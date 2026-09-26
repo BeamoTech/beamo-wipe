@@ -477,22 +477,45 @@ def _run_session(args, *, session_store, use_console, want_accessible,
     keyboard_layout = None
     language = None
     text_size = None
-    while True:
-        code = _run_one_session(
-            args, session_store=session_store, use_console=use_console,
-            want_accessible=want_accessible, fullscreen=fullscreen, reader=reader,
-            keyboard_layout=keyboard_layout, language=language,
-            text_size=text_size)
-        if not isinstance(code, Wizard):
-            return code
-        keyboard_layout = code.keyboard_layout
-        language = code.language
-        text_size = code.text_size
-        use_console = code.diagnostic_ui == "console"
-        want_accessible = code.diagnostic_ui == "accessible"
-        del code
-        if session_store is not None:
-            session_store.begin_new_session()
+    owned_reader = None
+    try:
+        while True:
+            # Tk can switch to the accessible view after _main's initial
+            # reader decision. Start Orca before the next startup stages so
+            # that a fresh disk discovery is announced as well as the wizard.
+            if want_accessible and not args.demo and running_on_live_usb():
+                needs_reader = reader is None
+                poll_reader = getattr(reader, "poll", None)
+                if not needs_reader and callable(poll_reader):
+                    try:
+                        needs_reader = poll_reader() is not None
+                    except OSError:
+                        pass
+                if needs_reader:
+                    from beamo_wipe.ui.accessible_wizard import start_live_reader
+
+                    owned_reader = start_live_reader()
+                    reader = owned_reader
+            code = _run_one_session(
+                args, session_store=session_store, use_console=use_console,
+                want_accessible=want_accessible, fullscreen=fullscreen, reader=reader,
+                keyboard_layout=keyboard_layout, language=language,
+                text_size=text_size)
+            if not isinstance(code, Wizard):
+                return code
+            keyboard_layout = code.keyboard_layout
+            language = code.language
+            text_size = code.text_size
+            use_console = code.diagnostic_ui == "console"
+            want_accessible = code.diagnostic_ui == "accessible"
+            del code
+            if session_store is not None:
+                session_store.begin_new_session()
+    finally:
+        if owned_reader is not None:
+            from beamo_wipe.ui.accessible_wizard import stop_live_reader
+
+            stop_live_reader(owned_reader)
 
 
 def _run_one_session(args, *, session_store, use_console, want_accessible,
