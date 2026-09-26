@@ -4,7 +4,9 @@ import pytest
 from beamo_wipe import copy as C
 from beamo_wipe.models import Screen, WipeResult
 from beamo_wipe.ui import console_wizard
-from test_busy_transitions import ready
+from test_busy_transitions import ready as ready_fixture
+
+ready = ready_fixture
 
 
 def test_stop_requires_fresh_consent_and_keep_does_not_cancel(ready):

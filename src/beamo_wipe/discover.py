@@ -483,7 +483,7 @@ def _could_be_live_medium(node: Dict[str, Any]) -> bool:
     return _node_type(node) in {"disk", "rom"} and _as_int(node.get("size")) > 0
 
 
-def _node_type(node: Dict[str, Any]) -> str:
+def _node_type(node: Mapping[str, Any]) -> str:
     return (node.get("type") or "").lower()
 
 
@@ -667,15 +667,15 @@ def _cover_shared_filesystem_members(
         uuid = _clean(node.get("uuid")).casefold()
         if not uuid:
             continue
-        mounts = mounted.get((fs, uuid)) if fs else None
-        if not mounts and not fs:
-            mounts = mounted_uuid.get(uuid)
-        if not mounts:
+        shared_mounts = mounted.get((fs, uuid)) if fs else None
+        if not shared_mounts and not fs:
+            shared_mounts = mounted_uuid.get(uuid)
+        if not shared_mounts:
             continue
         owner = _owner_disk_name(node, parent, by_name)
         if not owner:
             continue
-        flat_mounts.setdefault(owner, []).extend(mounts)
+        flat_mounts.setdefault(owner, []).extend(shared_mounts)
 
 
 def _is_stacked_holder(node: Mapping[str, Any]) -> bool:

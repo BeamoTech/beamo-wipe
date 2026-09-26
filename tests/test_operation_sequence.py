@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Backlog #88: complete erase operation sequence. Fake engine lines only."""
 
-import pytest
 
 from beamo_wipe import lang
 from beamo_wipe.demo import make_demo_wizard

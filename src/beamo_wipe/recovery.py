@@ -99,7 +99,7 @@ class RecoverySections:
     technical: str = ""
 
     def labeled_pairs(self, *, include_technical: bool = False) -> tuple[tuple[str, str], ...]:
-        pairs = (
+        pairs: tuple[tuple[str, str], ...] = (
             (RECOVERY_HAPPENED, self.happened),
             (RECOVERY_MEANING, self.meaning),
             (RECOVERY_NEXT, self.next_step),

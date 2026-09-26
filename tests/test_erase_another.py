@@ -10,7 +10,9 @@ from beamo_wipe.models import Screen, MethodId
 from beamo_wipe.safety import SafetyError
 from beamo_wipe.wizard import _ReportExportClaim
 from test_result_presentations import CASES, case_evidence
-from test_session_recovery import session, armed, finish
+from test_session_recovery import session as session_fixture, armed, finish
+
+session = session_fixture
 
 
 def saved(w):

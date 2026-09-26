@@ -1478,8 +1478,8 @@ def _export_prepared(evidence: VerifiedEvidence, baseline_without_rdev: Sequence
     # launch. A same-path replacement can duplicate lsblk's model/serial/WWN;
     # do not discard the kernel identity when preparing a later report copy.
     for item in baseline:
-        expected = (expected_required_rdevs or {}).get(os.path.realpath(item.path))
-        if expected is not None and item.rdev != expected:
+        expected_rdev = (expected_required_rdevs or {}).get(os.path.realpath(item.path))
+        if expected_rdev is not None and item.rdev != expected_rdev:
             raise SafetyError(DISK_IDENTITY_CHANGED)
     protected_rdevs = set(_protected_rdevs(second_payload, baseline_without_rdev))
     protected_rdevs.update(item.rdev for item in baseline if item.rdev > 0)

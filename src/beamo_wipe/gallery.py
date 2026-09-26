@@ -415,7 +415,7 @@ def _gallery_html_for_current_language(lang: str) -> str:
     from beamo_wipe import recovery as Rec
 
     result = discovery_for_scenario("happy")
-    payload = {
+    payload: dict[str, Any] = {
         "app": C.APP_NAME,
         "reportStatusTitle": C.REPORT_STATUS_TITLE,
         "reportPreview": C.REPORT_PREVIEW,

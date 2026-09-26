@@ -1,0 +1,112 @@
+name: Beamo Wipe CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, 'codex/ci-*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: beamo-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    name: Linux image gate
+    runs-on: blacksmith-8vcpu-ubuntu-2404
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate workflow
+        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.7 -color
+      - name: Restore download cache
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .ci-cache/pip
+          key: pip-bookworm-amd64-${{ hashFiles('scripts/ci-hosted.sh', 'pyproject.toml') }}
+
+      - name: Parallel lint, types, tests, preview, launchers and negative test
+        run: bash scripts/ci-blacksmith.sh sources
+      - name: Build and inspect ISO
+        run: bash scripts/ci-blacksmith.sh iso
+      - name: Verify image, vulnerabilities and BIOS/UEFI with KVM
+        run: bash scripts/ci-blacksmith.sh qemu
+      - name: Make evidence readable
+        if: always()
+        run: |
+          for path in dist/evidence qemu-evidence .ci-cache/pip; do
+            if [ -d "$path" ]; then sudo chown -R "$(id -u):$(id -g)" "$path"; fi
+          done
+          PYTHONPATH=src python3 -m beamo_wipe.ci_evidence summary
+      - name: Retain execution evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ci-evidence-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            dist/evidence/
+            dist/*.manifest.json
+            dist/*.sha256
+            dist/SHA256SUMS
+            qemu-evidence/
+            !qemu-evidence/PATH
+          if-no-files-found: error
+          retention-days: 7
+      - name: Save trusted download cache
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .ci-cache/pip
+          key: pip-bookworm-amd64-${{ hashFiles('scripts/ci-hosted.sh', 'pyproject.toml') }}
+
+  windows:
+    name: Windows launcher tests
+    runs-on: blacksmith-2vcpu-windows-2025
+    timeout-minutes: 20
+    env:
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version: '1.26.8'
+          cache: false
+      - name: Native Win32 and PowerShell fixture tests
+        working-directory: desktop
+        shell: pwsh
+        run: |
+          if ((go env GOVERSION) -ne 'go1.26.8') { throw 'Wrong Go toolchain' }
+          go test -json ./... | Tee-Object -FilePath windows-tests.jsonl
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          go vet ./...
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Retain Windows test evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: windows-tests-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: desktop/windows-tests.jsonl
+          if-no-files-found: error
+          retention-days: 7
+
+  required:
+    name: CI gate
+    needs: [verify, windows]
+    if: always()
+    runs-on: blacksmith-2vcpu-ubuntu-2404
+    timeout-minutes: 5
+    steps:
+      - name: Require every platform gate to pass
+        env:
+          LINUX_RESULT: ${{ needs.verify.result }}
+          WINDOWS_RESULT: ${{ needs.windows.result }}
+        run: test "$LINUX_RESULT" = success && test "$WINDOWS_RESULT" = success

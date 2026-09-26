@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Hosted gate for Google Cloud Build (project beamo-wipe).
+# Hosted gate for Blacksmith (GitHub Actions).
 # This is the project's CI: lint, fake-disk tests, preview, negative test,
 # amd64 ISO build, and controlled QEMU verification.
 # Never execs nwipe on a real disk. Never deploys.
@@ -37,9 +37,24 @@ install_test_deps() {
     python3-pip \
     python3-setuptools \
     python3-qrcode \
+    python3-pil python3-pyzbar libzbar0 nodejs rsync shellcheck \
     git \
     ca-certificates
   python3 -m pip install --break-system-packages -q 'pytest==9.0.3' 'cryptography==50.0.1'
+  python3 -m pip install --break-system-packages -q 'playwright==1.63.0'
+  python3 -m playwright install --with-deps chromium
+  # Tests using the system executable and Playwright's default browser must
+  # exercise the same pinned runtime, rather than silently skipping either.
+  ln -s "$(python3 - <<'PY'
+from playwright.sync_api import sync_playwright
+with sync_playwright() as runtime:
+    print(runtime.chromium.executable_path)
+PY
+)" /usr/local/bin/chromium
+  local go_tools
+  go_tools="$(mktemp -d /tmp/beamo-wipe-test-go.XXXXXX)"
+  bash "$ROOT/scripts/fetch-ci-go.sh" "$go_tools"
+  export PATH="$go_tools/go/bin:$PATH" GOTOOLCHAIN=local GOCACHE="$go_tools/cache"
 }
 
 install_lint_deps() {
@@ -59,6 +74,12 @@ install_preview_deps() {
   if [ "${BEAMO_GATE_CHILD:-0}" = "1" ]; then return; fi
   apt-get update -qq
   apt-get install -y -qq --no-install-recommends python3 python3-tk python3-qrcode python3-pytest nodejs git
+}
+
+install_negative_deps() {
+  if [ "${BEAMO_GATE_CHILD:-0}" = "1" ]; then return; fi
+  apt-get update -qq
+  apt-get install -y -qq --no-install-recommends python3 python3-pytest git
 }
 
 install_desktop_meta() {
@@ -106,9 +127,9 @@ run_lint() {
     packaging/live/config/hooks/normal/0500-build-nwipe.hook.chroot
   python3 -m ruff check --select S102,S103,S104,S105,S106,S107,S113,S307,S501,S506,S508,S602,S604,S605,S606,S608,S609,S610,S611,S612 src/beamo_wipe
   python3 -m ruff check --select S102,S103,S104,S107,S113,S307,S501,S506,S508,S602,S604,S605,S606,S608,S609,S610,S611,S612 tests
-  log "advisory full lint and type report"
-  python3 -m ruff check src/beamo_wipe tests || true
-  python3 -m mypy --ignore-missing-imports src/beamo_wipe || true
+  log "blocking full lint and type checks"
+  python3 -m ruff check src/beamo_wipe tests
+  python3 -m mypy --ignore-missing-imports src/beamo_wipe
   if grep -R --include="*.py" -n "TODO" src/beamo_wipe | grep -v "TODO:"; then
     log "warning: untracked TODO found; use 'TODO(#issue):' form"
   fi
@@ -122,7 +143,8 @@ run_pytest() {
   log "orca on a dedicated Xvfb 1600x1000 @ 72 DPI"
   dbus-run-session -- xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72" \
     env BEAMO_TEST_ORCA_CHILD=1 python3 -m pytest \
-      tests/test_accessible_runtime.py::test_orca_announces_every_result
+      tests/test_accessible_runtime.py::test_orca_announces_every_result \
+      --junitxml="${BEAMO_GATE_JUNIT:-$ROOT/dist/evidence/tests.xml}.orca.xml"
   export BEAMO_HOSTED_ORCA_SEPARATE=1
   log "pytest under Xvfb 1600x1000 @ 72 DPI"
   # Live-image tests that need lb config artifacts skip themselves when
@@ -429,7 +451,7 @@ case "$PHASE" in
     record_gate desktop-launchers run_desktop
     ;;
   negative)
-    install_test_deps
+    install_negative_deps
     record_gate negative run_negative
     ;;
   iso)
@@ -444,6 +466,7 @@ case "$PHASE" in
     record_gate lint run_lint
     install_test_deps
     record_gate tests run_pytest
+    install_preview_deps
     record_gate preview run_preview
     record_gate desktop-launchers run_desktop
     record_gate negative run_negative

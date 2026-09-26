@@ -1,98 +1,143 @@
 # Continuous integration gates
 
-Google Cloud Build (project `beamo-wipe`) is the project's CI. GitHub
-Actions is not used — there are no workflows under `.github/workflows/`.
+**Blacksmith through GitHub Actions is the current CI platform.** This follows
+the operator's 2026-09-26 correction and supersedes the Google Cloud guidance.
+The workflow is `.github/workflows/ci.yml`; the stable check name is `CI gate`.
+See [the migration audit](evidence/ci-audit-20260926/README.md) for measured
+rollout status. A configured workflow is not proof of a successful hosted run.
 
-Neither gate ever wipes a host disk.
+## Execution
 
-## Gate
-
-| Gate | Runner | What it proves |
-| --- | --- | --- |
-| **Cloud Build** `cloudbuild.yaml` (`./scripts/ci-cloud.sh`, project `beamo-wipe`) | One vulnerability-scanned, content-addressed Debian base on `E2_HIGHCPU_8`, `diskSizeGb: 200`; current Debian Python, Docker CLI, and test packages installed over signed HTTPS metadata | `lint`, fake-disk pytest under Xvfb 72 DPI, preview, desktop launchers, negative test, amd64 ISO build, and controlled QEMU verification. Outputs remain ephemeral unless an operator explicitly invokes `--publish-release`; the standard-library publisher is post-QEMU, no-overwrite, byte-verified, and completion-marked. |
+PRs targeting `main`, pushes to `main`, and verification branches matching
+`codex/ci-*` run every gate. Manual dispatch is verification only:
 
 ```bash
-python3 -m pytest                          # fast checkout (fake lsblk, no nwipe)
+python3 -m pytest
 ./scripts/test-all.sh
-dbus-run-session -- xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72" python3 -m pytest  # 72 DPI like the live USB
-BEAMO_WIPE_NO_OPEN=1 ./preview --web && ./preview --console < /dev/null
-./scripts/build-iso.sh                       # amd64 live image (prefer Cloud Build on this Mac)
-./scripts/ci-cloud.sh                        # or: gcloud builds submit --project=beamo-wipe
+# After the workflow has been installed on GitHub:
+gh workflow run ci.yml --repo BeamoTech/beamo-wipe --ref main
+gh run list --repo BeamoTech/beamo-wipe --workflow ci.yml
 ```
 
-## Phases (`scripts/ci-hosted.sh`)
+The Linux image runner is `blacksmith-8vcpu-ubuntu-2404`. Native Windows
+launcher tests run independently on `blacksmith-2vcpu-windows-2025`; both jobs
+must succeed for the aggregate `CI gate` check to pass. Each source gate runs in its own
+container using the content-addressed Debian bookworm image already pinned
+by the ISO builder. The shared checkout has the same absolute path inside
+and outside Docker so sibling ISO bind mounts resolve correctly. No developer
+credentials, signing keys, environment secrets, or GitHub token are passed to
+these containers. Checkout does not retain Git credentials.
 
-| Phase | Step | What it runs |
-| --- | --- | --- |
-| `lint` | `lint` | Blocking compile, ShellCheck, and Ruff security rules. Full Ruff and mypy still run and are printed; they stay advisory until the existing format/type backlog is cleared. |
-| `tests` | `python-tests` | `xvfb-run … 72 DPI` with `BEAMO_WIPE_DRY_RUN=1`; destructive-boundary spies use fake runners, never real `nwipe`. Sequential pip installs share `PIP_CACHE_DIR` under the Cloud Build workspace. |
-| `preview` | `preview` | `BEAMO_WIPE_NO_OPEN=1 ./preview --web` + `--console` + `--helper` (fake disks) |
-| `desktop-launchers` | `desktop-launchers` | `scripts/ci-desktop.sh` wrapped as a required gate receipt: Go race/vet/fuzz plus pinned Windows compile. ISO waits for this step so the image ships the tested pair. |
-| `negative` | `negative-test` | Waits for every source-reading gate, breaks `assert_boot_excluded` only in a private temporary package copy, and expects the e2e test to fail; the shared source tree stays intact |
-| `iso` | `iso-build` | Waits for the negative test **and** desktop-launchers, then performs a privileged linux/amd64 build with no host `/dev` bind, content-addressed Debian build image, strict versioned output, PVD/size checks, manifest + sidecars |
-| `qemu` | `qemu-verify` | Exact verified ISO, read-only image inspection, Debian fixed-vulnerability scan, shipped nwipe on a proved disposable loop, and mandatory BIOS+UEFI probes; no host binary/image fallback. Aborts if QEMU argv mentions `/dev/`. |
+| Phase | Validation |
+| --- | --- |
+| Workflow | actionlint 1.7.7, including shell validation |
+| lint | Python compile, blocking Ruff including security rules, existing developer-tool formatting gate, ShellCheck and blocking mypy |
+| tests | Full fake-device pytest at Xvfb 72 DPI; Orca in a separate clean D-Bus/X session; both JUnit reports counted in the receipt; Node, Playwright/Chromium, QR decoder and pinned Go installed so their tests execute |
+| preview | Web, console, helper and embedded JavaScript syntax |
+| desktop-launchers | Pinned Go 1.26.8, Linux race/vet/fuzz, Windows compilation, tested launcher bundle |
+| Windows | Native Go tests/vet including Win32 and PowerShell fixtures, on pinned Go 1.26.8 |
+| negative | Private safety mutation must produce the expected failing fake-device test, followed by a passing unmodified-source test |
+| iso | Tested launchers, pinned nwipe v0.42, build provenance, ISO size/PVD/checksums |
+| qemu | ISO and USB image inspection, installed-package inventory, fixed-vulnerability scan, isolated shipped-nwipe tests, BIOS/UEFI/Secure Boot checks, manifest finalization |
 
-`./scripts/ci-hosted.sh all` runs every verification phase in dependency order. Skip flags: `SKIP_ISO=true` / `SKIP_QEMU=true` (cloudbuild substitutions `_SKIP_ISO` / `_SKIP_QEMU`). `_PUBLISH_RELEASE` defaults to `false`. GitHub triggers pin `_PUBLISH_RELEASE=false` and `_SKIP_ISO=false` so a stale trigger cannot publish or drop the ISO. Verification `./scripts/ci-cloud.sh` also appends `_PUBLISH_RELEASE=false`. `./scripts/ci-cloud.sh --publish-release` is the explicit production path and refuses either skip. The publisher step explicitly maps Cloud Build's immutable `$BUILD_ID` substitution into its process environment; the publisher rejects a missing or malformed identifier before any upload. After publish-or-not, the worker prints a `CI timing summary` from gate receipts.
+The five source phases run concurrently; every process is waited for and any
+failure stops image building. ISO waits for all source gates. QEMU follows ISO
+on the same disposable worker. There are no ISO/QEMU skip inputs in the
+workflow. PRs receive full QEMU coverage, including image vulnerability checks.
+KVM is required; Mac emulation cannot substitute for this gate. QEMU receives
+only newly created regular-file images. No host `/dev` tree is bound into a
+container, and the QEMU script rejects `/dev/` guest-drive arguments.
 
-`./scripts/ci-cloud.sh --skip-iso` is a shortened verification run that skips both ISO and its dependent QEMU phase. It cannot publish a release or count as the full hosted gate.
+The image build uses privileged Docker as before. The QEMU container needs
+privileges for private file-backed loop mounts; its loop identity checks must
+remain intact. Run this only on isolated disposable workers.
 
-For a precommit checkout gate, `./scripts/ci-cloud.sh` detects uncommitted edits and passes `_ALLOW_DIRTY=1` to the ISO and QEMU verification steps. The build identity and manifest retain `source.dirty=true`; full checksums and measured evidence still run. The publisher does not receive this override and rejects dirty source. `--publish-release` refuses an uncommitted checkout before submitting. After a successful precommit gate, commit the audited paths, run a clean hosted gate for the committed source identity, then push only after that gate passes.
+## Caches, concurrency and evidence
 
-## Triggers
+Only pip download caches are persisted; the key binds the Debian architecture,
+CI dependency-install script, and project manifest. Only a successful push to
+`main` saves a cache. PRs may restore it but cannot update the trusted key.
+Compiled launchers, manifests, test results and images are never cached.
 
-`scripts/install-cloud-triggers.sh` creates (requires the Cloud Build GitHub App connected to `BeamoINT/beamo-wipe` first):
+New PR runs cancel older runs for that PR. Main runs are not cancelled by
+concurrency policy. Linux image work is bounded at 120 minutes, Windows at 20, and aggregation at five. Action references use
+immutable commit hashes. No path filters can leave an unchanged required
+check missing. `pull_request_target` is not used.
 
-- `beamo-wipe-pr-gate` — PRs targeting `main`: lint, tests, preview, desktop-launchers, negative, ISO. Substitutions: `_SKIP_QEMU=true,_SKIP_ISO=false,_PUBLISH_RELEASE=false`.
-- `beamo-wipe-main-gate` — pushes to `main`: the full gate including QEMU. Substitutions: `_SKIP_QEMU=false,_SKIP_ISO=false,_PUBLISH_RELEASE=false`.
+Build IDs are UUIDv5 values derived from repository/run ID/attempt. All phases
+share that ID and source commit; receipts also record `runner=blacksmith`,
+GitHub run ID, attempt and repository. Artifact names contain source SHA, run
+ID and attempt. Logs, receipts, JUnit and checksum/manifest sidecars are kept
+for seven days even on failure. The private QEMU temporary-path receipt is
+excluded. ISO/USB binaries are not uploaded by this verification workflow.
+Gate receipts report execution duration; GitHub step timings additionally
+include dependency/bootstrap time. Never compare those two timings as if they
+were the same measurement.
 
-The installer pins the production project's existing, constrained build service
-account explicitly; Cloud Build must not fall back to a legacy or implicit
-identity. Re-running the installer reconciles both triggers instead of silently
-accepting stale event, repository, substitution, or service-account settings.
-For a different project, set `BEAMO_WIPE_CLOUD_BUILD_SERVICE_ACCOUNT` to a
-fully qualified service-account resource in that same project.
+## Required checks and rollout
 
-## Required checks
+Require `CI gate` on `main`, with up-to-date branches, pull-request review,
+no force pushes and no deletion. Enable the requirement only after the new
+check has actually run successfully, to avoid a permanently pending check.
+Use the GitHub Actions app identity observed on that run when binding the
+required check. Verify enforcement through the API afterward.
 
-Branch protection on `main` should require these Cloud Build check names (GitHub Checks API, not the older commit-status API):
+At audit start, GitHub reported no classic protection or ruleset on `main`,
+and no custom Actions workflow. Blacksmith is installed in the organization
+with selected repository access; repository enrollment still needs actual
+execution proof. Current canonical repository is `BeamoTech/beamo-wipe`;
+`BeamoINT/beamo-wipe` redirects there. Current rollout evidence belongs in the
+linked dated audit, not in claims inferred from this configuration.
 
-- PRs: `beamo-wipe-pr-gate (beamo-wipe)`
-- Pushes to `main`: `beamo-wipe-main-gate (beamo-wipe)`
+## Publication, provenance and rollback
 
-This checkout cannot read or change GitHub branch protection. An operator with
-admin access should confirm those checks are required and that `main` is not
-writable without them.
+CI never publishes. There is no signing secret, production environment,
+write permission, release trigger or cloud identity in this workflow.
+A green check does not authorize a release. Publication requires separate
+explicit operator authorization and a reviewed production destination/signing
+procedure. Do not automatically promote unsigned CI artifacts.
 
-## Publication and rollback
+The retained `cloudbuild.yaml`, `ci-cloud.sh`, trigger installer and GCS
+publisher document the previous production system. They are legacy tooling,
+not the current CI route. Do not invoke Google Cloud for current CI. Migration
+of release credentials or publication to a new provider is a separate operator
+action; no release path has been activated by adding this workflow.
 
-Do not publish an ISO from a PR or from a main verification build. Production publication is only `./scripts/ci-cloud.sh --publish-release` after separate operator authorization. Uploads are no-overwrite under `gs://beamo-wipe_cloudbuild/releases/<BUILD_ID>/` with `RELEASE_COMPLETE.txt` last. Rollback is the prior stable ISO documented in `docs/release-verification.md` (`beamo-wipe-0.2.9-amd64.iso`, SHA-256 `4042f85e0e7c155dd2340dc93a6b879c35ebe2f13da9c81c1ba6269524a6b169`) plus `docs/runbook.md` §8. Never bind a host disk into QEMU.
+Existing publisher checks remain required for any authorized publication:
+clean/tagged source, all passing gates, exact artifact hashes and package
+inventory, detached Ed25519 signature, no-overwrite upload, remote byte
+verification, and completion marker last. Build inputs are pinned where the
+project currently pins them, but Debian package repositories remain mutable;
+this does **not** establish bit-for-bit reproducible ISO bytes. Record installed
+package versions and hashes for each build.
 
-## Billing
-
-Cloud Build bills the `beamo-wipe` project (free tier covers 120 build-minutes/day; `E2_HIGHCPU_8` burns faster — watch the billing dashboard). The full gate is roughly half an hour of worker time, mostly ISO + QEMU. Prefer the PR gate's QEMU skip for iteration; `main` always runs everything.
+Rollback remains `beamo-wipe-0.2.9-amd64.iso`, SHA-256
+`4042f85e0e7c155dd2340dc93a6b879c35ebe2f13da9c81c1ba6269524a6b169`.
+See [release verification](release-verification.md) and [runbook](runbook.md).
+Do not relabel a fresh build as the old verified artifact.
 
 ## Failure triage
 
-| Symptom | Likely cause | Fix |
-| --- | --- | --- |
-| `TclError: no display name and no $DISPLAY` | Runner not using `xvfb-run … 72 DPI` | Use `dbus-run-session -- xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72"`; never use VNC `DISPLAY=:1` at 96 DPI. |
-| `test_iso_build_uses_https_debian_mirrors` / `test_live_config_xinit… FileNotFoundError` | `lb config` not run | Skipped automatically when `packaging/live/config/{bootstrap,binary}` are absent; run `./scripts/build-iso.sh` to generate them and cover those tests. |
-| `test_manifest_*` fail with `untraceable source state` | Build workspace has no `.git` | `.gcloudignore` must not exclude `.git/` (locked by `test_cloud_submit_uploads_git_metadata`). |
-| `test_manifest_*` fail with `missing checksum: ISO not found` | Manufacturing ISO absent | Those tests skip without `dist/beamo-wipe-0.1.0-amd64.iso`; build it or fetch the release artifact. |
-| `test_boot_exclusion … FAILED` while `negative-test` passed | Real safety regression | Do not mute: fix `src/beamo_wipe/safety.py` / `discover.py` / `wizard.py` gate; add reproduction fixture under `tests/fixtures/`. |
-| `sha256sum` mismatch or ISO <80 MiB | Stale `packaging/live/config/includes.chroot` | `cp -R src/beamo_wipe …` is done by `scripts/build-iso.sh`; ensure `BEAMO_WIPE_VERSION` matches `src/beamo_wipe/__init__.py`. |
-| `docker: permission denied` | User not in `docker` group on nested VM | Use `sudo docker` (see `.cursor/start.sh`); ensure `/etc/docker/daemon.json` has `fuse-overlayfs` on nested hosts. |
-
-Local triage: reproduce with `BEAMO_WIPE_DRY_RUN=1 xvfb-run … python -m pytest -k "not test_iso_build and not test_live_config"` then `BEAMO_WIPE_NO_OPEN=1 ./preview --web`.
+- Queued Blacksmith job: verify App enrollment for this repository; do not
+  silently fall back to Google Cloud or an untrusted self-hosted machine.
+- Missing KVM: fix the Blacksmith x86_64 worker capability; do not weaken the
+  gate or wait on local Mac TCG.
+- Tk clipping: use Xvfb 72 DPI, never VNC at 96 DPI.
+- Missing live-build generated config: source checks still run; image tests
+  requiring actual build outputs run against the image in the hosted phase.
+- Failed tests, security scan or negative test: fix the cause; do not mask the
+  exit code or weaken coverage to obtain a green check.
+- Stale receipt/output: rerun on a fresh worker; never overwrite provenance to
+  disguise a partial run.
 
 ## Desktop and regular-file packaging checks
 
 Use the repository-pinned Go 1.26.8 for shipped builds. From `desktop/`,
 `go test -race ./...` and `go vet ./...` run the local launcher gate.
 `GOOS=windows GOARCH=amd64 go test -c -o /tmp/beamo-desktop-windows.test.exe`
-compiles the Windows suite; run that executable on an isolated x64 Windows
-worker to test the actual Win32 and Windows PowerShell paths. Cross-compilation
-is not native execution. The Windows fixtures include Unicode identities and
+compiles the Windows suite. The Blacksmith Windows job runs the actual Win32
+and Windows PowerShell tests natively; cross-compilation alone does not prove
+those runtime paths. The Windows fixtures include Unicode identities and
 512-byte/4096-byte sector layouts.
 
 The Linux utility integration test enumerates disks only when

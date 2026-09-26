@@ -40,7 +40,9 @@ from beamo_wipe.support_code import (
 )
 from beamo_wipe.wizard import Wizard
 from test_rejection_next_steps import ALL_REFUSALS
-from test_tk_runtime import descendants, ui  # noqa: F401
+from test_tk_runtime import descendants, ui as ui_fixture
+
+ui = ui_fixture
 
 WIZARD_EXPORT_DETAILS = (
     W.NO_FINISHED_REPORT,
@@ -364,7 +366,6 @@ def test_gallery_and_helper_teach_the_on_screen_lines():
 
 
 def test_tk_diagnostic_rejection_renders_code_and_build(ui):
-    from test_tk_runtime import descendants
     import tkinter as tk
 
     _, app = ui()

@@ -1,0 +1,29 @@
+[ci-hosted] negative test: broken boot-media safety must be rejected
+patched safety.py: assert_boot_excluded now fail-open
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___ test_boot_guard_rejects_false_identity_with_otherwise_selectable_target ____
+
+    def test_boot_guard_rejects_false_identity_with_otherwise_selectable_target():
+        """A single removed guard must let this fake target through the remaining checks."""
+        identified = discover(
+            lsblk_payload=_load("lsblk_same_size.json"),
+            boot_path="/dev/sdb",
+            mount_sources=[],
+            cmdline="",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+        assert identified.boot is not None
+        assert identified.selectable
+        uncertain = replace(identified, boot_identified=False)
+>       with pytest.raises(SafetyError, match="cannot tell which disk"):
+E       Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+
+tests/test_boot_exclusion_fails_closed.py:796: Failed
+=========================== short test summary info ============================
+FAILED [temporary-path]::test_boot_guard_rejects_false_identity_with_otherwise_selectable_target
+1 failed in 0.19s
+[ci-hosted] broken private safety copy correctly rejected; verifying source passes
+.                                                                        [100%]
+[ci-hosted] negative test PASS: safety gate blocks bypass
+[ci-hosted] PASS phase=negative

@@ -1,0 +1,225 @@
+[ci-hosted] blocking syntax, shell and security lint
+All checks passed!
+3 files already formatted
+All checks passed!
+All checks passed!
+[ci-hosted] advisory full lint and type report
+tests/test_erase_another.py:13:35: F401 [*] `test_session_recovery.session` imported but unused
+   |
+11 | from beamo_wipe.wizard import _ReportExportClaim
+12 | from test_result_presentations import CASES, case_evidence
+13 | from test_session_recovery import session, armed, finish
+   |                                   ^^^^^^^ F401
+   |
+   = help: Remove unused import: `test_session_recovery.session`
+
+tests/test_erase_another.py:148:64: F811 Redefinition of unused `session` from line 13
+    |
+148 | def test_journal_rotation_keeps_artifacts_and_allows_fresh_arm(session):
+    |                                                                ^^^^^^^ F811
+149 |     store = session()
+150 |     discovery, request = armed(store)
+    |
+    = help: Remove definition: `session`
+
+tests/test_erase_another.py:163:49: F811 Redefinition of unused `session` from line 13
+    |
+163 | def test_journal_rotation_refuses_active_runner(session, monkeypatch):
+    |                                                 ^^^^^^^ F811
+164 |     store = session()
+165 |     armed(store)
+    |
+    = help: Remove definition: `session`
+
+tests/test_erase_another.py:264:57: F811 Redefinition of unused `session` from line 13
+    |
+264 | def test_invalid_or_busy_journal_keeps_report_available(session, monkeypatch):
+    |                                                         ^^^^^^^ F811
+265 |     store = session()
+266 |     w, _, _ = case_evidence(CASES[0])
+    |
+    = help: Remove definition: `session`
+
+tests/test_erase_another.py:312:43: F811 Redefinition of unused `session` from line 13
+    |
+312 | def test_rotation_checks_real_runner_lock(session):
+    |                                           ^^^^^^^ F811
+313 |     import subprocess
+314 |     import sys
+    |
+    = help: Remove definition: `session`
+
+tests/test_erase_another.py:334:52: F811 Redefinition of unused `session` from line 13
+    |
+334 | def test_journal_save_failure_cannot_arm_new_erase(session, monkeypatch):
+    |                                                    ^^^^^^^ F811
+335 |     store = session()
+336 |     armed(store)
+    |
+    = help: Remove definition: `session`
+
+tests/test_operation_identity.py:203:39: F811 Redefinition of unused `ui` from line 12
+    |
+203 | def test_tk_stop_confirm_shows_method(ui, tmp_path, monkeypatch):
+    |                                       ^^ F811
+204 |     w, app = ui()
+205 |     monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+    |
+    = help: Remove definition: `ui`
+
+tests/test_operation_identity.py:219:48: F811 Redefinition of unused `ui` from line 12
+    |
+219 | def test_tk_stopping_shows_identity_and_method(ui):
+    |                                                ^^ F811
+220 |     w, app = ui()
+221 |     disk = sorted(w.selectable, key=lambda d: d.path)[0]
+    |
+    = help: Remove definition: `ui`
+
+tests/test_operation_sequence.py:4:8: F401 [*] `pytest` imported but unused
+  |
+2 | """Backlog #88: complete erase operation sequence. Fake engine lines only."""
+3 |
+4 | import pytest
+  |        ^^^^^^ F401
+5 |
+6 | from beamo_wipe import lang
+  |
+  = help: Remove unused import: `pytest`
+
+tests/test_stop_confirmation.py:7:35: F401 [*] `test_busy_transitions.ready` imported but unused
+  |
+5 | from beamo_wipe.models import Screen, WipeResult
+6 | from beamo_wipe.ui import console_wizard
+7 | from test_busy_transitions import ready
+  |                                   ^^^^^ F401
+  |
+  = help: Remove unused import: `test_busy_transitions.ready`
+
+tests/test_stop_confirmation.py:10:63: F811 Redefinition of unused `ready` from line 7
+   |
+10 | def test_stop_requires_fresh_consent_and_keep_does_not_cancel(ready):
+   |                                                               ^^^^^ F811
+11 |     w = ready
+12 |     w.confirm_erase()
+   |
+   = help: Remove definition: `ready`
+
+tests/test_stop_confirmation.py:29:50: F811 Redefinition of unused `ready` from line 7
+   |
+29 | def test_completion_while_confirmation_open_wins(ready, monkeypatch):
+   |                                                  ^^^^^ F811
+30 |     w = ready
+31 |     w.confirm_erase()
+   |
+   = help: Remove definition: `ready`
+
+tests/test_stop_confirmation.py:42:43: F811 Redefinition of unused `ready` from line 7
+   |
+42 | def test_failed_stop_never_claims_stopped(ready, monkeypatch):
+   |                                           ^^^^^ F811
+43 |     w = ready
+44 |     w.confirm_erase()
+   |
+   = help: Remove definition: `ready`
+
+tests/test_stop_confirmation.py:57:55: F811 Redefinition of unused `ready` from line 7
+   |
+57 | def test_curses_repeat_escape_and_enter_never_confirm(ready):
+   |                                                       ^^^^^ F811
+58 |     w = ready
+59 |     w.confirm_erase()
+   |
+   = help: Remove definition: `ready`
+
+tests/test_stop_confirmation.py:75:69: F811 Redefinition of unused `ready` from line 7
+   |
+75 | def test_plain_confirmation_polls_and_repeated_cancel_does_not_stop(ready, monkeypatch, capsys):
+   |                                                                     ^^^^^ F811
+76 |     w = ready
+77 |     w.confirm_erase()
+   |
+   = help: Remove definition: `ready`
+
+tests/test_stop_confirmation.py:101:53: F811 Redefinition of unused `ready` from line 7
+    |
+101 | def test_ctrl_c_opens_confirmation_without_stopping(ready, monkeypatch):
+    |                                                     ^^^^^ F811
+102 |     w = ready
+103 |     w.confirm_erase()
+    |
+    = help: Remove definition: `ready`
+
+tests/test_support_code.py:366:57: F811 Redefinition of unused `ui` from line 43
+    |
+366 | def test_tk_diagnostic_rejection_renders_code_and_build(ui):
+    |                                                         ^^ F811
+367 |     from test_tk_runtime import descendants
+368 |     import tkinter as tk
+    |
+    = help: Remove definition: `ui`
+
+tests/test_support_code.py:367:33: F811 [*] Redefinition of unused `descendants` from line 43
+    |
+366 | def test_tk_diagnostic_rejection_renders_code_and_build(ui):
+367 |     from test_tk_runtime import descendants
+    |                                 ^^^^^^^^^^^ F811
+368 |     import tkinter as tk
+    |
+    = help: Remove definition: `descendants`
+
+tests/test_write_vs_completion.py:8:37: F401 [*] `beamo_wipe.nwipe_runner.DryRunRunner` imported but unused
+   |
+ 6 | from beamo_wipe import lang
+ 7 | from beamo_wipe.models import MethodId
+ 8 | from beamo_wipe.nwipe_runner import DryRunRunner
+   |                                     ^^^^^^^^^^^^ F401
+ 9 | from test_operation_sequence import _working
+10 | from test_progress_timing import sample
+   |
+   = help: Remove unused import: `beamo_wipe.nwipe_runner.DryRunRunner`
+
+Found 19 errors.
+[*] 5 fixable with the `--fix` option.
+src/beamo_wipe/inventory.py:220: error: Item "None" of "Disk | None" has no attribute "path"  [union-attr]
+src/beamo_wipe/recovery.py:108: error: Incompatible types in assignment (expression has type "tuple[tuple[str, str], tuple[str, str], tuple[str, str], tuple[str, str]]", variable has type "tuple[tuple[str, str], tuple[str, str], tuple[str, str]]")  [assignment]
+src/beamo_wipe/session_recovery.py:114: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]
+src/beamo_wipe/discover.py:548: error: Argument 1 to "_node_type" has incompatible type "Mapping[str, Any]"; expected "dict[str, Any]"  [arg-type]
+src/beamo_wipe/discover.py:670: error: Incompatible types in assignment (expression has type "list[str] | None", variable has type "list[str]")  [assignment]
+src/beamo_wipe/discover.py:672: error: Incompatible types in assignment (expression has type "list[str] | None", variable has type "list[str]")  [assignment]
+src/beamo_wipe/discover.py:682: error: Argument 1 to "_node_type" has incompatible type "Mapping[str, Any]"; expected "dict[str, Any]"  [arg-type]
+src/beamo_wipe/discover.py:1051: error: Argument 1 to "_node_type" has incompatible type "Mapping[str, Any]"; expected "dict[str, Any]"  [arg-type]
+src/beamo_wipe/evidence.py:119: error: Argument 1 to "float" has incompatible type "object"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+src/beamo_wipe/support_export.py:1606: error: Incompatible types in assignment (expression has type "ExportReceipt", variable has type "int | None")  [assignment]
+src/beamo_wipe/support_export.py:1617: error: Item "int" of "int | None" has no attribute "owner_file"  [union-attr]
+src/beamo_wipe/support_export.py:1617: error: Item "None" of "int | None" has no attribute "owner_file"  [union-attr]
+src/beamo_wipe/support_export.py:1618: error: Item "int" of "int | None" has no attribute "share_copy"  [union-attr]
+src/beamo_wipe/support_export.py:1618: error: Item "None" of "int | None" has no attribute "share_copy"  [union-attr]
+src/beamo_wipe/ui/tk_wizard.py:2190: error: Incompatible types in assignment (expression has type "Label", variable has type "Frame | None")  [assignment]
+src/beamo_wipe/ui/tk_wizard.py:2192: error: Item "None" of "Frame | None" has no attribute "configure"  [union-attr]
+src/beamo_wipe/ui/tk_wizard.py:2195: error: Item "None" of "Frame | None" has no attribute "pack"  [union-attr]
+src/beamo_wipe/ui/tk_wizard.py:2850: error: Cannot infer type of lambda  [misc]
+src/beamo_wipe/ui/tk_wizard.py:2853: error: Item "None" of "Misc | None" has no attribute "focus_set"  [union-attr]
+src/beamo_wipe/ui/tk_wizard.py:2854: error: Item "None" of "Misc | None" has no attribute "focus_set"  [union-attr]
+src/beamo_wipe/ui/tk_wizard.py:3766: error: Argument 3 to "_primary_btn" of "TkWizard" has incompatible type "Callable[[], bool]"; expected "Callable[[], None]"  [arg-type]
+src/beamo_wipe/ui/tk_wizard.py:4013: error: Incompatible types in assignment (expression has type "Frame", variable has type "Label")  [assignment]
+src/beamo_wipe/ui/tk_wizard.py:4014: error: Argument 1 to "_back_btn" of "TkWizard" has incompatible type "Label"; expected "Frame"  [arg-type]
+src/beamo_wipe/ui/tk_wizard.py:4015: error: Argument 1 to "_primary_btn" of "TkWizard" has incompatible type "Label"; expected "Frame"  [arg-type]
+src/beamo_wipe/ui/accessible_wizard.py:834: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]
+src/beamo_wipe/gallery.py:724: error: Argument 2 to "replace" of "str" has incompatible type "dict[str, Any] | str | dict[Any, Any] | Any | None"; expected "str"  [arg-type]
+src/beamo_wipe/gallery.py:725: error: Argument 2 to "replace" of "str" has incompatible type "dict[str, Any] | str | dict[Any, Any] | Any | None"; expected "str"  [arg-type]
+src/beamo_wipe/gallery.py:726: error: Argument 2 to "replace" of "str" has incompatible type "dict[str, Any] | str | dict[Any, Any] | Any | None"; expected "str"  [arg-type]
+src/beamo_wipe/gallery.py:727: error: Argument 2 to "replace" of "str" has incompatible type "dict[str, Any] | str | dict[Any, Any] | Any | None"; expected "str"  [arg-type]
+src/beamo_wipe/gallery.py:728: error: Argument 2 to "replace" of "str" has incompatible type "dict[str, Any] | str | dict[Any, Any] | Any | None"; expected "str"  [arg-type]
+src/beamo_wipe/gallery.py:729: error: Argument 2 to "replace" of "str" has incompatible type "dict[str, Any] | str | dict[Any, Any] | Any | None"; expected "str"  [arg-type]
+src/beamo_wipe/gallery.py:730: error: Argument 2 to "replace" of "str" has incompatible type "dict[str, Any] | str | dict[Any, Any] | Any | None"; expected "str"  [arg-type]
+src/beamo_wipe/gallery.py:731: error: Argument 2 to "replace" of "str" has incompatible type "dict[str, Any] | str | dict[Any, Any] | Any | None"; expected "str"  [arg-type]
+src/beamo_wipe/gallery.py:732: error: Argument 2 to "replace" of "str" has incompatible type "dict[str, Any] | str | dict[Any, Any] | Any | None"; expected "str"  [arg-type]
+src/beamo_wipe/gallery.py:733: error: Argument 2 to "replace" of "str" has incompatible type "dict[str, Any] | str | dict[Any, Any] | Any | None"; expected "str"  [arg-type]
+src/beamo_wipe/gallery.py:734: error: Argument 2 to "replace" of "str" has incompatible type "dict[str, Any] | str | dict[Any, Any] | Any | None"; expected "str"  [arg-type]
+src/beamo_wipe/gallery.py:735: error: Argument 2 to "replace" of "str" has incompatible type "dict[str, Any] | str | dict[Any, Any] | Any | None"; expected "str"  [arg-type]
+src/beamo_wipe/gallery.py:736: error: Argument 2 to "replace" of "str" has incompatible type "dict[str, Any] | str | dict[Any, Any] | Any | None"; expected "str"  [arg-type]
+Found 36 errors in 7 files (checked 50 source files)
+src/beamo_wipe/release_manifest.py:39:PLACEHOLDER_RE = re.compile(r"PLACEHOLDER|TODO|XXX|CHANGEME", re.I)
+[ci-hosted] warning: untracked TODO found; use 'TODO(#issue):' form
+[ci-hosted] PASS phase=lint

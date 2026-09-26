@@ -1165,7 +1165,7 @@ class TkWizard:
         self._footer: Optional[tk.Frame] = None
         self._header: Optional[tk.Canvas] = None
         self._strip: Optional[tk.Canvas] = None
-        self._hint: Optional[tk.Frame] = None
+        self._hint: Optional[tk.Widget] = None
         self._primary: Optional[_Button] = None
         # The splash hides the header/strip so the white field runs clean;
         # every other screen shows them. Tracked so re-packing stays ordered.
@@ -2847,11 +2847,19 @@ class TkWizard:
             reader.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
             setattr(reader, "_beamo_comparison", True)
             for key, delta in (("Up", -1), ("Down", 1), ("Prior", -6), ("Next", 6)):
-                reader.bind(f"<{key}>", lambda e, r=reader, d=delta: (r.yview_scroll(d, "units"), "break")[1])
+                def scroll_comparison(_event: tk.Event, r: tk.Text = reader, d: int = delta) -> str:
+                    r.yview_scroll(d, "units")
+                    return "break"
+                reader.bind(f"<{key}>", scroll_comparison)
             for key in ("Return", "KP_Enter", "space"):
                 reader.bind(f"<{key}>", lambda e: "break")
-            reader.bind("<Tab>", lambda e: (e.widget.tk_focusNext().focus_set(), "break")[1])
-            reader.bind("<Shift-Tab>", lambda e: (e.widget.tk_focusPrev().focus_set(), "break")[1])
+            def focus_comparison(event: tk.Event, *, backwards: bool = False) -> str:
+                target = event.widget.tk_focusPrev() if backwards else event.widget.tk_focusNext()
+                if target is not None:
+                    target.focus_set()
+                return "break"
+            reader.bind("<Tab>", focus_comparison)
+            reader.bind("<Shift-Tab>", lambda e: focus_comparison(e, backwards=True))
             def reveal(event):
                 canvas = self._pick_canvas
                 if canvas is not None and str(event.widget).startswith(str(canvas)):
@@ -3763,7 +3771,9 @@ class TkWizard:
             self._p(col, self.w.operation_method_text, font=self.font_s, fg=MUTED).pack(fill=tk.X, pady=(12, 0))
             row = self._footer_shell(C.POWER_KEEP_CONNECTED)
             keep = self._secondary_btn(row, C.STOP_KEEP, self.w.keep_erasing)
-            self._primary_btn(row, C.STOP_CONFIRM, lambda: self.w.confirm_stop(confirmation), danger=True)
+            def confirm_stop() -> None:
+                self.w.confirm_stop(confirmation)
+            self._primary_btn(row, C.STOP_CONFIRM, confirm_stop, danger=True)
             keep.focus_set()
             return
         self._title_block(col, C.VIEWS["stop_unconfirmed"].message
@@ -3988,7 +3998,7 @@ class TkWizard:
         for i, spec in enumerate(METHODS.values()):
             if i:
                 tk.Frame(card.inner, bg=BORDER, height=1).pack(fill=tk.X)
-            row = tk.Label(
+            method_row = tk.Label(
                 card.inner,
                 text=f"{spec.method_id.value}: nwipe --method={spec.nwipe_method}  ({spec.docs_name})",
                 font=self.font_mono_sm,
@@ -3997,8 +4007,8 @@ class TkWizard:
                 anchor="w",
                 justify=tk.LEFT,
             )
-            self._flow_wrap(row, card.inner)
-            row.pack(fill=tk.X, pady=(7, 7))
+            self._flow_wrap(method_row, card.inner)
+            method_row.pack(fill=tk.X, pady=(7, 7))
         log = self.w._wipe_request.logfile if self.w._wipe_request else C.NO_WIPE_YET
         log_row = tk.Frame(zone, bg=BG)
         log_row.pack(fill=tk.X, pady=(14, 4))

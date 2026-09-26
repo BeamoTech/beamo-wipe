@@ -1,3 +1,4 @@
+# Legacy Google Cloud tooling; current CI uses Blacksmith (.github/workflows/ci.yml).
 # Beamo Wipe CI — Google Cloud Build, project beamo-wipe only.
 # This is the project's CI gate. GitHub Actions is not used.
 #

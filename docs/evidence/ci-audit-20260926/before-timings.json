@@ -1,0 +1,14 @@
+[
+  {
+    "phase": "lint",
+    "exit_code": 0,
+    "seconds": 1.989,
+    "scope": "local command only; dependency bootstrap and hosted execution excluded"
+  },
+  {
+    "phase": "negative",
+    "exit_code": 0,
+    "seconds": 0.876,
+    "scope": "local command only; dependency bootstrap and hosted execution excluded"
+  }
+]

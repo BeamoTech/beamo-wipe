@@ -127,7 +127,7 @@ separate program. Source: this repository. There is **no warranty**.
 
 ## Build the ISO
 
-Use Google Cloud Build (`./scripts/ci-cloud.sh`) for the amd64 ISO gate.
+Use Blacksmith (`.github/workflows/ci.yml`) for the amd64 ISO gate.
 A local build needs Docker on an isolated x86_64 Linux worker. Apple Silicon
 emulation is not the ISO or QEMU verification gate.
 
@@ -210,9 +210,8 @@ make test
 Tests use fake `lsblk` JSON. They never run nwipe on a real disk.
 
 Hosted CI — lint, x86_64 pytest, preview, negative test, the amd64 ISO
-build, and controlled QEMU verification — runs on Google Cloud Build
-(`./scripts/ci-cloud.sh`, project `beamo-wipe`). GitHub Actions is not
-used. Details: [docs/ci.md](docs/ci.md).
+build, and controlled QEMU verification — runs on Blacksmith through
+GitHub Actions (`.github/workflows/ci.yml`, required check `CI gate`). Details: [docs/ci.md](docs/ci.md).
 
 ## How it works
 

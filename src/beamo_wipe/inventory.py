@@ -217,6 +217,7 @@ def _path_aliases(path: str) -> set[str]:
 def _raw_other_devices(discovery: DiscoveryResult) -> tuple[ExcludedDevice, ...]:
     from beamo_wipe.safety import selectable_disks
 
+    assert discovery.boot is not None  # other_devices checks this before calling.
     boot_paths = _path_aliases(discovery.boot.path)
     if discovery.excluded:
         return tuple(

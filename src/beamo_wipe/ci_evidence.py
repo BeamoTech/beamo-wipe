@@ -160,9 +160,10 @@ def run_gate(gate, command, *, root, evidence_dir, build_id):
     receipt_path = evidence_dir / f"{gate}.receipt.json"
     log_path = evidence_dir / f"{gate}.log"
     junit = evidence_dir / f"{gate}.xml"
+    orca_junit = Path(str(junit) + ".orca.xml")
     # exists() misses a dangling JUnit symlink, which the test runner could
     # follow into a file outside the evidence directory when it creates XML.
-    if any(os.path.lexists(p) for p in (receipt_path, log_path, junit)):
+    if any(os.path.lexists(p) for p in (receipt_path, log_path, junit, orca_junit)):
         raise RuntimeError(f"stale evidence for {gate}; use a fresh build workspace")
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
     env = dict(os.environ, BEAMO_GATE_CHILD="1", BEAMO_GATE_JUNIT=str(junit))
@@ -204,27 +205,39 @@ def run_gate(gate, command, *, root, evidence_dir, build_id):
             measured.update(passed=0, skipped=1)
             skips = [dict(id=gate, kind="skip", reason=reason)]
     if gate == "tests":
-        if not junit.is_file():
+        reports = [p for p in (junit, orca_junit) if os.path.lexists(p)]
+        if not reports or (code == 0 and not junit.is_file()):
             raise RuntimeError("test gate did not produce its JUnit execution report")
         from beamo_wipe.release_manifest import _open_regular_nofollow
 
-        try:
-            junit_fd = _open_regular_nofollow(junit)
-        except RuntimeError as exc:
-            raise RuntimeError("unsafe JUnit execution report") from exc
-        with os.fdopen(junit_fd, "rb") as stream:
-            junit_bytes = stream.read(16 * 1024 * 1024 + 1)
-        if len(junit_bytes) > 16 * 1024 * 1024:
-            raise RuntimeError("JUnit execution report is too large")
-        try:
-            parsed = parse_junit_xml(junit_bytes.decode("utf-8"))
-        except UnicodeDecodeError as exc:
-            raise RuntimeError("JUnit execution report is not UTF-8") from exc
-        skips = parsed.pop("skips")
-        measured = parsed
+        measured = dict.fromkeys(measured, 0)
+        for report in reports:
+            try:
+                junit_fd = _open_regular_nofollow(report)
+            except RuntimeError as exc:
+                raise RuntimeError("unsafe JUnit execution report") from exc
+            with os.fdopen(junit_fd, "rb") as stream:
+                junit_bytes = stream.read(16 * 1024 * 1024 + 1)
+            if len(junit_bytes) > 16 * 1024 * 1024:
+                raise RuntimeError("JUnit execution report is too large")
+            try:
+                parsed = parse_junit_xml(junit_bytes.decode("utf-8"))
+            except UnicodeDecodeError as exc:
+                raise RuntimeError("JUnit execution report is not UTF-8") from exc
+            skips.extend(parsed.pop("skips"))
+            for key, value in parsed.items():
+                measured[key] += value
     environment = dict(platform=sys.platform, arch=platform.machine(),
                        python=platform.python_version(),
                        runner="cloudbuild" if build_id != "local" else "local")
+    if os.environ.get("BEAMO_CI_RUNNER") == "blacksmith":
+        environment.update(runner="blacksmith", **{
+            key: os.environ[name] for key, name in (
+                ("github_run_id", "GITHUB_RUN_ID"),
+                ("github_run_attempt", "GITHUB_RUN_ATTEMPT"),
+                ("github_repository", "GITHUB_REPOSITORY"),
+            )
+        })
     if gate == "qemu" and status == "pass":
         environment["qemu_evidence_sha256"] = qemu_evidence_digest(
             qemu_evidence_hashes(root / "qemu-evidence")

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Legacy Google Cloud tooling; current CI uses Blacksmith (.github/workflows/ci.yml).
 # Create GitHub Cloud Build triggers in project beamo-wipe.
 # Requires the Cloud Build GitHub App to have BeamoINT/beamo-wipe connected:
 #   https://console.cloud.google.com/cloud-build/triggers;add=github?project=beamo-wipe

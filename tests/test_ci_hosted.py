@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Google Cloud Build is the project's CI. GitHub Actions is not used."""
+"""Shared hosted gates and retained legacy Cloud Build tooling."""
 
 import ast
 import hashlib
@@ -100,11 +100,14 @@ def test_hosted_gate_runs_full_pipeline_on_cloud_build():
     assert (ROOT / "scripts" / "install-cloud-triggers.sh").is_file()
 
 
-def test_github_actions_not_used():
-    # No GitHub workflow may remain: billing is disabled there and Cloud
-    # Build is the gate. Templates and agent instructions are not CI.
-    workflows = ROOT / ".github" / "workflows"
-    assert not workflows.exists(), f"{workflows} must not exist"
+def test_github_actions_uses_blacksmith_without_publication():
+    workflow = (ROOT / ".github/workflows/ci.yml").read_text()
+    assert "runs-on: blacksmith-8vcpu-ubuntu-2404" in workflow
+    assert "name: CI gate" in workflow
+    assert "contents: read" in workflow
+    assert "pull_request_target" not in workflow
+    assert "secrets." not in workflow
+    assert "publish_release" not in workflow
 
 
 def test_desktop_bundle_rejects_stale_dirty_source(tmp_path):
@@ -573,6 +576,14 @@ def test_hosted_python_tests_install_cryptography_for_release_signing():
     hosted = (ROOT / "scripts" / "ci-hosted.sh").read_text(encoding="utf-8")
     test_deps = hosted.split("install_test_deps() {", 1)[1].split("\n}", 1)[0]
     assert "'cryptography==" in test_deps
+
+
+def test_hosted_python_tests_install_browser_and_javascript_prerequisites():
+    hosted = (ROOT / "scripts/ci-hosted.sh").read_text()
+    test_deps = hosted.split("install_test_deps() {", 1)[1].split("\n}", 1)[0]
+    for required in ("nodejs", "playwright==", "playwright install --with-deps chromium",
+                     "fetch-ci-go.sh", "python3-pyzbar", "rsync"):
+        assert required in test_deps
 
 
 def test_release_signing_cryptography_pins_are_patched_and_identical():

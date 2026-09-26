@@ -254,6 +254,7 @@ def live_build_inputs() -> Dict[str, Any]:
         "scripts/build-desktop.sh",
         "scripts/build-usb-image.sh",
         "scripts/ci-desktop.sh",
+        "scripts/fetch-ci-go.sh",
         "packaging/live/inside-docker.sh",
     ):
         path = ROOT / rel
@@ -278,7 +279,7 @@ def build_env() -> Dict[str, Any]:
     env: Dict[str, Any] = {}
     # Container/runner image
     try:
-        # In Cloud Build, the ISO step uses debian:bookworm
+        # The hosted ISO builder uses pinned Debian bookworm
         env["container_image"] = (
             "debian:bookworm@sha256:"
             "6ebd97fa83deb272194a2cf015b3d26a4d538e9ad3a7a79d544c8af5b0a01443"
@@ -286,7 +287,7 @@ def build_env() -> Dict[str, Any]:
     except Exception:
         env["container_image"] = "unknown"
     # Runner
-    env["runner"] = os.environ.get("RUNNER_OS", "unknown")
+    env["runner"] = os.environ.get("BEAMO_CI_RUNNER", os.environ.get("RUNNER_OS", "unknown"))
     env["github_runner_image"] = os.environ.get("ImageOS", "unknown")
     # Build commands
     env["build_commands"] = [
@@ -357,7 +358,7 @@ def hardware_limits() -> Dict[str, Any]:
 def known_issues() -> List[str]:
     return [
         "Physical Windows/Linux desktop-to-USB handoff and hardware Secure Boot acceptance remain required (see docs/desktop-entry-design.md)",
-        "QEMU TCG on Apple silicon is slow; use Cloud Build or x86_64 KVM (see docs/vm-test.md)",
+        "QEMU TCG on Apple silicon is slow; use Blacksmith x86_64 KVM (see docs/vm-test.md)",
         "eMMC boot partitions (mmcblk0boot0) hidden; eMMC-only recycle shows single selectable",
     ]
 

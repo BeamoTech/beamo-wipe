@@ -111,7 +111,7 @@ def wall_timestamps(
     }
 
 
-def _finite_monotonic(value: object) -> float | None:
+def _finite_monotonic(value: Any) -> float | None:
     """Keep only clock readings representable in a truthful JSON report."""
     if value is None or isinstance(value, bool):
         return None

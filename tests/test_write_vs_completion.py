@@ -5,7 +5,6 @@ import pytest
 
 from beamo_wipe import lang
 from beamo_wipe.models import MethodId
-from beamo_wipe.nwipe_runner import DryRunRunner
 from test_operation_sequence import _working
 from test_progress_timing import sample
 

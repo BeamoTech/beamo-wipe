@@ -4,11 +4,31 @@
 
 Durable notes live in `.ai/memory/` — start at `.ai/memory/MEMORY.md`.
 
+## CI, cost and documentation
+
+- Use **Blacksmith** runners for supported GitHub Actions CI. Check the current
+  [runner documentation](https://docs.blacksmith.sh/blacksmith-runners/overview)
+  and repository access before selecting labels. Preserve required checks and
+  native platform coverage; retain an existing gate until its replacement proves
+  equivalent coverage for the same source. Record any provider exception.
+- Minimize total cost across CI, hosting, storage, network, APIs, AI and tooling.
+  Choose the least costly option that meets the task's quality, security,
+  reliability and performance requirements. Preserve mandated models and gates;
+  never trade away correctness, coverage, accessibility or data safety for price.
+- Measure usage, reuse valid caches, bound retries/concurrency, cancel superseded
+  verification runs and expire disposable artifacts. Never cancel a release or
+  data migration blindly. Use local fixtures for iteration, run required gates
+  before delivery, and retire only verified idle resources within task authority.
+- Keep Markdown focused: one canonical home per topic, short sections and useful
+  links. Keep commands and safeguards near their use; move detailed history to
+  dated evidence. Update stale guidance against code, preserve release records,
+  and avoid duplicating this policy in every document.
+
 ## Project
 
 Guided **nwipe** front-end plus a Debian live ISO. Beamo Wipe does not implement a wipe engine. It discovers disks, refuses to target the boot USB, walks a non-technical owner through confirms, then execs pinned **nwipe v0.42**.
 
-Repo: `https://github.com/BeamoINT/beamo-wipe` (slug `beamo-wipe`). Branding may say Beamo Wipe; do not rename nwipe.
+Repo: `https://github.com/BeamoTech/beamo-wipe` (old BeamoINT URL redirects) (slug `beamo-wipe`). Branding may say Beamo Wipe; do not rename nwipe.
 
 ## Shared-checkout discipline
 
@@ -19,15 +39,15 @@ Other agents may be working here. Stage explicit paths only. Never `git add -A`.
 ```bash
 python3 -m pytest
 ./scripts/test-all.sh
-./scripts/ci-cloud.sh    # Google Cloud Build: pytest + amd64 ISO (project beamo-wipe)
+gh workflow run ci.yml --repo BeamoTech/beamo-wipe  # Blacksmith hosted gate
 ./preview                # Tk window, fake disks, nothing erased
 ./preview --web          # browser click-through
-./scripts/build-iso.sh   # amd64 live image (prefer Cloud Build, not this Mac)
+./scripts/build-iso.sh   # amd64 live image (Blacksmith, not this Mac)
 ```
 
-Local pytest is the fast checkout gate. CI is Google Cloud Build in project `beamo-wipe` — GitHub Actions is not used (no workflows under `.github/workflows/`). The hosted gate is `cloudbuild.yaml` → `scripts/ci-hosted.sh` phases `lint`/`tests`/`preview`/`negative`/`iso`/`qemu` (secret-free; see `docs/ci.md`). Intended triggers: PRs targeting `main` (`beamo-wipe-pr-gate`, QEMU skipped) and pushes to `main` (`beamo-wipe-main-gate`, full gate). Agents must `./scripts/ci-cloud.sh` (or `gcloud builds submit --project=beamo-wipe`) after local pytest for ISO/x86 work — do not treat Hostinger or this Apple silicon Mac as the ISO gate.
+Local pytest is the fast checkout gate. **CI runs on Blacksmith through GitHub Actions**, per the operator's 2026-09-26 correction. `.github/workflows/ci.yml` runs the secret-free `CI gate` on `blacksmith-8vcpu-ubuntu-2404`: parallel lint/types, Python tests, preview, desktop launchers, and negative checks; then the amd64 ISO and full QEMU validation, plus independent native Windows launcher tests. PRs to `main` and pushes to `main` run every phase. `codex/ci-*` pushes are verification branches. See `docs/ci.md` for bootstrap status and evidence. Never claim a configured workflow has passed before observing its hosted run.
 
-**ISO build and QEMU wipe tests:** on the Apple silicon Mac, Docker `linux/amd64` and `qemu-system-x86_64` are TCG. Do not wait on local emulation. Cloud Build always builds the ISO on amd64. Interactive QEMU wipe (`docs/vm-test.md`) still uses a disposable x86_64 KVM VM via `gcloud`/`aws`, then tear the VM down. See `.ai/memory/iso-builds-on-cloud.md`.
+**ISO build and QEMU wipe tests:** use Blacksmith's disposable x86_64 workers with KVM. Do not wait on this Apple silicon Mac's amd64 Docker/QEMU emulation. Never pass host disks to QEMU. `cloudbuild.yaml`, `ci-cloud.sh`, and the Cloud trigger installer are legacy tooling, not the current CI route. Do not invoke Google Cloud or request gcloud authentication for current CI. Publication requires separate explicit operator authorization; the Blacksmith workflow has no production credentials or publishing step. See `.ai/memory/iso-builds-on-cloud.md`.
 
 ## Cursor Cloud specific instructions
 

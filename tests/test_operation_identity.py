@@ -9,7 +9,9 @@ from beamo_wipe.methods import METHODS
 from beamo_wipe.models import MethodId, Screen
 from test_console_parity import _draw
 from test_progress_timing import Clock
-from test_tk_runtime import _drive_to, ui  # noqa: F401
+from test_tk_runtime import _drive_to, ui as ui_fixture
+
+ui = ui_fixture
 
 
 def _working(method=MethodId.EXTRA):

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Legacy Google Cloud tooling; current CI uses Blacksmith (.github/workflows/ci.yml).
 # Submit this checkout to Google Cloud Build (project beamo-wipe).
 # Unsets CLOUDSDK_* pins so a leftover support-deployer SA cannot steal the job.
 set -euo pipefail

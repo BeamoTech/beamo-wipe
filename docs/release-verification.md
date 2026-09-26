@@ -23,22 +23,24 @@ image metadata against the actual image and source ISO before any upload.
 These new image artifacts are development additions; they do not retroactively
 change the previously published v0.2.5 release.
 
-Cloud Build discards artifacts by default. An explicitly authorized
-`./scripts/ci-cloud.sh --publish-release` uploads only after the full QEMU gate
-and writes `RELEASE_COMPLETE.txt` last under a unique build-ID path.
+Current CI uses **Blacksmith** and retains evidence for seven days without
+publishing binaries. See [CI](ci.md). The retained legacy GCS publisher requires
+separate operator authorization, the full QEMU gate, and writes
+`RELEASE_COMPLETE.txt` last under a unique build-ID path. Its old Cloud Build
+entrypoint is not the current CI route or an authorized release action.
 
 ## What the manifest contains
 
 `dist/beamo-wipe-*.manifest.json` (`schema_version: 2`):
 
 - `source`: `commit` (40-hex), `tag`, `dirty`/redacted `dirty_count`, `branch`, canonical `remote_url`
-- `build`: content-addressed `debian:bookworm@sha256:…`, runner, `build_commands`, `built_at` UTC, `release_build_id` (Cloud Build UUID or explicit `local` for development)
+- `build`: content-addressed `debian:bookworm@sha256:…`, runner, `build_commands`, `built_at` UTC, `release_build_id` (UUID bound to the Blacksmith repository/run/attempt, historical Cloud Build UUID, or explicit `local` for development)
 - Live image identity is the same payload written once to `/usr/share/beamo-wipe/build-identity.json` (`source_commit`, `source_sha256`, `build_id`, `source_dirty`). Runtime never infers commit from git. Missing or invalid identity is `unavailable`; dirty trees are `dirty`; `local` is `development`; a matching UUID is `production`. ISO format never implies a trusted wall clock.
 - `dependencies`: `pyproject.toml`/`THIRD_PARTY.md`/`NOTICE` hashes, `live_build_inputs` (bootstrap/binary/package-lists/hooks/src hashes), `nwipe` (`version` `0.42`, `commit` `6082bde…`, `pinned_path`)
 - `artifact`: `iso_name`, `iso_size_bytes`, `iso_sha256`, `iso_sha256_sidecar`
 - `test_evidence`: measured gate results (see below), never script paths
 - `installed_packages`: deterministic inventory of the image (see below)
-- `hardware_limits`: supported/unsupported/degraded (from `docs/compatibility-matrix.md`), `known_issues`, `license` (wrapper GPL-3.0+, nwipe GPL-2.0), `prior_stable` (`0.2.0` `62437e…` `5b3b7af…`), `rollback`, `verification`
+- `hardware_limits`: supported/unsupported/degraded (from `docs/compatibility-matrix.md`), `known_issues`, `license` (wrapper GPL-3.0+, nwipe GPL-2.0), `prior_stable` (`0.2.9`, ISO SHA-256 `4042f85e…`), `rollback`, `verification`
 
 ## Measured release evidence
 
@@ -77,7 +79,7 @@ manifest records what was *executed*:
 The hosted gate automatically records execution through
 `beamo_wipe.ci_evidence` into `dist/evidence/`. The test receipt counts actual
 pytest JUnit outcomes; other required receipts count one executed phase,
-not individual assertions. Every phase receives the same Cloud Build ID.
+not individual assertions. Every phase receives the same build ID; Blacksmith receipts also record the GitHub run and attempt.
 The collector rejects stale files and binds receipts to retained log bytes.
 The QEMU phase reads package provenance directly from the mounted ISO squashfs.
 
@@ -97,7 +99,7 @@ python3 -m beamo_wipe.verification_evidence parse-junit \
   --gate tests --status pass --exec-command "python3 -m pytest" \
   --commit "$(git rev-parse HEAD)" --build-id "${BUILD_ID:-local}" \
   --xml tests.xml --log-sha256 "$(sha256sum tests.log | awk '{print $1}')" \
-  --env platform=linux --env arch=x86_64 --env runner=cloudbuild \
+  --env platform=linux --env arch=x86_64 --env runner=blacksmith \
   --started-at 2026-09-11T00:00:00Z --ended-at 2026-09-11T00:05:00Z \
   --out receipts/tests.receipt.json
 python3 -m beamo_wipe.verification_evidence parse-dpkg-status \
@@ -159,7 +161,7 @@ git status --porcelain  # should be clean for a release
 
 ## Immutability and publisher signatures
 
-- **Immutability:** Verification output is ephemeral by default. Explicit publication uses a unique Cloud Build UUID path, generation-match-zero uploads, remote byte verification, and a completion marker written last. The bucket also provides seven-day soft deletion; release paths are never reused.
+- **Immutability:** Verification output is ephemeral by default. Explicit publication uses a unique build UUID path, generation-match-zero uploads, remote byte verification, and a completion marker written last. The bucket also provides seven-day soft deletion; release paths are never reused.
 - **Signing:** New publication through this publisher requires a detached Ed25519 sidecar
   (`beamo-wipe-<version>-amd64.manifest.json.sig`) over the exact manifest
   bytes, so one signature covers the artifact hashes, build identity,
@@ -245,4 +247,4 @@ Live-build is not bit-reproducible due to `apt` timestamps and `squashfs` orderi
 
 Prior stable: `beamo-wipe-0.2.9-amd64.iso` `4042f85e0e7c155dd2340dc93a6b879c35ebe2f13da9c81c1ba6269524a6b169` commit `452cfc061ad20a9c44df202201404f3c4130fbb6` tag `v0.2.9`. Rollback: `git checkout 452cfc061ad20a9c44df202201404f3c4130fbb6` or `git revert <commit>`. The 0.2.0 ISO (`62437ec…` / `5b3b7afa…`) remains a historical GitHub artifact; it is not the branded rollback target.
 
-Never publish or promote the ISO without explicit operator authorization after `CI` (`lint`→`test`→`negative-test`→`iso`→`manifest`) and Cloud Build both pass.
+Never publish or promote the ISO without explicit operator authorization after the full Blacksmith `CI gate` passes for the exact source commit and artifact hashes.
