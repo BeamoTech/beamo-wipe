@@ -86,3 +86,35 @@ def test_exited_reader_is_replaced_before_accessible_startup(monkeypatch):
         == 0
     )
     assert events == ["start", ("build", replacement), ("stop", replacement)]
+
+
+def test_uninspectable_reader_is_replaced_before_accessible_startup(monkeypatch):
+    events = []
+    replacement = object()
+    accessible = ModuleType("beamo_wipe.ui.accessible_wizard")
+    accessible.start_live_reader = lambda: events.append("start") or replacement
+    accessible.stop_live_reader = lambda reader: events.append(("stop", reader))
+    monkeypatch.setitem(sys.modules, accessible.__name__, accessible)
+    monkeypatch.setattr(app, "running_on_live_usb", lambda: True)
+
+    class UninspectableReader:
+        def poll(self):
+            raise OSError("process status unavailable")
+
+    monkeypatch.setattr(
+        app,
+        "_run_one_session",
+        lambda _args, **kwargs: events.append(("build", kwargs["reader"])) or 0,
+    )
+    assert (
+        app._run_session(
+            SimpleNamespace(demo=False),
+            session_store=None,
+            use_console=False,
+            want_accessible=True,
+            fullscreen=True,
+            reader=UninspectableReader(),
+        )
+        == 0
+    )
+    assert events == ["start", ("build", replacement), ("stop", replacement)]

@@ -490,7 +490,9 @@ def _run_session(args, *, session_store, use_console, want_accessible,
                     try:
                         needs_reader = poll_reader() is not None
                     except OSError:
-                        pass
+                        # An unreadable process status cannot establish that
+                        # speech is still available for the next startup.
+                        needs_reader = True
                 if needs_reader:
                     from beamo_wipe.ui.accessible_wizard import start_live_reader
 
