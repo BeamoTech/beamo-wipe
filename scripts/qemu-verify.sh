@@ -1283,6 +1283,17 @@ drive_speech_boot() {
   log "$label speech entry completed discovery and rendered the accessible wizard"
 }
 
+qemu_machine() {
+  local acceleration=kvm:tcg
+  # Blacksmith validation requires actual KVM, with no silent TCG fallback.
+  if [[ "${BEAMO_CI_RUNNER:-}" == blacksmith ]]; then acceleration=kvm; fi
+  if [[ "$1" == secureboot-usb ]]; then
+    printf 'q35,accel=%s,smm=on\n' "$acceleration"
+  else
+    printf 'pc,accel=%s\n' "$acceleration"
+  fi
+}
+
 boot_probe() {
   local label="$1" exercise_export="$2"
   local method_key=3 token="${QEMU_TARGET_SERIAL:-}"
@@ -1300,8 +1311,7 @@ boot_probe() {
   qmp_socket="$RUN_ROOT/${label}.qmp"
   rm -f -- "$qmp_socket"
   : >"$EVIDENCE_DIR/${label}-serial.txt"
-  machine="pc,accel=kvm:tcg"
-  if [[ "$label" == secureboot-usb ]]; then machine="q35,accel=kvm:tcg,smm=on"; fi
+  machine="$(qemu_machine "$label")"
   boot_media="$ISO"
   local media_args=(-cdrom "$ISO" -boot order=d)
   if [[ "$label" == *-usb ]]; then

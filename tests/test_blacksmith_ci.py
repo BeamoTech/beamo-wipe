@@ -94,6 +94,74 @@ raise SystemExit(int(os.environ['PROBE_CODE']))
     compile(probe.read_text(), str(probe), "exec")
 
 
+@pytest.mark.parametrize("failure", ["", "attach", "ownership"])
+def test_loop_pool_prepares_concurrent_nodes_and_cleans_only_owned_files(tmp_path, failure):
+    tools = tmp_path / "bin"
+    tools.mkdir()
+    state = tmp_path / "loops.json"
+    state.write_text(json.dumps({"loops": {}, "peak": 0, "files": []}))
+    command = tools / "losetup"
+    command.write_text(f"#!{sys.executable}\n" + '''
+import json, os, pathlib, sys
+path = pathlib.Path(os.environ['LOOP_STATE'])
+state = json.loads(path.read_text())
+args = sys.argv[1:]
+failure = os.environ['LOOP_FAILURE']
+if args[:3] == ['--find', '--show', '--read-only']:
+    if failure == 'attach' and len(state['loops']) == 3:
+        raise SystemExit(1)
+    source = pathlib.Path(args[3])
+    assert source.is_file() and source.stat().st_size == 1024 * 1024
+    device = '/dev/loop' + str(len(state['loops']))
+    state['loops'][device] = str(source)
+    state['files'].append(str(source))
+    state['peak'] = max(state['peak'], len(state['loops']))
+    print(device)
+elif args[:5] == ['--list', '--noheadings', '--raw', '--output', 'BACK-FILE']:
+    print('another-owner' if failure == 'ownership' and args[5] == '/dev/loop0'
+          else state['loops'][args[5]])
+elif args[0] == '--detach':
+    assert not (failure == 'ownership' and args[1] == '/dev/loop0')
+    del state['loops'][args[1]]
+else:
+    raise AssertionError(args)
+path.write_text(json.dumps(state))
+''')
+    command.chmod(0o755)
+    shell = (ROOT / "scripts/check-ci-kvm.sh").read_text()
+    code = shell.split("sudo python3 - <<'PY'\n")[2].split("\nPY", 1)[0]
+    result = subprocess.run(
+        [sys.executable, "-c", code],
+        env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                 TMPDIR=str(tmp_path), LOOP_STATE=str(state), LOOP_FAILURE=failure),
+        capture_output=True, text=True, timeout=15,
+    )
+    recorded = json.loads(state.read_text())
+    assert (result.returncode == 0) == (failure == ""), result.stderr
+    assert recorded['peak'] == (3 if failure == 'attach' else 8)
+    if failure == 'ownership':
+        assert list(recorded['loops']) == ['/dev/loop0']
+        assert all(Path(path).is_file() for path in recorded['files'])
+    else:
+        assert recorded['loops'] == {}
+        assert not any(Path(path).exists() for path in recorded['files'])
+
+
+@pytest.mark.parametrize("runner", ["blacksmith", "local"])
+@pytest.mark.parametrize("label", ["bios", "secureboot-usb"])
+def test_blacksmith_guest_cannot_silently_fall_back_to_emulation(runner, label):
+    shell = (ROOT / "scripts/qemu-verify.sh").read_text()
+    function = 'qemu_machine() {' + shell.split('qemu_machine() {', 1)[1].split('\n}', 1)[0] + '\n}'
+    result = subprocess.run(
+        ['bash', '-c', function + '\nqemu_machine "$1"', 'fixture', label],
+        env=dict(os.environ, BEAMO_CI_RUNNER=runner),
+        capture_output=True, text=True, check=True,
+    )
+    acceleration = 'kvm' if runner == 'blacksmith' else 'kvm:tcg'
+    expected = f'q35,accel={acceleration},smm=on' if label == 'secureboot-usb' else f'pc,accel={acceleration}'
+    assert result.stdout.strip() == expected
+
+
 @pytest.mark.parametrize("orca_failed", [False, True])
 def test_receipt_includes_separate_orca_execution(tmp_path, orca_failed):
     from beamo_wipe.ci_evidence import run_gate

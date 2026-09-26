@@ -63,25 +63,40 @@ import subprocess
 import tempfile
 
 directory = Path(tempfile.mkdtemp(prefix='beamo-wipe-loop-probe.'))
-backing = directory / 'probe.img'
-loop = None
+backings = []
+loops = []
 try:
-    with backing.open('xb') as stream:
-        stream.truncate(1024 * 1024)
-    loop = subprocess.check_output(
-        ['losetup', '--find', '--show', '--read-only', str(backing)], text=True,
-    ).strip()
-    print('Private regular-file loop attachment succeeded.')
-finally:
-    if loop is not None:
-        attached = subprocess.check_output(
-            ['losetup', '--list', '--noheadings', '--raw', '--output', 'BACK-FILE', loop],
-            text=True,
+    # Devices are allocated lazily by this kernel. Keep eight attached at
+    # once so Docker sees enough nodes for concurrent SquashFS, report, boot
+    # exclusion and target checks. Every attachment is a private regular file.
+    for index in range(8):
+        backing = directory / f'probe-{index}.img'
+        backings.append(backing)
+        with backing.open('xb') as stream:
+            stream.truncate(1024 * 1024)
+        loop = subprocess.check_output(
+            ['losetup', '--find', '--show', '--read-only', str(backing)], text=True,
         ).strip()
-        if attached != str(backing):
-            raise SystemExit('Loop probe ownership changed; refusing cleanup.')
-        subprocess.run(['losetup', '--detach', loop], check=True)
-    backing.unlink(missing_ok=True)
+        loops.append((loop, backing))
+    print('Eight private regular-file loop attachments succeeded.')
+finally:
+    safe_cleanup = True
+    for loop, backing in reversed(loops):
+        try:
+            attached = subprocess.check_output(
+                ['losetup', '--list', '--noheadings', '--raw', '--output', 'BACK-FILE', loop],
+                text=True,
+            ).strip()
+            if attached != str(backing):
+                safe_cleanup = False
+                continue
+            subprocess.run(['losetup', '--detach', loop], check=True)
+        except subprocess.CalledProcessError:
+            safe_cleanup = False
+    if not safe_cleanup:
+        raise SystemExit('Loop probe ownership or detach failed; backing files preserved.')
+    for backing in backings:
+        backing.unlink(missing_ok=True)
     os.rmdir(directory)
-print('Private loop probe detached and removed; squashfs and FAT support are available.')
+print('Private loop probes detached and removed; squashfs and FAT support are available.')
 PY
