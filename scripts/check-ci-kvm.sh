@@ -35,3 +35,43 @@ except (OSError, RuntimeError) as exc:
     raise SystemExit(f'Blacksmith KVM API is unavailable: {exc}') from None
 print('Blacksmith KVM API version 12 is available to the privileged image gate.')
 PY
+
+# Docker enumerates available devices when the privileged container starts.
+# Load file-backed loop support on the worker first, so its device nodes are
+# present in the image-validation container as well as in the host namespace.
+if ! sudo test -c /dev/loop-control; then
+  sudo modprobe loop
+  sudo udevadm settle
+fi
+if ! grep -qw squashfs /proc/filesystems; then
+  sudo modprobe squashfs
+fi
+sudo python3 - <<'PY'
+import os
+from pathlib import Path
+import subprocess
+import tempfile
+
+directory = Path(tempfile.mkdtemp(prefix='beamo-wipe-loop-probe.'))
+backing = directory / 'probe.img'
+loop = None
+try:
+    with backing.open('xb') as stream:
+        stream.truncate(1024 * 1024)
+    loop = subprocess.check_output(
+        ['losetup', '--find', '--show', '--read-only', str(backing)], text=True,
+    ).strip()
+    print('Private regular-file loop attachment succeeded.')
+finally:
+    if loop is not None:
+        attached = subprocess.check_output(
+            ['losetup', '--list', '--noheadings', '--raw', '--output', 'BACK-FILE', loop],
+            text=True,
+        ).strip()
+        if attached != str(backing):
+            raise SystemExit('Loop probe ownership changed; refusing cleanup.')
+        subprocess.run(['losetup', '--detach', loop], check=True)
+    backing.unlink(missing_ok=True)
+    os.rmdir(directory)
+print('Private loop probe detached and removed; squashfs support is available.')
+PY
