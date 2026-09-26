@@ -24,7 +24,7 @@ def test_unsure_browser_keyboard_and_reset(tmp_path, size):
         unsure.focus()
         page.keyboard.press('Enter')
         page.evaluate('window.oldPick.click()')
-        reader = page.get_by_role('region', name='Identify the disk', exact=True)
+        reader = page.get_by_role('region', name=C.DISK_HELP_TITLE, exact=True)
         assert reader.text_content() == C.DISK_HELP_TEXT
         assert reader.evaluate('(el) => el === document.activeElement')
         page.keyboard.press('PageDown')

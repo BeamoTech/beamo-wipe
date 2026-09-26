@@ -10,7 +10,10 @@ import (
 func TestExclusiveWriteRemovesIncompleteFile(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "BootNext")
-	f, err := os.OpenFile(path, os.O_RDONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if err := os.WriteFile(path, nil, 0600); err != nil {
+		t.Fatal(err)
+	}
+	f, err := openReadOnlyReplaceableFixture(path)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -26,10 +29,14 @@ func TestExclusiveWriteRemovesIncompleteFile(t *testing.T) {
 func TestExclusiveWriteDoesNotRemoveAnotherOwnersReplacement(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "BootNext")
-	f, err := os.OpenFile(path, os.O_RDONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if err := os.WriteFile(path, nil, 0600); err != nil {
+		t.Fatal(err)
+	}
+	f, err := openReadOnlyReplaceableFixture(path)
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Cleanup(func() { _ = f.Close() })
 	if err := os.Rename(path, path+".old"); err != nil {
 		t.Fatal(err)
 	}

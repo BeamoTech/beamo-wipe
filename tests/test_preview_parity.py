@@ -4,11 +4,7 @@
 from __future__ import annotations
 
 import json
-import os
 import shutil
-import signal
-import subprocess
-from html import unescape
 from pathlib import Path
 
 import pytest
@@ -182,46 +178,19 @@ def test_chrome_show_more_progress_and_cancel(tmp_path):
     </script>"""
     page = tmp_path / "index.html"
     page.write_text(gallery_html().replace("</body>", check + "</body>"))
-    proc = subprocess.Popen(
-        [
-            chrome,
-            "--headless=new",
-            "--no-sandbox",
-            "--disable-gpu",
-            "--disable-dev-shm-usage",
-            "--no-first-run",
-            f"--user-data-dir={tmp_path / 'chrome'}",
-            "--window-size=1280,900",
-            "--dump-dom",
-            page.as_uri() + "#s=confirm&disk=0&typed=1",
-        ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        start_new_session=True,
-    )
-    try:
-        stdout, stderr = proc.communicate(timeout=40)
-    except subprocess.TimeoutExpired as exc:
-        stdout = exc.stdout or ""
-        stderr = exc.stderr or ""
+    api = pytest.importorskip("playwright.sync_api")
+    with api.sync_playwright() as runtime:
+        browser = runtime.chromium.launch(
+            executable_path=chrome, args=["--no-sandbox", "--disable-dev-shm-usage"]
+        )
         try:
-            os.killpg(proc.pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-        try:
-            proc.wait(timeout=3)
-        except subprocess.TimeoutExpired:
-            pass
-    if isinstance(stdout, bytes):
-        stdout = stdout.decode("utf-8", "replace")
-    if isinstance(stderr, bytes):
-        stderr = stderr.decode("utf-8", "replace")
-    blob = stdout or ""
-    marker = 'data-parity="'
-    assert marker in blob, (blob[-1500:], stderr[-1500:])
-    raw = blob.split(marker, 1)[1].split('"', 1)[0]
-    out = json.loads(unescape(raw))
+            rendered = browser.new_page(viewport={"width": 1280, "height": 900})
+            rendered.goto(page.as_uri() + "#s=confirm&disk=0&typed=1")
+            raw = rendered.locator("html").get_attribute("data-parity")
+            assert raw is not None
+            out = json.loads(raw)
+        finally:
+            browser.close()
     assert out.get("error") is None, out
     assert out["collapsed"] == "false"
     assert ident.SYSTEM_PATH_NOTE not in (out["collapsedDetail"] or "")
@@ -266,6 +235,7 @@ def test_playwright_keyboard_show_more(tmp_path, size):
         page.keyboard.press("Space")
         assert page.locator("#more").get_attribute("aria-expanded") == "false"
         page.goto(html.as_uri() + "#s=working&disk=0&progress=writing")
+        page.wait_for_function("screen === 'working'")
         page.keyboard.press("Escape")
         assert page.evaluate("screen") == "stop_confirm"
         page.keyboard.press("Escape")

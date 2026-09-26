@@ -1,14 +1,23 @@
 # CI audit — 2026-09-26
 
-Status: **local implementation checked; hosted rollout pending**. The operator
+Status: **first hosted run rejected; corrections under verification**. The operator
 corrected the platform during this task: use **Blacksmith, not Google Cloud**.
 This supersedes earlier instructions to renew gcloud authentication.
 
 ## Source and live baseline
 
 - Checkout started on `main`, HEAD `438d996`, with the earlier `e60a3bf` and
-  `438d996` reader fixes not yet pushed. No commits or pushes were made for this
-  CI audit at the time of this record.
+  `438d996` reader fixes not yet pushed at the start of this audit.
+- The operator approved a limited bootstrap push. Commit
+  `dc32f589c28527c9a0140c80dbb52c07ebc906e0` is on GitHub branch
+  `codex/ci-blacksmith`, including those earlier reader fixes. Main and the
+  Cursor remote have not been changed by this rollout.
+- [First Blacksmith run](https://github.com/BeamoTech/beamo-wipe/actions/runs/36266226513)
+  started at 19:29:25 UTC. Linux was assigned an actual Blacksmith 8-vCPU
+  Ubuntu 24.04 runner. Windows acquired its Blacksmith runner at 19:51:59 UTC,
+  after about 22 minutes queued. Both jobs rejected failures; ISO/QEMU did not
+  run. This is not a passing CI result. See [job timings](blacksmith-first-run.json)
+  and [failure inventory and log hashes](blacksmith-first-failures.json).
 - GitHub redirects `BeamoINT/beamo-wipe` to `BeamoTech/beamo-wipe`.
 - Remote main was `4feb25a6996268fd0890e7570e8cd3548b53c993`.
 - GitHub APIs reported no `.github/workflows` directory, no classic protection
@@ -61,7 +70,8 @@ This supersedes earlier instructions to renew gcloud authentication.
 ## Verification actually performed
 
 - `actionlint`, `git diff --check`, ShellCheck, compile, Ruff, existing formatter
-  gate and mypy: pass. Five agent instruction copies match.
+  gate and mypy: pass. The subsequent workspace instruction migration makes
+  `AGENTS.md` the sole guide; duplicate instruction files must not be recreated.
 - Full local pytest: **4,546 passed, 696 skipped, five failed in 380.02 s**.
   Two failures require unavailable GTK/ATK. The other three were sandbox-only
   headless Chrome / Unix socket failures and **all passed** when rerun with
@@ -88,12 +98,43 @@ redacted. The original lint timing represented
 an advisory check; the new one is blocking. No hosted speedup is claimed.
 A new Blacksmith run is needed for comparable hosted timings and cache behavior.
 
+## First hosted run findings
+
+- Linux lint, preview, negative mutation and desktop launcher gates passed.
+  Isolated Orca passed in 232.81 s. Main pytest: **5,397 passed, 20 failed,
+  15 skipped in 696.52 s**. The source step took 1,004 s including setup.
+- Linux artifact upload failed because the container created the parent `dist`
+  directory privately for root. Ownership restoration now includes the parent.
+- Browser readiness fixtures omitted the nonzero review revision supplied by
+  the API. Platform-neutral fixtures now represent a published review. The
+  product's incomplete-response rejection remains unchanged.
+- Preview confirmation redraw scheduled a late input focus that could steal
+  focus from Show more. Focus is now synchronous. URL fragment changes now
+  apply preview navigation, with a regression waiting for the resulting screen.
+- The unsure-disk browser test used an obsolete accessible region name. The
+  metadata rendering test expected picker-only markings even when an unsafe
+  token correctly kept the preview on the empty screen; it now checks both
+  that rejection and the applicable display contract.
+- Five rendering checks used Chromium's one-shot `--dump-dom` path, which
+  hung without producing output. They now use the installed Playwright driver
+  to await navigation and capture the same DOM, layout and screenshots.
+- Native Windows found four fixture/platform-assumption failures. Read-only
+  fixtures now create, then reopen files; the replacement fixture explicitly
+  permits Windows delete sharing. Session tests verify Windows' manual-only
+  policy and reject both missing and current-revision restart requests.
+  Unix session and replacement checks remain in place.
+- Local correction checks: all Go tests, Windows test-binary cross-compilation,
+  Go vet, actionlint, Ruff and mypy passed. Focused CI/provenance tests passed
+  (103 passed, two skipped). All 76 selected browser/adjacent tests passed.
+  The expanded run also exposed 23 Node fixtures that sliced the newly added
+  listener into their isolated function harness; keeping registration after
+  initialization restored that boundary. All 52 gallery regressions then passed.
+  Native Windows execution and a clean complete hosted run remain required.
+
 ## Remaining rollout requirements
 
-1. Bootstrap the new workflow on a GitHub validation branch. The request says
-   to commit/push only after trustworthy pipeline proof, but GitHub cannot run
-   an absent workflow from an uncommitted local checkout. Resolve permission
-   for this limited bootstrap push before proceeding.
+1. Bootstrap completed with explicit operator approval, on the validation
+   branch only. Follow-up fixes remain subject to hosted verification.
 2. Verify enrollment/KVM and obtain a full clean hosted run; repair any actual
    Linux/Windows/browser failures without skipping or weakening tests.
 3. Record hosted pass/failure proof, artifact identities and step timings.

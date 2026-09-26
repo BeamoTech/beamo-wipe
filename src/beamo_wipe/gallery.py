@@ -1621,7 +1621,10 @@ function draw() {
     inp.oninput = sync;
     inp.onkeydown = (e) => { if (e.key === "Enter" && tokenOk()) { e.preventDefault(); screen = "method"; draw(); } };
     sync();
-    setTimeout(() => { inp.focus(); inp.setSelectionRange(token.length, token.length); }, 0);
+    // The input is already attached. A deferred focus would steal focus back
+    // after Show more redraws and deliberately focuses its disclosure button.
+    inp.focus();
+    inp.setSelectionRange(token.length, token.length);
     renderHint(P.hints.confirm);
     btnsL.append(btn(P.buttons.back, () => { screen = "pick"; draw(); }));
     const cont = btn(P.buttons.chooseMethod, () => { if (tokenOk()) { screen = "method"; draw(); } }, "primary", !tokenOk());
@@ -2024,6 +2027,7 @@ function applyHash() {
   }
 }
 if (location.hash) applyHash(); else boot("happy");
+window.addEventListener("hashchange", applyHash);
 </script>
 </body>
 </html>

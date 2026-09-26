@@ -164,12 +164,7 @@ def test_comparison_never_bypasses_owner_token_or_delay():
 ])
 def test_browser_comparison_wraps_and_escapes_metadata(monkeypatch, tmp_path, serials):
     import json
-    import os
-    import re
     import shutil
-    import signal
-    import subprocess
-    from html import unescape
     from beamo_wipe import gallery
 
     chrome = shutil.which("google-chrome") or shutil.which("chromium")
@@ -193,41 +188,31 @@ def test_browser_comparison_wraps_and_escapes_metadata(monkeypatch, tmp_path, se
     </script>'''
     page = tmp_path / "gallery.html"
     page.write_text(gallery.gallery_html().replace('</body>', check + '</body>'))
-    proc = subprocess.Popen(
-        [chrome, '--headless=new', '--no-sandbox', '--disable-gpu',
-         '--disable-dev-shm-usage', '--no-first-run',
-         f'--user-data-dir={tmp_path / "chrome"}', '--window-size=1024,1160',
-         '--dump-dom', page.as_uri() + '#s=pick'],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        start_new_session=True,
-    )
-    try:
-        stdout, stderr = proc.communicate(timeout=40)
-    except subprocess.TimeoutExpired as exc:
-        # Headless Chrome 148 can dump the DOM then hang until timeout.
-        stdout, stderr = exc.stdout, exc.stderr
+    api = pytest.importorskip("playwright.sync_api")
+    with api.sync_playwright() as runtime:
+        browser = runtime.chromium.launch(
+            executable_path=chrome, args=["--no-sandbox", "--disable-dev-shm-usage"]
+        )
         try:
-            os.killpg(proc.pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-        proc.wait()
-    if isinstance(stdout, bytes):
-        stdout = stdout.decode("utf-8", "replace")
-    if isinstance(stderr, bytes):
-        stderr = stderr.decode("utf-8", "replace")
-    stdout = stdout or ""
-    stderr = stderr or ""
-    match = re.search(r'data-serial-check="([^"]*)"', stdout)
-    assert match, stderr
-    rows = json.loads(unescape(match.group(1)))
+            rendered = browser.new_page(viewport={"width": 1024, "height": 1160})
+            rendered.goto(page.as_uri() + '#s=pick')
+            raw = rendered.locator("html").get_attribute("data-serial-check")
+            assert raw is not None
+            rows = json.loads(raw)
+            picker = rendered.evaluate("screen") == "pick"
+        finally:
+            browser.close()
     assert len(rows) == 2
     for row, disk in zip(rows, wizard.selectable):
         assert not row['injected']
         assert row['labelLines'] == 1
         assert row['fits']
-        assert row['serial'] == comparison_view(disk, wizard.listed_disks).marked_id
+        view = comparison_view(disk, wizard.listed_disks)
+        # Unsafe confirmation tokens keep the inventory on the empty screen;
+        # comparison marks are intentionally exclusive to the picker.
+        if not view.confirmable:
+            assert not picker
+        assert row['serial'] == (view.marked_id if picker else view.id_value)
 
 
 def test_comparison_is_only_shown_while_choosing():

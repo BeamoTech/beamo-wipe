@@ -40,7 +40,12 @@ func TestReadinessExplainsEachCheck(t *testing.T) {
 				s.Entries = nil
 			}
 			p := makePlan(s)
-			fixtures[tc.name] = planView(p, false)
+			// These platform-neutral presentation fixtures represent a
+			// published review; /api/check supplies a nonzero revision.
+			// Host-specific restart policy is exercised by the session tests.
+			published := planView(p, false)
+			published.Revision = 1
+			fixtures[tc.name] = published
 			raw, _ := json.Marshal(fixtures[tc.name])
 			var result struct {
 				Checks    []struct{ ID, State, Label, Detail, Next string }

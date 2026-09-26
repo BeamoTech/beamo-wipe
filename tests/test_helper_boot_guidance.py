@@ -7,12 +7,8 @@ Fake devices only. Live Microsoft URLs are read-only link checks.
 from __future__ import annotations
 
 from html.parser import HTMLParser
-import os
 from pathlib import Path
 import shutil
-import signal
-import time
-import subprocess
 import tempfile
 import urllib.error
 import urllib.request
@@ -432,56 +428,20 @@ def _render_helper(
     chrome: str, tmp_path: Path, name: str, url: str, width: int, height: int
 ) -> str:
     shot = tmp_path / f"{name}.png"
-    argv = [
-        chrome,
-        "--headless=new",
-        f"--user-data-dir={tmp_path / (name + '-profile')}",
-        "--no-first-run",
-        "--no-default-browser-check",
-        "--disable-background-networking",
-        "--disable-component-update",
-        "--disable-extensions",
-        "--disable-sync",
-        "--use-mock-keychain",
-        "--password-store=basic",
-        "--disable-gpu",
-        "--hide-scrollbars",
-        "--no-sandbox",
-        "--disable-dev-shm-usage",
-        f"--window-size={width},{height}",
-        f"--screenshot={shot}",
-        "--timeout=10000",
-        "--dump-dom",
-        url,
-    ]
-    with (tmp_path / f"{name}.log").open("w+b") as output:
-        proc = subprocess.Popen(
-            argv, stdout=output, stderr=subprocess.STDOUT, start_new_session=True
+    api = pytest.importorskip("playwright.sync_api")
+    # Drive rendering explicitly. Chromium's one-shot --dump-dom path can
+    # stay alive without producing output even after the page has loaded.
+    with api.sync_playwright() as runtime:
+        browser = runtime.chromium.launch(
+            executable_path=chrome, args=["--no-sandbox", "--disable-dev-shm-usage"]
         )
         try:
-            deadline = time.monotonic() + 40
-            dom = ""
-            while time.monotonic() < deadline:
-                dom = (tmp_path / f"{name}.log").read_text(errors="replace")
-                code = proc.poll()
-                if code is not None:
-                    assert code == 0, dom
-                    break
-                if "</html>" in dom and shot.is_file() and shot.stat().st_size > 2000:
-                    break
-                time.sleep(0.1)
-            else:
-                pytest.fail(f"Chrome did not finish rendering {name} within 40s: {dom}")
+            page = browser.new_page(viewport={"width": width, "height": height})
+            page.goto(url)
+            page.screenshot(path=str(shot))
+            dom = page.content()
         finally:
-            try:
-                os.killpg(proc.pid, signal.SIGTERM)
-            except ProcessLookupError:
-                pass
-            try:
-                proc.wait(timeout=3)
-            except subprocess.TimeoutExpired:
-                os.killpg(proc.pid, signal.SIGKILL)
-                proc.wait(timeout=3)
+            browser.close()
     assert shot.is_file() and shot.stat().st_size > 2000
     return dom
 

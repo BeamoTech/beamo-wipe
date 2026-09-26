@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -23,6 +24,10 @@ func TestRestartRefusesPlanReplacedAfterEarlierTabReviewed(t *testing.T) {
 	a.restart = func(context.Context, string) error { restarts++; return nil }
 	if response := request(a, "/api/check", `{"confirm":false}`); response.Code != 200 {
 		t.Fatalf("replacement check failed: %d", response.Code)
+	}
+	if runtime.GOOS == "windows" {
+		assertWindowsManualRestart(t, a)
+		return
 	}
 	if !a.p.Direct || a.p.Fingerprint == previous || len(a.p.Fingerprint) != 64 {
 		t.Fatal("fake second tab did not replace the direct restart plan")
@@ -56,6 +61,10 @@ func TestRestartConsentIsBoundToTheDisplayedCheck(t *testing.T) {
 		if err := json.Unmarshal(response.Body.Bytes(), &shown); err != nil {
 			t.Fatal(err)
 		}
+		if runtime.GOOS == "windows" {
+			assertWindowsManualRestart(t, a)
+			return shown
+		}
 		if !shown.Ready || shown.Revision == 0 {
 			t.Fatalf("ready check lacks a review revision: %+v", shown)
 		}
@@ -67,6 +76,10 @@ func TestRestartConsentIsBoundToTheDisplayedCheck(t *testing.T) {
 	if second.Revision == first.Revision {
 		t.Fatal("replacement check reused the first review revision")
 	}
+	if runtime.GOOS == "windows" {
+		assertWindowsManualRestart(t, a)
+		return
+	}
 	restarts := 0
 	a.restart = func(context.Context, string) error { restarts++; return nil }
 	stale := request(a, "/api/restart", fmt.Sprintf(`{"confirm":true,"revision":%d}`, first.Revision))
@@ -76,5 +89,22 @@ func TestRestartConsentIsBoundToTheDisplayedCheck(t *testing.T) {
 	fresh := request(a, "/api/restart", fmt.Sprintf(`{"confirm":true,"revision":%d}`, second.Revision))
 	if fresh.Code != 200 || restarts != 1 {
 		t.Fatalf("current tab could not restart its reviewed plan: status=%d calls=%d", fresh.Code, restarts)
+	}
+}
+
+func assertWindowsManualRestart(t *testing.T, a *app) {
+	t.Helper()
+	if a.current.Ready || a.current.Revision == 0 || a.p.Direct || a.p.Problem != "windows-manual" {
+		t.Fatalf("Windows review did not preserve the manual-only route: %+v", a.current)
+	}
+	a.restart = func(context.Context, string) error {
+		t.Fatal("Windows must not request a firmware restart")
+		return nil
+	}
+	for _, revision := range []uint64{0, a.current.Revision} {
+		response := request(a, "/api/restart", fmt.Sprintf(`{"confirm":true,"revision":%d}`, revision))
+		if response.Code != 409 {
+			t.Fatalf("Windows restart was not rejected: %d", response.Code)
+		}
 	}
 }

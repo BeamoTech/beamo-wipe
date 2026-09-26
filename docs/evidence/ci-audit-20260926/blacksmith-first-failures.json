@@ -1,0 +1,48 @@
+{
+  "linux": {
+    "job_url": "https://github.com/BeamoTech/beamo-wipe/actions/runs/36266226513/job/108471303208",
+    "log_sha256": "49b3eaec267517f818acd46f120c156a4e296686fc09be9786360b68ec1df827",
+    "main_suite": {
+      "passed": 5397,
+      "failed": 20,
+      "skipped": 15,
+      "seconds": 696.52
+    },
+    "orca": {
+      "passed": 1,
+      "seconds": 232.81
+    },
+    "failed_tests": [
+      "tests/test_helper_boot_guidance.py::test_helper_renders_both_windows_paths_on_small_and_desktop_displays",
+      "tests/test_helper_boot_guidance.py::test_guided_branches_render_on_a_phone_width",
+      "tests/test_launcher_readiness.py::test_help_anchor_reload_keeps_launcher_session",
+      "tests/test_launcher_readiness.py::test_help_anchor_reload_with_storage_denied",
+      "tests/test_launcher_readiness.py::test_explained_checks_and_safe_next_actions[pass]",
+      "tests/test_launcher_readiness.py::test_empty_or_incomplete_response_fails_closed_and_recovers[None]",
+      "tests/test_launcher_readiness.py::test_empty_or_incomplete_response_fails_closed_and_recovers[bad1]",
+      "tests/test_launcher_readiness.py::test_empty_or_incomplete_response_fails_closed_and_recovers[bad2]",
+      "tests/test_launcher_readiness.py::test_keyboard_restart_permission_failure_retry_and_close[200]",
+      "tests/test_launcher_readiness.py::test_keyboard_restart_permission_failure_retry_and_close[503]",
+      "tests/test_launcher_readiness.py::test_long_content_display_and_forced_colors[size0]",
+      "tests/test_launcher_readiness.py::test_long_content_display_and_forced_colors[size1]",
+      "tests/test_launcher_readiness.py::test_long_content_display_and_forced_colors[size2]",
+      "tests/test_preview_parity.py::test_chrome_show_more_progress_and_cancel",
+      "tests/test_preview_parity.py::test_playwright_keyboard_show_more[size0]",
+      "tests/test_preview_parity.py::test_playwright_keyboard_show_more[size1]",
+      "tests/test_serial_comparison.py::test_browser_comparison_wraps_and_escapes_metadata[serials0]",
+      "tests/test_serial_comparison.py::test_browser_comparison_wraps_and_escapes_metadata[serials1]",
+      "tests/test_unsure_disk_browser.py::test_unsure_browser_keyboard_and_reset[size0]",
+      "tests/test_unsure_disk_browser.py::test_unsure_browser_keyboard_and_reset[size1]"
+    ]
+  },
+  "windows": {
+    "job_url": "https://github.com/BeamoTech/beamo-wipe/actions/runs/36266226513/job/108471303328",
+    "log_sha256": "7abe689d51b102fb9e81336664e0a52a6277b8ae1936810967642228fd794fbd",
+    "failed_tests": [
+      "TestExclusiveWriteRemovesIncompleteFile",
+      "TestExclusiveWriteDoesNotRemoveAnotherOwnersReplacement",
+      "TestRestartRefusesPlanReplacedAfterEarlierTabReviewed",
+      "TestRestartConsentIsBoundToTheDisplayedCheck"
+    ]
+  }
+}

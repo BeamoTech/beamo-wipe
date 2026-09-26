@@ -41,7 +41,9 @@ jobs:
       - name: Make evidence readable
         if: always()
         run: |
-          for path in dist/evidence qemu-evidence .ci-cache/pip; do
+          # Root-owned containers create dist itself with private permissions.
+          # Restore access to the parent as well as its evidence children.
+          for path in dist qemu-evidence .ci-cache; do
             if [ -d "$path" ]; then sudo chown -R "$(id -u):$(id -g)" "$path"; fi
           done
           PYTHONPATH=src python3 -m beamo_wipe.ci_evidence summary
