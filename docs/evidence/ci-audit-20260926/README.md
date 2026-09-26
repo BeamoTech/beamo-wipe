@@ -1,6 +1,6 @@
 # CI audit — 2026-09-26
 
-Status: **Windows, source, ISO and USB-image construction passed; portable ISO inspection awaiting full hosted validation**. The operator
+Status: **portable image inspection and package checks passed; loop-pool correction awaiting full hosted validation**. The operator
 corrected the platform during this task: use **Blacksmith, not Google Cloud**.
 This supersedes earlier instructions to renew gcloud authentication.
 
@@ -248,6 +248,43 @@ A new Blacksmith run is needed for comparable hosted timings and cache behavior.
   sidecar as well as its checksum; binaries are still excluded.
 - [Sixth-run timings](blacksmith-sixth-run.json). Linux job log SHA-256:
   `94297099b8ddde79657b347f18233a648fead605b371a6250b1fa857787af906`.
+
+## Seventh hosted run and concurrent loop nodes
+
+- [Run 36271624039](https://github.com/BeamoTech/beamo-wipe/actions/runs/36271624039)
+  on `10850d12bc4a818184d7ad65a9f3815a55420789` passed Windows, all source
+  checks, ISO and USB-image construction. Main pytest: **5,436 passed,
+  15 skipped in 201.41 s**; Orca: **one passed in 233.99 s**.
+- Portable ISO inspection, checksum checks, package inventory, the fixed
+  vulnerability scan, image permissions and shipped accessible-runtime imports
+  passed. The scan's fixed-vulnerability output is empty. The next report-image
+  loop allocation failed: the container had only the first lazily created
+  worker loop node, already occupied by the mounted SquashFS.
+- Commit `f56ea63` prepares eight simultaneously attached private 1 MiB
+  read-only files before Docker enumerates device nodes, then verifies backing
+  identities, detaches and removes them. Tests cover complete setup, partial
+  allocation failure, and preservation when ownership changes. Blacksmith's
+  actual guest commands now require KVM without silent TCG fallback; legacy
+  non-Blacksmith selection is unchanged. Focused tests and static checks pass.
+- The full pool preflight passed in
+  [run 36272593454](https://github.com/BeamoTech/beamo-wipe/actions/runs/36272593454);
+  the complete image/guest gate remains required.
+- [Seventh-run timings](blacksmith-seventh-run.json) and
+  [verified receipts, inspection hashes and failure identity](blacksmith-seventh-evidence.json).
+
+## Eighth hosted source gate
+
+- [Run 36272593454](https://github.com/BeamoTech/beamo-wipe/actions/runs/36272593454)
+  passed the eight-device loop-pool and KVM preflight. The main suite rejected
+  two diagnostic fixture failures: its isolated shell harness omitted the new
+  `qemu_machine` helper. **5,441 passed, two failed, 15 skipped in 213.47 s**;
+  the separate Orca check passed. ISO/QEMU correctly did not run.
+- The harness now includes the real helper. All **172 QEMU, Blacksmith and
+  receipt regression tests passed locally**, including both failed cases.
+  Ruff and diff checks passed. The superseded queued Windows job was cancelled
+  after Linux failed; earlier Windows passes do not substitute for this source.
+- [Eighth-run snapshot](blacksmith-eighth-run.json) and
+  [five independently verified receipts and log hash](blacksmith-eighth-evidence.json).
 
 ## Remaining rollout requirements
 

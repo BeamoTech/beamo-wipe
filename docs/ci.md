@@ -46,7 +46,8 @@ on the same disposable worker. There are no ISO/QEMU skip inputs in the
 workflow. PRs receive full QEMU coverage, including image vulnerability checks.
 KVM is required; an early privileged API probe checks capability before costly
 source/build work. It also initializes loop, squashfs and FAT support and proves a
-read-only private-file loop attachment before Docker enumerates devices.
+read-only private-file loop pool before Docker enumerates devices. Blacksmith
+guest commands require KVM without a software-emulation fallback.
 Runner-user group membership is not used as a proxy for container access. Mac emulation cannot substitute for this gate. QEMU receives
 only newly created regular-file images. Host-side ISO inspection uses xorriso
 on a hash-bound private snapshot, avoiding dependence on the worker kernel
