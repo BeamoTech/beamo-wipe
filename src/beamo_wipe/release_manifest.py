@@ -27,7 +27,7 @@ SCHEMA_VERSION = 2
 MAX_MANIFEST_BYTES = 16 * 1024 * 1024
 MANIFEST_NAME_TEMPLATE = "beamo-wipe-{version}-amd64.manifest.json"
 VERSION_RE = re.compile(r"[0-9]+\.[0-9]+\.[0-9]+")
-EXPECTED_REMOTE = "https://github.com/BeamoINT/beamo-wipe"
+EXPECTED_REMOTE = "https://github.com/BeamoTech/beamo-wipe"
 # Measured SHA-256 of the extracted branded v0.2.9 ISO. Do not copy-forward.
 PRIOR_STABLE = {
     "version": "0.2.9",
@@ -74,11 +74,17 @@ def git_remote_url() -> str:
         raw = _run(["git", "config", "--get", "remote.origin.url"])
     except Exception:
         raise RuntimeError("untraceable source state: origin URL unavailable")
+    # GitHub's organization rename preserves the old URL as a redirect.
+    # Accept only these exact identities and record the canonical repository.
     allowed = {
-        EXPECTED_REMOTE,
-        EXPECTED_REMOTE + ".git",
-        "git@github.com:BeamoINT/beamo-wipe.git",
-        "ssh://git@github.com/BeamoINT/beamo-wipe.git",
+        remote
+        for owner in ("BeamoTech", "BeamoINT")
+        for remote in (
+            f"https://github.com/{owner}/beamo-wipe",
+            f"https://github.com/{owner}/beamo-wipe.git",
+            f"git@github.com:{owner}/beamo-wipe.git",
+            f"ssh://git@github.com/{owner}/beamo-wipe.git",
+        )
     }
     if raw not in allowed:
         # Do not echo the raw value: a malformed HTTPS remote can contain a
@@ -478,7 +484,7 @@ def generate_manifest(
         "license": {
             "wrapper": "GPL-3.0-or-later",
             "nwipe": "GPL-2.0",
-            "source": "https://github.com/BeamoINT/beamo-wipe",
+            "source": EXPECTED_REMOTE,
             "notice": "NOTICE",
             "third_party": "THIRD_PARTY.md",
         },

@@ -30,6 +30,38 @@ requires_manufacturing_iso = pytest.mark.skipif(
 )
 
 
+@pytest.mark.parametrize("owner", ["BeamoTech", "BeamoINT"])
+@pytest.mark.parametrize("url", [
+    "https://github.com/{owner}/beamo-wipe",
+    "https://github.com/{owner}/beamo-wipe.git",
+    "git@github.com:{owner}/beamo-wipe.git",
+    "ssh://git@github.com/{owner}/beamo-wipe.git",
+])
+def test_manifest_origin_normalizes_current_and_legacy_repository(monkeypatch, owner, url):
+    from beamo_wipe import release_manifest as rm
+
+    monkeypatch.setattr(rm, "_run", lambda _cmd: url.format(owner=owner))
+    assert rm.git_remote_url() == "https://github.com/BeamoTech/beamo-wipe"
+
+
+@pytest.mark.parametrize("url", [
+    "https://github.com/another-owner/beamo-wipe.git",
+    "https://github.com/BeamoTech/another-repository.git",
+    "https://github.com.example.invalid/BeamoTech/beamo-wipe.git",
+    "https://credential@github.com/BeamoTech/beamo-wipe.git",
+    "https://github.com/BeamoTech/beamo-wipe.git?token=credential",
+    "https://github.com/BeamoTech/beamo-wipe.git/extra",
+])
+def test_manifest_origin_rejects_untrusted_remote_without_echoing_it(monkeypatch, url):
+    from beamo_wipe import release_manifest as rm
+
+    monkeypatch.setattr(rm, "_run", lambda _cmd: url)
+    with pytest.raises(RuntimeError, match="unexpected origin URL") as exc:
+        rm.git_remote_url()
+    assert url not in str(exc.value)
+    assert "credential" not in str(exc.value)
+
+
 def _copy_iso_release_files(manifest: dict, directory: Path) -> None:
     """Make a temp directory match the downloadable release layout."""
     iso_name = manifest["artifact"]["iso_name"]
@@ -509,4 +541,4 @@ def test_hardware_limits_and_license(tmp_path, monkeypatch):
     assert "x64" in str(hw["supported"])
     assert m["license"]["wrapper"] == "GPL-3.0-or-later"
     assert m["license"]["nwipe"] == "GPL-2.0"
-    assert "https://github.com/BeamoINT/beamo-wipe" in m["license"]["source"]
+    assert "https://github.com/BeamoTech/beamo-wipe" in m["license"]["source"]

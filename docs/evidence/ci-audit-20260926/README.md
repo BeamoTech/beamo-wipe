@@ -1,6 +1,6 @@
 # CI audit — 2026-09-26
 
-Status: **first hosted run rejected; corrections under verification**. The operator
+Status: **Windows and Linux source gates passed; image provenance fix awaiting hosted validation**. The operator
 corrected the platform during this task: use **Blacksmith, not Google Cloud**.
 This supersedes earlier instructions to renew gcloud authentication.
 
@@ -18,6 +18,12 @@ This supersedes earlier instructions to renew gcloud authentication.
   after about 22 minutes queued. Both jobs rejected failures; ISO/QEMU did not
   run. This is not a passing CI result. See [job timings](blacksmith-first-run.json)
   and [failure inventory and log hashes](blacksmith-first-failures.json).
+- Corrections were pushed as `7e7ce981e20a03761fd5ef9e7007f7721fb5cf01`.
+  [Second run](https://github.com/BeamoTech/beamo-wipe/actions/runs/36267895827)
+  passed native Windows tests and vet: 161 passing test/subtest results and one
+  case-sensitive-filesystem fixture skipped on Windows (still covered on Linux).
+  Windows log SHA-256:
+  `2f20c5a1c781150d7213cee215c33ade1115a042e7869a004d1b49b10b82063c`.
 - GitHub redirects `BeamoINT/beamo-wipe` to `BeamoTech/beamo-wipe`.
 - Remote main was `4feb25a6996268fd0890e7570e8cd3548b53c993`.
 - GitHub APIs reported no `.github/workflows` directory, no classic protection
@@ -86,8 +92,8 @@ This supersedes earlier instructions to renew gcloud authentication.
   rapid edits from reusing the failing fixture's cached bytecode. The repository
   never contains the failing fixture. The private boot-safety negative gate
   also rejects its mutant and passes again against the original source.
-- These are **local** proofs. They do not establish successful Blacksmith Linux,
-  Windows, ISO or QEMU execution, or live branch-protection enforcement.
+- These initial proofs were local. Subsequent hosted source results are recorded
+  below; full ISO/QEMU success and branch-protection enforcement remain required.
 
 ## Timings
 
@@ -129,7 +135,31 @@ A new Blacksmith run is needed for comparable hosted timings and cache behavior.
   The expanded run also exposed 23 Node fixtures that sliced the newly added
   listener into their isolated function harness; keeping registration after
   initialization restored that boundary. All 52 gallery regressions then passed.
-  Native Windows execution and a clean complete hosted run remain required.
+  Native Windows execution subsequently passed; a clean complete hosted Linux/ISO/QEMU run remains required.
+- Final local full suite, with Playwright and isolated Chrome profiles enabled:
+  **4,611 passed, 647 skipped, two failed in 350.64 s**. Both failures are the
+  previously documented unavailable GTK/ATK imports on this Mac. The complete
+  hosted Linux suite is required to cover them. The final six focused real-browser
+  navigation, focus, help and metadata regressions passed in 15.87 s.
+
+## Second hosted run findings
+
+- Native Windows and all five Linux source gates passed. Main pytest:
+  **5,417 passed, 15 skipped in 199.70 s**; isolated Orca: **one passed in
+  234.59 s**. The source step completed in about 502 s including setup,
+  compared with 1,004 s in the failed first run. Removing browser CLI hangs
+  accounts for much of the difference; this is not a cache benchmark.
+- Ownership restoration and the evidence upload passed. Artifact `10915021021`
+  contains 14 files, 145,797 bytes; archive SHA-256:
+  `d4b077a228a190a7a3520bf99f668b67d8f5e24044979e8f34a645af5e01f467`.
+- The 538 MiB ISO built successfully, but manifest generation rejected the
+  current `BeamoTech` origin because its exact allowlist retained only the old
+  `BeamoINT` identity. QEMU correctly did not run after this failure.
+- The manifest now accepts the exact current and redirected legacy repository
+  URLs, normalizes provenance to `BeamoTech`, and rejects unrelated repositories,
+  lookalike hosts and credential-bearing URLs without echoing their contents.
+  Fourteen new cases cover this boundary. Focused manifest/CI tests and Ruff pass.
+- [Complete second-run job and step timings](blacksmith-second-run.json).
 
 ## Remaining rollout requirements
 

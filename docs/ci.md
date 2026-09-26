@@ -54,10 +54,13 @@ remain intact. Run this only on isolated disposable workers.
 
 ## Caches, concurrency and evidence
 
-Only pip download caches are persisted; the key binds the Debian architecture,
+The workflow explicitly persists only pip download caches; the key binds the Debian architecture,
 CI dependency-install script, and project manifest. Only a successful push to
 `main` saves a cache. PRs may restore it but cannot update the trusted key.
 Compiled launchers, manifests, test results and images are never cached.
+The organization's existing Blacksmith Docker image cache is enabled separately;
+it may reuse the pinned Debian base image. It does not replace execution of
+these containerized gates or the freshly generated artifact receipts.
 
 New PR runs cancel older runs for that PR. Main runs are not cancelled by
 concurrency policy. Linux image work is bounded at 120 minutes, Windows at 20, and aggregation at five. Action references use
