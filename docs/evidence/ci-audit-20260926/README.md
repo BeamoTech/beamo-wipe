@@ -1,6 +1,6 @@
 # CI audit — 2026-09-26
 
-Status: **portable image inspection and package checks passed; loop-pool correction awaiting full hosted validation**. The operator
+Status: **complete Blacksmith validation passed on `d117909`; main rollout remains pending**. The operator
 corrected the platform during this task: use **Blacksmith, not Google Cloud**.
 This supersedes earlier instructions to renew gcloud authentication.
 
@@ -93,7 +93,8 @@ This supersedes earlier instructions to renew gcloud authentication.
   never contains the failing fixture. The private boot-safety negative gate
   also rejects its mutant and passes again against the original source.
 - These initial proofs were local. Subsequent hosted source results are recorded
-  below; full ISO/QEMU success and branch-protection enforcement remain required.
+  below. Full ISO/QEMU success is now demonstrated; main rollout and protection
+  enforcement remain pending.
 
 ## Timings
 
@@ -286,14 +287,59 @@ A new Blacksmith run is needed for comparable hosted timings and cache behavior.
 - [Eighth-run snapshot](blacksmith-eighth-run.json) and
   [five independently verified receipts and log hash](blacksmith-eighth-evidence.json).
 
+## Complete ninth hosted validation
+
+- [Run 36273278678](https://github.com/BeamoTech/beamo-wipe/actions/runs/36273278678)
+  passed **Linux image gate, Windows launcher tests and aggregate CI gate** on
+  `d117909d98cd89af240343987f7ee22342cad5af`. Main pytest: **5,443 passed,
+  15 skipped in 201.38 s**; isolated Orca: **one passed in 233.61 s**.
+  Native Windows: **161 passing test/subtest events, one filesystem-specific
+  skip**, plus passing vet. The private negative mutation was rejected and the
+  unmodified safety test passed. Source failures in prior runs blocked ISO/QEMU.
+- All three shipped nwipe methods passed twice on private host file-backed
+  loops and twice through the shipped BIOS wizard. Guest reports passed FAT,
+  wording, method, checksum and unmount checks. All twelve guest boots passed,
+  including UEFI, BIOS/UEFI USB, both speech entries and enrolled Secure Boot.
+  Every retained QEMU command line uses KVM and regular-file images; none
+  contains a host `/dev/` argument. The fixed-vulnerability report is empty.
+- Independently verified all seven receipt digests and their execution logs,
+  all 88 QEMU evidence hashes and their receipt binding, the manifest's internal
+  digest and file sidecar, and the measured 493-package inventory. Source and
+  build identity agree throughout: build `fe355dec-634c-5e0c-a04d-bf0388b07862`.
+  ISO/USB binary hashes were checked on the worker; binaries were not downloaded
+  locally. This establishes virtual-machine acceptance, not physical-hardware
+  acceptance or a production release.
+- ISO SHA-256:
+  `98c15bf7b20a081a3ccbc3c4bd290e1ccdefdabcf2389d78329747d2e7584d13`.
+  USB SHA-256:
+  `bf2fa15deb7e40edac535b43bec968a34be84558a0c6d8d8f5e437b8916c29a1`.
+  Final manifest file SHA-256:
+  `6940dbba924c55b99373ea64ebc7bb25c32573604de07178edae8e66ec7d1ab2`.
+- Artifact `10916840795` is 223,036 bytes. Its downloaded archive matches the
+  upload SHA-256 `f5aa8de99b3ed066de97c67e3ffdd979cbef05925c1a16f3ae06781146a5ebe1`.
+  [Full timings](blacksmith-ninth-run.json) and
+  [verified evidence and hashes](blacksmith-ninth-evidence.json).
+
+| Hosted measurement | First failed run | Complete passing run |
+| --- | ---: | ---: |
+| Source step, including dependencies | 1,004 s | 486 s |
+| ISO build/inspection | Not reached | 158 s |
+| Image security and full KVM phase | Not reached | 553 s |
+| Entire Linux job | Failed before image work | 1,208 s |
+| Native Windows job | Failed | 50 s |
+
+The source-time difference includes removal of browser CLI hangs and different
+execution outcomes. It is not a cache benchmark or an equivalent full-pipeline
+speedup claim. No previous successful full image gate was available as a baseline.
+
 ## Remaining rollout requirements
 
 1. Bootstrap completed with explicit operator approval, on the validation
    branch only. Follow-up fixes remain subject to hosted verification.
-2. Verify enrollment/KVM and obtain a full clean hosted run; repair any actual
-   Linux/Windows/browser failures without skipping or weakening tests.
-3. Record hosted pass/failure proof, artifact identities and step timings.
-4. Enable and read back main protection requiring the observed `CI gate` check,
-   then deliver the verified commits according to operator authorization.
-5. No production release is authorized by this task. Do not activate a new
+2. Enrollment, actual KVM execution, complete hosted success, negative-test
+   rejection and artifact/receipt bindings are verified above.
+3. Main promotion and protection changes remain outside the limited bootstrap
+   approval. Install the verified workflow on main through the approved rollout,
+   require the observed `CI gate` check, and read back enforcement through the API.
+4. No production release is authorized by this task. Do not activate a new
    publication route or treat validation artifacts as a production release.

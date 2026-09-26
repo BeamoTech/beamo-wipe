@@ -1,0 +1,451 @@
+{
+  "run_url": "https://github.com/BeamoTech/beamo-wipe/actions/runs/36273278678",
+  "source_commit": "d117909d98cd89af240343987f7ee22342cad5af",
+  "status": "all hosted gates passed; downloaded receipt, inventory, manifest and QEMU evidence bindings independently verified",
+  "limitations": [
+    "ISO and USB binary hashes were verified on the worker; large binaries were not downloaded locally.",
+    "No physical hardware acceptance or production publication."
+  ],
+  "artifact_id": 10916840795,
+  "artifact_archive_sha256": "f5aa8de99b3ed066de97c67e3ffdd979cbef05925c1a16f3ae06781146a5ebe1",
+  "manifest_file_sha256": "6940dbba924c55b99373ea64ebc7bb25c32573604de07178edae8e66ec7d1ab2",
+  "installed_package_count": 493,
+  "linux_job_log_sha256": "50fdc7c41d921456abd7f86ee1a8535a2e68b576ea267657586d2326a31929a8",
+  "windows_job_log_sha256": "31dcf5cf9118c130d49b19d3eb7555395680d9f2e2314e4a8c3170a31541a5a7",
+  "windows_passed_test_events": 161,
+  "windows_skipped_test_events": 1,
+  "job_seconds": {
+    "Windows launcher tests": 50,
+    "Linux image gate": 1208,
+    "CI gate": 5
+  },
+  "step_seconds": {
+    "Set up job": 1,
+    "Set up runner": 0,
+    "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262": 3,
+    "Check KVM and image-mount capabilities before building": 0,
+    "Validate workflow": 3,
+    "Restore download cache": 0,
+    "Parallel lint, types, tests, preview, launchers and negative test": 486,
+    "Build and inspect ISO": 158,
+    "Verify image, vulnerabilities and BIOS/UEFI with KVM": 553,
+    "Make evidence readable": 0,
+    "Retain execution evidence": 1,
+    "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262": 0,
+    "Complete runner": 1,
+    "Complete job": 0
+  },
+  "receipts": [
+    {
+      "schema": "beamo-wipe-gate-receipt/1",
+      "gate": "desktop-launchers",
+      "status": "pass",
+      "command": "bash scripts/ci-hosted.sh desktop-launchers",
+      "source_commit": "d117909d98cd89af240343987f7ee22342cad5af",
+      "build_id": "fe355dec-634c-5e0c-a04d-bf0388b07862",
+      "environment": {
+        "arch": "x86_64",
+        "github_repository": "BeamoTech/beamo-wipe",
+        "github_run_attempt": "1",
+        "github_run_id": "36273278678",
+        "platform": "linux",
+        "python": "3.11.2",
+        "runner": "blacksmith"
+      },
+      "measured": {
+        "passed": 1,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xfailed": 0,
+        "deselected": 0,
+        "total": 1
+      },
+      "skips": [],
+      "log_sha256": "ec7d84d56a389103ee9585a17d7deb1e449d9d8ffb34262c5dbc015401d9445f",
+      "reason": "",
+      "started_at": "2026-09-26T21:32:43Z",
+      "ended_at": "2026-09-26T21:33:36Z",
+      "receipt_sha256": "46ba30b471e9ef96b7335a90951d512e3bcf8ab3a515c2da3de9e6752cc5eb9b"
+    },
+    {
+      "schema": "beamo-wipe-gate-receipt/1",
+      "gate": "iso",
+      "status": "pass",
+      "command": "bash scripts/ci-hosted.sh iso",
+      "source_commit": "d117909d98cd89af240343987f7ee22342cad5af",
+      "build_id": "fe355dec-634c-5e0c-a04d-bf0388b07862",
+      "environment": {
+        "arch": "x86_64",
+        "github_repository": "BeamoTech/beamo-wipe",
+        "github_run_attempt": "1",
+        "github_run_id": "36273278678",
+        "platform": "linux",
+        "python": "3.11.2",
+        "runner": "blacksmith"
+      },
+      "measured": {
+        "passed": 1,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xfailed": 0,
+        "deselected": 0,
+        "total": 1
+      },
+      "skips": [],
+      "log_sha256": "fe358ef529cdba4e871e972695b955d087d2bae3fe8c1c5a32d1ecf7ea54113b",
+      "reason": "",
+      "started_at": "2026-09-26T21:40:48Z",
+      "ended_at": "2026-09-26T21:43:20Z",
+      "receipt_sha256": "4934d487646299492fbf212ebb373e4d72baa951b89219ed757dc6fa9c8529e4"
+    },
+    {
+      "schema": "beamo-wipe-gate-receipt/1",
+      "gate": "lint",
+      "status": "pass",
+      "command": "bash scripts/ci-hosted.sh lint",
+      "source_commit": "d117909d98cd89af240343987f7ee22342cad5af",
+      "build_id": "fe355dec-634c-5e0c-a04d-bf0388b07862",
+      "environment": {
+        "arch": "x86_64",
+        "github_repository": "BeamoTech/beamo-wipe",
+        "github_run_attempt": "1",
+        "github_run_id": "36273278678",
+        "platform": "linux",
+        "python": "3.11.2",
+        "runner": "blacksmith"
+      },
+      "measured": {
+        "passed": 1,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xfailed": 0,
+        "deselected": 0,
+        "total": 1
+      },
+      "skips": [],
+      "log_sha256": "b1d7dd6c9ec5c7f41b954284246f88f902d46c8c32f110020d163ada78fe3f1d",
+      "reason": "",
+      "started_at": "2026-09-26T21:32:47Z",
+      "ended_at": "2026-09-26T21:32:50Z",
+      "receipt_sha256": "aa5a8f5e648a29385cfef686aed4185579b52bce93da5297fa905d708f2d552b"
+    },
+    {
+      "schema": "beamo-wipe-gate-receipt/1",
+      "gate": "negative",
+      "status": "pass",
+      "command": "bash scripts/ci-hosted.sh negative",
+      "source_commit": "d117909d98cd89af240343987f7ee22342cad5af",
+      "build_id": "fe355dec-634c-5e0c-a04d-bf0388b07862",
+      "environment": {
+        "arch": "x86_64",
+        "github_repository": "BeamoTech/beamo-wipe",
+        "github_run_attempt": "1",
+        "github_run_id": "36273278678",
+        "platform": "linux",
+        "python": "3.11.2",
+        "runner": "blacksmith"
+      },
+      "measured": {
+        "passed": 1,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xfailed": 0,
+        "deselected": 0,
+        "total": 1
+      },
+      "skips": [],
+      "log_sha256": "9f642dbe9410f615fae7ef05f22fba6e711dbaa7579c1f62cfa5eb814574a8da",
+      "reason": "",
+      "started_at": "2026-09-26T21:32:43Z",
+      "ended_at": "2026-09-26T21:32:43Z",
+      "receipt_sha256": "8eb8b2159dff83319a6408e5f6c9578766968871cfae45da2d28bdbb255e83e7"
+    },
+    {
+      "schema": "beamo-wipe-gate-receipt/1",
+      "gate": "preview",
+      "status": "pass",
+      "command": "bash scripts/ci-hosted.sh preview",
+      "source_commit": "d117909d98cd89af240343987f7ee22342cad5af",
+      "build_id": "fe355dec-634c-5e0c-a04d-bf0388b07862",
+      "environment": {
+        "arch": "x86_64",
+        "github_repository": "BeamoTech/beamo-wipe",
+        "github_run_attempt": "1",
+        "github_run_id": "36273278678",
+        "platform": "linux",
+        "python": "3.11.2",
+        "runner": "blacksmith"
+      },
+      "measured": {
+        "passed": 1,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xfailed": 0,
+        "deselected": 0,
+        "total": 1
+      },
+      "skips": [],
+      "log_sha256": "379bd7bbae0f7b72d73ba4db6052cc49a6ba0321bacc742cf423aa8665af6b13",
+      "reason": "",
+      "started_at": "2026-09-26T21:32:45Z",
+      "ended_at": "2026-09-26T21:32:46Z",
+      "receipt_sha256": "3486f806ece5a43e78ae0f55e0ed62be74445df5975c55bbb33e45ef29702801"
+    },
+    {
+      "schema": "beamo-wipe-gate-receipt/1",
+      "gate": "qemu",
+      "status": "pass",
+      "command": "bash scripts/ci-hosted.sh qemu",
+      "source_commit": "d117909d98cd89af240343987f7ee22342cad5af",
+      "build_id": "fe355dec-634c-5e0c-a04d-bf0388b07862",
+      "environment": {
+        "arch": "x86_64",
+        "github_repository": "BeamoTech/beamo-wipe",
+        "github_run_attempt": "1",
+        "github_run_id": "36273278678",
+        "platform": "linux",
+        "python": "3.11.2",
+        "qemu_evidence_sha256": "f0e63efb064dcb47902211ff6b70d9fc5b11b6bee0e2e4a5af6484895f1f9e07",
+        "runner": "blacksmith"
+      },
+      "measured": {
+        "passed": 1,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "xfailed": 0,
+        "deselected": 0,
+        "total": 1
+      },
+      "skips": [],
+      "log_sha256": "c0b70a8f7c9687924561204d8c0252f0e7853ee663e3627d4973b9a843f06cfa",
+      "reason": "",
+      "started_at": "2026-09-26T21:43:32Z",
+      "ended_at": "2026-09-26T21:52:31Z",
+      "receipt_sha256": "9fee5f0a07ee429592ae5ca0f06b0d484e331e83f912d112847be901ee4fdf33"
+    },
+    {
+      "schema": "beamo-wipe-gate-receipt/1",
+      "gate": "tests",
+      "status": "pass",
+      "command": "bash scripts/ci-hosted.sh tests",
+      "source_commit": "d117909d98cd89af240343987f7ee22342cad5af",
+      "build_id": "fe355dec-634c-5e0c-a04d-bf0388b07862",
+      "environment": {
+        "arch": "x86_64",
+        "github_repository": "BeamoTech/beamo-wipe",
+        "github_run_attempt": "1",
+        "github_run_id": "36273278678",
+        "platform": "linux",
+        "python": "3.11.2",
+        "runner": "blacksmith"
+      },
+      "measured": {
+        "passed": 5444,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 15,
+        "xfailed": 0,
+        "deselected": 0,
+        "total": 5459
+      },
+      "skips": [
+        {
+          "id": "tests.test_ci_hosted.test_cloud_upload_excludes_local_captures_and_env_files",
+          "kind": "skip",
+          "reason": "gcloud CLI is unavailable"
+        },
+        {
+          "id": "tests.test_live_image.test_live_config_bootstrap_uses_https_debian_mirrors",
+          "kind": "skip",
+          "reason": "lb config artifacts are generated by scripts/build-iso.sh"
+        },
+        {
+          "id": "tests.test_live_image.test_live_config_xinit_cannot_hijack_kiosk",
+          "kind": "skip",
+          "reason": "lb config artifacts are generated by scripts/build-iso.sh"
+        },
+        {
+          "id": "tests.test_release_manifest.test_consumer_verification_instructions",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_hardware_limits_and_license",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_manifest_atomic_write_and_checksum",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_manifest_checksum_mismatch_is_rejected",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_manifest_duplicate_write_is_idempotent",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_manifest_fails_on_dirty_when_strict",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_manifest_fails_on_unexpected_nwipe_version",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_manifest_recovery_after_failed_write",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_manifest_schema_covers_required_fields",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_manifest_stale_state_detected",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_prior_stable_and_rollback",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_verify_allows_dirty_only_for_dirty_check",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        }
+      ],
+      "log_sha256": "317544ba67c9ea141a2e39144cc3622f2be972f62fe836726a4a38901b5c1eae",
+      "reason": "",
+      "started_at": "2026-09-26T21:33:25Z",
+      "ended_at": "2026-09-26T21:40:41Z",
+      "receipt_sha256": "dc4073acbdb42c49eedc9e387e0385ff96bae176501eb46c698b830242c15027"
+    }
+  ],
+  "qemu_summary": {
+    "iso_sha256": "98c15bf7b20a081a3ccbc3c4bd290e1ccdefdabcf2389d78329747d2e7584d13",
+    "usb_image_sha256": "bf2fa15deb7e40edac535b43bec968a34be84558a0c6d8d8f5e437b8916c29a1",
+    "nwipe_sha256": "975c9bce08a8ff827fa35207aabc6ad4a54ab8a6c29a4386de1e34fc246e47ed",
+    "source_commit": "d117909d98cd89af240343987f7ee22342cad5af",
+    "build_id": "fe355dec-634c-5e0c-a04d-bf0388b07862",
+    "repetitions": "2",
+    "cases": "everyday,extra,quick_zero",
+    "everyday": "pass",
+    "extra": "pass",
+    "quick_zero": "pass",
+    "bios": "pass",
+    "uefi": "pass",
+    "bios_usb": "pass",
+    "uefi_usb": "pass",
+    "secureboot_usb": "pass",
+    "speech_bios_usb": "pass",
+    "speech_uefi_usb": "pass",
+    "report_export": "pass"
+  },
+  "qemu_evidence": {
+    "accessible-runtime.txt": "f194d090f872f277b16e45ea47c8dae525fe325ec0d96e4d88dfe73bb74ddcdd",
+    "bios-everyday-cmdline.txt": "a12f159c5c274882fc81c8d5cfccff0088c89653caf45303b69401c429fe6571",
+    "bios-everyday-qemu.txt": "035826bae5cd8180ac17b4637edfabb6da36fc8d2c0fab2045a7c49f78e132fc",
+    "bios-everyday-repeat-cmdline.txt": "8b18a927aeb598ebe86880c78b262fb6a1d60208286734a8d462ba24bf0eb4c7",
+    "bios-everyday-repeat-qemu.txt": "035826bae5cd8180ac17b4637edfabb6da36fc8d2c0fab2045a7c49f78e132fc",
+    "bios-everyday-repeat-serial.txt": "c8e6f68e2ec51ad59201afd1143e666eecaae7e9db66f1f20e86dc5a511ed7e8",
+    "bios-everyday-serial.txt": "93405bb48a9db90293be637665358a1ff1305c6d83cb940c564563d8ac842eb9",
+    "bios-extra-cmdline.txt": "12744df66e445bd86518b49cb75635f25ae9000570ea8fa17404ff2a37fd2d45",
+    "bios-extra-qemu.txt": "035826bae5cd8180ac17b4637edfabb6da36fc8d2c0fab2045a7c49f78e132fc",
+    "bios-extra-repeat-cmdline.txt": "62e18eb3d13ac517a57d9e983cc2ea73e2455a9470d65f67f1c945a96f5305de",
+    "bios-extra-repeat-qemu.txt": "035826bae5cd8180ac17b4637edfabb6da36fc8d2c0fab2045a7c49f78e132fc",
+    "bios-extra-repeat-serial.txt": "3d3c6effe7d330ddbb29028c3740e1fea7e992acd830cd110f53e69f21fde055",
+    "bios-extra-serial.txt": "8cdca5a4948fc1b5e2a3ab9269ac8f90a72a7f170de6b68f6c4a04139f6f2acb",
+    "bios-quick_zero-cmdline.txt": "597a514a946ddcfbc92fab4c2103ae706ca44448c845563ce2a00f9f0f751168",
+    "bios-quick_zero-qemu.txt": "035826bae5cd8180ac17b4637edfabb6da36fc8d2c0fab2045a7c49f78e132fc",
+    "bios-quick_zero-repeat-cmdline.txt": "db9ba044b518e22823579ca7a55ba83b1fca7bd5d1fe09e2b3457da36a2af7a8",
+    "bios-quick_zero-repeat-qemu.txt": "035826bae5cd8180ac17b4637edfabb6da36fc8d2c0fab2045a7c49f78e132fc",
+    "bios-quick_zero-repeat-serial.txt": "a0830b35f9405b9beff7ca2cc8d70b288ddf89ed761ffd2ff93035fe553a117d",
+    "bios-quick_zero-serial.txt": "37362ed183e10101677f5b44e5c9386dff86e37c1175e056401114602d8a8bb8",
+    "bios-speech-usb-cmdline.txt": "88e5470829eb51809350330ea6d6de5d4ef900333df5ccbc1a1c30c002ad639f",
+    "bios-speech-usb-qemu.txt": "035826bae5cd8180ac17b4637edfabb6da36fc8d2c0fab2045a7c49f78e132fc",
+    "bios-speech-usb-serial.txt": "2778fee0bf7fe0258f34ce0762666d4fc37adf96391fb42f12705d9e2d7d033d",
+    "bios-usb-cmdline.txt": "188b67977d9b443eae76ec9c2bb1c7d5cb592a537c1d0c5de935c7c1d72764d2",
+    "bios-usb-qemu.txt": "035826bae5cd8180ac17b4637edfabb6da36fc8d2c0fab2045a7c49f78e132fc",
+    "bios-usb-serial.txt": "a647caf253b3181843840ac931a83de237227aa0d55296ba2a1cd85ec61fa57d",
+    "checksums.txt": "b3ecca5933a2ed68bd87bafc65bce2ad4ae19cf159b53fda7c70fb0fbe9d5e21",
+    "fake-disk-e2e.txt": "3465dfdabcd2a6655674fd82ca948c9c444aa28eae2b9f9be50a59480d529f2f",
+    "fixed-vulnerabilities.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "guest-everyday-bundle.txt": "837f2ae992bda445caeeb915f9c63a38767d4dd32027c76a7b07f5d484daed25",
+    "guest-everyday-fsck.txt": "fb309caa43625ce9ecc768c7a647982c9b4653eb413944b647da2824f508fa37",
+    "guest-everyday-mount.txt": "b6790a4af6523ed9483f18f134f469728e65a551fff902209a0ad96b8a1cd66b",
+    "guest-everyday-readback.txt": "f982d1bd396b42a30e791661343d26afe45c7811db18264a7caa115d8efd3793",
+    "guest-everyday-repeat-bundle.txt": "6f99f3b74c566f641104920611ca63d04d107ed5d7106618f961d5d359a36f79",
+    "guest-everyday-repeat-fsck.txt": "fb309caa43625ce9ecc768c7a647982c9b4653eb413944b647da2824f508fa37",
+    "guest-everyday-repeat-mount.txt": "b6790a4af6523ed9483f18f134f469728e65a551fff902209a0ad96b8a1cd66b",
+    "guest-everyday-repeat-readback.txt": "f041ca95c2cd50e7bc84568177733292179930e2d2070e902ec5f37277699b1a",
+    "guest-extra-bundle.txt": "9ffdc5a1cadc30b5d29ffb6ba21eeb2019eb51d1b49288976da17cd2df59fb77",
+    "guest-extra-fsck.txt": "a913ec64968c3836191ed1ec799a6abd993ab9f2c9b7f2e2c4d9879d3f90169f",
+    "guest-extra-mount.txt": "b6790a4af6523ed9483f18f134f469728e65a551fff902209a0ad96b8a1cd66b",
+    "guest-extra-readback.txt": "ac9588268cd157b977876e43e67aa985e6a25d3f7d6425858b99318cb7157cf9",
+    "guest-extra-repeat-bundle.txt": "20a22eee793d553c8c0eeeb7662fdcb52311098f52a7773f8e0be841ac34cea4",
+    "guest-extra-repeat-fsck.txt": "a913ec64968c3836191ed1ec799a6abd993ab9f2c9b7f2e2c4d9879d3f90169f",
+    "guest-extra-repeat-mount.txt": "b6790a4af6523ed9483f18f134f469728e65a551fff902209a0ad96b8a1cd66b",
+    "guest-extra-repeat-readback.txt": "87eeb1ba79d003d30a43043a4a4edda13b1fd47af91290f78ab49d0c0e7f0801",
+    "guest-quick_zero-bundle.txt": "85411c4a4a159a9eab72fdc1077338791b3c9a11ef2355dd14035723cf591f56",
+    "guest-quick_zero-fsck.txt": "684069ee5693edac7e2f8b983d9b24be66098496c379844a5702ee29ce0da5ea",
+    "guest-quick_zero-mount.txt": "b6790a4af6523ed9483f18f134f469728e65a551fff902209a0ad96b8a1cd66b",
+    "guest-quick_zero-readback.txt": "fa768fe67e88c1b332a97661fd1afe09bf11edf39b9af557691f0930cdc44d73",
+    "guest-quick_zero-repeat-bundle.txt": "6524f2470e290de2943e95f1fac5d919655c50ae8e78863a4082c2df89afe4d1",
+    "guest-quick_zero-repeat-fsck.txt": "684069ee5693edac7e2f8b983d9b24be66098496c379844a5702ee29ce0da5ea",
+    "guest-quick_zero-repeat-mount.txt": "b6790a4af6523ed9483f18f134f469728e65a551fff902209a0ad96b8a1cd66b",
+    "guest-quick_zero-repeat-readback.txt": "fa768fe67e88c1b332a97661fd1afe09bf11edf39b9af557691f0930cdc44d73",
+    "host-everyday-nwipe.txt": "09e59cf6f6f5b1a383c055f966c2d486e3bdf1ec5838a42cf4640a61047ed04a",
+    "host-everyday-repeat-nwipe.txt": "05690f3c79e8a6261cf332c589648036dd40f56298e5dd1ebc2082f8b9f80ff9",
+    "host-everyday-repeat.log": "76a2d4104feb5d03819505bbdaff5b929909698a31b8f328dae9e70a8fc67e75",
+    "host-everyday.log": "00d29437a0eb732a6346f8a9e852f614624697f364849f4e617332d140d621df",
+    "host-extra-nwipe.txt": "4a3cd6c93c12f365bd3a1c4eaa505720ca19475cbac459affb07ae5bf352215f",
+    "host-extra-repeat-nwipe.txt": "73aec65149cb3e31c46f196a93ff1333f9a4e9c645459e45adabc929653f089a",
+    "host-extra-repeat.log": "93a02cc0b8af3ca99f8e9902b69d05b09a2624a604d571a39f639ab1e4613752",
+    "host-extra.log": "a51938e28d01a9cc19c78ec2658bdfa5e60b8de35d1afef6c106070a8284f7c9",
+    "host-quick_zero-nwipe.txt": "a3859caf4a45319c024a50a25ddc4789a3a3441e15f0a597a9c436ac22bc8d45",
+    "host-quick_zero-repeat-nwipe.txt": "0e0aef21e66c9453e96ca6c7ccaf0b360e3fed8b49958bba834417ab253fd526",
+    "host-quick_zero-repeat.log": "844d3f4e2b52f7f707100d528c1b0a271917eebd2bc9b4bb3708ceb9be2ea663",
+    "host-quick_zero.log": "69f81b6226cba20f1694f41fcebf5e7d6f8b40fd5c0291be8db0270f734c4686",
+    "iso-extraction.txt": "cde2eb2ef2a1c3d8ae280865fe15f177f136a20ecf3ab02c2f1dc5ab5a07e419",
+    "isoinfo.txt": "78b792030298b6328b865a75eda059351d7aba5c14bd4f9f1c780848856d1f02",
+    "nwipe-invalid-target.txt": "f179d8d9c323faaf462d0d14eec1667d38b02489ec66f4b87794c4a2481eeb62",
+    "nwipe-version.txt": "e1874e8d51cf24603bf55c07024bdde08de5d9e7d8835f35b2e16d7ba1261a1d",
+    "qemu-img.txt": "dac30e429ff62531b6525a2926818c52972bfb044a96ad91b7f14edff83dadad",
+    "qemu-version.txt": "3b859103caddc63fdac09871a0cb97ca5a2b5655f8ded87fafc41be844d968df",
+    "report-helper-crash.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "report-image.txt": "8b92387c9c0a02597c9feafe5884a87bd34ae212b76db69667f23a9cf415070f",
+    "run.txt": "7321480fdd7195a9c442940099e7ce2739dc79a603c2da504959013cfe6402fd",
+    "secureboot-usb-cmdline.txt": "2eb063f5ad738e92995a0e798ba86473b541b6261523607812246a1a22dbda3a",
+    "secureboot-usb-qemu.txt": "035826bae5cd8180ac17b4637edfabb6da36fc8d2c0fab2045a7c49f78e132fc",
+    "secureboot-usb-serial.txt": "0fd36cb24aa46a2e13cc34320797c150686f7fa2cd054a914b066af399c240b4",
+    "source-commit.txt": "7d8ff542f5476c7d8f69ff361d5c9a79f60ebbb3b38e5969ea2c5d84ba518543",
+    "summary.txt": "62f564b511be689857cb1798f4d549f1b18bed8e9088279baf943b421a39c665",
+    "uefi-cmdline.txt": "76bec97eee04db5f0990b5e3cc9ce79aafa42f7c78d8c90281e69da596dad0f7",
+    "uefi-qemu.txt": "035826bae5cd8180ac17b4637edfabb6da36fc8d2c0fab2045a7c49f78e132fc",
+    "uefi-serial.txt": "076f088827a30ec6a3c9f295334f2e1eb34ddb41d4388c05a3396b5603e8424d",
+    "uefi-speech-usb-cmdline.txt": "9e393a5b24322e813372a83f5185814f936a0c236ccdb85269b79ab893e994b6",
+    "uefi-speech-usb-qemu.txt": "035826bae5cd8180ac17b4637edfabb6da36fc8d2c0fab2045a7c49f78e132fc",
+    "uefi-speech-usb-serial.txt": "b3353ea045065878101b414a5c003550ce58412562d3e10b47cabacfd492dc00",
+    "uefi-usb-cmdline.txt": "7404144935758744e34c3031206f5ffbde1584b4c397b1a354fcd039e28afc31",
+    "uefi-usb-qemu.txt": "035826bae5cd8180ac17b4637edfabb6da36fc8d2c0fab2045a7c49f78e132fc",
+    "uefi-usb-serial.txt": "af3499a8c42e54a549052b86ed4c59a46b130edd82a0bc3e17f1374cab974733",
+    "untested-physical.txt": "48644be4cea5ff33f4e334b9b90597efe2687f810c464232a216312da1823ab5"
+  }
+}
