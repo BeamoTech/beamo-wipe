@@ -26,7 +26,7 @@ phase() {
   if [[ "$gate" == iso ]]; then
     options+=(-v /var/run/docker.sock:/var/run/docker.sock)
   elif [[ "$gate" == qemu ]]; then
-    [[ -r /dev/kvm ]] || { echo 'Blacksmith KVM is required.' >&2; return 2; }
+    bash scripts/check-ci-kvm.sh
     # Needed for private file-backed loop mounts. Never bind host /dev;
     # qemu-verify.sh independently refuses /dev/ in every guest drive argv.
     options+=(--privileged)

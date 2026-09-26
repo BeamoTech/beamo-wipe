@@ -63,6 +63,35 @@ def test_blacksmith_refuses_developer_machine():
     assert "isolated Blacksmith" in result.stderr
 
 
+@pytest.mark.parametrize("probe_code", [0, 1])
+def test_kvm_preflight_checks_privileged_api_not_runner_permissions(tmp_path, probe_code):
+    tools = tmp_path / "bin"
+    tools.mkdir()
+    (tools / "uname").write_text("#!/bin/sh\necho 'Linux x86_64'\n")
+    # No KVM device exists on this fixture host. sudo represents the isolated
+    # worker's privileged view, where the device exists but its API may fail.
+    (tools / "sudo").write_text(f"#!{sys.executable}\n" + '''
+import os, pathlib, sys
+if sys.argv[1:] == ['test', '-c', '/dev/kvm']:
+    raise SystemExit(0)
+assert sys.argv[1:] == ['python3', '-']
+pathlib.Path(os.environ['PROBE_OUTPUT']).write_text(sys.stdin.read())
+raise SystemExit(int(os.environ['PROBE_CODE']))
+''')
+    for tool in tools.iterdir():
+        tool.chmod(0o755)
+    probe = tmp_path / "probe.py"
+    result = subprocess.run(
+        ["bash", str(ROOT / "scripts/check-ci-kvm.sh")],
+        env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                 GITHUB_ACTIONS="true", PROBE_OUTPUT=str(probe), PROBE_CODE=str(probe_code)),
+        capture_output=True, text=True, timeout=10,
+    )
+    assert result.returncode == probe_code, result.stderr
+    assert probe.is_file(), "must exercise the privileged API even if runner cannot read KVM"
+    compile(probe.read_text(), str(probe), "exec")
+
+
 @pytest.mark.parametrize("orca_failed", [False, True])
 def test_receipt_includes_separate_orca_execution(tmp_path, orca_failed):
     from beamo_wipe.ci_evidence import run_gate

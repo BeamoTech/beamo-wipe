@@ -24,6 +24,8 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Check KVM capability before building
+        run: bash scripts/check-ci-kvm.sh
       - name: Validate workflow
         run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.7 -color
       - name: Restore download cache
