@@ -44,8 +44,13 @@ The five source phases run concurrently; every process is waited for and any
 failure stops image building. ISO waits for all source gates. QEMU follows ISO
 on the same disposable worker. There are no ISO/QEMU skip inputs in the
 workflow. PRs receive full QEMU coverage, including image vulnerability checks.
-KVM is required; Mac emulation cannot substitute for this gate. QEMU receives
-only newly created regular-file images. No host `/dev` tree is bound into a
+KVM is required; an early privileged API probe checks capability before costly
+source/build work. It also initializes loop, squashfs and FAT support and proves a
+read-only private-file loop attachment before Docker enumerates devices.
+Runner-user group membership is not used as a proxy for container access. Mac emulation cannot substitute for this gate. QEMU receives
+only newly created regular-file images. Host-side ISO inspection uses xorriso
+on a hash-bound private snapshot, avoiding dependence on the worker kernel
+having an ISO9660 driver; the live SquashFS is inspected read-only. No host `/dev` tree is bound into a
 container, and the QEMU script rejects `/dev/` guest-drive arguments.
 
 The image build uses privileged Docker as before. The QEMU container needs
@@ -70,7 +75,7 @@ check missing. `pull_request_target` is not used.
 Build IDs are UUIDv5 values derived from repository/run ID/attempt. All phases
 share that ID and source commit; receipts also record `runner=blacksmith`,
 GitHub run ID, attempt and repository. Artifact names contain source SHA, run
-ID and attempt. Logs, receipts, JUnit and checksum/manifest sidecars are kept
+ID and attempt. Logs, receipts, JUnit and checksum/manifest/USB-metadata sidecars are kept
 for seven days even on failure. The private QEMU temporary-path receipt is
 excluded. ISO/USB binaries are not uploaded by this verification workflow.
 Gate receipts report execution duration; GitHub step timings additionally
@@ -87,8 +92,7 @@ required check. Verify enforcement through the API afterward.
 
 At audit start, GitHub reported no classic protection or ruleset on `main`,
 and no custom Actions workflow. Blacksmith is installed in the organization
-with selected repository access; repository enrollment still needs actual
-execution proof. Current canonical repository is `BeamoTech/beamo-wipe`;
+with selected repository access; repository enrollment is demonstrated by hosted Linux and Windows execution. Current canonical repository is `BeamoTech/beamo-wipe`;
 `BeamoINT/beamo-wipe` redirects there. Current rollout evidence belongs in the
 linked dated audit, not in claims inferred from this configuration.
 

@@ -57,6 +57,7 @@ jobs:
           path: |
             dist/evidence/
             dist/*.manifest.json
+            dist/*.img.json
             dist/*.sha256
             dist/SHA256SUMS
             qemu-evidence/

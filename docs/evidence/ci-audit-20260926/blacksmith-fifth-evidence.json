@@ -1,0 +1,6 @@
+{
+  "run_url": "https://github.com/BeamoTech/beamo-wipe/actions/runs/36270395225",
+  "source_commit": "7f7f86914f46aeaf616a0fdd212f00508f00bc8a",
+  "status": "KVM and private loop probe passed; QEMU image inspection rejected unloaded iso9660 filesystem driver",
+  "linux_job_log_sha256": "50d3272cecbb9b2a45c06638d153eeafbf77e83548117dd45b73b58502ef1fd4"
+}

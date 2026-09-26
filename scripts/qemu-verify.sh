@@ -91,7 +91,6 @@ LOOP=""
 BOOT_LOOP=""
 REPORT_LOOP=""
 REPORT_LOOP_RO=""
-ISO_MOUNTED=0
 SQUASH_MOUNTED=0
 REPORT_MOUNTED=0
 BIOS_PID=""
@@ -189,13 +188,6 @@ cleanup() {
       echo "ABORT: cleanup could not unmount the live SquashFS" >&2
     fi
   fi
-  if [[ "$ISO_MOUNTED" == 1 ]]; then
-    if sudo umount "$ISO_MOUNT"; then
-      ISO_MOUNTED=0
-    else
-      echo "ABORT: cleanup could not unmount the ISO" >&2
-    fi
-  fi
   if [[ "$target_detached" == 1 ]]; then
     rm -f -- "$TARGET" "$TARGET_RAW" "$NWIPE_BIN" "$RUN_ROOT/ovmf-vars.fd" \
       "$RUN_ROOT"/target-*.qcow2 "$RUN_ROOT"/host-*.raw "$RUN_ROOT"/guest-*-readback.raw
@@ -205,7 +197,7 @@ cleanup() {
   fi
   rm -f -- "$RUN_ROOT"/*.qmp
   if [[ "$report_detached" != 1 || "$target_detached" != 1 ||
-        "$REPORT_MOUNTED" != 0 || "$SQUASH_MOUNTED" != 0 || "$ISO_MOUNTED" != 0 ]]; then
+        "$REPORT_MOUNTED" != 0 || "$SQUASH_MOUNTED" != 0 ]]; then
     status=1
   fi
   if [[ "$status" != 0 ]]; then
@@ -245,9 +237,9 @@ git rev-parse HEAD >"$EVIDENCE_DIR/source-commit.txt"
 ) >"$EVIDENCE_DIR/checksums.txt" 2>&1
 log "artifact checksums verified"
 QEMU_USB_SHA="$(sha256sum "$USB_IMAGE" | awk '{print $1}')"
-PYTHONPATH="$ROOT/src" python3 -c \
-  'import os,pathlib,sys; from beamo_wipe.release_manifest import verify_build_manifest; verify_build_manifest(pathlib.Path(sys.argv[1]), allow_dirty=os.environ.get("ALLOW_DIRTY") == "1")' \
-  "$MANIFEST"
+QEMU_ISO_SHA="$(PYTHONPATH="$ROOT/src" python3 -c \
+  'import json,os,pathlib,sys; from beamo_wipe.release_manifest import verify_build_manifest; print(json.loads(verify_build_manifest(pathlib.Path(sys.argv[1]), allow_dirty=os.environ.get("ALLOW_DIRTY") == "1"))["artifact"]["iso_sha256"])' \
+  "$MANIFEST")"
 magic="$(dd if="$ISO" bs=1 skip=32769 count=5 status=none)"
 [[ "$magic" == CD001 ]] || { echo "ISO 9660 PVD check failed" >&2; exit 2; }
 isoinfo -d -i "$ISO" >"$EVIDENCE_DIR/isoinfo.txt" 2>&1
@@ -256,10 +248,47 @@ grep -q 'El Torito' "$EVIDENCE_DIR/isoinfo.txt" || {
   exit 2
 }
 
-# Inspect the exact filesystem that QEMU will boot. Mounts are read-only and
-# private to this disposable worker; failure to inspect is a hard failure.
-sudo mount -o ro,loop "$ISO" "$ISO_MOUNT"
-ISO_MOUNTED=1
+# Inspect the exact ISO bytes without requiring the worker's ISO9660 driver.
+# Only the three inspected files are extracted from a private, hash-bound
+# snapshot. The live SquashFS remains mounted read-only for all existing checks.
+python3 - "$ISO" "$RUN_ROOT/inspection.iso" "$ISO_MOUNT" "$QEMU_ISO_SHA" \
+  >"$EVIDENCE_DIR/iso-extraction.txt" 2>&1 <<'PYISO'
+import hashlib
+import os
+from pathlib import Path
+import stat
+import subprocess
+import sys
+
+source, snapshot, destination = map(Path, sys.argv[1:4])
+expected = sys.argv[4]
+descriptor = os.open(source, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+digest = hashlib.sha256()
+with os.fdopen(descriptor, 'rb') as original:
+    if not stat.S_ISREG(os.fstat(original.fileno()).st_mode):
+        raise SystemExit('ISO inspection source must be a regular file')
+    with snapshot.open('xb') as copied:
+        for chunk in iter(lambda: original.read(1024 * 1024), b''):
+            copied.write(chunk)
+            digest.update(chunk)
+if digest.hexdigest() != expected:
+    raise SystemExit('ISO inspection snapshot differs from verified artifact')
+os.chmod(snapshot, 0o400)
+command = ['xorriso', '-osirrox', 'on', '-indev', str(snapshot)]
+names = ('live/filesystem.squashfs', 'isolinux/live.cfg', 'boot/grub/grub.cfg')
+for name in names:
+    target = destination / name
+    target.parent.mkdir(parents=True, exist_ok=True)
+    command.extend(('-extract', '/' + name, str(target)))
+subprocess.run(command, check=True)
+for name in names:
+    target = destination / name
+    if not stat.S_ISREG(target.lstat().st_mode):
+        raise SystemExit('ISO inspection output is not a regular file')
+    target.chmod(0o400)
+snapshot.unlink()
+print('Inspected ISO snapshot SHA-256:', expected)
+PYISO
 [[ -f "$ISO_MOUNT/live/filesystem.squashfs" ]] || {
   echo "live filesystem.squashfs missing" >&2
   exit 2
@@ -501,8 +530,6 @@ copied_sha="$(sha256sum "$NWIPE_BIN" | awk '{print $1}')"
 [[ "$shipped_sha" == "$copied_sha" ]] || { echo "nwipe copy changed" >&2; exit 2; }
 sudo umount "$SQUASH_MOUNT"
 SQUASH_MOUNTED=0
-sudo umount "$ISO_MOUNT"
-ISO_MOUNTED=0
 
 # Exercise the complete owner, boot-exclusion, token and countdown state
 # machine with fake disks only. No device node is opened by these tests.

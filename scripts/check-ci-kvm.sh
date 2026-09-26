@@ -45,7 +45,7 @@ if ! sudo test -c /dev/loop-control; then
 fi
 # The Debian validation container has no copy of the worker's kernel modules,
 # so mount cannot rely on loading filesystem drivers from inside it.
-for mapping in iso9660:isofs squashfs:squashfs vfat:vfat; do
+for mapping in squashfs:squashfs vfat:vfat; do
   filesystem="${mapping%%:*}"
   module="${mapping#*:}"
   if ! grep -qw "$filesystem" /proc/filesystems; then
@@ -55,13 +55,6 @@ for mapping in iso9660:isofs squashfs:squashfs vfat:vfat; do
     echo "Image worker filesystem is unavailable: $filesystem" >&2
     exit 2
   }
-done
-# FAT mounts also load their default code page/character set on first use.
-# Load the standard Linux FAT character sets before entering the container.
-for module in nls_cp437 nls_iso8859-1 nls_ascii nls_utf8; do
-  if ! grep -qw "$module" /proc/modules; then
-    sudo modprobe "$module"
-  fi
 done
 sudo python3 - <<'PY'
 import os
@@ -90,5 +83,5 @@ finally:
         subprocess.run(['losetup', '--detach', loop], check=True)
     backing.unlink(missing_ok=True)
     os.rmdir(directory)
-print('Private loop probe detached and removed; ISO9660, squashfs and FAT support are available.')
+print('Private loop probe detached and removed; squashfs and FAT support are available.')
 PY

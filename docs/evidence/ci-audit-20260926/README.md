@@ -1,6 +1,6 @@
 # CI audit — 2026-09-26
 
-Status: **Windows and Linux source gates passed; image provenance fix awaiting hosted validation**. The operator
+Status: **Windows, source, ISO and USB-image construction passed; portable ISO inspection awaiting full hosted validation**. The operator
 corrected the platform during this task: use **Blacksmith, not Google Cloud**.
 This supersedes earlier instructions to renew gcloud authentication.
 
@@ -160,6 +160,94 @@ A new Blacksmith run is needed for comparable hosted timings and cache behavior.
   lookalike hosts and credential-bearing URLs without echoing their contents.
   Fourteen new cases cover this boundary. Focused manifest/CI tests and Ruff pass.
 - [Complete second-run job and step timings](blacksmith-second-run.json).
+
+## Third hosted run and KVM correction
+
+- Commit `51fdabf569fd1638aeced2c968a819d35e58c151` ran as
+  [36268715728](https://github.com/BeamoTech/beamo-wipe/actions/runs/36268715728).
+  Windows, all source gates and the ISO phase passed. Main pytest:
+  **5,431 passed, 15 skipped in 207.13 s**; isolated Orca: **one passed in
+  233.58 s**. The combined test receipt counts 5,432 passes. All six retained
+  receipts and their log digests were independently verified after download.
+- The 564,133,888-byte ISO passed PVD, preliminary provenance and checksum
+  checks. SHA-256:
+  `45fd5bd08c1c8322db1ad469dc42f33321922db24e762a7661e0149b66261166`.
+  Its manifest records a clean source, canonical BeamoTech repository,
+  Blacksmith runner and build ID `d1d85edc-e2fe-5539-ab09-f162a753614f`.
+  This is preliminary provenance; it is not finalized release evidence.
+- QEMU stopped before execution because the unprivileged runner could not read
+  `/dev/kvm`. [Blacksmith documents nested KVM on x64 Linux](https://docs.blacksmith.sh/blacksmith-runners/overview).
+  Commit `e72d071` adds an early privileged KVM API probe and module loading
+  when supported CPU flags exist. This replaces the overly strict runner-user
+  readability check while retaining a hard failure if KVM is unavailable.
+- The early probe passed in
+  [run 36269569550](https://github.com/BeamoTech/beamo-wipe/actions/runs/36269569550).
+  It uses the same privilege level required by the QEMU container. No VM,
+  disk or guest is created by the probe. All 14 orchestration tests, Ruff,
+  ShellCheck and actionlint passed locally for this correction.
+- [Third-run timings](blacksmith-third-run.json) and
+  [receipts, artifact identity and log hash](blacksmith-third-evidence.json).
+- The after-work storage report performed no deletion. Large ISO/USB binaries
+  stayed on the disposable Blacksmith worker; only small evidence was downloaded.
+
+## Fourth hosted run and image-mount correction
+
+- Commit `e72d07151b6b3e4e7584e5d13acd75f8f5eaf776` passed its early KVM
+  API probe, Windows tests, all source gates and ISO gate in
+  [run 36269569550](https://github.com/BeamoTech/beamo-wipe/actions/runs/36269569550).
+  Main pytest: **5,433 passed, 15 skipped in 200.79 s**; Orca:
+  **one passed in 233.31 s**. QEMU bootstrap also passed the KVM probe.
+- The regular-file Windows-readable USB image built successfully. After
+  checksum checks, image validation failed to set up a loop device for the
+  read-only ISO mount. No guest boot or erase test had started.
+- Commit `7f7f869` initializes loop/squashfs support before Docker enumerates
+  devices for its privileged container. Its early capability probe attaches
+  only a private 1 MiB regular file read-only, verifies the backing file before
+  detaching, and removes the private file. An ownership mismatch stops cleanup.
+  The 14 orchestration tests, ShellCheck, actionlint and Ruff pass locally.
+- [Fourth-run timings](blacksmith-fourth-run.json) and
+  [receipts and log hash](blacksmith-fourth-evidence.json).
+
+## Fifth hosted run and filesystem prerequisites
+
+- [Run 36270395225](https://github.com/BeamoTech/beamo-wipe/actions/runs/36270395225)
+  on `7f7f86914f46aeaf616a0fdd212f00508f00bc8a` passed KVM and the
+  private-file loop probe, Windows, all source checks, ISO construction and USB
+  image construction. The ISO mount then failed with `unknown filesystem type
+  'iso9660'`: loop attachment now worked, but the filesystem module was not loaded.
+- The worker preflight now loads and verifies the filesystem drivers required
+  by the gate: ISO9660 (`isofs`), squashfs and FAT, plus the standard FAT
+  character sets. The Debian validation container has no matching worker kernel
+  module tree, so loading these on the worker precedes container startup.
+  Commit `68e78fd` contains this correction. Local orchestration tests,
+  ShellCheck and actionlint pass. Full hosted validation remains required.
+- [Fifth-run timings](blacksmith-fifth-run.json) and
+  [failure identity and log hash](blacksmith-fifth-evidence.json).
+
+## Sixth hosted preflight and portable ISO inspection
+
+- [Run 36271180369](https://github.com/BeamoTech/beamo-wipe/actions/runs/36271180369)
+  rejected the worker before source/build work: kernel `6.6.141` has no `isofs`
+  module. Windows passed. This establishes an actual platform limitation,
+  rather than an unloaded module that can be repaired with `modprobe`.
+- ISO inspection now uses the already-required `xorriso` to read three files
+  from a private ISO snapshot whose SHA-256 must match the verified manifest.
+  Original-source changes during extraction cannot affect that snapshot.
+  Symlink/FIFO sources and changed bytes fail before extraction. Extracted
+  files must be regular and are made read-only; the live SquashFS is still
+  mounted read-only for every existing package and permission assertion.
+  QEMU still boots the actual ISO and USB image. Guest coverage is unchanged.
+- Local verification: **70 focused tests passed**, including extraction from a
+  tiny real ISO using installed xorriso, invalid-source boundaries, boot menus,
+  QEMU argv, method journeys, receipts and cleanup. ShellCheck, Ruff and
+  actionlint also passed. Hosted source prerequisites now include xorriso so
+  this real-ISO regression executes there as well.
+- The early worker check retains KVM, loop, squashfs and FAT requirements.
+  ISO9660 kernel support is no longer needed for host-side inspection.
+  Evidence uploads now retain the USB image's small `.img.json` provenance
+  sidecar as well as its checksum; binaries are still excluded.
+- [Sixth-run timings](blacksmith-sixth-run.json). Linux job log SHA-256:
+  `94297099b8ddde79657b347f18233a648fead605b371a6250b1fa857787af906`.
 
 ## Remaining rollout requirements
 

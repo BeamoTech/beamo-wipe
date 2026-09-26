@@ -1,0 +1,283 @@
+{
+  "conclusion": "failure",
+  "createdAt": "2026-09-26T20:41:32Z",
+  "headSha": "7f7f86914f46aeaf616a0fdd212f00508f00bc8a",
+  "jobs": [
+    {
+      "completedAt": "2026-09-26T20:53:34Z",
+      "conclusion": "failure",
+      "databaseId": 108483113949,
+      "name": "Linux image gate",
+      "startedAt": "2026-09-26T20:41:45Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-09-26T20:41:47Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-09-26T20:41:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:41:47Z",
+          "conclusion": "success",
+          "name": "Set up runner",
+          "number": 2,
+          "startedAt": "2026-09-26T20:41:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:41:49Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 3,
+          "startedAt": "2026-09-26T20:41:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:41:49Z",
+          "conclusion": "success",
+          "name": "Check KVM and image-mount capabilities before building",
+          "number": 4,
+          "startedAt": "2026-09-26T20:41:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:41:51Z",
+          "conclusion": "success",
+          "name": "Validate workflow",
+          "number": 5,
+          "startedAt": "2026-09-26T20:41:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:41:52Z",
+          "conclusion": "success",
+          "name": "Restore download cache",
+          "number": 6,
+          "startedAt": "2026-09-26T20:41:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:49:52Z",
+          "conclusion": "success",
+          "name": "Parallel lint, types, tests, preview, launchers and negative test",
+          "number": 7,
+          "startedAt": "2026-09-26T20:41:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:53:04Z",
+          "conclusion": "success",
+          "name": "Build and inspect ISO",
+          "number": 8,
+          "startedAt": "2026-09-26T20:49:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:53:30Z",
+          "conclusion": "failure",
+          "name": "Verify image, vulnerabilities and BIOS/UEFI with KVM",
+          "number": 9,
+          "startedAt": "2026-09-26T20:53:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:53:30Z",
+          "conclusion": "success",
+          "name": "Make evidence readable",
+          "number": 10,
+          "startedAt": "2026-09-26T20:53:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:53:31Z",
+          "conclusion": "success",
+          "name": "Retain execution evidence",
+          "number": 11,
+          "startedAt": "2026-09-26T20:53:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:53:31Z",
+          "conclusion": "skipped",
+          "name": "Save trusted download cache",
+          "number": 12,
+          "startedAt": "2026-09-26T20:53:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:53:31Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 23,
+          "startedAt": "2026-09-26T20:53:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:53:32Z",
+          "conclusion": "success",
+          "name": "Complete runner",
+          "number": 24,
+          "startedAt": "2026-09-26T20:53:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:53:32Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 25,
+          "startedAt": "2026-09-26T20:53:32Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/BeamoTech/beamo-wipe/actions/runs/36270395225/job/108483113949"
+    },
+    {
+      "completedAt": "2026-09-26T20:42:55Z",
+      "conclusion": "success",
+      "databaseId": 108483114123,
+      "name": "Windows launcher tests",
+      "startedAt": "2026-09-26T20:42:02Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-09-26T20:42:10Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-09-26T20:42:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:42:12Z",
+          "conclusion": "success",
+          "name": "Set up runner",
+          "number": 2,
+          "startedAt": "2026-09-26T20:42:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:42:17Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 3,
+          "startedAt": "2026-09-26T20:42:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:42:29Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff",
+          "number": 4,
+          "startedAt": "2026-09-26T20:42:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:42:50Z",
+          "conclusion": "success",
+          "name": "Native Win32 and PowerShell fixture tests",
+          "number": 5,
+          "startedAt": "2026-09-26T20:42:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:42:51Z",
+          "conclusion": "success",
+          "name": "Retain Windows test evidence",
+          "number": 6,
+          "startedAt": "2026-09-26T20:42:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:42:51Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff",
+          "number": 10,
+          "startedAt": "2026-09-26T20:42:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:42:52Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 11,
+          "startedAt": "2026-09-26T20:42:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:42:53Z",
+          "conclusion": "success",
+          "name": "Complete runner",
+          "number": 12,
+          "startedAt": "2026-09-26T20:42:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:42:53Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 13,
+          "startedAt": "2026-09-26T20:42:53Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/BeamoTech/beamo-wipe/actions/runs/36270395225/job/108483114123"
+    },
+    {
+      "completedAt": "2026-09-26T20:53:50Z",
+      "conclusion": "failure",
+      "databaseId": 108485006299,
+      "name": "CI gate",
+      "startedAt": "2026-09-26T20:53:45Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-09-26T20:53:46Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-09-26T20:53:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:53:47Z",
+          "conclusion": "success",
+          "name": "Set up runner",
+          "number": 2,
+          "startedAt": "2026-09-26T20:53:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:53:47Z",
+          "conclusion": "failure",
+          "name": "Require every platform gate to pass",
+          "number": 3,
+          "startedAt": "2026-09-26T20:53:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:53:47Z",
+          "conclusion": "success",
+          "name": "Complete runner",
+          "number": 6,
+          "startedAt": "2026-09-26T20:53:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-26T20:53:47Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 7,
+          "startedAt": "2026-09-26T20:53:47Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/BeamoTech/beamo-wipe/actions/runs/36270395225/job/108485006299"
+    }
+  ],
+  "status": "completed",
+  "updatedAt": "2026-09-26T20:53:51Z",
+  "url": "https://github.com/BeamoTech/beamo-wipe/actions/runs/36270395225"
+}

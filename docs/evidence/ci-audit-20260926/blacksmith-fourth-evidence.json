@@ -1,0 +1,308 @@
+{
+  "run_url": "https://github.com/BeamoTech/beamo-wipe/actions/runs/36269569550",
+  "source_commit": "e72d07151b6b3e4e7584e5d13acd75f8f5eaf776",
+  "status": "KVM API passed; QEMU image gate failed to set up ISO loop mount",
+  "linux_job_log_sha256": "439681b69fd93918e1e17f722ebfc78cf71df9d7dbae9073ed834dc33761790e",
+  "receipts": [
+    {
+      "build_id": "20415d56-5aa8-5d50-a2c7-1a229d430599",
+      "command": "bash scripts/ci-hosted.sh desktop-launchers",
+      "ended_at": "2026-09-26T20:28:34Z",
+      "environment": {
+        "arch": "x86_64",
+        "github_repository": "BeamoTech/beamo-wipe",
+        "github_run_attempt": "1",
+        "github_run_id": "36269569550",
+        "platform": "linux",
+        "python": "3.11.2",
+        "runner": "blacksmith"
+      },
+      "gate": "desktop-launchers",
+      "log_sha256": "793f82d8bfb8772cbe5291381dd4476a251947ff80c0fb2be75382d477226179",
+      "measured": {
+        "deselected": 0,
+        "errors": 0,
+        "failed": 0,
+        "passed": 1,
+        "skipped": 0,
+        "total": 1,
+        "xfailed": 0
+      },
+      "reason": "",
+      "receipt_sha256": "605ef1f2a0ccd455b0d7f9ce01e6e26506ac67ed31cef851fdc6bdc150382732",
+      "schema": "beamo-wipe-gate-receipt/1",
+      "skips": [],
+      "source_commit": "e72d07151b6b3e4e7584e5d13acd75f8f5eaf776",
+      "started_at": "2026-09-26T20:27:40Z",
+      "status": "pass"
+    },
+    {
+      "build_id": "20415d56-5aa8-5d50-a2c7-1a229d430599",
+      "command": "bash scripts/ci-hosted.sh iso",
+      "ended_at": "2026-09-26T20:38:13Z",
+      "environment": {
+        "arch": "x86_64",
+        "github_repository": "BeamoTech/beamo-wipe",
+        "github_run_attempt": "1",
+        "github_run_id": "36269569550",
+        "platform": "linux",
+        "python": "3.11.2",
+        "runner": "blacksmith"
+      },
+      "gate": "iso",
+      "log_sha256": "5ad8b7e29e32a34081c8ea20298879ff49bed06679662c2e55374f45fb9652ec",
+      "measured": {
+        "deselected": 0,
+        "errors": 0,
+        "failed": 0,
+        "passed": 1,
+        "skipped": 0,
+        "total": 1,
+        "xfailed": 0
+      },
+      "reason": "",
+      "receipt_sha256": "607a6c00a2ca32e33137de5d0bd7cadc6a475808865492ae59aa49aab9d67749",
+      "schema": "beamo-wipe-gate-receipt/1",
+      "skips": [],
+      "source_commit": "e72d07151b6b3e4e7584e5d13acd75f8f5eaf776",
+      "started_at": "2026-09-26T20:35:43Z",
+      "status": "pass"
+    },
+    {
+      "build_id": "20415d56-5aa8-5d50-a2c7-1a229d430599",
+      "command": "bash scripts/ci-hosted.sh lint",
+      "ended_at": "2026-09-26T20:27:51Z",
+      "environment": {
+        "arch": "x86_64",
+        "github_repository": "BeamoTech/beamo-wipe",
+        "github_run_attempt": "1",
+        "github_run_id": "36269569550",
+        "platform": "linux",
+        "python": "3.11.2",
+        "runner": "blacksmith"
+      },
+      "gate": "lint",
+      "log_sha256": "b1d7dd6c9ec5c7f41b954284246f88f902d46c8c32f110020d163ada78fe3f1d",
+      "measured": {
+        "deselected": 0,
+        "errors": 0,
+        "failed": 0,
+        "passed": 1,
+        "skipped": 0,
+        "total": 1,
+        "xfailed": 0
+      },
+      "reason": "",
+      "receipt_sha256": "63e4d52300deaeee524f3069a2633f589d2b64681c8fae80450c02f74eef55e4",
+      "schema": "beamo-wipe-gate-receipt/1",
+      "skips": [],
+      "source_commit": "e72d07151b6b3e4e7584e5d13acd75f8f5eaf776",
+      "started_at": "2026-09-26T20:27:45Z",
+      "status": "pass"
+    },
+    {
+      "build_id": "20415d56-5aa8-5d50-a2c7-1a229d430599",
+      "command": "bash scripts/ci-hosted.sh negative",
+      "ended_at": "2026-09-26T20:27:40Z",
+      "environment": {
+        "arch": "x86_64",
+        "github_repository": "BeamoTech/beamo-wipe",
+        "github_run_attempt": "1",
+        "github_run_id": "36269569550",
+        "platform": "linux",
+        "python": "3.11.2",
+        "runner": "blacksmith"
+      },
+      "gate": "negative",
+      "log_sha256": "b72457d6dcbc3e64a1bb32ad0d205c14ab4f9a7fc67ec4c6a5171e84d283360b",
+      "measured": {
+        "deselected": 0,
+        "errors": 0,
+        "failed": 0,
+        "passed": 1,
+        "skipped": 0,
+        "total": 1,
+        "xfailed": 0
+      },
+      "reason": "",
+      "receipt_sha256": "e41f784f93c81dbf9b922038e5edb8be956b494fc2341d244a3b6cf8228780ae",
+      "schema": "beamo-wipe-gate-receipt/1",
+      "skips": [],
+      "source_commit": "e72d07151b6b3e4e7584e5d13acd75f8f5eaf776",
+      "started_at": "2026-09-26T20:27:39Z",
+      "status": "pass"
+    },
+    {
+      "build_id": "20415d56-5aa8-5d50-a2c7-1a229d430599",
+      "command": "bash scripts/ci-hosted.sh preview",
+      "ended_at": "2026-09-26T20:27:42Z",
+      "environment": {
+        "arch": "x86_64",
+        "github_repository": "BeamoTech/beamo-wipe",
+        "github_run_attempt": "1",
+        "github_run_id": "36269569550",
+        "platform": "linux",
+        "python": "3.11.2",
+        "runner": "blacksmith"
+      },
+      "gate": "preview",
+      "log_sha256": "379bd7bbae0f7b72d73ba4db6052cc49a6ba0321bacc742cf423aa8665af6b13",
+      "measured": {
+        "deselected": 0,
+        "errors": 0,
+        "failed": 0,
+        "passed": 1,
+        "skipped": 0,
+        "total": 1,
+        "xfailed": 0
+      },
+      "reason": "",
+      "receipt_sha256": "f3f8a7140945b0012f217ccb4800841810a358cb75569643206ef99530afdd1e",
+      "schema": "beamo-wipe-gate-receipt/1",
+      "skips": [],
+      "source_commit": "e72d07151b6b3e4e7584e5d13acd75f8f5eaf776",
+      "started_at": "2026-09-26T20:27:42Z",
+      "status": "pass"
+    },
+    {
+      "build_id": "20415d56-5aa8-5d50-a2c7-1a229d430599",
+      "command": "bash scripts/ci-hosted.sh qemu",
+      "ended_at": "2026-09-26T20:38:38Z",
+      "environment": {
+        "arch": "x86_64",
+        "github_repository": "BeamoTech/beamo-wipe",
+        "github_run_attempt": "1",
+        "github_run_id": "36269569550",
+        "platform": "linux",
+        "python": "3.11.2",
+        "runner": "blacksmith"
+      },
+      "gate": "qemu",
+      "log_sha256": "971c07c84ef48f0efcb2382bee7eaf396c2326771031e968bd027a057a1cdbc6",
+      "measured": {
+        "deselected": 0,
+        "errors": 0,
+        "failed": 1,
+        "passed": 0,
+        "skipped": 0,
+        "total": 1,
+        "xfailed": 0
+      },
+      "reason": "",
+      "receipt_sha256": "2b1fde0cf25cbf1a603e7d9eb3a19211f40a11fd289a70052630382633e2c0c8",
+      "schema": "beamo-wipe-gate-receipt/1",
+      "skips": [],
+      "source_commit": "e72d07151b6b3e4e7584e5d13acd75f8f5eaf776",
+      "started_at": "2026-09-26T20:38:24Z",
+      "status": "fail"
+    },
+    {
+      "build_id": "20415d56-5aa8-5d50-a2c7-1a229d430599",
+      "command": "bash scripts/ci-hosted.sh tests",
+      "ended_at": "2026-09-26T20:35:36Z",
+      "environment": {
+        "arch": "x86_64",
+        "github_repository": "BeamoTech/beamo-wipe",
+        "github_run_attempt": "1",
+        "github_run_id": "36269569550",
+        "platform": "linux",
+        "python": "3.11.2",
+        "runner": "blacksmith"
+      },
+      "gate": "tests",
+      "log_sha256": "25ea8b622b69c15f1ada17147d90631d2e1e85150f62d6c9ac2593e118523238",
+      "measured": {
+        "deselected": 0,
+        "errors": 0,
+        "failed": 0,
+        "passed": 5434,
+        "skipped": 15,
+        "total": 5449,
+        "xfailed": 0
+      },
+      "reason": "",
+      "receipt_sha256": "fde31e8c4939e5a8b203c54757dca5a4fd1b648c124a5cebc845ab2f174419bf",
+      "schema": "beamo-wipe-gate-receipt/1",
+      "skips": [
+        {
+          "id": "tests.test_ci_hosted.test_cloud_upload_excludes_local_captures_and_env_files",
+          "kind": "skip",
+          "reason": "gcloud CLI is unavailable"
+        },
+        {
+          "id": "tests.test_live_image.test_live_config_bootstrap_uses_https_debian_mirrors",
+          "kind": "skip",
+          "reason": "lb config artifacts are generated by scripts/build-iso.sh"
+        },
+        {
+          "id": "tests.test_live_image.test_live_config_xinit_cannot_hijack_kiosk",
+          "kind": "skip",
+          "reason": "lb config artifacts are generated by scripts/build-iso.sh"
+        },
+        {
+          "id": "tests.test_release_manifest.test_consumer_verification_instructions",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_hardware_limits_and_license",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_manifest_atomic_write_and_checksum",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_manifest_checksum_mismatch_is_rejected",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_manifest_duplicate_write_is_idempotent",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_manifest_fails_on_dirty_when_strict",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_manifest_fails_on_unexpected_nwipe_version",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_manifest_recovery_after_failed_write",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_manifest_schema_covers_required_fields",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_manifest_stale_state_detected",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_prior_stable_and_rollback",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest.test_verify_allows_dirty_only_for_dirty_check",
+          "kind": "skip",
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        }
+      ],
+      "source_commit": "e72d07151b6b3e4e7584e5d13acd75f8f5eaf776",
+      "started_at": "2026-09-26T20:28:20Z",
+      "status": "pass"
+    }
+  ]
+}
