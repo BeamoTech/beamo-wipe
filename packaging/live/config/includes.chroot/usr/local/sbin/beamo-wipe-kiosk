@@ -113,16 +113,26 @@ short_choices() {
 
 read_choice() {
   if ! IFS= read -r choice; then
-    notice 'Input is unavailable. Recovery stays here; no automatic retry.'
+    if [ "$input_failure_count" -eq 0 ]; then
+      notice 'Input is unavailable. Recovery stays here; no automatic retry.'
+    fi
     # Ctrl-D can produce one EOF on a live tty while the terminal remains
-    # usable. Keep offering recovery; pace retries if the tty keeps failing.
+    # usable. Keep checking for input, but bound visible output and back off
+    # if the tty keeps failing so the recovery message remains readable.
     if [ -t 0 ]; then
-      sleep 1 || true
+      if [ "$input_failure_count" -lt 3 ]; then
+        input_failure_count=$((input_failure_count + 1))
+        if [ "$input_failure_count" -eq 3 ]; then
+          notice 'Input remains unavailable. Recovery stays on this screen; try another keyboard or USB port.'
+        fi
+      fi
+      if [ "$input_failure_count" -eq 3 ]; then sleep 5 || true; else sleep 1 || true; fi
       return 1
     fi
-    # A closed pipe cannot regain input. Preserve the recovery text on tty1.
+    # A closed pipe cannot regain input. Preserve the recovery text.
     exit 0
   fi
+  input_failure_count=0
 }
 
 power_choice() {
@@ -172,9 +182,12 @@ while [ "$attempt" -lt 3 ]; do
   if [ "$attempt" -lt 3 ]; then sleep 1 || true; fi
 done
 
+input_failure_count=0
 recovery_menu
 while :; do
-  printf '%s\n' 'Choose 1, 2, 3, 4 or 5, then press Enter:'
+  if [ "$input_failure_count" -eq 0 ]; then
+    printf '%s\n' 'Choose 1, 2, 3, 4 or 5, then press Enter:'
+  fi
   if ! read_choice; then continue; fi
   case "$choice" in
     1)

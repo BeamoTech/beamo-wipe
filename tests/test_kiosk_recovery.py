@@ -20,7 +20,8 @@ SERVICE = CHROOT / "etc/systemd/system/beamo-wipe-kiosk.service"
 
 
 def prepare_kiosk(tmp_path, *, graphical=1, console=1, engine=1,
-                  power=1, missing=(), accessible=False):
+                  power=1, missing=(), accessible=False,
+                  persistent_read_failure=False):
     commands = tmp_path / "commands"
     commands.mkdir()
     trace = tmp_path / "trace"
@@ -31,7 +32,7 @@ def prepare_kiosk(tmp_path, *, graphical=1, console=1, engine=1,
         "beamo-wipe": f'exit {console}',
         "pgrep": f'exit {engine}',
         "systemctl": f'exit {power}',
-        "sleep": "exit 0",
+        "sleep": "command /bin/sleep 0.02; exit 0" if persistent_read_failure else "exit 0",
         "rm": "exit 0",
         "stty": "exit 0",
         "cat": "printf '%s\\n' beamo.ui=accessible" if accessible else "exit 0",
@@ -55,6 +56,8 @@ def prepare_kiosk(tmp_path, *, graphical=1, console=1, engine=1,
             if name == "startx":
                 guard = 'starts=$(( ${starts:-0} + 1 )); [ "$starts" -le 12 ] || exit 90; '
             functions.append(f"{name}() {{ {trace_line}; {guard}{body}; }}")
+    if persistent_read_failure:
+        functions.append("read() { return 1; }")
     script = KIOSK.read_text().replace("/tmp/beamo-wipe", str(tmp_path / "logs")).replace(
         "export PATH=/usr/sbin:/usr/bin:/sbin:/bin", f'export PATH="{commands}"'
     ).replace("/usr/local/bin/beamo-wipe", str(commands / "beamo-wipe"))
@@ -304,6 +307,45 @@ def test_tty_control_d_keeps_recovery_menu_interactive(tmp_path, power_confirmat
         calls = trace.read_text().splitlines()
         assert len(launches(calls, "startx")) == 3
         assert not launches(calls, "systemctl")
+    finally:
+        if slave >= 0:
+            os.close(slave)
+        os.close(master)
+        if "proc" in locals():
+            if proc.poll() is None:
+                proc.kill()
+                proc.wait(timeout=2)
+            proc.stdout.close()
+
+
+def test_persistent_tty_read_failure_keeps_recovery_readable(tmp_path):
+    """A broken tty must not endlessly scroll the only recovery screen."""
+    script, _ = prepare_kiosk(tmp_path, persistent_read_failure=True)
+    master, slave = pty.openpty()
+    try:
+        proc = subprocess.Popen(
+            ["/bin/sh", str(script)], stdin=slave, stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+        )
+        os.close(slave)
+        slave = -1
+        output = bytearray()
+        deadline = time.monotonic() + 5
+        while b"Input is unavailable" not in output:
+            assert time.monotonic() < deadline, output.decode(errors="replace")
+            ready, _, _ = select.select([proc.stdout], [], [], 0.05)
+            if ready:
+                chunk = os.read(proc.stdout.fileno(), 4096)
+                assert chunk, output.decode(errors="replace")
+                output.extend(chunk)
+        time.sleep(0.25)
+        assert proc.poll() is None
+        proc.terminate()
+        rest, _ = proc.communicate(timeout=2)
+        output.extend(rest)
+        assert output.count(b"Input is unavailable") == 1
+        assert output.count(b"Input remains unavailable") == 1
+        assert output.count(b"Choose 1, 2, 3, 4 or 5, then press Enter") == 1
     finally:
         if slave >= 0:
             os.close(slave)
