@@ -72,8 +72,16 @@ gh release upload "$tag" --repo "$GITHUB_REPOSITORY" --clobber "${assets[@]}"
 
 # GitHub supplies the SHA-256 of each stored asset. Refuse public promotion
 # until every server digest equals the exact local bytes we uploaded.
+# A draft can be read by release ID even when the release-by-tag API returns
+# 404, so resolve its ID with the authenticated release CLI first.
+release_id="$(gh release view "$tag" --repo "$GITHUB_REPOSITORY" \
+  --json databaseId --jq .databaseId)"
+[[ "$release_id" =~ ^[1-9][0-9]*$ ]] || {
+  echo "Release $tag has no valid GitHub draft ID." >&2
+  exit 2
+}
 for ((attempt = 1; attempt <= 6; attempt++)); do
-  gh api "repos/$GITHUB_REPOSITORY/releases/tags/$tag" > "$stage/github-release.json"
+  gh api "repos/$GITHUB_REPOSITORY/releases/$release_id" > "$stage/github-release.json"
   if "$RUNNER_TEMP/beamo-release-venv/bin/python" scripts/verify_github_release_assets.py \
     "$stage/github-release.json" "${assets[@]}"; then
     gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=false --latest
