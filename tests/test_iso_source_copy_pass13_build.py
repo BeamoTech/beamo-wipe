@@ -1,4 +1,4 @@
-"""The ISO source copy omits disposable files but retains staged assets."""
+"""The ISO source copy omits unused trees but retains staged assets."""
 
 from __future__ import annotations
 
@@ -49,7 +49,7 @@ def test_source_copy_does_not_import_prior_iso(tmp_path):
     assert "packaging/live/stale-previous-build.iso" not in result.stdout
 
 
-def test_source_copy_omits_disposable_caches_but_keeps_staged_assets(tmp_path):
+def test_source_copy_omits_non_build_inputs_but_keeps_staged_assets(tmp_path):
     if shutil.which("rsync") is None:
         pytest.skip("rsync is installed in the live-build container")
     source = tmp_path / "source"
@@ -62,6 +62,9 @@ def test_source_copy_omits_disposable_caches_but_keeps_staged_assets(tmp_path):
         ".venv/lib/tool",
         ".venv-local/lib/tool",
         "web-preview/index.html",
+        "docs/evidence/old-verification.log",
+        "tests/test_other_gate.py",
+        "developer_tests/test_developer_tool.py",
     )
     staged = "packaging/live/config/includes.binary/START-HERE.html"
     for relative in (*ignored, staged):

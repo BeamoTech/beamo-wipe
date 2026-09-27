@@ -37,6 +37,9 @@ rsync -a \
   --exclude '/.venv/' \
   --exclude '/.venv-*/' \
   --exclude '/web-preview/' \
+  --exclude '/docs/' \
+  --exclude '/tests/' \
+  --exclude '/developer_tests/' \
   --exclude 'packaging/live/chroot/' \
   --exclude 'packaging/live/cache/' \
   --exclude 'packaging/live/.build/' \
