@@ -61,3 +61,5 @@ The final source-copy pass reran all three focused rsync tests and ShellCheck. A
 The dependency cleanup passed all 22 `tests/test_ci_hosted.py` cases, ShellCheck and `bash -n` for `scripts/ci-hosted.sh`, and `git diff --check`. These local checks do not prove how Debian will resolve the smaller QEMU package set; the first authorized Blacksmith run must confirm all 12 guests and the host-method checks still pass.
 
 The desktop metadata change passed 23 focused hosted/desktop tests, ShellCheck and `bash -n` on both touched scripts, and `git diff --check`. No hosted elapsed-time result exists for this change.
+
+After the local candidate was assembled, a combined focused run of the Blacksmith workflow, hosted gate, QEMU marker polling, and ISO source-copy tests passed 57 tests. ShellCheck and `bash -n` passed on all four touched shell scripts; Ruff passed on the three edited/related test modules, and actionlint passed on the workflow. This is cross-change local evidence only; it does not replace the withheld hosted ISO and KVM checks.
