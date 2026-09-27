@@ -32,7 +32,7 @@ these containers. Checkout does not retain Git credentials.
 | --- | --- |
 | Workflow | actionlint 1.7.7, including shell validation |
 | lint | Python compile, blocking Ruff including security rules, existing developer-tool formatting gate, ShellCheck and blocking mypy |
-| tests | Full fake-device pytest at Xvfb 72 DPI; Orca in a separate clean D-Bus/X session; both JUnit reports counted in the receipt; Node, Playwright/Chromium, QR decoder and pinned Go installed so their tests execute |
+| tests | Full fake-device pytest at Xvfb 72 DPI; Orca in a separate clean D-Bus/X session; both groups run concurrently with private runtime directories and both JUnit reports counted in the receipt; Node, Playwright/Chromium, QR decoder and pinned Go installed so their tests execute |
 | preview | Web, console, helper and embedded JavaScript syntax |
 | desktop-launchers | Pinned Go 1.26.8, Linux race/vet/fuzz, Windows compilation, tested launcher bundle |
 | Windows | Native Go tests/vet including Win32 and PowerShell fixtures, on pinned Go 1.26.8 |

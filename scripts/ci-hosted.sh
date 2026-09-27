@@ -135,25 +135,40 @@ run_lint() {
   fi
 }
 
-run_pytest() {
+run_pytest() (
   export BEAMO_ISOLATED_X11_TEST=1
-  # Dedicated clean Xvfb + session for Orca. Not nested inside the suite
-  # xvfb-run. Bookworm Orca 43 exceeds the in-suite 300s child wait when the
-  # parent AT-SPI bus is already polluted; a timeout bump is forbidden.
+  # Private runtime directories prevent AT-SPI/Pulse from sharing sockets.
+  # Independent D-Bus and Xvfb sessions preserve the clean Orca environment
+  # while the rest of pytest runs concurrently. Never raise its timeout.
+  runtime_root="$(mktemp -d "${TMPDIR:-/tmp}/beamo-ci-sessions.XXXXXX")"
+  trap 'rm -rf -- "$runtime_root"' EXIT
+  mkdir -m 700 "$runtime_root/orca" "$runtime_root/suite"
   log "orca on a dedicated Xvfb 1600x1000 @ 72 DPI"
-  dbus-run-session -- xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72" \
-    env BEAMO_TEST_ORCA_CHILD=1 python3 -m pytest \
+  env -u AT_SPI_BUS_ADDRESS -u PULSE_SERVER \
+    XDG_RUNTIME_DIR="$runtime_root/orca" PULSE_RUNTIME_PATH="$runtime_root/orca/pulse" \
+    dbus-run-session -- xvfb-run -a -n 100 -s "-screen 0 1600x1000x24 -dpi 72" \
+    env BEAMO_TEST_ORCA_CHILD=1 python3 -m pytest -p no:cacheprovider \
       tests/test_accessible_runtime.py::test_orca_announces_every_result \
-      --junitxml="${BEAMO_GATE_JUNIT:-$ROOT/dist/evidence/tests.xml}.orca.xml"
-  export BEAMO_HOSTED_ORCA_SEPARATE=1
-  log "pytest under Xvfb 1600x1000 @ 72 DPI"
+      --junitxml="${BEAMO_GATE_JUNIT:-$ROOT/dist/evidence/tests.xml}.orca.xml" &
+  orca_pid=$!
+  log "pytest under a separate Xvfb 1600x1000 @ 72 DPI"
   # Live-image tests that need lb config artifacts skip themselves when
   # packaging/live/config/{bootstrap,binary} are absent. Source assertions
   # for HTTPS mirrors and nox11autologin always run.
-  dbus-run-session -- xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72" python3 -m pytest \
+  env -u AT_SPI_BUS_ADDRESS -u PULSE_SERVER \
+    XDG_RUNTIME_DIR="$runtime_root/suite" PULSE_RUNTIME_PATH="$runtime_root/suite/pulse" \
+    BEAMO_HOSTED_ORCA_SEPARATE=1 \
+    dbus-run-session -- xvfb-run -a -n 200 -s "-screen 0 1600x1000x24 -dpi 72" python3 -m pytest \
     --deselect=tests/test_accessible_runtime.py::test_orca_announces_every_result \
-    --junitxml="${BEAMO_GATE_JUNIT:-$ROOT/dist/evidence/tests.xml}"
-}
+    --junitxml="${BEAMO_GATE_JUNIT:-$ROOT/dist/evidence/tests.xml}" &
+  suite_pid=$!
+  # Collect both reports even if one process fails. Neither can hide failure
+  # in the other, and image building must wait until both have finished.
+  failed=0
+  wait "$orca_pid" || failed=1
+  wait "$suite_pid" || failed=1
+  exit "$failed"
+)
 
 run_preview() {
   log "preview verification (fake disks, no browser)"

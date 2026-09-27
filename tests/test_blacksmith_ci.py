@@ -221,3 +221,61 @@ def test_stale_orca_report_cannot_be_counted_as_fresh(tmp_path):
     with pytest.raises(RuntimeError, match="stale evidence"):
         run_gate("tests", [sys.executable, "-c", "pass"], root=ROOT,
                  evidence_dir=tmp_path, build_id="local")
+
+
+@pytest.mark.parametrize("failed_group", ["", "orca", "suite", "both"])
+def test_pytest_groups_overlap_isolate_runtime_and_wait_for_both(tmp_path, failed_group):
+    tools = tmp_path / "bin"
+    tools.mkdir()
+    output = tmp_path / "output"
+    output.mkdir()
+    session = tools / "dbus-run-session"
+    session.write_text(f"#!{sys.executable}\n" + '''
+import json, os, pathlib, sys, time
+out = pathlib.Path(os.environ['FAKE_OUTPUT'])
+runtime = pathlib.Path(os.environ['XDG_RUNTIME_DIR'])
+group = runtime.name
+assert runtime.stat().st_mode & 0o777 == 0o700
+assert os.environ['PULSE_RUNTIME_PATH'] == str(runtime / 'pulse')
+assert 'AT_SPI_BUS_ADDRESS' not in os.environ and 'PULSE_SERVER' not in os.environ
+args = sys.argv[1:]
+assert args[:2] == ['--', 'xvfb-run']
+assert '-screen 0 1600x1000x24 -dpi 72' in args
+if group == 'orca':
+    assert 'BEAMO_TEST_ORCA_CHILD=1' in args and 'no:cacheprovider' in args
+else:
+    assert os.environ['BEAMO_HOSTED_ORCA_SEPARATE'] == '1'
+    assert any(arg.startswith('--deselect=') for arg in args)
+(out / (group + '.json')).write_text(json.dumps({'runtime': str(runtime), 'args': args}))
+deadline = time.monotonic() + 5
+while len(list(out.glob('*.json'))) != 2:
+    if time.monotonic() > deadline:
+        raise SystemExit('test groups did not overlap')
+    time.sleep(.01)
+failed = os.environ['FAILED_GROUP'] in (group, 'both')
+# Make the successful peer finish later to prove failure still waits for it.
+if not failed:
+    time.sleep(.1)
+report = pathlib.Path(next(arg.split('=', 1)[1] for arg in args if arg.startswith('--junitxml=')))
+report.write_text('<testsuite tests="1" failures="%d"/>' % int(failed))
+(out / (group + '.done')).touch()
+raise SystemExit(9 if failed else 0)
+''')
+    session.chmod(0o755)
+    source = (ROOT / "scripts/ci-hosted.sh").read_text()
+    function = "run_pytest() (" + source.split("run_pytest() (", 1)[1].split("\nrun_preview()", 1)[0]
+    report = tmp_path / "tests.xml"
+    result = subprocess.run(
+        ["bash", "-ceu", 'log() { :; }\n' + function + '\nrun_pytest'],
+        env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                 TMPDIR=str(tmp_path), FAKE_OUTPUT=str(output), FAILED_GROUP=failed_group,
+                 BEAMO_GATE_JUNIT=str(report), AT_SPI_BUS_ADDRESS="inherited",
+                 PULSE_SERVER="inherited"),
+        capture_output=True, text=True, timeout=15,
+    )
+    assert result.returncode == int(bool(failed_group)), result.stderr
+    assert {path.stem for path in output.glob("*.done")} == {"orca", "suite"}
+    records = [json.loads(path.read_text()) for path in output.glob("*.json")]
+    assert len({record["runtime"] for record in records}) == 2
+    assert all(not Path(record["runtime"]).exists() for record in records)
+    assert report.is_file() and Path(str(report) + ".orca.xml").is_file()
