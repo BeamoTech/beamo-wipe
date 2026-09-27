@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [main]
   push:
-    branches: [main, 'codex/ci-*']
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -17,12 +17,12 @@ concurrency:
 jobs:
   verify:
     name: Linux image gate
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           persist-credentials: false
       - name: Check KVM and image-mount capabilities before building
         run: bash scripts/check-ci-kvm.sh
@@ -33,6 +33,7 @@ jobs:
         with:
           path: .ci-cache/pip
           key: pip-bookworm-amd64-${{ hashFiles('scripts/ci-hosted.sh', 'pyproject.toml') }}
+          restore-keys: pip-bookworm-amd64-
 
       - name: Parallel lint, types, tests, preview, launchers and negative test
         run: bash scripts/ci-blacksmith.sh sources

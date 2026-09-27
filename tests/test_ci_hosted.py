@@ -102,7 +102,7 @@ def test_hosted_gate_runs_full_pipeline_on_cloud_build():
 
 def test_github_actions_uses_blacksmith_without_publication():
     workflow = (ROOT / ".github/workflows/ci.yml").read_text()
-    assert "runs-on: blacksmith-8vcpu-ubuntu-2404" in workflow
+    assert "runs-on: blacksmith-4vcpu-ubuntu-2404" in workflow
     assert "name: CI gate" in workflow
     assert "contents: read" in workflow
     assert "pull_request_target" not in workflow

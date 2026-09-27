@@ -1,4 +1,4 @@
-"""A local ISO build must not import an ignored ISO from an earlier run."""
+"""The ISO source copy omits unused trees but retains staged assets."""
 
 from __future__ import annotations
 
@@ -47,3 +47,44 @@ def test_source_copy_does_not_import_prior_iso(tmp_path):
         check=True,
     )
     assert "packaging/live/stale-previous-build.iso" not in result.stdout
+
+
+def test_source_copy_omits_non_build_inputs_but_keeps_staged_assets(tmp_path):
+    if shutil.which("rsync") is None:
+        pytest.skip("rsync is installed in the live-build container")
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    ignored = (
+        ".ci-cache/pip/download.whl",
+        ".pytest_cache/lastfailed",
+        ".mypy_cache/state.json",
+        ".ruff_cache/state.json",
+        ".venv/lib/tool",
+        ".venv-local/lib/tool",
+        "web-preview/index.html",
+        "docs/evidence/old-verification.log",
+        "tests/test_other_gate.py",
+        "developer_tests/test_developer_tool.py",
+    )
+    staged = "packaging/live/config/includes.binary/START-HERE.html"
+    for relative in (*ignored, staged):
+        path = source / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("fixture")
+    target.mkdir()
+    result = subprocess.run(
+        [
+            "rsync",
+            "-an",
+            "--out-format=%n",
+            *(item for pattern in _copy_excludes() for item in ("--exclude", pattern)),
+            f"{source}/",
+            f"{target}/",
+        ],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    copied = result.stdout.splitlines()
+    assert staged in copied
+    assert all(relative not in copied for relative in ignored)

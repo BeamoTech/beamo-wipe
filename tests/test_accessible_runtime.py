@@ -721,9 +721,20 @@ sys.exit(entry['main']())
 
     app_box = []
 
+    def log_size():
+        return logfile.stat().st_size if logfile.exists() else 0
+
     def logged_speech(phrase, since):
-        content = logfile.read_text(errors="replace") if logfile.exists() else ""
-        lines = content[since:].splitlines()
+        # Orca's LEVEL_ALL log grows across every screen. Each assertion only
+        # needs entries after its byte checkpoint; rereading the whole file on
+        # every 20 ms poll adds avoidable I/O and decoding to this long gate.
+        try:
+            with logfile.open("rb") as stream:
+                stream.seek(since)
+                content = stream.read().decode("utf-8", "replace")
+        except FileNotFoundError:
+            content = ""
+        lines = content.splitlines()
         for index, line in enumerate(lines):
             if "SPEECH OUTPUT:" not in line:
                 continue
@@ -815,18 +826,18 @@ sys.exit(entry['main']())
     try:
         wait_for("Screen reader on")
         first, _, _ = case_evidence(CASES[0])
-        checkpoint = len(logfile.read_text(errors="replace")) if logfile.exists() else 0
+        checkpoint = log_size()
         app = ui(first)
         app_box.append(app)
         wait_for(first.result_view.message, since=checkpoint)
         for case in CASES[1:]:
             wizard, _, _ = case_evidence(case)
             app.w = wizard
-            checkpoint = len(logfile.read_text(errors="replace"))
+            checkpoint = log_size()
             app.render()
             wait_for(wizard.result_view.message, since=checkpoint)
         wizard.evidence = None
-        checkpoint = len(logfile.read_text(errors="replace"))
+        checkpoint = log_size()
         app.render()
         wait_for(VIEWS["indeterminate"].message, since=checkpoint)
         # Short visual headings must not suppress the full warning on arrival.
@@ -839,7 +850,7 @@ sys.exit(entry['main']())
         wizard.continue_owner()
         wizard.select_disk(wizard.selectable[0].path)
         wizard.continue_pick()
-        checkpoint = len(logfile.read_text(errors="replace"))
+        checkpoint = log_size()
         app.render()
         wait_for(wizard.warning_text(), since=checkpoint)
         wizard.set_confirm_input(wizard.confirm.token)
@@ -850,7 +861,7 @@ sys.exit(entry['main']())
         # text-changed events and never speaks TITLE_PICK after the widgets
         # are destroyed.
         wizard._erase_until = 0.0
-        checkpoint = len(logfile.read_text(errors="replace"))
+        checkpoint = log_size()
         app.render()
         wait_for(wizard.erase_label(), since=checkpoint)
         assert not wizard.runner.started
@@ -858,16 +869,16 @@ sys.exit(entry['main']())
         wizard.back()
         wizard.back()
         wizard.back()
-        checkpoint = len(logfile.read_text(errors="replace"))
+        checkpoint = log_size()
         app.render()
         wait_for(C.TITLE_PICK, since=checkpoint)
-        checkpoint = len(logfile.read_text(errors="replace"))
+        checkpoint = log_size()
         app.actions[C.DISK_HELP_BUTTON].grab_focus()
         wait_for(C.DISK_HELP_BUTTON, since=checkpoint)
-        checkpoint = len(logfile.read_text(errors="replace"))
+        checkpoint = log_size()
         app.actions[C.DISK_HELP_BUTTON].clicked()
         wait_for(C.DISK_HELP_TITLE, since=checkpoint)
-        checkpoint = len(logfile.read_text(errors="replace"))
+        checkpoint = log_size()
         help_reader = next(item for item in widgets(app.window) if isinstance(item, Gtk.TextView))
         help_reader.grab_focus()
         wait_for("You do not need to choose now", since=checkpoint)

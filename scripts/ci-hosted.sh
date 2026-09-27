@@ -40,8 +40,8 @@ install_test_deps() {
     python3-pil python3-pyzbar libzbar0 nodejs rsync shellcheck \
     git \
     ca-certificates
-  python3 -m pip install --break-system-packages -q 'pytest==9.0.3' 'cryptography==50.0.1'
-  python3 -m pip install --break-system-packages -q 'playwright==1.63.0'
+  python3 -m pip install --break-system-packages -q \
+    'pytest==9.0.3' 'cryptography==50.0.1' 'playwright==1.63.0'
   python3 -m playwright install --with-deps chromium
   # Tests using the system executable and Playwright's default browser must
   # exercise the same pinned runtime, rather than silently skipping either.
@@ -87,10 +87,13 @@ install_desktop_meta() {
   if [ "${BEAMO_GATE_CHILD:-0}" = "1" ]; then return; fi
   apt-get update -qq
   apt-get install -y -qq --no-install-recommends ca-certificates python3 git
+  export BEAMO_DESKTOP_APT_READY=1
 }
 
 install_qemu_deps() {
   if [ "${BEAMO_GATE_CHILD:-0}" = "1" ]; then return; fi
+  # nwipe is built inside the ISO chroot. This worker only executes the
+  # extracted binary against disposable loops, so it needs runtime libraries.
   apt-get update -qq
   apt-get install -y -qq --no-install-recommends \
     qemu-system-x86 \
@@ -98,23 +101,17 @@ install_qemu_deps() {
     ovmf \
     genisoimage xorriso mtools syslinux syslinux-common \
     debsecan \
-    file \
     sudo \
     python3 \
     python3-pytest \
     git \
     procps \
     util-linux \
-    kmod \
     hdparm \
     dosfstools \
-    build-essential \
-    automake \
-    autoconf \
-    pkg-config \
-    libncurses-dev \
-    libparted-dev \
-    libconfig-dev \
+    libncurses6 \
+    libparted2 \
+    libconfig9 \
     ca-certificates
 }
 
@@ -135,25 +132,40 @@ run_lint() {
   fi
 }
 
-run_pytest() {
+run_pytest() (
   export BEAMO_ISOLATED_X11_TEST=1
-  # Dedicated clean Xvfb + session for Orca. Not nested inside the suite
-  # xvfb-run. Bookworm Orca 43 exceeds the in-suite 300s child wait when the
-  # parent AT-SPI bus is already polluted; a timeout bump is forbidden.
+  # Private runtime directories prevent AT-SPI/Pulse from sharing sockets.
+  # Independent D-Bus and Xvfb sessions preserve the clean Orca environment
+  # while the rest of pytest runs concurrently. Never raise its timeout.
+  runtime_root="$(mktemp -d "${TMPDIR:-/tmp}/beamo-ci-sessions.XXXXXX")"
+  trap 'rm -rf -- "$runtime_root"' EXIT
+  mkdir -m 700 "$runtime_root/orca" "$runtime_root/suite"
   log "orca on a dedicated Xvfb 1600x1000 @ 72 DPI"
-  dbus-run-session -- xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72" \
-    env BEAMO_TEST_ORCA_CHILD=1 python3 -m pytest \
+  env -u AT_SPI_BUS_ADDRESS -u PULSE_SERVER \
+    XDG_RUNTIME_DIR="$runtime_root/orca" PULSE_RUNTIME_PATH="$runtime_root/orca/pulse" \
+    dbus-run-session -- xvfb-run -a -n 100 -s "-screen 0 1600x1000x24 -dpi 72" \
+    env BEAMO_TEST_ORCA_CHILD=1 python3 -m pytest -p no:cacheprovider \
       tests/test_accessible_runtime.py::test_orca_announces_every_result \
-      --junitxml="${BEAMO_GATE_JUNIT:-$ROOT/dist/evidence/tests.xml}.orca.xml"
-  export BEAMO_HOSTED_ORCA_SEPARATE=1
-  log "pytest under Xvfb 1600x1000 @ 72 DPI"
+      --junitxml="${BEAMO_GATE_JUNIT:-$ROOT/dist/evidence/tests.xml}.orca.xml" &
+  orca_pid=$!
+  log "pytest under a separate Xvfb 1600x1000 @ 72 DPI"
   # Live-image tests that need lb config artifacts skip themselves when
   # packaging/live/config/{bootstrap,binary} are absent. Source assertions
   # for HTTPS mirrors and nox11autologin always run.
-  dbus-run-session -- xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72" python3 -m pytest \
+  env -u AT_SPI_BUS_ADDRESS -u PULSE_SERVER \
+    XDG_RUNTIME_DIR="$runtime_root/suite" PULSE_RUNTIME_PATH="$runtime_root/suite/pulse" \
+    BEAMO_HOSTED_ORCA_SEPARATE=1 \
+    dbus-run-session -- xvfb-run -a -n 200 -s "-screen 0 1600x1000x24 -dpi 72" python3 -m pytest \
     --deselect=tests/test_accessible_runtime.py::test_orca_announces_every_result \
-    --junitxml="${BEAMO_GATE_JUNIT:-$ROOT/dist/evidence/tests.xml}"
-}
+    --junitxml="${BEAMO_GATE_JUNIT:-$ROOT/dist/evidence/tests.xml}" &
+  suite_pid=$!
+  # Collect both reports even if one process fails. Neither can hide failure
+  # in the other, and image building must wait until both have finished.
+  failed=0
+  wait "$orca_pid" || failed=1
+  wait "$suite_pid" || failed=1
+  exit "$failed"
+)
 
 run_preview() {
   log "preview verification (fake disks, no browser)"
@@ -171,7 +183,7 @@ run_preview() {
 }
 
 run_desktop() {
-  log "desktop launchers (Go race/vet/fuzz + pinned Windows compile; fake firmware)"
+  log "desktop launchers (Go race/vet/fuzz + Windows launcher build; fake firmware)"
   ./scripts/ci-desktop.sh
 }
 

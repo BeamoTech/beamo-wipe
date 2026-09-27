@@ -1,6 +1,6 @@
 # Beamo Wipe — AI agent guide
 
-> This file is mirrored to `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `GROK.md`, and `.github/copilot-instructions.md`. Edit one copy, then run `~/dev/sync-ai-memory.sh --repo .` to re-sync the rest.
+`AGENTS.md` is the sole project instruction file for all coding agents.
 
 Durable notes live in `.ai/memory/` — start at `.ai/memory/MEMORY.md`.
 
@@ -15,10 +15,12 @@ Durable notes live in `.ai/memory/` — start at `.ai/memory/MEMORY.md`.
   Choose the least costly option that meets the task's quality, security,
   reliability and performance requirements. Preserve mandated models and gates;
   never trade away correctness, coverage, accessibility or data safety for price.
-- Measure usage, reuse valid caches, bound retries/concurrency, cancel superseded
-  verification runs and expire disposable artifacts. Never cancel a release or
-  data migration blindly. Use local fixtures for iteration, run required gates
-  before delivery, and retire only verified idle resources within task authority.
+- Use the fewest hosted CI runs that still cover changed paths, scheduled
+  checks and required gates. Iterate locally, route jobs by scope, reuse valid
+  caches, avoid duplicate runs and bound retries/concurrency. Cancel superseded
+  verification when safe; review releases and migrations before cancellation.
+  Preserve checks for the exact commit and native platforms. Measure usage, expire disposable
+  artifacts and retire only verified idle resources within task authority.
 - Keep Markdown focused: one canonical home per topic, short sections and useful
   links. Keep commands and safeguards near their use; move detailed history to
   dated evidence. Update stale guidance against code, preserve release records,
@@ -45,7 +47,7 @@ gh workflow run ci.yml --repo BeamoTech/beamo-wipe  # Blacksmith hosted gate
 ./scripts/build-iso.sh   # amd64 live image (Blacksmith, not this Mac)
 ```
 
-Local pytest is the fast checkout gate. **CI runs on Blacksmith through GitHub Actions**, per the operator's 2026-09-26 correction. `.github/workflows/ci.yml` runs the secret-free `CI gate` on `blacksmith-8vcpu-ubuntu-2404`: parallel lint/types, Python tests, preview, desktop launchers, and negative checks; then the amd64 ISO and full QEMU validation, plus independent native Windows launcher tests. PRs to `main` and pushes to `main` run every phase. `codex/ci-*` pushes are verification branches. See `docs/ci.md` for bootstrap status and evidence. Never claim a configured workflow has passed before observing its hosted run.
+Local pytest is the fast checkout gate. **CI runs on Blacksmith through GitHub Actions**, per the operator's 2026-09-26 correction. `.github/workflows/ci.yml` runs the secret-free `CI gate`: parallel lint/types, Python tests, preview, desktop launchers, and negative checks; then the amd64 ISO and full QEMU validation, plus independent native Windows launcher tests. PRs to `main` and pushes to `main` run every phase; use manual dispatch for verification branches. See `docs/ci.md` for runner sizing, bootstrap status, and evidence. Never claim a configured workflow has passed before observing its hosted run.
 
 **ISO build and QEMU wipe tests:** use Blacksmith's disposable x86_64 workers with KVM. Do not wait on this Apple silicon Mac's amd64 Docker/QEMU emulation. Never pass host disks to QEMU. `cloudbuild.yaml`, `ci-cloud.sh`, and the Cloud trigger installer are legacy tooling, not the current CI route. Do not invoke Google Cloud or request gcloud authentication for current CI. Publication requires separate explicit operator authorization; the Blacksmith workflow has no production credentials or publishing step. See `.ai/memory/iso-builds-on-cloud.md`.
 

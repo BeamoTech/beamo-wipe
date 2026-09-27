@@ -8,19 +8,25 @@ rollout status. A configured workflow is not proof of a successful hosted run.
 
 ## Execution
 
-PRs targeting `main`, pushes to `main`, and verification branches matching
-`codex/ci-*` run every gate. Manual dispatch is verification only:
+PRs targeting `main` and pushes to `main` run every gate. Verification branches
+can use manual dispatch; pushing them does not start another full run:
 
 ```bash
 python3 -m pytest
 ./scripts/test-all.sh
 # After the workflow has been installed on GitHub:
 gh workflow run ci.yml --repo BeamoTech/beamo-wipe --ref main
+gh workflow run ci.yml --repo BeamoTech/beamo-wipe --ref codex/ci-blacksmith
 gh run list --repo BeamoTech/beamo-wipe --workflow ci.yml
 ```
 
-The Linux image runner is `blacksmith-8vcpu-ubuntu-2404`. Native Windows
-launcher tests run independently on `blacksmith-2vcpu-windows-2025`; both jobs
+The Linux image runner is `blacksmith-4vcpu-ubuntu-2404`. A full
+[qualification run](https://github.com/BeamoTech/beamo-wipe/actions/runs/36293739547)
+passed on source commit `6feba1e50ad7d668f6e5b84b13fb32cd3795ec5d`,
+including the ISO, all seven Linux receipts, and 12 KVM guest commands. The
+single completed run took 17m38s; see the [optimization audit](evidence/ci-optimization-20260926.md)
+for its scope and cost comparison. Native Windows launcher tests run
+independently on `blacksmith-2vcpu-windows-2025`; both jobs
 must succeed for the aggregate `CI gate` check to pass. Each source gate runs in its own
 container using the content-addressed Debian bookworm image already pinned
 by the ISO builder. The shared checkout has the same absolute path inside
@@ -32,9 +38,9 @@ these containers. Checkout does not retain Git credentials.
 | --- | --- |
 | Workflow | actionlint 1.7.7, including shell validation |
 | lint | Python compile, blocking Ruff including security rules, existing developer-tool formatting gate, ShellCheck and blocking mypy |
-| tests | Full fake-device pytest at Xvfb 72 DPI; Orca in a separate clean D-Bus/X session; both JUnit reports counted in the receipt; Node, Playwright/Chromium, QR decoder and pinned Go installed so their tests execute |
+| tests | Full fake-device pytest at Xvfb 72 DPI; Orca in a separate clean D-Bus/X session; both groups run concurrently with private runtime directories and both JUnit reports counted in the receipt; Node, Playwright/Chromium, QR decoder and pinned Go installed so their tests execute |
 | preview | Web, console, helper and embedded JavaScript syntax |
-| desktop-launchers | Pinned Go 1.26.8, Linux race/vet/fuzz, Windows compilation, tested launcher bundle |
+| desktop-launchers | Pinned Go 1.26.8, Linux race/vet/fuzz, shipped Windows and Linux launcher builds, tested bundle |
 | Windows | Native Go tests/vet including Win32 and PowerShell fixtures, on pinned Go 1.26.8 |
 | negative | Private safety mutation must produce the expected failing fake-device test, followed by a passing unmodified-source test |
 | iso | Tested launchers, pinned nwipe v0.42, build provenance, ISO size/PVD/checksums |
@@ -61,14 +67,18 @@ remain intact. Run this only on isolated disposable workers.
 ## Caches, concurrency and evidence
 
 The workflow explicitly persists only pip download caches; the key binds the Debian architecture,
-CI dependency-install script, and project manifest. Only a successful push to
+CI dependency-install script, and project manifest. A fallback can restore an
+older trusted pip download cache when the script changes, subject to cache
+branch access. Only a successful push to
 `main` saves a cache. PRs may restore it but cannot update the trusted key.
 Compiled launchers, manifests, test results and images are never cached.
 The organization's existing Blacksmith Docker image cache is enabled separately;
 it may reuse the pinned Debian base image. It does not replace execution of
 these containerized gates or the freshly generated artifact receipts.
+The ISO builder omits disposable pip, test, type-check, virtualenv and preview
+caches when it copies the checkout into its private live-build filesystem.
 
-New PR runs cancel older runs for that PR. Main runs are not cancelled by
+New PR runs cancel older runs for the same PR. Main and manually dispatched runs are not cancelled by
 concurrency policy. Linux image work is bounded at 120 minutes, Windows at 20, and aggregation at five. Action references use
 immutable commit hashes. No path filters can leave an unchanged required
 check missing. `pull_request_target` is not used.
@@ -142,11 +152,11 @@ Do not relabel a fresh build as the old verified artifact.
 
 Use the repository-pinned Go 1.26.8 for shipped builds. From `desktop/`,
 `go test -race ./...` and `go vet ./...` run the local launcher gate.
-`GOOS=windows GOARCH=amd64 go test -c -o /tmp/beamo-desktop-windows.test.exe`
-compiles the Windows suite. The Blacksmith Windows job runs the actual Win32
-and Windows PowerShell tests natively; cross-compilation alone does not prove
-those runtime paths. The Windows fixtures include Unicode identities and
-512-byte/4096-byte sector layouts.
+The Blacksmith Windows job compiles and runs the actual Win32 and Windows
+PowerShell fixtures, so the Linux Blacksmith gate skips its duplicate Windows
+test-binary cross-compilation. Standalone and legacy callers retain that check.
+The Linux desktop gate still builds the shipped Windows launcher. The Windows
+fixtures include Unicode identities and 512-byte/4096-byte sector layouts.
 
 The Linux utility integration test enumerates disks only when
 `BEAMO_DESKTOP_NATIVE_INVENTORY_TEST=1`; `scripts/ci-desktop.sh` opts in on its

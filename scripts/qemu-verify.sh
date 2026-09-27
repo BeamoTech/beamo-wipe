@@ -1118,7 +1118,7 @@ send_key() {
 }
 
 send_key_for_marker() {
-  local label="$1" qmp_socket="$2" key="$3" marker="$4" limit="$5"
+  local label="$1" qmp_socket="$2" key="$3" marker="$4" limit="$5" release_limit="${6:-20}"
   local prior release_marker="" release_prior=0
   prior="$(marker_count "$label" "$marker")"
   case "$key" in
@@ -1135,8 +1135,8 @@ send_key_for_marker() {
     qmp_request "$qmp_socket" key-up "$key"
     # Recover an unacknowledged emulator event by retrying only the idempotent
     # release, never the press that might confirm erasure. A fresh guest
-    # release acknowledgement is still mandatory within the original bound.
-    for release_attempt in $(seq 1 20); do
+    # release acknowledgement is still mandatory within the selected bound.
+    for release_attempt in $(seq 1 "$release_limit"); do
       if [[ "$(marker_count "$label" "$release_marker")" -gt "$release_prior" ]]; then
         return 0
       fi
@@ -1256,7 +1256,10 @@ drive_report_export() {
   # then Save report. Keep this in sync with the real Tk traversal test.
   send_key "$qmp_socket" tab
   send_key "$qmp_socket" tab
-  send_key_for_marker "$label" "$qmp_socket" spc BEAMO_WIPE_REPORT_SAVING 20
+  # Report export can occupy Tk's event loop before its deferred key-release
+  # callback runs. Bound this release wait by the report-save budget; all other
+  # keys retain the shorter 20-second acknowledgment bound.
+  send_key_for_marker "$label" "$qmp_socket" spc BEAMO_WIPE_REPORT_SAVING 20 120
   wait_for_report_saved "$label"
 }
 

@@ -17,7 +17,6 @@ apt-get install -y \
   syslinux-common \
   squashfs-tools \
   ca-certificates \
-  git \
   cpio \
   rsync \
   file \
@@ -30,6 +29,16 @@ mkdir -p /build
 rsync -a \
   --exclude '.git/' \
   --exclude 'dist/' \
+  --exclude '/.ci-cache/' \
+  --exclude '/.pytest_cache/' \
+  --exclude '/.mypy_cache/' \
+  --exclude '/.ruff_cache/' \
+  --exclude '/.venv/' \
+  --exclude '/.venv-*/' \
+  --exclude '/web-preview/' \
+  --exclude '/docs/' \
+  --exclude '/tests/' \
+  --exclude '/developer_tests/' \
   --exclude 'packaging/live/chroot/' \
   --exclude 'packaging/live/cache/' \
   --exclude 'packaging/live/.build/' \
