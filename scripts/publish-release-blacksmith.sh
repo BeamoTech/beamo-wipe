@@ -73,7 +73,8 @@ gh release upload "$tag" --repo "$GITHUB_REPOSITORY" --clobber "${assets[@]}"
 # GitHub supplies the SHA-256 of each stored asset. Refuse public promotion
 # until every server digest equals the exact local bytes we uploaded.
 for ((attempt = 1; attempt <= 6; attempt++)); do
-  gh api "repos/$GITHUB_REPOSITORY/releases/tags/$tag" > "$stage/github-release.json"
+  scripts/fetch_github_draft_release.sh "$GITHUB_REPOSITORY" "$tag" \
+    > "$stage/github-release.json"
   if "$RUNNER_TEMP/beamo-release-venv/bin/python" scripts/verify_github_release_assets.py \
     "$stage/github-release.json" "${assets[@]}"; then
     gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=false --latest

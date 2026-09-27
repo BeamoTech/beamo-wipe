@@ -3,8 +3,10 @@ import gzip
 import hashlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 import shutil
+import subprocess
 
 import pytest
 
@@ -68,6 +70,43 @@ def test_public_release_asset_digest_check_rejects_missing_and_altered(tmp_path)
     b.write_bytes(b"second")
     assert not checker.verified({**release, "draft": False}, [a, b])
     assert not checker.verified({**release, "assets": release["assets"][:1]}, [a, b])
+
+
+@pytest.mark.parametrize("release_id,expected_code", [("397823407", 0), ("null", 2), ("0", 2), ("42/extra", 2)])
+def test_draft_release_lookup_uses_numeric_id(tmp_path, monkeypatch, release_id, expected_code):
+    fake_gh = tmp_path / "gh"
+    fake_gh.write_text("""#!/usr/bin/env python3
+import json, os, sys
+with open(os.environ['FAKE_GH_CALLS'], 'a') as calls:
+    calls.write(json.dumps(sys.argv[1:]) + '\\n')
+if sys.argv[1:3] == ['release', 'view']:
+    print(os.environ['FAKE_GH_RELEASE_ID'])
+elif sys.argv[1] == 'api':
+    print('{"draft": true}')
+else:
+    sys.exit(3)
+""")
+    fake_gh.chmod(0o755)
+    calls = tmp_path / "calls.jsonl"
+    monkeypatch.setenv("PATH", f"{tmp_path}:{os.environ['PATH']}")
+    monkeypatch.setenv("FAKE_GH_CALLS", str(calls))
+    monkeypatch.setenv("FAKE_GH_RELEASE_ID", release_id)
+    result = subprocess.run(
+        ["bash", str(ROOT / "scripts/fetch_github_draft_release.sh"),
+         "BeamoTech/beamo-wipe", "v0.2.11"],
+        text=True, capture_output=True, check=False,
+    )
+    assert result.returncode == expected_code
+    invoked = [json.loads(line) for line in calls.read_text().splitlines()]
+    assert invoked[0] == ["release", "view", "v0.2.11", "--repo", "BeamoTech/beamo-wipe",
+                          "--json", "databaseId", "--jq", ".databaseId"]
+    if expected_code == 0:
+        assert invoked[1] == ["api", f"repos/BeamoTech/beamo-wipe/releases/{release_id}"]
+        assert len(invoked) == 2
+        assert json.loads(result.stdout) == {"draft": True}
+    else:
+        assert len(invoked) == 1
+        assert "no valid GitHub draft ID" in result.stderr
 
 
 def test_release_download_inventory_is_signed_and_binds_compressed_usb(tmp_path, monkeypatch):
