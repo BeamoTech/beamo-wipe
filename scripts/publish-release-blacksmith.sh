@@ -40,9 +40,17 @@ PYTHONPATH=src "$RUNNER_TEMP/beamo-release-venv/bin/python" \
   scripts/prepare_release_assets.py "$stage"
 
 tag="v$BEAMO_WIPE_VERSION"
-gh release create "$tag" --repo "$GITHUB_REPOSITORY" --verify-tag --draft \
-  --title "Beamo Wipe $BEAMO_WIPE_VERSION" \
-  --notes-file "docs/release-${BEAMO_WIPE_VERSION}.md"
+if draft_state="$(gh release view "$tag" --repo "$GITHUB_REPOSITORY" \
+  --json isDraft --jq .isDraft 2>/dev/null)"; then
+  [[ "$draft_state" == true ]] || {
+    echo "Release $tag is already public; refusing to replace its assets." >&2
+    exit 2
+  }
+else
+  gh release create "$tag" --repo "$GITHUB_REPOSITORY" --verify-tag --draft \
+    --title "Beamo Wipe $BEAMO_WIPE_VERSION" \
+    --notes-file "docs/release-${BEAMO_WIPE_VERSION}.md"
+fi
 
 assets=(
   "$iso" "$iso.sha256"
@@ -58,13 +66,16 @@ assets=(
   "$stage/release-downloads.json" "$stage/release-downloads.json.sig"
   "$stage/RELEASE_COMPLETE.txt"
 )
-gh release upload "$tag" --repo "$GITHUB_REPOSITORY" "${assets[@]}"
+# A failed attempt may have left a partial draft. Replace only draft assets;
+# the complete server digest check below still gates public promotion.
+gh release upload "$tag" --repo "$GITHUB_REPOSITORY" --clobber "${assets[@]}"
 
 # GitHub supplies the SHA-256 of each stored asset. Refuse public promotion
 # until every server digest equals the exact local bytes we uploaded.
 for ((attempt = 1; attempt <= 6; attempt++)); do
   gh api "repos/$GITHUB_REPOSITORY/releases/tags/$tag" > "$stage/github-release.json"
-  if python3 scripts/verify_github_release_assets.py "$stage/github-release.json" "${assets[@]}"; then
+  if "$RUNNER_TEMP/beamo-release-venv/bin/python" scripts/verify_github_release_assets.py \
+    "$stage/github-release.json" "${assets[@]}"; then
     gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=false --latest
     echo "Published verified signed release $tag from $GITHUB_SHA (build $BUILD_ID)"
     exit 0
