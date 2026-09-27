@@ -17,7 +17,6 @@ apt-get install -y \
   syslinux-common \
   squashfs-tools \
   ca-certificates \
-  git \
   cpio \
   rsync \
   file \
