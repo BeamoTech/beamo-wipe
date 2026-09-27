@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 from pathlib import Path
+import re
 
 import pytest
 
@@ -26,6 +27,7 @@ def _qemu_gate_output_names() -> set[str]:
         "source-commit.txt",
         "checksums.txt",
         "isoinfo.txt",
+        "iso-extraction.txt",
         "nwipe-version.txt",
         "fixed-vulnerabilities.txt",
         "accessible-runtime.txt",
@@ -73,6 +75,43 @@ def test_release_lists_every_qemu_gate_output():
         if path.parent == qemu_dir
     }
     assert listed == _qemu_gate_output_names()
+
+
+def test_release_lists_qemu_gate_outputs_from_script():
+    """Named and interpolated QEMU logs must be in the publisher inventory."""
+    source = (ROOT / "scripts/qemu-verify.sh").read_text(encoding="utf-8")
+    method_block = re.search(r"METHOD_CASES=\$\(cat <<'EOF'\n(.*?)\nEOF", source, re.S)
+    assert method_block
+    cases = {
+        name
+        for line in method_block.group(1).splitlines()
+        if (name := line.split("|", 1)[0])
+    }
+    assert cases
+    cases = cases | {f"{name}-repeat" for name in cases}
+    labels = {f"bios-{name}" for name in cases}
+    labels.update(re.findall(
+        r"^(?:boot_probe|uefi_boot_probe) ([a-z][a-z0-9-]*)\b", source, re.M
+    ))
+    assert labels
+
+    templates = set(re.findall(
+        r"\$EVIDENCE_DIR/((?:[A-Za-z0-9._-]|\$\{[A-Za-z_][A-Za-z0-9_]*\})+\.(?:txt|log))",
+        source,
+    ))
+    assert templates
+    outputs = set()
+    for template in templates:
+        placeholders = set(re.findall(r"\$\{([^}]+)\}", template))
+        assert placeholders <= {"case", "label"}, template
+        expanded = {template}
+        for placeholder, values in (("case", cases), ("label", labels)):
+            expanded = {
+                name.replace("${" + placeholder + "}", value)
+                for name in expanded for value in values
+            }
+        outputs.update(expanded)
+    assert outputs <= set(PUBLISHER._qemu_evidence_names())
 
 
 def test_publisher_rejects_unlisted_or_missing_qemu_gate_output():

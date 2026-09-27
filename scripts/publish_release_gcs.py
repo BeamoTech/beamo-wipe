@@ -425,6 +425,7 @@ def _qemu_evidence_names() -> list[str]:
         "source-commit.txt",
         "checksums.txt",
         "isoinfo.txt",
+        "iso-extraction.txt",
         "nwipe-version.txt",
         "fixed-vulnerabilities.txt",
         "accessible-runtime.txt",
