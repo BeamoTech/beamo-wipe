@@ -87,6 +87,7 @@ install_desktop_meta() {
   if [ "${BEAMO_GATE_CHILD:-0}" = "1" ]; then return; fi
   apt-get update -qq
   apt-get install -y -qq --no-install-recommends ca-certificates python3 git
+  export BEAMO_DESKTOP_APT_READY=1
 }
 
 install_qemu_deps() {

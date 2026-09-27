@@ -4,7 +4,11 @@ set -euo pipefail
 ROOT="$(CDPATH='' cd -- "$(dirname "$0")/.." && pwd)"
 TOOL_ROOT="$(mktemp -d /tmp/beamo-wipe-go.XXXXXX)"
 trap 'rm -rf -- "$TOOL_ROOT"' EXIT
-apt-get update -qq
+# The hosted wrapper has just refreshed this container's package lists.
+# Standalone desktop checks still refresh before installing their dependencies.
+if [[ "${BEAMO_DESKTOP_APT_READY:-0}" != 1 ]]; then
+  apt-get update -qq
+fi
 apt-get install -y -qq --no-install-recommends ca-certificates python3 git gcc libc6-dev util-linux
 bash "$ROOT/scripts/fetch-ci-go.sh" "$TOOL_ROOT"
 export BEAMO_GO_BIN="$TOOL_ROOT/go/bin/go" GOCACHE="$TOOL_ROOT/cache" GOTOOLCHAIN=local
