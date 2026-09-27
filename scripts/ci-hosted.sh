@@ -100,14 +100,12 @@ install_qemu_deps() {
     ovmf \
     genisoimage xorriso mtools syslinux syslinux-common \
     debsecan \
-    file \
     sudo \
     python3 \
     python3-pytest \
     git \
     procps \
     util-linux \
-    kmod \
     hdparm \
     dosfstools \
     libncurses6 \
