@@ -1,0 +1,123 @@
+name: Beamo Wipe release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version whose tag points at the qualified main commit
+        required: true
+        default: '0.2.11'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: beamo-release
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Qualify customer image bytes
+    if: github.repository == 'BeamoTech/beamo-wipe' && github.ref == 'refs/heads/main'
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    timeout-minutes: 120
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      transfer_manifest_sha256: ${{ steps.transfer.outputs.manifest_sha256 }}
+    env:
+      BEAMO_WIPE_VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Require tagged, qualified main source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/check-release-ready.sh
+      - name: Check KVM before building
+        run: bash scripts/check-ci-kvm.sh
+      - name: Validate workflow
+        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.7 -color
+      - name: Run source and safety gates
+        run: bash scripts/ci-blacksmith.sh sources
+      - name: Build and inspect customer ISO
+        run: bash scripts/ci-blacksmith.sh iso
+      - name: Verify ISO and USB image in KVM
+        run: bash scripts/ci-blacksmith.sh qemu
+      - name: Make release artifacts readable
+        run: |
+          sudo chown -R "$(id -u):$(id -g)" dist qemu-evidence
+          PYTHONPATH=src python3 -m beamo_wipe.ci_evidence summary
+      - name: Stage only the tested release inputs
+        id: transfer
+        run: |
+          python3 scripts/release_transfer.py pack
+          echo "manifest_sha256=$(sha256sum release-transfer/transfer-manifest.json | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+      - name: Transfer verified inputs to protected publisher
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: release-inputs-${{ github.run_id }}-${{ github.run_attempt }}
+          path: release-transfer/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 1
+      - name: Retain failure evidence without customer binaries
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: release-failure-evidence-${{ github.sha }}-${{ github.run_id }}
+          path: |
+            dist/evidence/
+            dist/*.manifest.json
+            dist/*.sha256
+            qemu-evidence/
+            !qemu-evidence/PATH
+          if-no-files-found: ignore
+          retention-days: 7
+
+  publish:
+    name: Sign and publish verified release
+    needs: verify
+    if: needs.verify.result == 'success' && github.repository == 'BeamoTech/beamo-wipe' && github.ref == 'refs/heads/main'
+    environment: production
+    runs-on: blacksmith-2vcpu-ubuntu-2404
+    timeout-minutes: 90
+    permissions:
+      contents: write
+      id-token: write
+    env:
+      BEAMO_WIPE_VERSION: ${{ inputs.version }}
+      TRANSFER_MANIFEST_SHA256: ${{ needs.verify.outputs.transfer_manifest_sha256 }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Download same-run verified image bytes
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: release-inputs-${{ github.run_id }}-${{ github.run_attempt }}
+          path: release-transfer/
+      - name: Verify transfer and restore exact tested inputs
+        run: python3 scripts/release_transfer.py restore
+      - name: Install pinned release signing dependency
+        run: |
+          python3 -m venv "$RUNNER_TEMP/beamo-release-venv"
+          "$RUNNER_TEMP/beamo-release-venv/bin/pip" install --only-binary=:all: 'cryptography==50.0.1'
+      - name: Authenticate dedicated release publisher by GitHub OIDC
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          project_id: beamo-wipe
+          workload_identity_provider: projects/368895881889/locations/global/workloadIdentityPools/beamo-wipe-github-release/providers/github-manual-release
+          service_account: beamo-wipe-release-publisher@beamo-wipe.iam.gserviceaccount.com
+      - name: Set up Google CLI for renewable short-lived credentials
+        uses: google-github-actions/setup-gcloud@e427ad8a34f8676edf47cf7d7925499adf3eb74f # v2
+        with:
+          project_id: beamo-wipe
+      - name: Sign, publish, and independently verify every release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/publish-release-blacksmith.sh

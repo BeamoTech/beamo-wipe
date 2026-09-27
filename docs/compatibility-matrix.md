@@ -1,5 +1,7 @@
 # Beamo Wipe — Boot and Hardware Compatibility Matrix
 
+**Current gate (2026-09-27):** Blacksmith GitHub Actions runs the full Linux ISO/QEMU and native Windows checks on each main commit. The signed release workflow is manual and requires its dedicated GCP publishing identity. The older Cloud Build notes below are historical.
+
 **Cross-platform verification (2026-09-08):** current source checks, the actual
 platform boundaries, and outstanding gates are recorded in
 [the independent second-pass evidence](evidence/cross-platform-verify-20260908/README.md)
@@ -28,10 +30,10 @@ The screen-reader view exposes Keep first and both native buttons. See
 [the state, console, and recovery rules](report-shutdown.md). No report survives
 live-session shutdown or power loss unless it has been exported.
 
-> **Matrix v1.11 — for Beamo Wipe 0.2.10 (nwipe 0.42)**
-> Date: 2026-09-25
+> **Matrix v1.12 — for Beamo Wipe 0.2.11 (nwipe 0.42)**
+> Date: 2026-09-27
 > Author: Accountable senior engineer (this checkout)
-> Status: Versioned release target. No physical destructives on the developer host. Production evidence requires the isolated x86_64 Cloud Build gate described below.
+> Status: Versioned release target. No physical destructives on the developer host. Production evidence requires the exact-source Blacksmith gate and signed release manifest.
 
 Customer-facing startup and compatibility text for **this USB** comes from
 `src/beamo_wipe/compat_story.py` and is injected into helper/START-HERE.html
@@ -49,7 +51,7 @@ It does **not** weaken safety gates. Every *Fail Closed* row lists no disks and 
 > Full signal map: [`docs/boot-exclusion-signals.md`](boot-exclusion-signals.md) — every lsblk field, mount source, alias, partition, removable flag, and metadata-refresh path that can make boot identity uncertain.
 
 - **Never run nwipe against a real disk from the dev machine.** `./preview` and `pytest` use **fake lsblk JSON only** (`tests/fixtures/*.json`, `src/beamo_wipe/demo_*.json`). No host-disk enumeration.
-- **ISO builds and any destructive/QEMU run belong on an isolated x86_64 Linux runner/VM** with no host-disk passthrough and an explicitly created disposable `qcow2`. See `docs/vm-test.md` and `cloudbuild.yaml` → `scripts/ci-hosted.sh`.
+- **ISO builds and any destructive/QEMU run belong on an isolated x86_64 Linux runner/VM** with no host-disk passthrough and an explicitly created disposable `qcow2`. See `docs/vm-test.md` and `.github/workflows/ci.yml` → `scripts/ci-hosted.sh`.
 - **Fail closed:** missing/conflicting/stale/changed boot or target identity → expose **no destructive target** and invoke **nothing** (`DiscoveryResult.boot_identified == False`, `selectable == ()`, `SafetyError`).
 - **Invariants never relaxed:** boot-media exclusion, exact whole-disk binding (`/dev/nvme0n1`, not `n1p1`), ownership checkbox, type-to-confirm, 5 s delay, no-auto-start, pinned `nwipe` at `/usr/lib/beamo-wipe/nwipe` (`NWIPE_PINNED_COMMIT 6082bde060091e66365d852a1877f2ee80c67105`), logs under `/tmp/beamo-wipe/` (never target). Any change to these is a `safety:` commit with a test.
 - All local and CI paths are asserted with spies/fakes: `tests/test_security_hardening.py`, `tests/test_nwipe_runner.py`, `tests/test_safety.py` — `NwipeRunner.start` raises in preview/dry-run; `discover` never reads real `/proc/self/mountinfo` when a payload is injected.
@@ -61,12 +63,12 @@ It does **not** weaken safety gates. Every *Fail Closed* row lists no disks and 
 | Env | Identity | Use | Isolation |
 | --- | --- | --- | --- |
 | **Local fake-device** | `Darwin MacBook-Air-7.local 25.5.0 arm64, Python 3.10.0, pytest 9.0.3` | Parser/device-state, wizard state machine, UI layout, safety gates | Fake `lsblk` JSON injection; `BEAMO_WIPE_DRY_RUN=1`; `DryRunRunner`; no subprocess `nwipe` |
-| **Cloud Build hosted gate** | `Google Cloud Build project beamo-wipe, machineType E2_HIGHCPU_8, content-addressed images, Xvfb 1600x1000 @72 DPI` | Canonical pytest + amd64 ISO build + isolated QEMU | `cloudbuild.yaml`; fake local metadata; ISO 9660/size/hash validation; default-ephemeral output; explicitly authorized releases use a unique no-overwrite `gs://beamo-wipe_cloudbuild/releases/<BUILD_ID>/` path |
+| **Blacksmith hosted gate** | `blacksmith-4vcpu-ubuntu-2404` for Linux; native Blacksmith Windows 2025 for launchers | Canonical pytest + amd64 ISO build + isolated KVM QEMU + native Windows | `.github/workflows/ci.yml`; fake local metadata; ISO 9660/size/hash validation; default-ephemeral output; separately authorized signed releases use a unique no-overwrite `gs://beamo-wipe_cloudbuild/releases/<BUILD_ID>/` path |
 | **Isolated x86_64 QEMU/KVM** | Per `docs/vm-test.md`: throwaway `n2-standard-4` / `t3.large` with `/dev/kvm`, disposable `qcow2` | Boot the ISO, prove wizard is first UI, wipe disposable disk, confirm success/fail screens | No host-disk passthrough; `qemu-img create -f qcow2 /tmp/beamo-wipe-target.qcow2 10G`; VM torn down after |
 
 Local `python3 -m pytest` is the fast fake-device gate; `tk_runtime` clipped-text checks require Xvfb 72 DPI and are run on the hosted gate. Tk tests scale with DPI — `DISPLAY=:99` @72 DPI or `xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72"`; VNC `DISPLAY=:1` @96 DPI is not the gate.
 
-Environments map to evidence tiers defined in [`docs/evidence-tiers.md`](evidence-tiers.md): local fake-device is Tier 1 (never boot/wipe/hardware proof), Cloud Build ISO + isolated QEMU is Tier 2 (never physical-hardware proof), named lab machines are Tier 3. Section 4–9 rows marked *Supported* rest on Tier 1 unless §4 of that page links a dated Tier 2/3 receipt for the pinned build; unlinked combinations are explicitly `UNVERIFIED` there.
+Environments map to evidence tiers defined in [`docs/evidence-tiers.md`](evidence-tiers.md): local fake-device is Tier 1 (never boot/wipe/hardware proof), Blacksmith ISO + isolated QEMU is Tier 2 (never physical-hardware proof), named lab machines are Tier 3. Section 4–9 rows marked *Supported* rest on Tier 1 unless §4 of that page links a dated Tier 2/3 receipt for the pinned build; unlinked combinations are explicitly `UNVERIFIED` there.
 
 ---
 
@@ -74,10 +76,10 @@ Environments map to evidence tiers defined in [`docs/evidence-tiers.md`](evidenc
 
 | Artifact | Version | Path | Size | SHA-256 | Build inputs pinned |
 | --- | --- | --- | --- | --- | --- |
-| Beamo Wipe wrapper | **0.2.10** | `src/beamo_wipe/__init__.py:__version__` | — | — | `pyproject.toml 0.2.10`, `NWIPE_PINNED_VERSION 0.42`, `NWIPE_PINNED_COMMIT 6082bde0…67105` |
-| Staged chroot copy | 0.2.10 | `packaging/live/config/includes.chroot/usr/lib/python3/dist-packages/beamo_wipe/__init__.py` | — | — | Synced from `src/` by `scripts/build-iso.sh` (hook `0500-build-nwipe` clones at pinned commit, `GIT_CONFIG_*` isolated, fails closed if compiler packages remain) |
-| Prior stable ISO | **0.2.9** | GitHub release `v0.2.9` | 537 MiB | `4042f85e0e7c155dd2340dc93a6b879c35ebe2f13da9c81c1ba6269524a6b169` | Source `452cfc061ad20a9c44df202201404f3c4130fbb6`; branded BIOS/UEFI menus; retained rollback target |
-| Release target | **0.2.10** | `dist/beamo-wipe-0.2.10-amd64.iso` | Set by hosted build | Set by manifest | Content-addressed build inputs; production upload only after full hosted/QEMU success |
+| Beamo Wipe wrapper | **0.2.11** | `src/beamo_wipe/__init__.py:__version__` | — | — | `pyproject.toml 0.2.11`, `NWIPE_PINNED_VERSION 0.42`, `NWIPE_PINNED_COMMIT 6082bde0…67105` |
+| Staged chroot copy | 0.2.11 | `packaging/live/config/includes.chroot/usr/lib/python3/dist-packages/beamo_wipe/__init__.py` | — | — | Synced from `src/` by `scripts/build-iso.sh` (hook `0500-build-nwipe` clones at pinned commit, `GIT_CONFIG_*` isolated, fails closed if compiler packages remain) |
+| Prior stable ISO | **0.2.10** | GitHub release `v0.2.10` | 538 MiB | `3f18759f52ed029b949e054573b37cbcc37859d0f62148d9215995b071a36d73` | Source `4feb25a6996268fd0890e7570e8cd3548b53c993`; signed release and retained rollback target |
+| Release target | **0.2.11** | `dist/beamo-wipe-0.2.11-amd64.iso` | Set by hosted build | Set by manifest | Content-addressed build inputs; production upload only after full hosted/QEMU success |
 
 `packaging/live/config/bootstrap` and `binary` are `https://deb.debian.org` / `https://security.debian.org` only, use debootstrap `minbase` with system defaults ignored, `firmware false`, `bootappend live: noeject nopersistence noswap ip=frommedia nox11autologin`, and `bootloaders syslinux grub-efi` (BIOS + UEFI). Full apt/package list: `packaging/live/config/package-lists/beamo.list.chroot` (kept minimal — no `curl/git/build-essential/sudo/network-manager/openssh-server`).
 
@@ -314,22 +316,20 @@ BEAMO_WIPE_NO_OPEN=1 ./preview --web && ls web-preview/index.html
 ### Hosted gate (BIOS+UEFI ISO + pytest @72 DPI)
 
 ```bash
-./scripts/ci-cloud.sh --project beamo-wipe                  # ephemeral verification
-./scripts/ci-cloud.sh --project beamo-wipe --publish-release # separately authorized production path
-# or: gcloud builds submit --project=beamo-wipe --config cloudbuild.yaml .
-# Logs: Google Cloud Console → Cloud Build → beamo-wipe-pr-gate / beamo-wipe-main-gate
-# Authorized artifacts: gs://beamo-wipe_cloudbuild/releases/<BUILD_ID>/beamo-wipe-0.2.10-amd64.iso
-# Validate locally after download:
-sha256sum dist/beamo-wipe-0.2.10-amd64.iso
-dd if=dist/beamo-wipe-0.2.10-amd64.iso bs=1 skip=32769 count=5 2>/dev/null | od -An -tx1  # CD001
-python3 -m pytest  # (inside cloudbuild step, xvfb-run 72 DPI)
+# Main/PR workflow: Blacksmith full gate with native Windows and KVM guests.
+gh run list --repo BeamoTech/beamo-wipe --workflow ci.yml
+# After signed-release access is configured and the exact tagged main commit passes:
+gh workflow run release.yml --repo BeamoTech/beamo-wipe --ref main -f version=0.2.11
+# Published GCS path: gs://beamo-wipe_cloudbuild/releases/<BUILD_ID>/
+sha256sum dist/beamo-wipe-0.2.11-amd64.iso
+dd if=dist/beamo-wipe-0.2.11-amd64.iso bs=1 skip=32769 count=5 2>/dev/null | od -An -tx1  # CD001
 ```
 
 ### Disposable QEMU destructive (isolated x86_64 VM only)
 
 ```bash
 # On a throwaway x86_64 Linux VM with /dev/kvm, no host disks passed through:
-BEAMO_WIPE_VERSION=0.2.10 ./scripts/qemu-verify.sh
+BEAMO_WIPE_VERSION=0.2.11 ./scripts/qemu-verify.sh
 # Checklist per docs/vm-test.md:
 # - exact manifest/ISO checksums
 # - shipped nwipe 0.42 bytes only
@@ -378,6 +378,7 @@ BEAMO_WIPE_VERSION=0.2.10 ./scripts/qemu-verify.sh
 | **1.9** | 2026-09-13 | 0.2.8 | First signed release, speech boot entries, and full three-method qualification; physical-hardware limits remain. |
 | **1.10** | 2026-09-13 | 0.2.9 | Bounded kiosk recovery and portable developer tooling. Exact qualification is recorded in the release manifest; hardware support is unchanged. |
 | **1.11** | 2026-09-25 | 0.2.10 | Safety, recovery, desktop media, release packaging, and verification fixes from the comprehensive audit. Hardware support and pinned nwipe remain unchanged. |
+| **1.12** | 2026-09-27 | 0.2.11 | Blacksmith release target and signed publication workflow; exact qualification belongs in the eventual release manifest. Physical hardware support and pinned nwipe remain unchanged. |
 
 ---
 

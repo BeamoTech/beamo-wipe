@@ -28,12 +28,12 @@ MAX_MANIFEST_BYTES = 16 * 1024 * 1024
 MANIFEST_NAME_TEMPLATE = "beamo-wipe-{version}-amd64.manifest.json"
 VERSION_RE = re.compile(r"[0-9]+\.[0-9]+\.[0-9]+")
 EXPECTED_REMOTE = "https://github.com/BeamoTech/beamo-wipe"
-# Measured SHA-256 of the extracted branded v0.2.9 ISO. Do not copy-forward.
+# Measured SHA-256 of the signed, published v0.2.10 ISO. Do not copy-forward.
 PRIOR_STABLE = {
-    "version": "0.2.9",
-    "iso_name": "beamo-wipe-0.2.9-amd64.iso",
-    "sha256": "4042f85e0e7c155dd2340dc93a6b879c35ebe2f13da9c81c1ba6269524a6b169",
-    "commit": "452cfc061ad20a9c44df202201404f3c4130fbb6",
+    "version": "0.2.10",
+    "iso_name": "beamo-wipe-0.2.10-amd64.iso",
+    "sha256": "3f18759f52ed029b949e054573b37cbcc37859d0f62148d9215995b071a36d73",
+    "commit": "4feb25a6996268fd0890e7570e8cd3548b53c993",
 }
 
 PLACEHOLDER_RE = re.compile(r"PLACEHOLDER|TODO|XXX|CHANGEME", re.I)

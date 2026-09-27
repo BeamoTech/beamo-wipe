@@ -14,6 +14,8 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 .ci-cache/
+gha-creds-*.json
+/release-transfer/
 
 # ISO / USB / live-build artifacts (never commit)
 *.iso
