@@ -1,12 +1,15 @@
 """Execute the shipped supervisor with every external action stubbed.
 
 No installed launcher, disk command, X server, tty mutation, or power command
-is reachable from this harness. Pipes deliberately exercise EOF recovery.
+is reachable from this harness. Pipes and a pseudo-terminal exercise EOF recovery.
 """
-from pathlib import Path
-import subprocess
+import os
+import pty
+import select
 import signal
+import subprocess
 import time
+from pathlib import Path
 
 import pytest
 
@@ -262,3 +265,51 @@ def test_long_invalid_input_is_not_executed_or_echoed(tmp_path):
     assert "Nothing was started" in result.stdout
     assert len(launches(calls, "startx")) == 3
     assert not launches(calls, "nwipe")
+
+
+@pytest.mark.parametrize("power_confirmation", [False, True])
+def test_tty_control_d_keeps_recovery_menu_interactive(tmp_path, power_confirmation):
+    """A transient terminal EOF must not strand the only recovery interface."""
+    script, trace = prepare_kiosk(tmp_path)
+    master, slave = pty.openpty()
+    try:
+        proc = subprocess.Popen(
+            ["/bin/sh", str(script)], stdin=slave, stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+        )
+        os.close(slave)
+        slave = -1
+
+        def read_until(marker):
+            output = bytearray()
+            deadline = time.monotonic() + 5
+            while marker not in output:
+                assert time.monotonic() < deadline, output.decode(errors="replace")
+                ready, _, _ = select.select([proc.stdout], [], [], 0.05)
+                if ready:
+                    chunk = os.read(proc.stdout.fileno(), 4096)
+                    assert chunk, output.decode(errors="replace")
+                    output.extend(chunk)
+            return bytes(output)
+
+        read_until(b"Choose 1, 2, 3, 4 or 5")
+        if power_confirmation:
+            os.write(master, b"4\n")
+            read_until(b"Type RESTART to confirm")
+        os.write(master, b"\x04")
+        time.sleep(0.05)
+        assert proc.poll() is None, "Ctrl-D closed the live recovery interface"
+        os.write(master, b"3\n")
+        assert b"technical details" in read_until(b"technical details")
+        calls = trace.read_text().splitlines()
+        assert len(launches(calls, "startx")) == 3
+        assert not launches(calls, "systemctl")
+    finally:
+        if slave >= 0:
+            os.close(slave)
+        os.close(master)
+        if "proc" in locals():
+            if proc.poll() is None:
+                proc.kill()
+                proc.wait(timeout=2)
+            proc.stdout.close()

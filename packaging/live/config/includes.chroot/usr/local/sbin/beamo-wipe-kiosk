@@ -114,7 +114,13 @@ short_choices() {
 read_choice() {
   if ! IFS= read -r choice; then
     notice 'Input is unavailable. Recovery stays here; no automatic retry.'
-    # Restart=no and TTYVTDisallocate=no preserve the terminal on EOF.
+    # Ctrl-D can produce one EOF on a live tty while the terminal remains
+    # usable. Keep offering recovery; pace retries if the tty keeps failing.
+    if [ -t 0 ]; then
+      sleep 1 || true
+      return 1
+    fi
+    # A closed pipe cannot regain input. Preserve the recovery text on tty1.
     exit 0
   fi
 }
@@ -129,7 +135,10 @@ power_choice() {
   esac
   notice 'Restarting or shutting down loses unsaved reports and temporary logs.'
   notice "Type $token to confirm, or press Enter to cancel."
-  read_choice
+  if ! read_choice; then
+    notice 'Cancelled. The computer will stay on.'
+    return
+  fi
   if [ "$choice" != "$token" ]; then
     notice 'Cancelled. The computer will stay on.'
     return
@@ -166,7 +175,7 @@ done
 recovery_menu
 while :; do
   printf '%s\n' 'Choose 1, 2, 3, 4 or 5, then press Enter:'
-  read_choice
+  if ! read_choice; then continue; fi
   case "$choice" in
     1)
       run_ui || true

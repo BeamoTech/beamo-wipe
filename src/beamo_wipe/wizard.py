@@ -119,6 +119,7 @@ def error_needs_support(error: object) -> bool:
 
     return (
         error.startswith(RECOVERY_MAY_RUNNING)
+        or error == CLEANUP_UNCONFIRMED
         or error == STARTUP_BLOCKED
         or error == STARTUP_UNCONFIRMED
         or error == VIEWS["stop_unconfirmed"].announcement
