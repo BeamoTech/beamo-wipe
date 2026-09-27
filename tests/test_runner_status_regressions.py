@@ -6,10 +6,22 @@ from unittest.mock import Mock
 
 import pytest
 
+from beamo_wipe import lang, wizard
 from beamo_wipe.demo import make_demo_wizard
 from beamo_wipe.models import MethodId, Screen, WipeRequest, WipeResult
 from beamo_wipe.nwipe_runner import NwipeRunner
 from beamo_wipe.safety import SafetyError
+from beamo_wipe.wizard import error_needs_support
+
+
+@pytest.mark.parametrize("language", ["en", "fr", "de"])
+def test_uncertain_cleanup_offers_support_in_every_language(language):
+    previous = lang.current()
+    try:
+        lang.set_language(language)
+        assert error_needs_support(wizard.CLEANUP_UNCONFIRMED)
+    finally:
+        lang.set_language(previous)
 
 
 def request(tmp_path):
@@ -44,6 +56,7 @@ def test_process_status_failure_reaches_wizard(tmp_path, monkeypatch, error):
     w.tick()
     assert w.error and "status" in w.error.lower()
     assert "may still be erasing" in w.error
+    assert error_needs_support(w.error)
     assert w.screen == Screen.WORKING
     assert w.wipe_result is None
     assert runner._proc is proc

@@ -59,10 +59,13 @@ unspoken, as its fallback warning states.
 
 Systemd uses `Restart=no`: it cannot reset the supervisor's retry budget.
 `TTYVTDisallocate=no` leaves the final readable message visible when input
-closes. EOF exits without another launch; stopping the service or delivering
-TERM/HUP exits without launching a login shell. If the shell or kernel itself
-cannot run, this recovery interface cannot be provided. It is not firmware or
-physical-hardware recovery.
+closes. A closed non-terminal input exits without another launch. A single
+terminal EOF, such as Ctrl-D, keeps the menu interactive; if terminal reads keep
+failing, the supervisor shows one final input warning and silently checks again
+at a slower pace. It never automatically retries the wizard. Stopping the service
+or delivering TERM/HUP exits without launching a login shell. If the shell or
+kernel itself cannot run, this recovery interface cannot be provided. It is not
+firmware or physical-hardware recovery.
 
 ## Acceptance and regression evidence
 
