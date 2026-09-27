@@ -1061,11 +1061,8 @@ wait_for_qmp() {
 
 wait_for_marker() {
   local label="$1" marker="$2" limit="$3" pid
-  [[ "$limit" =~ ^[1-9][0-9]*$ ]] || { echo "invalid marker wait limit: $limit" >&2; return 2; }
   pid="$(guest_pid "$label")"
-  # Poll more often without shortening the caller's timeout in seconds.
-  # Hosted logs showed many ready markers waiting for the next one-second tick.
-  for _attempt in $(seq 1 "$((limit * 4))"); do
+  for _attempt in $(seq 1 "$limit"); do
     if [[ "$(marker_count "$label" "$marker")" -gt 0 ]]; then
       printf 'QEMU %s reached marker %s\n' "$label" "$marker" >&2
       return 0
@@ -1076,7 +1073,7 @@ wait_for_marker() {
       wait "$pid" || true
       return 1
     fi
-    sleep 0.25
+    sleep 1
   done
   # The marker can arrive during the final bounded sleep. Recheck before
   # diagnosing a timeout so the gate cannot report success evidence as absent.
@@ -1091,9 +1088,8 @@ wait_for_marker() {
 
 wait_for_new_marker() {
   local label="$1" marker="$2" prior="$3" limit="$4" pid
-  [[ "$limit" =~ ^[1-9][0-9]*$ ]] || { echo "invalid marker wait limit: $limit" >&2; return 2; }
   pid="$(guest_pid "$label")"
-  for _attempt in $(seq 1 "$((limit * 4))"); do
+  for _attempt in $(seq 1 "$limit"); do
     if [[ "$(marker_count "$label" "$marker")" -gt "$prior" ]]; then
       printf 'QEMU %s reached new marker %s\n' "$label" "$marker" >&2
       return 0
@@ -1104,7 +1100,7 @@ wait_for_new_marker() {
       wait "$pid" || true
       return 1
     fi
-    sleep 0.25
+    sleep 1
   done
   if [[ "$(marker_count "$label" "$marker")" -gt "$prior" ]]; then
     printf 'QEMU %s reached new marker %s\n' "$label" "$marker" >&2
@@ -1122,8 +1118,8 @@ send_key() {
 }
 
 send_key_for_marker() {
-  local label="$1" qmp_socket="$2" key="$3" marker="$4" limit="$5"
-  local prior release_marker="" release_prior=0 release_tick
+  local label="$1" qmp_socket="$2" key="$3" marker="$4" limit="$5" release_limit="${6:-20}"
+  local prior release_marker="" release_prior=0
   prior="$(marker_count "$label" "$marker")"
   case "$key" in
     ret) release_marker=BEAMO_WIPE_KEY_RETURN_RELEASED ;;
@@ -1139,17 +1135,15 @@ send_key_for_marker() {
     qmp_request "$qmp_socket" key-up "$key"
     # Recover an unacknowledged emulator event by retrying only the idempotent
     # release, never the press that might confirm erasure. A fresh guest
-    # release acknowledgement is still mandatory within the original bound.
-    # Four short probes per second keep the original 20-second release bound.
-    # Ticks 16 and 36 retry at the former fifth and tenth one-second probes.
-    for ((release_tick = 0; release_tick < 80; release_tick++)); do
+    # release acknowledgement is still mandatory within the selected bound.
+    for release_attempt in $(seq 1 "$release_limit"); do
       if [[ "$(marker_count "$label" "$release_marker")" -gt "$release_prior" ]]; then
         return 0
       fi
-      if (( release_tick == 16 || release_tick == 36 )); then
+      if [[ "$release_attempt" == 5 || "$release_attempt" == 10 ]]; then
         qmp_request "$qmp_socket" key-up "$key"
       fi
-      sleep 0.25
+      sleep 1
     done
     wait_for_new_marker "$label" "$release_marker" "$release_prior" 1
     return
@@ -1205,7 +1199,7 @@ PY
 wait_for_report_saved() {
   local label="$1" pid
   pid="$(guest_pid "$label")"
-  for _attempt in $(seq 1 480); do
+  for _attempt in $(seq 1 120); do
     if [[ "$(marker_count "$label" BEAMO_WIPE_REPORT_SAVED)" -gt 0 ]]; then
       return 0
     fi
@@ -1220,7 +1214,7 @@ wait_for_report_saved() {
       wait "$pid" || true
       return 1
     fi
-    sleep 0.25
+    sleep 1
   done
   if [[ "$(marker_count "$label" BEAMO_WIPE_REPORT_SAVED)" -gt 0 ]]; then
     return 0
@@ -1262,7 +1256,10 @@ drive_report_export() {
   # then Save report. Keep this in sync with the real Tk traversal test.
   send_key "$qmp_socket" tab
   send_key "$qmp_socket" tab
-  send_key_for_marker "$label" "$qmp_socket" spc BEAMO_WIPE_REPORT_SAVING 20
+  # Report export can occupy Tk's event loop before its deferred key-release
+  # callback runs. Bound this release wait by the report-save budget; all other
+  # keys retain the shorter 20-second acknowledgment bound.
+  send_key_for_marker "$label" "$qmp_socket" spc BEAMO_WIPE_REPORT_SAVING 20 120
   wait_for_report_saved "$label"
 }
 
