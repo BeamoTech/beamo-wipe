@@ -40,8 +40,8 @@ install_test_deps() {
     python3-pil python3-pyzbar libzbar0 nodejs rsync shellcheck \
     git \
     ca-certificates
-  python3 -m pip install --break-system-packages -q 'pytest==9.0.3' 'cryptography==50.0.1'
-  python3 -m pip install --break-system-packages -q 'playwright==1.63.0'
+  python3 -m pip install --break-system-packages -q \
+    'pytest==9.0.3' 'cryptography==50.0.1' 'playwright==1.63.0'
   python3 -m playwright install --with-deps chromium
   # Tests using the system executable and Playwright's default browser must
   # exercise the same pinned runtime, rather than silently skipping either.
