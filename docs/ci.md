@@ -109,17 +109,26 @@ linked dated audit, not in claims inferred from this configuration.
 
 ## Publication, provenance and rollback
 
-CI never publishes. There is no signing secret, production environment,
-write permission, release trigger or cloud identity in this workflow.
-A green check does not authorize a release. Publication requires separate
-explicit operator authorization and a reviewed production destination/signing
-procedure. Do not automatically promote unsigned CI artifacts.
+CI never publishes. The ordinary `ci.yml` has no signing secret, write
+permission or cloud identity. A green check does not authorize a release.
+The separately authorized `release.yml` is manual on `main`; it requires a
+tag at the exact commit of a successful main `CI gate` (including native
+Windows), then reruns all seven Linux gates in a credential free Blacksmith
+job. A short-lived artifact transfers only verified image bytes and evidence
+to a separate protected publisher job. That job rechecks every transfer hash
+and all publisher evidence before it obtains GitHub OIDC credentials. The
+dedicated GCP account reads the existing
+signing secret and writes immutable objects to the existing release bucket;
+GCP does not run the CI. GitHub receives a draft whose every asset digest is
+checked before it becomes public.
 
-The retained `cloudbuild.yaml`, `ci-cloud.sh`, trigger installer and GCS
-publisher document the previous production system. They are legacy tooling,
-not the current CI route. Do not invoke Google Cloud for current CI. Migration
-of release credentials or publication to a new provider is a separate operator
-action; no release path has been activated by adding this workflow.
+The retained `cloudbuild.yaml`, `ci-cloud.sh` and trigger installer are legacy
+tooling, not the current CI route. Do not invoke Google Cloud for current CI.
+The GCS publisher remains the signed-release byte verifier and now supports
+renewable workload identity credentials from the manual Blacksmith job. The
+GitHub workload identity provider is restricted to this repository ID, the
+manual release workflow and `main`; its service-account impersonation binding
+must be approved and configured before that workflow can publish.
 
 Existing publisher checks remain required for any authorized publication:
 clean/tagged source, all passing gates, exact artifact hashes and package
@@ -129,8 +138,8 @@ project currently pins them, but Debian package repositories remain mutable;
 this does **not** establish bit-for-bit reproducible ISO bytes. Record installed
 package versions and hashes for each build.
 
-Rollback remains `beamo-wipe-0.2.9-amd64.iso`, SHA-256
-`4042f85e0e7c155dd2340dc93a6b879c35ebe2f13da9c81c1ba6269524a6b169`.
+Rollback remains the signed `beamo-wipe-0.2.10-amd64.iso`, SHA-256
+`3f18759f52ed029b949e054573b37cbcc37859d0f62148d9215995b071a36d73`.
 See [release verification](release-verification.md) and [runbook](runbook.md).
 Do not relabel a fresh build as the old verified artifact.
 

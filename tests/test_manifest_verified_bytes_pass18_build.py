@@ -17,7 +17,7 @@ def test_finalizer_uses_verified_manifest_bytes_after_path_replacement(
     monkeypatch.setenv("BUILD_ID", "local")
     dist = tmp_path / "dist"
     dist.mkdir()
-    dest = dist / "beamo-wipe-0.2.10-amd64.manifest.json"
+    dest = dist / "beamo-wipe-0.2.11-amd64.manifest.json"
     verified = {
         "source": {"commit": "a" * 40},
         "build": {"release_build_id": "local"},

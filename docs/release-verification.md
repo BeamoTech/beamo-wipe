@@ -6,14 +6,14 @@ Each release publishes a machine-readable manifest that links the ISO to its sou
 
 | File | Purpose | Retention | Location |
 | --- | --- | --- | --- |
-| `beamo-wipe-0.2.10-amd64.iso` | Bootable live image (hybrid BIOS+UEFI) | Operator-defined after authorization | local `dist/` until separately published |
-| `beamo-wipe-0.2.10-amd64.iso.sha256` | SHA256 sidecar (`<sha>  <name>`) | same | `dist/` alongside ISO |
-| `beamo-wipe-0.2.10-amd64.manifest.json` | Release provenance (this doc) | same | `dist/` |
-| `beamo-wipe-0.2.10-amd64.manifest.json.sha256` | Manifest checksum | same | `dist/` |
+| `beamo-wipe-0.2.11-amd64.iso` | Bootable live image (hybrid BIOS+UEFI) | Operator-defined after authorization | local `dist/` until separately published |
+| `beamo-wipe-0.2.11-amd64.iso.sha256` | SHA256 sidecar (`<sha>  <name>`) | same | `dist/` alongside ISO |
+| `beamo-wipe-0.2.11-amd64.manifest.json` | Release provenance (this doc) | same | `dist/` |
+| `beamo-wipe-0.2.11-amd64.manifest.json.sha256` | Manifest checksum | same | `dist/` |
 | `SHA256SUMS` | `sha256sum` of ISO + manifest | same | `dist/` |
-| `beamo-wipe-0.2.10-amd64.img` | Desktop-readable FAT32 USB image with BIOS/UEFI boot | same | `dist/` after the USB-image builder |
-| `beamo-wipe-0.2.10-amd64.img.sha256` | USB image checksum | same | alongside image |
-| `beamo-wipe-0.2.10-amd64.img.json` | USB image size, layout, checksum, and source ISO checksum | same | alongside image |
+| `beamo-wipe-0.2.11-amd64.img` | Desktop-readable FAT32 USB image with BIOS/UEFI boot | same | `dist/` after the USB-image builder |
+| `beamo-wipe-0.2.11-amd64.img.sha256` | USB image checksum | same | alongside image |
+| `beamo-wipe-0.2.11-amd64.img.json` | USB image size, layout, checksum, and source ISO checksum | same | alongside image |
 
 The ISO artifacts are under `dist/` after `./scripts/build-iso.sh`. The hosted
 QEMU phase also runs `./scripts/build-usb-image.sh` on its isolated amd64 Linux
@@ -24,10 +24,16 @@ These new image artifacts are development additions; they do not retroactively
 change the previously published v0.2.5 release.
 
 Current CI uses **Blacksmith** and retains evidence for seven days without
-publishing binaries. See [CI](ci.md). The retained legacy GCS publisher requires
-separate operator authorization, the full QEMU gate, and writes
-`RELEASE_COMPLETE.txt` last under a unique build-ID path. Its old Cloud Build
-entrypoint is not the current CI route or an authorized release action.
+publishing binaries. See [CI](ci.md). The separately authorized manual
+`.github/workflows/release.yml` reruns the full Linux gate on the exact tagged
+main commit after its native Windows CI gate has passed. Its credential free
+verification job transfers only hash checked image bytes and evidence to a
+separate protected publisher job. That job obtains short lived credentials
+for the dedicated GCP publisher only after transfer validation, signs the
+manifest with the existing Secret Manager key, verifies each immutable GCS
+object, and writes `RELEASE_COMPLETE.txt` last. It then checks every GitHub
+draft asset's server SHA-256 before public promotion. GCP supplies the key and
+storage, not CI compute.
 
 ## What the manifest contains
 
@@ -40,7 +46,7 @@ entrypoint is not the current CI route or an authorized release action.
 - `artifact`: `iso_name`, `iso_size_bytes`, `iso_sha256`, `iso_sha256_sidecar`
 - `test_evidence`: measured gate results (see below), never script paths
 - `installed_packages`: deterministic inventory of the image (see below)
-- `hardware_limits`: supported/unsupported/degraded (from `docs/compatibility-matrix.md`), `known_issues`, `license` (wrapper GPL-3.0+, nwipe GPL-2.0), `prior_stable` (`0.2.9`, ISO SHA-256 `4042f85e…`), `rollback`, `verification`
+- `hardware_limits`: supported/unsupported/degraded (from `docs/compatibility-matrix.md`), `known_issues`, `license` (wrapper GPL-3.0+, nwipe GPL-2.0), `prior_stable` (`0.2.10`, ISO SHA-256 `3f18759f…`), `rollback`, `verification`
 
 ## Measured release evidence
 
@@ -108,7 +114,7 @@ python3 -m beamo_wipe.verification_evidence parse-dpkg-status \
   --apt-source https://deb.debian.org/debian/ \
   --apt-source https://security.debian.org/ \
   --commit "$(git rev-parse HEAD)" --generated-at 2026-09-11T00:00:00Z \
-  --out dist/beamo-wipe-0.2.10-amd64.packages.json
+  --out dist/beamo-wipe-0.2.11-amd64.packages.json
 python3 -m beamo_wipe.verification_evidence verify-receipts \
   --receipt receipts/lint.receipt.json --receipt receipts/tests.receipt.json
 ```
@@ -119,27 +125,27 @@ Top-level `_manifest_sha256` is the SHA256 of the canonical JSON (sorted keys, n
 
 ```sh
 # From the release directory (where ISO and manifest were downloaded):
-sha256sum -c beamo-wipe-0.2.10-amd64.iso.sha256
-sha256sum -c beamo-wipe-0.2.10-amd64.manifest.json.sha256
+sha256sum -c beamo-wipe-0.2.11-amd64.iso.sha256
+sha256sum -c beamo-wipe-0.2.11-amd64.manifest.json.sha256
 # From repo root, change directory because each sidecar intentionally binds a
 # bare filename rather than an arbitrary path:
-(cd dist && sha256sum -c beamo-wipe-0.2.10-amd64.iso.sha256)
-(cd dist && sha256sum -c beamo-wipe-0.2.10-amd64.manifest.json.sha256)
+(cd dist && sha256sum -c beamo-wipe-0.2.11-amd64.iso.sha256)
+(cd dist && sha256sum -c beamo-wipe-0.2.11-amd64.manifest.json.sha256)
 (cd dist && sha256sum -c SHA256SUMS)
 
-# From a checked-out v0.2.10 source tree, place the downloaded release files
+# From a checked-out v0.2.11 source tree, place the downloaded release files
 # together under dist/, then verify the manifest and sibling ISO (fails closed
 # on dirty/placeholder, path escape, size, content, or sidecar mismatch):
 python3 - <<'PY'
 import pathlib, sys
 sys.path.insert(0, "src")
 from beamo_wipe.release_manifest import verify_manifest
-verify_manifest(pathlib.Path("dist/beamo-wipe-0.2.10-amd64.manifest.json"))
+verify_manifest(pathlib.Path("dist/beamo-wipe-0.2.11-amd64.manifest.json"))
 print("manifest OK")
 PY
 
 # Inspect provenance without trusting ISO:
-python3 -m json.tool dist/beamo-wipe-0.2.10-amd64.manifest.json | head -n 60
+python3 -m json.tool dist/beamo-wipe-0.2.11-amd64.manifest.json | head -n 60
 # Check source commit matches tag:
 git rev-parse HEAD  # should equal manifest source.commit
 git status --porcelain  # should be clean for a release
@@ -220,15 +226,15 @@ python3 - <<'PY'
 import json, pathlib, sys
 sys.path.insert(0, "src")
 from beamo_wipe.release_signing import load_key_registry, verify_release_acceptance
-manifest = pathlib.Path("beamo-wipe-0.2.10-amd64.manifest.json").read_bytes()
-sidecar = json.loads(pathlib.Path("beamo-wipe-0.2.10-amd64.manifest.json.sig").read_text())
+manifest = pathlib.Path("beamo-wipe-0.2.11-amd64.manifest.json").read_bytes()
+sidecar = json.loads(pathlib.Path("beamo-wipe-0.2.11-amd64.manifest.json.sig").read_text())
 registry = load_key_registry(json.loads(pathlib.Path("packaging/release-keys/keys.json").read_text()))
-result = verify_release_acceptance(manifest, sidecar, registry, min_version="0.2.10")
+result = verify_release_acceptance(manifest, sidecar, registry, min_version="0.2.11")
 print("signature ok:", result["key_id"], "version:", result["beamo_wipe_version"])
 PY
 ```
 
-Expected success: `signature ok: <16-hex-key-id> version: 0.2.10`.
+Expected success: `signature ok: <16-hex-key-id> version: 0.2.11`.
 Expected failures (each raises `RuntimeError`, never a partial pass):
 
 - altered manifest or sidecar bytes → `digest mismatch` / `different manifest bytes` / `signature is invalid`
@@ -237,7 +243,7 @@ Expected failures (each raises `RuntimeError`, never a partial pass):
 - retired key → `is not active (retired)`; compromised key → `is revoked`
 - older signed release against the floor → `below the acceptance floor`
 
-Or use the CLI: `python3 -m beamo_wipe.release_signing verify --manifest … --signature … --registry … --min-version 0.2.10`.
+Or use the CLI: `python3 -m beamo_wipe.release_signing verify --manifest … --signature … --registry … --min-version 0.2.11`.
 
 ## Reproducibility
 
@@ -245,6 +251,6 @@ Live-build is not bit-reproducible due to `apt` timestamps and `squashfs` orderi
 
 ## Prior stable and rollback
 
-Prior stable: `beamo-wipe-0.2.9-amd64.iso` `4042f85e0e7c155dd2340dc93a6b879c35ebe2f13da9c81c1ba6269524a6b169` commit `452cfc061ad20a9c44df202201404f3c4130fbb6` tag `v0.2.9`. Rollback: `git checkout 452cfc061ad20a9c44df202201404f3c4130fbb6` or `git revert <commit>`. The 0.2.0 ISO (`62437ec…` / `5b3b7afa…`) remains a historical GitHub artifact; it is not the branded rollback target.
+Prior stable: `beamo-wipe-0.2.10-amd64.iso` `3f18759f52ed029b949e054573b37cbcc37859d0f62148d9215995b071a36d73` commit `4feb25a6996268fd0890e7570e8cd3548b53c993` tag `v0.2.10`. Rollback: use the signed `v0.2.10` release or `git checkout 4feb25a6996268fd0890e7570e8cd3548b53c993`. The 0.2.0 ISO (`62437ec…` / `5b3b7afa…`) remains a historical GitHub artifact; it is not the branded rollback target.
 
 Never publish or promote the ISO without explicit operator authorization after the full Blacksmith `CI gate` passes for the exact source commit and artifact hashes.

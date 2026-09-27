@@ -52,6 +52,24 @@ def _response_bytes(response: http.client.HTTPResponse) -> bytes:
 
 
 def _metadata_token() -> str:
+    # GitHub OIDC credentials are written by google-github-actions/auth only
+    # after the full release gate. gcloud refreshes short-lived tokens for
+    # large uploads; never pass a long-lived service-account key to CI.
+    if os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"):
+        if (os.environ.get("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE")
+                != os.environ["GOOGLE_APPLICATION_CREDENTIALS"]):
+            raise PublishError("workload identity credentials are not selected by gcloud")
+        try:
+            result = subprocess.run(
+                ["gcloud", "auth", "print-access-token"],
+                check=True, capture_output=True, text=True, timeout=45,
+            )
+        except (OSError, subprocess.SubprocessError) as exc:
+            raise PublishError("workload identity authentication failed") from exc
+        token = result.stdout.strip()
+        if not isinstance(token, str) or not 20 <= len(token) <= 8192 or any(ch.isspace() for ch in token):
+            raise PublishError("workload identity returned an invalid token")
+        return token
     connection = http.client.HTTPConnection(METADATA_HOST, timeout=10)
     try:
         try:
@@ -80,7 +98,7 @@ def _metadata_token() -> str:
 
 def _object_name(build_id: str, filename: str) -> str:
     if not BUILD_ID_RE.fullmatch(build_id):
-        raise PublishError("missing or invalid Cloud Build ID")
+        raise PublishError("missing or invalid release build ID")
     if not filename or filename != Path(filename).name or "/" in filename or "\\" in filename:
         raise PublishError("invalid release filename")
     return f"{RELEASE_PREFIX}/{build_id}/{filename}"
@@ -601,12 +619,12 @@ def publish() -> str | None:
     if os.environ.get("SKIP_ISO", "false") == "true" or os.environ.get("SKIP_QEMU", "false") == "true":
         raise PublishError("refusing release publication with a skipped ISO or QEMU gate")
 
-    version = os.environ.get("BEAMO_WIPE_VERSION", "0.2.10")
+    version = os.environ.get("BEAMO_WIPE_VERSION", "0.2.11")
     build_id = os.environ.get("BUILD_ID", "")
     if not VERSION_RE.fullmatch(version):
         raise PublishError("invalid BEAMO_WIPE_VERSION")
     if not BUILD_ID_RE.fullmatch(build_id):
-        raise PublishError("missing or invalid Cloud Build ID")
+        raise PublishError("missing or invalid release build ID")
 
     inputs = _release_inputs(version)
     sig_name = f"beamo-wipe-{version}-amd64.manifest.json.sig"
