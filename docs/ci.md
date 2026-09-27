@@ -20,10 +20,13 @@ gh workflow run ci.yml --repo BeamoTech/beamo-wipe --ref codex/ci-blacksmith
 gh run list --repo BeamoTech/beamo-wipe --workflow ci.yml
 ```
 
-The proposed Linux image runner is `blacksmith-4vcpu-ubuntu-2404`; the latest
-verified run used 8 vCPUs, so this sizing still needs a hosted qualification.
-Native Windows
-launcher tests run independently on `blacksmith-2vcpu-windows-2025`; both jobs
+The Linux image runner is `blacksmith-4vcpu-ubuntu-2404`. A full
+[qualification run](https://github.com/BeamoTech/beamo-wipe/actions/runs/36293739547)
+passed on source commit `6feba1e50ad7d668f6e5b84b13fb32cd3795ec5d`,
+including the ISO, all seven Linux receipts, and 12 KVM guest commands. The
+single completed run took 17m38s; see the [optimization audit](evidence/ci-optimization-20260926.md)
+for its scope and cost comparison. Native Windows launcher tests run
+independently on `blacksmith-2vcpu-windows-2025`; both jobs
 must succeed for the aggregate `CI gate` check to pass. Each source gate runs in its own
 container using the content-addressed Debian bookworm image already pinned
 by the ISO builder. The shared checkout has the same absolute path inside
