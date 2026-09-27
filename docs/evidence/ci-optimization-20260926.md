@@ -1,6 +1,6 @@
 # Blacksmith CI optimization audit — 2026-09-26
 
-Scope: current `codex/ci-blacksmith` source at `978da0a9cd87ff387d0d0b519fd65f100987d40f`, using the completed [Blacksmith run 36282904405](https://github.com/BeamoTech/beamo-wipe/actions/runs/36282904405) as the baseline. One run measures elapsed time; it does not establish a stable performance distribution or the organization's actual bill.
+Scope: baseline source `978da0a9cd87ff387d0d0b519fd65f100987d40f` and local candidate commits through `9776ebd`, using the completed [Blacksmith run 36282904405](https://github.com/BeamoTech/beamo-wipe/actions/runs/36282904405) as the baseline. One run measures elapsed time; it does not establish a stable performance distribution or the organization's actual bill.
 
 | Baseline phase | Elapsed |
 | --- | ---: |
@@ -10,6 +10,8 @@ Scope: current `codex/ci-blacksmith` source at `978da0a9cd87ff387d0d0b519fd65f10
 | Linux job, including setup and evidence upload | 1,064 s |
 | Native Windows job | 52 s |
 | Aggregate required check | 4 s |
+
+The timestamped Linux log puts checkout at 2.4 seconds, KVM preflight at 0.3 seconds, actionlint at 1.2 seconds, cache restore at 0.3 seconds, evidence preparation at 0.1 seconds, and artifact upload at 1.4 seconds. Together these are under six seconds. Further setup-step changes would have negligible cost effect compared with the 278-second source phase, 193-second ISO phase, and 581-second QEMU phase. These are baseline measurements; the candidate has not run on Blacksmith.
 
 The QEMU phase is the largest serial cost. Timestamped job logs show about 43 seconds from the QEMU step start to its verification command, mostly container setup and dependency installation; the USB image then built in about 6.6 seconds. Verification spent about 62 seconds on six real-nwipe host boundaries, 313 seconds on six BIOS wipe-and-report journeys, and 145 seconds on the remaining UEFI, USB, speech, and Secure Boot probes. Each journey has a distinct safety or compatibility assertion. The current QEMU script shares loop-device ownership, mount state, process IDs, and cleanup traps, so parallelizing its guests without isolating those resources could invalidate the safety evidence. We did not remove any of those checks.
 
