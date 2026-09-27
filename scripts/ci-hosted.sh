@@ -91,6 +91,8 @@ install_desktop_meta() {
 
 install_qemu_deps() {
   if [ "${BEAMO_GATE_CHILD:-0}" = "1" ]; then return; fi
+  # nwipe is built inside the ISO chroot. This worker only executes the
+  # extracted binary against disposable loops, so it needs runtime libraries.
   apt-get update -qq
   apt-get install -y -qq --no-install-recommends \
     qemu-system-x86 \
@@ -108,13 +110,9 @@ install_qemu_deps() {
     kmod \
     hdparm \
     dosfstools \
-    build-essential \
-    automake \
-    autoconf \
-    pkg-config \
-    libncurses-dev \
-    libparted-dev \
-    libconfig-dev \
+    libncurses6 \
+    libparted2 \
+    libconfig9 \
     ca-certificates
 }
 
@@ -186,7 +184,7 @@ run_preview() {
 }
 
 run_desktop() {
-  log "desktop launchers (Go race/vet/fuzz + pinned Windows compile; fake firmware)"
+  log "desktop launchers (Go race/vet/fuzz + Windows launcher build; fake firmware)"
   ./scripts/ci-desktop.sh
 }
 
