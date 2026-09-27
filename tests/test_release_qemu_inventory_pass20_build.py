@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 from pathlib import Path
+import re
 
 import pytest
 
@@ -26,6 +27,7 @@ def _qemu_gate_output_names() -> set[str]:
         "source-commit.txt",
         "checksums.txt",
         "isoinfo.txt",
+        "iso-extraction.txt",
         "nwipe-version.txt",
         "fixed-vulnerabilities.txt",
         "accessible-runtime.txt",
@@ -73,6 +75,17 @@ def test_release_lists_every_qemu_gate_output():
         if path.parent == qemu_dir
     }
     assert listed == _qemu_gate_output_names()
+
+
+def test_release_lists_literal_qemu_gate_outputs():
+    """New named QEMU logs must be included in the publisher inventory."""
+    source = (ROOT / "scripts/qemu-verify.sh").read_text(encoding="utf-8")
+    literal_outputs = set(re.findall(
+        r"\$EVIDENCE_DIR/([A-Za-z0-9][A-Za-z0-9._-]*\.(?:txt|log))",
+        source,
+    ))
+    assert literal_outputs
+    assert literal_outputs <= set(PUBLISHER._qemu_evidence_names())
 
 
 def test_publisher_rejects_unlisted_or_missing_qemu_gate_output():
