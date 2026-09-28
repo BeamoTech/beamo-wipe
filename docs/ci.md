@@ -107,8 +107,20 @@ path remains usable. Verify exact enforcement through the API afterward; see
 the [dated review audit](evidence/pr-review-enforcement-20260928.md) for the
 current gap and before settings.
 
-At audit start, GitHub reported no classic protection or ruleset on `main`,
-and no custom Actions workflow. Blacksmith is installed in the organization
+For actual agent-authored work, the proposed manual
+`.github/workflows/agent-pr.yml` route would replay an exact `codex/*` source
+commit under a dedicated GitHub App PR author, leaving `BeamoINT` to review
+the source evidence and final diff. It requires a repository-scoped App and a
+protected `agent-pr` environment; it is **not operational or evidence of review
+enforcement** until those are configured and a safe test succeeds. Relaying a
+human-authored change through that App does not supply an independent review.
+`BeamoINT`-authored work still needs another eligible reviewer. See the dated
+audit for setup, safeguards, and remaining limitations.
+
+At the initial CI migration audit, GitHub reported no classic protection or
+ruleset on `main`, and no custom Actions workflow. By 2026-09-28, classic
+protection required the strict `CI gate` but no approving review; this later
+state is recorded in the dated review audit. Blacksmith is installed in the organization
 with selected repository access; repository enrollment is demonstrated by hosted Linux and Windows execution. Current canonical repository is `BeamoTech/beamo-wipe`;
 `BeamoINT/beamo-wipe` redirects there. Current rollout evidence belongs in the
 linked dated audit, not in claims inferred from this configuration.

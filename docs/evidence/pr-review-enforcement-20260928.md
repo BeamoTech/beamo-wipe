@@ -110,6 +110,50 @@ another trusted human reviewer for `BeamoINT`-authored PRs, must be identified
 before enabling the rule. The operator then confirmed that no separate GitHub
 identity exists. No bot workflow or Actions permission was changed.
 
+### Agent-authored proposal route prepared after operator decision
+
+The operator subsequently chose an agent-authored PR workflow with
+`BeamoINT` as reviewer. The proposed `agent-pr.yml` runs only by manual
+dispatch on `main` by `BeamoINT`. It accepts a `codex/*` source ref, its exact
+commit SHA, and a changed evidence file. It refuses an advanced `main`, merges,
+unrelated refs, missing evidence, submodules, prohibited image/key extensions,
+and more than 500 changed paths. It replays the exact source tree onto the
+dispatch commit, records the source SHA in the new commit and PR, and does not
+approve or merge. The source checkout is treated as data: the publisher script
+is copied from `main` to the runner's temporary directory before any proposal
+files are loaded, and the App token is minted only after replay checks pass.
+The job has a ten-minute bound and serializes duplicate source-SHA dispatches.
+
+The proposed route uses a **dedicated GitHub App installation token** scoped
+to this repository with Contents, Pull requests, and Workflows write
+permissions. Workflows write is required only so a proposal changing a workflow
+file can still be pushed and reviewed through the same protected path. The
+short-lived token comes from an `agent-pr` environment intended to require
+`BeamoINT` approval, using the
+`BEAMO_AGENT_APP_ID` environment variable and
+`BEAMO_AGENT_APP_PRIVATE_KEY` environment secret. The broad repository switch
+that lets `GITHUB_TOKEN` create **and approve** PRs stays disabled. GitHub's
+Pull requests write permission also permits review API calls; this workflow
+does not make one, and the App key must be stored only in the dedicated
+environment and never used for approval. Any workflow on `main` that enters
+the same environment could request its secret after environment approval, so
+the environment must require a deliberate `BeamoINT` review of each run. Since
+`BeamoINT` initiates dispatch, GitHub's optional prevent-self-review switch
+must remain off for this single-operator route; that is a residual trust
+limit, not a second-person approval. The App needs no administration, secrets,
+or deployment permission.
+Its installation and environment must be configured and verified before this
+route is usable. The exact App identity and installer are not yet known.
+
+This route gives GitHub a distinct PR author for code actually proposed by an
+agent and allows `BeamoINT` to review that code. It does **not** prove who
+wrote the source branch; relaying a `BeamoINT`-authored change through the App
+would defeat the independence the policy seeks. The evidence file and commit
+history must be inspected during review. Human-authored `BeamoINT` changes
+still need a different qualified reviewer. Until the App route passes an
+end-to-end non-release test and the human-authored path is acknowledged, the
+one-approval protection must remain unapplied to avoid an unusable merge path.
+
 ## Proposed narrow change and rollback
 
 After the review path and eligibility are recorded, re-read protection and
@@ -150,3 +194,21 @@ without opening a PR or starting CI; it is not merged. A reviewer path and
 hosted validation remain necessary before merge.
 Enforcement, its after-settings comparison, and a safe merge-rule check remain
 outstanding.
+
+### Follow-up preparation results
+
+The unmerged agent proposal workflow, publisher, and local Git-fixture tests
+were prepared on `codex/review-enforcement-118`. Ten focused fixture tests
+passed, including exact-tree replay, malformed/stale input rejection, symlink
+evidence rejection, wrong publisher actor, and repeated publication using a
+fake `gh` and bare Git remote. `actionlint`, focused Ruff checks and formatting,
+shell syntax, and `git diff --check` passed. No live App token or disk was used.
+The full local `./scripts/test-all.sh` run finished with **4,605 passed, 710
+skipped, four failed** in 7m10s. Failures were in the preview negative fixture
+(preview cannot write/open its gallery in this checkout), two `gi`/ATK tests
+(PyGObject unavailable on this Mac), and the QMP UNIX-socket fixture (sandbox
+denied socket bind). Hosted Linux, Windows, ISO, and QEMU qualification of this
+change remain unrun. These failures must not be described as a passing full
+local gate. A read-only browser check found no dedicated App installed for
+this repository, and the local `gh` token was invalid. No branch-protection or
+Actions permission setting changed.
