@@ -92,7 +92,7 @@ steps:
       - SKIP_ISO=${_SKIP_ISO}
       - ALLOW_DIRTY=${_ALLOW_DIRTY}
       - BUILD_ID=$BUILD_ID
-      - BEAMO_WIPE_VERSION=0.2.11
+      - BEAMO_WIPE_VERSION=0.2.12
     args:
       - -ceu
       - |
@@ -108,7 +108,7 @@ steps:
     env:
       - SKIP_QEMU=${_SKIP_QEMU}
       - ALLOW_DIRTY=${_ALLOW_DIRTY}
-      - BEAMO_WIPE_VERSION=0.2.11
+      - BEAMO_WIPE_VERSION=0.2.12
     args:
       - -ceu
       - |
@@ -123,7 +123,7 @@ steps:
       - PUBLISH_RELEASE=${_PUBLISH_RELEASE}
       - SKIP_ISO=${_SKIP_ISO}
       - SKIP_QEMU=${_SKIP_QEMU}
-      - BEAMO_WIPE_VERSION=0.2.11
+      - BEAMO_WIPE_VERSION=0.2.12
       - BUILD_ID=$BUILD_ID
     args:
       - -ceu
