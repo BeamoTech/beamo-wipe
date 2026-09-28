@@ -95,11 +95,17 @@ were the same measurement.
 
 ## Required checks and rollout
 
-Require `CI gate` on `main`, with up-to-date branches, pull-request review,
-no force pushes and no deletion. Enable the requirement only after the new
-check has actually run successfully, to avoid a permanently pending check.
-Use the GitHub Actions app identity observed on that run when binding the
-required check. Verify enforcement through the API afterward.
+Require `CI gate` on `main`, with up-to-date branches, one approving review
+from a non-author with write access, no force pushes and no deletion.
+Administrator enforcement remains enabled. The one-approval policy adds no
+CODEOWNERS, stale-review dismissal, last-push approval, or bypass rule; no
+emergency bypass is documented. Changes to workflow and protection files
+use the same PR review and CI gate. The existing check was bound to the GitHub
+Actions app identity observed on a successful hosted run. Before enabling
+review enforcement, establish an eligible non-author reviewer so the merge
+path remains usable. Verify exact enforcement through the API afterward; see
+the [dated review audit](evidence/pr-review-enforcement-20260928.md) for the
+current gap and before settings.
 
 At audit start, GitHub reported no classic protection or ruleset on `main`,
 and no custom Actions workflow. Blacksmith is installed in the organization
@@ -138,8 +144,9 @@ project currently pins them, but Debian package repositories remain mutable;
 this does **not** establish bit-for-bit reproducible ISO bytes. Record installed
 package versions and hashes for each build.
 
-Rollback remains the signed `beamo-wipe-0.2.10-amd64.iso`, SHA-256
-`3f18759f52ed029b949e054573b37cbcc37859d0f62148d9215995b071a36d73`.
+The recorded prior-stable rollback for v0.2.12 is the signed
+`beamo-wipe-0.2.11-amd64.iso`, SHA-256
+`9694068e4d70824b316f12da9bd4c0ee964809d15ce5ad4d406333f710176305`.
 See [release verification](release-verification.md) and [runbook](runbook.md).
 Do not relabel a fresh build as the old verified artifact.
 
