@@ -63,6 +63,31 @@ that GitHub can enforce is available. Do not weaken the existing `CI gate` or
 administrator enforcement to work around reviewer eligibility. Draft PRs
 cannot satisfy merge requirements until made ready.
 
+## Alternative review paths checked
+
+- The available Codex GitHub connector authenticated as `BeamoINT`, the same
+  identity that authored the recent PRs; it cannot independently approve those
+  PRs. Having a bot merely open a PR containing `BeamoINT`'s own changes would
+  change GitHub's displayed PR author without providing independent review.
+- The installed `greptile-apps` GitHub App has pull-request and contents write
+  permissions, but its observed #78–#75 reviews were `COMMENTED`, not
+  `APPROVED`. [Greptile's auto-approval beta](https://www.greptile.com/changelog)
+  is limited to clean, low-risk PRs and excludes critical CI, infrastructure,
+  security and similar changes; it cannot provide the sole qualifying path
+  for every change in this safety-critical repository. No such approval
+  configuration was changed here.
+- [GitHub Copilot approvals](https://docs.github.com/en/copilot/concepts/agents/code-review)
+  can count if explicitly enabled, but are a public-preview feature and off by
+  default. The organization reported a Copilot Business plan with zero assigned
+  seats; [unlicensed organization review](https://docs.github.com/en/copilot/concepts/agents/code-review#copilot-code-review-without-a-copilot-license)
+  requires enabling paid AI-credit usage and additional policies. No current
+  entitlement or approved sole-AI-review policy was established, so this is
+  not an existing usable merge path.
+
+An independent trusted reviewer with write access remains the narrowest
+reliable path for the approved one-approval rule. Do not silently substitute
+paid or automated approval for the operator's review-policy decision.
+
 ## Proposed narrow change and rollback
 
 After the review path and eligibility are recorded, re-read protection and
