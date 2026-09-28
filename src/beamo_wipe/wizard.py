@@ -287,6 +287,18 @@ def _start_guarded_thread(
 
 
 class Wizard:
+    @property
+    def screen(self) -> Screen:
+        return self._screen
+
+    @screen.setter
+    def screen(self, value: Screen) -> None:
+        # Audio results belong to one visit to a screen, even if navigation
+        # returns to the same screen before the next UI timer tick.
+        if getattr(self, "_screen", None) != value:
+            self._screen_epoch = getattr(self, "_screen_epoch", 0) + 1
+        self._screen = value
+
     def __init__(
         self,
         discovery: DiscoveryResult,
@@ -313,6 +325,8 @@ class Wizard:
         self.sound_output = ""
         self.sounds_enabled = False
         self.sound_message = ""
+        self.sound_revision = 0
+        self._audio_request = None
         self._sound_played_for: Optional[tuple[str, str]] = None
         self._intent_store = None
         self.report_recovery_warning = ""
@@ -848,6 +862,7 @@ class Wizard:
 
     def tick(self) -> None:
         self.power.tick(self.now)
+        self._poll_audio()
         with self._lock:
             self._recover_when_quiescent()
         if (
@@ -3027,6 +3042,121 @@ class Wizard:
                 if self.sounds_enabled
                 else _copy.SOUND_TOGGLE_OFF
             )
+            self.sound_revision += 1
+
+    def set_sound_message(self, message: str) -> None:
+        with self._lock:
+            self.sound_message = message
+            self.sound_revision += 1
+
+    def _queue_audio(self, action, *, auto=False, key=None):
+        """Only tickets cross back to the UI thread; workers never mutate Wizard."""
+        from beamo_wipe.audio_jobs import worker
+
+        with self._lock:
+            if self._audio_request is not None:
+                self._audio_request[0].cancel()
+            if not auto:
+                self.sound_message = C.SOUND_CHECKING
+                self.sound_revision += 1
+            ticket = worker.submit(action)
+            self._audio_request = (ticket, self.screen, self._screen_epoch, key, auto)
+            return ticket
+
+    def _poll_audio(self) -> None:
+        with self._lock:
+            request = self._audio_request
+            if request is None:
+                return
+            ticket, screen, epoch, key, auto = request
+            if self.screen != screen or self._screen_epoch != epoch or (
+                key is not None
+                and (
+                    self.wipe_result is None
+                    or (self._result_evidence_key(self.wipe_result), self.result_view.code) != key
+                )
+            ):
+                ticket.cancel()
+                self._audio_request = None
+                if not auto and self.sound_message == C.SOUND_CHECKING:
+                    self.sound_message = ""
+                    self.sound_revision += 1
+                return
+            ready, result = ticket.poll()
+            if not ready:
+                return
+            self._audio_request = None
+            if result is None:
+                if not auto:
+                    self.sound_message = C.SOUND_ACTION_FAILED
+                    self.sound_revision += 1
+                return
+            from beamo_wipe.sound import SoundResult
+
+            if isinstance(result, BaseException) or not isinstance(result, SoundResult):
+                message = C.SOUND_ACTION_FAILED
+                diagnostic = type(result).__name__
+            else:
+                message = result.message
+                diagnostic = "" if result.ok else "AudioUnavailable"
+            if diagnostic:
+                try:
+                    from beamo_wipe.diagnostics import log_diag
+
+                    log_diag("audio", "operation_failed", diagnostic)
+                except Exception:
+                    pass
+            if not auto or diagnostic:
+                self.sound_message = message
+                self.sound_revision += 1
+
+    def cancel_audio(self) -> None:
+        with self._lock:
+            if self._audio_request is not None:
+                self._audio_request[0].cancel()
+                self._audio_request = None
+
+    def request_hear_both_sounds(self):
+        from beamo_wipe import sound
+
+        def play():
+            first = sound.play_test(sound.KIND_FINISHED)
+            if not first.ok:
+                return first
+            second = sound.play_test(sound.KIND_ATTENTION)
+            return sound.SoundResult(
+                second.ok,
+                first.message + " " + second.message if second.ok else second.message,
+            )
+
+        return self._queue_audio(play)
+
+    def request_hear_outcome_sound(self):
+        from beamo_wipe import sound
+
+        with self._lock:
+            if self.screen != Screen.DONE or self.wipe_result is None or self._finishing or self._evidence_saving:
+                return None
+            code = self.result_view.code
+            key = (self._result_evidence_key(self.wipe_result), code)
+        return self._queue_audio(lambda: sound.play_test(sound.kind_for_code(code)), key=key)
+
+    def request_auto_outcome_sound(self):
+        from beamo_wipe import sound
+
+        with self._lock:
+            if (
+                self.screen != Screen.DONE or self.preview or self.wipe_result is None
+                or not self.sounds_enabled or self._finishing or self._evidence_saving
+            ):
+                return None
+            code = self.result_view.code
+            key = (self._result_evidence_key(self.wipe_result), code)
+            if key == self._sound_played_for:
+                return None
+            self._sound_played_for = key
+        # A bounded, reaped playback also gives truthful failure feedback.
+        return self._queue_audio(lambda: sound.play_test(sound.kind_for_code(code)), auto=True, key=key)
 
     def maybe_play_outcome_sound(self):
         """Auto-play the final outcome's earcon at most once. Silent rules:

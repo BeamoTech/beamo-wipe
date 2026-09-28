@@ -223,6 +223,7 @@ STRINGS = {
         "SOUND_TEST_PLAYED": "Der Test wurde abgespielt. Wenn Sie ihn gehört haben, erreicht der Ton diesen Ausgang.",
         "SOUND_TEST_FAILED": "Der Sprachtest wurde nicht abgespielt. Folgen Sie den Schritten unten und versuchen Sie es erneut.",
         "SOUND_ACTION_FAILED": "Diese Änderung hat nicht funktioniert. Versuchen Sie es erneut.",
+        "SOUND_CHECKING": "Ton wird geprüft… Sie können die Oberfläche weiter benutzen.",
         "SOUND_DIALOG_LEAD": "Wählen Sie, wo der Ton spielen soll, und spielen Sie dann den Sprachtest ab.",
         "SOUND_SELECTED": "ausgewählt. Spielen Sie den Sprachtest zur Prüfung ab.",
         "SOUND_VOLUME": "Lautstärke",

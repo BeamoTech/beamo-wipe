@@ -9,9 +9,12 @@ Nothing here raises: failures return structured results with customer words.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import os
 import re
+import selectors
 import subprocess
 import threading
+import time
 from typing import List, Optional, Tuple
 
 from beamo_wipe import copy as C
@@ -32,6 +35,7 @@ _ALLOWED_BINARIES = frozenset(
 _PACTL_TIMEOUT = 5
 _SPEECH_TIMEOUT = 20
 _PLAY_TIMEOUT = 10
+_OUTPUT_LIMIT = 64 * 1024
 VOLUME_STEP = 10
 VOLUME_MAX = 100
 
@@ -39,6 +43,7 @@ TEST_PHRASE = C.SOUND_TEST_PHRASE
 
 _SINK_ID_RE = re.compile(r"^[\w.:+-]+$")
 _VOLUME_RE = re.compile(r"(\d+)%")
+_audio_context = threading.local()
 
 
 @dataclass(frozen=True)
@@ -80,7 +85,60 @@ def _run(tool: str, args: List[str], timeout: int):
     resolved = resolve_system_binary(tool)
     if not resolved:
         return None
+    ticket = getattr(_audio_context, "ticket", None)
+    if ticket is not None and ticket.cancelled.is_set():
+        return None
     try:
+        if ticket is not None:
+            # The audio worker owns this child. Poll in short slices so a
+            # superseded request or shutdown can terminate and reap it.
+            proc = subprocess.Popen(
+                [resolved, *args], stdin=subprocess.DEVNULL,
+                stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                shell=False, env=session_exec_env(),
+            )
+            end = min(time.monotonic() + timeout, ticket.deadline)
+            output = bytearray()
+            stdout = proc.stdout
+            assert stdout is not None
+            selector = selectors.DefaultSelector()
+            selector.register(stdout, selectors.EVENT_READ)
+            eof = False
+            try:
+                while not ticket.cancelled.is_set():
+                    remaining = end - time.monotonic()
+                    if remaining <= 0:
+                        break
+                    for _key, _events in selector.select(timeout=min(0.1, remaining)):
+                        chunk = os.read(stdout.fileno(), min(4096, _OUTPUT_LIMIT - len(output)))
+                        if not chunk:
+                            eof = True
+                            selector.unregister(stdout)
+                        else:
+                            output.extend(chunk)
+                    if eof and proc.poll() is not None:
+                        return subprocess.CompletedProcess(
+                            proc.args, proc.returncode, output.decode("utf-8", "replace"), None
+                        )
+                    if len(output) >= _OUTPUT_LIMIT:
+                        break
+            finally:
+                selector.close()
+                if proc.poll() is None:
+                    try:
+                        proc.terminate()
+                    except ProcessLookupError:
+                        pass
+                    try:
+                        proc.wait(timeout=0.2)
+                    except subprocess.TimeoutExpired:
+                        try:
+                            proc.kill()
+                        except ProcessLookupError:
+                            pass
+                        proc.wait(timeout=0.2)
+                stdout.close()
+            return None
         return subprocess.run(
             [resolved, *args],
             stdin=subprocess.DEVNULL,

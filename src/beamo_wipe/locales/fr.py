@@ -223,6 +223,7 @@ STRINGS = {
         "SOUND_TEST_PLAYED": "Le test a été joué. Si vous l’avez entendu, le son atteint cette sortie.",
         "SOUND_TEST_FAILED": "Le test vocal n’a pas été joué. Suivez les étapes de récupération ci-dessous et réessayez.",
         "SOUND_ACTION_FAILED": "Ce changement n’a pas fonctionné. Réessayez.",
+        "SOUND_CHECKING": "Vérification du son… Vous pouvez continuer à utiliser l’interface.",
         "SOUND_DIALOG_LEAD": "Choisissez où le son doit jouer, puis jouez le test vocal.",
         "SOUND_SELECTED": "sélectionné. Jouez le test vocal pour le vérifier.",
         "SOUND_VOLUME": "Volume",
