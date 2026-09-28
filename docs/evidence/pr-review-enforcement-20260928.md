@@ -248,3 +248,24 @@ succeeds. Rollback of this setup, if needed before any run, is to delete only
 the new `agent-pr` environment and App after confirming no dependent secret or
 workflow; the existing `production` environment and branch protection must
 remain untouched.
+
+### Repository-scoped installation after GitHub authentication
+
+After GitHub sudo authentication, `BeamoINT` installed the dedicated App as
+installation `165943719`. The GitHub installation confirmation displayed
+"Installed" and its repository access selector showed **Only select
+repositories**, with exactly one selected repository,
+`BeamoTech/beamo-wipe`. The permission summary showed Metadata read and
+Contents, Pull requests, and Workflows read/write. No other repository was
+selected. The App ID remains `5113012`.
+
+A same-session REST read of the `agent-pr` environment secret names still
+returned an empty list. A fresh read of `main` reported commit
+`e986419379f512f8088f5982ee02a51dc91a9dae`, strict `CI gate` bound to
+GitHub Actions app ID `15368`, administrator enforcement enabled, force pushes
+and deletions disabled, and **no** required PR review. The installed App does
+not make the proposal workflow operational until its private key is placed in
+the protected environment and the workflow reaches `main`. No private key has
+been handled by the agent. No branch-protection change or hosted CI run was
+made during installation. The App installation can be suspended or uninstalled
+through GitHub's installation `165943719` settings if this route is abandoned.
