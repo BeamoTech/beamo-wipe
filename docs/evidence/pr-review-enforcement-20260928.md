@@ -212,3 +212,39 @@ change remain unrun. These failures must not be described as a passing full
 local gate. A read-only browser check found no dedicated App installed for
 this repository, and the local `gh` token was invalid. No branch-protection or
 Actions permission setting changed.
+
+### Dedicated App registration after operator approval
+
+After the operator approved the dedicated App setup and completed GitHub sudo
+verification, `BeamoINT` registered the organization-owned GitHub App
+[`Beamo Wipe Agent PR Publisher`](https://github.com/apps/beamo-wipe-agent-pr-publisher)
+(App ID `5113012`, slug `beamo-wipe-agent-pr-publisher`). At registration, the
+form selected only repository Contents, Pull requests, and Workflows read/write,
+plus GitHub's mandatory Metadata read permission. Webhooks, user OAuth during
+installation, and device flow were disabled; installation was limited to
+`BeamoTech`. The post-registration page displayed “Registration successful”
+and stated that a private key must be generated before installation. A fresh
+saved-permissions page reported three selected repository permissions and one
+mandatory permission; the exact entries still require independent readback. No
+private key was generated or handled by the agent, the App was not installed,
+and no `agent-pr` environment or one-approval branch rule was configured. The
+App's existence alone does not provide a qualifying reviewer path.
+
+### Protected agent PR environment
+
+Using the existing `BeamoINT` GitHub credential after a read-only before check,
+the `agent-pr` environment was created with `BeamoINT` (user ID `122241124`)
+as required reviewer, `prevent_self_review: false`, no wait timer, and a custom
+deployment branch policy matching only the branch `main`. The nonsecret
+`BEAMO_AGENT_APP_ID` environment variable was created with value `5113012`.
+A post-write REST readback verified these values and found no environment
+secrets. Before creation, the only repository environment was `production`;
+no existing environment was modified. Main protection still required strict
+`CI gate` (Actions app ID `15368`) and administrator enforcement, with no
+required pull-request review. This environment cannot publish an agent PR
+until the private key is stored by the operator, the App is installed only on
+this repository, the workflow is merged to `main`, and a safe end-to-end test
+succeeds. Rollback of this setup, if needed before any run, is to delete only
+the new `agent-pr` environment and App after confirming no dependent secret or
+workflow; the existing `production` environment and branch protection must
+remain untouched.
