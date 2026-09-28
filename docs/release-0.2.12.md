@@ -15,8 +15,9 @@ the publisher looks up a GitHub draft by its numeric release ID before checking
 uploaded asset hashes. It does not change the disk engine or its arguments.
 
 The engine remains pinned to nwipe 0.42. The supported hardware and storage
-claims remain those in [claims](claims.md) and the
-[compatibility matrix](compatibility-matrix.md). Safe local tests use fake
+claims remain those in the [claims](https://github.com/BeamoTech/beamo-wipe/blob/v0.2.12/docs/claims.md)
+and [compatibility matrix](https://github.com/BeamoTech/beamo-wipe/blob/v0.2.12/docs/compatibility-matrix.md).
+Safe local tests use fake
 devices and stubbed power commands. Release qualification includes exact-source
 Blacksmith Linux, amd64 image, isolated KVM/USB boot, and native Windows gates.
 These checks do not establish physical-machine compatibility.
