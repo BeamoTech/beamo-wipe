@@ -88,6 +88,28 @@ An independent trusted reviewer with write access remains the narrowest
 reliable path for the approved one-approval rule. Do not silently substitute
 paid or automated approval for the operator's review-policy decision.
 
+### Sole-maintainer clarification
+
+The operator identified themself as `BeamoINT` and offered to be the trusted
+reviewer of agent-proposed changes. Current `gh` authentication and the Codex
+GitHub connector both use `BeamoINT`; local commits and recent PRs also carry
+that account. GitHub therefore treats PRs opened through the available tools
+as `BeamoINT` PRs, whose approval by `BeamoINT` cannot satisfy the rule.
+Repository Actions settings report `default_workflow_permissions: read` and
+`can_approve_pull_request_reviews: false`. No independent PR-authoring identity
+or existing bot workflow was found.
+
+Creating a workflow to open `BeamoINT`'s existing changes as a bot would require
+changing the Actions PR-creation setting and would not establish independent
+review of human-authored code. It would broaden the solution beyond the narrow
+review setting and risk turning the author check into a naming formality.
+[GitHub also says](https://docs.github.com/en/copilot/how-tos/copilot-on-github/use-copilot-agents/review-copilot-output)
+that the person who assigned a Copilot cloud-agent PR cannot supply its required
+approval. A separately controlled PR author for actual agent-authored work, or
+another trusted human reviewer for `BeamoINT`-authored PRs, must be identified
+before enabling the rule. The operator then confirmed that no separate GitHub
+identity exists. No bot workflow or Actions permission was changed.
+
 ## Proposed narrow change and rollback
 
 After the review path and eligibility are recorded, re-read protection and
