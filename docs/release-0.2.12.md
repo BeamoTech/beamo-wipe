@@ -1,4 +1,4 @@
-# Beamo Wipe 0.2.12 — candidate notes
+# Beamo Wipe 0.2.12
 
 This patch release restores the live USB recovery menu after a single terminal
 EOF (for example, Ctrl-D). If terminal reads keep failing, the menu keeps its
@@ -17,10 +17,10 @@ uploaded asset hashes. It does not change the disk engine or its arguments.
 The engine remains pinned to nwipe 0.42. The supported hardware and storage
 claims remain those in [claims](claims.md) and the
 [compatibility matrix](compatibility-matrix.md). Safe local tests use fake
-devices and stubbed power commands. The exact-source Blacksmith Linux,
-amd64 image, isolated KVM/USB boot, and native Windows gates are required before
-release. No physical-machine compatibility claim follows from those gates.
+devices and stubbed power commands. Release qualification includes exact-source
+Blacksmith Linux, amd64 image, isolated KVM/USB boot, and native Windows gates.
+These checks do not establish physical-machine compatibility.
 
-The signed release manifest, if publication is separately authorized, must
-identify the exact tagged source and measured ISO/USB bytes. The previous
-signed v0.2.11 release remains the rollback target; its artifacts are unchanged.
+The signed release manifest identifies the tagged source and measured ISO/USB
+bytes. The previous signed v0.2.11 release remains the rollback target; its
+artifacts are unchanged.
