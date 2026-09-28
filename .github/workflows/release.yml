@@ -6,7 +6,7 @@ on:
       version:
         description: Version whose tag points at the qualified main commit
         required: true
-        default: '0.2.11'
+        default: '0.2.12'
 
 permissions:
   contents: read

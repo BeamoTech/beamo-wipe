@@ -10,8 +10,8 @@ import subprocess
 
 
 ROOT = Path(__file__).resolve().parents[1]
-ISO = "beamo-wipe-0.2.11-amd64.iso"
-MANIFEST = "beamo-wipe-0.2.11-amd64.manifest.json"
+ISO = "beamo-wipe-0.2.12-amd64.iso"
+MANIFEST = "beamo-wipe-0.2.12-amd64.manifest.json"
 
 
 def _preflight(tmp_path: Path, setup):
@@ -23,7 +23,7 @@ def _preflight(tmp_path: Path, setup):
     (scripts / "build-iso.sh").write_text(source.split("\nif ! docker info", 1)[0] + "\n")
     package = project / "src/beamo_wipe"
     package.mkdir(parents=True)
-    (package / "__init__.py").write_text('__version__ = "0.2.11"\n')
+    (package / "__init__.py").write_text('__version__ = "0.2.12"\n')
     out = project / "dist"
     out.mkdir()
     setup(out)
@@ -50,7 +50,7 @@ def _complete_bundle(out: Path):
     iso_sha = hashlib.sha256(iso_blob).hexdigest()
     fields = {
         "schema_version": 2,
-        "beamo_wipe_version": "0.2.11",
+        "beamo_wipe_version": "0.2.12",
         "artifact": {
             "iso_name": ISO,
             "iso_path": ISO,
@@ -71,7 +71,7 @@ def _complete_bundle(out: Path):
     )
 
 
-def _previous_version_bundle(out: Path, version: str = "0.2.10"):
+def _previous_version_bundle(out: Path, version: str = "0.2.11"):
     iso = f"beamo-wipe-{version}-amd64.iso"
     manifest = f"beamo-wipe-{version}-amd64.manifest.json"
     iso_blob = b"previous ISO fixture"
@@ -117,7 +117,7 @@ def test_iso_preflight_accepts_valid_checksum_list_from_previous_version(tmp_pat
 def test_iso_preflight_refuses_corrupt_previous_version_checksum_list(tmp_path):
     def corrupt(out):
         _previous_version_bundle(out)
-        (out / "beamo-wipe-0.2.10-amd64.iso").write_bytes(b"changed prior ISO!!")
+        (out / "beamo-wipe-0.2.11-amd64.iso").write_bytes(b"changed prior ISO!!")
 
     _, result = _preflight(tmp_path, corrupt)
     assert result.returncode != 0
@@ -133,7 +133,7 @@ def test_iso_preflight_refuses_checksum_list_from_newer_version(tmp_path):
 def test_iso_preflight_refuses_old_manifest_with_invalid_internal_digest(tmp_path):
     def corrupt(out):
         _previous_version_bundle(out)
-        manifest = "beamo-wipe-0.2.10-amd64.manifest.json"
+        manifest = "beamo-wipe-0.2.11-amd64.manifest.json"
         fields = json.loads((out / manifest).read_text())
         fields["_manifest_sha256"] = "0" * 64
         raw = json.dumps(fields).encode() + b"\n"
@@ -159,7 +159,7 @@ def test_iso_backup_accepts_verified_previous_version_sums(tmp_path):
     helper = "verify_prior_bundle() {" + source.split("verify_prior_bundle() {", 1)[1].split(
         "\ncleanup() {", 1
     )[0]
-    script = "#!/bin/sh\nset -eu\nVERSION=0.2.11\n" + helper + '\nverify_prior_bundle "$1" "$2"\n'
+    script = "#!/bin/sh\nset -eu\nVERSION=0.2.12\n" + helper + '\nverify_prior_bundle "$1" "$2"\n'
     result = subprocess.run(
         ["sh", "-c", script, "verify", str(backup), str(out)],
         capture_output=True,
@@ -193,7 +193,7 @@ def test_iso_transaction_preserves_prior_name_swapped_to_foreign_regular_file(tm
     )[1].split('\necho "Wrote ', 1)[0]
     script = tmp_path / "transaction.sh"
     script.write_text(
-        f"#!/bin/sh\nset -eu\nOUT_DIR='{out}'\nVERSION=0.2.11\nISO_NAME={ISO}\n"
+        f"#!/bin/sh\nset -eu\nOUT_DIR='{out}'\nVERSION=0.2.12\nISO_NAME={ISO}\n"
         + helpers
         + "\ntrap cleanup EXIT\n"
         + 'BUILD_OUT="$(mktemp -d "$OUT_DIR/.build-output.XXXXXX")"\n'

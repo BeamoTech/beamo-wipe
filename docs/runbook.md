@@ -1,7 +1,7 @@
 # Beamo Wipe — Production support and incident runbook
 
-> **Version 1.10 — 2026-09-27 | Owner: Accountable senior engineer (this checkout) | Next review 2026-12-18**
-> Pinned wrapper `0.2.11` / `nwipe v0.42` commit `6082bde060091e66365d852a1877f2ee80c67105` at `/usr/lib/beamo-wipe/nwipe`
+> **Version 1.11 — 2026-09-28 | Owner: Accountable senior engineer (this checkout) | Next review 2026-12-28**
+> Pinned wrapper `0.2.12` / `nwipe v0.42` commit `6082bde060091e66365d852a1877f2ee80c67105` at `/usr/lib/beamo-wipe/nwipe`
 > Wrapper GPL-3.0-or-later; nwipe GPL-2.0. See `docs/storage-and-controller-limits.md`, `docs/compatibility-matrix.md`.
 
 This runbook is for the support operator who answers "the USB won't boot / it shows no disks / the erase failed." It separates **verified behavior** (code, tests, build) from **unknowns**, gives decision trees that never weaken a safety gate, and defines how to reproduce safely, collect evidence with redaction, communicate, and when to quarantine or stop-ship.
@@ -58,7 +58,7 @@ Collect in order shown. Redaction is mandatory before leaving the support queue.
 | `REPORT.html` + `.sha256` | Same private bundle; open offline in any browser | Same identifiers as `RESULT.txt` — do not share; share only `SHARE.json`/`SHARE.txt` | Readable copy of `RESULT.txt` with the same canonical fields; checksum-covered by `COMPLETE`. |
 | `lsblk` JSON snapshot | Live: run `lsblk -J -b -o NAME,PATH,SIZE,TYPE,TRAN,ROTA,MODEL,SERIAL,WWN,RM,HOTPLUG,MOUNTPOINTS,LABEL,FSTYPE,VENDOR,PKNAME,UUID` into a file on the second USB | Contains serials — treat as PII, keep in ticket private field | For L1 to file a fake fixture that reproduces without hardware (see §8) |
 | Manifest + ISO hash | Customer reads `dist/*.manifest.json` + `dist/beamo-wipe-*.iso.sha256` or `gs://…` object, or wrapper `NWIPE_VERSION` on USB | No customer PII | Proves build input pin |
-| Environment | Wrapper version (`src/beamo_wipe/__init__.py 0.2.11`), live `NWIPE_VERSION` on USB, firmware mode (BIOS vs UEFI, Secure Boot on/off), machine vendor/model, bus of target (`TRAN`), kind (`ROTA`→HDD vs SSD per `classify_kind`) | Strip customer name | Needed for §3 wear/raid decision |
+| Environment | Wrapper version (`src/beamo_wipe/__init__.py 0.2.12`), live `NWIPE_VERSION` on USB, firmware mode (BIOS vs UEFI, Secure Boot on/off), machine vendor/model, bus of target (`TRAN`), kind (`ROTA`→HDD vs SSD per `classify_kind`) | Strip customer name | Needed for §3 wear/raid decision |
 
 **Privacy rule:** Support queue shows `device.serial` only to on-call and only when the customer consented. Public issues use `size_gb_label` + `kind` + sanitized `evidence.outcome`/`failure_reason` with serial replaced by `***`.
 
@@ -74,7 +74,7 @@ Each tree ends in exactly one of: **resolve with guidance**, **collect evidence 
 Symptom: stick never appears (Dell F12, HP F9/Esc, Lenovo F12 not listed)
   ├─ Ask: does live USB show on *another* x64 PC with Secure Boot **disabled**?
   │   ├─ No on any PC → suspect stick or flash. Check `scripts/build-iso.sh` ISO hash (`CD001` at 32769, ≥80 MiB, sha256)
-  │   │       Reflash on Linux: `sudo dd if=dist/beamo-wipe-0.2.11-amd64.iso ...` (verify `/dev/sdX` *is* USB via `lsblk`), or BalenaEtcher. Retry.
+  │   │       Reflash on Linux: `sudo dd if=dist/beamo-wipe-0.2.12-amd64.iso ...` (verify `/dev/sdX` *is* USB via `lsblk`), or BalenaEtcher. Retry.
   │   └─ Yes on at least one PC → firmware setting issue.
   ├─ Secure Boot enabled? → This USB uses Debian's signed boot files; firmware may still refuse them (docs/claims.md). Do NOT ship a bypass.
   │        Guidance: try a direct USB port, the computer manufacturer's startup instructions, or a PC that accepts Debian's signed boot files. Ask for the USB's START-HERE.html build identity. Older sticks may be unsigned. Link helper/index.html.
@@ -290,7 +290,7 @@ On a throwaway x86_64 Linux VM with `/dev/kvm`, no host block passthrough, one n
 
 ```bash
 # On a throwaway x86_64 Linux VM with /dev/kvm (e.g., GCE n2-standard-4), ephemeral:
-BEAMO_WIPE_VERSION=0.2.11 ./scripts/qemu-verify.sh
+BEAMO_WIPE_VERSION=0.2.12 ./scripts/qemu-verify.sh
 evidence_dir=$(cat qemu-evidence/PATH)
 find "$evidence_dir" -maxdepth 1 -type f -print
 # Tear down the VM (gcloud compute instances delete ... --quiet)
@@ -348,7 +348,7 @@ A release is suspect if any of:
 - `result.json` shows a host disk (e.g. `boot_device` equals `device`, or `boot_device_in_selectable` regression) in QEMU evidence `wizard-exercise.txt` or `nwipe-boundary.txt`.
 - Evidence shows `certificate`/`compliant` fields (forbidden by `tests/test_storage_limits.py`).
 - ISO `sha256` mismatch between `dist/beamo-wipe-*.iso` and `dist/*.iso.sha256` + `manifest.json.sha256` and the published `SHA256SUMS` in `gs://beamo-wipe_cloudbuild/releases/<BUILD_ID>/` and GitHub release sidecars.
-- Manifest `pinned nwipe commit 6082bde060091e66365d852a1877f2ee80c67105` or `__version__` drift from `src/beamo_wipe/__init__.py` (currently `0.2.11`; check `python -m pytest tests/test_live_image.py::test_staged_chroot_package_matches_src`).
+- Manifest `pinned nwipe commit 6082bde060091e66365d852a1877f2ee80c67105` or `__version__` drift from `src/beamo_wipe/__init__.py` (currently `0.2.12`; check `python -m pytest tests/test_live_image.py::test_staged_chroot_package_matches_src`).
 - QEMU preflight aborts on host-backed device.
 
 ### 8.b Immediate actions (page release manager)
@@ -356,7 +356,7 @@ A release is suspect if any of:
 1. **Quarantine.** Mark the GitHub release `prerelease`/`draft` and add note "Do not flash — pending verification." Do not delete the `gs://…` objects immediately; they are evidence. Add a `QUARANTINE.txt` alongside with `BUILD_ID` + reason hash.
 2. **Stop-ship.** Hold `scripts/build-iso.sh` / Blacksmith workflow promotion until the accountable engineer clears the manifested diff (`git diff HEAD packaging/live/config/{bootstrap,binary} src/beamo_wipe/__init__.py`).
 3. **Notify.** Post to the shared checkout channel and to the support queue header: "Beamo Wipe <version> quarantined — do not guide customers to flash it. Support follows this runbook §4.i and only uses the prior SHA until cleared."
-4. **Rollback.** The designated prior stable ISO is the signed `v0.2.10` release's `beamo-wipe-0.2.10-amd64.iso`, hash `3f18759f52ed029b949e054573b37cbcc37859d0f62148d9215995b071a36d73`, source commit `4feb25a6996268fd0890e7570e8cd3548b53c993`. Guidance to customers reverts to that exact signed release and hash. For a code rollback, use `git revert <quarantined commit>` or `git checkout v0.2.10` + fresh Blacksmith verification using `BEAMO_WIPE_VERSION=... ./scripts/build-iso.sh` with manifest regeneration `scripts/generate-release-manifest.sh`. Verification: `sha256sum -c dist/*.sha256`, `isoinfo -d` `CD001`, `verify_evidence_checksum()`, full `pytest -q -k "not tk_runtime"` (see §10).
+4. **Rollback.** The designated prior stable ISO is the signed `v0.2.11` release's `beamo-wipe-0.2.11-amd64.iso`, hash `9694068e4d70824b316f12da9bd4c0ee964809d15ce5ad4d406333f710176305`, source commit `662cf470f9fcedf710d897591560267575745fea`. Guidance to customers reverts to that exact signed release and hash. For a code rollback, use `git revert <quarantined commit>` or `git checkout v0.2.11` + fresh Blacksmith verification using `BEAMO_WIPE_VERSION=... ./scripts/build-iso.sh` with manifest regeneration `scripts/generate-release-manifest.sh`. Verification: `sha256sum -c dist/*.sha256`, `isoinfo -d` `CD001`, `verify_evidence_checksum()`, full `pytest -q -k "not tk_runtime"` (see §10).
 5. **Post-mortem.** After clearing, append a backlog finding `BF-0xx` row to `docs/compatibility-matrix.md` §11 exactly as the existing `BF-001…009` are recorded, with symptom, hash, and fix commit.
 
 ### 8.c Stop-ship release criteria (what must be true before the next promo)
@@ -412,7 +412,7 @@ All three spies prove no real nwipe on the support host: `NwipeRunner.start` rai
 
 ## 11. Change control for this runbook
 
-This doc is versioned with the wrapper (`1.10` for `0.2.11`) and reviewed with `docs/storage-and-controller-limits.md` and `docs/compatibility-matrix.md` on each release or when the pinned nwipe commit, Debian base, or method mapping changes. Update `Version / Next review` at the top, `docs/compatibility-matrix.md` §15 changelog, and `tests/test_runbook.py` (below) in the same commit; CI (`test_ui_system` + `test_copy` + `test_storage_limits` + `test_runbook`) must still pass before push.
+This doc is versioned with the wrapper (`1.11` for `0.2.12`) and reviewed with `docs/storage-and-controller-limits.md` and `docs/compatibility-matrix.md` on each release or when the pinned nwipe commit, Debian base, or method mapping changes. Update `Version / Next review` at the top, `docs/compatibility-matrix.md` §15 changelog, and `tests/test_runbook.py` (below) in the same commit; CI (`test_ui_system` + `test_copy` + `test_storage_limits` + `test_runbook`) must still pass before push.
 
 ---
 

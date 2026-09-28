@@ -620,7 +620,7 @@ def publish() -> str | None:
     if os.environ.get("SKIP_ISO", "false") == "true" or os.environ.get("SKIP_QEMU", "false") == "true":
         raise PublishError("refusing release publication with a skipped ISO or QEMU gate")
 
-    version = os.environ.get("BEAMO_WIPE_VERSION", "0.2.11")
+    version = os.environ.get("BEAMO_WIPE_VERSION", "0.2.12")
     build_id = os.environ.get("BUILD_ID", "")
     if not VERSION_RE.fullmatch(version):
         raise PublishError("invalid BEAMO_WIPE_VERSION")

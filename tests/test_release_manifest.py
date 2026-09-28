@@ -201,10 +201,10 @@ def test_prior_stable_release_identity_is_exact():
     import beamo_wipe.release_manifest as rm
 
     assert rm.PRIOR_STABLE == {
-        "version": "0.2.10",
-        "iso_name": "beamo-wipe-0.2.10-amd64.iso",
-        "sha256": "3f18759f52ed029b949e054573b37cbcc37859d0f62148d9215995b071a36d73",
-        "commit": "4feb25a6996268fd0890e7570e8cd3548b53c993",
+        "version": "0.2.11",
+        "iso_name": "beamo-wipe-0.2.11-amd64.iso",
+        "sha256": "9694068e4d70824b316f12da9bd4c0ee964809d15ce5ad4d406333f710176305",
+        "commit": "662cf470f9fcedf710d897591560267575745fea",
     }
 
 
@@ -275,7 +275,7 @@ def test_manifest_schema_covers_required_fields(tmp_path, monkeypatch):
     assert m["hardware_limits"]["unsupported"]
     assert m["known_issues"]
     assert m["license"]["wrapper"] == "GPL-3.0-or-later"
-    assert m["prior_stable"]["iso_name"] == "beamo-wipe-0.2.10-amd64.iso"
+    assert m["prior_stable"]["iso_name"] == "beamo-wipe-0.2.11-amd64.iso"
     assert m["verification"]["checksum_instructions"]
     assert "_manifest_sha256" in m
 
@@ -524,10 +524,10 @@ def test_prior_stable_and_rollback(tmp_path, monkeypatch):
 
     m = rm.generate_manifest(version="0.1.0", strict=False)
     prior = m["prior_stable"]
-    assert prior["iso_name"] == "beamo-wipe-0.2.10-amd64.iso"
-    assert prior["sha256"] == "3f18759f52ed029b949e054573b37cbcc37859d0f62148d9215995b071a36d73"
+    assert prior["iso_name"] == "beamo-wipe-0.2.11-amd64.iso"
+    assert prior["sha256"] == "9694068e4d70824b316f12da9bd4c0ee964809d15ce5ad4d406333f710176305"
     assert "rollback" in m
-    assert "4feb25a6996268fd0890e7570e8cd3548b53c993" in m["rollback"]
+    assert "662cf470f9fcedf710d897591560267575745fea" in m["rollback"]
 
 
 @requires_manufacturing_iso
