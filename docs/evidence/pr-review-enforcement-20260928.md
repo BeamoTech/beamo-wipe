@@ -122,7 +122,9 @@ test but the negative-gate test's fake CI subprocess exceeded its 30-second
 timeout on this macOS checkout. Neither test reads the three edited Markdown
 files. No hosted CI, publication workflow, or repository-setting write was
 started. A final read-only protection response was byte-for-byte identical
-to the before snapshot. The documentation correction remains local pending a
-reviewer path and separately authorized hosted validation before merge.
+to the before snapshot. The documentation correction was pushed to
+[`codex/review-enforcement-118`](https://github.com/BeamoTech/beamo-wipe/tree/codex/review-enforcement-118)
+without opening a PR or starting CI; it is not merged. A reviewer path and
+hosted validation remain necessary before merge.
 Enforcement, its after-settings comparison, and a safe merge-rule check remain
 outstanding.
