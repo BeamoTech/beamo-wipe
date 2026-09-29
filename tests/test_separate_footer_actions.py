@@ -6,6 +6,7 @@ packs a mid filler between Back and the primary action. Runtime geometry
 needs a display.
 """
 
+import importlib.util
 import inspect
 import re
 
@@ -95,6 +96,13 @@ def test_assist_nav_labels_stay_on_the_swept_copy_surface():
 
 def test_assist_nav_names_do_not_rewrite_result_heading():
     """Would fail if footer grouping ATK names prefixed the result heading."""
+    # Reuse the GTK suite's skip only for absent bindings, not a broken install.
+    if importlib.util.find_spec("gi") is None:
+        pytest.importorskip("gi", reason="GTK bindings are validated on the hosted Linux image")
+    import gi
+
+    gi.require_version("Gtk", "3.0")
+    gi.require_version("Atk", "1.0")
     from gi.repository import Atk
 
     from beamo_wipe.ui.accessible_wizard import AccessibleWizard

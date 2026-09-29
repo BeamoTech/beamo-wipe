@@ -134,6 +134,8 @@ run_lint() {
 
 run_pytest() (
   export BEAMO_ISOLATED_X11_TEST=1
+  # GTK is optional only for local development, never for qualification.
+  python3 -c 'import gi; gi.require_version("Gtk", "3.0"); gi.require_version("Atk", "1.0"); from gi.repository import Gtk, Atk'
   # Private runtime directories prevent AT-SPI/Pulse from sharing sockets.
   # Independent D-Bus and Xvfb sessions preserve the clean Orca environment
   # while the rest of pytest runs concurrently. Never raise its timeout.
@@ -164,6 +166,7 @@ run_pytest() (
   failed=0
   wait "$orca_pid" || failed=1
   wait "$suite_pid" || failed=1
+  python3 scripts/check-gtk-test-results.py "${BEAMO_GATE_JUNIT:-$ROOT/dist/evidence/tests.xml}" || failed=1
   exit "$failed"
 )
 

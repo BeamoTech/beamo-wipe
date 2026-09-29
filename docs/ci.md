@@ -8,6 +8,20 @@ rollout status. A configured workflow is not proof of a successful hosted run.
 
 ## Execution
 
+GTK bindings (`gi`, GTK 3 and ATK 1) are optional on the macOS development
+setup. Mixed test modules skip only their GTK runtime tests when `gi` is
+absent, using the existing `pytest.importorskip` pattern before GTK imports;
+their non-GTK tests still run. An installed but broken binding, wrong GTK
+version, initialization error or assertion failure is not a dependency skip.
+
+Linux qualification requires the declared `python3-gi` and `gir1.2-gtk-3.0`
+packages (including ATK). The shared `ci-hosted.sh` test gate imports the
+required namespaces before pytest and checks its JUnit report with
+`scripts/check-gtk-test-results.py`: both mixed-module GTK regressions must
+execute and pass exactly once. Missing, skipped, failed or duplicated cases
+fail the gate. This applies to both CI and release qualification through
+`ci-blacksmith.sh sources`; local skips are not Linux qualification evidence.
+
 Start with [local development and operation-specific doctor checks](development.md).
 PRs targeting `main` and pushes to `main` run every gate. Pushing a branch with
 an open PR updates that PR and triggers CI; only branches without a PR avoid
