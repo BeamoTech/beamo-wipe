@@ -112,10 +112,16 @@ never transfer to 0.2.7.
 
 ### Firmware and boot mode (matrix §4)
 
+**Current correction (#119):** this index is historical 0.2.7 evidence, not
+the current physical expectation. [Q12 component inspection and cases](secure-boot-acceptance.md)
+establish conditional Debian-chain acceptance/refusal and explicit unknown
+states. Enforced OVMF acceptance is virtual evidence only. All physical
+trust/revocation cases remain NOT TESTED; no old receipt is upgraded.
+
 | IDs | Tier | Best receipt on file | Gap |
 | --- | --- | --- | --- |
 | FW-01 (SeaBIOS), FW-02/FW-04 (UEFI, Secure Boot off), FW-05 (CSM/virtio) | Tier 1 now; Tier 2 historical | Tier 2: [hosted 0.2.5 excerpts](evidence/bugfix-20260908/hosted-verification-excerpts.txt) (2026-09-08, wrapper 0.2.5: BIOS export, UEFI WHAT, BIOS/USB and UEFI/USB boots) | `UNVERIFIED` at 0.2.7: no executed `qemu-verify.sh` run on file for this source. The `feat/qemu-three-method-journeys` workflow is also uncommitted, so its three-method journeys have no receipt yet |
-| FW-03 (Secure Boot enabled, unsigned image refuses) | Tier 1 + Tier 2 historical | Tier 2: same 0.2.5 excerpts (`secureboot-usb` probe) for refusal behavior | `UNVERIFIED` at 0.2.7 as above; refusal is by design per `docs/claims.md`, never a bypass |
+| FW-03 (Secure Boot enforcing, image-specific policy outcome) | Tier 1 + Tier 2 historical | Tier 2: same 0.2.5 excerpts (`secureboot-usb` probe); the probe name alone does not prove refusal | `UNVERIFIED` at 0.2.7 as above; current expectations use the inspected chain and actual trust/revocation state, never a bypass |
 | FW-06 (boot-menu keys) | Tier 1 (doc render) | `tests/test_helper_boot_guidance.py` (non-pixel) plus helper page | Physical key behavior per vendor is Tier 3 `UNVERIFIED` by nature; the card documents keys, it does not prove firmware menus |
 
 ### Boot-media identification (matrix §5, BM-01…BM-17)

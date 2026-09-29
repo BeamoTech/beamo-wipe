@@ -72,16 +72,23 @@ Each tree ends in exactly one of: **resolve with guidance**, **collect evidence 
 
 ```
 Symptom: stick never appears (Dell F12, HP F9/Esc, Lenovo F12 not listed)
-  ├─ Ask: does live USB show on *another* x64 PC with Secure Boot **disabled**?
+  ├─ Ask: does live USB show on *another* x64 PC already configured to accept this image?
   │   ├─ No on any PC → suspect stick or flash. Check `scripts/build-iso.sh` ISO hash (`CD001` at 32769, ≥80 MiB, sha256)
   │   │       Reflash on Linux: `sudo dd if=dist/beamo-wipe-0.2.12-amd64.iso ...` (verify `/dev/sdX` *is* USB via `lsblk`), or BalenaEtcher. Retry.
   │   └─ Yes on at least one PC → firmware setting issue.
   ├─ Secure Boot enabled? → This USB uses Debian's signed boot files; firmware may still refuse them (docs/claims.md). Do NOT ship a bypass.
   │        Guidance: try a direct USB port, the computer manufacturer's startup instructions, or a PC that accepts Debian's signed boot files. Ask for the USB's START-HERE.html build identity. Older sticks may be unsigned. Link helper/index.html.
-  ├─ Fast Boot / USB legacy disabled? → Guidance: disable Fast Boot, enable USB legacy/CSM, try direct USB-A/C port not a keyboard hub.
+  ├─ Fast Boot / USB boot disabled? → Try a direct USB-A/C port and the manufacturer's USB-startup instructions. Preserve Secure Boot; do not switch to CSM if that requires disabling it.
   └─ Still not listed → degraded boot findability (docs/compatibility-matrix.md DISP/ FW). Collect vendor/model/BIOS version, photo of boot menu, manifest hash, and file as SEV-3 (escalate if ≥2 vendors systematically).
 Action: never "force boot via efibootmgr on customer PC."
 ```
+
+For lab qualification, use [the exact-image Secure Boot cases](secure-boot-acceptance.md).
+Capture CPU/firmware architecture, actual db/dbx, shim validation/SBAT,
+entry path, and failure stage. No Beamo firmware key is required by the
+inspected Debian chain. Unknown databases or a missing menu entry do not
+prove policy rejection and cannot qualify a Pass. Do not change trust,
+revocations, validation, or Secure Boot to obtain acceptance.
 
 ### 4.b Blank / low-resolution UI (old 800×600 laptop, VNC 96 DPI)
 

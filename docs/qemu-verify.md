@@ -66,6 +66,10 @@ The gate fails unless all of these pass:
    ISO/nwipe hashes, source commit, build identity, and executed repetitions.
 8. OVMF reaches the shipped Tk `OWNER` marker. Missing OVMF, an early exit, or a
    timeout is a failure, never `SKIP` or a tolerated timeout.
+9. The actual FAT32 USB image reaches the guide with Microsoft-trusting
+   `OVMF_VARS_4M.ms.fd`, Secure Boot code, SMM enforcement and the guest's
+   actual `BEAMO_WIPE_SECURE_BOOT=1` marker. This is an acceptance probe for
+   that virtual policy, not a refusal test or physical-firmware guarantee.
 
 ```sh
 BEAMO_WIPE_VERSION=0.2.12 ./scripts/qemu-verify.sh
@@ -73,4 +77,8 @@ evidence_dir=$(cat qemu-evidence/PATH)
 find "$evidence_dir" -maxdepth 1 -type f -print
 ```
 
-The run does not validate physical SATA/NVMe firmware behavior, USB bridges, Secure Boot, RAID, SSD spare-area erasure, or a human click-through of every graphical screen. Those require separately authorized lab hardware and are not claimed.
+The run does not validate physical SATA/NVMe firmware behavior, USB bridges,
+physical Secure Boot trust/revocations, RAID, SSD spare-area erasure, or a human
+click-through of every graphical screen. Those require separately authorized
+lab hardware and are not claimed. Use [the inspected-chain physical cases](secure-boot-acceptance.md)
+and keep untested hardware states NOT TESTED.

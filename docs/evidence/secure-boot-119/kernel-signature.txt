@@ -1,0 +1,53 @@
+PE checksum   : 007E18DD
+
+Signature Index: 0  (Primary Signature)
+
+Message digest algorithm  : SHA256
+Current message digest    : B2FC604C57CFDEFD59E36F664FDBC1D0C4E2DAD7B3CBE874637D64618E6FEDA9
+Calculated message digest : B2FC604C57CFDEFD59E36F664FDBC1D0C4E2DAD7B3CBE874637D64618E6FEDA9
+
+Signer's certificate:
+	------------------
+	Signer #0:
+		Subject: CN=Debian Secure Boot Signer 2022 - linux
+		Issuer : CN=Debian Secure Boot CA
+		Serial : 32A0287F841A036FA393C1E065C43AE6B2422643
+		Certificate expiration date:
+			notBefore : Aug 18 17:32:37 2022 GMT
+			notAfter : Aug 15 17:32:37 2032 GMT
+
+Message digest algorithm: SHA256
+
+Authenticated attributes:
+	Signing time: Sep  8 10:03:27 2026 GMT
+	Message digest: 37EC87D9782A5CFDDCF419B7935721D3DCF4B195D9313EB50B52ADD2950EE52D
+
+CAfile: <inspection>/debian-ca.pem
+TSA's certificates file: /etc/ssl/cert.pem
+
+Timestamp is not available
+
+Signing certificate chain verified using:
+	------------------
+	Signer #1:
+		Subject: CN=Debian Secure Boot CA
+		Issuer : CN=Debian Secure Boot CA
+		Serial : ED54A1D5AF8748948D9F8932EE9C7C34
+		Certificate expiration date:
+			notBefore : Aug 16 18:09:18 2016 GMT
+			notAfter : Aug  9 18:09:18 2046 GMT
+
+	------------------
+	Signer #0:
+		Subject: CN=Debian Secure Boot Signer 2022 - linux
+		Issuer : CN=Debian Secure Boot CA
+		Serial : 32A0287F841A036FA393C1E065C43AE6B2422643
+		Certificate expiration date:
+			notBefore : Aug 18 17:32:37 2022 GMT
+			notAfter : Aug 15 17:32:37 2032 GMT
+
+CRL online verification disabled
+Signature verification: ok
+
+Number of verified signatures: 1
+Succeeded

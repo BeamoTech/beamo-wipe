@@ -23,7 +23,7 @@ No hardware model, firmware string, screenshot, or pass mark in this folder is a
 3. **Named-machine receipts** exist for every firmware class you intend to advertise:
    - Legacy BIOS boot to the wizard
    - UEFI with Secure Boot off (or firmware that does not enforce it) boot to the wizard
-   - UEFI with Secure Boot on and no enrolled Beamo key: firmware **refuses** the USB (expected; not a product bug)
+   - UEFI with Secure Boot enforcing and inspected trust/revocation state: apply the exact-image [Secure Boot cases](../../secure-boot-acceptance.md). Qualify acceptance on each configuration intended for startup support; test policy refusal only where its prerequisites already exist. Beamo release-key enrollment is not a boot prerequisite.
    - At least one vendor boot-menu key path from [`docs/boot-card.md`](../../boot-card.md)
 4. **Representative coverage** is recorded (Pass, Fail, or Excluded with a reason — never an invented Pass) for:
    - Monitors: the built-in panel, and one external display if the PC has a video output
@@ -50,8 +50,9 @@ Use exactly these words in the Result column.
 | **Excluded** | This machine cannot run the row (no touchpad, no battery, no USB-C, Apple Silicon, and so on). Reason is filled. |
 | **NOT TESTED** | Nobody has run this row yet. Default for every row in this folder. |
 | **BLOCKED** | Cannot run until a named dependency exists (hardware, manufactured image, owner authorization). |
+| **Unknown** | A boot was observed, but firmware trust, revocations, enforcement, or the failure stage could not be established. This is not Pass. |
 
-Never upgrade **NOT TESTED** to **Pass** without a named machine, recorded image SHA-256, and evidence file. A safe refusal (for example Secure Boot rejecting an unenrolled image) is a **Pass** only when the row’s expected result is that refusal.
+Never upgrade **NOT TESTED** to **Pass** without a named machine, recorded image SHA-256, and evidence file. A refusal is a **Pass** only for a rejection case whose actual trust/revocation prerequisites were established before judging the boot. A missing USB entry or unknown database cannot prove that case. Image/signature inspection failure blocks qualification; it is not a physical Pass.
 
 ## 3. Related documents (what they actually prove)
 
@@ -89,7 +90,7 @@ Never upgrade **NOT TESTED** to **Pass** without a named machine, recorded image
 - Any named physical PC (vendor, model, firmware mode, firmware version).
 - Any manufactured-image SHA-256 recorded against a flashed spare USB used on that PC.
 - Physical results for firmware, monitors, ports, USB controllers, keyboards, touchpads, audio, and power — all rows in `results/` are **NOT TESTED**.
-- Physical Secure Boot *trust store* behavior (revocation, enrolled vs unsigned).
+- Physical Secure Boot trust and revocation behavior for the inspected Debian chain: acceptance, missing authorization, firmware denylist, and shim/SBAT denial. Artifact inspection and QEMU acceptance are recorded in [#119](../secure-boot-119/README.md); these do not fill physical cells.
 - Physical USB connector/flash/power quality (the USB lab cannot supply this).
 - Physical Orca/speaker output and mute/HDMI-audio routing.
 - Physical lid, short power-button, held power-button, and real battery readings.
@@ -119,7 +120,7 @@ Operator-facing steps. Technical IDs stay in the worksheets.
 1. Plug the USB into a **direct** USB-A or USB-C port on the PC, not a keyboard hub if you can avoid it.
 2. Open the firmware boot menu (Dell F12, HP F9/Esc, Lenovo F12, and the rest on the boot card).
 3. Expected when Secure Boot is off or not enforcing: the Beamo menu appears; picking the ordinary guide opens the wizard and erases nothing.
-4. Expected when Secure Boot is on and no Beamo key is enrolled: firmware rejects the USB or does not list it. Record the exact message. Do not ship a circumvention. Do not disable Secure Boot on a customer PC merely to make a row pass; on lab hardware you may toggle it to cover both rows.
+4. For Secure Boot enforcing cases, record the exact image and component receipt, CPU/firmware architecture, `db / dbx`, shim validation and SBAT state, and selected EFI path. Use [the canonical cases](../../secure-boot-acceptance.md) to choose acceptance, policy rejection, unknown state, or inspection failure. Firmware that authorizes the unrevoked Debian chain may start it without any Beamo key. Do not change keys, revocations, validation, or Secure Boot on lab or customer hardware to fill a row. Use machines already in the required state; unavailable states remain **NOT TESTED**.
 5. Photograph the firmware menu, the Beamo menu, and the first wizard screen. Save under `photos/PHY-FW-…`.
 6. On the pick-disk screen, confirm the Beamo USB is **not** selectable. If the USB cannot be identified, **no** disks may be selectable. Stop and record Fail. Do not continue toward erase.
 
@@ -154,7 +155,7 @@ Fill the sheets, not this index. Every Result here is **NOT TESTED**.
 
 | Sheet | IDs | Covers |
 | --- | --- | --- |
-| [results/firmware.md](results/firmware.md) | PHY-FW-01…12 | BIOS, UEFI, Secure Boot on/off, CSM, vendor boot-menu keys, Fast Boot |
+| [results/firmware.md](results/firmware.md) | PHY-FW-01…17 | BIOS, UEFI, inspected Secure Boot acceptance/refusal, unknown/inspection failure, architecture, CSM, vendor boot-menu keys, Fast Boot |
 | [results/monitors.md](results/monitors.md) | PHY-MON-01…08 | Built-in panels, external outputs, dual display, blanking, HiDPI, 800×600 |
 | [results/ports.md](results/ports.md) | PHY-PORT-01…07 | USB-A, USB-C, adapter, front/rear, hub, dock |
 | [results/usb-controllers.md](results/usb-controllers.md) | PHY-USB-01…06 | USB 2, USB 3, UAS vs BOT as the OS reports it, bridges |

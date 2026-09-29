@@ -184,9 +184,12 @@ git status --porcelain  # should be clean for a release
 Release signing is **not Secure Boot**. It proves *who published this file*
 (the Beamo release key held by the operator). It does not prove what a
 machine may boot, confer firmware trust, bless image contents beyond their
-hashes, or say anything about a wiped disk. Our image may be unsigned for
-Secure Boot purposes and we ship no circumvention tools
-(see `docs/claims.md`). Confusing the two would be a category error: a valid
+hashes, or say anything about a wiped disk. The inspected 0.2.12 x64 path uses
+Microsoft-signed Debian shim and Debian-signed GRUB/kernel; it does not use
+the Beamo release key for firmware trust. Its initrd and live filesystem are
+outside that PE signature chain. Reinspect every new candidate's actual boot
+components and apply [the physical trust/revocation cases](secure-boot-acceptance.md).
+We ship no circumvention tools (see `docs/claims.md`). A valid
 publisher signature never means "safe to boot without checking firmware",
 and a Secure Boot refusal never means "the download was tampered with".
 
