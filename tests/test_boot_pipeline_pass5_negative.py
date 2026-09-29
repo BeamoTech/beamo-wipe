@@ -7,12 +7,18 @@ import os
 from pathlib import Path
 import shutil
 import stat
-import subprocess
 import sys
 import time
 
+import pytest
+
+from negative_gate_child import owned_gate_child
 
 ROOT = Path(__file__).resolve().parents[1]
+pytestmark = pytest.mark.skipif(
+    os.name != "posix" or shutil.which("bash") is None,
+    reason="negative shell gate requires POSIX process groups and bash",
+)
 
 
 def test_negative_gate_mutates_only_private_source(tmp_path: Path) -> None:
@@ -64,30 +70,27 @@ def test_negative_gate_mutates_only_private_source(tmp_path: Path) -> None:
         BEAMO_NEGATIVE_REAL_PYTHON=sys.executable,
         PATH=str(wrappers) + os.pathsep + env["PATH"],
     )
-    proc = subprocess.Popen(
+    with owned_gate_child(
         ["bash", "scripts/ci-hosted.sh", "negative"],
         cwd=checkout,
         env=env,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-    )
-    deadline = time.monotonic() + 15
-    while not marker.exists() and proc.poll() is None and time.monotonic() < deadline:
-        time.sleep(0.02)
-    during = safety.read_bytes()
-    during_mtime = safety.stat().st_mtime_ns
-    during_mode = stat.S_IMODE(safety.stat().st_mode)
-    output, _ = proc.communicate(timeout=30)
-    assert marker.exists(), output
-    assert proc.returncode == 0, output
-    assert (
-        during == before
-        and during_mtime == original_mtime
-        and during_mode == original_mode
-    ), (
-        "Negative gate changed its checkout's safety.py while another process could import it.\n"
-        + output
-    )
-    assert safety.read_bytes() == before
-    assert stat.S_IMODE(safety.stat().st_mode) == original_mode
+    ) as proc:
+        deadline = time.monotonic() + 15
+        while not marker.exists() and proc.poll() is None and time.monotonic() < deadline:
+            time.sleep(0.02)
+        during = safety.read_bytes()
+        during_mtime = safety.stat().st_mtime_ns
+        during_mode = stat.S_IMODE(safety.stat().st_mode)
+        output, _ = proc.communicate(timeout=30)
+        assert marker.exists(), output
+        assert proc.returncode == 0, output
+        assert (
+            during == before
+            and during_mtime == original_mtime
+            and during_mode == original_mode
+        ), (
+            "Negative gate changed its checkout's safety.py while another process could import it.\n"
+            + output
+        )
+        assert safety.read_bytes() == before
+        assert stat.S_IMODE(safety.stat().st_mode) == original_mode
