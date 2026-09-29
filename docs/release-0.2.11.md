@@ -15,5 +15,5 @@ key.
 
 The erasure engine remains pinned to nwipe 0.42. QEMU results do not establish
 compatibility with every physical PC or storage controller. See
-[storage and controller limits](storage-and-controller-limits.md) and
-[release verification](release-verification.md) before using the image.
+[storage and controller limits](https://github.com/BeamoTech/beamo-wipe/blob/662cf470f9fcedf710d897591560267575745fea/docs/storage-and-controller-limits.md) and
+[release verification](https://github.com/BeamoTech/beamo-wipe/blob/662cf470f9fcedf710d897591560267575745fea/docs/release-verification.md) before using the image.

@@ -1,0 +1,7 @@
+--- release-397823407.before.md
++++ release-397823407.proposed.md
+@@ -18,2 +18,2 @@
+-[storage and controller limits](storage-and-controller-limits.md) and
+-[release verification](release-verification.md) before using the image.
++[storage and controller limits](https://github.com/BeamoTech/beamo-wipe/blob/662cf470f9fcedf710d897591560267575745fea/docs/storage-and-controller-limits.md) and
++[release verification](https://github.com/BeamoTech/beamo-wipe/blob/662cf470f9fcedf710d897591560267575745fea/docs/release-verification.md) before using the image.
