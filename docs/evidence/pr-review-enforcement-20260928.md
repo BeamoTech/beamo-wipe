@@ -269,3 +269,21 @@ the protected environment and the workflow reaches `main`. No private key has
 been handled by the agent. No branch-protection change or hosted CI run was
 made during installation. The App installation can be suspended or uninstalled
 through GitHub's installation `165943719` settings if this route is abandoned.
+
+### Final review and authenticated publication coverage — 2026-09-29
+
+The operator authorized merging PR #80 after Greptile review and confirmed-bug
+fixes. [Greptile's review of `466ba9d`](https://github.com/BeamoTech/beamo-wipe/pull/80#discussion_r4129310559)
+found that the local publication fixture never invoked the credential helper.
+The fixture now uses a loopback-only smart-HTTP Git remote that requires a fake
+App token for pushes. It verifies successful authenticated branch publication,
+reuse without another push, and rejection before PR creation for an invalid
+token. Developer credential configuration and interactive prompts are disabled.
+The server has one thread, bounded reads/backend commands, and verified teardown.
+
+All 11 publisher tests passed locally outside the Mac socket sandbox. Removing
+the push credential helper in memory made the successful-publication test fail,
+as required; the mutation changed no source file. Ruff and diff checks passed.
+This tests Git's real authentication exchange with fake credentials, not a live
+GitHub App installation. The protected-environment secret and the hosted
+App-authored end-to-end smoke remain prerequisites for review enforcement.
