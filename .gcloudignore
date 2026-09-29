@@ -1,4 +1,5 @@
-# NOTE: .git/ is intentionally NOT ignored. The hosted gate needs git
+# Retained legacy Cloud Build source packaging; not the Blacksmith CI route.
+# NOTE: .git/ is intentionally NOT ignored. This compatibility gate needs git
 # metadata: tests/test_release_manifest.py requires `git rev-parse HEAD`
 # (fail-closed "untraceable source state" otherwise), and manifest/ISO
 # generation records the source commit. A git-less tarball reds the whole

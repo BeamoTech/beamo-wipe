@@ -7,6 +7,8 @@ import argparse
 import json
 import os
 from pathlib import Path
+import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -93,52 +95,175 @@ def wsl(argv):
     return run([executable, "--exec", "python3", path, *argv])
 
 
-def doctor():
+DOCTOR_OPERATIONS = (
+    "local",
+    "test",
+    "test-native",
+    "preview",
+    "preview-web",
+    "desktop",
+    "qualification",
+)
+
+
+def doctor_probe(argv, *, env=None):
+    """Read a local version/module result; never print subprocess diagnostics."""
+    try:
+        result = subprocess.run(
+            argv, cwd=ROOT, capture_output=True, text=True, timeout=5, env=env
+        )
+    except subprocess.TimeoutExpired:
+        return None, "probe exceeded 5 seconds"
+    except (OSError, UnicodeError):
+        return None, "executable could not start"
+    if result.returncode:
+        return None, "probe failed; repair the selected local tool"
+    return result.stdout, None
+
+
+def doctor(operation="local"):
     checks = {
+        "operation": operation,
         "python": sys.version.split()[0],
         "host": sys.platform,
-        "machine": __import__("platform").machine(),
+        "machine": platform.machine(),
         "checkout": str(ROOT),
         "environment_python": python(),
         "git": shutil.which("git"),
-        "go": shutil.which(os.environ.get("BEAMO_GO_BIN", "go")),
-        "gcloud": shutil.which("gcloud"),
-        "wsl": shutil.which("wsl.exe") if sys.platform == "win32" else "not needed",
         "live_environment": live_environment(),
     }
-    # Importing Tk is safe; do not create a window or claim display availability.
-    probe = subprocess.run(
-        [python(), "-c", "import tkinter; print(tkinter.TkVersion)"],
-        capture_output=True,
-        text=True,
-    )
-    checks["tk_import"] = (
-        probe.stdout.strip()
-        if probe.returncode == 0
-        else "unavailable (web preview remains available)"
-    )
-    checks["tk_display"] = "not probed; use preview to test the actual display"
-    checks["python_workflow"] = (
-        "WSL2 required" if sys.platform == "win32" else "native POSIX"
+    problems = []
+    notes = [
+        "Local preflight only; no disks, authentication, network checks, builds or CI dispatch.",
+        "Each local probe is bounded to 5 seconds; at most two probes run.",
+        "Current qualification: Blacksmith via .github/workflows/ci.yml (CI gate).",
+        "Publication is separately authorized release.yml; see docs/ci.md.",
+    ]
+    if sys.version_info < (3, 10):
+        problems.append("Install Python 3.10 or newer.")
+    if not checks["git"]:
+        problems.append("Install Git for this checkout.")
+    if checks["live_environment"]:
+        problems.append(
+            "Use a separate development machine, not the live erasure system."
+        )
+    elif operation == "qualification":
+        checks["gh"] = shutil.which("gh")
+        notes.append(
+            "gh is optional for the CLI route; GitHub's web UI can open PRs and inspect CI. Authentication and repository access are not probed."
+        )
+        notes.append(
+            "PRs to main and pushes to main trigger full CI. Manual dispatch also needs authorization. This doctor never triggers them."
+        )
+    elif sys.platform == "win32" and operation in ("test", "preview", "preview-web"):
+        checks["wsl"] = shutil.which("wsl.exe")
+        problems.append(
+            "Run this doctor operation inside the WSL2 Ubuntu checkout; Linux dependencies are not checked here."
+            if checks["wsl"]
+            else "Install WSL2 Ubuntu for Python wizard work; see docs/development.md."
+        )
+        notes.append("For portable native tooling tests use doctor --for test-native.")
+    else:
+        modules = ["venv", "pip"] if operation == "local" else []
+        if operation in ("test", "test-native"):
+            modules = ["pytest"]
+        if operation == "preview":
+            modules = ["tkinter"]
+        output, error = doctor_probe(
+            [
+                python(),
+                "-c",
+                "import importlib.util,json,sys; print(json.dumps({'version':list(sys.version_info[:3]),"
+                "'modules':{n:importlib.util.find_spec(n) is not None for n in sys.argv[1:]}}))",
+                *modules,
+            ],
+            env=fake_environment(),
+        )
+        try:
+            data = json.loads(output) if output is not None else None
+            if (
+                not isinstance(data, dict)
+                or not isinstance(data.get("version"), list)
+                or len(data["version"]) != 3
+                or any(type(v) is not int for v in data["version"])
+                or not isinstance(data.get("modules"), dict)
+                or any(type(data["modules"].get(n)) is not bool for n in modules)
+            ):
+                raise ValueError("invalid probe output")
+        except (ValueError, TypeError):
+            problems.append(
+                "Selected Python "
+                + (error or "returned invalid probe output")
+                + ". Repair or recreate its environment."
+            )
+        else:
+            checks["environment_version"] = ".".join(map(str, data["version"]))
+            checks["modules"] = data["modules"]
+            if tuple(data["version"]) < (3, 10):
+                problems.append(
+                    "The selected environment needs Python 3.10 or newer; recreate it."
+                )
+            missing = [n for n in modules if not data["modules"][n] and n != "tkinter"]
+            if missing:
+                problems.append(
+                    "Missing "
+                    + ", ".join(missing)
+                    + "; follow setup in docs/development.md."
+                )
+            if operation == "preview":
+                notes.append(
+                    "Tk availability is not a display/version check; preview selects compatible Tk or falls back to console. Web preview needs no Tk."
+                )
+        if operation == "desktop":
+            go = shutil.which(os.environ.get("BEAMO_GO_BIN", "go"))
+            checks["go"] = go
+            try:
+                pin = re.search(
+                    r"^go (\d+\.\d+\.\d+)$", (ROOT / "desktop/go.mod").read_text(), re.M
+                )
+            except (OSError, UnicodeError):
+                pin = None
+            if not pin:
+                problems.append(
+                    "Cannot read the desktop Go version pin; restore desktop/go.mod."
+                )
+            elif not go:
+                problems.append(f"Install Go {pin[1]} or select it with BEAMO_GO_BIN.")
+            else:
+                env = fake_environment()
+                env["GOTOOLCHAIN"] = "local"
+                output, error = doctor_probe([go, "version"], env=env)
+                version = re.match(r"go version (go\d+\.\d+\.\d+)\s", output or "")
+                checks["go_version"] = version[1] if version else "unavailable"
+                if error or not version or version[1] != "go" + pin[1]:
+                    problems.append(
+                        f"Select pinned Go {pin[1]}; "
+                        + (error or "version does not match")
+                        + "."
+                    )
+        if operation in ("test", "test-native"):
+            notes.append(
+                "Module presence is not a passing test suite. Full Linux GTK/Orca, display and image coverage belong to the hosted gate; report local skips/failures."
+            )
+    checks.update(
+        status="blocked" if problems else "ok", problems=problems, notes=notes
     )
     print(json.dumps(checks, indent=2))
-    print(
-        "Optional tools: Go 1.26.8 for desktop builds; gcloud for the full amd64 gate. See docs/development.md."
-    )
-    return (
-        0
-        if sys.version_info >= (3, 10)
-        and checks["git"]
-        and not checks["live_environment"]
-        else 2
-    )
+    return 2 if problems else 0
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser(
-        "doctor", help="Report available tools without installing or reading disks"
+    child = sub.add_parser(
+        "doctor", help="Local prerequisite checks; never authenticate or trigger CI"
+    )
+    child.add_argument(
+        "--for",
+        dest="operation",
+        choices=DOCTOR_OPERATIONS,
+        default="local",
+        help="Check only this operation's local prerequisites (default: local)",
     )
     for name in ("setup", "test"):
         child = sub.add_parser(name)
@@ -161,7 +286,7 @@ def main(argv=None):
     preview_args = argv[1:] if argv[:1] == ["preview"] else []
     args = parser.parse_args(["preview"] if argv[:1] == ["preview"] else argv)
     if args.command == "doctor":
-        return doctor()
+        return doctor(args.operation)
     if live_environment():
         print(
             "Development commands are disabled on the live erasure system. Use a separate development machine.",

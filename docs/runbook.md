@@ -1,6 +1,6 @@
 # Beamo Wipe — Production support and incident runbook
 
-> **Version 1.11 — 2026-09-28 | Owner: Accountable senior engineer (this checkout) | Next review 2026-12-28**
+> **Version 1.12 — 2026-09-29 | Owner: Accountable senior engineer (this checkout) | Next review 2026-12-29**
 > Pinned wrapper `0.2.12` / `nwipe v0.42` commit `6082bde060091e66365d852a1877f2ee80c67105` at `/usr/lib/beamo-wipe/nwipe`
 > Wrapper GPL-3.0-or-later; nwipe GPL-2.0. See `docs/storage-and-controller-limits.md`, `docs/compatibility-matrix.md`.
 
@@ -263,7 +263,7 @@ The production-readable path that never touches host block devices:
 
 ```bash
 # from repo root, no real disks
-BEAMO_WIPE_DRY_RUN=1 python3 -m pytest -k "not tk_runtime"  # fast gate
+BEAMO_WIPE_DRY_RUN=1 python3 -m pytest -k "not tk_runtime"  # local subset, not qualification
 
 # Single signal repro — pick a fixture that matches the ticket's TRAN/SIZE/SERIAL shape:
 ls tests/fixtures/*.json
@@ -363,12 +363,12 @@ A release is suspect if any of:
 1. **Quarantine.** Mark the GitHub release `prerelease`/`draft` and add note "Do not flash — pending verification." Do not delete the `gs://…` objects immediately; they are evidence. Add a `QUARANTINE.txt` alongside with `BUILD_ID` + reason hash.
 2. **Stop-ship.** Hold `scripts/build-iso.sh` / Blacksmith workflow promotion until the accountable engineer clears the manifested diff (`git diff HEAD packaging/live/config/{bootstrap,binary} src/beamo_wipe/__init__.py`).
 3. **Notify.** Post to the shared checkout channel and to the support queue header: "Beamo Wipe <version> quarantined — do not guide customers to flash it. Support follows this runbook §4.i and only uses the prior SHA until cleared."
-4. **Rollback.** The designated prior stable ISO is the signed `v0.2.11` release's `beamo-wipe-0.2.11-amd64.iso`, hash `9694068e4d70824b316f12da9bd4c0ee964809d15ce5ad4d406333f710176305`, source commit `662cf470f9fcedf710d897591560267575745fea`. Guidance to customers reverts to that exact signed release and hash. For a code rollback, use `git revert <quarantined commit>` or `git checkout v0.2.11` + fresh Blacksmith verification using `BEAMO_WIPE_VERSION=... ./scripts/build-iso.sh` with manifest regeneration `scripts/generate-release-manifest.sh`. Verification: `sha256sum -c dist/*.sha256`, `isoinfo -d` `CD001`, `verify_evidence_checksum()`, full `pytest -q -k "not tk_runtime"` (see §10).
+4. **Rollback.** The designated prior stable ISO is the signed `v0.2.11` release's `beamo-wipe-0.2.11-amd64.iso`, hash `9694068e4d70824b316f12da9bd4c0ee964809d15ce5ad4d406333f710176305`, source commit `662cf470f9fcedf710d897591560267575745fea`. Guidance to customers reverts to that exact signed release and hash. A code rollback is a reviewed revert with fresh [Blacksmith PR and main qualification](ci.md), followed by separately authorized publication of a new version. Check downloaded sidecars from their directory and use the signature/manifest commands in [release verification](release-verification.md). Do not relabel a rebuilt image as the old signed artifact or treat a local test subset as full acceptance.
 5. **Post-mortem.** After clearing, append a backlog finding `BF-0xx` row to `docs/compatibility-matrix.md` §11 exactly as the existing `BF-001…009` are recorded, with symptom, hash, and fix commit.
 
 ### 8.c Stop-ship release criteria (what must be true before the next promo)
 
-- Full verification gate green: `python3 -m ruff check`, `python -m py_compile src/beamo_wipe`, `python3 -m pytest -q -k "not tk_runtime"` (fake-device), `BEAMO_WIPE_NO_OPEN=1 ./preview --web` + `web-preview/index.html` 54K, `scripts/build-iso.sh` on isolated x86_64 (Blacksmith) with `CD001` + `≥80 MiB` + manifest + sidecars, `scripts/qemu-verify.sh` with disposable qcow2 preflight re-checked before each destructive assertion, and `verify_manifest.py` `verified true`.
+- The exact main source has a successful full `CI gate`: blocking lint/types, fake-device tests including Linux/Tk/Orca, preview, launcher builds, negative safety control, ISO inspection, isolated KVM/QEMU and native Windows. Follow [current CI](ci.md); filtered local tests or a particular gallery byte count cannot prove that result. The separately authorized `release.yml` then rebuilds, verifies and signs the actual customer bytes per [release verification](release-verification.md).
 - No forbidden claim regression (`tests/test_ui_system.py` + `tests/test_copy.py` + `tests/test_storage_limits.py`).
 - Stages `packaging/live/config/includes.chroot/usr/lib/python3/dist-packages/beamo_wipe/` exactly match `src/beamo_wipe/` (`python -m pytest tests/test_live_image.py::test_staged_chroot_package_matches_src`).
 
@@ -398,19 +398,14 @@ When a customer asks for any of the above, reply with the linked decision tree a
 
 ```bash
 # Fake-device repro (always first)
-BEAMO_WIPE_DRY_RUN=1 python3 -m pytest -k "not tk_runtime"   # fast gate
+BEAMO_WIPE_DRY_RUN=1 python3 -m pytest -k "not tk_runtime"   # local subset, not qualification
 python3 -m pytest tests/test_storage_limits.py tests/test_copy.py tests/test_ui_system.py -v
 BEAMO_WIPE_NO_OPEN=1 ./preview --web && ls web-preview/index.html
 grep -c "Not a formal certificate" web-preview/index.html     # SSD footer in gallery
 python3 -m pytest tests/test_evidence.py -v                  # outcome truth
 
-# Build/manifest gate (needs Docker amd64, not on this Mac's TCG)
-# BEAMO_WIPE_VERSION=0.1.1 ./scripts/build-iso.sh && sha256sum dist/beamo-wipe-*.iso
-# python -m beamo_wipe.release_manifest verify  dist/beamo-wipe-0.1.1-amd64.manifest.json
-
-# Isolated QEMU gate (needs isolated x86_64, see §6.c and docs/vm-test.md)
-# BEAMO_WIPE_VERSION=0.1.1 ./scripts/qemu-verify.sh  # abort on Darwin or existing target
-# Evidence then in /tmp/beamo-wipe-qemu-evidence/*.txt + sidecars, with untuned-physical note
+# Local preflight only; this does not authenticate or dispatch hosted CI.
+python3 dev.py doctor --for qualification
 ```
 
 All three spies prove no real nwipe on the support host: `NwipeRunner.start` raises `SafetyError("Refusing to exec nwipe in preview or dry-run.")`; `DryRunRunner` fakes `WipeResult`; `subprocess.Popen` spy in `test_nwipe_runner.py` asserts `pass_fds`, `cwd="/"`, `shell False`, `start_new_session True`.
@@ -419,7 +414,7 @@ All three spies prove no real nwipe on the support host: `NwipeRunner.start` rai
 
 ## 11. Change control for this runbook
 
-This doc is versioned with the wrapper (`1.11` for `0.2.12`) and reviewed with `docs/storage-and-controller-limits.md` and `docs/compatibility-matrix.md` on each release or when the pinned nwipe commit, Debian base, or method mapping changes. Update `Version / Next review` at the top, `docs/compatibility-matrix.md` §15 changelog, and `tests/test_runbook.py` (below) in the same commit; CI (`test_ui_system` + `test_copy` + `test_storage_limits` + `test_runbook`) must still pass before push.
+This doc is versioned with the wrapper (`1.12` for `0.2.12`) and reviewed with `docs/storage-and-controller-limits.md` and `docs/compatibility-matrix.md` on each release or when the pinned nwipe commit, Debian base, or method mapping changes. Update `Version / Next review` at the top, `docs/compatibility-matrix.md` §15 changelog, and `tests/test_runbook.py` (below) in the same commit; CI (`test_ui_system` + `test_copy` + `test_storage_limits` + `test_runbook`) must still pass before push.
 
 ---
 

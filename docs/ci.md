@@ -8,17 +8,38 @@ rollout status. A configured workflow is not proof of a successful hosted run.
 
 ## Execution
 
-PRs targeting `main` and pushes to `main` run every gate. Verification branches
-can use manual dispatch; pushing them does not start another full run:
+Start with [local development and operation-specific doctor checks](development.md).
+PRs targeting `main` and pushes to `main` run every gate. Pushing a branch with
+an open PR updates that PR and triggers CI; only branches without a PR avoid
+automatic qualification. Opening a PR, pushing its updates, merging to main,
+or manually dispatching is consequential hosted execution. Do none of these
+during a local-only task.
+
+Local checks (no hosted execution):
 
 ```bash
 python3 -m pytest
 ./scripts/test-all.sh
-# After the workflow has been installed on GitHub:
-gh workflow run ci.yml --repo BeamoTech/beamo-wipe --ref main
-gh workflow run ci.yml --repo BeamoTech/beamo-wipe --ref codex/ci-blacksmith
+```
+
+Inspect existing runs through GitHub's web UI or the optional authenticated
+GitHub CLI (read-only):
+
+```bash
 gh run list --repo BeamoTech/beamo-wipe --workflow ci.yml
 ```
+
+Only when a new hosted run is authorized and no equivalent run exists, dispatch
+the current verification branch explicitly:
+
+```bash
+gh workflow run ci.yml --repo BeamoTech/beamo-wipe --ref "$(git branch --show-current)"
+```
+
+Record the actual tested SHA: PR runs use GitHub's merge revision and its
+base/head parents; main runs use the pushed main revision. Release readiness
+requires a successful main `push` run for the exact tagged commit. Neither
+local checks, PR qualification nor a manual branch run replaces it.
 
 The Linux image runner is `blacksmith-4vcpu-ubuntu-2404`. A full
 [qualification run](https://github.com/BeamoTech/beamo-wipe/actions/runs/36293739547)

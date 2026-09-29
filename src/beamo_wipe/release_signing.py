@@ -15,9 +15,10 @@ hashes, or the wiped-disk result. See ``docs/release-verification.md``.
 Trust boundaries (enforced by tests, not just docs):
 
 - Private signing material lives only in the operator's custody (Secret
-  Manager for the release build) and is never committed, never printed, and
-  never attached to pull-request builds. ``cloudbuild.yaml`` — the file a
-  pull request can rewrite — must stay secret-free.
+  Manager for the protected release publisher) and is never committed,
+  never printed, and never attached to pull-request builds. Current
+  ``ci.yml`` and retained legacy ``cloudbuild.yaml`` must stay secret-free;
+  a pull request can rewrite build configuration.
 - Verification fails closed: unknown schema, unknown or non-active key,
   digest mismatch, altered bytes, missing sidecar, or a version below the
   acceptance floor all raise.

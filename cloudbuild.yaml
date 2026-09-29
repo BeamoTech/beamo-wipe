@@ -1,10 +1,12 @@
 # Legacy Google Cloud tooling; current CI uses Blacksmith (.github/workflows/ci.yml).
-# Beamo Wipe CI — Google Cloud Build, project beamo-wipe only.
-# This is the project's CI gate. GitHub Actions is not used.
+# Retained Cloud Build compatibility configuration, project beamo-wipe only.
+# Not the required CI gate or current release route; see docs/development.md.
+# Invocation requires separate authorization for legacy maintenance.
 #
 #   ./scripts/ci-cloud.sh
 #
-# GitHub App triggers (same project; see scripts/install-cloud-triggers.sh):
+# Legacy GitHub App trigger definitions (not current branch qualification;
+# same project; see scripts/install-cloud-triggers.sh):
 #   - Pull requests targeting main (beamo-wipe-pr-gate, QEMU skipped)
 #   - Pushes to main (beamo-wipe-main-gate, full gate incl. QEMU)
 #

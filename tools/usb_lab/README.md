@@ -70,7 +70,7 @@ A failed run retains its partial receipt and logs. The run-owned backing images
 are removed only after the QEMU process exits. Preserve evidence before deleting
 the cloud host; do not preserve bulky guest disks as the test receipt.
 
-The existing `scripts/qemu-verify.sh` and canonical `scripts/ci-cloud.sh` remain
+The existing `scripts/qemu-verify.sh` and Blacksmith `.github/workflows/ci.yml` remain
 the boot, real nwipe erase, report-export and hosted acceptance gates. This matrix
 adds hotplug/driver/fault coverage and does not replace them.
 

@@ -99,7 +99,7 @@ citing it must name the commit and the environment, never just "tests pass".
 | Wizard flow / gates / screens | `wizard.py`, `ui/*`, `copy.py` wording | Pytest plus Xvfb 72 DPI layout/keyboard suites; `docs/screens.md` sync (pinned by test) |
 | Evidence / outcomes / reports | `evidence.py`, `outcomes.py`, `result_summary.py`, `privacy.py`, `support_export.py` | Evidence/report/shutdown suites plus Tier 2 report checks; `docs/runbook.md` sync |
 | Image / boot / power config | `packaging/live/**`, `package-lists`, nwipe hook, xorg, keyboard, logind/sleep, bootloaders, kernel `linux-image-*` | `test_live_image.py`, lint, full ISO build, Tier 2 image inspection and `debsecan`; display/power rows re-checked |
-| Verification workflow | `scripts/qemu-verify.sh`, `cloudbuild.yaml`, `scripts/ci-hosted.sh` | Shellcheck plus at least one executed Tier 2 run with the new workflow |
+| Verification workflow | `.github/workflows/ci.yml`, `scripts/ci-blacksmith.sh`, `scripts/qemu-verify.sh`, `scripts/ci-hosted.sh`; `cloudbuild.yaml` is retained legacy compatibility | Shellcheck plus at least one executed Tier 2 run with the new workflow; see [current CI](ci.md) |
 | New claimed hardware / firmware | Matrix row added or widened | Tier 3 receipt on the named configuration, or keep it unsupported |
 | Docs / copy only | `docs/*`, `helper/*`, gallery | Link/text checks plus the suites named in §5; no Tier 2 needed unless a claim widened |
 

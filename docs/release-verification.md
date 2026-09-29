@@ -211,9 +211,10 @@ and a Secure Boot refusal never means "the download was tampered with".
 Full ceremony lives in `packaging/release-keys/KEYS.md`. In short: private
 material exists only in the operator's offline ceremony record and one
 Secret Manager secret readable by the release identity alone; it is never
-committed, printed, or attached to pull-request builds, and `cloudbuild.yaml`
-stays secret-free by policy (pinned by test) because a pull request can
-rewrite that file. Rotation keeps both keys active for at most one release,
+committed, printed, or attached to pull-request builds. Current `ci.yml` and
+the retained legacy `cloudbuild.yaml` stay secret-free by policy (pinned by
+tests); neither is the protected `release.yml` publisher. A pull request can
+rewrite build configuration. Rotation keeps both keys active for at most one release,
 then retires the predecessor. Revocation is a committed status change that
 fails verification even for cryptographically valid signatures; never
 delete a revoked entry. Production key creation and rotation need separate
