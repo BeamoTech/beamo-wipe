@@ -228,3 +228,35 @@ temporary ISO/USB/squashfs/initrd copies were removed after receipts were
 recorded (3,276,560,014 bytes); no Git work or existing releases were removed.
 Before/after reports were read-only and removed nothing themselves. Small
 inspection tools, certificates and local logs remain disposable staging.
+
+## Independent automated review follow-up — 2026-09-29
+
+[Greptile's review of the initial correction](https://github.com/BeamoTech/beamo-wipe/pull/81#issuecomment-5896967719)
+identified two evidence gaps: no executable post-flash media comparison and no
+test binding the operator table's hashes to the inspection receipt. The physical
+procedure now requires reconnecting/re-identifying the stick and comparing its
+image-length bytes read-only against the authenticated regular image. It records
+the readback range, digest, device identity, command and outcome before boot.
+Any missing, different, truncated or unreadable input blocks qualification.
+Larger unused USB capacity is outside the comparison and receives no integrity
+claim. Reflash or subsequent writes require fresh readback.
+
+The operator table now includes the measured compressed size. The component
+receipt adds the already measured ISO/raw/compressed sizes and compressed digest
+from the authenticated Q12 inventory; no release byte or identity is changed.
+Tests compare the displayed source/build/tag, filenames, sizes and hashes with
+that receipt. Four independent displayed-hash mutations are rejected. The
+original operator table fails the new identity check, and the original physical
+procedure lacks the required readback command.
+
+The documented Python readback was executed on macOS using disposable regular
+files only: exact and larger media, last-chunk corruption, truncation, missing
+media/reference, unset input, zero/invalid length, and wrong reference size.
+Fixtures cross two 1 MiB boundaries and verify all input bytes remain unchanged.
+No physical device was accessed. Focused local checks passed **70 tests with
+6 platform skips**; the Secure Boot module now has **32 passing tests**. Full
+and security Ruff checks passed, as did **118 relative links/anchors** and
+`git diff --check`. The fresh full local run and final exact-source hosted
+qualification results belong in the PR/task handoff, not the earlier commit's
+CI receipt. Automated review is not the required non-author human approval.
+All physical cases remain NOT TESTED.

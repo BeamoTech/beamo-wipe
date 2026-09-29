@@ -8,7 +8,9 @@ Historical releases and execution logs deliberately remain outside this policy.
 from __future__ import annotations
 
 import json
+import os
 import re
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -135,3 +137,107 @@ def test_canonical_secure_boot_links_resolve():
                 continue
             target = target.split("#", 1)[0]
             assert (path.parent / target).is_file(), (relative, target)
+
+
+def _check_operator_identity(text, receipt):
+    rows = {
+        cells[0]: cells[1]
+        for line in text.splitlines()
+        if line.startswith("| ")
+        for cells in [[cell.strip() for cell in line.strip("|").split("|")]]
+        if len(cells) == 2
+    }
+    assert re.findall(r"[a-f0-9]{40}", rows["Source"]) == [receipt["source_commit"]]
+    assert f'`{receipt["tag"]}`' in rows["Source"]
+    assert rows["Build"] == f'`{receipt["build_id"]}`, Blacksmith'
+    version = receipt["tag"].removeprefix("v")
+    for row, prefix, extension in (
+        ("ISO", "iso", "iso"),
+        ("Compressed USB download", "usb_gzip", "img.gz"),
+        ("Decompressed USB", "usb", "img"),
+    ):
+        assert rows[row] == (
+            f'`beamo-wipe-{version}-amd64.{extension}`, '
+            f'{receipt[prefix + "_size_bytes"]} bytes, '
+            f'SHA-256 `{receipt[prefix + "_sha256"]}`'
+        )
+    assert re.findall(r"[a-f0-9]{64}", rows["Signed manifest"]) == [receipt["manifest_sha256"]]
+
+
+def test_operator_identity_matches_pinned_receipt():
+    receipt = json.loads((DOCS / "evidence/secure-boot-119/components.json").read_text())
+    assert receipt["iso_size_bytes"] == 564133888
+    assert receipt["usb_size_bytes"] == 2147483648
+    assert receipt["usb_gzip_size_bytes"] == 601441384
+    assert receipt["usb_gzip_sha256"] == "a3d2a65d8941facbd30b794b083419dc694511903281e57cd028db565bdc1972"
+    _check_operator_identity((DOCS / "secure-boot-acceptance.md").read_text(), receipt)
+
+
+@pytest.mark.parametrize("field", ["iso_sha256", "usb_sha256", "usb_gzip_sha256", "manifest_sha256"])
+def test_operator_identity_rejects_a_changed_displayed_hash(field):
+    receipt = json.loads((DOCS / "evidence/secure-boot-119/components.json").read_text())
+    text = (DOCS / "secure-boot-acceptance.md").read_text()
+    changed = text.replace(receipt[field], "0" * 64)
+    assert changed != text
+    with pytest.raises(AssertionError):
+        _check_operator_identity(changed, receipt)
+
+
+@pytest.mark.parametrize("case", ["match", "larger", "corrupt", "short", "missing", "zero", "invalid", "unset", "missing_reference", "wrong_size"])
+def test_documented_readback_with_disposable_regular_files(tmp_path, case):
+    if os.name != "posix":
+        pytest.skip("documented readback command requires a POSIX shell")
+    text = (HUB / "README.md").read_text()
+    match = re.search(r"<!-- media-readback-command -->\n```sh\n(.*?)\n```", text, re.S)
+    assert match, "physical procedure must provide the post-flash comparison"
+    reference = tmp_path / "verified image.img"
+    media = tmp_path / "fake media.img"
+    payload = bytes(range(256)) * 8193  # Cross two read boundaries and a partial final chunk.
+    reference.write_bytes(payload)
+    media.write_bytes(payload)
+    if case == "larger":
+        media.write_bytes(payload + b"unused capacity")
+    elif case == "corrupt":
+        media.write_bytes(payload[:-1] + b"x")
+    elif case == "short":
+        media.write_bytes(payload[:-1])
+    elif case == "missing":
+        media.unlink()
+    elif case == "missing_reference":
+        reference.unlink()
+    before = {p.name: p.read_bytes() for p in tmp_path.iterdir()}
+    env = {
+        **os.environ,
+        "VERIFIED_IMAGE": str(reference),
+        "LAB_USB_DEVICE": str(media),
+        "IMAGE_BYTES": str(len(payload)),
+    }
+    if case in ("zero", "invalid"):
+        env["IMAGE_BYTES"] = "0" if case == "zero" else "invalid"
+    elif case == "unset":
+        del env["LAB_USB_DEVICE"]
+    elif case == "wrong_size":
+        env["IMAGE_BYTES"] = str(len(payload) - 1)
+    result = subprocess.run(
+        ["/bin/sh", "-c", match[1]], env=env, capture_output=True, text=True, timeout=5,
+    )
+    if case in ("match", "larger"):
+        assert result.returncode == 0, result.stderr
+        assert f"READBACK MATCH: {len(payload)} bytes" in result.stdout
+    else:
+        assert result.returncode != 0
+        assert "READBACK MATCH" not in result.stdout
+    assert before == {p.name: p.read_bytes() for p in tmp_path.iterdir()}
+
+
+def test_physical_readback_is_required_and_recorded():
+    canonical = (DOCS / "secure-boot-acceptance.md").read_text()
+    assert "#post-flash-readback" in canonical
+    assert "SB-INSPECTION" in canonical
+    procedure = (HUB / "README.md").read_text()
+    assert "Complete the post-flash readback" in procedure
+    assert "Re-run readback after any subsequent write" in procedure
+    assert "never Pass" in procedure
+    identity = (HUB / "BUILD-IDENTITY.md").read_text()
+    assert "Post-flash readback" in identity
+    assert "Readback byte count" in identity

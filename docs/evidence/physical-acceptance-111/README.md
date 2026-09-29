@@ -112,8 +112,78 @@ Operator-facing steps. Technical IDs stay in the worksheets.
 ### 5.2 Flash and first look (does not erase a PC disk)
 
 1. Write the authorized `.img` (desktop-readable) or ISO to the spare USB with a tool Jack specifies. Record the writer, host OS, and USB port used to flash.
-2. On a running Windows 10/11 x64 or Linux desktop you are willing to restart: insert the USB. Confirm files are visible. Insertion must not start an erase. Follow [`docs/desktop-hardware-acceptance.md`](../../desktop-hardware-acceptance.md) and [results/desktop-usb-launch.md](results/desktop-usb-launch.md).
-3. Ordinary opening, readiness, and a restart do **not** require erasing another disk.
+2. Complete the post-flash readback below before opening files or booting. A successful write is not readback evidence.
+3. On a running Windows 10/11 x64 or Linux desktop you are willing to restart: insert the USB. Confirm files are visible. Insertion must not start an erase. Follow [`docs/desktop-hardware-acceptance.md`](../../desktop-hardware-acceptance.md) and [results/desktop-usb-launch.md](results/desktop-usb-launch.md).
+4. Ordinary opening, readiness, and a restart do **not** require erasing another disk.
+
+#### Post-flash readback
+
+After the writer finishes and safely ejects the stick, reconnect it without
+mounting its filesystems writable. Re-identify the **whole spare USB**, including
+model, capacity and serial, because its device path may have changed. Keep valuable
+disks disconnected. Compare bytes read from that device with the authenticated
+regular image file, from byte zero for exactly the image's verified length.
+Use the decompressed `.img` or directly written ISO, never `.img.gz`, a partition,
+or a version string. A writer that transforms the image does not qualify through
+this byte-identical route; stop for a separately inspected media receipt.
+
+On Linux or macOS with Python 3, set `VERIFIED_IMAGE` to the absolute path of the
+already signature/hash/size-verified image, `LAB_USB_DEVICE` to the re-identified
+whole USB device path, and `IMAGE_BYTES` to its authenticated image length.
+For Q12 these lengths are 2147483648 for `.img` and 564133888 for ISO.
+Do not infer the length from USB capacity or trust an unverified reference file.
+The following reads both inputs only; it writes no device. Run it in a shell
+with authorized read access to that USB. If read access is unavailable, stop;
+do not change disk permissions or substitute another device.
+
+<!-- media-readback-command -->
+```sh
+python3 - "$VERIFIED_IMAGE" "$LAB_USB_DEVICE" "$IMAGE_BYTES" <<'PY_READBACK'
+import hashlib
+import os
+import stat
+import sys
+
+try:
+    reference, device, count_text = sys.argv[1:]
+    if not reference or not device or not count_text.isascii() or not count_text.isdigit():
+        raise ValueError("set both paths and the authenticated image byte length")
+    count = int(count_text)
+    if count <= 0:
+        raise ValueError("image length must be positive")
+    with open(reference, "rb") as image:
+        info = os.fstat(image.fileno())
+        if not stat.S_ISREG(info.st_mode) or info.st_size != count:
+            raise ValueError("reference must be a regular file of the authenticated size")
+        digest = hashlib.sha256()
+        with open(device, "rb", buffering=0) as media:
+            remaining = count
+            while remaining:
+                expected = image.read(min(1024 * 1024, remaining))
+                actual = media.read(len(expected))
+                if not expected or actual != expected:
+                    raise ValueError("media differs, is short, or cannot be read completely")
+                digest.update(actual)
+                remaining -= len(actual)
+    print(f"READBACK MATCH: {count} bytes; SHA-256 {digest.hexdigest()}")
+except (OSError, ValueError) as error:
+    sys.exit(f"STOP: {error}")
+PY_READBACK
+```
+
+Only exit 0 with `READBACK MATCH` qualifies this comparison. Different bytes,
+short reads/EOF, permission or I/O errors, missing inputs, and interruption
+are stop conditions: record **SB-INSPECTION / BLOCKED**, never Pass. Cancel a
+stalled read; it supplies no qualifying receipt. Remaining USB capacity beyond
+the image length is intentionally not compared and is not authenticated.
+Record the UTC time, tool/version, command, exit code/output, compared length,
+reference hash and re-identified USB in [BUILD-IDENTITY.md](BUILD-IDENTITY.md)
+and `logs/`. On Windows use the authorized writer's documented byte-for-byte
+readback only if it provides this same source/range/device evidence; otherwise
+perform the readback on Linux/macOS or remain BLOCKED. No Windows command is
+qualified here. Re-run readback after any subsequent write or reflash and before
+claiming another exact-image boot. A passing comparison binds bytes to the
+reference at that time; it does not establish firmware trust or successful boot.
 
 ### 5.3 Firmware boot (does not erase a PC disk)
 

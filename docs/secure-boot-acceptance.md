@@ -14,13 +14,16 @@ flashed image in [BUILD-IDENTITY](evidence/physical-acceptance-111/BUILD-IDENTIT
 before a case. A different image requires its own signature inspection and
 receipt; neither a version string nor a source-only build transfers this one.
 Q12 identifies test inputs, not authorization to overwrite a USB or disk.
+Before a physical boot, complete the [post-flash readback](evidence/physical-acceptance-111/README.md#post-flash-readback)
+and record its receipt. A source-file hash or successful write alone does not
+bind the stick to Q12; a mismatch or unavailable readback is SB-INSPECTION.
 
 | Input | Identity |
 | --- | --- |
 | Source | `e986419379f512f8088f5982ee02a51dc91a9dae`, tag `v0.2.12`, clean |
 | Build | `625971a4-afef-5398-9bec-d96455192ab3`, Blacksmith |
 | ISO | `beamo-wipe-0.2.12-amd64.iso`, 564133888 bytes, SHA-256 `73554d35aecafac7fc6dffe41d1f1efdb658b43c39da85a2f0bebfe8f1beb598` |
-| Compressed USB download | `beamo-wipe-0.2.12-amd64.img.gz`, SHA-256 `a3d2a65d8941facbd30b794b083419dc694511903281e57cd028db565bdc1972` |
+| Compressed USB download | `beamo-wipe-0.2.12-amd64.img.gz`, 601441384 bytes, SHA-256 `a3d2a65d8941facbd30b794b083419dc694511903281e57cd028db565bdc1972` |
 | Decompressed USB | `beamo-wipe-0.2.12-amd64.img`, 2147483648 bytes, SHA-256 `1e807895ee643a35d90a0c2302143f02b01de91aec564a3972d86740c55ae10b` |
 | Signed manifest | SHA-256 `0bb56538500330086f507538e94ec68846ff5ab39ddf491dbeaf467a50cfd5b8`, publisher key `93caaf7ca93eff4d` |
 

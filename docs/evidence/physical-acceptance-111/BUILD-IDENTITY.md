@@ -40,6 +40,8 @@ Do not paste values from QEMU, Cloud Build, or an old USB-lab receipt unless you
 | How checksums were verified | |
 | Flash tool and host OS | |
 | Flash date (UTC) | |
+| Post-flash readback UTC / tool and version / exact command / exit code / log | |
+| Readback byte count / authenticated reference hash / whole USB identity after reconnect | |
 | USB stick manufacturer / model / capacity | |
 | USB stick serial (if known) | |
 | Partition label observed | `BEAMO_WIPE` expected |
