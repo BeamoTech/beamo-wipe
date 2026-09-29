@@ -1206,6 +1206,7 @@ class TkWizard:
         self._space_release_after: Optional[str] = None
         self._space_release_time: Optional[int] = None
         self._space_action_active = False
+        self._report_space_release_pending = False
         self._f5_held = False
         self._f5_release_time: Optional[int] = None
         self._escape_held = False
@@ -3979,7 +3980,7 @@ class TkWizard:
                 self._click_shutdown,
                 enabled=not report.exporting and not report.saving_evidence,
             )
-        if self._primary is not None:
+        if self._primary is not None and not self._report_space_release_pending:
             self._primary.focus_set()
 
     def _advanced(self) -> None:
@@ -4115,8 +4116,17 @@ class TkWizard:
     def _release_space(self) -> None:
         self._space_release_after = None
         self._space_held = False
+        restore_done_focus = self._report_space_release_pending
+        self._report_space_release_pending = False
         self.w.arm_done_keyboard()
         emit_serial_marker("BEAMO_WIPE_KEY_SPACE_RELEASED")
+        if (
+            restore_done_focus
+            and self.w.screen == Screen.DONE
+            and self._primary is not None
+            and self._primary._enabled
+        ):
+            self._primary.focus_set()
 
     def _click_erase(self) -> None:
         self.w.begin_erase()
@@ -4130,8 +4140,18 @@ class TkWizard:
         self.w.begin_evidence_retry()
 
     def _click_save_report(self) -> None:
+        # Space can start export before QMP sends key-up. Focus the stable
+        # toplevel before the report-start marker: a redraw destroys the Save
+        # button, and X11 can otherwise discard a release targeted at it.
+        keyboard_space = self._space_action_active
+        previous_focus = self.root.focus_get() if keyboard_space else None
+        if keyboard_space:
+            self.root.focus_set()
         if self.w.begin_report_export():
+            self._report_space_release_pending = keyboard_space
             self._draw()
+        elif keyboard_space and previous_focus is not None:
+            previous_focus.focus_set()
 
     def _click_shutdown(self) -> None:
         """Button Space/click on Shut down. Ignore until the arriving key is up."""

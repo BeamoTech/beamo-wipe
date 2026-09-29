@@ -880,8 +880,34 @@ def test_x11_space_release_press_pair_does_not_shutdown_done(ui):
     assert app._space_held
 
 
+def test_space_report_export_retargets_focus_before_worker_starts():
+    """The report-start marker must never race release to a destroyed button."""
+    app = object.__new__(TkWizard)
+    events = []
+
+    class Root:
+        def focus_get(self):
+            return None
+
+        def focus_set(self):
+            events.append("stable-focus")
+
+    class Wizard:
+        def begin_report_export(self):
+            events.append("report-start")
+            return True
+
+    app.root = Root()
+    app.w = Wizard()
+    app._space_action_active = True
+    app._draw = lambda: events.append("redraw")
+
+    app._click_save_report()
+    assert events == ["stable-focus", "report-start", "redraw"]
+
+
 def test_held_space_from_save_cannot_repeat_onto_shutdown(ui, tmp_path, monkeypatch):
-    """A fast report completion cannot move one held Space to Shut down."""
+    """A report redraw retains key-up routing and cannot turn a hold into shutdown."""
     monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
     wiz, app = ui(fail=True)
     wiz.preview = False
@@ -906,17 +932,27 @@ def test_held_space_from_save_cannot_repeat_onto_shutdown(ui, tmp_path, monkeypa
     save = _button_named(app, "Save report to USB")
     save.focus_set()
     save._key()
+    # QEMU sends key-up after the report-start marker, while the Save control
+    # may already have been destroyed. Keep focus on the stable toplevel until
+    # that physical release has been delivered.
+    assert app.root.focus_get() is app.root
     deadline = time.monotonic() + 3
     while wiz.report_view.exporting and time.monotonic() < deadline:
         app.root.update()
     app._draw()
     assert wiz.report_status == "saved"
     assert not wiz._done_keyboard_armed
+    assert app.root.focus_get() is app.root
 
     shut = app._primary
     assert shut is not None
     shut._key()
     assert not wiz.wants_shutdown
+
+    app.root.event_generate("<KeyRelease>", keysym="space")
+    app.root.update()
+    assert not app._space_held
+    assert app.root.focus_get() is app._primary
 
 
 def test_escape_goes_back(ui):

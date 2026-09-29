@@ -1,0 +1,63 @@
+name: Agent-authored pull request
+
+on:
+  workflow_dispatch:
+    inputs:
+      proposal_ref:
+        description: Existing codex/* proposal branch
+        required: true
+        type: string
+      proposal_sha:
+        description: Exact 40-character proposal commit SHA
+        required: true
+        type: string
+      evidence_path:
+        description: Changed docs/evidence/*.md file explaining authorship and checks
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agent-pr-${{ github.event.inputs.proposal_sha }}
+  cancel-in-progress: false
+
+jobs:
+  propose:
+    if: github.ref == 'refs/heads/main' && github.actor == 'BeamoINT'
+    runs-on: blacksmith-2vcpu-ubuntu-2404
+    timeout-minutes: 10
+    environment: agent-pr
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Preserve trusted publisher outside the proposal checkout
+        run: cp scripts/agent_pr.py "$RUNNER_TEMP/agent_pr.py"
+      - name: Prepare exact-source proposal without a token
+        env:
+          PROPOSAL_REF: ${{ inputs.proposal_ref }}
+          PROPOSAL_SHA: ${{ inputs.proposal_sha }}
+          EVIDENCE_PATH: ${{ inputs.evidence_path }}
+        run: >-
+          python3 -I "$RUNNER_TEMP/agent_pr.py" prepare
+          --ref "$PROPOSAL_REF" --sha "$PROPOSAL_SHA"
+          --evidence "$EVIDENCE_PATH"
+          --output "$RUNNER_TEMP/agent-pr-plan.json"
+      - name: Mint short-lived repository-scoped GitHub App token
+        id: app
+        uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2
+        with:
+          app-id: ${{ vars.BEAMO_AGENT_APP_ID }}
+          private-key: ${{ secrets.BEAMO_AGENT_APP_PRIVATE_KEY }}
+          owner: BeamoTech
+          repositories: beamo-wipe
+          permission-contents: write
+          permission-pull-requests: write
+          permission-workflows: write
+      - name: Publish without approving or merging
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: python3 -I "$RUNNER_TEMP/agent_pr.py" publish --plan "$RUNNER_TEMP/agent-pr-plan.json"
