@@ -1,0 +1,71 @@
+PE checksum   : 0010791B
+
+Signature Index: 0  (Primary Signature)
+
+Message digest algorithm  : SHA256
+Current message digest    : 80A66D53A945D2286FCADD780FAE1C225AA732079CD67B5225DC78AAAB4E2FF8
+Calculated message digest : 80A66D53A945D2286FCADD780FAE1C225AA732079CD67B5225DC78AAAB4E2FF8
+
+Signer's certificate:
+	------------------
+	Signer #0:
+		Subject: CN=Microsoft Windows UEFI Driver Publisher,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US
+		Issuer : CN=Microsoft Corporation UEFI CA 2011,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US
+		Serial : 33000000708CC364D7555A275E000100000070
+		Certificate expiration date:
+			notBefore : Mar 12 19:35:19 2026 GMT
+			notAfter : Jun 26 19:35:19 2026 GMT
+
+Message digest algorithm: SHA256
+
+Authenticated attributes:
+	Microsoft Individual Code Signing purpose
+	Message digest: B4DA998CAE52E93EEB86EB67F39278C7A65CA2C8FFE97FA50944F71C0DF59022
+	URL description: https://www.microsoft.com/en-us/windows
+	Text description: Software in the Public Interest, Inc
+
+Countersignatures:
+	Timestamp time: May 13 10:06:13 2026 GMT
+	Signing time: N/A
+	Hash Algorithm: sha256
+	Issuer: CN=Microsoft Time-Stamp PCA 2010,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US
+	Serial: 330000021825D99205E2E7E5E4000100000218
+
+CAfile: <inspection>/microsoft-root.pem
+TSA's certificates file: /etc/ssl/cert.pem
+
+Timestamp Server Signature verification is disabled
+Signature verification time: May 14 00:00:00 2026 GMT
+Signing certificate chain verified using:
+	------------------
+	Signer #2:
+		Subject: CN=Microsoft Corporation Third Party Marketplace Root,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US
+		Issuer : CN=Microsoft Corporation Third Party Marketplace Root,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US
+		Serial : 33959C19504871914238DF73D3B49A3D
+		Certificate expiration date:
+			notBefore : Oct  5 22:02:28 2010 GMT
+			notAfter : Oct  5 22:09:33 2035 GMT
+
+	------------------
+	Signer #1:
+		Subject: CN=Microsoft Corporation UEFI CA 2011,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US
+		Issuer : CN=Microsoft Corporation Third Party Marketplace Root,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US
+		Serial : 6108D3C4000000000004
+		Certificate expiration date:
+			notBefore : Jun 27 21:22:45 2011 GMT
+			notAfter : Jun 27 21:32:45 2026 GMT
+
+	------------------
+	Signer #0:
+		Subject: CN=Microsoft Windows UEFI Driver Publisher,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US
+		Issuer : CN=Microsoft Corporation UEFI CA 2011,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US
+		Serial : 33000000708CC364D7555A275E000100000070
+		Certificate expiration date:
+			notBefore : Mar 12 19:35:19 2026 GMT
+			notAfter : Jun 26 19:35:19 2026 GMT
+
+CRL online verification disabled
+Signature verification: ok
+
+Number of verified signatures: 1
+Succeeded

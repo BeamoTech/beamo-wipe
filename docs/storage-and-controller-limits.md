@@ -120,7 +120,7 @@ Back-office policy: a support ticket that asks to bypass ownership, EDID, or the
 | Bucket | What we handle | Reference |
 |---|---|---|
 | **Supported** | Legacy BIOS + UEFI (Secure Boot disabled) via `syslinux`+`grub-efi`, USB-A/C when firmware lists the stick, NVMe/SATA HDD/SSD/virtio/eMMC main device, same-size disambiguation via `confirm_spec`, 5 s delay, proof-of-attempt JSON. | `docs/compatibility-matrix.md` FW/ST rows |
-| **Degraded (works but not a certificate)** | Any SSD/NVMe/eMMC overwrite as above, damaged reallocated media, PICK_EMPTY only-eMMC, hub-boot, 800×600/HiDPI. Documented as overwrite, not sanitization. | This doc §3 |
+| **Degraded (works but not a certificate)** | Any SSD/NVMe/eMMC overwrite as above, damaged reallocated media, PICK_EMPTY only-eMMC, hub-boot, 800×600/HiDPI. Secure Boot acceptance is firmware-dependent on the inspected Debian chain and actual trust/revocations; unknown states cannot Pass. Documented as overwrite, not sanitization. | This doc §3; [Secure Boot cases](secure-boot-acceptance.md) |
 | **Unsupported / out of scope** | Apple Silicon, Chromebooks, RAID controllers (hardware), Apple T2 internal, `nbd/iscsi/fc/nvmeof`, BitLocker/OPAL/Sed locked without prior unlock, HPA/DCO hidden LBAs, hidden NVMe namespaces, Windows in-OS wipe from inside the running OS. Correctly listed-with-no-targets or fails closed. | `docs/compatibility-matrix.md` Unsupported, `docs/claims.md` forbidden list |
 
 ---

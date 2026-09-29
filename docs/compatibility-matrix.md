@@ -22,6 +22,13 @@ and signed Debian EFI components are described in
 and remaining hardware requirements are recorded separately; older Secure
 Boot rows below must not be used as evidence for the new image.
 
+**Secure Boot expectations (2026-09-29, #119):** current physical outcomes
+come from [the inspected-chain cases](secure-boot-acceptance.md), including
+the exact Q12 image identity. Debian-signed shim/GRUB/kernel can be accepted
+without a Beamo firmware key when the actual databases and revocation policy
+permit them. Unknown state cannot qualify a Pass. No firmware changes are
+prescribed to make a case pass; physical coverage remains NOT TESTED.
+
 Shutdown actions described below now request the shared shutdown decision:
 when a report was requested but no current verified export is confirmed,
 **Shut down without saving?** requires a separate choice. **Keep session open**
@@ -93,8 +100,8 @@ All ISO boot tests are **QEMU x86_64**; on Apple silicon they are TCG and marked
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | **FW-01** | Legacy BIOS (SeaBIOS) | USB-A direct | SATA HDD 500 GB (ST500) + NVMe 256 GB | Boots via `syslinux`, wizard is first UI, lists SATA+NVMe, boot USB not selectable | QEMU `-boot order=d` boots; fixture `lsblk_same_size.json` via `discover()` boots equivalently | **Supported** | `cloudbuild.yaml` iso-build PVD CD001; `tests/test_discover.py::test_boot_usb_excluded_and_marked` | `qemu-system-x86_64 -m 2048 -cdrom dist/*.iso -drive file=/tmp/...qcow2,if=virtio -boot order=d` |
 | **FW-02** | UEFI (OVMF) | USB-C via adapter | NVMe Samsung 970 256 GB + SATA WDC 1 TB + Crucial SSD | Boots via `grub-efi`, wizard first UI, same disk list | QEMU `-bios OVMF_CODE.fd` boots; same fixture passes | **Supported** | `packaging/live/config/binary:LB_BOOTLOADERS="syslinux grub-efi"`; same test as FW-01 | `qemu-system-x86_64 -m 2048 -bios /usr/share/OVMF/OVMF_CODE.fd -cdrom dist/*.iso -drive ...` |
-| **FW-03** | UEFI Secure Boot **enabled** (firmware refuses Debian's signed boot files) | USB-A | Any | **Image does not boot** when firmware rejects the signed Debian EFI components — wizard never runs, so no wipe | Documented; QEMU enrolled-key USB is a later hosted-gate receipt, not a physical guarantee; declaration per `docs/claims.md` and `docs/boot-card.md` | **Degraded / firmware-dependent** | Current image includes signed Debian EFI; `docs/claims.md` forbids circumvention. Older sticks may be unsigned. | Enable Secure Boot in firmware, insert USB, record the firmware message; do not ship a bypass |
-| **FW-04** | UEFI Secure Boot **disabled** | USB-A | Any | Boots as FW-02 | Same as FW-02 | **Supported** | Same as FW-02 | Disable Secure Boot, boot as FW-02 |
+| **FW-03** | x64 UEFI Secure Boot enforcing; actual trust/revocations inspected | USB-A | Any eligible target; no erase needed for boot test | Known permitted Q12 chain reaches guide; proven denial refuses at its identified stage; unknown policy/inspection failure never qualifies Pass | Q12 signature inspection and enforced OVMF USB acceptance; physical cases NOT TESTED | **Firmware-dependent**; no universal acceptance claim | [Exact image, component identities and cases](secure-boot-acceptance.md); `docs/claims.md` forbids circumvention | Use an already configured dedicated machine; capture db/dbx, shim/SBAT, enforcement and selected entry; apply SB-ACCEPT / SB-NO-ANCHOR / SB-DBX / SB-SHIM / SB-UNKNOWN / SB-INSPECTION |
+| **FW-04** | UEFI already non-enforcing | USB-A | Any | Ordinary boot as FW-02; not Secure Boot evidence | Same as FW-02 | **Supported ordinary boot path** | Same as FW-02 | Record the existing state; this case does not prescribe disabling Secure Boot |
 | **FW-05** | Legacy BIOS with CSM on UEFI machine | USB-A | Virtio 10 GB (`/dev/vda`) via QEMU | Boots via BIOS compatibility; lists virtio disk as HDD kind | Fixture `lsblk_vm_iso.json` (`vda` tran virtio, rota true) → kind HDD, size 11 GB | **Supported** | `tests/test_discover.py::test_vm_iso_boot_marks_rom_and_lists_virtio` | QEMU default SeaBIOS; `discover(payload=lsblk_vm_iso.json, boot_path=/dev/sr0)` |
 | **FW-06** | BIOS boot menu key variant (F12/Esc/F9) | — | — | Not a Beamo bug — user uses firmware key from `docs/boot-card.md`; helper page lists per-vendor keys | Manual doc check | **Supported via docs** | `docs/boot-card.md`, `helper/index.html` (key caps F12/Esc/F9) | Follow card: Dell F12, HP F9/Esc, Lenovo F12, etc.; `helper/index.html` renders key caps |
 
@@ -238,7 +245,7 @@ Preview/dry-run cannot exec real `NwipeRunner`: `test_confirm_erase_refuses_real
 - **eMMC/mmcblk:** `mmcblk0boot0/1/rpmb` (4 MiB) are hidden — correct (they are not wipe targets) the ordinary `mmcblk0` user-data device remains eligible when all disk safety checks pass. Only firmware-area nodes alone yield `PICK_EMPTY`.
 - **USB hubs / keyboard hubs:** May hide the stick from firmware boot menu; degraded boot findability (try direct port, disable Fast Boot per `docs/boot-card.md`).
 - **HiDPI:** May exhibit clipping at non-gate DPI; not automated at those DPIs. 800×600 and 1280×720 are supported short layouts.
-- **Secure Boot enabled:** Degraded to **unsupported** unless user disables it; we do not ship a bypass.
+- **Secure Boot enforcing:** Firmware-dependent acceptance of the inspected Debian chain; trust, revocations, SBAT and firmware architecture decide. Use [the physical cases](secure-boot-acceptance.md). Unknown policy cannot Pass. We do not prescribe security changes or ship a bypass.
 - **Xorg driverless fallback:** Very old GPUs may fall back to `vesa`/`fbdev` (still works but slower); we deliberately do not force VESA on every GPU.
 
 ### Unsupported (honest)
@@ -269,8 +276,8 @@ The window minimum is 800×600. 1280×720 uses compact pads and a scrolling body
 **BF-004 — HiDPI not gated**
 `xvfb-run @72 DPI` is the only automated gate. At 144 DPI, `WRAP` labels and `_Box` halo may clip. No failure seen in gallery/tk at 72 DPI. Follow-up: add a separate 144 DPI smoke on the hosted gate (not required for 1.0).
 
-**BF-005 — Secure Boot unsigned image**
-`LB_UEFI_SECURE_BOOT="auto"` + no enrolled key → firmware rejects USB when Secure Boot is on. This is *correct* (we do not ship circumvention), but the matrix must not claim "any UEFI". Follow-up: keep `docs/boot-card.md` and `docs/claims.md` language; consider documenting "disable Secure Boot" steps per vendor if support load justifies.
+**BF-005 — Earlier Secure Boot expectation superseded (#119)**
+The earlier unsigned-image assumption does not describe the inspected Q12 bytes. The current builder explicitly uses `--uefi-secure-boot enable`; the shipped x64 path is Microsoft-signed Debian shim, Debian-signed GRUB, then Debian-signed kernel. [Artifact inspection and the physical cases](secure-boot-acceptance.md) replace the enrollment-based verdict. Existing release assets and earlier execution logs remain historical; no universal acceptance or firmware-change workaround is authorized.
 
 **BF-006 — eMMC only machines show empty pick**
 Machines whose only non-boot storage is `mmcblk0` with only eMMC (laptops/tablets) correctly show a single selectable `mmcblk0` (ST-09). If that machine exposes only `mmcblk0boot0` (firmware area) the list is empty → `PICK_EMPTY` with "plug in the drive you want to erase" — honest but not ergonomic for eMMC-only recycle. Follow-up: keep as supported with `PICK_EMPTY`; do not auto-promote `mmcblk0boot0` to a target.

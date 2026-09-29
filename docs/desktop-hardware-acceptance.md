@@ -17,7 +17,8 @@ USB-lab, and GCP desktop VM receipts must not be copied into a Pass.
 - Tester and date:
 - PC manufacturer/model, CPU architecture, firmware version:
 - OS edition/version and desktop environment (Linux):
-- Secure Boot state and relevant firmware trust/revocation updates:
+- Secure Boot enforcement, CPU/firmware architecture, actual db / dbx,
+  shim validation / SBAT state, and [component receipt](secure-boot-acceptance.md):
 - USB model/capacity, connection/port, manufactured image SHA-256:
 - Source commit and launcher version:
 - Account type (standard/admin), execution policy, permission prompt result:
@@ -49,7 +50,7 @@ cases as such; do not count a safe refusal as proof of direct-restart support.
 | Leave application idle, refresh, then Close | Refresh retains the current session while active; Close removes controls and the server exits | NOT TESTED |
 | Cancel Linux restart or an application vetoes it | No forced application closure or erasure; record whether firmware retains the requested one-time USB boot | NOT TESTED |
 | Ordinary firmware boot-menu selection | USB reaches the welcome screen without the desktop launcher | NOT TESTED |
-| Supported Secure Boot configuration | USB reaches the welcome screen with Secure Boot still enabled; record actual trust state | NOT TESTED |
+| Inspected Secure Boot configuration | Apply the exact-image [Secure Boot cases](secure-boot-acceptance.md): known permitted chain reaches welcome with enforcement intact; proven denied chain refuses; unknown policy or inspection failure cannot Pass. Capture the selected entry, database/policy evidence, and startup/refusal stage. | NOT TESTED |
 | Repeat using advertised ports/controllers | The same media and identity remain usable; record failures by port/controller | NOT TESTED |
 | Booted welcome screen with several attached disks | No erase starts; the boot USB is absent from selectable targets | NOT TESTED |
 | Unknown boot-media identity | No disks become selectable | NOT TESTED |

@@ -1,0 +1,13 @@
+Current PE checksum   : 003AAD20
+Calculated PE checksum: 003AAD21
+Warning: invalid PE checksum
+
+Signature Index: 0  (Primary Signature)
+
+Message digest algorithm  : SHA256
+Current message digest    : DCA841985136F0533ECD18B589DDF75503660B499C2DCD77B7C7EFA7BC5D6A02
+Calculated message digest : DCF3E8648ECA9A7F0A282103F1352B611A850573D44750C641C499C765CE91A9     MISMATCH!!!
+
+Number of verified signatures: 1
+Failed
+Signature verification: failed

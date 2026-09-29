@@ -21,7 +21,7 @@ Every Result below is **NOT TESTED**.
 | PHY-DESK-09 | Leave idle, refresh, then Close | Refresh keeps the session while active; Close removes controls and the server exits | | NOT TESTED | `logs/PHY-DESK-09-*` |
 | PHY-DESK-10 | Cancel restart or an application vetoes it | No forced app closure or erasure; record whether firmware kept BootNext | | NOT TESTED | `logs/PHY-DESK-10-*` |
 | PHY-DESK-11 | Ordinary firmware boot-menu selection | USB reaches the welcome screen without the desktop launcher | | NOT TESTED | `photos/PHY-DESK-11-*` |
-| PHY-DESK-12 | Supported Secure Boot configuration on this desktop | USB reaches welcome with Secure Boot still enabled; record actual trust state | | NOT TESTED | `photos/PHY-DESK-12-*` |
+| PHY-DESK-12 | Q12; inspected Secure Boot configuration on this desktop | Apply [the canonical cases](../../../secure-boot-acceptance.md); record case ID, exact image, entry path, database/policy evidence and welcome/refusal stage. Only SB-ACCEPT with enforcement intact can qualify successful startup. Unknown or inspection failure cannot Pass. | | NOT TESTED | `photos/PHY-DESK-12-*` and `logs/PHY-DESK-12-*` |
 | PHY-DESK-13 | Repeat on advertised ports/controllers | Same media and identity remain usable; record Failures by port | | NOT TESTED | `logs/PHY-DESK-13-*` |
 | PHY-DESK-14 | Booted welcome with several attached disks | No erase starts; boot USB absent from selectable targets | | NOT TESTED | `photos/PHY-DESK-14-*` |
 | PHY-DESK-15 | Unknown boot-media identity | No disks become selectable | | NOT TESTED | `logs/PHY-DESK-15-*` |

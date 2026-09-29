@@ -35,9 +35,13 @@ Do not paste values from QEMU, Cloud Build, or an old USB-lab receipt unless you
 | USB image SHA-256 | |
 | Manifest filename | |
 | Manifest SHA-256 | |
+| Release signature verification / publisher fingerprint | |
+| Secure Boot component receipt / image binding (Q12 or new inspection) | |
 | How checksums were verified | |
 | Flash tool and host OS | |
 | Flash date (UTC) | |
+| Post-flash readback UTC / tool and version / exact command / exit code / log | |
+| Readback byte count / authenticated reference hash / whole USB identity after reconnect | |
 | USB stick manufacturer / model / capacity | |
 | USB stick serial (if known) | |
 | Partition label observed | `BEAMO_WIPE` expected |
@@ -51,7 +55,15 @@ Do not paste values from QEMU, Cloud Build, or an old USB-lab receipt unless you
 | Firmware vendor / version | |
 | Firmware mode this session (BIOS / UEFI / CSM) | |
 | Secure Boot state | on / off / not present |
-| Relevant trust / revocation notes | |
+| Firmware architecture (x64 / IA32 / other) | |
+| SecureBoot / SetupMode / available AuditMode and DeployedMode readings | |
+| db / dbx read-only evidence before/after boot, export SHA-256, relevant certificate/hash matches | |
+| Shim validation / MokSBStateRT (value or explained absence) | |
+| MOK trust and denylist evidence / embedded vendor denylist identity | |
+| Active SBAT / SbatLevelRT evidence before/after boot and matching component generations | |
+| Selected EFI entry/path and exact failure stage/message | |
+| Secure Boot case ID / missing or unreadable prerequisite | |
+| Relevant firmware/trust updates and dates (context, not database proof) | |
 | Built-in panel resolution (if laptop) | |
 | External display (if any) | |
 | Ports used (USB-A / USB-C / adapter / hub) | |
