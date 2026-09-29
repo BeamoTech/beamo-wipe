@@ -158,7 +158,11 @@ def test_release_download_inventory_is_signed_and_binds_compressed_usb(tmp_path,
     inventory_bytes = (stage / "release-downloads.json").read_bytes()
     signed = json.loads((stage / "release-downloads.json.sig").read_text())
     verify_with_registry(inventory_bytes, signed, load_key_registry(registry_data))
-    files = json.loads(inventory_bytes)["files"]
+    inventory = json.loads(inventory_bytes)
+    assert inventory["verification"]["signature_file"] == "release-downloads.json.sig"
+    assert "not configured" not in inventory["verification"]["signing"]
+    assert "--manifest dist/release-downloads.json" in inventory["verification"]["signature_command"]
+    files = inventory["files"]
     assert files[f"{stem}.img"]["sha256"] == sha(raw)
     assert files[f"{stem}.img.gz"]["sha256"] == sha(compressed.read_bytes())
 

@@ -16,6 +16,7 @@ from typing import Any, Dict, List, Optional
 
 from beamo_wipe import NWIPE_PINNED_COMMIT, NWIPE_PINNED_VERSION, __version__
 from beamo_wipe.build_identity import BUILD_ID_RE
+from beamo_wipe.release_signing import detached_verification_metadata
 from beamo_wipe.verification_evidence import (
     build_test_evidence,
     verify_package_inventory,
@@ -491,9 +492,13 @@ def generate_manifest(
         "prior_stable": PRIOR_STABLE,
         "rollback": f"git checkout {PRIOR_STABLE['commit']} or git revert <commit> to prior ISO {PRIOR_STABLE['iso_name']}",
         "verification": {
-            "checksum_instructions": f"cd dist && sha256sum -c {iso['iso_name']}.sha256",
+            **detached_verification_metadata(MANIFEST_NAME_TEMPLATE.format(version=version), version),
+            "checksum_instructions": (
+                "After verifying the detached signature and comparing artifact hashes "
+                "with the authenticated manifest/inventory: "
+                f"cd dist && sha256sum -c {iso['iso_name']}.sha256"
+            ),
             "artifact_immutability": "verification is ephemeral unless the explicit post-QEMU release gate writes a unique build path",
-            "signing": "not configured; SHA256 detects corruption but does not authenticate the publisher",
             "reproducibility": "live-build is not bit-reproducible due to apt timestamps; use SHA256 and source commit for traceability",
         },
     }

@@ -1,0 +1,29 @@
+{
+  "purpose": "EPHEMERAL TEST KEY / REGULAR-FILE FIXTURE ONLY; NOT RELEASE QUALIFICATION",
+  "version": "0.2.12",
+  "fake_source": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "manifest_name": "beamo-wipe-0.2.12-amd64.manifest.json",
+  "manifest_sha256": "0d1154ef0ce9d1d620d61fdffcdc9d2a50fabfe3b0a07c26feb623163e3edf54",
+  "sidecar_name": "beamo-wipe-0.2.12-amd64.manifest.json.sig",
+  "sidecar_sha256": "dfe83ee8f0cee8b75433f3f7ae47df9c4696ca56b8ef76aa9e32612470b2a357",
+  "test_public_key_fingerprint": "5c6fc4d5890855048dd83ced99b4158ad717957240a80f94a686f04f427cd794",
+  "registry_sha256": "13beaeeb4f0b55f6e70db1ed5514824b76cd8f8bbab0071b7fea71483e845edf",
+  "verification": {
+    "signing": "Published releases require a detached Ed25519 signature in beamo-wipe-0.2.12-amd64.manifest.json.sig over the exact bytes of this document; no signature is embedded here. Generation alone does not sign or authenticate a build. Without a successfully verified sidecar, including when signing is skipped, treat it as unauthenticated. SHA256 checksums alone do not authenticate the publisher. A valid signature authenticates these bytes to the trusted publisher key; it does not prove runtime safety, firmware compatibility or successful erasure.",
+    "signature_file": "beamo-wipe-0.2.12-amd64.manifest.json.sig",
+    "signature_algorithm": "Ed25519",
+    "verification_order": [
+      "Obtain beamo-wipe-0.2.12-amd64.manifest.json and beamo-wipe-0.2.12-amd64.manifest.json.sig from the same release.",
+      "Authenticate the public key through the approved trust path: use the current trusted packaging/release-keys/keys.json registry, confirm the full public-key fingerprint through the operator's independent announcement, and require an active key. A registry downloaded with the release is not its own trust anchor.",
+      "Verify the detached signature over the exact document bytes with beamo_wipe.release_signing and an explicit minimum accepted version; reject missing, invalid or mismatched signatures.",
+      "Only after signature verification, check the listed artifact sizes and SHA256 hashes against the actual files. Verify release-downloads.json with release-downloads.json.sig before trusting its download inventory; verify the manifest with its own .sig before using its provenance."
+    ],
+    "signature_command": "PYTHONPATH=src python3 -m beamo_wipe.release_signing verify --manifest dist/beamo-wipe-0.2.12-amd64.manifest.json --signature dist/beamo-wipe-0.2.12-amd64.manifest.json.sig --registry packaging/release-keys/keys.json --min-version 0.2.12",
+    "checksum_instructions": "After verifying the detached signature and comparing artifact hashes with the authenticated manifest/inventory: cd dist && sha256sum -c beamo-wipe-0.2.12-amd64.iso.sha256",
+    "artifact_immutability": "verification is ephemeral unless the explicit post-QEMU release gate writes a unique build path",
+    "reproducibility": "live-build is not bit-reproducible due to apt timestamps; use SHA256 and source commit for traceability"
+  },
+  "signature_verified": true,
+  "tamper_rejection": "signature sidecar is for different manifest bytes",
+  "private_key_written": false
+}

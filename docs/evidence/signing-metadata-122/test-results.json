@@ -1,0 +1,32 @@
+{
+  "full_suite": {
+    "command": "BEAMO_WIPE_DRY_RUN=1 PYTEST_ADDOPTS='-p no:cacheprovider' ./scripts/test-all.sh -o addopts=''",
+    "passed": 4629,
+    "skipped": 701,
+    "failed": 2,
+    "seconds": 461.52,
+    "failures": [
+      {
+        "test": "tests.test_compat_story::test_what_screen_keeps_title_and_shows_this_usb_line",
+        "message": "ModuleNotFoundError: No module named 'gi'"
+      },
+      {
+        "test": "tests.test_separate_footer_actions::test_assist_nav_names_do_not_rewrite_result_heading",
+        "message": "ModuleNotFoundError: No module named 'gi'"
+      }
+    ]
+  },
+  "final_focused_suite": {
+    "passed": 85,
+    "skipped": 12,
+    "failed": 0,
+    "seconds": 1.78,
+    "new_metadata_cases": 11
+  },
+  "logs": {
+    "full-local-tests.xml": "6526d7f30b27038a750fb5a630fdaded6e6b5ea8d172450ac0aa0844ed845e72",
+    "full-local-tests.log": "520f0115614c6391d165ad9bc56cc9557bc6ae96215d78c90fb90b56556ae826",
+    "final-focused-tests.log": "3f2a0c0c5e06d0bab7ba154a2b2dbae5875563d941fe21336a5409a0bde85f50",
+    "original-regression.log": "9fefccb417c143c7473b83f4515e6029062777b875eff9e8e50c09531bbbf784"
+  }
+}
