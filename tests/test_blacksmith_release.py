@@ -164,7 +164,9 @@ def test_release_download_inventory_is_signed_and_binds_compressed_usb(tmp_path,
     assert "--manifest dist/release-downloads.json" in inventory["verification"]["signature_command"]
     files = inventory["files"]
     assert files[f"{stem}.img"]["sha256"] == sha(raw)
+    assert files[f"{stem}.img"]["bytes"] == len(raw)
     assert files[f"{stem}.img.gz"]["sha256"] == sha(compressed.read_bytes())
+    assert files[f"{stem}.img.gz"]["bytes"] == compressed.stat().st_size
 
 
 @pytest.mark.parametrize("alter_transfer", [False, True])

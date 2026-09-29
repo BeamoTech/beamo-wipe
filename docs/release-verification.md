@@ -146,6 +146,126 @@ Use this order; a checksum match alone is not publisher authentication:
    recorded evidence. Checking an unauthenticated `.sha256` file alone is not
    a substitute for comparison with the authenticated documents.
 
+### USB image download verification
+
+Use this procedure for the **`.img.gz` download**, not the ISO. It checks the
+compressed bytes before decompression, then the actual decompressed file's
+size and hash. The signed inventory already lists both identities; the raw
+`.img` need not be a separate downloadable asset.
+
+This is a **versioned v0.2.12 example**, using the
+[public release](https://github.com/BeamoTech/beamo-wipe/releases/tag/v0.2.12)
+and source `e986419379f512f8088f5982ee02a51dc91a9dae`. For another release,
+independently establish its tag/source commit and approved current signing
+key before changing the three identity variables. Do not lower an acceptance
+floor or substitute ISO hashes to make USB verification pass.
+
+Prerequisites: Linux or macOS, a POSIX shell, `curl`, Python 3.10+ with the
+repository's `cryptography` verification dependency, and an independently
+trusted reviewed checkout containing `scripts/verify-usb-download.py`.
+These commands verify files on macOS; they make no claim that the live image
+boots an Apple Silicon Mac. Native Windows commands are not provided here.
+Keep enough free space for both listed sizes (about 2.6 GiB for v0.2.12), plus
+working headroom. No administrator privilege or raw device is needed.
+
+**Authenticate the trust material first.** Obtain the current public registry
+through the approved trusted checkout/update channel and confirm its full key
+fingerprint with the operator's independent announcement. The
+[versioned first-key ceremony record](https://github.com/BeamoTech/beamo-wipe/blob/e986419379f512f8088f5982ee02a51dc91a9dae/packaging/release-keys/KEYS.md)
+explains this key's approval; an old record does not establish its current
+revocation status. The verifier requires an active key in the current trusted
+registry. A registry/fingerprint downloaded alongside the image cannot
+authenticate itself. If you cannot establish that trust path, stop; a matching
+hash alone does not establish publisher provenance.
+
+After that independent check, edit only `BEAMO_SOURCE` to the **absolute** path
+of your trusted checkout. Copy the whole block. It creates its own empty,
+private working directory and uses explicit paths throughout; it does not
+depend on the caller's current directory. The subprocess shell stops on any
+failed command. Do not share or modify the working directory during verification.
+
+<!-- USB-VERIFY-WALKTHROUGH-BEGIN -->
+```sh
+(
+set -euC
+BEAMO_SOURCE='/absolute/path/to/trusted/beamo-wipe'
+BEAMO_VERSION='0.2.12'
+BEAMO_COMMIT='e986419379f512f8088f5982ee02a51dc91a9dae'
+BEAMO_KEY_SHA256='93caaf7ca93eff4d7fa1c16e360f9d6aa17ced0155a56d4cf89d8f6d429e66f7'
+case "$BEAMO_SOURCE" in /*) ;; *) echo 'STOP: checkout path must be absolute' >&2; exit 1;; esac
+test -f "$BEAMO_SOURCE/scripts/verify-usb-download.py" || {
+  echo 'STOP: select the trusted checkout containing the USB verifier' >&2; exit 1;
+}
+BEAMO_USB_WORK="$(mktemp -d "${TMPDIR:-/tmp}/beamo-usb-verify.XXXXXXXX")"
+BEAMO_USB_WORK="$(cd "$BEAMO_USB_WORK" && pwd -P)"
+BEAMO_STEM="beamo-wipe-${BEAMO_VERSION}-amd64"
+BEAMO_RELEASE_URL="https://github.com/BeamoTech/beamo-wipe/releases/download/v${BEAMO_VERSION}"
+cd "$BEAMO_USB_WORK"
+printf 'Private verification directory: %s\n' "$BEAMO_USB_WORK"
+
+fetch_usb_file() {
+  test ! -e "$BEAMO_USB_WORK/$1" && test ! -L "$BEAMO_USB_WORK/$1" || {
+    echo 'STOP: download destination already exists' >&2; exit 1;
+  }
+  curl --fail --location --proto '=https' --proto-redir '=https' \
+    --connect-timeout 15 --max-time 900 --silent --show-error \
+    "$BEAMO_RELEASE_URL/$1" > "$BEAMO_USB_WORK/$1.part"
+  ln "$BEAMO_USB_WORK/$1.part" "$BEAMO_USB_WORK/$1"
+  rm "$BEAMO_USB_WORK/$1.part"
+}
+verify_usb_files() {
+  python3 "$BEAMO_SOURCE/scripts/verify-usb-download.py" "$1" \
+    --directory "$BEAMO_USB_WORK" \
+    --registry "$BEAMO_SOURCE/packaging/release-keys/keys.json" \
+    --trusted-key-sha256 "$BEAMO_KEY_SHA256" \
+    --version "$BEAMO_VERSION" --expected-source "$BEAMO_COMMIT"
+}
+
+fetch_usb_file 'release-downloads.json'
+fetch_usb_file 'release-downloads.json.sig'
+fetch_usb_file "$BEAMO_STEM.manifest.json"
+fetch_usb_file "$BEAMO_STEM.manifest.json.sig"
+fetch_usb_file "$BEAMO_STEM.img.json"
+verify_usb_files metadata
+fetch_usb_file "$BEAMO_STEM.img.gz"
+verify_usb_files extract
+verify_usb_files verify
+printf 'Verified regular file, not yet written to media: %s/%s.img\n' "$BEAMO_USB_WORK" "$BEAMO_STEM"
+)
+```
+<!-- USB-VERIFY-WALKTHROUGH-END -->
+
+Expected sequence: `AUTHENTICATED metadata` identifies the exact tag, source
+commit and build; `EXPECTED` lists the compressed/raw filenames, sizes and
+SHA256 values; `VERIFIED compressed USB download` precedes decompression;
+`VERIFIED raw USB image` appears only after the raw file matches. The separate
+final `verify` rechecks both regular files without extracting again. Every
+stage authenticates the inventory and manifest signatures before using their
+hashes. The image metadata must itself match the signed inventory and bind
+the raw image to the ISO identity recorded by the signed manifest. This does
+not claim that the ISO bytes were downloaded or verified by this procedure.
+
+Missing/invalid signatures, altered metadata, wrong source/version/build,
+missing size/hash fields, or mismatched compressed/raw bytes produce `STOP`
+and a nonzero exit. Wrong directories and symlink/special-file inputs are
+rejected. Extraction refuses any existing `.img` or `.img.partial`, bounds
+decompression by the authenticated raw size, and publishes `.img` without
+overwriting only after successful verification. Interrupted/failed downloads
+retain `.part`; failed extraction may retain `.img.partial`. Neither is a
+verified image. Start over in a new empty directory after a failure; never
+rename a partial file or bypass a failed check. `verify` is the mode for
+rechecking an already complete image, not `extract`.
+
+**Stop before writing media.** Successful verification authenticates these
+exact bytes to the approved publisher key and ties them to one signed release
+source/build identity. It does not prove runtime safety, firmware compatibility,
+successful erasure, or that a selected physical disk is safe to overwrite.
+The printed `.img` is a regular file; this procedure performs no media write.
+
+### ISO verification
+
+The following checks concern the separate `.iso`, not the USB `.img.gz` or
+`.img`. An ISO hash must never stand in for either USB-image hash.
 Run these commands from a trusted source checkout with release files together
 under `dist/`. The examples use 0.2.12; choose the intended release and an
 appropriate acceptance floor, rather than lowering it to make a check pass.
