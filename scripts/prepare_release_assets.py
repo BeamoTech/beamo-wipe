@@ -16,7 +16,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from beamo_wipe.release_manifest import verify_manifest  # noqa: E402
 from beamo_wipe.release_signing import (  # noqa: E402
-    load_key_registry, sign_manifest_bytes, verify_with_registry,
+    detached_verification_metadata, load_key_registry, sign_manifest_bytes, verify_with_registry,
 )
 from publish_release_gcs import _read_signing_key  # noqa: E402
 
@@ -116,6 +116,7 @@ def prepare(stage: Path, version: str, build_id: str, commit: str) -> None:
         "schema": "beamo-wipe-release-downloads/1",
         "beamo_wipe_version": version, "source_commit": commit,
         "qualified_build_id": build_id,
+        "verification": detached_verification_metadata("release-downloads.json", version),
         "files": {p.name: file_record(p) for p in [*public, receipt_path, raw_image]},
     }
     inventory_bytes = write_json(stage / "release-downloads.json", inventory)

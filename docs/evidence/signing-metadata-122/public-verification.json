@@ -1,0 +1,66 @@
+{
+  "release_id": 398337215,
+  "tag": "v0.2.12",
+  "url": "https://github.com/BeamoTech/beamo-wipe/releases/tag/v0.2.12",
+  "source": {
+    "branch": "main",
+    "commit": "e986419379f512f8088f5982ee02a51dc91a9dae",
+    "dirty": false,
+    "dirty_count": 0,
+    "remote_url": "https://github.com/BeamoTech/beamo-wipe",
+    "tag": "v0.2.12"
+  },
+  "observed_verification": {
+    "artifact_immutability": "verification is ephemeral unless the explicit post-QEMU release gate writes a unique build path",
+    "checksum_instructions": "cd dist && sha256sum -c beamo-wipe-0.2.12-amd64.iso.sha256",
+    "reproducibility": "live-build is not bit-reproducible due to apt timestamps; use SHA256 and source commit for traceability",
+    "signing": "not configured; SHA256 detects corruption but does not authenticate the publisher"
+  },
+  "trust_registry_sha256": "545e39ad52215228dd13d24b0fb2e39c1819c80d2f0ff40eb78ab06b4a27443c",
+  "approved_fingerprint": "93caaf7ca93eff4d7fa1c16e360f9d6aa17ced0155a56d4cf89d8f6d429e66f7",
+  "verification": {
+    "release-downloads.json": {
+      "key_id": "93caaf7ca93eff4d",
+      "manifest_sha256": "2023d3aa84a84f406a1d0f0b230d38293eb1b74275cf068088408209a296511c",
+      "beamo_wipe_version": "0.2.12"
+    },
+    "beamo-wipe-0.2.12-amd64.manifest.json": {
+      "key_id": "93caaf7ca93eff4d",
+      "manifest_sha256": "0bb56538500330086f507538e94ec68846ff5ab39ddf491dbeaf467a50cfd5b8",
+      "beamo_wipe_version": "0.2.12"
+    }
+  },
+  "downloads": [
+    {
+      "name": "beamo-wipe-0.2.12-amd64.manifest.json",
+      "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/beamo-wipe-0.2.12-amd64.manifest.json",
+      "bytes": 85269,
+      "sha256": "0bb56538500330086f507538e94ec68846ff5ab39ddf491dbeaf467a50cfd5b8"
+    },
+    {
+      "name": "beamo-wipe-0.2.12-amd64.manifest.json.sig",
+      "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/beamo-wipe-0.2.12-amd64.manifest.json.sig",
+      "bytes": 406,
+      "sha256": "3fc11d5a039a2ddfa964c7bd983eda545623dbf4013c79963857263a759f62cb"
+    },
+    {
+      "name": "keys.json",
+      "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/keys.json",
+      "bytes": 275,
+      "sha256": "545e39ad52215228dd13d24b0fb2e39c1819c80d2f0ff40eb78ab06b4a27443c"
+    },
+    {
+      "name": "release-downloads.json",
+      "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/release-downloads.json",
+      "bytes": 2337,
+      "sha256": "2023d3aa84a84f406a1d0f0b230d38293eb1b74275cf068088408209a296511c"
+    },
+    {
+      "name": "release-downloads.json.sig",
+      "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/release-downloads.json.sig",
+      "bytes": 406,
+      "sha256": "93b1f8da89c80bdeec400a750549c8e2d4ac700a50d822a4bf652202638f83b2"
+    }
+  ],
+  "artifact_bytes_verified": false
+}

@@ -147,7 +147,7 @@ Pinned by: `tests/test_copy.py: FORBIDDEN`, `tests/test_ui_system.py: test_no_fo
 
 | Source | What it proves | Last checked | Owner |
 |---|---|---|---|
-| `nwipe` upstream 0.42 release + tag `v0.42` + commit `6082bde060091e66365d852a1877f2ee80c67105` (`git rev-parse HEAD` in hook) | Engine identity + method list | 2026-09-02 (pinned; re-checked by Cloud Build hook on every ISO) | Accountable senior engineer (this checkout), then Cloud Build `pkg live` log |
+| `nwipe` upstream 0.42 release + tag `v0.42` + commit `6082bde060091e66365d852a1877f2ee80c67105` (`git rev-parse HEAD` in hook) | Engine identity + method list | 2026-09-02 first inspection; currently re-checked by the shared build hook on each Blacksmith ISO | Accountable senior engineer (this checkout); exact build receipt per [current CI](ci.md) |
 | nwipe `--help` + `src/method.c` + `src/nwipe.c` (PRNG/dodshort/zero, `--verify`, `--noblank`, SIGUSR1) | The three wizard choices mean exactly `--method=prng|dodshort|zero --verify=last|off --rounds=1 --noblank` | 2026-09-02 via code inspection + `docs/ADVANCED.md` mapping (no physical destructive run) | Same |
 | `src/beamo_wipe/methods.py` + `src/beamo_wipe/nwipe_runner.py` `build_nwipe_argv()` + `validate_argv()` + `evaluate_nwipe_completion()` | Flags that ship + failure/verified logic | 2026-09-02 via `tests/test_nwipe_runner.py` (40 tests, fake logs) | Same |
 | Debian `live-build` hooks + `beamo.list.chroot` + `inside-docker.sh` (tag+SHA pin, ELF/PATH check, stub) | Build locks in wrapper + boots | 2026-09-02 via `scripts/build-iso.sh` dry inspection (no build on this Mac) | Same |

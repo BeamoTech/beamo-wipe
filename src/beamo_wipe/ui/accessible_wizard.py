@@ -19,7 +19,7 @@ gi.require_version("Atk", "1.0")
 from gi.repository import Atk, Gdk, GLib, Gtk, Pango  # noqa: E402
 
 from beamo_wipe import copy as C  # noqa: E402
-from beamo_wipe import diagnostic_report as D, inventory, sound, storage_limits  # noqa: E402
+from beamo_wipe import diagnostic_report as D, inventory, storage_limits  # noqa: E402
 from beamo_wipe.outcomes import may_have_erased  # noqa: E402
 from beamo_wipe.recovery import (  # noqa: E402
     recovery_for_blocked,
@@ -89,6 +89,8 @@ class AccessibleWizard:
         self.error_label = None
         self.shown = None
         self.report_revision = -1
+        self.sound_revision = -1
+        self._sound_dialog = None
         self.actions: dict[str, Gtk.Button] = {}
         self._refresh_lock = threading.Lock()
         self._refresh_result: tuple[int, object] | None = None
@@ -260,6 +262,7 @@ class AccessibleWizard:
         self.power_label = None
         self.shown = self.w.screen
         self.report_revision = self.w.report_view.revision
+        self.sound_revision = getattr(self.w, "sound_revision", 0)
         old = self.window.get_child()
         if old:
             self.window.remove(old)
@@ -600,7 +603,7 @@ class AccessibleWizard:
             else:
                 self.button(C.STOP_ASK, self.w.request_stop)
         elif screen == Screen.DONE:
-            self.w.maybe_play_outcome_sound()
+            self.w.request_auto_outcome_sound()
             result = self.w.result_view
             sections = recovery_for_view(result)
             heading.set_text(result.message if sections else result.announcement)
@@ -823,186 +826,12 @@ class AccessibleWizard:
             self.reader(inventory.full_text(self.w.other_devices))
 
     def open_sound_check(self):
-        """Modal output controls and speech test. Native controls only:
-        Tab moves, Enter activates, Esc closes. Shown, never run(), so the
-        main loop keeps flowing while it is open."""
-        state = sound.list_outputs()
-        if state.available:
-            applied = sound.apply_remembered_output(self.w)
-            if applied is not None and applied.ok:
-                state = sound.list_outputs()
-        chosen: dict = {"output": sound.resolve_output(self.w.sound_output, state)}
-        muted = {"value": bool(state.muted)}
-        dialog = Gtk.Dialog(title=C.SOUND_CHECK_TITLE)
-        dialog.set_transient_for(self.window)
-        dialog.set_modal(True)
-        dialog.set_destroy_with_parent(True)
-        dialog.set_default_size(560, 480)
-        box = dialog.get_content_area()
-        box.set_spacing(6)
-        box.set_border_width(16)
-        status = Gtk.Label(
-            label=C.SOUND_DIALOG_LEAD if state.available else state.message
-        )
-        status.set_line_wrap(True)
-        status.set_xalign(0)
-        status.set_max_width_chars(65)
-        status.set_can_focus(True)
-        status.set_selectable(True)
-        box.pack_start(status, False, False, 4)
+        from beamo_wipe.ui.sound_dialog import SoundDialog
 
-        def announce(text):
-            status.set_text(text)
-            status.grab_focus()
-
-        if sound.orca_running() is False:
-            notice = Gtk.Label(label=C.SOUND_ORCA_MISSING)
-            notice.set_line_wrap(True)
-            notice.set_xalign(0)
-            notice.set_max_width_chars(65)
-            box.pack_start(notice, False, False, 4)
-        volume_label = Gtk.Label(label="")
-        volume_label.set_line_wrap(True)
-        volume_label.set_xalign(0)
-        volume_label.set_max_width_chars(65)
-        mute_button = Gtk.Button.new_with_label(
-            C.SOUND_UNMUTE if muted["value"] else C.SOUND_MUTE
-        )
-
-        def refresh_volume():
-            fresh = sound.list_outputs()
-            if fresh.available and fresh.volume_percent is not None:
-                text = f"{C.SOUND_VOLUME}: {fresh.volume_percent}%"
-                if fresh.muted:
-                    text += f", {C.SOUND_MUTED_STATE}"
-                elif fresh.volume_percent < 20:
-                    text += f" {C.SOUND_VOLUME_LOW}"
-                muted["value"] = bool(fresh.muted)
-            else:
-                text = C.SOUND_VOLUME_UNKNOWN
-            volume_label.set_text(text)
-            mute_button.set_label(
-                C.SOUND_UNMUTE if muted["value"] else C.SOUND_MUTE
-            )
-
-        def on_output_toggled(choice, output):
-            if not choice.get_active():
-                return
-            result = sound.set_output(output.id)
-            if result.ok:
-                self.w.set_sound_output(output.id)
-                chosen["output"] = output
-                refresh_volume()
-                announce(f"{output.label} {C.SOUND_SELECTED}")
-            else:
-                announce(result.message)
-
-        group = None
-        for output in state.outputs:
-            choice = Gtk.RadioButton.new_with_label_from_widget(group, output.label)
-            choice.get_accessible().set_description(output.detail)
-            choice.get_child().set_line_wrap(True)
-            choice.get_child().set_max_width_chars(65)
-            group = choice
-            box.pack_start(choice, False, False, 3)
-            if chosen["output"] is not None and output.id == chosen["output"].id:
-                choice.set_active(True)
-            choice.connect("toggled", on_output_toggled, output)
-        controls = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        box.pack_start(controls, False, False, 4)
-        controls.pack_start(volume_label, True, True, 0)
-        louder = Gtk.Button.new_with_label(C.SOUND_LOUDER)
-        quieter = Gtk.Button.new_with_label(C.SOUND_QUIETER)
-        controls.pack_start(louder, False, False, 0)
-        controls.pack_start(quieter, False, False, 0)
-        controls.pack_start(mute_button, False, False, 0)
-
-        def on_nudge(_button, delta):
-            current = chosen["output"]
-            if current is None:
-                return
-            result = sound.nudge_volume(current.id, delta)
-            if result.ok:
-                refresh_volume()
-            else:
-                announce(result.message)
-
-        louder.connect("clicked", on_nudge, sound.VOLUME_STEP)
-        quieter.connect("clicked", on_nudge, -sound.VOLUME_STEP)
-
-        def on_mute(_button):
-            current = chosen["output"]
-            if current is None:
-                return
-            result = sound.set_muted(current.id, not muted["value"])
-            if result.ok:
-                muted["value"] = not muted["value"]
-                refresh_volume()
-            else:
-                announce(result.message)
-
-        mute_button.connect("clicked", on_mute)
-        play = Gtk.Button.new_with_label(C.SOUND_PLAY_TEST)
-        box.pack_start(play, False, False, 4)
-
-        def on_play(_button):
-            current = chosen["output"]
-            if current is None:
-                return
-            applied = sound.set_output(current.id)
-            if not applied.ok:
-                announce(applied.message)
-                return
-            self.w.set_sound_output(current.id)
-            announce(sound.play_speech_test().message)
-
-        play.connect("clicked", on_play)
-        outcome_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        box.pack_start(outcome_row, False, False, 4)
-        sounds_toggle = Gtk.Button.new_with_label(self.w.sound_toggle_text)
-        hear_outcomes = Gtk.Button.new_with_label(C.SOUND_HEAR)
-        outcome_row.pack_start(sounds_toggle, False, False, 0)
-        outcome_row.pack_start(hear_outcomes, False, False, 0)
-
-        def on_sounds_toggle(_button):
-            self.w.toggle_sounds()
-            sounds_toggle.set_label(self.w.sound_toggle_text)
-            announce(self.w.sound_message)
-
-        def on_hear_outcomes(_button):
-            current = chosen["output"]
-            if current is None:
-                return
-            applied = sound.set_output(current.id)
-            if not applied.ok:
-                announce(applied.message)
-                return
-            self.w.set_sound_output(current.id)
-            announce(self.w.hear_both_sounds().message)
-
-        sounds_toggle.connect("clicked", on_sounds_toggle)
-        hear_outcomes.connect("clicked", on_hear_outcomes)
-        controls.set_sensitive(chosen["output"] is not None)
-        play.set_sensitive(chosen["output"] is not None)
-        hear_outcomes.set_sensitive(chosen["output"] is not None)
-        refresh_volume()
-        recovery = Gtk.Label(label=C.SOUND_RECOVERY)
-        recovery.set_line_wrap(True)
-        recovery.set_xalign(0)
-        recovery.set_max_width_chars(65)
-        box.pack_start(recovery, False, False, 4)
-        dialog.add_button(C.SOUND_CLOSE, Gtk.ResponseType.CLOSE)
-        dialog.connect("response", lambda *args: dialog.destroy())
-        dialog.connect("close", lambda *args: dialog.destroy())
-        review_overlay = self.w.begin_review_overlay()
-        if review_overlay:
-            dialog.connect("destroy", lambda *args: self.w.end_review_overlay())
-        try:
-            dialog.show_all()
-            status.grab_focus()
-        except BaseException:
-            dialog.destroy()
-            raise
+        if self._sound_dialog is not None and self._sound_dialog.dialog is not None:
+            self._sound_dialog.dialog.present()
+            return
+        self._sound_dialog = SoundDialog(Gtk, self.window, self.w, on_stop=self.render)
 
     def _select(self, path):
         self.w.select_disk(path)
@@ -1101,12 +930,16 @@ class AccessibleWizard:
             return False
         self._drain_refresh_result()
         self.w.tick()
+        dialog = getattr(self, "_sound_dialog", None)
+        if dialog is not None:
+            dialog.poll()
         if self.w.wants_shutdown or self.w.wants_new_session:
             self.close()
             return False
         if (
             self.shown != self.w.screen
             or self.report_revision != self.w.report_view.revision
+            or (self.w.screen in {Screen.DONE, Screen.WORKING} and getattr(self, "sound_revision", 0) != getattr(self.w, "sound_revision", 0))
         ):
             self.render()
         else:
@@ -1201,6 +1034,10 @@ class AccessibleWizard:
         if self.closed:
             return
         self.closed = True
+        getattr(self.w, "cancel_audio", lambda: None)()
+        dialog = getattr(self, "_sound_dialog", None)
+        if dialog is not None:
+            dialog.close()
         if self.timer:
             GLib.source_remove(self.timer)
             self.timer = 0

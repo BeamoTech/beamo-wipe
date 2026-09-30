@@ -4,9 +4,6 @@
 # Unsets CLOUDSDK_* pins so a leftover support-deployer SA cannot steal the job.
 set -euo pipefail
 
-ROOT="$(CDPATH='' cd -- "$(dirname "$0")/.." && pwd)"
-cd "$ROOT"
-
 project="${BEAMO_WIPE_GCP_PROJECT:-beamo-wipe}"
 publish_release=false
 
@@ -27,6 +24,8 @@ while [ $# -gt 0 ]; do
       ;;
     -h|--help)
       printf 'usage: %s [--skip-iso] [--publish-release] [--project ID]\n' "$0"
+      printf 'Legacy Cloud Build compatibility only; current qualification is Blacksmith CI gate.\n'
+      printf 'Execution submits a remote build; --publish-release also requests publication. Separate authorization required. See docs/development.md.\n'
       exit 0
       ;;
     *)
@@ -36,6 +35,9 @@ while [ $# -gt 0 ]; do
   esac
   shift
 done
+
+ROOT="$(CDPATH='' cd -- "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
 
 if [ "$publish_release" = true ] && {
   [ "${SUBSTITUTIONS#*_SKIP_ISO=true}" != "$SUBSTITUTIONS" ] ||

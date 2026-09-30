@@ -247,7 +247,7 @@ BEAMO_WIPE_NO_OPEN=1 ./preview --web && python3 -c "import pathlib; print(pathli
 python3 -c "from beamo_wipe.gallery import gallery_html; print('gallery', len(gallery_html()))"
 python3 -c "from beamo_wipe.ui.tk_wizard import TkWizard; import inspect; print('scaling' in inspect.getsource(TkWizard.__init__))"
 
-# Tk clipping/focus gate (native — not on macOS TCG). Run on Linux x86_64 or Cloud Build:
+# Tk clipping/focus gate: Linux with the hosted dependencies; current CI uses Blacksmith.
 xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72" python3 -m pytest
 DISPLAY=:99 python3 -m pytest  # when .cursor/start.sh already runs Xvfb :99 at 72 DPI
 
@@ -260,7 +260,7 @@ xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72" python3 -m pytest tests/test_tk_
 ## 13. Evidence & logs (this checkout)
 
 - `python3 -m pytest -k "not tk_runtime"` — **349 passed, 0 failed** on `Darwin 25.5.0 arm64, Python 3.10.0, pytest 9.0.3` with `BEAMO_WIPE_DRY_RUN=1`.
-- `xvfb 72 DPI` clipping suite — `28/28 tk_runtime` on the Cloud Build hosted gate (see `docs/ci.md`). On this Mac headless, `DISPLAY=:1 @96 DPI` aborts — expected, not the gate.
+- Historical `xvfb 72 DPI` clipping receipt: `28/28 tk_runtime` on the then-used Cloud Build gate. This is not current qualification; see [current Blacksmith CI](ci.md). On this Mac headless, `DISPLAY=:1 @96 DPI` aborts — expected, not the gate.
 - `BEAMO_WIPE_NO_OPEN=1 ./preview --web` → `web-preview/index.html` 54K, `BEAMO_WIPE_DRY_RUN=1` no `nwipe` spawn.
 - No `nwipe` `Popen` in any fake path — spy `test_popen_inherits_wipe_lock_fd` asserts `pass_fds`, `cwd="/"`, `shell False`, `start_new_session True`.
 

@@ -27,6 +27,19 @@ def drain():
         Gtk.main_iteration_do(False)
 
 
+def wait_sound(app):
+    """Apply a sound job through the real GTK timer path."""
+    deadline = time.monotonic() + 2
+    while time.monotonic() < deadline:
+        app.tick()
+        drain()
+        controller = app._sound_dialog
+        if controller is None or controller.ticket is None:
+            return
+        time.sleep(0.005)
+    pytest.fail("sound job did not settle")
+
+
 def wait_refresh(app):
     """Observe the worker result through the same GTK timer as the owner."""
     assert app.w.screen == Screen.REFRESHING
@@ -1554,7 +1567,7 @@ def test_sound_check_dialog_plays_test_and_switches_output(ui, monkeypatch):
     _canned_sound(monkeypatch, calls)
     app = ui()
     app.actions[C.SOUND_CHECK_BUTTON].clicked()
-    drain()
+    wait_sound(app)
     dialogs = _sound_dialog()
     assert len(dialogs) == 1
     dialog = dialogs[0]
@@ -1564,17 +1577,18 @@ def test_sound_check_dialog_plays_test_and_switches_output(ui, monkeypatch):
     assert any("Speakers" in name for name in names)
     assert any("Headphones" in name for name in names)
     _dialog_button(dialog, C.SOUND_PLAY_TEST).clicked()
-    drain()
+    wait_sound(app)
     assert ("play",) in calls
     radios = [w for w in widgets(dialog) if isinstance(w, Gtk.RadioButton)]
     assert len(radios) == 2
     radios[1].set_active(True)
-    drain()
+    wait_sound(app)
     assert ("set", "phones-id") in calls
     assert app.w.sound_output == "phones-id"
     _dialog_button(dialog, C.SOUND_LOUDER).clicked()
+    wait_sound(app)
     _dialog_button(dialog, C.SOUND_MUTE).clicked()
-    drain()
+    wait_sound(app)
     assert ("vol", "phones-id", 10) in calls
     assert ("mute", "phones-id", True) in calls
     dialog.destroy()
@@ -1591,7 +1605,7 @@ def test_sound_check_dialog_reports_no_audio_and_orca_failure(ui, monkeypatch):
     _canned_sound(monkeypatch, calls, available=False, orca=False)
     app = ui()
     app.actions[C.SOUND_CHECK_BUTTON].clicked()
-    drain()
+    wait_sound(app)
     dialogs = _sound_dialog()
     assert len(dialogs) == 1
     dialog = dialogs[0]
@@ -1622,7 +1636,7 @@ def test_sound_check_dialog_toggles_and_hears_outcome_sounds(ui, monkeypatch):
     )
     app = ui()
     app.actions[C.SOUND_CHECK_BUTTON].clicked()
-    drain()
+    wait_sound(app)
     dialog = _sound_dialog()[0]
     _dialog_button(dialog, C.SOUND_TOGGLE_OFF).clicked()
     drain()
@@ -1630,11 +1644,45 @@ def test_sound_check_dialog_toggles_and_hears_outcome_sounds(ui, monkeypatch):
     assert app.w.sound_message == C.SOUND_TOGGLE_ON
     _dialog_button(dialog, C.SOUND_TOGGLE_ON)
     _dialog_button(dialog, C.SOUND_HEAR).clicked()
-    drain()
+    wait_sound(app)
     assert ("hear", "finished") in calls
     assert ("hear", "attention") in calls
     dialog.destroy()
     drain()
+    assert _sound_dialog() == []
+
+
+def test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog(ui, monkeypatch):
+    from threading import Event
+    from beamo_wipe import sound
+
+    entered = Event()
+    release = Event()
+    calls = []
+    state = _canned_sound(monkeypatch, calls)
+    def slow_outputs():
+        entered.set()
+        release.wait(timeout=2)
+        return state
+    monkeypatch.setattr(sound, "list_outputs", slow_outputs)
+    app = ui()
+    started = time.perf_counter()
+    app.actions[C.SOUND_CHECK_BUTTON].clicked()
+    assert time.perf_counter() - started < 0.06
+    try:
+        assert entered.wait(timeout=1)
+        started = time.perf_counter()
+        app.tick()
+        drain()
+        assert time.perf_counter() - started < 0.06
+        dialog = _sound_dialog()[0]
+        dialog.destroy()
+        drain()
+        assert app._sound_dialog.ticket is None
+    finally:
+        release.set()
+    time.sleep(0.02)
+    app.tick()
     assert _sound_dialog() == []
 
 
@@ -1646,7 +1694,7 @@ def test_accessible_done_auto_plays_once_without_changing_announcement(ui, monke
     calls = []
     monkeypatch.setattr(
         sound_module,
-        "play_outcome",
+        "play_test",
         lambda kind: calls.append(kind)
         or sound_module.SoundResult(True, ""),
     )
@@ -1658,7 +1706,12 @@ def test_accessible_done_auto_plays_once_without_changing_announcement(ui, monke
     off_text = text(app)
     wizard.set_sounds_enabled(True)
     app.render()
-    drain()
+    deadline = time.monotonic() + 2
+    while wizard._audio_request is not None and time.monotonic() < deadline:
+        wizard.tick()
+        drain()
+        time.sleep(0.005)
+    assert wizard._audio_request is None
     app.render()
     drain()
     assert calls == [sound_module.KIND_ATTENTION]

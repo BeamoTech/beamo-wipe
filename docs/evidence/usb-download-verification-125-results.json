@@ -1,0 +1,341 @@
+{
+  "task": 125,
+  "base_commit": "cd5e771b1e28f184979bdfab792828614a71df38",
+  "branch": "codex/usb-download-verification-125",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "python": "3.10.0",
+  "public_release": {
+    "id": 398337215,
+    "tag": "v0.2.12",
+    "published_at": "2026-09-28T14:37:13Z",
+    "source_commit": "e986419379f512f8088f5982ee02a51dc91a9dae",
+    "build_id": "625971a4-afef-5398-9bec-d96455192ab3",
+    "body_sha256": "9b6bb812e86732b4cac354432dd79a8d0cd49f48032a9674a06db0bc6b1ae970",
+    "metadata_verification": "PASS against existing trusted checkout registry",
+    "full_public_compressed_and_raw_verification": "NOT TESTED: incomplete network transfer",
+    "assets_unchanged_before_after": true,
+    "assets": [
+      {
+        "id": 595626632,
+        "name": "beamo-wipe-0.2.12-amd64.img.gz",
+        "size": 601441384,
+        "digest": "sha256:a3d2a65d8941facbd30b794b083419dc694511903281e57cd028db565bdc1972",
+        "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/beamo-wipe-0.2.12-amd64.img.gz"
+      },
+      {
+        "id": 595626637,
+        "name": "beamo-wipe-0.2.12-amd64.img.gz.sha256",
+        "size": 97,
+        "digest": "sha256:78e615463ff166a97930efdb199351acb533045a18059f04f8cc3d6da6619106",
+        "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/beamo-wipe-0.2.12-amd64.img.gz.sha256"
+      },
+      {
+        "id": 595626594,
+        "name": "beamo-wipe-0.2.12-amd64.img.json",
+        "size": 356,
+        "digest": "sha256:e1ad82cf060b9d1a1424e19ff989e7ad2db10c2c5f414f8dbf3697107c155d37",
+        "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/beamo-wipe-0.2.12-amd64.img.json"
+      },
+      {
+        "id": 595626592,
+        "name": "beamo-wipe-0.2.12-amd64.img.sha256",
+        "size": 94,
+        "digest": "sha256:5c298e89dfc13df9b005792b6e5aae86c78b9dbd0c5b137e3c2bf28e7dc52313",
+        "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/beamo-wipe-0.2.12-amd64.img.sha256"
+      },
+      {
+        "id": 595626596,
+        "name": "beamo-wipe-0.2.12-amd64.iso",
+        "size": 564133888,
+        "digest": "sha256:73554d35aecafac7fc6dffe41d1f1efdb658b43c39da85a2f0bebfe8f1beb598",
+        "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/beamo-wipe-0.2.12-amd64.iso"
+      },
+      {
+        "id": 595626593,
+        "name": "beamo-wipe-0.2.12-amd64.iso.sha256",
+        "size": 94,
+        "digest": "sha256:67243dc3aece0d587da417e80a919c070d624146dc91851a704d159a286dfc1e",
+        "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/beamo-wipe-0.2.12-amd64.iso.sha256"
+      },
+      {
+        "id": 595626587,
+        "name": "beamo-wipe-0.2.12-amd64.manifest.json",
+        "size": 85269,
+        "digest": "sha256:0bb56538500330086f507538e94ec68846ff5ab39ddf491dbeaf467a50cfd5b8",
+        "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/beamo-wipe-0.2.12-amd64.manifest.json"
+      },
+      {
+        "id": 595626610,
+        "name": "beamo-wipe-0.2.12-amd64.manifest.json.sha256",
+        "size": 104,
+        "digest": "sha256:5ba912c2a1b1dd02224c08b72046a942329b128dcf90b0e17b2a73110dc97313",
+        "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/beamo-wipe-0.2.12-amd64.manifest.json.sha256"
+      },
+      {
+        "id": 595626611,
+        "name": "beamo-wipe-0.2.12-amd64.manifest.json.sig",
+        "size": 406,
+        "digest": "sha256:3fc11d5a039a2ddfa964c7bd983eda545623dbf4013c79963857263a759f62cb",
+        "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/beamo-wipe-0.2.12-amd64.manifest.json.sig"
+      },
+      {
+        "id": 595626661,
+        "name": "BUILD-RECEIPT.json",
+        "size": 13082,
+        "digest": "sha256:e27e6184de27938d18f275b27706c14e8d2162ce377ad5ca8aad4436904da2f2",
+        "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/BUILD-RECEIPT.json"
+      },
+      {
+        "id": 595626619,
+        "name": "keys.json",
+        "size": 275,
+        "digest": "sha256:545e39ad52215228dd13d24b0fb2e39c1819c80d2f0ff40eb78ab06b4a27443c",
+        "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/keys.json"
+      },
+      {
+        "id": 595626674,
+        "name": "release-downloads.json",
+        "size": 2337,
+        "digest": "sha256:2023d3aa84a84f406a1d0f0b230d38293eb1b74275cf068088408209a296511c",
+        "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/release-downloads.json"
+      },
+      {
+        "id": 595626676,
+        "name": "release-downloads.json.sig",
+        "size": 406,
+        "digest": "sha256:93b1f8da89c80bdeec400a750549c8e2d4ac700a50d822a4bf652202638f83b2",
+        "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/release-downloads.json.sig"
+      },
+      {
+        "id": 595626679,
+        "name": "RELEASE_COMPLETE.txt",
+        "size": 10241,
+        "digest": "sha256:02dea100c64e5195e9ca292e2d94bbda672cb90c3432d5dcf710ad68cc0c7e1d",
+        "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/RELEASE_COMPLETE.txt"
+      },
+      {
+        "id": 595626616,
+        "name": "SHA256SUMS",
+        "size": 198,
+        "digest": "sha256:c3f0e1d2c1e161d007b7855bf341746d5b01a3ff671ecfa5825e1058535fdec0",
+        "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/SHA256SUMS"
+      },
+      {
+        "id": 595626639,
+        "name": "verification-evidence.tar.gz",
+        "size": 80557,
+        "digest": "sha256:36d56a104a1fef3de933d149ab288684be57b54a72128841444c71deba746f54",
+        "url": "https://github.com/BeamoTech/beamo-wipe/releases/download/v0.2.12/verification-evidence.tar.gz"
+      }
+    ]
+  },
+  "measured_public_metadata": {
+    "beamo-wipe-0.2.12-amd64.img.json": {
+      "bytes": 356,
+      "sha256": "e1ad82cf060b9d1a1424e19ff989e7ad2db10c2c5f414f8dbf3697107c155d37"
+    },
+    "release-downloads.json": {
+      "bytes": 2337,
+      "sha256": "2023d3aa84a84f406a1d0f0b230d38293eb1b74275cf068088408209a296511c"
+    },
+    "beamo-wipe-0.2.12-amd64.manifest.json": {
+      "bytes": 85269,
+      "sha256": "0bb56538500330086f507538e94ec68846ff5ab39ddf491dbeaf467a50cfd5b8"
+    },
+    "release-downloads.json.sig": {
+      "bytes": 406,
+      "sha256": "93b1f8da89c80bdeec400a750549c8e2d4ac700a50d822a4bf652202638f83b2"
+    },
+    "beamo-wipe-0.2.12-amd64.manifest.json.sig": {
+      "bytes": 406,
+      "sha256": "3fc11d5a039a2ddfa964c7bd983eda545623dbf4013c79963857263a759f62cb"
+    }
+  },
+  "cleanroom": {
+    "status": "PASS",
+    "scope": "Exact documentation shell block with offline signed non-production fixture downloads; no media writes",
+    "release_label": "0.2.12",
+    "source_label": "e986419379f512f8088f5982ee02a51dc91a9dae",
+    "key_fingerprint": "249c47a5198fccbc2ec883f762f463163223e4b4ea65e51d34f7dc73c1ba7c6d",
+    "key_scope": "ephemeral test key; private bytes never written",
+    "files": {
+      "beamo-wipe-0.2.12-amd64.img.json": {
+        "bytes": 273,
+        "sha256": "563bbb9a89f90286b299168b5bc3bfadb31179d73d48c1ef73138d5e84342c87"
+      },
+      "beamo-wipe-0.2.12-amd64.img": {
+        "bytes": 3600,
+        "sha256": "fdeceb5709255f1994a125a59240a8520fc0d2b45e4eb5186c71ea02f248b5f7"
+      },
+      "release-downloads.json": {
+        "bytes": 992,
+        "sha256": "6507713b66f7c2e5a2bd196f8043816dc4a8f86e90c1d20948707a91cb6200f1"
+      },
+      "beamo-wipe-0.2.12-amd64.manifest.json": {
+        "bytes": 443,
+        "sha256": "7ad004b1c4dad8316ffedc996cd57aacbef14a78ece40f6a7098b1e9ee9b1d90"
+      },
+      "release-downloads.json.sig": {
+        "bytes": 391,
+        "sha256": "89a315852325318ae72ed5e3b094968f7fe82f32413db8e5e79a87585010479b"
+      },
+      "beamo-wipe-0.2.12-amd64.img.gz": {
+        "bytes": 80,
+        "sha256": "69051c82dc598bc6a4451e17f006373929ea6d6627cc33f573b403878edacee0"
+      },
+      "beamo-wipe-0.2.12-amd64.manifest.json.sig": {
+        "bytes": 391,
+        "sha256": "3a65eb10819ab792e46e213a1ad63042b22008222151beebb2aa8267a4b9ff93"
+      }
+    },
+    "cleanup": "TemporaryDirectory removed all fixture files after recording hashes"
+  },
+  "links": [
+    {
+      "url": "https://github.com/BeamoTech/beamo-wipe/releases/tag/v0.2.12",
+      "exit": 0,
+      "result": "200 https://github.com/BeamoTech/beamo-wipe/releases/tag/v0.2.12",
+      "error": ""
+    },
+    {
+      "url": "https://github.com/BeamoTech/beamo-wipe/blob/e986419379f512f8088f5982ee02a51dc91a9dae/packaging/release-keys/KEYS.md",
+      "exit": 0,
+      "result": "200 https://github.com/BeamoTech/beamo-wipe/blob/e986419379f512f8088f5982ee02a51dc91a9dae/packaging/release-keys/KEYS.md",
+      "error": ""
+    }
+  ],
+  "download_cleanup": {
+    "partials": [
+      {
+        "file": "beamo-wipe-0.2.12-amd64.img.gz.part",
+        "logical_bytes": 42022497,
+        "allocated_bytes": 42024960,
+        "status": "INCOMPLETE; never extracted; removed"
+      },
+      {
+        "file": "beamo-wipe-0.2.12-amd64.img.gz.ranges.part",
+        "logical_bytes": 601441384,
+        "allocated_bytes": 0,
+        "status": "INCOMPLETE; never extracted; removed"
+      },
+      {
+        "file": "beamo-wipe-0.2.12-amd64.img.gz.ranges-small.part",
+        "logical_bytes": 601441384,
+        "allocated_bytes": 103809024,
+        "status": "INCOMPLETE; never extracted; removed"
+      }
+    ],
+    "task_owned_range_directories_removed": [
+      "beamo-125-range-myd5kpjm",
+      "beamo-125-range-tx5jzkw2",
+      "beamo-125-range-_6ukqanl",
+      "beamo-125-range-84_ohr7q",
+      "beamo-125-range-4afvzunk",
+      "beamo-125-range-xantb_hl",
+      "beamo-125-range-tarz51uq",
+      "beamo-125-range-l6_zhp3_",
+      "beamo-125-range-buwycwpf",
+      "beamo-125-range-9zfd3p8p",
+      "beamo-125-range-_y_3ip55",
+      "beamo-125-range-odtd9lyr",
+      "beamo-125-range-7fuvisov",
+      "beamo-125-range-rdcw8a41",
+      "beamo-125-range-vplb49f7",
+      "beamo-125-range-sxpxrqv1"
+    ],
+    "verified_public_raw_image": "NOT TESTED: full public compressed transfer incomplete"
+  },
+  "source_sha256": {
+    "scripts/verify-usb-download.py": "a03e66c289ca56777e10c0ef49f385397077999570d39d274b001556487d4f02",
+    "tests/test_usb_download_verification.py": "f2bb69244442c67b15044e3bac480a55e9011e14dc6d40b6d40b0041a7eadf60",
+    "tests/test_blacksmith_release.py": "a06ceafc4c20bf5cc074a35f5ba61c00367de37f01590d171e08cfaeda7ae6a5",
+    "docs/release-verification.md": "55a8e0b4595adfcc82b8c5a3fbc94040f53d18de4666f4e4960ec8da8fe61ee6"
+  },
+  "local_checks": {
+    "focused": {
+      "passed": 50,
+      "duration_seconds": 9.76
+    },
+    "runner_isolated": {
+      "passed": 53,
+      "duration_seconds": 4.41
+    },
+    "static": "PASS: compileall, Ruff/security, formatting, mypy, ShellCheck, actionlint, sh -n, help, diff check",
+    "full_isolated": {
+      "passed": 4687,
+      "skipped": 703,
+      "failures": 0,
+      "errors": 0,
+      "total": 5390,
+      "duration_seconds": 990.42
+    },
+    "first_full": {
+      "total": 5390,
+      "failures": 3,
+      "errors": 0,
+      "skipped": 703,
+      "duration_seconds": 686.821,
+      "failed_tests": [
+        "tests.test_nwipe_runner::test_nwipe_runner_busy_skip_log_is_failure",
+        "tests.test_nwipe_runner::test_progress_does_not_drop_to_summary_zero_percent",
+        "tests.test_nwipe_runner::test_completion_sees_erased_row_after_large_pdf_tail"
+      ]
+    },
+    "temporary_fixture_cleanup": "Removed only the two completed task-owned pytest --basetemp directories; retained logs and JUnit outside them."
+  },
+  "logs": {
+    "beamo-wipe-125-focused.log": {
+      "bytes": 744,
+      "sha256": "b0c365e9f4361e526064c4977c510eaac6fec9571161205c3bf2ab2de39a89f9"
+    },
+    "beamo-wipe-125-runner-isolated.log": {
+      "bytes": 664,
+      "sha256": "da557c8cca7f1467c104f3026b0980fa03da084d934ca1be05ef5a4193071a43"
+    },
+    "beamo-wipe-125-full.log": {
+      "bytes": 47549,
+      "sha256": "19ae4583ef045acd90eb72da8a7dc84cfc816c5fb6f72df49404440fe01b2d90"
+    },
+    "beamo-wipe-125-public-metadata.log": {
+      "bytes": 383,
+      "sha256": "1d46038eeb1c50250d3b318f7cba9b46274cfffe282c167c3849705e83d79f94"
+    },
+    "beamo-wipe-125-download.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "beamo-wipe-125-download-small.log": {
+      "bytes": 33,
+      "sha256": "1f0da6898d266e7581964639b5c7478243bfef881d9fa5f3db74fc6d4c2d465c"
+    },
+    "beamo-wipe-125-runner-recheck.log": {
+      "bytes": 5314,
+      "sha256": "becd4bf8f988f2ca66a218582ce7bf4b8e4097f35daa6ea8a33ca5fe8e120a69"
+    },
+    "beamo-wipe-125-full-isolated.log": {
+      "bytes": 40473,
+      "sha256": "43e7568afae00beff750c6103130b9bc3e11e8742fb4fc06fccf385268202406"
+    },
+    "beamo-wipe-125-full-isolated.xml": {
+      "bytes": 995932,
+      "sha256": "12c0d0f86700b89c70247c101bb9f138854e45696b69c811b763db7c216f26ba"
+    },
+    "beamo-wipe-125-full.xml": {
+      "bytes": 1002000,
+      "sha256": "277fc8218a04092ca8d8389e3d9e29a46787bdc28134e8eaec738050e32c0c66"
+    },
+    "beamo-wipe-125-storage-after.txt": {
+      "bytes": 6446,
+      "sha256": "176c9149fa9b819b67ded4fc086363154a91f8c1971c2cc219ed78f9caf57605"
+    }
+  },
+  "trust_registry": {
+    "path": "packaging/release-keys/keys.json",
+    "bytes": 275,
+    "sha256": "545e39ad52215228dd13d24b0fb2e39c1819c80d2f0ff40eb78ab06b4a27443c",
+    "fingerprint": "93caaf7ca93eff4d7fa1c16e360f9d6aa17ced0155a56d4cf89d8f6d429e66f7",
+    "status": "active",
+    "scope": "existing independently maintained checkout registry; no new human ceremony performed"
+  },
+  "storage": "Required before/after read-only reports run; incomplete download staging and completed task-owned pytest fixtures removed. No unrelated storage deleted."
+}

@@ -1182,6 +1182,7 @@ class TkWizard:
         self._match_pill: Optional[_Box] = None
         self._shown: Optional[Screen] = None
         self._shown_report_revision = -1
+        self._shown_sound_revision = -1
         self._after_id: Optional[str] = None
         # Pick-list scroll state: the list is rebuilt on every redraw, so the
         # scroll offset is saved before teardown and restored (or the selected
@@ -1530,6 +1531,7 @@ class TkWizard:
         # In-flight scans finish into the void: polls stop here and any late
         # worker result finds no owner. Workers are daemons; join them only.
         self._ui_dead = True
+        getattr(self.w, "cancel_audio", lambda: None)()
         self._cancel_pick_restore()
         for attr in ("_return_release_after", "_space_release_after"):
             callback = getattr(self, attr)
@@ -1564,6 +1566,8 @@ class TkWizard:
             elif self.w.screen in {Screen.DONE, Screen.DIAGNOSTIC, Screen.WORKING} and (
                 self.w.report_view.revision != self._shown_report_revision
             ):
+                self._draw()
+            elif self.w.screen in {Screen.DONE, Screen.WORKING} and getattr(self.w, "sound_revision", 0) != getattr(self, "_shown_sound_revision", 0):
                 self._draw()
             elif self.w.screen == Screen.LAST_CHANCE:
                 self._refresh_last_chance()
@@ -1683,6 +1687,7 @@ class TkWizard:
         self._draw_header()
         self._draw_strip()
         self._shown = screen
+        self._shown_sound_revision = getattr(self.w, "sound_revision", 0)
         if working_revision is not None:
             self._shown_report_revision = working_revision
         if diagnostic_view is not None:
@@ -3825,7 +3830,7 @@ class TkWizard:
         row = self._footer_shell(C.HINT_WORKING)
         self._secondary_btn(row, C.STOP_ASK, self._click_cancel)
         self._secondary_btn(row, self.w.sound_toggle_text, self.w.toggle_sounds)
-        self._secondary_btn(row, C.SOUND_HEAR, self.w.hear_both_sounds)
+        self._secondary_btn(row, C.SOUND_HEAR, self.w.request_hear_both_sounds)
         self._refresh_working()
 
     def _refresh_working(self) -> None:
@@ -3884,7 +3889,7 @@ class TkWizard:
 
     def _done(self, report: ReportView) -> None:
         col = self._column(self._body, fill_height=True)
-        self.w.maybe_play_outcome_sound()
+        self.w.request_auto_outcome_sound()
         result = self.w.result_view
         # Erase status heading stays independent of report chrome.
         # Cancelled copy remains in result.message ("Stopped by you").
@@ -3950,7 +3955,7 @@ class TkWizard:
         if self.w.preview:
             self._secondary_btn(row, C.BTN_CLOSE_PREVIEW, self._click_shutdown)
             self._secondary_btn(row, self.w.sound_toggle_text, self.w.toggle_sounds)
-            self._secondary_btn(row, C.SOUND_HEAR_AGAIN, self.w.hear_outcome_sound)
+            self._secondary_btn(row, C.SOUND_HEAR_AGAIN, self.w.request_hear_outcome_sound)
             self._primary_btn(row, C.BTN_RUN_AGAIN, self.w.reset_for_preview)
         else:
             if report.evidence_error:
@@ -3963,7 +3968,7 @@ class TkWizard:
                 enabled=report.can_save,
             )
             self._secondary_btn(row, self.w.sound_toggle_text, self.w.toggle_sounds)
-            self._secondary_btn(row, C.SOUND_HEAR_AGAIN, self.w.hear_outcome_sound)
+            self._secondary_btn(row, C.SOUND_HEAR_AGAIN, self.w.request_hear_outcome_sound)
             another = _Button(
                 self._footer_left_parent(
                     row, self.font_s_bold.measure(C.BTN_ERASE_ANOTHER) + 2 * 12 + 6

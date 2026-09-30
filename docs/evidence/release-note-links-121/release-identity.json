@@ -1,0 +1,124 @@
+{
+  "release_id": 397823407,
+  "tag": "v0.2.11",
+  "release_url": "https://github.com/BeamoTech/beamo-wipe/releases/tag/v0.2.11",
+  "published_at": "2026-09-27T21:44:27Z",
+  "body_sha256": "40adde10ed3a63b31e91a85b36cfad5f8db014a8121a8330bed2cc3cd42021c0",
+  "proposed_body_sha256": "a9f5c891534f98d496c5868ef8aa2b75878be2bc6dedc66d1e1e5d050ff805c6",
+  "published_body_unchanged": true,
+  "assets_unchanged": true,
+  "assets": [
+    {
+      "id": 593828317,
+      "name": "beamo-wipe-0.2.11-amd64.img.gz",
+      "size": 601442964,
+      "digest": "sha256:047c48e46bf12cd012fc5294df7b0a37e2ba95317581368e215057e855ccca31",
+      "updated_at": "2026-09-27T21:39:38Z"
+    },
+    {
+      "id": 593828313,
+      "name": "beamo-wipe-0.2.11-amd64.img.gz.sha256",
+      "size": 97,
+      "digest": "sha256:dc9c60080a22a5f3d24d8ffda1818f8a98940c77cc5fec8eec32b6c1cf2fa357",
+      "updated_at": "2026-09-27T21:39:14Z"
+    },
+    {
+      "id": 593828282,
+      "name": "beamo-wipe-0.2.11-amd64.img.json",
+      "size": 356,
+      "digest": "sha256:f2513bf4f93b6f44bf3cdfe2e889e14840d605a0302ecc2115d59307e6228d0a",
+      "updated_at": "2026-09-27T21:39:13Z"
+    },
+    {
+      "id": 593828283,
+      "name": "beamo-wipe-0.2.11-amd64.img.sha256",
+      "size": 94,
+      "digest": "sha256:78f76e1bda0ea3be2208df33b5190b5c2d921031c72c60bb1f907784d8f14f0e",
+      "updated_at": "2026-09-27T21:39:13Z"
+    },
+    {
+      "id": 593828284,
+      "name": "beamo-wipe-0.2.11-amd64.iso",
+      "size": 564133888,
+      "digest": "sha256:9694068e4d70824b316f12da9bd4c0ee964809d15ce5ad4d406333f710176305",
+      "updated_at": "2026-09-27T21:39:37Z"
+    },
+    {
+      "id": 593828285,
+      "name": "beamo-wipe-0.2.11-amd64.iso.sha256",
+      "size": 94,
+      "digest": "sha256:f21c77098f630a8e724214f57babe5effd854bca6d947674324f85d73cb81a8d",
+      "updated_at": "2026-09-27T21:39:13Z"
+    },
+    {
+      "id": 593828277,
+      "name": "beamo-wipe-0.2.11-amd64.manifest.json",
+      "size": 85269,
+      "digest": "sha256:baa45ec47162388fdd9f8d441084977ee93e0215b1b4fcf2330df6b7e58a3b98",
+      "updated_at": "2026-09-27T21:39:13Z"
+    },
+    {
+      "id": 593828300,
+      "name": "beamo-wipe-0.2.11-amd64.manifest.json.sha256",
+      "size": 104,
+      "digest": "sha256:8aa4ca46b0589b272731ba4e6b57b99cb3d2e7573ba15b8b9f5b846ede7aa7d7",
+      "updated_at": "2026-09-27T21:39:13Z"
+    },
+    {
+      "id": 593828298,
+      "name": "beamo-wipe-0.2.11-amd64.manifest.json.sig",
+      "size": 406,
+      "digest": "sha256:ab658376b68317825404cd9b43ed535cc0df34e4ce34f4d2d6eaff6ba0229ca4",
+      "updated_at": "2026-09-27T21:39:13Z"
+    },
+    {
+      "id": 593828318,
+      "name": "BUILD-RECEIPT.json",
+      "size": 13082,
+      "digest": "sha256:741a19039a550c5c91d2f0bfda300672171b683aff02be94231fe30d62521858",
+      "updated_at": "2026-09-27T21:39:14Z"
+    },
+    {
+      "id": 593828303,
+      "name": "keys.json",
+      "size": 275,
+      "digest": "sha256:545e39ad52215228dd13d24b0fb2e39c1819c80d2f0ff40eb78ab06b4a27443c",
+      "updated_at": "2026-09-27T21:39:13Z"
+    },
+    {
+      "id": 593828341,
+      "name": "release-downloads.json",
+      "size": 2337,
+      "digest": "sha256:b316027eef91dc8552bfe7433ba8fe4bbdcf081e12e7fec7177943592605b94f",
+      "updated_at": "2026-09-27T21:39:15Z"
+    },
+    {
+      "id": 593828338,
+      "name": "release-downloads.json.sig",
+      "size": 406,
+      "digest": "sha256:31bb06abc0199a9bd3eed35a1c92aa6db070cb2e5feb1d38f11dfef02f32d3cb",
+      "updated_at": "2026-09-27T21:39:14Z"
+    },
+    {
+      "id": 593828339,
+      "name": "RELEASE_COMPLETE.txt",
+      "size": 10241,
+      "digest": "sha256:43faa934bd9d097b66e5d93c779510a486d2bfe69ccd26b4b9fc08de5758890c",
+      "updated_at": "2026-09-27T21:39:15Z"
+    },
+    {
+      "id": 593828301,
+      "name": "SHA256SUMS",
+      "size": 198,
+      "digest": "sha256:af9c7f40b59fc7071aee20bd52d52bc0611b5b7eb6c3e4a16338a840ae5a657f",
+      "updated_at": "2026-09-27T21:39:13Z"
+    },
+    {
+      "id": 593828314,
+      "name": "verification-evidence.tar.gz",
+      "size": 78464,
+      "digest": "sha256:ac429674d2ce2d3fdf7e5b631f3926f8bb2fc006ae8367cba631a1f98a84000b",
+      "updated_at": "2026-09-27T21:39:14Z"
+    }
+  ]
+}

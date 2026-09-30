@@ -123,12 +123,168 @@ Top-level `_manifest_sha256` is the SHA256 of the canonical JSON (sorted keys, n
 
 ## Consumer verification
 
+Use this order; a checksum match alone is not publisher authentication:
+
+1. Obtain the release's `release-downloads.json` and `.sig`, the versioned
+   `beamo-wipe-<version>-amd64.manifest.json` and `.sig`, and the artifacts
+   you intend to use. Keep each document's exact downloaded bytes.
+2. Authenticate the signing identity **before trusting those documents**.
+   Use the current public registry from an independently trusted source
+   checkout, confirm the full public-key fingerprint against the operator's
+   independent announcement, and check its active/revoked/retired status.
+   See [key distribution and custody](../packaging/release-keys/KEYS.md).
+   A `keys.json` downloaded beside a signature cannot authenticate itself;
+   neither can a key ID or fingerprint supplied only by that same download.
+3. Verify each detached signature with that trusted registry and an explicit
+   minimum accepted version. Missing, invalid or mismatched signatures stop
+   verification. A successful result authenticates the exact signed bytes to
+   that publisher key; it does not prove runtime safety or a wipe outcome.
+4. Only then compare the actual downloaded sizes and SHA256 hashes with the
+   authenticated inventory and manifest. The inventory covers the compressed
+   USB download and other listed files; its raw `.img` entry applies after
+   decompression. The manifest verifier below checks the sibling ISO and its
+   recorded evidence. Checking an unauthenticated `.sha256` file alone is not
+   a substitute for comparison with the authenticated documents.
+
+### USB image download verification
+
+Use this procedure for the **`.img.gz` download**, not the ISO. It checks the
+compressed bytes before decompression, then the actual decompressed file's
+size and hash. The signed inventory already lists both identities; the raw
+`.img` need not be a separate downloadable asset.
+
+This is a **versioned v0.2.12 example**, using the
+[public release](https://github.com/BeamoTech/beamo-wipe/releases/tag/v0.2.12)
+and source `e986419379f512f8088f5982ee02a51dc91a9dae`. For another release,
+independently establish its tag/source commit and approved current signing
+key before changing the three identity variables. Do not lower an acceptance
+floor or substitute ISO hashes to make USB verification pass.
+
+Prerequisites: Linux or macOS, a POSIX shell, `curl`, Python 3.10+ with the
+repository's `cryptography` verification dependency, and an independently
+trusted reviewed checkout containing `scripts/verify-usb-download.py`.
+These commands verify files on macOS; they make no claim that the live image
+boots an Apple Silicon Mac. Native Windows commands are not provided here.
+Keep enough free space for both listed sizes (about 2.6 GiB for v0.2.12), plus
+working headroom. No administrator privilege or raw device is needed.
+
+**Authenticate the trust material first.** Obtain the current public registry
+through the approved trusted checkout/update channel and confirm its full key
+fingerprint with the operator's independent announcement. The
+[versioned first-key ceremony record](https://github.com/BeamoTech/beamo-wipe/blob/e986419379f512f8088f5982ee02a51dc91a9dae/packaging/release-keys/KEYS.md)
+explains this key's approval; an old record does not establish its current
+revocation status. The verifier requires an active key in the current trusted
+registry. A registry/fingerprint downloaded alongside the image cannot
+authenticate itself. If you cannot establish that trust path, stop; a matching
+hash alone does not establish publisher provenance.
+
+After that independent check, edit only `BEAMO_SOURCE` to the **absolute** path
+of your trusted checkout. Copy the whole block. It creates its own empty,
+private working directory and uses explicit paths throughout; it does not
+depend on the caller's current directory. The subprocess shell stops on any
+failed command. Do not share or modify the working directory during verification.
+
+<!-- USB-VERIFY-WALKTHROUGH-BEGIN -->
 ```sh
-# From the release directory (where ISO and manifest were downloaded):
-sha256sum -c beamo-wipe-0.2.12-amd64.iso.sha256
-sha256sum -c beamo-wipe-0.2.12-amd64.manifest.json.sha256
-# From repo root, change directory because each sidecar intentionally binds a
-# bare filename rather than an arbitrary path:
+(
+set -euC
+BEAMO_SOURCE='/absolute/path/to/trusted/beamo-wipe'
+BEAMO_VERSION='0.2.12'
+BEAMO_COMMIT='e986419379f512f8088f5982ee02a51dc91a9dae'
+BEAMO_KEY_SHA256='93caaf7ca93eff4d7fa1c16e360f9d6aa17ced0155a56d4cf89d8f6d429e66f7'
+case "$BEAMO_SOURCE" in /*) ;; *) echo 'STOP: checkout path must be absolute' >&2; exit 1;; esac
+test -f "$BEAMO_SOURCE/scripts/verify-usb-download.py" || {
+  echo 'STOP: select the trusted checkout containing the USB verifier' >&2; exit 1;
+}
+BEAMO_USB_WORK="$(mktemp -d "${TMPDIR:-/tmp}/beamo-usb-verify.XXXXXXXX")"
+BEAMO_USB_WORK="$(cd "$BEAMO_USB_WORK" && pwd -P)"
+BEAMO_STEM="beamo-wipe-${BEAMO_VERSION}-amd64"
+BEAMO_RELEASE_URL="https://github.com/BeamoTech/beamo-wipe/releases/download/v${BEAMO_VERSION}"
+cd "$BEAMO_USB_WORK"
+printf 'Private verification directory: %s\n' "$BEAMO_USB_WORK"
+
+fetch_usb_file() {
+  test ! -e "$BEAMO_USB_WORK/$1" && test ! -L "$BEAMO_USB_WORK/$1" || {
+    echo 'STOP: download destination already exists' >&2; exit 1;
+  }
+  curl --fail --location --proto '=https' --proto-redir '=https' \
+    --connect-timeout 15 --max-time 900 --silent --show-error \
+    "$BEAMO_RELEASE_URL/$1" > "$BEAMO_USB_WORK/$1.part"
+  ln "$BEAMO_USB_WORK/$1.part" "$BEAMO_USB_WORK/$1"
+  rm "$BEAMO_USB_WORK/$1.part"
+}
+verify_usb_files() {
+  python3 "$BEAMO_SOURCE/scripts/verify-usb-download.py" "$1" \
+    --directory "$BEAMO_USB_WORK" \
+    --registry "$BEAMO_SOURCE/packaging/release-keys/keys.json" \
+    --trusted-key-sha256 "$BEAMO_KEY_SHA256" \
+    --version "$BEAMO_VERSION" --expected-source "$BEAMO_COMMIT"
+}
+
+fetch_usb_file 'release-downloads.json'
+fetch_usb_file 'release-downloads.json.sig'
+fetch_usb_file "$BEAMO_STEM.manifest.json"
+fetch_usb_file "$BEAMO_STEM.manifest.json.sig"
+fetch_usb_file "$BEAMO_STEM.img.json"
+verify_usb_files metadata
+fetch_usb_file "$BEAMO_STEM.img.gz"
+verify_usb_files extract
+verify_usb_files verify
+printf 'Verified regular file, not yet written to media: %s/%s.img\n' "$BEAMO_USB_WORK" "$BEAMO_STEM"
+)
+```
+<!-- USB-VERIFY-WALKTHROUGH-END -->
+
+Expected sequence: `AUTHENTICATED metadata` identifies the exact tag, source
+commit and build; `EXPECTED` lists the compressed/raw filenames, sizes and
+SHA256 values; `VERIFIED compressed USB download` precedes decompression;
+`VERIFIED raw USB image` appears only after the raw file matches. The separate
+final `verify` rechecks both regular files without extracting again. Every
+stage authenticates the inventory and manifest signatures before using their
+hashes. The image metadata must itself match the signed inventory and bind
+the raw image to the ISO identity recorded by the signed manifest. This does
+not claim that the ISO bytes were downloaded or verified by this procedure.
+
+Missing/invalid signatures, altered metadata, wrong source/version/build,
+missing size/hash fields, or mismatched compressed/raw bytes produce `STOP`
+and a nonzero exit. Wrong directories and symlink/special-file inputs are
+rejected. Extraction refuses any existing `.img` or `.img.partial`, bounds
+decompression by the authenticated raw size, and publishes `.img` without
+overwriting only after successful verification. Interrupted/failed downloads
+retain `.part`; failed extraction may retain `.img.partial`. Neither is a
+verified image. Start over in a new empty directory after a failure; never
+rename a partial file or bypass a failed check. `verify` is the mode for
+rechecking an already complete image, not `extract`.
+
+**Stop before writing media.** Successful verification authenticates these
+exact bytes to the approved publisher key and ties them to one signed release
+source/build identity. It does not prove runtime safety, firmware compatibility,
+successful erasure, or that a selected physical disk is safe to overwrite.
+The printed `.img` is a regular file; this procedure performs no media write.
+
+### ISO verification
+
+The following checks concern the separate `.iso`, not the USB `.img.gz` or
+`.img`. An ISO hash must never stand in for either USB-image hash.
+Run these commands from a trusted source checkout with release files together
+under `dist/`. The examples use 0.2.12; choose the intended release and an
+appropriate acceptance floor, rather than lowering it to make a check pass.
+
+```sh
+# After independently authenticating the current registry:
+set -eu
+PYTHONPATH=src python3 -m beamo_wipe.release_signing verify \
+  --manifest dist/release-downloads.json \
+  --signature dist/release-downloads.json.sig \
+  --registry packaging/release-keys/keys.json --min-version 0.2.12
+PYTHONPATH=src python3 -m beamo_wipe.release_signing verify \
+  --manifest dist/beamo-wipe-0.2.12-amd64.manifest.json \
+  --signature dist/beamo-wipe-0.2.12-amd64.manifest.json.sig \
+  --registry packaging/release-keys/keys.json --min-version 0.2.12
+
+# STOP if either signature check fails. After comparing the actual downloads
+# with the authenticated inventory, these are additional corruption checks.
+# Each checksum sidecar uses a bare filename, so run from dist/:
 (cd dist && sha256sum -c beamo-wipe-0.2.12-amd64.iso.sha256)
 (cd dist && sha256sum -c beamo-wipe-0.2.12-amd64.manifest.json.sha256)
 (cd dist && sha256sum -c SHA256SUMS)
@@ -152,6 +308,8 @@ git status --porcelain  # should be clean for a release
 ```
 
 `verify_manifest` requires the manifest to record only the canonical bare ISO filename, resolves that file beside the manifest, hashes the actual bytes, checks its size, and validates both exact sidecar lines. This makes the release directory relocatable without accepting an embedded absolute path or traversal. If any check fails, do not use the ISO.
+It does not verify a publisher signature; the preceding detached-signature
+checks are required for authentication.
 
 ## Build failure (fail-closed)
 
@@ -176,8 +334,24 @@ git status --porcelain  # should be clean for a release
   without signing material, or against a retired/revoked key, publication
   refuses instead of publishing unsigned. SHA256 alone detects corruption
   but does not authenticate the publisher: do not treat an unsigned image
-  as tamper-resistant, and public promotion stays blocked without an
-  explicit operator decision.
+  as an authenticated release. This publisher has no unsigned-publication
+  override.
+
+The manifest generator and download-inventory generator share the same
+detached-verification guidance: `signing`, `signature_file`,
+`signature_algorithm`, `verification_order` and `signature_command`.
+These fields describe a verification contract, **not a signed-status flag**.
+The manifest is generated before signing; local or signing-skipped builds
+remain unauthenticated without a valid external sidecar. The publisher signs
+and verifies the exact completed bytes without rewriting them afterward.
+The inventory likewise uses `release-downloads.json.sig` over its exact bytes.
+No signature is embedded in either document. Verification commands assume a
+trusted checkout and downloaded documents in `dist/`.
+
+The published v0.2.12 manifest contains an obsolete generated
+"not configured" sentence even though its detached signature verifies.
+Those signed bytes are a historical record and must not be edited or re-signed
+to repair prose. See the [#122 verification receipt](evidence/signing-metadata-122/README.md).
 
 ### What release signing is not (Secure Boot distinction)
 
@@ -211,9 +385,10 @@ and a Secure Boot refusal never means "the download was tampered with".
 Full ceremony lives in `packaging/release-keys/KEYS.md`. In short: private
 material exists only in the operator's offline ceremony record and one
 Secret Manager secret readable by the release identity alone; it is never
-committed, printed, or attached to pull-request builds, and `cloudbuild.yaml`
-stays secret-free by policy (pinned by test) because a pull request can
-rewrite that file. Rotation keeps both keys active for at most one release,
+committed, printed, or attached to pull-request builds. Current `ci.yml` and
+the retained legacy `cloudbuild.yaml` stay secret-free by policy (pinned by
+tests); neither is the protected `release.yml` publisher. A pull request can
+rewrite build configuration. Rotation keeps both keys active for at most one release,
 then retires the predecessor. Revocation is a committed status change that
 fails verification even for cryptographically valid signatures; never
 delete a revoked entry. Production key creation and rotation need separate
@@ -221,23 +396,8 @@ operator authorization — code and tests only ever use ephemeral keys.
 
 ### Verify a release signature (copyable)
 
-From the release directory (manifest, sidecar, and the registry from a
-trusted source tree):
-
-```sh
-python3 - <<'PY'
-import json, pathlib, sys
-sys.path.insert(0, "src")
-from beamo_wipe.release_signing import load_key_registry, verify_release_acceptance
-manifest = pathlib.Path("beamo-wipe-0.2.12-amd64.manifest.json").read_bytes()
-sidecar = json.loads(pathlib.Path("beamo-wipe-0.2.12-amd64.manifest.json.sig").read_text())
-registry = load_key_registry(json.loads(pathlib.Path("packaging/release-keys/keys.json").read_text()))
-result = verify_release_acceptance(manifest, sidecar, registry, min_version="0.2.12")
-print("signature ok:", result["key_id"], "version:", result["beamo_wipe_version"])
-PY
-```
-
-Expected success: `signature ok: <16-hex-key-id> version: 0.2.12`.
+Use the ordered, copyable commands in [Consumer verification](#consumer-verification).
+Expected success for each document: `accepted version 0.2.12 key <16-hex-key-id>`.
 Expected failures (each raises `RuntimeError`, never a partial pass):
 
 - altered manifest or sidecar bytes → `digest mismatch` / `different manifest bytes` / `signature is invalid`

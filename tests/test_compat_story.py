@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import subprocess
 from pathlib import Path
@@ -307,6 +308,9 @@ def test_usb_story_strings_stay_on_the_swept_copy_surface():
 
 def test_what_screen_keeps_title_and_shows_this_usb_line():
     """this_usb_line is supporting copy, not a rewritten owner heading."""
+    # Reuse the GTK suite's skip only for absent bindings, not a broken install.
+    if importlib.util.find_spec("gi") is None:
+        pytest.importorskip("gi", reason="GTK bindings are validated on the hosted Linux image")
     import gi
 
     gi.require_version("Gtk", "3.0")

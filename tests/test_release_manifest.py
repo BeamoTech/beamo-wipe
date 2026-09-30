@@ -514,7 +514,8 @@ def test_consumer_verification_instructions(tmp_path, monkeypatch):
     # Should mention both ISO and manifest
     assert "iso.sha256" in m["verification"]["checksum_instructions"] or "manifest" in m["verification"]["checksum_instructions"]
     assert "explicit post-QEMU release gate" in m["verification"]["artifact_immutability"]
-    assert "not configured" in m["verification"]["signing"] or "SHA256" in m["verification"]["signing"]
+    assert "not configured" not in m["verification"]["signing"]
+    assert m["verification"]["signature_file"] == "beamo-wipe-0.1.0-amd64.manifest.json.sig"
 
 
 @requires_manufacturing_iso

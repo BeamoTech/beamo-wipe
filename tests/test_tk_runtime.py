@@ -48,6 +48,14 @@ def _needs_display():
     except Exception as exc:  # noqa: BLE001
         pytest.skip(f"no display: {exc}")
 
+
+def _await_sound(wizard):
+    deadline = time.monotonic() + 2
+    while wizard._audio_request is not None and time.monotonic() < deadline:
+        wizard.tick()
+        time.sleep(0.005)
+    assert wizard._audio_request is None
+
 WINDOW = (1280, 820)
 MIN_WINDOW = (1024, 740)  # Comfortable tall layout; minsize is 800x600
 SHORT_WINDOW = (1280, 720)
@@ -2402,6 +2410,7 @@ def test_working_sounds_toggle_and_hear(ui, size, monkeypatch):
     app.root.update_idletasks()
     hear = _button_named(app, C.SOUND_HEAR)
     hear._command()
+    _await_sound(wiz)
     assert wiz.sound_message == C.SOUND_OUTCOME_OFF_LIVE
 
 
@@ -2420,7 +2429,7 @@ def test_done_auto_plays_once_and_offers_replay(ui, size):
     wiz.set_sounds_enabled(True)
     calls = []
     with patch.object(
-        sound_module, "play_outcome",
+        sound_module, "play_test",
         lambda kind: calls.append(kind) or sound_module.SoundResult(True, ""),
     ):
         app._draw()
@@ -2428,6 +2437,7 @@ def test_done_auto_plays_once_and_offers_replay(ui, size):
         message_before = wiz.result_view.message
         app._draw()
         app.root.update_idletasks()
+        _await_sound(wiz)
     assert calls == [sound_module.KIND_ATTENTION]
     assert wiz.result_view.message == message_before
     _button_named(app, C.SOUND_TOGGLE_ON)
@@ -2438,6 +2448,7 @@ def test_done_auto_plays_once_and_offers_replay(ui, size):
         or sound_module.SoundResult(True, "played"),
     ):
         replay._command()
+        _await_sound(wiz)
     assert calls[-1] == ("hear", sound_module.KIND_ATTENTION)
 
 

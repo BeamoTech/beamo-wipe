@@ -1,0 +1,98 @@
+{
+  "base_commit": "607655b1322edeb4af50074dc886fd9823c15b47",
+  "branch": "codex/gtk-dependency-123",
+  "platform": "macOS 26.6.2 arm64; Python 3.10.0; no gi or DISPLAY",
+  "baseline": {
+    "collected": 25,
+    "failed": 2,
+    "reason": "ModuleNotFoundError: No module named 'gi'"
+  },
+  "post_change_collection": 25,
+  "focused": {
+    "passed": 92,
+    "skipped": 6,
+    "failed": 0,
+    "seconds": 29.33
+  },
+  "isolated_real_dependency_test": {
+    "passed": 1,
+    "skipped": 2,
+    "cases": [
+      {
+        "name": "test_what_screen_keeps_title_and_shows_this_usb_line",
+        "skip_reason": "GTK bindings are validated on the hosted Linux image"
+      },
+      {
+        "name": "test_assist_nav_names_do_not_rewrite_result_heading",
+        "skip_reason": "GTK bindings are validated on the hosted Linux image"
+      },
+      {
+        "name": "test_source_helper_is_honest_checkout_stub",
+        "skip_reason": null
+      }
+    ]
+  },
+  "hosted_guard_on_real_skip_report_exit": 1,
+  "hosted_dependency_preflight_exit": 1,
+  "original_functions_controlled_missing": {
+    "passed": 1,
+    "failed": 2
+  },
+  "linux_gtk_execution": "NOT TESTED",
+  "log_sha256": {
+    "baseline-collection.log": "58a73dd3b41237488e5ad6424d55fbc095a0f0cd11952a86753b7c296bcc816d",
+    "baseline.log": "204d9675b6dea46f3c6c7eb287b3201e58cbfb8082531ae3ce5f2c8522253844",
+    "collection.log": "5c1bd12d1ff6705a033142d7fce4a42b4534583429dbbbbddb48904102e8e19a",
+    "focused.log": "4c5ec06d82a4c1f4f54bea471cd7314c6d3602711b07a103d8facabbef85f5aa",
+    "two.log": "efcdba2ee7e37bb32eb3a82cdbec2f31e15fbd87ff42a76761b78edd77dcfa07",
+    "two.xml": "c27f65cabea88b8a9c97b4ffc28ced4872f0b10a9cecbe14e17f9e5f297926e5",
+    "guard-rejection.log": "148cff21ff60ae4a4f15942908a974751e25fc26ff08a3e59e0916ee72445ac0",
+    "original-controlled.log": "ac1efbd496fa7592f20edc8f05043a375a1fae25b7424af318ec2928adcdcc37",
+    "preflight.log": "8990980d90ea299b5b89a299a874bec7b7949c7113e9918ce4fb89eacaa70347",
+    "full.xml": "8ddafba8b7c38e02311fcc018b664a23005dda6868c38e734b9826bd13ba5af6",
+    "full.log": "21206c43f8b9f74536fbc7b53961334f17af3191045e1fc369fb11233d5f9059",
+    "focused-final.log": "da7a680e34e53c4c3c4202d483cb1471be858b4720a0319af00e200d715783f1",
+    "full-final.xml": "3b10b67005f3637397d3ae9fa4ca46e712482f59fff78309350c06d145163544",
+    "full-final.log": "233988ceed776c191df3e2095cfadf3435d468d0a3fe97c9e441f8bc71a98081"
+  },
+  "implementation_sha256": {
+    "tests/test_compat_story.py": "ba9805a70469a13d7ad695fc33975625817d5dd86e1f27386b3547021666c7d5",
+    "tests/test_separate_footer_actions.py": "e9f08cc7b1ecf2d9a05888f943de93f7adb5a271f280468ff107b2e3f007da96",
+    "tests/test_gtk_dependency_handling.py": "1850c43120765782dced7e03c658fd7cab0bbd8ed043ccb70ba1a8c29936e902",
+    "scripts/ci-hosted.sh": "93e0d27ed696d73148f8c60e2636b23e4b6386acc15125164f897b11571c884e",
+    "scripts/check-gtk-test-results.py": "fcdc79e1e40af79ab3b99210fd1e2004e3c813bf11a9cd60226306c706a59be7",
+    "tests/test_blacksmith_ci.py": "884e1f885e927f36b5e866182628958124895171b8b0bd494a41d8e22b98714d"
+  },
+  "first_full_suite": {
+    "passed": 4641,
+    "skipped": 703,
+    "failed": 4,
+    "seconds": 411.17,
+    "failures": [
+      {
+        "test": "tests.test_blacksmith_ci::test_pytest_groups_overlap_isolate_runtime_and_wait_for_both[]",
+        "reason": "Existing shell fixture lacked new GTK preflight and named JUnit inputs; fixture corrected and focused scenarios passed."
+      },
+      {
+        "test": "tests.test_blacksmith_ci::test_pytest_groups_overlap_isolate_runtime_and_wait_for_both[orca]",
+        "reason": "Existing shell fixture lacked new GTK preflight and named JUnit inputs; fixture corrected and focused scenarios passed."
+      },
+      {
+        "test": "tests.test_blacksmith_ci::test_pytest_groups_overlap_isolate_runtime_and_wait_for_both[suite]",
+        "reason": "Existing shell fixture lacked new GTK preflight and named JUnit inputs; fixture corrected and focused scenarios passed."
+      },
+      {
+        "test": "tests.test_blacksmith_ci::test_pytest_groups_overlap_isolate_runtime_and_wait_for_both[both]",
+        "reason": "Existing shell fixture lacked new GTK preflight and named JUnit inputs; fixture corrected and focused scenarios passed."
+      }
+    ]
+  },
+  "final_full_suite": {
+    "passed": 4647,
+    "skipped": 703,
+    "failed": 0,
+    "errors": 0,
+    "seconds": 389.8,
+    "command": "BEAMO_WIPE_DRY_RUN=1 PYTEST_ADDOPTS='-p no:cacheprovider' ./scripts/test-all.sh -o addopts='' --junitxml=/private/tmp/beamo-wipe-123-full-final.xml"
+  }
+}

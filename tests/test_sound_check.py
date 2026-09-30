@@ -243,18 +243,23 @@ def test_accessible_view_exposes_sound_check(monkeypatch):
     """Would fail with no dialog: button, controls, test, recovery."""
     import pathlib
 
-    source = (
+    view_source = (
         pathlib.Path(__file__).resolve().parents[1]
         / "src/beamo_wipe/ui/accessible_wizard.py"
     ).read_text()
-    assert "SOUND_CHECK_BUTTON" in source
-    assert "open_sound_check" in source
-    assert "Gtk.Dialog" in source
+    source = (
+        pathlib.Path(__file__).resolve().parents[1]
+        / "src/beamo_wipe/ui/sound_dialog.py"
+    ).read_text()
+    assert "SOUND_CHECK_BUTTON" in view_source
+    assert "open_sound_check" in view_source
+    assert "SoundDialog(Gtk, self.window, self.w, on_stop=self.render)" in view_source
+    assert "gtk.Dialog" in source
     assert "SOUND_PLAY_TEST" in source
     assert "SOUND_LOUDER" in source
     assert "SOUND_QUIETER" in source
     assert "SOUND_RECOVERY" in source
-    assert "apply_remembered_output" in source
+    assert "sound.set_output(self.remembered)" in source
 
 
 def test_sound_backend_uses_allowlisted_tools_only():

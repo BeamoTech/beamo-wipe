@@ -223,15 +223,24 @@ def test_stale_orca_report_cannot_be_counted_as_fresh(tmp_path):
                  evidence_dir=tmp_path, build_id="local")
 
 
-@pytest.mark.parametrize("failed_group", ["", "orca", "suite", "both"])
+@pytest.mark.parametrize("failed_group", ["", "orca", "suite", "both", "gtk-skipped", "gtk-missing"])
 def test_pytest_groups_overlap_isolate_runtime_and_wait_for_both(tmp_path, failed_group):
     tools = tmp_path / "bin"
     tools.mkdir()
+    # Only this shell fixture sees fake bindings; real hosted preflight is intact.
+    gi = tools / "gi"
+    gi.mkdir()
+    (gi / "__init__.py").write_text(
+        'def require_version(name, version):\n'
+        '    assert (name, version) in (("Gtk", "3.0"), ("Atk", "1.0"))\n'
+    )
+    (gi / "repository.py").write_text('Gtk = object()\nAtk = object()\n')
     output = tmp_path / "output"
     output.mkdir()
     session = tools / "dbus-run-session"
     session.write_text(f"#!{sys.executable}\n" + '''
 import json, os, pathlib, sys, time
+import xml.etree.ElementTree as ET
 out = pathlib.Path(os.environ['FAKE_OUTPUT'])
 runtime = pathlib.Path(os.environ['XDG_RUNTIME_DIR'])
 group = runtime.name
@@ -257,7 +266,16 @@ failed = os.environ['FAILED_GROUP'] in (group, 'both')
 if not failed:
     time.sleep(.1)
 report = pathlib.Path(next(arg.split('=', 1)[1] for arg in args if arg.startswith('--junitxml=')))
-report.write_text('<testsuite tests="1" failures="%d"/>' % int(failed))
+suite = ET.Element('testsuite', failures=str(int(failed)))
+if group == 'suite' and os.environ['FAILED_GROUP'] != 'gtk-missing':
+    for module, name in (
+        ('test_compat_story', 'test_what_screen_keeps_title_and_shows_this_usb_line'),
+        ('test_separate_footer_actions', 'test_assist_nav_names_do_not_rewrite_result_heading'),
+    ):
+        case = ET.SubElement(suite, 'testcase', classname='tests.' + module, name=name)
+        if os.environ['FAILED_GROUP'] == 'gtk-skipped':
+            ET.SubElement(case, 'skipped', message='simulated missing bindings')
+ET.ElementTree(suite).write(report)
 (out / (group + '.done')).touch()
 raise SystemExit(9 if failed else 0)
 ''')
@@ -268,10 +286,11 @@ raise SystemExit(9 if failed else 0)
     result = subprocess.run(
         ["bash", "-ceu", 'log() { :; }\n' + function + '\nrun_pytest'],
         env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                 PYTHONPATH=str(tools) + os.pathsep + os.environ.get("PYTHONPATH", ""),
                  TMPDIR=str(tmp_path), FAKE_OUTPUT=str(output), FAILED_GROUP=failed_group,
                  BEAMO_GATE_JUNIT=str(report), AT_SPI_BUS_ADDRESS="inherited",
                  PULSE_SERVER="inherited"),
-        capture_output=True, text=True, timeout=15,
+        cwd=ROOT, capture_output=True, text=True, timeout=15,
     )
     assert result.returncode == int(bool(failed_group)), result.stderr
     assert {path.stem for path in output.glob("*.done")} == {"orca", "suite"}

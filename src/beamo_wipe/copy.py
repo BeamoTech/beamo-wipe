@@ -834,6 +834,7 @@ SOUND_TEST_FAILED = (
     "The speech test did not play. Follow the recovery steps below and try again."
 )
 SOUND_ACTION_FAILED = "That change did not work. Try again."
+SOUND_CHECKING = "Checking sound… You can keep using the interface."
 SOUND_DIALOG_LEAD = "Choose where sound should play, then play the speech test."
 SOUND_SELECTED = "selected. Play the speech test to check it."
 SOUND_VOLUME = "Volume"

@@ -1,0 +1,53 @@
+[
+  {
+    "operation": "local",
+    "exit": 0,
+    "seconds": 0.129,
+    "status": "ok",
+    "problems": []
+  },
+  {
+    "operation": "test",
+    "exit": 0,
+    "seconds": 0.097,
+    "status": "ok",
+    "problems": []
+  },
+  {
+    "operation": "test-native",
+    "exit": 0,
+    "seconds": 0.093,
+    "status": "ok",
+    "problems": []
+  },
+  {
+    "operation": "preview",
+    "exit": 0,
+    "seconds": 0.088,
+    "status": "ok",
+    "problems": []
+  },
+  {
+    "operation": "preview-web",
+    "exit": 0,
+    "seconds": 0.074,
+    "status": "ok",
+    "problems": []
+  },
+  {
+    "operation": "desktop",
+    "exit": 2,
+    "seconds": 0.119,
+    "status": "blocked",
+    "problems": [
+      "Select pinned Go 1.26.8; version does not match."
+    ]
+  },
+  {
+    "operation": "qualification",
+    "exit": 0,
+    "seconds": 0.041,
+    "status": "ok",
+    "problems": []
+  }
+]

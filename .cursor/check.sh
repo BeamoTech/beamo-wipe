@@ -48,7 +48,7 @@ if [ -e /dev/kvm ]; then
     warn "/dev/kvm exists but is not writable for $(id -un); use sudo for QEMU -enable-kvm (optional ISO path)"
   fi
 else
-  warn "/dev/kvm missing; pytest/preview still work, ISO QEMU will be TCG"
+  warn "/dev/kvm missing; pytest/preview still work, but required image qualification needs Blacksmith KVM (docs/ci.md)"
 fi
 
 docker_ok=0

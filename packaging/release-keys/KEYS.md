@@ -20,8 +20,9 @@ that secret requires an explicitly authorized replacement key. A dedicated
 release publisher identity has secret access; normal PR/main workers do not.
 A separate operator-invoked publisher job retrieves artifacts only after a
 successful full qualification build and verifies their source, hashes and
-execution receipts before signing. The normal `cloudbuild.yaml` remains
-secret-free. This approval applies to this first key only; future rotation
+execution receipts before signing. Ordinary qualification now uses the
+secret-free Blacksmith `ci.yml`; the retained legacy `cloudbuild.yaml` also
+remains secret-free. This approval applies to this first key only; future rotation
 still requires separate authorization.
 
 ## Registry
@@ -59,7 +60,10 @@ listed so old signatures fail with a precise reason.
   receive it. Only the operator-invoked release workflow obtains it through
   the dedicated publisher identity after exact-source qualification. The
   credential is short lived and the key file is removed after publication.
-  `cloudbuild.yaml` remains secret-free by policy.
+  The protected `release.yml` publisher still needs GCP signing/storage via
+  GitHub OIDC; no interactive developer cloud login is needed. See
+  [current release workflow](../../docs/ci.md#publication-provenance-and-rollback).
+  Legacy `cloudbuild.yaml` remains secret-free by policy.
 - Developers and CI verify with the public registry only.
 
 ## Rotation
