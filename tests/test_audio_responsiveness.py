@@ -531,3 +531,30 @@ def test_audio_eof_uses_cancellable_wait_not_empty_selector(monkeypatch):
     assert sound._run("pactl", ["-c", "import os,time; os.close(1); time.sleep(30)"], 20) is None
     assert waits and all(0 < timeout <= 0.1 for timeout in waits)
     assert not selections_after_eof
+
+
+@pytest.mark.parametrize("protected", [False, True])
+def test_request_arriving_during_idle_retirement_is_not_stranded(monkeypatch, protected):
+    worker = audio_jobs.AudioWorker()
+    ticket = audio_jobs.AudioTicket(protected=protected)
+    calls = []
+
+    def action():
+        calls.append(True)
+        worker._closed = True
+        return 42
+
+    def timed_out_wait(timeout):
+        # Model a submitter enqueueing after the wait times out but before
+        # its lock is reacquired. No timing race or extra thread is required.
+        slot = "_pending_outcome" if protected else "_pending"
+        setattr(worker, slot, (ticket, action))
+        return False
+
+    monkeypatch.setattr(worker._condition, "wait", timed_out_wait)
+    try:
+        worker._run()
+        assert calls == [True]
+        assert ticket.poll() == (True, 42)
+    finally:
+        worker.close()

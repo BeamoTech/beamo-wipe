@@ -101,7 +101,11 @@ class AudioWorker:
         while True:
             with self._condition:
                 while self._pending is None and self._pending_outcome is None and not self._closed:
-                    if not self._condition.wait(timeout=1.0):
+                    self._condition.wait(timeout=1.0)
+                    # A submitter can acquire the lock after the timeout but
+                    # before this waiter reacquires it. Recheck the queues;
+                    # wait()'s return value alone cannot decide to retire.
+                    if self._pending is None and self._pending_outcome is None and not self._closed:
                         self._thread = None
                         return
                 if self._closed:
