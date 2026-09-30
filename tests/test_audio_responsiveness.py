@@ -218,6 +218,56 @@ def test_audio_subprocess_output_is_capped_and_reaped(monkeypatch):
     worker.close()
 
 
+@pytest.mark.parametrize("failure", ["create", "register", "close"])
+def test_audio_selector_failures_reap_child_and_close_pipe(monkeypatch, failure):
+    real_popen = subprocess.Popen
+    real_selector = sound.selectors.DefaultSelector
+    processes = []
+    selectors_created = []
+
+    def launch(*args, **kwargs):
+        proc = real_popen(*args, **kwargs)
+        processes.append(proc)
+        return proc
+
+    class BrokenSelector:
+        def __init__(self):
+            if failure == "create":
+                raise OSError("controlled selector creation failure")
+            self.inner = real_selector()
+            selectors_created.append(self.inner)
+
+        def register(self, *args):
+            if failure == "register":
+                raise OSError("controlled selector registration failure")
+            return self.inner.register(*args)
+
+        def close(self):
+            self.inner.close()
+            if failure == "close":
+                raise OSError("controlled selector close failure")
+
+    monkeypatch.setattr("beamo_wipe.safety.resolve_system_binary", lambda name: sys.executable)
+    monkeypatch.setattr(sound.subprocess, "Popen", launch)
+    monkeypatch.setattr(sound.selectors, "DefaultSelector", BrokenSelector)
+    # An expired ticket reaches cleanup immediately in the close-failure case.
+    monkeypatch.setattr(sound._audio_context, "ticket", audio_jobs.AudioTicket(seconds=0), raising=False)
+    try:
+        assert sound._run("pactl", ["-c", "import time; time.sleep(30)"], 20) is None
+        assert len(processes) == 1
+        assert processes[0].returncode is not None, "owned audio child was not reaped"
+        assert processes[0].stdout.closed
+    finally:
+        # Regressions in the production cleanup must not leak the test child.
+        for proc in processes:
+            if proc.poll() is None:
+                proc.kill()
+            proc.wait(timeout=2)
+            proc.stdout.close()
+        for selector in selectors_created:
+            selector.close()
+
+
 class FakeWidget:
     """Headless GTK stand-in that rejects worker-thread widget mutations."""
 

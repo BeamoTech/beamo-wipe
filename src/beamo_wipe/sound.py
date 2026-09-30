@@ -101,10 +101,11 @@ def _run(tool: str, args: List[str], timeout: int):
             output = bytearray()
             stdout = proc.stdout
             assert stdout is not None
-            selector = selectors.DefaultSelector()
-            selector.register(stdout, selectors.EVENT_READ)
-            eof = False
+            selector = None
             try:
+                selector = selectors.DefaultSelector()
+                selector.register(stdout, selectors.EVENT_READ)
+                eof = False
                 while not ticket.cancelled.is_set():
                     remaining = end - time.monotonic()
                     if remaining <= 0:
@@ -123,21 +124,28 @@ def _run(tool: str, args: List[str], timeout: int):
                     if len(output) >= _OUTPUT_LIMIT:
                         break
             finally:
-                selector.close()
-                if proc.poll() is None:
+                # Own the child even if selector creation/registration fails.
+                # Closing a selector must not prevent termination or pipe close.
+                try:
+                    if selector is not None:
+                        selector.close()
+                finally:
                     try:
-                        proc.terminate()
-                    except ProcessLookupError:
-                        pass
-                    try:
-                        proc.wait(timeout=0.2)
-                    except subprocess.TimeoutExpired:
-                        try:
-                            proc.kill()
-                        except ProcessLookupError:
-                            pass
-                        proc.wait(timeout=0.2)
-                stdout.close()
+                        if proc.poll() is None:
+                            try:
+                                proc.terminate()
+                            except ProcessLookupError:
+                                pass
+                            try:
+                                proc.wait(timeout=0.2)
+                            except subprocess.TimeoutExpired:
+                                try:
+                                    proc.kill()
+                                except ProcessLookupError:
+                                    pass
+                                proc.wait(timeout=0.2)
+                    finally:
+                        stdout.close()
             return None
         return subprocess.run(
             [resolved, *args],
