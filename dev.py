@@ -139,8 +139,6 @@ def doctor(operation="local"):
         "Current qualification: Blacksmith via .github/workflows/ci.yml (CI gate).",
         "Publication is separately authorized release.yml; see docs/ci.md.",
     ]
-    if sys.version_info < (3, 10):
-        problems.append("Install Python 3.10 or newer.")
     if not checks["git"]:
         problems.append("Install Git for this checkout.")
     if checks["live_environment"]:

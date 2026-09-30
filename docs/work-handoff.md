@@ -36,7 +36,8 @@ The fake slow-audio regression documents the original synchronous baseline
 (12 calls at 80 ms each, approximately 0.998 seconds). It requires the request,
 progress tick and Stop handler each to return within 60 ms under that controlled
 substitute; this is a test bound, not a universal hardware latency guarantee.
-The implementation permits one worker and one latest waiting request, a
+The implementation permits one worker, one latest waiting interactive request and one protected outcome
+notification slot, a
 30-second operation deadline, cancellation/supersession, screen-epoch checks,
 64 KiB subprocess output, and bounded terminate/kill waits. A stuck in-process
 third-party call can occupy the single daemon; it cannot be forcibly stopped

@@ -433,3 +433,101 @@ def test_gtk_sound_dialog_stop_stays_available_during_hung_discovery(monkeypatch
     assert dialog.dialog is None and dialog.ticket is None
     assert rendered == [True]
     release.set()
+
+
+@pytest.mark.parametrize("queued", [False, True])
+def test_sound_dialog_cannot_cancel_automatic_outcome(monkeypatch, audio_worker, queued):
+    """Protect a queued or running notification without blocking GTK discovery."""
+    blocker_entered = threading.Event()
+    unblock = threading.Event()
+    playing = threading.Event()
+    finish_sound = threading.Event()
+    calls = []
+
+    def blocker():
+        blocker_entered.set()
+        unblock.wait(timeout=3)
+
+    def play(kind):
+        calls.append(kind)
+        playing.set()
+        finish_sound.wait(timeout=3)
+        return sound.SoundResult(True, "")
+
+    monkeypatch.setattr(sound, "play_test", play)
+    monkeypatch.setattr(sound, "list_outputs", lambda: sound.SoundState(False, C.SOUND_NO_OUTPUT, ()))
+    monkeypatch.setattr(sound, "orca_running", lambda: None)
+    wizard = make_demo_wizard()
+    wizard.preview = False
+    wizard.screen = Screen.DONE
+    wizard.wipe_result = WipeResult(True, 0, "Erase completed", "/tmp/fake-audio-result.log")
+    wizard.set_sounds_enabled(True)
+    dialog = None
+    try:
+        if queued:
+            audio_worker.submit(blocker)
+            until(blocker_entered.is_set)
+        ticket = wizard.request_auto_outcome_sound()
+        assert ticket is not None
+        if not queued:
+            until(playing.is_set)
+        dialog = SoundDialog(FakeGtk, FakeWidget(), wizard)
+        assert not ticket.cancelled.is_set()
+        assert wizard.request_auto_outcome_sound() is None
+        unblock.set()
+        until(playing.is_set)
+        assert not ticket.cancelled.is_set()
+        finish_sound.set()
+        settle(wizard)
+        until(lambda: dialog.ticket.poll()[0])
+        dialog.poll()
+        assert dialog.status.label == C.SOUND_NO_OUTPUT
+        assert len(calls) == 1
+        assert wizard.request_auto_outcome_sound() is None
+        assert wizard.sound_message == ""
+    finally:
+        unblock.set()
+        finish_sound.set()
+        if dialog is not None:
+            dialog.close()
+
+
+def test_audio_eof_uses_cancellable_wait_not_empty_selector(monkeypatch):
+    real_selector = sound.selectors.DefaultSelector
+    selections_after_eof = []
+    waits = []
+    ticket = audio_jobs.AudioTicket(seconds=1)
+    real_wait = ticket.cancelled.wait
+
+    def wait(timeout):
+        waits.append(timeout)
+        return real_wait(timeout)
+
+    class Selector:
+        def __init__(self):
+            self.inner = real_selector()
+            self.eof = False
+
+        def register(self, *args):
+            return self.inner.register(*args)
+
+        def unregister(self, *args):
+            self.eof = True
+            return self.inner.unregister(*args)
+
+        def select(self, **kwargs):
+            if self.eof:
+                selections_after_eof.append(True)
+                raise AssertionError("empty selector must not be polled after EOF")
+            return self.inner.select(**kwargs)
+
+        def close(self):
+            self.inner.close()
+
+    monkeypatch.setattr("beamo_wipe.safety.resolve_system_binary", lambda name: sys.executable)
+    monkeypatch.setattr(sound.selectors, "DefaultSelector", Selector)
+    monkeypatch.setattr(sound._audio_context, "ticket", ticket, raising=False)
+    monkeypatch.setattr(ticket.cancelled, "wait", wait)
+    assert sound._run("pactl", ["-c", "import os,time; os.close(1); time.sleep(30)"], 20) is None
+    assert waits and all(0 < timeout <= 0.1 for timeout in waits)
+    assert not selections_after_eof

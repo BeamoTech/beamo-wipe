@@ -239,3 +239,15 @@ def test_legacy_help_exits_before_any_cloud_command(tmp_path):
         assert result.returncode == 0, result.stderr
         assert "Legacy Cloud Build" in result.stdout
         assert "authorization" in result.stdout
+
+
+def test_supported_selected_python_overrides_old_invoking_python(
+    doctor, monkeypatch, capsys
+):
+    dev, _, _, calls, _ = doctor
+    monkeypatch.setattr(dev.sys, "version_info", (3, 9, 0))
+    assert dev.doctor("local") == 0
+    result = json.loads(capsys.readouterr().out)
+    assert result["environment_version"] == "3.11.2"
+    assert result["problems"] == []
+    assert len(calls) == 1

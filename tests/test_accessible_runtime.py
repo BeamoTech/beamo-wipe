@@ -1694,7 +1694,7 @@ def test_accessible_done_auto_plays_once_without_changing_announcement(ui, monke
     calls = []
     monkeypatch.setattr(
         sound_module,
-        "play_outcome",
+        "play_test",
         lambda kind: calls.append(kind)
         or sound_module.SoundResult(True, ""),
     )
@@ -1706,7 +1706,12 @@ def test_accessible_done_auto_plays_once_without_changing_announcement(ui, monke
     off_text = text(app)
     wizard.set_sounds_enabled(True)
     app.render()
-    drain()
+    deadline = time.monotonic() + 2
+    while wizard._audio_request is not None and time.monotonic() < deadline:
+        wizard.tick()
+        drain()
+        time.sleep(0.005)
+    assert wizard._audio_request is None
     app.render()
     drain()
     assert calls == [sound_module.KIND_ATTENTION]

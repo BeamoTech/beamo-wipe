@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """One bounded worker for optional audio I/O; UI threads poll tickets.
 
-Only the latest waiting request is retained. A cancelled running request is
+One latest interactive request and one outcome notification may wait. Outcome
+notifications are not superseded by interactive discovery. A cancelled request is
 cooperatively stopped by sound._run. A stuck third-party call can occupy the
 single daemon, but cannot create more workers or hold the interface hostage.
 """
@@ -18,7 +19,8 @@ OPERATION_SECONDS = 30.0
 
 
 class AudioTicket:
-    def __init__(self, seconds: float = OPERATION_SECONDS):
+    def __init__(self, seconds: float = OPERATION_SECONDS, *, protected: bool = False):
+        self.protected = protected
         self.cancelled = threading.Event()
         self.deadline = time.monotonic() + seconds
         self._lock = threading.Lock()
@@ -55,21 +57,27 @@ class AudioWorker:
     def __init__(self):
         self._condition = threading.Condition()
         self._pending: tuple[AudioTicket, Callable] | None = None
+        self._pending_outcome: tuple[AudioTicket, Callable] | None = None
         self._active: AudioTicket | None = None
         self._closed = False
         self._thread: threading.Thread | None = None
 
-    def submit(self, action: Callable, seconds: float = OPERATION_SECONDS) -> AudioTicket:
-        ticket = AudioTicket(seconds)
+    def submit(self, action: Callable, seconds: float = OPERATION_SECONDS, *, protected: bool = False) -> AudioTicket:
+        ticket = AudioTicket(seconds, protected=protected)
         with self._condition:
             if self._closed:
                 ticket._finish(RuntimeError("Audio worker closed"))
                 return ticket
-            if self._active is not None:
-                self._active.cancel()
-            if self._pending is not None:
-                self._pending[0].cancel()
-            self._pending = (ticket, action)
+            if protected:
+                if self._pending_outcome is not None:
+                    self._pending_outcome[0].cancel()
+                self._pending_outcome = (ticket, action)
+            else:
+                if self._active is not None and not self._active.protected:
+                    self._active.cancel()
+                if self._pending is not None:
+                    self._pending[0].cancel()
+                self._pending = (ticket, action)
             if self._thread is None:
                 self._thread = threading.Thread(
                     target=self._run, name="beamo-audio", daemon=True
@@ -77,7 +85,10 @@ class AudioWorker:
                 try:
                     self._thread.start()
                 except RuntimeError as exc:
-                    self._pending = None
+                    if protected:
+                        self._pending_outcome = None
+                    else:
+                        self._pending = None
                     self._thread = None
                     ticket._finish(exc)
                     return ticket
@@ -89,16 +100,20 @@ class AudioWorker:
 
         while True:
             with self._condition:
-                while self._pending is None and not self._closed:
+                while self._pending is None and self._pending_outcome is None and not self._closed:
                     if not self._condition.wait(timeout=1.0):
                         self._thread = None
                         return
                 if self._closed:
                     return
-                if self._pending is None:
+                if self._pending_outcome is not None:
+                    ticket, action = self._pending_outcome
+                    self._pending_outcome = None
+                elif self._pending is not None:
+                    ticket, action = self._pending
+                    self._pending = None
+                else:
                     continue
-                ticket, action = self._pending
-                self._pending = None
                 self._active = ticket
             try:
                 if ticket.cancelled.is_set():
@@ -124,6 +139,9 @@ class AudioWorker:
             if self._pending is not None:
                 self._pending[0].cancel()
                 self._pending = None
+            if self._pending_outcome is not None:
+                self._pending_outcome[0].cancel()
+                self._pending_outcome = None
             self._condition.notify_all()
             thread = self._thread
         if thread is not None:

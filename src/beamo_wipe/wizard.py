@@ -3059,7 +3059,7 @@ class Wizard:
             if not auto:
                 self.sound_message = C.SOUND_CHECKING
                 self.sound_revision += 1
-            ticket = worker.submit(action)
+            ticket = worker.submit(action, protected=auto)
             self._audio_request = (ticket, self.screen, self._screen_epoch, key, auto)
             return ticket
 

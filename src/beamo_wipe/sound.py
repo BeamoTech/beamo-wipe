@@ -110,7 +110,11 @@ def _run(tool: str, args: List[str], timeout: int):
                     remaining = end - time.monotonic()
                     if remaining <= 0:
                         break
-                    for _key, _events in selector.select(timeout=min(0.1, remaining)):
+                    # Some selectors return immediately with no descriptors.
+                    # After EOF, wait cancellably instead of spinning on an empty set.
+                    if eof:
+                        ticket.cancelled.wait(timeout=min(0.1, remaining))
+                    for _key, _events in (() if eof else selector.select(timeout=min(0.1, remaining))):
                         chunk = os.read(stdout.fileno(), min(4096, _OUTPUT_LIMIT - len(output)))
                         if not chunk:
                             eof = True
