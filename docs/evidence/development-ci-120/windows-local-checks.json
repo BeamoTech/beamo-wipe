@@ -1,0 +1,647 @@
+{
+  "base_source": "baafb0605b91ff80a229aea09a78917f6c1640a1",
+  "python": "3.13.6",
+  "platform": "win32",
+  "doctor_results": [
+    {
+      "operation": "local",
+      "exit": 0,
+      "output": {
+        "operation": "local",
+        "python": "3.13.6",
+        "host": "win32",
+        "machine": "AMD64",
+        "checkout": "C:\\Users\\Jack\\beamo-wipe",
+        "environment_python": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "git": "C:\\Program Files\\Git\\cmd\\git.EXE",
+        "live_environment": false,
+        "environment_version": "3.13.6",
+        "modules": {
+          "venv": true,
+          "pip": true
+        },
+        "status": "ok",
+        "problems": [],
+        "notes": [
+          "Local preflight only; no disks, authentication, network checks, builds or CI dispatch.",
+          "Each local probe is bounded to 5 seconds; at most two probes run.",
+          "Current qualification: Blacksmith via .github/workflows/ci.yml (CI gate).",
+          "Publication is separately authorized release.yml; see docs/ci.md."
+        ]
+      }
+    },
+    {
+      "operation": "test",
+      "exit": 2,
+      "output": {
+        "operation": "test",
+        "python": "3.13.6",
+        "host": "win32",
+        "machine": "AMD64",
+        "checkout": "C:\\Users\\Jack\\beamo-wipe",
+        "environment_python": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "git": "C:\\Program Files\\Git\\cmd\\git.EXE",
+        "live_environment": false,
+        "wsl": "C:\\WINDOWS\\system32\\wsl.exe",
+        "status": "blocked",
+        "problems": [
+          "Run this doctor operation inside the WSL2 Ubuntu checkout; Linux dependencies are not checked here."
+        ],
+        "notes": [
+          "Local preflight only; no disks, authentication, network checks, builds or CI dispatch.",
+          "Each local probe is bounded to 5 seconds; at most two probes run.",
+          "Current qualification: Blacksmith via .github/workflows/ci.yml (CI gate).",
+          "Publication is separately authorized release.yml; see docs/ci.md.",
+          "For portable native tooling tests use doctor --for test-native."
+        ]
+      }
+    },
+    {
+      "operation": "test-native",
+      "exit": 0,
+      "output": {
+        "operation": "test-native",
+        "python": "3.13.6",
+        "host": "win32",
+        "machine": "AMD64",
+        "checkout": "C:\\Users\\Jack\\beamo-wipe",
+        "environment_python": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "git": "C:\\Program Files\\Git\\cmd\\git.EXE",
+        "live_environment": false,
+        "environment_version": "3.13.6",
+        "modules": {
+          "pytest": true
+        },
+        "status": "ok",
+        "problems": [],
+        "notes": [
+          "Local preflight only; no disks, authentication, network checks, builds or CI dispatch.",
+          "Each local probe is bounded to 5 seconds; at most two probes run.",
+          "Current qualification: Blacksmith via .github/workflows/ci.yml (CI gate).",
+          "Publication is separately authorized release.yml; see docs/ci.md.",
+          "Module presence is not a passing test suite. Full Linux GTK/Orca, display and image coverage belong to the hosted gate; report local skips/failures."
+        ]
+      }
+    },
+    {
+      "operation": "preview",
+      "exit": 2,
+      "output": {
+        "operation": "preview",
+        "python": "3.13.6",
+        "host": "win32",
+        "machine": "AMD64",
+        "checkout": "C:\\Users\\Jack\\beamo-wipe",
+        "environment_python": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "git": "C:\\Program Files\\Git\\cmd\\git.EXE",
+        "live_environment": false,
+        "wsl": "C:\\WINDOWS\\system32\\wsl.exe",
+        "status": "blocked",
+        "problems": [
+          "Run this doctor operation inside the WSL2 Ubuntu checkout; Linux dependencies are not checked here."
+        ],
+        "notes": [
+          "Local preflight only; no disks, authentication, network checks, builds or CI dispatch.",
+          "Each local probe is bounded to 5 seconds; at most two probes run.",
+          "Current qualification: Blacksmith via .github/workflows/ci.yml (CI gate).",
+          "Publication is separately authorized release.yml; see docs/ci.md.",
+          "For portable native tooling tests use doctor --for test-native."
+        ]
+      }
+    },
+    {
+      "operation": "preview-web",
+      "exit": 2,
+      "output": {
+        "operation": "preview-web",
+        "python": "3.13.6",
+        "host": "win32",
+        "machine": "AMD64",
+        "checkout": "C:\\Users\\Jack\\beamo-wipe",
+        "environment_python": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "git": "C:\\Program Files\\Git\\cmd\\git.EXE",
+        "live_environment": false,
+        "wsl": "C:\\WINDOWS\\system32\\wsl.exe",
+        "status": "blocked",
+        "problems": [
+          "Run this doctor operation inside the WSL2 Ubuntu checkout; Linux dependencies are not checked here."
+        ],
+        "notes": [
+          "Local preflight only; no disks, authentication, network checks, builds or CI dispatch.",
+          "Each local probe is bounded to 5 seconds; at most two probes run.",
+          "Current qualification: Blacksmith via .github/workflows/ci.yml (CI gate).",
+          "Publication is separately authorized release.yml; see docs/ci.md.",
+          "For portable native tooling tests use doctor --for test-native."
+        ]
+      }
+    },
+    {
+      "operation": "desktop",
+      "exit": 2,
+      "output": {
+        "operation": "desktop",
+        "python": "3.13.6",
+        "host": "win32",
+        "machine": "AMD64",
+        "checkout": "C:\\Users\\Jack\\beamo-wipe",
+        "environment_python": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "git": "C:\\Program Files\\Git\\cmd\\git.EXE",
+        "live_environment": false,
+        "environment_version": "3.13.6",
+        "modules": {},
+        "go": null,
+        "status": "blocked",
+        "problems": [
+          "Install Go 1.26.8 or select it with BEAMO_GO_BIN."
+        ],
+        "notes": [
+          "Local preflight only; no disks, authentication, network checks, builds or CI dispatch.",
+          "Each local probe is bounded to 5 seconds; at most two probes run.",
+          "Current qualification: Blacksmith via .github/workflows/ci.yml (CI gate).",
+          "Publication is separately authorized release.yml; see docs/ci.md."
+        ]
+      }
+    },
+    {
+      "operation": "qualification",
+      "exit": 0,
+      "output": {
+        "operation": "qualification",
+        "python": "3.13.6",
+        "host": "win32",
+        "machine": "AMD64",
+        "checkout": "C:\\Users\\Jack\\beamo-wipe",
+        "environment_python": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "git": "C:\\Program Files\\Git\\cmd\\git.EXE",
+        "live_environment": false,
+        "gh": "C:\\Program Files\\GitHub CLI\\gh.EXE",
+        "status": "ok",
+        "problems": [],
+        "notes": [
+          "Local preflight only; no disks, authentication, network checks, builds or CI dispatch.",
+          "Each local probe is bounded to 5 seconds; at most two probes run.",
+          "Current qualification: Blacksmith via .github/workflows/ci.yml (CI gate).",
+          "Publication is separately authorized release.yml; see docs/ci.md.",
+          "gh is optional for the CLI route; GitHub's web UI can open PRs and inspect CI. Authentication and repository access are not probed.",
+          "PRs to main and pushes to main trigger full CI. Manual dispatch also needs authorization. This doctor never triggers them."
+        ]
+      }
+    }
+  ],
+  "commands": [
+    {
+      "label": "doctor-local",
+      "argv": [
+        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "dev.py",
+        "doctor",
+        "--for",
+        "local"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.319,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-local.log",
+      "sha256": "64838b4e288d400c1b8c2f4880b70f326fc9d975a65619a4745e993cab89760f"
+    },
+    {
+      "label": "doctor-test",
+      "argv": [
+        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "dev.py",
+        "doctor",
+        "--for",
+        "test"
+      ],
+      "exit": 2,
+      "expected_exit": 2,
+      "seconds": 0.206,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-test.log",
+      "sha256": "d2408ff2fe6b4afc44cdbd3bc242b8243d026e9f7c2b25fbbf2c3b449c05e05a"
+    },
+    {
+      "label": "doctor-test-native",
+      "argv": [
+        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "dev.py",
+        "doctor",
+        "--for",
+        "test-native"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.291,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-test-native.log",
+      "sha256": "2f2b71d2b0b61466030ea3edc7ea404e5903e16fb661b7af77dfa9033b6114d7"
+    },
+    {
+      "label": "doctor-preview",
+      "argv": [
+        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "dev.py",
+        "doctor",
+        "--for",
+        "preview"
+      ],
+      "exit": 2,
+      "expected_exit": 2,
+      "seconds": 0.203,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-preview.log",
+      "sha256": "426085f771ff2e7d37f74c8730da2386d1964c0457b484b56209a92a73099c49"
+    },
+    {
+      "label": "doctor-preview-web",
+      "argv": [
+        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "dev.py",
+        "doctor",
+        "--for",
+        "preview-web"
+      ],
+      "exit": 2,
+      "expected_exit": 2,
+      "seconds": 0.206,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-preview-web.log",
+      "sha256": "f8c5ce49e9bb5aca72439bcb4cc8ff248ec2f5111f5f0dcc3a07cec0cb0c7fd1"
+    },
+    {
+      "label": "doctor-desktop",
+      "argv": [
+        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "dev.py",
+        "doctor",
+        "--for",
+        "desktop"
+      ],
+      "exit": 2,
+      "expected_exit": 2,
+      "seconds": 0.311,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-desktop.log",
+      "sha256": "5be1cc231ef5ab84ae8da4912b52c24fe8303283b94883de28e70c1ff5cd166c"
+    },
+    {
+      "label": "doctor-qualification",
+      "argv": [
+        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "dev.py",
+        "doctor",
+        "--for",
+        "qualification"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.212,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-qualification.log",
+      "sha256": "1f445c040b44280418c385ad9469b8c78a12d7ac067cdac9019003370cf0d14f"
+    },
+    {
+      "label": "help-main",
+      "argv": [
+        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "dev.py",
+        "--help"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.148,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-main.log",
+      "sha256": "dcec55cc03dbad58786ae0774b114a05f7f8d1368cf55b08af1f85a6962f31f1"
+    },
+    {
+      "label": "help-doctor",
+      "argv": [
+        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "dev.py",
+        "doctor",
+        "--help"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.146,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-doctor.log",
+      "sha256": "29516452986ac131065b750d09343ed7db03cfb673bea45289bac8528a326431"
+    },
+    {
+      "label": "help-setup",
+      "argv": [
+        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "dev.py",
+        "setup",
+        "--help"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.142,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-setup.log",
+      "sha256": "9913c42d3dbf3100df49e1b752054a10accbd2f29695ed77490a352808b844a3"
+    },
+    {
+      "label": "help-test",
+      "argv": [
+        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "dev.py",
+        "test",
+        "--help"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.146,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-test.log",
+      "sha256": "7340af63ee8566877815043ef746c96510df0e6f574efd3d2a8896ec76f79b62"
+    },
+    {
+      "label": "help-desktop-build",
+      "argv": [
+        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "dev.py",
+        "desktop-build",
+        "--help"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.144,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-desktop-build.log",
+      "sha256": "7bd89eba23608d90733ac90cbd79ba81176ae5d030130bfb3ebf405735de6110"
+    },
+    {
+      "label": "help-desktop-test",
+      "argv": [
+        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "dev.py",
+        "desktop-test",
+        "--help"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.136,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-desktop-test.log",
+      "sha256": "880ac68ca6b11fe5b3f98e6e18a7d7bec44b2922a7453a2e537b790de2f3dfeb"
+    },
+    {
+      "label": "legacy-help-ci-cloud.sh",
+      "argv": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "--noprofile",
+        "--norc",
+        "scripts/ci-cloud.sh",
+        "--help"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.139,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\legacy-help-ci-cloud.sh.log",
+      "sha256": "5db583d97ede90f49aeb4bd2c2357d6c01376f4aea2d3eea238bb21e09cae105"
+    },
+    {
+      "label": "legacy-help-install-cloud-triggers.sh",
+      "argv": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "--noprofile",
+        "--norc",
+        "scripts/install-cloud-triggers.sh",
+        "--help"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.056,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\legacy-help-install-cloud-triggers.sh.log",
+      "sha256": "7432d916edc9e8a8c7137c383668f4ead02e96998beb638a50a96eaec92b52d5"
+    },
+    {
+      "label": "syntax-check",
+      "argv": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "--noprofile",
+        "--norc",
+        "-n",
+        ".cursor/check.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.059,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "syntax-ci-cloud",
+      "argv": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "--noprofile",
+        "--norc",
+        "-n",
+        "scripts/ci-cloud.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.058,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-ci-cloud.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "syntax-install-cloud-triggers",
+      "argv": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "--noprofile",
+        "--norc",
+        "-n",
+        "scripts/install-cloud-triggers.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.06,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-install-cloud-triggers.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "syntax-ci-blacksmith",
+      "argv": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "--noprofile",
+        "--norc",
+        "-n",
+        "scripts/ci-blacksmith.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.057,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-ci-blacksmith.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "syntax-ci-hosted",
+      "argv": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "--noprofile",
+        "--norc",
+        "-n",
+        "scripts/ci-hosted.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.058,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-ci-hosted.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "syntax-ci-desktop",
+      "argv": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "--noprofile",
+        "--norc",
+        "-n",
+        "scripts/ci-desktop.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.057,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-ci-desktop.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "syntax-check-release-ready",
+      "argv": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "--noprofile",
+        "--norc",
+        "-n",
+        "scripts/check-release-ready.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.064,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-check-release-ready.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "syntax-publish-release-blacksmith",
+      "argv": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "--noprofile",
+        "--norc",
+        "-n",
+        "scripts/publish-release-blacksmith.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.065,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-publish-release-blacksmith.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "syntax-build-iso",
+      "argv": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "--noprofile",
+        "--norc",
+        "-n",
+        "scripts/build-iso.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.057,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-build-iso.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "syntax-build-desktop",
+      "argv": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "--noprofile",
+        "--norc",
+        "-n",
+        "scripts/build-desktop.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.057,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-build-desktop.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "syntax-preview",
+      "argv": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "--noprofile",
+        "--norc",
+        "-n",
+        "scripts/preview.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.056,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-preview.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "syntax-test-all",
+      "argv": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "--noprofile",
+        "--norc",
+        "-n",
+        "scripts/test-all.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.056,
+      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-test-all.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "configurations": [
+    ".github/workflows/agent-pr.yml",
+    ".github/workflows/ci.yml",
+    ".github/workflows/release.yml",
+    "cloudbuild.yaml",
+    ".cursor/environment.json"
+  ],
+  "configuration_assertions": "pass",
+  "documentation": {
+    "files": 17,
+    "local_links": 99,
+    "errors": []
+  },
+  "inventory_files": 298,
+  "new_inventory_matches": [
+    "docs/evidence/compare-similar-disks-67/README.md",
+    "docs/evidence/countdown-review-77/README.md",
+    "docs/evidence/development-ci-120/README.md",
+    "docs/evidence/development-ci-120/doctor-results.json",
+    "docs/evidence/development-ci-120/windows-20261001.md",
+    "docs/evidence/gtk-dependency-123-results.json",
+    "docs/evidence/gtk-dependency-123.md",
+    "docs/evidence/inventory-count-63/README.md",
+    "docs/evidence/negative-gate-cleanup-124.md",
+    "docs/evidence/physical-acceptance-111/README.md",
+    "docs/evidence/physical-acceptance-111/results/firmware.md",
+    "docs/evidence/release-note-links-121/README.md",
+    "docs/evidence/release-note-links-121/release-identity.json",
+    "docs/evidence/secure-boot-119/README.md",
+    "docs/evidence/secure-boot-119/components.json",
+    "docs/evidence/secure-boot-119/shim-signature.txt",
+    "docs/evidence/serial-number-label-65/README.md",
+    "docs/evidence/signing-metadata-122/README.md",
+    "docs/evidence/signing-metadata-122/generated-sample.json",
+    "docs/evidence/signing-metadata-122/public-verification.json",
+    "docs/evidence/usb-download-verification-125-results.json",
+    "docs/evidence/usb-download-verification-125.md",
+    "docs/evidence/usb-lab-20260907/acceptance-index.json",
+    "docs/evidence/usb-lab-20260907/windows-followup/brain-handoff.json",
+    "docs/release-readiness-audit-2026-09-28.md",
+    "docs/secure-boot-acceptance.md",
+    "docs/session-recovery.md",
+    "docs/work-handoff.md",
+    "scripts/verify-usb-download.py",
+    "tests/test_desktop_lock_pass11.py",
+    "tests/test_evidence_nonfinite_clock_pass10.py",
+    "tests/test_gtk_dependency_handling.py",
+    "tests/test_iso_bundle_ownership_pass8.py",
+    "tests/test_iso_dist_boundary_pass10.py",
+    "tests/test_iso_live_assets_pass20.py",
+    "tests/test_iso_prior_bundle_pass23_build.py",
+    "tests/test_pass12_evidence_log_bound.py",
+    "tests/test_secure_boot_expectations.py",
+    "tests/test_signing_metadata.py",
+    "tests/test_usb_download_verification.py"
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "recorded_utc": "2026-10-01T04:40:04.516552+00:00",
+  "base_source": "baafb0605b91ff80a229aea09a78917f6c1640a1",
+  "branch": "codex/dev-ci-120-windows-verification",
+  "source_sha256": {
+    "dev.py": "ba81cb35a61974a886774d819f1ef0ee3eb55f24b12012134febdc58bf94175f",
+    "scripts/build_desktop.py": "7bcac4b13c39720e46d76279977633725dac4b29e6152647109cf9f8dab3b681",
+    "developer_tests/test_dev.py": "d674a6db2b9fbff065de3babde435a61da27451880793e875c4b7cc4df3d9643",
+    "developer_tests/test_doctor.py": "7d9e55287995669358f869cb2abd9afcc3a136a952d645758135e4b5a47c66ff",
+    "developer_tests/test_desktop_portability.py": "6758cb962c3575f65618626948b8cb23d703ddec775f0c1020d7d2a0e063f534",
+    "docs/development.md": "cd93f22ded983f0163adc3e46d63009060939c1336820f79f4b78a4f465deb38",
+    "docs/evidence/development-ci-120/README.md": "11f838e7aaffbafcf58244829190799bdd60f6214bc2acd2945c69a584bd3d60",
+    "docs/evidence/development-ci-120/windows-20261001.md": "2cb8d380dfd19b43de5e34b5c5dafc861f29c54e482cae239e673a7378651c50"
+  },
+  "tests": [
+    {
+      "path": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\native-tests.log",
+      "sha256": "8792c4328059e3c7e96feaa2f4321d4fe18337d27a5c7f10706c0aba1276d0d6",
+      "failed": 3,
+      "passed": 49,
+      "skipped": 1
+    },
+    {
+      "path": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\native-tests-final.log",
+      "sha256": "c51941d57ebebd4364338a0a57dbb156b550a885e7f7090d67aebda145a53e54",
+      "passed": 59,
+      "skipped": 1,
+      "failed": 0
+    },
+    {
+      "path": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\builder-regressions.log",
+      "sha256": "24bba1c34430e28400eeb8017e26605977e9da72d07d5b7b9e338cbc4c1ed843",
+      "passed": 7,
+      "failed": 0
+    }
+  ],
+  "local_checks": "windows-local-checks.json",
+  "hosted_follow_up": "NOT RUN; user prohibited hosted CI for this task",
+  "verification_environment": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z",
+  "unvalidated": [
+    "Full POSIX/GTK/Orca suite and wizard previews: native Windows without installed WSL distribution",
+    "Real desktop build/test/vet: pinned Go not installed",
+    "Make dry run, ShellCheck and actionlint: tools not installed",
+    "ISO/KVM and release publication: separate authorization required",
+    "External HTTP link availability: not exhaustively network-checked"
+  ]
+}

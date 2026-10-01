@@ -158,6 +158,7 @@ def test_build_contract_with_space_paths(tmp_path, monkeypatch):
     assert all(kw["env"]["CGO_ENABLED"] == "0" for _, kw in calls)
     assert all("-trimpath" in cmd and "-buildvcs=false" in cmd for cmd, _ in calls)
     assert "-H=windowsgui" in calls[1][0][calls[1][0].index("-ldflags") + 1]
+    assert not (dest / ".build.lock").exists()
 
 
 def test_failed_build_does_not_write_success_manifest(tmp_path, monkeypatch):
@@ -177,6 +178,7 @@ def test_failed_build_does_not_write_success_manifest(tmp_path, monkeypatch):
     with pytest.raises(subprocess.CalledProcessError):
         builder.build(tmp_path)
     assert not (tmp_path / "desktop-build.json").exists()
+    assert not (tmp_path / ".build.lock").exists()
 
 
 def test_test_environment_does_not_disguise_fake_as_demo(dev, monkeypatch):

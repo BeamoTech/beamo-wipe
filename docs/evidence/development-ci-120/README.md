@@ -1,5 +1,9 @@
 # Development and CI guidance correction — #120
 
+This is the original preparation receipt. The [2026-10-01 Windows follow-up](windows-20261001.md)
+records the merged source, observed main CI result and subsequent local fixes;
+its status supersedes the pending integration action at the end of this receipt.
+
 2026-09-29, Codex. Local preparation only: no push, PR creation, hosted
 dispatch/rerun, tagging, publication, image build, firmware change or real
 disk operation was performed for this task.

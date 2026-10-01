@@ -102,7 +102,6 @@ def _read_regular_source(path: Path) -> bytes:
             info.st_ino,
             info.st_size,
             info.st_mtime_ns,
-            info.st_ctime_ns,
         )
 
     if (
@@ -110,6 +109,11 @@ def _read_regular_source(path: Path) -> bytes:
         or not (
             identity(before) == identity(opened) == identity(after) == identity(named)
         )
+        # Windows path stat and fstat can report different meanings for ctime.
+        # Compare each API before/after; POSIX also compares across APIs.
+        or before.st_ctime_ns != named.st_ctime_ns
+        or opened.st_ctime_ns != after.st_ctime_ns
+        or (os.name == "posix" and before.st_ctime_ns != opened.st_ctime_ns)
         or len(data) != opened.st_size
     ):
         raise RuntimeError("desktop source input changed or unsafe")
@@ -460,8 +464,9 @@ def build(output=None):
             os.close(output_fd)
         raise
 
+    owned_lock = os.fstat(lock_fd)
+
     def owns_lock_inode() -> bool:
-        owned = os.fstat(lock_fd)
         try:
             if output_fd is None:
                 current = lock.lstat()
@@ -472,8 +477,8 @@ def build(output=None):
         except OSError:
             return False
         return stat.S_ISREG(current.st_mode) and (current.st_dev, current.st_ino) == (
-            owned.st_dev,
-            owned.st_ino,
+            owned_lock.st_dev,
+            owned_lock.st_ino,
         )
 
     def owns_lock() -> bool:
@@ -651,13 +656,19 @@ def build(output=None):
         )
     finally:
         try:
-            if owns_lock_inode() and (output_fd is not None or owns_lock()):
-                if output_fd is None:
+            if output_fd is None:
+                # Windows cannot unlink this open handle. Close it first, then
+                # recheck the original file ID and the entire output path.
+                os.close(lock_fd)
+                if owns_lock():
                     lock.unlink()
-                else:
-                    os.unlink(".build.lock", dir_fd=output_fd)
+            else:
+                try:
+                    if owns_lock_inode():
+                        os.unlink(".build.lock", dir_fd=output_fd)
+                finally:
+                    os.close(lock_fd)
         finally:
-            os.close(lock_fd)
             if output_fd is not None:
                 os.close(output_fd)
 
