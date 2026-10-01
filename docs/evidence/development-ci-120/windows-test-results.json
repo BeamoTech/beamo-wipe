@@ -1,0 +1,82 @@
+{
+  "recorded_utc": "2026-10-01T05:02:06.805348+00:00",
+  "base_source": "baafb0605b91ff80a229aea09a78917f6c1640a1",
+  "branch": "codex/dev-ci-120-windows-verification",
+  "source_sha256": {
+    "dev.py": "ba81cb35a61974a886774d819f1ef0ee3eb55f24b12012134febdc58bf94175f",
+    "scripts/build_desktop.py": "f61119bcba6ba348d875f0d8d78f8054d9b39584c932c6fb126db31f69424171",
+    "developer_tests/test_dev.py": "d674a6db2b9fbff065de3babde435a61da27451880793e875c4b7cc4df3d9643",
+    "developer_tests/test_doctor.py": "7d9e55287995669358f869cb2abd9afcc3a136a952d645758135e4b5a47c66ff",
+    "developer_tests/test_desktop_portability.py": "79d1cfd5110d345f0c16cc61a55e3fe83c68e6fa134010ba55093fae382a936c",
+    "docs/development.md": "cd93f22ded983f0163adc3e46d63009060939c1336820f79f4b78a4f465deb38",
+    "docs/evidence/development-ci-120/README.md": "11f838e7aaffbafcf58244829190799bdd60f6214bc2acd2945c69a584bd3d60",
+    "docs/evidence/development-ci-120/windows-20261001.md": "3d581fa964f884caeada4dc1624d6f46e672969db8f9e8983f48abd643e00db5"
+  },
+  "tests": [
+    {
+      "path": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\native-tests.log",
+      "sha256": "8792c4328059e3c7e96feaa2f4321d4fe18337d27a5c7f10706c0aba1276d0d6",
+      "failed": 3,
+      "passed": 49,
+      "skipped": 1
+    },
+    {
+      "path": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\native-tests-final.log",
+      "sha256": "c51941d57ebebd4364338a0a57dbb156b550a885e7f7090d67aebda145a53e54",
+      "passed": 59,
+      "skipped": 1,
+      "failed": 0
+    },
+    {
+      "path": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\builder-regressions.log",
+      "sha256": "24bba1c34430e28400eeb8017e26605977e9da72d07d5b7b9e338cbc4c1ed843",
+      "passed": 7,
+      "failed": 0
+    },
+    {
+      "path": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\native-tests-reviewed.log",
+      "sha256": "c34b92e9628ee1b028ac5e815ae9fa2b80f58a9e00bf0e2a3bde58dba38e1cf7",
+      "passed": 64,
+      "skipped": 3,
+      "failed": 0
+    },
+    {
+      "path": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\builder-regressions-reviewed.log",
+      "sha256": "683327a945c860d217ef7ea9dc3fcc3c670e35b90d612e9672c908fafd0bbfa1",
+      "passed": 7,
+      "failed": 0
+    }
+  ],
+  "local_checks": "windows-local-checks.json",
+  "hosted_follow_up": {
+    "authorization": "Operator authorized Cloud Build within free tier, otherwise Blacksmith, after local preparation",
+    "provider": "Blacksmith; retained Cloud Build E2_HIGHCPU_8 is ineligible for free minutes",
+    "pr": "https://github.com/BeamoTech/beamo-wipe/pull/83",
+    "superseded_run": "https://github.com/BeamoTech/beamo-wipe/actions/runs/36816909188",
+    "superseded_result": "Cancelled after Windows and Linux source success; image/KVM incomplete",
+    "reviewed_source_qualification": "PENDING; observe the replacement PR gate for exact merge revision"
+  },
+  "verification_environment": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z",
+  "unvalidated": [
+    "Full POSIX/GTK/Orca suite and wizard previews: native Windows without installed WSL distribution",
+    "Real desktop build/test/vet: pinned Go not installed",
+    "Make dry run, ShellCheck and actionlint: tools not installed",
+    "Final source ISO/KVM qualification: pending updated Blacksmith PR gate; release publication remains separately authorized",
+    "External HTTP link availability: not exhaustively network-checked"
+  ],
+  "pre_review_source_snapshot": {
+    "recorded_utc": "2026-10-01T04:40:04.516552+00:00",
+    "local_commit": "e02de15db7f9a93fe047dc2ecd5258fda56fb117",
+    "source_sha256": {
+      "dev.py": "ba81cb35a61974a886774d819f1ef0ee3eb55f24b12012134febdc58bf94175f",
+      "scripts/build_desktop.py": "7bcac4b13c39720e46d76279977633725dac4b29e6152647109cf9f8dab3b681",
+      "developer_tests/test_dev.py": "d674a6db2b9fbff065de3babde435a61da27451880793e875c4b7cc4df3d9643",
+      "developer_tests/test_doctor.py": "7d9e55287995669358f869cb2abd9afcc3a136a952d645758135e4b5a47c66ff",
+      "developer_tests/test_desktop_portability.py": "6758cb962c3575f65618626948b8cb23d703ddec775f0c1020d7d2a0e063f534",
+      "docs/development.md": "cd93f22ded983f0163adc3e46d63009060939c1336820f79f4b78a4f465deb38",
+      "docs/evidence/development-ci-120/README.md": "11f838e7aaffbafcf58244829190799bdd60f6214bc2acd2945c69a584bd3d60",
+      "docs/evidence/development-ci-120/windows-20261001.md": "2cb8d380dfd19b43de5e34b5c5dafc861f29c54e482cae239e673a7378651c50"
+    }
+  },
+  "review_update_parent": "e02de15db7f9a93fe047dc2ecd5258fda56fb117"
+}

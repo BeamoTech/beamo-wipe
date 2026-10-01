@@ -130,27 +130,25 @@ were the same measurement.
 
 ## Required checks and rollout
 
-Require `CI gate` on `main`, with up-to-date branches, one approving review
-from a non-author with write access, no force pushes and no deletion.
-Administrator enforcement remains enabled. The one-approval policy adds no
-CODEOWNERS, stale-review dismissal, last-push approval, or bypass rule; no
-emergency bypass is documented. Changes to workflow and protection files
-use the same PR review and CI gate. The existing check was bound to the GitHub
-Actions app identity observed on a successful hosted run. Before enabling
-review enforcement, establish an eligible non-author reviewer so the merge
-path remains usable. Verify exact enforcement through the API afterward; see
-the [dated review audit](evidence/pr-review-enforcement-20260928.md) for the
-current gap and before settings.
+Require `CI gate` on `main`, with up-to-date branches, no force pushes and no
+deletion. Administrator enforcement remains enabled, and the required check
+stays bound to the GitHub Actions app. Changes to workflow and protection files
+use the same PR and CI gate.
 
-For actual agent-authored work, the proposed manual
-`.github/workflows/agent-pr.yml` route would replay an exact `codex/*` source
-commit under a dedicated GitHub App PR author, leaving `BeamoINT` to review
-the source evidence and final diff. It requires a repository-scoped App and a
-protected `agent-pr` environment; it is **not operational or evidence of review
-enforcement** until those are configured and a safe test succeeds. Relaying a
-human-authored change through that App does not supply an independent review.
-`BeamoINT`-authored work still needs another eligible reviewer. See the dated
-audit for setup, safeguards, and remaining limitations.
+On 2026-10-01 the sole maintainer removed the separate non-author approval
+requirement. A qualified PR may be merged with maintainer authorization,
+including an agent-authored PR opened through the maintainer's account. No
+approving-review count or alternate PR author is required. CI has no bypass.
+Review comments and automated findings still need assessment; their resolution
+does not replace the exact-commit `CI gate`. Publication remains separately
+authorized. The [policy verification](evidence/sole-maintainer-policy-20261001.md)
+records the owner decision and actual protection settings. It supersedes the
+review requirement in older dated audits.
+
+The optional `.github/workflows/agent-pr.yml` authoring route is retained; it
+is not a prerequisite for this sole-maintainer workflow. Its historical setup
+and unverified App/environment dependencies remain in the
+[dated review audit](evidence/pr-review-enforcement-20260928.md).
 
 At the initial CI migration audit, GitHub reported no classic protection or
 ruleset on `main`, and no custom Actions workflow. By 2026-09-28, classic

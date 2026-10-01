@@ -1,5 +1,9 @@
 # Pull-request review enforcement audit — 2026-09-28
 
+The owner superseded this audit's required-review policy on 2026-10-01 for the
+sole-maintainer repository. See [current CI and branch policy](../ci.md#required-checks-and-rollout).
+The dated observations and earlier decisions below are preserved as history.
+
 This is a dated, read-only audit of `BeamoTech/beamo-wipe` at `main`
 `e986419379f512f8088f5982ee02a51dc91a9dae`. It does not assert that a
 review requirement has been enabled. The policy is [CI and branch policy](../ci.md)

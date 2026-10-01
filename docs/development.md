@@ -18,8 +18,9 @@ VM work and release publication have separate boundaries below.
 | Other machines | Use a remote Linux development host over SSH | Unqualified locally | Remote x86_64 Linux |
 
 The matrix describes intended development workflows, not certification of every
-OS version or CPU. See the dated verification receipt for environments actually
-tested. Native Windows Python cannot run the POSIX wizard: file locking, secure
+OS version or CPU. See the [initial workflow verification](evidence/development-ci-120/README.md)
+and [Windows follow-up](evidence/development-ci-120/windows-20261001.md) for environments
+actually tested. Native Windows Python cannot run the POSIX wizard: file locking, secure
 file descriptors, terminal input and Linux device paths are intentional runtime
 requirements. `dev.py` routes Python commands through WSL2 rather than weakening
 those controls. Native Windows `test --native` tests developer tools only.
@@ -146,7 +147,7 @@ print subprocess diagnostics or credentials.
 | `python3 dev.py doctor --for preview` | Python plus optional Tk module discovery; no window/display claim; console fallback remains available |
 | `python3 dev.py doctor --for preview-web` | Python, without a Tk prerequisite |
 | `python3 dev.py doctor --for desktop` | Git/Python and the exact Go pin from `desktop/go.mod`, with toolchain downloads disabled |
-| `python3 dev.py doctor --for qualification` | Local Git/Python preflight and Blacksmith route; `gh` presence is optional, credentials are not checked |
+| `python3 dev.py doctor --for qualification` | Git and optional `gh` discovery plus the Blacksmith route; the selected Python environment and credentials are not probed |
 
 Native Windows doctor cannot verify Linux dependencies for `test`, `preview`
 or `preview-web`: run that operation inside the WSL2 Ubuntu checkout. It returns
@@ -184,8 +185,10 @@ are needed for local development or ordinary qualification.
    Pushing a branch without a PR does not trigger `ci.yml`; opening/updating
    its PR does. A push to `main` runs the full gate again. Do not push or open
    a PR during a local-only task.
-3. Require the exact PR's `CI gate` and the documented non-author review before
-   merging. PR CI checks GitHub's merge revision; record its base/head parents.
+3. Require the exact PR's `CI gate` and maintainer authorization before merging.
+   A separate non-author approval is not required under the
+   [sole-maintainer policy](ci.md#required-checks-and-rollout).
+   PR CI checks GitHub's merge revision; record its base/head parents.
    Main qualification is the separate successful `push` run for the exact main
    commit, not a reused PR result. Manual dispatch is available for authorized
    verification branches; see [CI execution](ci.md#execution).
