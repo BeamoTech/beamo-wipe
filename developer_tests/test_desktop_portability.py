@@ -3,6 +3,7 @@
 import importlib.util
 import os
 from pathlib import Path
+import subprocess
 from types import SimpleNamespace
 
 import pytest
@@ -60,8 +61,9 @@ def test_source_ctime_compares_platform_apis(
 
 
 @pytest.mark.parametrize("replacement", ["none", "lock", "output"])
+@pytest.mark.parametrize("build_failed", [False, True])
 def test_native_cleanup_closes_handle_and_preserves_replacement(
-    builder, tmp_path, monkeypatch, replacement
+    builder, tmp_path, monkeypatch, replacement, build_failed
 ):
     desktop = tmp_path / "desktop"
     desktop.mkdir()
@@ -76,6 +78,8 @@ def test_native_cleanup_closes_handle_and_preserves_replacement(
         return "a" * 40 if argv[1:] == ["rev-parse", "HEAD"] else ""
 
     def fake_build(argv, **kwargs):
+        if build_failed:
+            raise subprocess.CalledProcessError(3, argv)
         Path(argv[argv.index("-o") + 1]).write_bytes(kwargs["env"]["GOOS"].encode())
 
     class CleanupOSProxy(WindowsOSProxy):
@@ -102,15 +106,82 @@ def test_native_cleanup_closes_handle_and_preserves_replacement(
     monkeypatch.setattr(builder, "ROOT", tmp_path)
     monkeypatch.setattr(builder.subprocess, "check_output", fake_output)
     monkeypatch.setattr(builder.subprocess, "check_call", fake_build)
-    builder.build(output)
+    if build_failed:
+        with pytest.raises(subprocess.CalledProcessError):
+            builder.build(output)
+        assert not (output / "desktop-build.json").exists()
+    else:
+        builder.build(output)
     assert proxy.released
     if replacement == "none":
         assert not lock.exists()
         # The output is immediately reusable after a successful build.
-        builder.build(output)
-        assert not lock.exists()
+        if not build_failed:
+            builder.build(output)
+            assert not lock.exists()
     elif replacement == "lock":
         assert lock.read_text() == "foreign lock"
     else:
         assert lock.exists()
         assert (tmp_path / "original-output/.build.lock").exists()
+
+
+@pytest.mark.parametrize("host", ["nt", "posix"])
+@pytest.mark.parametrize("persistent_failure", [False, True])
+def test_failed_initial_lock_stat_closes_owned_handles(
+    builder, tmp_path, monkeypatch, host, persistent_failure
+):
+    if host == "posix" and os.name != "posix":
+        pytest.skip("POSIX directory descriptors require a POSIX host")
+    output = tmp_path / "output"
+    lock = output / ".build.lock"
+
+    class FaultOSProxy(WindowsOSProxy):
+        name = host
+        lock_fd = None
+        lock_reads = 0
+
+        def __init__(self):
+            self.opened = set()
+            self.closed = set()
+
+        def open(self, path, *args, **kwargs):
+            fd = os.open(path, *args, **kwargs)
+            self.opened.add(fd)
+            if Path(path).name == ".build.lock":
+                self.lock_fd = fd
+            return fd
+
+        def fstat(self, fd):
+            if fd == self.lock_fd:
+                self.lock_reads += 1
+                if self.lock_reads == 1 or persistent_failure:
+                    raise OSError("controlled lock stat failure")
+            return os.fstat(fd)
+
+        def close(self, fd):
+            os.close(fd)
+            self.closed.add(fd)
+
+    def fake_output(argv, **kwargs):
+        if argv[1:] == ["version"]:
+            return "go version go1.26.8 linux/amd64\n"
+        return "a" * 40 if argv[1:] == ["rev-parse", "HEAD"] else ""
+
+    proxy = FaultOSProxy()
+    monkeypatch.setattr(builder, "os", proxy)
+    monkeypatch.setattr(builder.subprocess, "check_output", fake_output)
+    monkeypatch.setattr(
+        builder.subprocess,
+        "check_call",
+        lambda *a, **kw: pytest.fail("compiler must not run after inspection failure"),
+    )
+    with pytest.raises(OSError, match="controlled lock stat failure"):
+        builder.build(output)
+    assert proxy.opened <= proxy.closed
+    for fd in proxy.opened:
+        with pytest.raises(OSError):
+            os.fstat(fd)
+    assert not (output / "desktop-build.json").exists()
+    # Persistent unknown identity must never authorize deleting a named file.
+    assert lock.exists() is persistent_failure

@@ -464,9 +464,11 @@ def build(output=None):
             os.close(output_fd)
         raise
 
-    owned_lock = os.fstat(lock_fd)
+    owned_lock = None
 
     def owns_lock_inode() -> bool:
+        if owned_lock is None:
+            return False
         try:
             if output_fd is None:
                 current = lock.lstat()
@@ -514,6 +516,7 @@ def build(output=None):
             os.close(current_output_fd)
 
     try:
+        owned_lock = os.fstat(lock_fd)
         manifest = output / "desktop-build.json"
         # A failed rebuild must not leave an earlier success receipt beside partial outputs.
         if not owns_lock():
@@ -656,6 +659,13 @@ def build(output=None):
         )
     finally:
         try:
+            if owned_lock is None:
+                # Retry a failed inspection while the original handle is held.
+                # If identity remains unknown, close handles and retain the lock.
+                try:
+                    owned_lock = os.fstat(lock_fd)
+                except OSError:
+                    pass
             if output_fd is None:
                 # Windows cannot unlink this open handle. Close it first, then
                 # recheck the original file ID and the entire output path.

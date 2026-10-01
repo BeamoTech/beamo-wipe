@@ -81,7 +81,7 @@ docs/evidence/desktop-boot-corrected-20260906.txt	historical-evidence-or-release
 docs/evidence/desktop-linux-handoff-20260906.txt	historical-evidence-or-release-record	196	d828cc690252010150632f9c3d6a08c2969bb4f6d442c3ba18a0950fcf198774
 docs/evidence/development-ci-120/README.md	historical-evidence-or-release-record	8,24,29,32,33,35,37,46,55,57,58,59,65,83,84,85,89,92,109,115,117,137,147,148	11f838e7aaffbafcf58244829190799bdd60f6214bc2acd2945c69a584bd3d60
 docs/evidence/development-ci-120/doctor-results.json	historical-evidence-or-release-record	47	cdbcd5ecf3ed62edf6465faf7215c0f430dfc881088a13fd656e4a384b494897
-docs/evidence/development-ci-120/windows-20261001.md	historical-evidence-or-release-record	24,30,35,37,41,44,48,49,54,55,58,60,81,98,102	2cb8d380dfd19b43de5e34b5c5dafc861f29c54e482cae239e673a7378651c50
+docs/evidence/development-ci-120/windows-20261001.md	historical-evidence-or-release-record	25,31,36,38,42,45,49,50,55,56,59,61,86,103,107,123,124,129,132,138	3d581fa964f884caeada4dc1624d6f46e672969db8f9e8983f48abd643e00db5
 docs/evidence/erase-another-103/README.md	historical-evidence-or-release-record	119,121,135,139,140	3388a48dba071ca698ea1b6753bc6485312d3354900d500011ec7a21993354bf
 docs/evidence/explain-refresh-resets-prep/README.md	historical-evidence-or-release-record	3	41b565a8e58d6fa183dad000e951b1d8d57cbb7dc2d6cffcec8c00b5cf66d299
 docs/evidence/gcp-desktop-20260907.json	historical-evidence-or-release-record	180	87075632c21c5d72c7d2ba7ff0329ec305eae79b1a70efc396fc150d267ca979
@@ -223,7 +223,7 @@ packaging/release-keys/KEYS.md	current-guidance-or-scoped-validation-note	3,20,2
 scripts/agent_pr.py	current-implementation-or-config	172,191,193,268,269,276	6d3494a17344dea7d75e1bd871803ac31faea1a34882b65f1b8cf4a145773395
 scripts/build-iso.sh	current-implementation-or-config	220,361,368,382	e5fc440e065fbb33ea1d6a580584aa0537390ba92e60e3cd331e9622cfb48a00
 scripts/build-usb-image.sh	current-implementation-or-config	29,33,34,35,37,38,40,41,42,48,49,50,243,244,247,248,249,250,251,252,253,258	0d1be5f4154bf1fa84c75c6e9dd385696a0ff44eda42fd66479f69f0beca984f
-scripts/build_desktop.py	current-implementation-or-config	340,438,440,520,576,581,583,586,590,595,597,599,604	7bcac4b13c39720e46d76279977633725dac4b29e6152647109cf9f8dab3b681
+scripts/build_desktop.py	current-implementation-or-config	340,438,440,523,579,584,586,589,593,598,600,602,607	f61119bcba6ba348d875f0d8d78f8054d9b39584c932c6fb126db31f69424171
 scripts/check-ci-kvm.sh	current-implementation-or-config	17,35,36	8c3a85d7aeb57d4df711abd62911d1e2dba254b6bf85ef60be754123c200a265
 scripts/check-release-ready.sh	current-implementation-or-config	22	7428be921dec6e5c786fa82ce21c298e5126d0d55ba0930f0c4e1a2e9f85ae14
 scripts/ci-blacksmith.sh	current-implementation-or-config	2,9,37	39a7e452724e007b2fd7c42ee21fe7eb6cc6f671a5b74c2e352ffdc827f282d0
