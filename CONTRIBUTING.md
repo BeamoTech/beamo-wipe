@@ -17,8 +17,8 @@ python3 -m pytest
 ./scripts/test-all.sh
 ```
 
-Open PRs into `main` and obtain one approving review from a non-author with
-write access. The required hosted check is `CI gate` in
+Open PRs into `main`; the sole maintainer may authorize merge without a
+separate non-author approval. The required hosted check is `CI gate` in
 `.github/workflows/ci.yml`, which runs on Blacksmith through
 GitHub Actions for PRs to `main`. The branch must be up to date and the check
 must pass before merge. See [CI and branch policy](docs/ci.md). Release

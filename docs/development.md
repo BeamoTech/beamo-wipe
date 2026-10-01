@@ -185,8 +185,10 @@ are needed for local development or ordinary qualification.
    Pushing a branch without a PR does not trigger `ci.yml`; opening/updating
    its PR does. A push to `main` runs the full gate again. Do not push or open
    a PR during a local-only task.
-3. Require the exact PR's `CI gate` and the documented non-author review before
-   merging. PR CI checks GitHub's merge revision; record its base/head parents.
+3. Require the exact PR's `CI gate` and maintainer authorization before merging.
+   A separate non-author approval is not required under the
+   [sole-maintainer policy](ci.md#required-checks-and-rollout).
+   PR CI checks GitHub's merge revision; record its base/head parents.
    Main qualification is the separate successful `push` run for the exact main
    commit, not a reused PR result. Manual dispatch is available for authorized
    verification branches; see [CI execution](ci.md#execution).

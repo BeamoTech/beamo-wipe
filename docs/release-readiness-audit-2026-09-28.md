@@ -1,5 +1,9 @@
 # Release readiness audit — 2026-09-28 UTC
 
+Finding R5's required-review recommendation was superseded by the owner's
+2026-10-01 [sole-maintainer policy](ci.md#required-checks-and-rollout).
+The audit's original observations and other findings remain historical evidence.
+
 Audited source: `e8dc56a38dc987cfbf40048fd27070c6c8ddd2b4` on `main`, initially clean. This report consolidates the initial audit and the requested second review. This was a review, not a fix or publication request. No runtime source, disk-selection rule, engine flag, remote setting, release, or physical disk was changed. The initial audit date in America/Chicago was 2026-09-27.
 
 At final checkout verification, a concurrent `AGENTS.md` cost-policy edit was present. This audit did not make or alter it. Its general provider preferences retain project mandates; the project's current Blacksmith workflow and specific CI instructions remain the basis for R7.
