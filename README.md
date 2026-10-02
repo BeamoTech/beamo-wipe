@@ -185,6 +185,13 @@ real Windows disk.
 
 ## Flash a USB for testing
 
+Before selecting media, follow [USB download verification](docs/release-verification.md#usb-image-download-verification)
+for the published `.img.gz` and reconstructed `.img`, or the separate
+[ISO verification](docs/release-verification.md#iso-verification) for an ISO.
+An ISO hash does not authenticate the USB image. Writing replaces the selected
+device's contents; use a spare USB and follow
+[safe preparation and post-flash readback](docs/evidence/physical-acceptance-111/README.md#52-flash-and-first-look-does-not-erase-a-pc-disk).
+
 ```bash
 # Linux (double-check the device name)
 sudo dd if=dist/beamo-wipe-0.2.12-amd64.iso of=/dev/sdX bs=4M status=progress conv=fsync

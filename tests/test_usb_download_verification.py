@@ -167,7 +167,8 @@ def test_symlink_input_is_not_followed(release, verifier, tmp_path):
     assert not (directory / (STEM + ".img")).exists()
 
 
-def test_copyable_document_block_with_fixture_downloads(release, tmp_path):
+@pytest.mark.parametrize("download_fault", [None, "inventory-tamper", "compressed-tamper", "download-error"])
+def test_copyable_document_block_with_fixture_downloads(release, tmp_path, download_fault):
     directory, registry, raw, *_rest, args = release
     trusted = tmp_path / "trusted checkout"
     (trusted / "scripts").mkdir(parents=True)
@@ -181,7 +182,14 @@ def test_copyable_document_block_with_fixture_downloads(release, tmp_path):
     curl.write_text(f"#!{sys.executable}\n" +
                    "import os,pathlib,sys\n"
                    "name=sys.argv[-1].rsplit('/',1)[-1]\n"
-                   "sys.stdout.buffer.write((pathlib.Path(os.environ['FIXTURE_RELEASE'])/name).read_bytes())\n")
+                   "data=(pathlib.Path(os.environ['FIXTURE_RELEASE'])/name).read_bytes()\n"
+                   "fault=os.environ['FIXTURE_DOWNLOAD_FAULT']\n"
+                   "if fault=='inventory-tamper' and name=='release-downloads.json': data+=b' '\n"
+                   "if fault=='compressed-tamper' and name.endswith('.img.gz'): data=b'X'+data[1:]\n"
+                   "if fault=='download-error' and name.endswith('.img.gz'):\n"
+                   " sys.stdout.buffer.write(data[:len(data)//2]); sys.stdout.buffer.flush()\n"
+                   " sys.stderr.write('fixture transfer failed\\n'); sys.exit(22)\n"
+                   "sys.stdout.buffer.write(data)\n")
     curl.chmod(0o755)
     doc = (ROOT / "docs/release-verification.md").read_text()
     block = doc.split("<!-- USB-VERIFY-WALKTHROUGH-BEGIN -->", 1)[1].split("<!-- USB-VERIFY-WALKTHROUGH-END -->", 1)[0]
@@ -191,12 +199,27 @@ def test_copyable_document_block_with_fixture_downloads(release, tmp_path):
     result = subprocess.run(  # noqa: S603
         ["/bin/sh", "-c", block], cwd=tmp_path,
         env=dict(os.environ, TMPDIR=str(tmp_path), FIXTURE_RELEASE=str(directory),
+                 FIXTURE_DOWNLOAD_FAULT=download_fault or "",
                  PATH=str(tools) + os.pathsep + os.environ["PATH"]),
         capture_output=True, text=True, timeout=30,
     )
-    assert result.returncode == 0, result.stdout + result.stderr
     work = Path(next(line.split(": ", 1)[1] for line in result.stdout.splitlines()
                      if line.startswith("Private verification directory:")))
-    assert (work / (STEM + ".img")).read_bytes() == raw
-    assert result.stdout.count("VERIFIED raw USB image") == 2
+    if download_fault is None:
+        assert result.returncode == 0, result.stdout + result.stderr
+        assert (work / (STEM + ".img")).read_bytes() == raw
+        assert result.stdout.count("VERIFIED raw USB image") == 2
+    else:
+        assert result.returncode != 0
+        assert not (work / (STEM + ".img")).exists()
+        assert "VERIFIED raw USB image" not in result.stdout
+        if download_fault == "download-error":
+            assert result.returncode == 22
+            assert "fixture transfer failed" in result.stderr
+            assert (work / (STEM + ".img.gz.part")).is_file()
+            assert not (work / (STEM + ".img.gz")).exists()
+        else:
+            assert "STOP: USB verification failed" in result.stderr
+        if download_fault == "inventory-tamper":
+            assert not (work / (STEM + ".img.gz")).exists()
     assert "/dev/" not in block and "sudo" not in block

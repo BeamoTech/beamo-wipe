@@ -57,7 +57,7 @@ Collect in order shown. Redaction is mandatory before leaving the support queue.
 | `nwipe.log` or `nwipe-tail.log` + `.sha256` | Same private bundle; only the exact authenticated log suffix recorded in terminal evidence is exported, and a suffix shorter than the current file is explicitly marked as a tail | Contains the engine markers used by `evaluate_nwipe_completion`: `is reported as IN USE`, `Nwipe was aborted`, `Unable to open device`, `No sane device geometry`, `>>> FAILURE! <<<`, `| Erased |`, `SIGUSR1` progress | Never copy to target disk; see `FORBIDDEN_LOG_ROOTS`. Missing, changed, or unsafe logs are recorded as unavailable rather than silently trusted. |
 | `REPORT.html` + `.sha256` | Same private bundle; open offline in any browser | Same identifiers as `RESULT.txt` — do not share; share only `SHARE.json`/`SHARE.txt` | Readable copy of `RESULT.txt` with the same canonical fields; checksum-covered by `COMPLETE`. |
 | `lsblk` JSON snapshot | Live: run `lsblk -J -b -o NAME,PATH,SIZE,TYPE,TRAN,ROTA,MODEL,SERIAL,WWN,RM,HOTPLUG,MOUNTPOINTS,LABEL,FSTYPE,VENDOR,PKNAME,UUID` into a file on the second USB | Contains serials — treat as PII, keep in ticket private field | For L1 to file a fake fixture that reproduces without hardware (see §8) |
-| Manifest + ISO hash | Customer reads `dist/*.manifest.json` + `dist/beamo-wipe-*.iso.sha256` or `gs://…` object, or wrapper `NWIPE_VERSION` on USB | No customer PII | Proves build input pin |
+| Authenticated release inventory + matching artifact bytes | Follow [USB download verification](release-verification.md#usb-image-download-verification) for `.img.gz`/`.img`, or [ISO verification](release-verification.md#iso-verification) for `.iso` | No customer PII | Binds the checked bytes to the approved publisher key and signed source/build identity; a version string or unauthenticated checksum alone does not |
 | Environment | Wrapper version (`src/beamo_wipe/__init__.py 0.2.12`), live `NWIPE_VERSION` on USB, firmware mode (BIOS vs UEFI, Secure Boot on/off), machine vendor/model, bus of target (`TRAN`), kind (`ROTA`→HDD vs SSD per `classify_kind`) | Strip customer name | Needed for §3 wear/raid decision |
 
 **Privacy rule:** Support queue shows `device.serial` only to on-call and only when the customer consented. Public issues use `size_gb_label` + `kind` + sanitized `evidence.outcome`/`failure_reason` with serial replaced by `***`.
@@ -73,7 +73,7 @@ Each tree ends in exactly one of: **resolve with guidance**, **collect evidence 
 ```
 Symptom: stick never appears (Dell F12, HP F9/Esc, Lenovo F12 not listed)
   ├─ Ask: does live USB show on *another* x64 PC already configured to accept this image?
-  │   ├─ No on any PC → suspect stick or flash. Check `scripts/build-iso.sh` ISO hash (`CD001` at 32769, ≥80 MiB, sha256)
+  │   ├─ No on any PC → suspect stick or flash. Verify the actual downloaded format and post-flash readback (release verification).
   │   │       Reflash on Linux: `sudo dd if=dist/beamo-wipe-0.2.12-amd64.iso ...` (verify `/dev/sdX` *is* USB via `lsblk`), or BalenaEtcher. Retry.
   │   └─ Yes on at least one PC → firmware setting issue.
   ├─ Secure Boot enabled? → This USB uses Debian's signed boot files; firmware may still refuse them (docs/claims.md). Do NOT ship a bypass.
