@@ -30,7 +30,7 @@ install_test_deps() {
   if [ "${BEAMO_GATE_CHILD:-0}" = "1" ]; then return; fi
   apt-get update -qq
   apt-get install -y -qq --no-install-recommends \
-    xvfb \
+    xvfb x11-utils \
     xauth libxtst6 \
     python3-tk dosfstools mtools xorriso \
     python3-gi gir1.2-gtk-3.0 librsvg2-common python3-pyatspi at-spi2-core dbus-x11 orca speech-dispatcher speech-dispatcher-espeak-ng pulseaudio \

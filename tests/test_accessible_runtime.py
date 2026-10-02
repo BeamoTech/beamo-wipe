@@ -20,6 +20,10 @@ from beamo_wipe.models import DiskKind, MethodId, Screen  # noqa: E402
 from beamo_wipe.methods import METHODS  # noqa: E402
 from beamo_wipe.outcomes import VIEWS  # noqa: E402
 from test_result_presentations import CASES, case_evidence  # noqa: E402
+from xvfb_process import (  # noqa: E402
+    start_private_xvfb as _start_private_xvfb,
+    stop_private_xvfb as _stop_private_xvfb,
+)
 
 
 def drain():
@@ -51,64 +55,6 @@ def wait_refresh(app):
         drain()
     assert app.w.screen == Screen.OWNER
     app.tick()
-
-
-def _start_private_xvfb():
-    """Private X server so AT-SPI is not the parent's polluted bus.
-
-    Hosted pytest already runs under xvfb-run. Nested xvfb-run fails that
-    gate. Direct Xvfb on a free display keeps 72 DPI without sharing the
-    X11 AT_SPI_BUS root-window address of earlier GTK tests. The child also
-    gets a private XDG_RUNTIME_DIR so it does not join $XDG_RUNTIME_DIR/at-spi/bus.
-    """
-    import shutil
-
-    assert shutil.which("Xvfb"), "The supported Linux image requires Xvfb"
-    Path("/tmp/.X11-unix").mkdir(mode=0o1777, exist_ok=True)
-    for n in range(110, 141):
-        if os.path.exists(f"/tmp/.X{n}-lock") or os.path.exists(f"/tmp/.X11-unix/X{n}"):
-            continue
-        proc = subprocess.Popen(
-            [
-                "Xvfb",
-                f":{n}",
-                "-screen",
-                "0",
-                "1600x1000x24",
-                "-dpi",
-                "72",
-                "-nolisten",
-                "tcp",
-                "-ac",
-            ],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-        sock = f"/tmp/.X11-unix/X{n}"
-        deadline = time.monotonic() + 5
-        while time.monotonic() < deadline:
-            if proc.poll() is not None:
-                break
-            if os.path.exists(sock):
-                return proc, f":{n}"
-            time.sleep(0.05)
-        proc.kill()
-        try:
-            proc.wait(timeout=2)
-        except subprocess.TimeoutExpired:
-            pass
-    raise RuntimeError("could not start a private Xvfb for Orca")
-
-
-def _stop_private_xvfb(proc) -> None:
-    if proc.poll() is not None:
-        return
-    proc.terminate()
-    try:
-        proc.wait(timeout=5)
-    except subprocess.TimeoutExpired:
-        proc.kill()
-        proc.wait(timeout=5)
 
 
 def _orca_runtime_dir() -> tempfile.TemporaryDirectory:
@@ -642,7 +588,10 @@ def test_orca_parent_isolates_x11_instead_of_raising_timeout():
     assert "XDG_RUNTIME_DIR" in src
     assert wait % 300 in src
     assert wait % 480 not in src
-    assert '"Xvfb"' in src
+    helper = Path(__file__).with_name("xvfb_process.py").read_text(encoding="utf-8")
+    assert "from xvfb_process import" in src
+    assert '"Xvfb"' in helper
+    assert '"xdpyinfo"' in helper
     assert "xvfb-run" in src  # comment only: nested xvfb-run is forbidden
     assert 'os.environ.get("BEAMO_HOSTED_ORCA_SEPARATE") == "1"' in src
     conftest = Path(__file__).with_name("conftest.py").read_text(encoding="utf-8")
