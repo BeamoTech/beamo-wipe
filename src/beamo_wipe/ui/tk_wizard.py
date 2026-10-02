@@ -4107,15 +4107,18 @@ class TkWizard:
         return True
 
     def _on_space_release(self, _event=None) -> str:
-        # Defer queued X11 repeat pairs; _claim_space_press also rejects a
-        # matching server timestamp when the pair spans idle callbacks.
+        # Queue cleanup without requiring global idle: report redraws can
+        # otherwise starve a delivered release. _claim_space_press cancels
+        # queued cleanup and rejects matching X11 repeat timestamps even
+        # when the timer has already run before the paired press.
         if self._space_release_after is not None:
             try:
                 self.root.after_cancel(self._space_release_after)
             except tk.TclError:
                 pass
         self._space_release_time = self._key_event_time(_event)
-        self._space_release_after = self.root.after_idle(self._release_space)
+        emit_serial_marker("BEAMO_WIPE_KEY_SPACE_RELEASE_RECEIVED")
+        self._space_release_after = self.root.after(0, self._release_space)
         return "break"
 
     def _release_space(self) -> None:
