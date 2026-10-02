@@ -22,6 +22,11 @@ execute and pass exactly once. Missing, skipped, failed or duplicated cases
 fail the gate. This applies to both CI and release qualification through
 `ci-blacksmith.sh sources`; local skips are not Linux qualification evidence.
 
+Local Orca tests start a private Xvfb at 72 DPI and use `xdpyinfo` from
+`x11-utils` to check that an X11 client can connect. This also works when WSL
+provides a read-only `/tmp/.X11-unix` and Xvfb serves an abstract socket.
+The test never replaces the desktop's X server or changes that mount.
+
 Start with [local development and operation-specific doctor checks](development.md).
 PRs targeting `main` and pushes to `main` run every gate. Pushing a branch with
 an open PR updates that PR and triggers CI; only branches without a PR avoid

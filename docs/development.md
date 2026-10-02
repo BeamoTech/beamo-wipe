@@ -51,7 +51,7 @@ On Debian/Ubuntu, install Python and optional graphical test dependencies:
 
 ```bash
 sudo apt-get update
-sudo apt-get install python3 python3-venv python3-tk git xvfb xauth dbus-x11
+sudo apt-get install python3 python3-venv python3-tk git xvfb x11-utils xauth dbus-x11
 python3 dev.py setup
 python3 dev.py doctor
 ```
