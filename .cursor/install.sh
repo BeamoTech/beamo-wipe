@@ -77,7 +77,7 @@ REQUIRED_PKGS=(
   speech-dispatcher
   speech-dispatcher-espeak-ng
   pulseaudio
-  xvfb
+  xvfb x11-utils
   xauth
   fonts-dejavu-core
   iptables

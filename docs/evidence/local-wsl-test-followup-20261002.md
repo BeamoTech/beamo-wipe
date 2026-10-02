@@ -1,11 +1,16 @@
 # WSL local-suite follow-up — 2026-10-02
 
+This is the original preparation receipt for `2d82ec2`.
+The [PR review follow-up](local-wsl-test-followup-review-20261002.md) records
+the subsequent Cursor setup correction; file identities below apply to the
+original preparation revision.
+
 Base: `b73ea196f3223ba0a07e8c9182000f2c7da6eab5`.
 Branch: `codex/local-wsl-test-followup`. The commit containing this receipt
 identifies the final change (`git log -1 --format=%H --
 docs/evidence/local-wsl-test-followup-20261002.md`).
 [Machine-readable results](local-wsl-test-followup-20261002.json) bind the seven
-tested files to SHA-256 identities. Their bytes matched the final worktree;
+tested files to SHA-256 identities. Their bytes matched that preparation worktree;
 only this dated receipt and its JSON were added after test execution.
 
 ## Findings and corrections

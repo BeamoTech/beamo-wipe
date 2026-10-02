@@ -212,7 +212,10 @@ def test_repeated_start_and_stop_leave_every_owned_child_reaped(harness):
     assert all(proc.poll() == 0 and proc.waits == [5] for proc in harness.children)
 
 
-def test_readiness_tool_is_declared_for_local_and_hosted_linux():
+def test_readiness_tool_is_declared_for_all_linux_setup_paths():
     root = Path(__file__).resolve().parents[1]
     assert "xvfb x11-utils" in (root / "scripts/ci-hosted.sh").read_text(encoding="utf-8")
     assert "xvfb x11-utils" in (root / "docs/development.md").read_text(encoding="utf-8")
+    installer = (root / ".cursor/install.sh").read_text(encoding="utf-8")
+    required_packages = installer.split("REQUIRED_PKGS=(", 1)[1].split("\n)", 1)[0]
+    assert "x11-utils" in required_packages.split()
