@@ -1,39 +1,33 @@
 # Beamo Wipe — AI agent guide
 
-`AGENTS.md` is the sole project instruction file for all coding agents.
+`AGENTS.md` is the sole guide for all agents.
 
-Durable notes live in `.ai/memory/` — start at `.ai/memory/MEMORY.md`.
+Prior context: `.ai/memory/MEMORY.md`; read only relevant notes.
 
 ## CI, cost and documentation
 
-- Prefer [Google Cloud Build](https://cloud.google.com/build/pricing) for
-  eligible CI only when the billing account's verified free minutes cover the
-  entire forecast run with headroom. Use [AWS CodeBuild](https://aws.amazon.com/codebuild/pricing/)
-  likewise for qualifying small on demand builds. Check shared usage, machine
-  eligibility, and logging, storage and network costs. If neither free
-  allowance safely covers the run, use [Blacksmith](https://docs.blacksmith.sh/blacksmith-runners/overview)
-  for supported GitHub Actions or the project's required native provider.
-- Keep existing required checks until a replacement proves equivalent
-  statuses for the exact commit, native coverage, security and release gates. Follow
-  provider mandates in each project and avoid duplicate runs. For suitable
-  optional compute, assess [Cloud Run](https://cloud.google.com/run/pricing)
-  and [AWS Lambda](https://aws.amazon.com/lambda/pricing/) free usage with the
-  same forecast for the complete run; never move a live service merely to use a free tier.
-- Minimize total cost across CI, hosting, storage, network, APIs, AI and tooling.
-  Choose the least costly option that meets the task's quality, security,
-  reliability and performance requirements. Preserve mandated models and gates;
-  never trade away correctness, coverage, accessibility or data safety for price.
-- Use the fewest hosted CI runs that still cover changed paths, scheduled
-  checks and required gates. Iterate locally, route jobs by scope, reuse valid
-  caches, avoid duplicate runs and bound retries/concurrency. Cancel superseded
-  verification when safe; review releases and migrations before cancellation.
-  Preserve checks for the exact commit and native platforms. Measure usage,
-  expire disposable artifacts and retire only verified idle resources within
-  task authority.
-- Keep Markdown focused: one canonical home per topic, short sections and useful
-  links. Keep commands and safeguards near their use; move detailed history to
-  dated evidence. Update stale guidance against code, preserve release records,
-  and avoid duplicating this policy in every document.
+Read `~/dev/AGENTS.md` for shared checkout, cost, documentation and storage rules.
+
+- Iterate locally; run the applicable full local gate before release. Hosted
+  CI is only for necessary final public/customer production verification,
+  never routine work, draft PRs, previews or unshipped instruction/doc maintenance. Local
+  scripts named `ci` remain local; do not push merely to trigger CI.
+- Run the fewest required hosted jobs. Reuse only evidence for the exact final
+  SHA, artifacts and config; revalidate after changes. Fix every candidate/gate
+  failure and material warning, then rerun until all applicable checks pass.
+  Pending, canceled, blocked, timed out and unexpected skips are not passes;
+  path skips require workflow evidence. Never weaken tests/coverage or retry blindly.
+- Check automatic triggers and gate publication on successful verification.
+  Preserve required statuses, branch protection, scheduled security/ops checks,
+  native acceptance and approvals; record proof and verify after deployment.
+  No hosted CI means retain local/manual gates. Changes to automation or
+  publication need task authority. Avoid duplicate providers/runs.
+
+**Project gate:** Use local pytest, preview and focused safety tests while developing. Reserve
+Blacksmith's full `ci.yml` ISO/QEMU and native Windows gates for the final public
+ISO/launcher candidate; dispatch on a verification ref when needed before
+publication. Retain every safety phase and source receipt. `release.yml` is a
+separately authorized publisher; ordinary edits do not need an ISO CI build.
 
 ## Project
 
@@ -56,15 +50,15 @@ gh workflow run ci.yml --repo BeamoTech/beamo-wipe  # Blacksmith hosted gate
 ./scripts/build-iso.sh   # amd64 live image (Blacksmith, not this Mac)
 ```
 
-Local pytest is the fast checkout gate. **CI runs on Blacksmith through GitHub Actions**, per the operator's 2026-09-26 correction. `.github/workflows/ci.yml` runs the secret-free `CI gate`: parallel lint/types, Python tests, preview, desktop launchers, and negative checks; then the amd64 ISO and full QEMU validation, plus independent native Windows launcher tests. PRs to `main` and pushes to `main` run every phase; use manual dispatch for verification branches. See `docs/ci.md` for runner sizing, bootstrap status, and evidence. Never claim a configured workflow has passed before observing its hosted run.
+Local pytest is the fast gate. Actions/Blacksmith `.github/workflows/ci.yml` runs the `CI gate`: lint/types, Python, preview, launchers, negatives, amd64 ISO, full QEMU and native Windows checks. PR/main triggers run every phase; manually dispatch only necessary final verification branches. See `docs/ci.md`; observe hosted success before claiming it.
 
-**ISO build and QEMU wipe tests:** use Blacksmith's disposable x86_64 workers with KVM. Do not wait on this Apple silicon Mac's amd64 Docker/QEMU emulation. Never pass host disks to QEMU. `cloudbuild.yaml`, `ci-cloud.sh`, and the Cloud trigger installer are legacy tooling, not the current CI route. Do not invoke Google Cloud or request gcloud authentication for current CI. Ordinary `ci.yml` has no production credentials or publishing step. Separately authorized publication uses manual `release.yml` on a tagged, qualified `main` commit: a credential-free Blacksmith build transfers measured bytes to a protected publisher job, which uses the existing GCP key and bucket only for signing/storage. Its narrow GitHub OIDC publisher binding must be configured before use. See `.ai/memory/iso-builds-on-cloud.md`.
+ISO/QEMU: disposable Blacksmith x86_64/KVM workers, not Apple silicon amd64 emulation; never attach host disks. `cloudbuild.yaml`, `ci-cloud.sh` and Cloud triggers are legacy; do not invoke GCP CI or request gcloud login. `ci.yml` is secret-free and cannot publish. Authorized `release.yml` needs a tagged, qualified `main`, credential-free build, measured private transfer, protected publisher and narrow GitHub OIDC binding; existing GCP key/bucket are signing/storage only. See `.ai/memory/iso-builds-on-cloud.md`.
 
-## Cursor Cloud specific instructions
+## Cloud agent environment
 
-Cursor Cloud Agent VMs for this repo are **x86_64 Ubuntu**, not the Apple silicon Mac. Committed boot is `.cursor/environment.json` → `.cursor/install.sh` then `.cursor/start.sh` (dockerd + Xvfb `:99` at 72 DPI). `.cursor/check.sh` is the fast smoke.
+Cloud VMs: x86_64 Ubuntu. `.cursor/environment.json` runs `.cursor/install.sh`, then `.cursor/start.sh` (dockerd, Xvfb `:99`, 72 DPI). Fast smoke: `.cursor/check.sh`.
 
-Python gate on Cloud Agents: Tk layout tests scale with X DPI. The VNC desktop is `DISPLAY=:1` at 96 DPI and fails clipping tests. Use 72 DPI:
+Tk layout checks need 72 DPI. VNC `DISPLAY=:1` is 96 DPI and clips; keep that computer-use display unchanged. Run:
 
 ```bash
 dbus-run-session -- xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72" python3 -m pytest
@@ -74,7 +68,7 @@ dbus-run-session -- xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72" python3 -m p
 
 `packaging/live/config/{bootstrap,binary}` are gitignored live-build outputs. Two tests in `tests/test_live_image.py` fail until `lb config` has been run inside `./scripts/build-iso.sh`. That is expected on a fresh checkout.
 
-ISO on Cloud Agents: Docker Engine is nested, so `/etc/docker/daemon.json` must use `fuse-overlayfs` (plain overlay fails). `/dev/kvm` is present. `./scripts/build-iso.sh` and KVM QEMU are native here. Prefer `sudo docker` unless this user is already in the `docker` group. `gcloud` and `aws` are installed for throwaway VMs you will tear down; they are not logged in unless secrets exist.
+Nested Docker requires `fuse-overlayfs` in `/etc/docker/daemon.json`; `/dev/kvm` is present. `./scripts/build-iso.sh` and QEMU run natively. Use `sudo docker` unless already in the `docker` group. `gcloud`/`aws` are installed but need existing secrets for login; tear down disposable VMs.
 
 ## Safety boundaries
 
