@@ -9,11 +9,19 @@ Each release publishes a machine-readable manifest that links the ISO to its sou
 | `beamo-wipe-0.2.12-amd64.iso` | Bootable live image (hybrid BIOS+UEFI) | Operator-defined after authorization | local `dist/` until separately published |
 | `beamo-wipe-0.2.12-amd64.iso.sha256` | SHA256 sidecar (`<sha>  <name>`) | same | `dist/` alongside ISO |
 | `beamo-wipe-0.2.12-amd64.manifest.json` | Release provenance (this doc) | same | `dist/` |
+| `beamo-wipe-0.2.12-amd64.manifest.json.sig` | Detached signature over the exact manifest bytes | same | published beside manifest |
 | `beamo-wipe-0.2.12-amd64.manifest.json.sha256` | Manifest checksum | same | `dist/` |
 | `SHA256SUMS` | `sha256sum` of ISO + manifest | same | `dist/` |
 | `beamo-wipe-0.2.12-amd64.img` | Desktop-readable FAT32 USB image with BIOS/UEFI boot | same | `dist/` after the USB-image builder |
 | `beamo-wipe-0.2.12-amd64.img.sha256` | USB image checksum | same | alongside image |
 | `beamo-wipe-0.2.12-amd64.img.json` | USB image size, layout, checksum, and source ISO checksum | same | alongside image |
+| `beamo-wipe-0.2.12-amd64.img.gz` | Actual compressed USB download; reconstructs the raw `.img` | same | published release assets |
+| `beamo-wipe-0.2.12-amd64.img.gz.sha256` | Compressed-download corruption checksum; alone does not authenticate the publisher | same | alongside compressed download |
+| `release-downloads.json` + `release-downloads.json.sig` | Inventory of exact filenames, sizes and hashes, with a detached publisher signature; includes both compressed and raw USB identities | same | published release assets |
+
+These are versioned example names, not interchangeable checksum targets. The
+public USB asset is `.img.gz`; the `.img` record describes the reconstructed
+regular file, which need not also be offered as a download.
 
 The ISO artifacts are under `dist/` after `./scripts/build-iso.sh`. The hosted
 QEMU phase also runs `./scripts/build-usb-image.sh` on its isolated amd64 Linux
@@ -163,6 +171,14 @@ floor or substitute ISO hashes to make USB verification pass.
 Prerequisites: Linux or macOS, a POSIX shell, `curl`, Python 3.10+ with the
 repository's `cryptography` verification dependency, and an independently
 trusted reviewed checkout containing `scripts/verify-usb-download.py`.
+Use the current reviewed verification tools: the original v0.2.12 source tree
+predates this helper. The expected image source below remains the signed
+v0.2.12 source, not the verification-tool checkout's revision. The
+[development setup](https://github.com/BeamoTech/beamo-wipe/blob/be26f24ac08aefa708cf9dd5a0045eb915abd7c0/docs/development.md#first-setup) installs the
+verification dependency into `.venv-linux` or `.venv-darwin`. The block below
+uses that environment's Python explicitly, so activation and the caller's
+default `python3` are irrelevant. Run the setup first if that environment is
+missing; no cloud credentials are needed.
 These commands verify files on macOS; they make no claim that the live image
 boots an Apple Silicon Mac. Native Windows commands are not provided here.
 Keep enough free space for both listed sizes (about 2.6 GiB for v0.2.12), plus
@@ -196,6 +212,14 @@ case "$BEAMO_SOURCE" in /*) ;; *) echo 'STOP: checkout path must be absolute' >&
 test -f "$BEAMO_SOURCE/scripts/verify-usb-download.py" || {
   echo 'STOP: select the trusted checkout containing the USB verifier' >&2; exit 1;
 }
+case "$(uname -s)" in
+  Linux) BEAMO_PYTHON="$BEAMO_SOURCE/.venv-linux/bin/python" ;;
+  Darwin) BEAMO_PYTHON="$BEAMO_SOURCE/.venv-darwin/bin/python" ;;
+  *) echo 'STOP: this file-verification procedure supports Linux/macOS' >&2; exit 1 ;;
+esac
+test -x "$BEAMO_PYTHON" || {
+  echo 'STOP: run the trusted checkout development setup first' >&2; exit 1;
+}
 BEAMO_USB_WORK="$(mktemp -d "${TMPDIR:-/tmp}/beamo-usb-verify.XXXXXXXX")"
 BEAMO_USB_WORK="$(cd "$BEAMO_USB_WORK" && pwd -P)"
 BEAMO_STEM="beamo-wipe-${BEAMO_VERSION}-amd64"
@@ -204,9 +228,9 @@ cd "$BEAMO_USB_WORK"
 printf 'Private verification directory: %s\n' "$BEAMO_USB_WORK"
 
 fetch_usb_file() {
-  test ! -e "$BEAMO_USB_WORK/$1" && test ! -L "$BEAMO_USB_WORK/$1" || {
+  if test -e "$BEAMO_USB_WORK/$1" || test -L "$BEAMO_USB_WORK/$1"; then
     echo 'STOP: download destination already exists' >&2; exit 1;
-  }
+  fi
   curl --fail --location --proto '=https' --proto-redir '=https' \
     --connect-timeout 15 --max-time 900 --silent --show-error \
     "$BEAMO_RELEASE_URL/$1" > "$BEAMO_USB_WORK/$1.part"
@@ -214,7 +238,7 @@ fetch_usb_file() {
   rm "$BEAMO_USB_WORK/$1.part"
 }
 verify_usb_files() {
-  python3 "$BEAMO_SOURCE/scripts/verify-usb-download.py" "$1" \
+  "$BEAMO_PYTHON" "$BEAMO_SOURCE/scripts/verify-usb-download.py" "$1" \
     --directory "$BEAMO_USB_WORK" \
     --registry "$BEAMO_SOURCE/packaging/release-keys/keys.json" \
     --trusted-key-sha256 "$BEAMO_KEY_SHA256" \
@@ -260,7 +284,16 @@ rechecking an already complete image, not `extract`.
 exact bytes to the approved publisher key and ties them to one signed release
 source/build identity. It does not prove runtime safety, firmware compatibility,
 successful erasure, or that a selected physical disk is safe to overwrite.
+The source/build values are the publisher's authenticated provenance record,
+not independent proof of a reproducible build.
 The printed `.img` is a regular file; this procedure performs no media write.
+For a separately authorized lab write, follow
+[safe USB preparation](https://github.com/BeamoTech/beamo-wipe/blob/be26f24ac08aefa708cf9dd5a0045eb915abd7c0/docs/evidence/physical-acceptance-111/README.md#52-flash-and-first-look-does-not-erase-a-pc-disk).
+Writing replaces the selected device's contents: re-identify the whole spare
+USB by model, capacity and serial rather than reusing a device number. The
+[post-flash readback](https://github.com/BeamoTech/beamo-wipe/blob/be26f24ac08aefa708cf9dd5a0045eb915abd7c0/docs/evidence/physical-acceptance-111/README.md#post-flash-readback)
+is a separate check of the physical stick; this file-verification result and
+a successful writer dialog do not supply that evidence.
 
 ### ISO verification
 
@@ -269,6 +302,8 @@ The following checks concern the separate `.iso`, not the USB `.img.gz` or
 Run these commands from a trusted source checkout with release files together
 under `dist/`. The examples use 0.2.12; choose the intended release and an
 appropriate acceptance floor, rather than lowering it to make a check pass.
+This ISO command block uses Linux's `sha256sum`; the USB procedure above
+uses Python for hashing on both documented file-verification platforms.
 
 ```sh
 # After independently authenticating the current registry:
