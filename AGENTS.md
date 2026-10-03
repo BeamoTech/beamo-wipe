@@ -1,8 +1,33 @@
 # Beamo Wipe — AI agent guide
 
-> This file is mirrored to `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `GROK.md`, and `.github/copilot-instructions.md`. Edit one copy, then run `~/dev/sync-ai-memory.sh --repo .` to re-sync the rest.
+`AGENTS.md` is the sole guide for all agents.
 
-Durable notes live in `.ai/memory/` — start at `.ai/memory/MEMORY.md`.
+Prior context: `.ai/memory/MEMORY.md`; read only relevant notes.
+
+## CI, cost and documentation
+
+Read `~/dev/AGENTS.md` for shared checkout, cost, documentation and storage rules.
+
+- Iterate locally; run the applicable full local gate before release. Hosted
+  CI is only for necessary final public/customer production verification,
+  never routine work, draft PRs, previews or unshipped instruction/doc maintenance. Local
+  scripts named `ci` remain local; do not push merely to trigger CI.
+- Run the fewest required hosted jobs. Reuse only evidence for the exact final
+  SHA, artifacts and config; revalidate after changes. Fix every candidate/gate
+  failure and material warning, then rerun until all applicable checks pass.
+  Pending, canceled, blocked, timed out and unexpected skips are not passes;
+  path skips require workflow evidence. Never weaken tests/coverage or retry blindly.
+- Check automatic triggers and gate publication on successful verification.
+  Preserve required statuses, branch protection, scheduled security/ops checks,
+  native acceptance and approvals; record proof and verify after deployment.
+  No hosted CI means retain local/manual gates. Changes to automation or
+  publication need task authority. Avoid duplicate providers/runs.
+
+**Project gate:** This older checkout retains its own Cloud Build gate. Use local pytest and
+preview during development; reserve its ISO/native/QEMU qualification for a
+final public release candidate. Inspect this checkout's triggers and receipts
+rather than assuming parity with Beamo Wipe. A local Mac pass or a Cloud build
+without the required QEMU evidence cannot qualify a public ISO.
 
 ## Project
 
@@ -25,15 +50,15 @@ python3 -m pytest
 ./scripts/build-iso.sh   # amd64 live image (prefer Cloud Build, not this Mac)
 ```
 
-Local pytest is the fast checkout gate. CI is Google Cloud Build in project `beamo-wipe` — GitHub Actions is not used (no workflows under `.github/workflows/`). The hosted gate is `cloudbuild.yaml` → `scripts/ci-hosted.sh` phases `lint`/`tests`/`preview`/`negative`/`iso`/`qemu` (secret-free; see `docs/ci.md`). Intended triggers: PRs targeting `main` (`beamo-wipe-pr-gate`, QEMU skipped) and pushes to `main` (`beamo-wipe-main-gate`, full gate). Agents must `./scripts/ci-cloud.sh` (or `gcloud builds submit --project=beamo-wipe`) after local pytest for ISO/x86 work — do not treat Hostinger or this Apple silicon Mac as the ISO gate.
+Local pytest is the fast gate. This checkout has Cloud Build in `beamo-wipe`, no Actions. `cloudbuild.yaml` → `scripts/ci-hosted.sh` runs `lint`/`tests`/`preview`/`negative`/`iso`/`qemu`, secret-free (`docs/ci.md`). Intended PR trigger `beamo-wipe-pr-gate` skips QEMU; `main` trigger `beamo-wipe-main-gate` runs all phases. Until migration is verified, necessary final ISO/x86 qualification uses `./scripts/ci-cloud.sh` or `gcloud builds submit --project=beamo-wipe`. Preserve native/ISO/QEMU coverage; Hostinger and this Mac are not the ISO gate.
 
-**ISO build and QEMU wipe tests:** on the Apple silicon Mac, Docker `linux/amd64` and `qemu-system-x86_64` are TCG. Do not wait on local emulation. Cloud Build always builds the ISO on amd64. Interactive QEMU wipe (`docs/vm-test.md`) still uses a disposable x86_64 KVM VM via `gcloud`/`aws`, then tear the VM down. See `.ai/memory/iso-builds-on-cloud.md`.
+Cloud Build produces amd64 ISOs. On Apple silicon, Docker `linux/amd64`/`qemu-system-x86_64` use TCG; avoid waiting on emulation. Interactive `docs/vm-test.md` QEMU needs a disposable x86_64/KVM VM via `gcloud`/`aws`; tear it down. See `.ai/memory/iso-builds-on-cloud.md`.
 
-## Cursor Cloud specific instructions
+## Cloud agent environment
 
-Cursor Cloud Agent VMs for this repo are **x86_64 Ubuntu**, not the Apple silicon Mac. Committed boot is `.cursor/environment.json` → `.cursor/install.sh` then `.cursor/start.sh` (dockerd + Xvfb `:99` at 72 DPI). `.cursor/check.sh` is the fast smoke.
+Cloud VMs: x86_64 Ubuntu. `.cursor/environment.json` runs `.cursor/install.sh`, then `.cursor/start.sh` (dockerd, Xvfb `:99`, 72 DPI). Fast smoke: `.cursor/check.sh`.
 
-Python gate on Cloud Agents: Tk layout tests scale with X DPI. The VNC desktop is `DISPLAY=:1` at 96 DPI and fails clipping tests. Use 72 DPI:
+Tk layout checks need 72 DPI. VNC `DISPLAY=:1` is 96 DPI and clips; keep that computer-use display unchanged. Run:
 
 ```bash
 dbus-run-session -- xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72" python3 -m pytest
@@ -43,7 +68,7 @@ dbus-run-session -- xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72" python3 -m p
 
 `packaging/live/config/{bootstrap,binary}` are gitignored live-build outputs. Two tests in `tests/test_live_image.py` fail until `lb config` has been run inside `./scripts/build-iso.sh`. That is expected on a fresh checkout.
 
-ISO on Cloud Agents: Docker Engine is nested, so `/etc/docker/daemon.json` must use `fuse-overlayfs` (plain overlay fails). `/dev/kvm` is present. `./scripts/build-iso.sh` and KVM QEMU are native here. Prefer `sudo docker` unless this user is already in the `docker` group. `gcloud` and `aws` are installed for throwaway VMs you will tear down; they are not logged in unless secrets exist.
+Nested Docker requires `fuse-overlayfs` in `/etc/docker/daemon.json`; `/dev/kvm` is present. `./scripts/build-iso.sh` and QEMU run natively. Use `sudo docker` unless already in the `docker` group. `gcloud`/`aws` are installed but need existing secrets for login; tear down disposable VMs.
 
 ## Safety boundaries
 

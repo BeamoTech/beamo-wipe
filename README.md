@@ -15,7 +15,7 @@ Nothing is erased. Fake disks only. This is the way to look at the screens
 without building an ISO or booting a USB.
 
 ```bash
-cd "/path/to/Beamo Wiper"   # this repo
+cd "/path/to/Beamo Wipe"   # this repo
 ./preview                   # real Tk window (same screens as the live USB)
 ./preview --web             # browser click-through of the same copy
 ./preview --helper          # boot-menu helper page (does not wipe)
@@ -156,8 +156,9 @@ Tests use fake `lsblk` JSON. They never run nwipe on a real disk.
 
 Hosted CI — lint, x86_64 pytest, preview, negative test, the amd64 ISO
 build, and controlled QEMU verification — runs on Google Cloud Build
-(`./scripts/ci-cloud.sh`, project `beamo-wipe`). GitHub Actions is not
-used. Details: [docs/ci.md](docs/ci.md).
+(`./scripts/ci-cloud.sh`, project `beamo-wipe`) in this checkout. Blacksmith is
+the standard; retain this gate until equivalent native/ISO/QEMU coverage passes.
+Details: [docs/ci.md](docs/ci.md).
 
 ## How it works
 

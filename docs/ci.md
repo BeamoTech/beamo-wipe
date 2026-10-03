@@ -1,7 +1,10 @@
 # Continuous integration gates
 
-Google Cloud Build (project `beamo-wipe`) is the project's CI. GitHub
-Actions is not used — there are no workflows under `.github/workflows/`.
+Blacksmith is the CI standard. This checkout retains the Google Cloud Build
+configuration in project `beamo-wipe` and has no Actions workflow. Keep this gate
+until equivalent Blacksmith native, ISO and QEMU coverage is verified. Consult
+the [agent policy](../AGENTS.md#ci-cost-and-documentation) and current source before
+submitting work; do not infer this checkout's state from another clone.
 
 Neither gate ever wipes a host disk.
 
@@ -51,7 +54,7 @@ Branch protection on `main` should require these Cloud Build statuses.
 
 ## Billing
 
-Cloud Build bills the `beamo-wipe` project (free tier covers 120 build-minutes/day; `E2_HIGHCPU_8` burns faster — watch the billing dashboard). The full gate is roughly half an hour of worker time, mostly ISO + QEMU. Prefer the PR gate's QEMU skip for iteration; `main` always runs everything.
+Cloud Build bills the `beamo-wipe` project. Check current provider pricing and measured usage; no fixed free-tier allowance is assumed. The full gate is roughly half an hour of worker time, mostly ISO + QEMU. Prefer the PR gate's QEMU skip for iteration; `main` always runs everything.
 
 ## Failure triage
 
