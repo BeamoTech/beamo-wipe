@@ -96,7 +96,7 @@ dbus-run-session -- xvfb-run -a -s '-screen 0 1600x1000x24 -dpi 72' \
 python3 scripts/verify-usb-download.py --help
 ```
 
-The final focused tests: **67 passed**, including 25 USB fixture cases and
+The initial follow-up's focused tests: **67 passed**, including 25 USB fixture cases and
 three cross-platform documentation checks. Negative cases reject inventory
 tampering, missing/invalid signatures, wrong/revoked keys, compressed/raw
 corruption, missing records/sizes, inconsistent source/build, traversal,
@@ -121,6 +121,30 @@ ShellCheck reported SC2015 on the original equivalent guard shorthand. The
 assertion/runner were corrected and the guard clarified, followed by the
 recorded successful checks. No signature/hash check was bypassed.
 
+### PR review follow-up
+
+[PR #86](https://github.com/BeamoTech/beamo-wipe/pull/86) identified that the
+linked setup installs dependencies in a platform-specific venv. The copyable
+block now selects `.venv-linux/bin/python` or `.venv-darwin/bin/python`
+explicitly, and stops before creating a download directory if setup is missing.
+The fixture poisons default `python3` and exercises both environment selections,
+including missing setup and the existing download failures. Darwin selection
+is simulated on Linux; this does not claim fresh macOS execution.
+
+Post-review focused validation: **73 passed**, including 31 USB cases; Ruff,
+`sh -n`, ShellCheck with the documented `sh` dialect, and the three standalone
+Windows documentation assertions passed. The revised exact shell block also
+verified the complete cached public Q12 compressed/raw files in a fresh private
+directory while default Python was blocked. Only the absolute source path was
+substituted. It used the selected setup interpreter and stopped before media
+writing. The first review validator invocation omitted ShellCheck's dialect
+argument for the extracted block; the diagnostic and corrected run are retained.
+
+The link test now labels `urljoin` as a portability assertion and also checks
+commit-pinned links' paths and headings against the checkout. Actual HTTP status
+and pinned historical headings remain separate observations in the dated
+receipt, rather than claims made by the deterministic test.
+
 ## Handoff and publication boundary
 
 The [machine-readable receipt](usb-download-verification-125-linux-2026-10-02.json)
@@ -137,6 +161,10 @@ flash occurred. This proves publisher-bound file identities and declared
 provenance, not reproducibility, runtime safety, physical-media readback, boot
 compatibility or erasure.
 
-The local follow-up is ready for review; the local checks are complete.
-New PR/hosted CI/merge await authorization; no new hosted run was invoked.
+The operator authorized PR, required Blacksmith CI and merge. PR #86 is open;
+its final required CI and merge/main-push results are pending at this receipt
+update and must be observed before reporting completion. Review validation and
+remote snapshots are preserved separately under
+`%LOCALAPPDATA%\BeamoWipe\usb-download-125\20261002-hosted`; the original
+local receipt and sealed audit remain unchanged.
 No release republishing or historical description edit is needed for #125.

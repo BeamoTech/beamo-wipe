@@ -46,13 +46,16 @@ def test_download_block_authenticates_before_download_and_extract():
     assert positions == sorted(positions)
     assert '--directory "$BEAMO_USB_WORK"' in block
     assert '--registry "$BEAMO_SOURCE/packaging/release-keys/keys.json"' in block
+    assert '"$BEAMO_PYTHON" "$BEAMO_SOURCE/scripts/verify-usb-download.py"' in block
+    assert 'BEAMO_PYTHON="$BEAMO_SOURCE/.venv-linux/bin/python"' in block
+    assert 'BEAMO_PYTHON="$BEAMO_SOURCE/.venv-darwin/bin/python"' in block
     assert '--proto-redir \'=https\'' in block
     assert not re.search(r"/dev/|\bsudo\b|\bdd\b|\bgunzip\b|\.iso\b", block)
     for filename in re.findall(r"^fetch_usb_file (.+)$", block, re.MULTILINE):
         assert "*" not in filename
 
 
-def test_usb_entry_and_handoff_links_resolve_in_checkout():
+def test_usb_links_are_portable_and_targets_exist_in_checkout():
     assert all(urlparse(target).scheme == "https" for target in re.findall(r"\]\(([^)]+)\)", usb_section()))
     fragments = [(DOC, usb_section()),
                  (ROOT / "README.md", (ROOT / "README.md").read_text(encoding="utf-8").split("## Flash a USB for testing", 1)[1].split("## Unit tests", 1)[0]),
@@ -61,14 +64,21 @@ def test_usb_entry_and_handoff_links_resolve_in_checkout():
         for target in re.findall(r"\]\(([^)]+)\)", text):
             if urlparse(target).scheme:
                 assert target.startswith("https://github.com/BeamoTech/beamo-wipe/")
-                # Public release and trust-record links resolve the same way
-                # if this prose is rendered outside the checkout.
+                # URL shape/portability only; the dated validation receipt
+                # separately checks HTTP status and the pinned page's anchors.
                 for base in ("https://github.com/BeamoTech/beamo-wipe/blob/main/docs/",
                              "https://github.com/BeamoTech/beamo-wipe/releases/tag/v0.2.12"):
                     assert urljoin(base, target) == target
-                continue
-            path, _, anchor = target.partition("#")
-            destination = source.parent / path
+                parsed = urlparse(target)
+                prefix = "/BeamoTech/beamo-wipe/blob/"
+                if not parsed.path.startswith(prefix):
+                    continue
+                revision, path = parsed.path[len(prefix):].split("/", 1)
+                assert re.fullmatch(r"[0-9a-f]{40}", revision)
+                destination, anchor = ROOT / path, parsed.fragment
+            else:
+                path, _, anchor = target.partition("#")
+                destination = source.parent / path
             assert destination.is_file(), (source, target)
             if anchor:
                 headings = re.findall(r"^#{1,6} (.+)$", destination.read_text(encoding="utf-8"), re.MULTILINE)

@@ -175,7 +175,10 @@ Use the current reviewed verification tools: the original v0.2.12 source tree
 predates this helper. The expected image source below remains the signed
 v0.2.12 source, not the verification-tool checkout's revision. The
 [development setup](https://github.com/BeamoTech/beamo-wipe/blob/be26f24ac08aefa708cf9dd5a0045eb915abd7c0/docs/development.md#first-setup) installs the
-verification dependency; no cloud credentials are needed.
+verification dependency into `.venv-linux` or `.venv-darwin`. The block below
+uses that environment's Python explicitly, so activation and the caller's
+default `python3` are irrelevant. Run the setup first if that environment is
+missing; no cloud credentials are needed.
 These commands verify files on macOS; they make no claim that the live image
 boots an Apple Silicon Mac. Native Windows commands are not provided here.
 Keep enough free space for both listed sizes (about 2.6 GiB for v0.2.12), plus
@@ -209,6 +212,14 @@ case "$BEAMO_SOURCE" in /*) ;; *) echo 'STOP: checkout path must be absolute' >&
 test -f "$BEAMO_SOURCE/scripts/verify-usb-download.py" || {
   echo 'STOP: select the trusted checkout containing the USB verifier' >&2; exit 1;
 }
+case "$(uname -s)" in
+  Linux) BEAMO_PYTHON="$BEAMO_SOURCE/.venv-linux/bin/python" ;;
+  Darwin) BEAMO_PYTHON="$BEAMO_SOURCE/.venv-darwin/bin/python" ;;
+  *) echo 'STOP: this file-verification procedure supports Linux/macOS' >&2; exit 1 ;;
+esac
+test -x "$BEAMO_PYTHON" || {
+  echo 'STOP: run the trusted checkout development setup first' >&2; exit 1;
+}
 BEAMO_USB_WORK="$(mktemp -d "${TMPDIR:-/tmp}/beamo-usb-verify.XXXXXXXX")"
 BEAMO_USB_WORK="$(cd "$BEAMO_USB_WORK" && pwd -P)"
 BEAMO_STEM="beamo-wipe-${BEAMO_VERSION}-amd64"
@@ -227,7 +238,7 @@ fetch_usb_file() {
   rm "$BEAMO_USB_WORK/$1.part"
 }
 verify_usb_files() {
-  python3 "$BEAMO_SOURCE/scripts/verify-usb-download.py" "$1" \
+  "$BEAMO_PYTHON" "$BEAMO_SOURCE/scripts/verify-usb-download.py" "$1" \
     --directory "$BEAMO_USB_WORK" \
     --registry "$BEAMO_SOURCE/packaging/release-keys/keys.json" \
     --trusted-key-sha256 "$BEAMO_KEY_SHA256" \

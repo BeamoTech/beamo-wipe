@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import shlex
 import subprocess
 import sys
 
@@ -167,8 +168,9 @@ def test_symlink_input_is_not_followed(release, verifier, tmp_path):
     assert not (directory / (STEM + ".img")).exists()
 
 
-@pytest.mark.parametrize("download_fault", [None, "inventory-tamper", "compressed-tamper", "download-error"])
-def test_copyable_document_block_with_fixture_downloads(release, tmp_path, download_fault):
+@pytest.mark.parametrize("shell_platform", ["Linux", "Darwin"])
+@pytest.mark.parametrize("download_fault", [None, "inventory-tamper", "compressed-tamper", "download-error", "missing-verifier-python"])
+def test_copyable_document_block_with_fixture_downloads(release, tmp_path, download_fault, shell_platform):
     directory, registry, raw, *_rest, args = release
     trusted = tmp_path / "trusted checkout"
     (trusted / "scripts").mkdir(parents=True)
@@ -176,8 +178,20 @@ def test_copyable_document_block_with_fixture_downloads(release, tmp_path, downl
     shutil.copy2(ROOT / "scripts/verify-usb-download.py", trusted / "scripts")
     shutil.copy2(registry, trusted / "packaging/release-keys/keys.json")
     (trusted / "src").symlink_to(ROOT / "src", target_is_directory=True)
+    selected_python = trusted / (".venv-" + shell_platform.lower()) / "bin/python"
+    selected_python.parent.mkdir(parents=True)
+    if download_fault != "missing-verifier-python":
+        selected_python.write_text("#!/bin/sh\nexec " + shlex.quote(sys.executable) + ' "$@"\n')
+        selected_python.chmod(0o755)
     tools = tmp_path / "tools"
     tools.mkdir()
+    # Simulate the documented environment-name selection, not macOS execution.
+    uname = tools / "uname"
+    uname.write_text("#!/bin/sh\nprintf '%s\\n' " + shlex.quote(shell_platform) + "\n")
+    uname.chmod(0o755)
+    default_python = tools / "python3"
+    default_python.write_text("#!/bin/sh\necho 'unselected default Python was invoked' >&2\nexit 91\n")
+    default_python.chmod(0o755)
     curl = tools / "curl"
     curl.write_text(f"#!{sys.executable}\n" +
                    "import os,pathlib,sys\n"
@@ -203,6 +217,12 @@ def test_copyable_document_block_with_fixture_downloads(release, tmp_path, downl
                  PATH=str(tools) + os.pathsep + os.environ["PATH"]),
         capture_output=True, text=True, timeout=30,
     )
+    assert "unselected default Python was invoked" not in result.stderr
+    if download_fault == "missing-verifier-python":
+        assert result.returncode != 0
+        assert "STOP: run the trusted checkout development setup first" in result.stderr
+        assert "Private verification directory:" not in result.stdout
+        return
     work = Path(next(line.split(": ", 1)[1] for line in result.stdout.splitlines()
                      if line.startswith("Private verification directory:")))
     if download_fault is None:
