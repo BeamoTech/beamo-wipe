@@ -20,11 +20,28 @@ from beamo_wipe.models import DiskKind, MethodId, Screen  # noqa: E402
 from beamo_wipe.methods import METHODS  # noqa: E402
 from beamo_wipe.outcomes import VIEWS  # noqa: E402
 from test_result_presentations import CASES, case_evidence  # noqa: E402
+from xvfb_process import (  # noqa: E402
+    start_private_xvfb as _start_private_xvfb,
+    stop_private_xvfb as _stop_private_xvfb,
+)
 
 
 def drain():
     while Gtk.events_pending():
         Gtk.main_iteration_do(False)
+
+
+def wait_sound(app):
+    """Apply a sound job through the real GTK timer path."""
+    deadline = time.monotonic() + 2
+    while time.monotonic() < deadline:
+        app.tick()
+        drain()
+        controller = app._sound_dialog
+        if controller is None or controller.ticket is None:
+            return
+        time.sleep(0.005)
+    pytest.fail("sound job did not settle")
 
 
 def wait_refresh(app):
@@ -38,64 +55,6 @@ def wait_refresh(app):
         drain()
     assert app.w.screen == Screen.OWNER
     app.tick()
-
-
-def _start_private_xvfb():
-    """Private X server so AT-SPI is not the parent's polluted bus.
-
-    Hosted pytest already runs under xvfb-run. Nested xvfb-run fails that
-    gate. Direct Xvfb on a free display keeps 72 DPI without sharing the
-    X11 AT_SPI_BUS root-window address of earlier GTK tests. The child also
-    gets a private XDG_RUNTIME_DIR so it does not join $XDG_RUNTIME_DIR/at-spi/bus.
-    """
-    import shutil
-
-    assert shutil.which("Xvfb"), "The supported Linux image requires Xvfb"
-    Path("/tmp/.X11-unix").mkdir(mode=0o1777, exist_ok=True)
-    for n in range(110, 141):
-        if os.path.exists(f"/tmp/.X{n}-lock") or os.path.exists(f"/tmp/.X11-unix/X{n}"):
-            continue
-        proc = subprocess.Popen(
-            [
-                "Xvfb",
-                f":{n}",
-                "-screen",
-                "0",
-                "1600x1000x24",
-                "-dpi",
-                "72",
-                "-nolisten",
-                "tcp",
-                "-ac",
-            ],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-        sock = f"/tmp/.X11-unix/X{n}"
-        deadline = time.monotonic() + 5
-        while time.monotonic() < deadline:
-            if proc.poll() is not None:
-                break
-            if os.path.exists(sock):
-                return proc, f":{n}"
-            time.sleep(0.05)
-        proc.kill()
-        try:
-            proc.wait(timeout=2)
-        except subprocess.TimeoutExpired:
-            pass
-    raise RuntimeError("could not start a private Xvfb for Orca")
-
-
-def _stop_private_xvfb(proc) -> None:
-    if proc.poll() is not None:
-        return
-    proc.terminate()
-    try:
-        proc.wait(timeout=5)
-    except subprocess.TimeoutExpired:
-        proc.kill()
-        proc.wait(timeout=5)
 
 
 def _orca_runtime_dir() -> tempfile.TemporaryDirectory:
@@ -629,7 +588,10 @@ def test_orca_parent_isolates_x11_instead_of_raising_timeout():
     assert "XDG_RUNTIME_DIR" in src
     assert wait % 300 in src
     assert wait % 480 not in src
-    assert '"Xvfb"' in src
+    helper = Path(__file__).with_name("xvfb_process.py").read_text(encoding="utf-8")
+    assert "from xvfb_process import" in src
+    assert '"Xvfb"' in helper
+    assert '"xdpyinfo"' in helper
     assert "xvfb-run" in src  # comment only: nested xvfb-run is forbidden
     assert 'os.environ.get("BEAMO_HOSTED_ORCA_SEPARATE") == "1"' in src
     conftest = Path(__file__).with_name("conftest.py").read_text(encoding="utf-8")
@@ -1554,7 +1516,7 @@ def test_sound_check_dialog_plays_test_and_switches_output(ui, monkeypatch):
     _canned_sound(monkeypatch, calls)
     app = ui()
     app.actions[C.SOUND_CHECK_BUTTON].clicked()
-    drain()
+    wait_sound(app)
     dialogs = _sound_dialog()
     assert len(dialogs) == 1
     dialog = dialogs[0]
@@ -1564,17 +1526,18 @@ def test_sound_check_dialog_plays_test_and_switches_output(ui, monkeypatch):
     assert any("Speakers" in name for name in names)
     assert any("Headphones" in name for name in names)
     _dialog_button(dialog, C.SOUND_PLAY_TEST).clicked()
-    drain()
+    wait_sound(app)
     assert ("play",) in calls
     radios = [w for w in widgets(dialog) if isinstance(w, Gtk.RadioButton)]
     assert len(radios) == 2
     radios[1].set_active(True)
-    drain()
+    wait_sound(app)
     assert ("set", "phones-id") in calls
     assert app.w.sound_output == "phones-id"
     _dialog_button(dialog, C.SOUND_LOUDER).clicked()
+    wait_sound(app)
     _dialog_button(dialog, C.SOUND_MUTE).clicked()
-    drain()
+    wait_sound(app)
     assert ("vol", "phones-id", 10) in calls
     assert ("mute", "phones-id", True) in calls
     dialog.destroy()
@@ -1591,7 +1554,7 @@ def test_sound_check_dialog_reports_no_audio_and_orca_failure(ui, monkeypatch):
     _canned_sound(monkeypatch, calls, available=False, orca=False)
     app = ui()
     app.actions[C.SOUND_CHECK_BUTTON].clicked()
-    drain()
+    wait_sound(app)
     dialogs = _sound_dialog()
     assert len(dialogs) == 1
     dialog = dialogs[0]
@@ -1622,7 +1585,7 @@ def test_sound_check_dialog_toggles_and_hears_outcome_sounds(ui, monkeypatch):
     )
     app = ui()
     app.actions[C.SOUND_CHECK_BUTTON].clicked()
-    drain()
+    wait_sound(app)
     dialog = _sound_dialog()[0]
     _dialog_button(dialog, C.SOUND_TOGGLE_OFF).clicked()
     drain()
@@ -1630,11 +1593,45 @@ def test_sound_check_dialog_toggles_and_hears_outcome_sounds(ui, monkeypatch):
     assert app.w.sound_message == C.SOUND_TOGGLE_ON
     _dialog_button(dialog, C.SOUND_TOGGLE_ON)
     _dialog_button(dialog, C.SOUND_HEAR).clicked()
-    drain()
+    wait_sound(app)
     assert ("hear", "finished") in calls
     assert ("hear", "attention") in calls
     dialog.destroy()
     drain()
+    assert _sound_dialog() == []
+
+
+def test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog(ui, monkeypatch):
+    from threading import Event
+    from beamo_wipe import sound
+
+    entered = Event()
+    release = Event()
+    calls = []
+    state = _canned_sound(monkeypatch, calls)
+    def slow_outputs():
+        entered.set()
+        release.wait(timeout=2)
+        return state
+    monkeypatch.setattr(sound, "list_outputs", slow_outputs)
+    app = ui()
+    started = time.perf_counter()
+    app.actions[C.SOUND_CHECK_BUTTON].clicked()
+    assert time.perf_counter() - started < 0.06
+    try:
+        assert entered.wait(timeout=1)
+        started = time.perf_counter()
+        app.tick()
+        drain()
+        assert time.perf_counter() - started < 0.06
+        dialog = _sound_dialog()[0]
+        dialog.destroy()
+        drain()
+        assert app._sound_dialog.ticket is None
+    finally:
+        release.set()
+    time.sleep(0.02)
+    app.tick()
     assert _sound_dialog() == []
 
 
@@ -1646,7 +1643,7 @@ def test_accessible_done_auto_plays_once_without_changing_announcement(ui, monke
     calls = []
     monkeypatch.setattr(
         sound_module,
-        "play_outcome",
+        "play_test",
         lambda kind: calls.append(kind)
         or sound_module.SoundResult(True, ""),
     )
@@ -1658,7 +1655,12 @@ def test_accessible_done_auto_plays_once_without_changing_announcement(ui, monke
     off_text = text(app)
     wizard.set_sounds_enabled(True)
     app.render()
-    drain()
+    deadline = time.monotonic() + 2
+    while wizard._audio_request is not None and time.monotonic() < deadline:
+        wizard.tick()
+        drain()
+        time.sleep(0.005)
+    assert wizard._audio_request is None
     app.render()
     drain()
     assert calls == [sound_module.KIND_ATTENTION]

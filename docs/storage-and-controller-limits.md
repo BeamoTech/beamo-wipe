@@ -120,7 +120,7 @@ Back-office policy: a support ticket that asks to bypass ownership, EDID, or the
 | Bucket | What we handle | Reference |
 |---|---|---|
 | **Supported** | Legacy BIOS + UEFI (Secure Boot disabled) via `syslinux`+`grub-efi`, USB-A/C when firmware lists the stick, NVMe/SATA HDD/SSD/virtio/eMMC main device, same-size disambiguation via `confirm_spec`, 5 s delay, proof-of-attempt JSON. | `docs/compatibility-matrix.md` FW/ST rows |
-| **Degraded (works but not a certificate)** | Any SSD/NVMe/eMMC overwrite as above, damaged reallocated media, PICK_EMPTY only-eMMC, hub-boot, 800×600/HiDPI. Documented as overwrite, not sanitization. | This doc §3 |
+| **Degraded (works but not a certificate)** | Any SSD/NVMe/eMMC overwrite as above, damaged reallocated media, PICK_EMPTY only-eMMC, hub-boot, 800×600/HiDPI. Secure Boot acceptance is firmware-dependent on the inspected Debian chain and actual trust/revocations; unknown states cannot Pass. Documented as overwrite, not sanitization. | This doc §3; [Secure Boot cases](secure-boot-acceptance.md) |
 | **Unsupported / out of scope** | Apple Silicon, Chromebooks, RAID controllers (hardware), Apple T2 internal, `nbd/iscsi/fc/nvmeof`, BitLocker/OPAL/Sed locked without prior unlock, HPA/DCO hidden LBAs, hidden NVMe namespaces, Windows in-OS wipe from inside the running OS. Correctly listed-with-no-targets or fails closed. | `docs/compatibility-matrix.md` Unsupported, `docs/claims.md` forbidden list |
 
 ---
@@ -147,7 +147,7 @@ Pinned by: `tests/test_copy.py: FORBIDDEN`, `tests/test_ui_system.py: test_no_fo
 
 | Source | What it proves | Last checked | Owner |
 |---|---|---|---|
-| `nwipe` upstream 0.42 release + tag `v0.42` + commit `6082bde060091e66365d852a1877f2ee80c67105` (`git rev-parse HEAD` in hook) | Engine identity + method list | 2026-09-02 (pinned; re-checked by Cloud Build hook on every ISO) | Accountable senior engineer (this checkout), then Cloud Build `pkg live` log |
+| `nwipe` upstream 0.42 release + tag `v0.42` + commit `6082bde060091e66365d852a1877f2ee80c67105` (`git rev-parse HEAD` in hook) | Engine identity + method list | 2026-09-02 first inspection; currently re-checked by the shared build hook on each Blacksmith ISO | Accountable senior engineer (this checkout); exact build receipt per [current CI](ci.md) |
 | nwipe `--help` + `src/method.c` + `src/nwipe.c` (PRNG/dodshort/zero, `--verify`, `--noblank`, SIGUSR1) | The three wizard choices mean exactly `--method=prng|dodshort|zero --verify=last|off --rounds=1 --noblank` | 2026-09-02 via code inspection + `docs/ADVANCED.md` mapping (no physical destructive run) | Same |
 | `src/beamo_wipe/methods.py` + `src/beamo_wipe/nwipe_runner.py` `build_nwipe_argv()` + `validate_argv()` + `evaluate_nwipe_completion()` | Flags that ship + failure/verified logic | 2026-09-02 via `tests/test_nwipe_runner.py` (40 tests, fake logs) | Same |
 | Debian `live-build` hooks + `beamo.list.chroot` + `inside-docker.sh` (tag+SHA pin, ELF/PATH check, stub) | Build locks in wrapper + boots | 2026-09-02 via `scripts/build-iso.sh` dry inspection (no build on this Mac) | Same |

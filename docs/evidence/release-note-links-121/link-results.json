@@ -1,0 +1,89 @@
+{
+  "release_id": 397823407,
+  "tag": "v0.2.11",
+  "tag_object": "6462d04d7706fdc53e2ab114ce48350388786ecd",
+  "commit": "662cf470f9fcedf710d897591560267575745fea",
+  "rendered_links": {
+    "local-render.html": {
+      "storage and controller limits": "https://github.com/BeamoTech/beamo-wipe/blob/662cf470f9fcedf710d897591560267575745fea/docs/storage-and-controller-limits.md",
+      "release verification": "https://github.com/BeamoTech/beamo-wipe/blob/662cf470f9fcedf710d897591560267575745fea/docs/release-verification.md"
+    },
+    "github-render.html": {
+      "storage and controller limits": "https://github.com/BeamoTech/beamo-wipe/blob/662cf470f9fcedf710d897591560267575745fea/docs/storage-and-controller-limits.md",
+      "release verification": "https://github.com/BeamoTech/beamo-wipe/blob/662cf470f9fcedf710d897591560267575745fea/docs/release-verification.md"
+    }
+  },
+  "rendering_bases": [
+    "https://github.com/BeamoTech/beamo-wipe/blob/v0.2.11/docs/release-0.2.11.md",
+    "https://github.com/BeamoTech/beamo-wipe/releases/tag/v0.2.11"
+  ],
+  "checks": [
+    {
+      "url": "https://github.com/BeamoTech/beamo-wipe/blob/v0.2.11/storage-and-controller-limits.md",
+      "status": 404,
+      "final_url": "https://github.com/BeamoTech/beamo-wipe/blob/v0.2.11/storage-and-controller-limits.md",
+      "redirects": [],
+      "kind": "original-public-link",
+      "label": "storage and controller limits"
+    },
+    {
+      "url": "https://github.com/BeamoTech/beamo-wipe/blob/v0.2.11/release-verification.md",
+      "status": 404,
+      "final_url": "https://github.com/BeamoTech/beamo-wipe/blob/v0.2.11/release-verification.md",
+      "redirects": [],
+      "kind": "original-public-link",
+      "label": "release verification"
+    },
+    {
+      "url": "https://github.com/BeamoTech/beamo-wipe/blob/v0.2.11/docs/release-0.2.11.md",
+      "status": 200,
+      "final_url": "https://github.com/BeamoTech/beamo-wipe/blob/v0.2.11/docs/release-0.2.11.md",
+      "redirects": [],
+      "kind": "existing-repository-render",
+      "links": {
+        "storage and controller limits": "https://github.com/BeamoTech/beamo-wipe/blob/v0.2.11/docs/storage-and-controller-limits.md",
+        "release verification": "https://github.com/BeamoTech/beamo-wipe/blob/v0.2.11/docs/release-verification.md"
+      }
+    },
+    {
+      "url": "https://github.com/BeamoTech/beamo-wipe/blob/662cf470f9fcedf710d897591560267575745fea/docs/storage-and-controller-limits.md",
+      "status": 200,
+      "final_url": "https://github.com/BeamoTech/beamo-wipe/blob/662cf470f9fcedf710d897591560267575745fea/docs/storage-and-controller-limits.md",
+      "redirects": [],
+      "kind": "replacement",
+      "label": "storage and controller limits",
+      "page_title": "beamo-wipe/docs/storage-and-controller-limits.md at 662cf470f9fcedf710d897591560267575745fea \u00b7 BeamoTech/beamo-wipe \u00b7 GitHub",
+      "document_heading": "# Storage, controller, and certification limits \u2014 Beamo Wipe 0.2.10 (nwipe 0.42)",
+      "anchor": null
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BeamoTech/beamo-wipe/662cf470f9fcedf710d897591560267575745fea/docs/storage-and-controller-limits.md",
+      "status": 200,
+      "final_url": "https://raw.githubusercontent.com/BeamoTech/beamo-wipe/662cf470f9fcedf710d897591560267575745fea/docs/storage-and-controller-limits.md",
+      "redirects": [],
+      "kind": "target-bytes",
+      "sha256": "a764c51420fb4e5f7a159f7dc2ea703d6e09e6bff502516c97ea71e50165c804",
+      "matches_tagged_blob": true
+    },
+    {
+      "url": "https://github.com/BeamoTech/beamo-wipe/blob/662cf470f9fcedf710d897591560267575745fea/docs/release-verification.md",
+      "status": 200,
+      "final_url": "https://github.com/BeamoTech/beamo-wipe/blob/662cf470f9fcedf710d897591560267575745fea/docs/release-verification.md",
+      "redirects": [],
+      "kind": "replacement",
+      "label": "release verification",
+      "page_title": "beamo-wipe/docs/release-verification.md at 662cf470f9fcedf710d897591560267575745fea \u00b7 BeamoTech/beamo-wipe \u00b7 GitHub",
+      "document_heading": "# Release verification",
+      "anchor": null
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BeamoTech/beamo-wipe/662cf470f9fcedf710d897591560267575745fea/docs/release-verification.md",
+      "status": 200,
+      "final_url": "https://raw.githubusercontent.com/BeamoTech/beamo-wipe/662cf470f9fcedf710d897591560267575745fea/docs/release-verification.md",
+      "redirects": [],
+      "kind": "target-bytes",
+      "sha256": "d42911d3fc92671d19f41907214d2d8f4cd7bf05bab43865c524f9c5dc1c2dae",
+      "matches_tagged_blob": true
+    }
+  ]
+}

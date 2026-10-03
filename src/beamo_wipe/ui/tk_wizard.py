@@ -1182,6 +1182,7 @@ class TkWizard:
         self._match_pill: Optional[_Box] = None
         self._shown: Optional[Screen] = None
         self._shown_report_revision = -1
+        self._shown_sound_revision = -1
         self._after_id: Optional[str] = None
         # Pick-list scroll state: the list is rebuilt on every redraw, so the
         # scroll offset is saved before teardown and restored (or the selected
@@ -1206,6 +1207,7 @@ class TkWizard:
         self._space_release_after: Optional[str] = None
         self._space_release_time: Optional[int] = None
         self._space_action_active = False
+        self._report_space_release_pending = False
         self._f5_held = False
         self._f5_release_time: Optional[int] = None
         self._escape_held = False
@@ -1529,6 +1531,7 @@ class TkWizard:
         # In-flight scans finish into the void: polls stop here and any late
         # worker result finds no owner. Workers are daemons; join them only.
         self._ui_dead = True
+        getattr(self.w, "cancel_audio", lambda: None)()
         self._cancel_pick_restore()
         for attr in ("_return_release_after", "_space_release_after"):
             callback = getattr(self, attr)
@@ -1563,6 +1566,8 @@ class TkWizard:
             elif self.w.screen in {Screen.DONE, Screen.DIAGNOSTIC, Screen.WORKING} and (
                 self.w.report_view.revision != self._shown_report_revision
             ):
+                self._draw()
+            elif self.w.screen in {Screen.DONE, Screen.WORKING} and getattr(self.w, "sound_revision", 0) != getattr(self, "_shown_sound_revision", 0):
                 self._draw()
             elif self.w.screen == Screen.LAST_CHANCE:
                 self._refresh_last_chance()
@@ -1682,6 +1687,7 @@ class TkWizard:
         self._draw_header()
         self._draw_strip()
         self._shown = screen
+        self._shown_sound_revision = getattr(self.w, "sound_revision", 0)
         if working_revision is not None:
             self._shown_report_revision = working_revision
         if diagnostic_view is not None:
@@ -3824,7 +3830,7 @@ class TkWizard:
         row = self._footer_shell(C.HINT_WORKING)
         self._secondary_btn(row, C.STOP_ASK, self._click_cancel)
         self._secondary_btn(row, self.w.sound_toggle_text, self.w.toggle_sounds)
-        self._secondary_btn(row, C.SOUND_HEAR, self.w.hear_both_sounds)
+        self._secondary_btn(row, C.SOUND_HEAR, self.w.request_hear_both_sounds)
         self._refresh_working()
 
     def _refresh_working(self) -> None:
@@ -3883,7 +3889,7 @@ class TkWizard:
 
     def _done(self, report: ReportView) -> None:
         col = self._column(self._body, fill_height=True)
-        self.w.maybe_play_outcome_sound()
+        self.w.request_auto_outcome_sound()
         result = self.w.result_view
         # Erase status heading stays independent of report chrome.
         # Cancelled copy remains in result.message ("Stopped by you").
@@ -3949,7 +3955,7 @@ class TkWizard:
         if self.w.preview:
             self._secondary_btn(row, C.BTN_CLOSE_PREVIEW, self._click_shutdown)
             self._secondary_btn(row, self.w.sound_toggle_text, self.w.toggle_sounds)
-            self._secondary_btn(row, C.SOUND_HEAR_AGAIN, self.w.hear_outcome_sound)
+            self._secondary_btn(row, C.SOUND_HEAR_AGAIN, self.w.request_hear_outcome_sound)
             self._primary_btn(row, C.BTN_RUN_AGAIN, self.w.reset_for_preview)
         else:
             if report.evidence_error:
@@ -3962,7 +3968,7 @@ class TkWizard:
                 enabled=report.can_save,
             )
             self._secondary_btn(row, self.w.sound_toggle_text, self.w.toggle_sounds)
-            self._secondary_btn(row, C.SOUND_HEAR_AGAIN, self.w.hear_outcome_sound)
+            self._secondary_btn(row, C.SOUND_HEAR_AGAIN, self.w.request_hear_outcome_sound)
             another = _Button(
                 self._footer_left_parent(
                     row, self.font_s_bold.measure(C.BTN_ERASE_ANOTHER) + 2 * 12 + 6
@@ -3979,7 +3985,7 @@ class TkWizard:
                 self._click_shutdown,
                 enabled=not report.exporting and not report.saving_evidence,
             )
-        if self._primary is not None:
+        if self._primary is not None and not self._report_space_release_pending:
             self._primary.focus_set()
 
     def _advanced(self) -> None:
@@ -4101,22 +4107,34 @@ class TkWizard:
         return True
 
     def _on_space_release(self, _event=None) -> str:
-        # Defer queued X11 repeat pairs; _claim_space_press also rejects a
-        # matching server timestamp when the pair spans idle callbacks.
+        # Queue cleanup without requiring global idle: report redraws can
+        # otherwise starve a delivered release. _claim_space_press cancels
+        # queued cleanup and rejects matching X11 repeat timestamps even
+        # when the timer has already run before the paired press.
         if self._space_release_after is not None:
             try:
                 self.root.after_cancel(self._space_release_after)
             except tk.TclError:
                 pass
         self._space_release_time = self._key_event_time(_event)
-        self._space_release_after = self.root.after_idle(self._release_space)
+        emit_serial_marker("BEAMO_WIPE_KEY_SPACE_RELEASE_RECEIVED")
+        self._space_release_after = self.root.after(0, self._release_space)
         return "break"
 
     def _release_space(self) -> None:
         self._space_release_after = None
         self._space_held = False
+        restore_done_focus = self._report_space_release_pending
+        self._report_space_release_pending = False
         self.w.arm_done_keyboard()
         emit_serial_marker("BEAMO_WIPE_KEY_SPACE_RELEASED")
+        if (
+            restore_done_focus
+            and self.w.screen == Screen.DONE
+            and self._primary is not None
+            and self._primary._enabled
+        ):
+            self._primary.focus_set()
 
     def _click_erase(self) -> None:
         self.w.begin_erase()
@@ -4130,8 +4148,18 @@ class TkWizard:
         self.w.begin_evidence_retry()
 
     def _click_save_report(self) -> None:
+        # Space can start export before QMP sends key-up. Focus the stable
+        # toplevel before the report-start marker: a redraw destroys the Save
+        # button, and X11 can otherwise discard a release targeted at it.
+        keyboard_space = self._space_action_active
+        previous_focus = self.root.focus_get() if keyboard_space else None
+        if keyboard_space:
+            self.root.focus_set()
         if self.w.begin_report_export():
+            self._report_space_release_pending = keyboard_space
             self._draw()
+        elif keyboard_space and previous_focus is not None:
+            previous_focus.focus_set()
 
     def _click_shutdown(self) -> None:
         """Button Space/click on Shut down. Ignore until the arriving key is up."""

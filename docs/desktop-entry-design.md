@@ -73,8 +73,10 @@ Unit tests must exercise ambiguous/malformed EFI paths, device changes,
 pending boot requests, read/write failure and rollback, browser request
 authorization, repeated actions, and preview separation. Compile both shipped
 executables. Exercise real Windows and Linux UI/runtime behavior in isolated
-environments. Run existing Python, hosted ISO, BIOS and UEFI gates; add a
-Secure Boot gate using enrolled firmware before advertising it. Test the
+environments. Run existing Python, hosted ISO, BIOS and UEFI gates, including
+the current Secure Boot acceptance probe with Microsoft-trusting OVMF and
+enforcement evidence. Apply [the inspected-chain physical cases](secure-boot-acceptance.md)
+before claiming a named hardware configuration. Test the
 launcher from the flashed-media layout, not only extracted files. Physical
 machines and novice usability remain distinct evidence requirements.
 

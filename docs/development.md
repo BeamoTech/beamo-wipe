@@ -2,22 +2,25 @@
 
 Use a normal development computer and fake devices. The same source checkout
 supports development from Windows, macOS and Linux; the Linux live USB remains
-the only supported erasure runtime. No development command below erases a disk,
-changes firmware, requests administrator access, or restarts the computer.
+the only supported erasure runtime. Doctor, preview and local test commands use
+fake devices and do not erase disks, change firmware or restart the computer.
+OS dependency installation may require administrator access. Hosted verification,
+VM work and release publication have separate boundaries below.
 
 ## Choose your environment
 
 | Host | Python wizard and full checkout tests | Desktop launcher | ISO and complete acceptance |
 | --- | --- | --- | --- |
-| Linux x86_64 | Native; Tk or browser preview; Xvfb for headless tests | Native tests; Windows/Linux cross-builds | Google Cloud Build; interactive QEMU in an isolated x86_64 Linux VM |
+| Linux x86_64 | Native; Tk or browser preview; Xvfb for headless tests | Native tests; Windows/Linux cross-builds | Blacksmith through GitHub Actions; optional interactive QEMU on an authorized disposable x86_64 KVM worker |
 | Linux ARM64 | Native Python development; platform-dependent tests may skip | Native Go tests; Windows/Linux amd64 cross-builds | Remote x86_64 Linux; local ARM emulation is not acceptance |
 | macOS Intel or Apple Silicon | Native Python; modern Tk or browser preview | Native Go logic/UI tests; Windows/Linux cross-builds | Remote x86_64 Linux |
 | Windows | WSL2 Ubuntu for the Python wizard and full suite; browser preview works without WSLg | Native Go tests and builds; native Python developer-tool tests | Remote x86_64 Linux |
 | Other machines | Use a remote Linux development host over SSH | Unqualified locally | Remote x86_64 Linux |
 
 The matrix describes intended development workflows, not certification of every
-OS version or CPU. See the dated verification receipt for environments actually
-tested. Native Windows Python cannot run the POSIX wizard: file locking, secure
+OS version or CPU. See the [initial workflow verification](evidence/development-ci-120/README.md)
+and [Windows follow-up](evidence/development-ci-120/windows-20261001.md) for environments
+actually tested. Native Windows Python cannot run the POSIX wizard: file locking, secure
 file descriptors, terminal input and Linux device paths are intentional runtime
 requirements. `dev.py` routes Python commands through WSL2 rather than weakening
 those controls. Native Windows `test --native` tests developer tools only.
@@ -32,23 +35,23 @@ with maintained security updates. Windows users can use `py -3` wherever these
 examples say `python3`. Go **1.26.8** is needed only for desktop work; build
 commands reject a different version and do not download a replacement silently.
 
-Clone either canonical remote into a development directory:
+Clone the canonical repository into a development directory:
 
 ```text
-git clone https://github.com/BeamoINT/beamo-wipe.git
+git clone https://github.com/BeamoTech/beamo-wipe.git
 cd beamo-wipe
 ```
 
-Cursor Origin is an equivalent authenticated source:
-`https://origin.cursor.com/beamo/beamo-wipe.git`. Pull the same `main` revision
-before comparing results on different machines; record `git rev-parse HEAD`.
+The old `BeamoINT/beamo-wipe` GitHub URL redirects here. Other remotes are not
+qualification evidence: verify the same source revision before comparing
+results on different machines; record `git rev-parse HEAD`.
 Do not copy virtual environments or executable caches between operating systems.
 
 On Debian/Ubuntu, install Python and optional graphical test dependencies:
 
 ```bash
 sudo apt-get update
-sudo apt-get install python3 python3-venv python3-tk git xvfb xauth dbus-x11
+sudo apt-get install python3 python3-venv python3-tk git xvfb x11-utils xauth dbus-x11
 python3 dev.py setup
 python3 dev.py doctor
 ```
@@ -116,8 +119,8 @@ python3 dev.py desktop-test            # native Go unit tests and vet
 python3 dev.py desktop-build           # Windows/Linux amd64 executables
 ```
 
-The legacy `./preview`, `./scripts/test-all.sh`, and
-`./scripts/build-desktop.sh` commands remain available. The shell desktop build
+The supported `./preview`, `./scripts/test-all.sh`, and
+`./scripts/build-desktop.sh` entry points remain available. The shell desktop build
 and `dev.py` use the same Python implementation, Go pin, flags, executable names,
 and manifest schema. `BEAMO_GO_BIN` may select an explicit Go executable.
 The generated `dist/desktop/desktop-build.json` identifies source and hashes;
@@ -128,10 +131,31 @@ the same output are refused. Normal errors and keyboard cancellation release
 that no build is still running before manually removing that stale lock and
 retrying. Never remove the lock to bypass an active build.
 
-`doctor` reports tools without installing them or enumerating disks. A Tk import
-is not a display test. Optional Go/gcloud absence does not prevent browser or
-Python work. A missing Git/Python prerequisite or a live erasure environment
-returns nonzero. Preview/test commands enforce fake mode and remove inherited
+`doctor` is a local, operation-specific preflight. It never authenticates,
+installs tools, checks remote permissions, enumerates disks, builds images or
+dispatches CI. Output is one JSON object with `operation`, `status`, `problems`,
+and `notes`; exit 0 means the selected local prerequisites passed, and exit 2
+means an actionable prerequisite is missing, failed, timed out or unverified.
+It runs at most two local probes, each bounded to five seconds, and does not
+print subprocess diagnostics or credentials.
+
+| Command | Scope |
+| --- | --- |
+| `python3 dev.py doctor` | Git, selected Python >=3.10, venv/pip; no Go, Tk or cloud prerequisite |
+| `python3 dev.py doctor --for test` | Git, selected Python and pytest; full Linux/display coverage still requires actual tests |
+| `python3 dev.py doctor --for test-native` | Portable developer-tool test prerequisites, including on native Windows |
+| `python3 dev.py doctor --for preview` | Python plus optional Tk module discovery; no window/display claim; console fallback remains available |
+| `python3 dev.py doctor --for preview-web` | Python, without a Tk prerequisite |
+| `python3 dev.py doctor --for desktop` | Git/Python and the exact Go pin from `desktop/go.mod`, with toolchain downloads disabled |
+| `python3 dev.py doctor --for qualification` | Git and optional `gh` discovery plus the Blacksmith route; the selected Python environment and credentials are not probed |
+
+Native Windows doctor cannot verify Linux dependencies for `test`, `preview`
+or `preview-web`: run that operation inside the WSL2 Ubuntu checkout. It returns
+2 with this instruction even if `wsl.exe` is installed. Use `test-native` for
+portable Windows tooling. A missing selected Python or a live erasure environment
+also returns 2. Tk module discovery is not proof of compatible Tk or a working
+display; the preview launcher makes the actual interpreter/display choice.
+Preview/test commands enforce fake mode and remove inherited
 boot-device and native-inventory test overrides. They refuse a live system
 instead of clearing its live identity.
 
@@ -147,27 +171,59 @@ That uses fake readiness and cannot reboot. Test UI behavior in the host browser
 Windows/Linux runtime and firmware tests remain separate. The offline helper is
 `helper/index.html`; it provides boot guidance and never erases disks.
 
-## Full build and handoff
+## Qualification, artifacts and release handoff
 
-From macOS/Linux/WSL with authenticated gcloud, run:
+The approved pipeline is [Blacksmith through GitHub Actions](ci.md), configured
+in [ci.yml](../.github/workflows/ci.yml). No Google Cloud CLI or cloud credentials
+are needed for local development or ordinary qualification.
 
-```bash
-./scripts/ci-cloud.sh
-```
+1. Make source changes on a local branch. Run `python3 dev.py test` (or
+   `./scripts/test-all.sh`), review failures/skips and record the source SHA.
+   Use fake previews for UI work. `test --native` is a smaller tooling suite.
+2. When remote work is authorized, open a PR targeting `main`. Every PR update
+   triggers the full Linux source/ISO/KVM gate and native Windows tests.
+   Pushing a branch without a PR does not trigger `ci.yml`; opening/updating
+   its PR does. A push to `main` runs the full gate again. Do not push or open
+   a PR during a local-only task.
+3. Require the exact PR's `CI gate` and maintainer authorization before merging.
+   A separate non-author approval is not required under the
+   [sole-maintainer policy](ci.md#required-checks-and-rollout).
+   PR CI checks GitHub's merge revision; record its base/head parents.
+   Main qualification is the separate successful `push` run for the exact main
+   commit, not a reused PR result. Manual dispatch is available for authorized
+   verification branches; see [CI execution](ci.md#execution).
+4. Retain the run URL, tested SHA, build ID, receipts and artifact digests.
+   Ordinary CI retains evidence/sidecars for seven days, **not ISO/USB binaries**.
+   Retaining binaries for another machine needs an authorized destination and
+   measured hashes; local output is not a published release.
+5. Separately authorized publication uses [release.yml](../.github/workflows/release.yml)
+   on `main` with a version tag at that exact, successfully qualified main
+   commit. It rebuilds and verifies the actual customer bytes on Blacksmith,
+   transfers them for one day to the protected `production` publisher, checks
+   all hashes, then obtains short-lived GitHub OIDC credentials for GCP signing
+   and storage. GCP is still required for that publisher; it is not CI compute
+   and does not require a maintainer's interactive cloud login. Follow
+   [release verification](release-verification.md), including immutable uploads,
+   signatures, completion marker and GitHub asset checks before public promotion.
 
-This invokes the canonical `cloudbuild.yaml` in GCP project `beamo-wipe`.
-Use a clean, attributed source checkpoint. Run local checks first; the hosted
-pipeline adds security lint, Linux/Tk/accessibility tests, negative safety tests,
-desktop builds, the amd64 ISO and controlled QEMU verification. Do not call a
-skipped ISO/QEMU run full acceptance. Do not attempt local amd64 Docker/QEMU
-acceptance on Apple Silicon. Never attach host disks to test VMs.
+A configured workflow or a passing doctor is not an executed qualification.
+No local command substitutes for the full hosted gate. Do not run amd64
+Docker/QEMU acceptance on Apple Silicon or attach host disks to test VMs.
+Optional manual VM work belongs on an authorized disposable x86_64 worker;
+see [VM notes](vm-test.md). It does not publish or replace the required gate.
 
-Build verification does not publish a release. Retaining a developer build for
-another machine requires an authorized artifact destination and a receipt with
-source commit, build ID, filenames, hashes and access instructions. Download
-and verify hashes on the receiving machine. Production release publication,
-signing and promotion remain separate authorized steps. Existing developer
-artifacts do not automatically update when source changes.
+### Retained legacy and shared tools
+
+| Entry point | Current purpose and support boundary |
+| --- | --- |
+| `scripts/ci-cloud.sh`, `cloudbuild.yaml`, `make cloud-test` / `make legacy-cloud-test` | Retained Cloud Build compatibility path, covered by local fake-command tests. It can submit remote builds (and explicitly request publication); it is not the approved qualification/publication route. Use only for separately authorized legacy maintenance, never to satisfy `CI gate`. |
+| `scripts/install-cloud-triggers.sh` | Retained legacy trigger reconciliation. It changes remote settings; do not run for normal onboarding or to recreate superseded triggers. `--help` is local only. |
+| `scripts/ci-hosted.sh`, `scripts/build-iso.sh`, `scripts/qemu-verify.sh` | Shared, actively required implementation used by Blacksmith; these are not obsolete. Privileged image/QEMU work requires isolated disposable Linux workers. |
+| `scripts/publish_release_gcs.py`, `scripts/publish-release-blacksmith.sh` | Active signed-release publisher and its Blacksmith entry point. Existing GCP signing/storage remains required only inside the separately authorized protected publisher. |
+| `./preview`, `scripts/test-all.sh`, `scripts/build-desktop.sh` | Supported local entry points; keep their existing compatibility behavior. |
+
+Historical release notes and dated evidence retain their original provider
+names and commands. They describe those runs, not today's onboarding route.
 
 ## Troubleshooting and recovery
 
@@ -179,8 +235,14 @@ artifacts do not automatically update when source changes.
   editing. A skip is not a pass. Native tooling tests are not the full suite.
 - Wrong Go version: install the pinned version or point `BEAMO_GO_BIN` at it.
   Do not change the project's Go pin merely to match your machine.
-- Permission or cloud login failure: fix that specific prerequisite and rerun;
-  never disable safety tests, use real disks, or broaden cloud IAM to get green.
+- Local prerequisite failure: select the relevant doctor operation and repair
+  that tool. Do not install/authenticate a cloud CLI for local tests or previews.
+- GitHub access or queued Blacksmith job: check repository/App access using the
+  approved account and [CI triage](ci.md#failure-triage). Doctor does not test
+  that access. Do not silently switch providers or broaden cloud IAM.
+- Protected release authentication failure: preserve verification evidence and
+  investigate its dedicated OIDC publisher binding under separate release
+  authorization; an interactive developer cloud login is not a substitute.
 - Interrupted preview/test/build: inspect the process and result before retrying.
   No preview state is evidence of erasure. Preserve unrelated working-tree edits.
 

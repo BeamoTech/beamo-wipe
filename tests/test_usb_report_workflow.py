@@ -1490,9 +1490,9 @@ def test_owner_card_space_suppresses_x11_autorepeat_pair():
             self.callbacks = {}
             self.next_id = 0
 
-        def after_idle(self, callback):
+        def after(self, delay, callback):
             self.next_id += 1
-            callback_id = f"idle-{self.next_id}"
+            callback_id = f"timer-{self.next_id}"
             self.callbacks[callback_id] = callback
             return callback_id
 
@@ -1539,6 +1539,7 @@ def test_owner_card_space_suppresses_x11_autorepeat_pair():
     assert app.w.owner_ok
     assert len(draw_count) == 1
     assert app._space_held
+    assert not app.root.callbacks
 
 
 def test_confirm_screen_recovers_entry_focus_without_window_manager(monkeypatch):

@@ -2,7 +2,9 @@
 
 import os
 import hashlib
+import json
 from pathlib import Path
+import re
 
 import pytest
 
@@ -13,7 +15,11 @@ from beamo_wipe.evidence import (
 )
 from beamo_wipe.nwipe_runner import NWIPE_COMPLETION_LOG_BYTES
 from beamo_wipe.safety import SafetyError
-from beamo_wipe.support_export import EVIDENCE_MALFORMED, prepare_terminal_evidence
+from beamo_wipe.support_export import (
+    EVIDENCE_MALFORMED,
+    EVIDENCE_SCHEMA,
+    prepare_terminal_evidence,
+)
 from test_evidence_retry import start
 
 
@@ -63,8 +69,30 @@ def test_deeply_nested_evidence_fails_closed_for_recovery_and_export(tmp_path):
         f"{hashlib.sha256(data).hexdigest()}  {path.name}\n"
     )
     assert recover_result(path).code == "indeterminate"
-    with pytest.raises(SafetyError, match=EVIDENCE_MALFORMED):
+    # Python versions differ in the depth their JSON decoder accepts. Either
+    # decoder rejection or rejection of the decoded array's schema is safe.
+    expected = f"^(?:{re.escape(EVIDENCE_MALFORMED)}|{re.escape(EVIDENCE_SCHEMA)})$"
+    with pytest.raises(SafetyError, match=expected):
         prepare_terminal_evidence(path, "/dev/sdz")
+
+
+def test_decoder_recursion_error_fails_closed_for_recovery_and_export(tmp_path, monkeypatch):
+    path = tmp_path / "result-recursion.json"
+    data = b"{}"
+    path.write_bytes(data)
+    path.with_name(path.name + ".sha256").write_text(
+        f"{hashlib.sha256(data).hexdigest()}  {path.name}\n"
+    )
+
+    def decoder_overflow(*args, **kwargs):
+        raise RecursionError("controlled decoder recursion limit")
+
+    # Restore the shared JSON decoder before fixture teardown reads settings.
+    with monkeypatch.context() as patch:
+        patch.setattr(json, "loads", decoder_overflow)
+        assert recover_result(path).code == "indeterminate"
+        with pytest.raises(SafetyError, match=f"^{re.escape(EVIDENCE_MALFORMED)}$"):
+            prepare_terminal_evidence(path, "/dev/sdz")
 
 
 def test_oversized_evidence_file_is_rejected_before_loading(tmp_path):

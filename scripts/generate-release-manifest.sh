@@ -3,7 +3,7 @@
 set -eu
 ROOT="$(CDPATH='' cd -- "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
-VERSION="${BEAMO_WIPE_VERSION:-0.2.11}"
+VERSION="${BEAMO_WIPE_VERSION:-0.2.12}"
 DEST="${1:-dist/beamo-wipe-${VERSION}-amd64.manifest.json}"
 EXPECTED_DEST="dist/beamo-wipe-${VERSION}-amd64.manifest.json"
 case "$VERSION" in
@@ -135,8 +135,9 @@ finally:
 ' "$SUMS_TMP" "$ROOT/dist/SHA256SUMS"
   trap - EXIT HUP INT TERM
   ( cd dist && sha256sum -c SHA256SUMS )
-  echo "Consumer: sha256sum -c beamo-wipe-${VERSION}-amd64.iso.sha256 (from dist/)"
-  echo "Consumer: sha256sum -c SHA256SUMS (from dist/)"
+  echo "Manifest generation does not sign: authenticate the publisher key and verify detached signatures first (docs/release-verification.md)."
+  echo "Then compare downloaded artifact hashes with the authenticated manifest/inventory; checksum sidecars alone do not authenticate them."
+  echo "Additional checksum check: sha256sum -c SHA256SUMS (from dist/)"
 else
   # Fail closed: a manifest that links to an ISO that was not produced must
   # never exit 0 (normally unreachable — iso_info already fails above — but

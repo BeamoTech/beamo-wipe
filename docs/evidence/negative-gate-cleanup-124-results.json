@@ -1,0 +1,90 @@
+{
+  "base_commit": "c170c85aff70ca55bebe5674ef6854e9c02b4999",
+  "branch": "codex/negative-gate-cleanup-124",
+  "platform": "macOS arm64; Python 3.10.0",
+  "baseline": {
+    "traceback": "Traceback (most recent call last):\n  File \"<stdin>\", line 15, in <module>\n  File \"/Users/HP/.codex/worktrees/release-recovery-117/Beamo Wipe/tests/test_boot_pipeline_pass5_negative.py\", line 81, in test_negative_gate_mutates_only_private_source\n    output, _ = proc.communicate(timeout=30)\n  File \"<stdin>\", line 8, in communicate\n  File \"/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/subprocess.py\", line 1149, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/subprocess.py\", line 2001, in _communicate\n    self._check_timeout(endtime, orig_timeout, stdout, stderr)\n  File \"/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/subprocess.py\", line 1193, in _check_timeout\n    raise TimeoutExpired(\nsubprocess.TimeoutExpired: Command '['/Library/Frameworks/Python.framework/Versions/3.10/bin/python3', '-c', 'import os,pathlib,time; pathlib.Path(os.environ[\"BEAMO_NEGATIVE_PROBE_MARKER\"]).touch(); time.sleep(30)']' timed out after 0.05 seconds\n",
+    "elapsed_seconds": 0.106,
+    "pid": 44758,
+    "still_running": true,
+    "waitpid_nohang": [
+      0,
+      0
+    ],
+    "stdout_open": true,
+    "ps": "44758 44757 S    /Library/Frameworks/Python.framework/Versions/3.10/Resources/Python.app/Contents/MacOS/Python",
+    "reproduction_cleanup": "harness terminated and reaped its harmless child; pipe closed"
+  },
+  "focused": {
+    "passed": 93,
+    "failed": 0,
+    "seconds": 12.73
+  },
+  "repeated_runs": [
+    {
+      "run": 1,
+      "exit_code": 0,
+      "seconds": 15.908
+    },
+    {
+      "run": 2,
+      "exit_code": 0,
+      "seconds": 16.384
+    },
+    {
+      "run": 3,
+      "exit_code": 0,
+      "seconds": 15.689
+    },
+    {
+      "run": 4,
+      "exit_code": 0,
+      "seconds": 13.012
+    },
+    {
+      "run": 5,
+      "exit_code": 0,
+      "seconds": 19.207
+    }
+  ],
+  "maximum_test_seconds": {
+    "test_timeout_escalates_only_stubborn_owned_child": 1.212,
+    "test_negative_test_timeout_now_reaps_owned_child": 0.191
+  },
+  "linux_execution": "NOT TESTED",
+  "original_assertions_ast_identical": 5,
+  "source_sha256": {
+    "tests/test_boot_pipeline_pass5_negative.py": "98ccfc0ed3f2f37cc38223e6d8e068c6d011b7c673deea2df2946d8b407cebe3",
+    "tests/negative_gate_child.py": "f17bd5e99eb214c2d29676b6f49c5549879d6d17b72de9904a01c81e126fa799",
+    "tests/test_negative_gate_child_cleanup.py": "c6db6727baf0dd5005ec84c4c0a84f4618b97669c198c7209c1b4917978f7667"
+  },
+  "log_sha256": {
+    "focused-final.log": "d3a75d4d9e74434cda3f9cdac8a17590521aadd84875b6cb123f242c7fe424a1",
+    "repeat-1.log": "0d5207e8b7ab1252cf5b0e29298adf85b2e55132d600176f24710bd3e92deb97",
+    "repeat-1.xml": "c7e5cccb788fe674a63062af5a99d6bf2ab58d00a6948f5e287924e383320129",
+    "repeat-2.log": "1c30179722cd600adbfdcc68204e08ab448fa26b285bd3a1f0f13d207580f740",
+    "repeat-2.xml": "1c3721d4a9c8711a4bd760c5e1ae935131183fbd6f2bc236981a10014d8143ad",
+    "repeat-3.log": "f6b847afedb94323cd584b39b55d2b878044268d5cbaaf9872c00b3e6ef15c24",
+    "repeat-3.xml": "8fc93b764f35cad5b3023b98433ea223875ea68a6a0c5b6acd0ebbb47102ab93",
+    "repeat-4.log": "7f6030a2eb95c5f28d414c327a0f4af55def8857bcdf4f1866bed9655b5286e6",
+    "repeat-4.xml": "e0ef4b8f6ae34a4b6f23922dc4ef7ddba8b531a7e82c96cb508fa910d26aab68",
+    "repeat-5.log": "20114bdfdfd421efed4adc5ecc17518a5861878d712a7930b4b6b95d5a172b89",
+    "repeat-5.xml": "d7a5661ef88bb8dd7a585ccfeff1ebcfa2283c10e4b36bb6739eb77b06d80897",
+    "full.log": "6199395afa0bff79ef5ab09e7516800e45c5d523cc3de5f69f6d44c8ef294a49",
+    "full.xml": "a728c55191edd46846c11c4c2def63a89efbd900cae64a394bf4aaa03c4247b9"
+  },
+  "full_suite": {
+    "passed": 4664,
+    "skipped": 704,
+    "failed": 0,
+    "errors": 0,
+    "seconds": 468.52,
+    "command": "BEAMO_WIPE_DRY_RUN=1 PYTEST_ADDOPTS='-p no:cacheprovider' ./scripts/test-all.sh -o addopts='' --junitxml=/private/tmp/beamo-wipe-124-full.xml"
+  },
+  "additional_skips_since_123": [
+    {
+      "test": "tests.test_helper_boot_guidance::test_cited_microsoft_sources_are_current[https://support.microsoft.com/en-us/windows/experience/backup-recovery/windows-recovery-environment]",
+      "reason": "network unavailable for https://support.microsoft.com/en-us/windows/experience/backup-recovery/windows-recovery-environment: EOF occurred in violation of protocol (_ssl.c:997)"
+    }
+  ]
+}

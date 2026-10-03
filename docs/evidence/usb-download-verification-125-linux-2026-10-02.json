@@ -1,0 +1,586 @@
+{
+  "audit_files": {
+    "cached-public-walkthrough.json": {
+      "bytes": 2176,
+      "sha256": "b27c7f93c00ad83df100342de0482e516f45b079edde53ef127162203aeb1e34"
+    },
+    "cached-public-walkthrough.log": {
+      "bytes": 1898,
+      "sha256": "edc949a1ad3b0e2ea1e61da6e9ada72c2e06a9ef55577c7cc2c2fc9caa2a719a"
+    },
+    "focused-tests.log": {
+      "bytes": 826,
+      "sha256": "48cee45a9505a7101a7ad0553d2a65c8ed5f36c6ce421d5fe1911364bc58b53f"
+    },
+    "focused-tests.xml": {
+      "bytes": 9111,
+      "sha256": "e9ba1b024bd9901e38f934cd5e95ce115f8d517c9f8900e3b96b6e6ada7f287b"
+    },
+    "full-suite-receipt.json": {
+      "bytes": 471,
+      "sha256": "14b77071d2edb95eabc80afed60a6011e1cfdcda6144c27ec57a0872f6e7018e"
+    },
+    "full-suite.log": {
+      "bytes": 10714,
+      "sha256": "32140b170ecfa5f6b2e1a043cd596008613dbb35f3caf36e76e31c93ff3d84cb"
+    },
+    "full-suite.xml": {
+      "bytes": 892972,
+      "sha256": "655436f27800ea2c9d90ddd0e2fe6f35e4e8bcdcb3539c9b82cdaf7ef2301e94"
+    },
+    "helper-help.log": {
+      "bytes": 657,
+      "sha256": "cbf69921fc827e41b924468dfc7f53187504b19817f24dc3cfa12ec0e2169323"
+    },
+    "initial-focused-tests.log": {
+      "bytes": 5786,
+      "sha256": "a07d6323dd26c7e50edc068650162e03c30ed584d33716b9838c497e0880b1a0"
+    },
+    "lint.log": {
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "public-network-walkthrough.sh": {
+      "bytes": 2000,
+      "sha256": "4339ce50bc4bd8cb27b97c81ac78c3d9a1f4b73e406a67b992185f9a1e56cd3b"
+    },
+    "public-walkthrough.json": {
+      "bytes": 2108,
+      "sha256": "205b90a50198e42ce5e6f0964c46521b1f52238f20ad119891b9811cd5297781"
+    },
+    "public-walkthrough.log": {
+      "bytes": 1898,
+      "sha256": "acfcd4744cb70ef76e8629b22e6490a3cf2a0351c66ce509b5313abb8bb770bf"
+    },
+    "public-walkthrough.sh": {
+      "bytes": 2001,
+      "sha256": "ff25516e748e702dff3a054972b99d05f7edfb2d6b8fa763fb7aeba6974e96f1"
+    },
+    "review-checks.json": {
+      "bytes": 4231,
+      "sha256": "cfbf2b28fe117c6167953ef3756670fee59b87bfe1af13c12a948858ca3c8c70"
+    }
+  },
+  "date": "2026-10-02",
+  "existing_implementation_commit": "d5edff22c406e08fba3a60ac07faea97e99068a0",
+  "final_cached_public_walkthrough": {
+    "authenticated_identity": {
+      "beamo_wipe_version": "0.2.12",
+      "qualified_build_id": "625971a4-afef-5398-9bec-d96455192ab3",
+      "source_commit": "e986419379f512f8088f5982ee02a51dc91a9dae"
+    },
+    "command": "/bin/sh -c <exact USB-VERIFY-WALKTHROUGH block; only absolute checkout path replaced>",
+    "command_block_sha256": "ff25516e748e702dff3a054972b99d05f7edfb2d6b8fa763fb7aeba6974e96f1",
+    "curl": "curl 8.5.0 (x86_64-pc-linux-gnu) libcurl/8.5.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 (+libidn2/2.3.7) libssh/0.10.6/openssl/zlib nghttp2/1.59.0 librtmp/2.3 OpenLDAP/2.6.10",
+    "cwd": "unrelated empty directory",
+    "exit_code": 0,
+    "files": {
+      "beamo-wipe-0.2.12-amd64.img": {
+        "bytes": 2147483648,
+        "sha256": "1e807895ee643a35d90a0c2302143f02b01de91aec564a3972d86740c55ae10b"
+      },
+      "beamo-wipe-0.2.12-amd64.img.gz": {
+        "bytes": 601441384,
+        "sha256": "a3d2a65d8941facbd30b794b083419dc694511903281e57cd028db565bdc1972"
+      },
+      "beamo-wipe-0.2.12-amd64.img.json": {
+        "bytes": 356,
+        "sha256": "e1ad82cf060b9d1a1424e19ff989e7ad2db10c2c5f414f8dbf3697107c155d37"
+      },
+      "beamo-wipe-0.2.12-amd64.manifest.json": {
+        "bytes": 85269,
+        "sha256": "0bb56538500330086f507538e94ec68846ff5ab39ddf491dbeaf467a50cfd5b8"
+      },
+      "beamo-wipe-0.2.12-amd64.manifest.json.sig": {
+        "bytes": 406,
+        "sha256": "3fc11d5a039a2ddfa964c7bd983eda545623dbf4013c79963857263a759f62cb"
+      },
+      "release-downloads.json": {
+        "bytes": 2337,
+        "sha256": "2023d3aa84a84f406a1d0f0b230d38293eb1b74275cf068088408209a296511c"
+      },
+      "release-downloads.json.sig": {
+        "bytes": 406,
+        "sha256": "93b1f8da89c80bdeec400a750549c8e2d4ac700a50d822a4bf652202638f83b2"
+      }
+    },
+    "finished_at": "2026-10-02T22:56:48.210134+00:00",
+    "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "real_disk_writes": false,
+    "source_base": "be26f24ac08aefa708cf9dd5a0045eb915abd7c0",
+    "started_at": "2026-10-02T22:56:27.898299+00:00",
+    "transport": "cached already-public bytes via test curl adapter",
+    "working_directory": "/tmp/beamo-usb-download-125-20261002T223645Z/beamo-usb-verify.Xe1EXBRq"
+  },
+  "focused_tests": {
+    "counts": {
+      "errors": 0,
+      "failures": 0,
+      "passed": 67,
+      "skipped": 0,
+      "total": 67
+    },
+    "skips": []
+  },
+  "full_local_suite": {
+    "cleanup_errors": [],
+    "command": [
+      "dbus-run-session",
+      "--",
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 1600x1000x24 -dpi 72",
+      "./scripts/test-all.sh",
+      "-rs",
+      "--junitxml=/tmp/beamo-usb-download-125-20261002T223645Z/results/full-suite.xml"
+    ],
+    "elapsed_seconds": 817.3963517479988,
+    "finished_at": "2026-10-02T23:02:32.946254+00:00",
+    "junit": {
+      "counts": {
+        "errors": 0,
+        "failures": 0,
+        "passed": 5635,
+        "skipped": 57,
+        "total": 5692
+      },
+      "skips": [
+        {
+          "reason": "gcloud CLI is unavailable",
+          "test": "tests.test_ci_hosted::test_cloud_upload_excludes_local_captures_and_env_files"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_compare_disks::test_browser_comparison_keyboard_reflow_and_selection[1100-2]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_compare_disks::test_browser_comparison_keyboard_reflow_and_selection[390-1]"
+        },
+        {
+          "reason": "Chrome is not installed for helper pixel checks",
+          "test": "tests.test_helper_boot_guidance::test_helper_renders_both_windows_paths_on_small_and_desktop_displays"
+        },
+        {
+          "reason": "Chrome is not installed for helper pixel checks",
+          "test": "tests.test_helper_boot_guidance::test_guided_branches_render_on_a_phone_width"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_inventory_count::test_browser_inventory_count_is_visible[1024-happy-pick-3 disks available to erase \\xb7 Beamo USB protected \\xb7 1 other device not available]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_inventory_count::test_browser_inventory_count_is_visible[1024-empty-empty-No disks available to erase \\xb7 Beamo USB protected \\xb7 1 other device not available]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_inventory_count::test_browser_inventory_count_is_visible[1024-blocked-blocked-Disk list could not be confirmed. No disk is available to erase.]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_inventory_count::test_browser_inventory_count_is_visible[390-happy-pick-3 disks available to erase \\xb7 Beamo USB protected \\xb7 1 other device not available]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_inventory_count::test_browser_inventory_count_is_visible[390-empty-empty-No disks available to erase \\xb7 Beamo USB protected \\xb7 1 other device not available]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_inventory_count::test_browser_inventory_count_is_visible[390-blocked-blocked-Disk list could not be confirmed. No disk is available to erase.]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_help_anchor_reload_keeps_launcher_session"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_help_anchor_reload_with_storage_denied"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_explained_checks_and_safe_next_actions[pass]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_explained_checks_and_safe_next_actions[partial]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_explained_checks_and_safe_next_actions[fail]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_explained_checks_and_safe_next_actions[unsupported]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_explained_checks_and_safe_next_actions[permission]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_explained_checks_and_safe_next_actions[legacy]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_explained_checks_and_safe_next_actions[pending]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_explained_checks_and_safe_next_actions[unattended]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_explained_checks_and_safe_next_actions[live]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_explained_checks_and_safe_next_actions[timeout]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_explained_checks_and_safe_next_actions[cancelled]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_empty_or_incomplete_response_fails_closed_and_recovers[None]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_empty_or_incomplete_response_fails_closed_and_recovers[bad1]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_empty_or_incomplete_response_fails_closed_and_recovers[bad2]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_keyboard_restart_permission_failure_retry_and_close[200]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_keyboard_restart_permission_failure_retry_and_close[503]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_long_content_display_and_forced_colors[size0]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_long_content_display_and_forced_colors[size1]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_long_content_display_and_forced_colors[size2]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_launcher_readiness::test_loading_network_failure_expired_session_and_retry"
+        },
+        {
+          "reason": "lb config artifacts are generated by scripts/build-iso.sh",
+          "test": "tests.test_live_image::test_live_config_bootstrap_uses_https_debian_mirrors"
+        },
+        {
+          "reason": "lb config artifacts are generated by scripts/build-iso.sh",
+          "test": "tests.test_live_image::test_live_config_xinit_cannot_hijack_kiosk"
+        },
+        {
+          "reason": "Chrome is unavailable",
+          "test": "tests.test_preview_parity::test_chrome_show_more_progress_and_cancel"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_preview_parity::test_playwright_keyboard_show_more[size0]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_preview_parity::test_playwright_keyboard_show_more[size1]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_protected_boot_gallery::test_browser_protected_card_semantics[happy-pick-1]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_protected_boot_gallery::test_browser_protected_card_semantics[empty-empty-1]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_protected_boot_gallery::test_browser_protected_card_semantics[blocked-blocked-0]"
+        },
+        {
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "test": "tests.test_release_manifest::test_manifest_schema_covers_required_fields"
+        },
+        {
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "test": "tests.test_release_manifest::test_manifest_fails_on_dirty_when_strict"
+        },
+        {
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "test": "tests.test_release_manifest::test_verify_allows_dirty_only_for_dirty_check"
+        },
+        {
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "test": "tests.test_release_manifest::test_manifest_fails_on_unexpected_nwipe_version"
+        },
+        {
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "test": "tests.test_release_manifest::test_manifest_atomic_write_and_checksum"
+        },
+        {
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "test": "tests.test_release_manifest::test_manifest_checksum_mismatch_is_rejected"
+        },
+        {
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "test": "tests.test_release_manifest::test_manifest_duplicate_write_is_idempotent"
+        },
+        {
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "test": "tests.test_release_manifest::test_manifest_stale_state_detected"
+        },
+        {
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "test": "tests.test_release_manifest::test_manifest_recovery_after_failed_write"
+        },
+        {
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "test": "tests.test_release_manifest::test_consumer_verification_instructions"
+        },
+        {
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "test": "tests.test_release_manifest::test_prior_stable_and_rollback"
+        },
+        {
+          "reason": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "test": "tests.test_release_manifest::test_hardware_limits_and_license"
+        },
+        {
+          "reason": "Chrome is unavailable",
+          "test": "tests.test_serial_comparison::test_browser_comparison_wraps_and_escapes_metadata[serials0]"
+        },
+        {
+          "reason": "Chrome is unavailable",
+          "test": "tests.test_serial_comparison::test_browser_comparison_wraps_and_escapes_metadata[serials1]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_unsure_disk_browser::test_unsure_browser_keyboard_and_reset[size0]"
+        },
+        {
+          "reason": "could not import 'playwright.sync_api': No module named 'playwright'",
+          "test": "tests.test_unsure_disk_browser::test_unsure_browser_keyboard_and_reset[size1]"
+        }
+      ]
+    },
+    "returncode": 0,
+    "started_at": "2026-10-02T22:48:55.549959+00:00",
+    "timeout_seconds": 1800
+  },
+  "full_suite_scope": "Frozen snapshot before final documentation link/guard readability changes and one added portable-link assertion; final sources verified with 67 focused tests and full-size cached public fixture.",
+  "historical_release_before_after": "identical ID, tag, description, asset IDs/sizes/digests/update timestamps",
+  "image_release": {
+    "authenticated_documents": "Ed25519 detached inventory and manifest signatures",
+    "build": "625971a4-afef-5398-9bec-d96455192ab3",
+    "git_tag_signature": "unsigned",
+    "release_id": 398337215,
+    "source": "e986419379f512f8088f5982ee02a51dc91a9dae",
+    "tag": "v0.2.12",
+    "tag_object": "c9d880cb7b9809fab0d93bcfcd1e4cdb2ed3c1bc"
+  },
+  "initial_validation_issues": {
+    "full_suite_preparation": "Previous disposable source lacked generated live-build config/bootstrap and config/binary; these are optional local skips by current tests; no image build or fabricated generated file was used",
+    "initial_focused_run": {
+      "causes": [
+        "New documentation assertion rejected the absolute-path case pattern's asterisk; narrowed to actual download filenames",
+        "Validation runner PATH omitted the verification venv, so the copied documentation block correctly stopped for missing cryptography; runner PATH corrected"
+      ],
+      "failed": 2,
+      "log": "results/initial-focused-tests.log",
+      "passed": 62
+    },
+    "initial_shellcheck": {
+      "diagnostic": "SC2015: Note that A && B || C is not if-then-else. C may run when A is true.",
+      "exit_code": 1,
+      "resolution": "Equivalent explicit if destination-exists-or-is-symlink guard; final unfiltered ShellCheck and final copied-block positive/negative fixtures passed"
+    },
+    "scope": "Observations retained from validation tool outputs; these were corrected without bypassing verification",
+    "windows_native_pytest": "No module named pytest in native Python 3.13; three documentation assertions executed directly instead; Linux pytest used pinned verification dependencies"
+  },
+  "links": [
+    {
+      "final_url": "https://github.com/BeamoTech/beamo-wipe/blob/be26f24ac08aefa708cf9dd5a0045eb915abd7c0/docs/development.md",
+      "fragment": "matches pinned document heading",
+      "http_status": 200,
+      "url": "https://github.com/BeamoTech/beamo-wipe/blob/be26f24ac08aefa708cf9dd5a0045eb915abd7c0/docs/development.md#first-setup"
+    },
+    {
+      "final_url": "https://github.com/BeamoTech/beamo-wipe/blob/be26f24ac08aefa708cf9dd5a0045eb915abd7c0/docs/evidence/physical-acceptance-111/README.md",
+      "fragment": "matches pinned document heading",
+      "http_status": 200,
+      "url": "https://github.com/BeamoTech/beamo-wipe/blob/be26f24ac08aefa708cf9dd5a0045eb915abd7c0/docs/evidence/physical-acceptance-111/README.md#52-flash-and-first-look-does-not-erase-a-pc-disk"
+    },
+    {
+      "final_url": "https://github.com/BeamoTech/beamo-wipe/blob/be26f24ac08aefa708cf9dd5a0045eb915abd7c0/docs/evidence/physical-acceptance-111/README.md",
+      "fragment": "matches pinned document heading",
+      "http_status": 200,
+      "url": "https://github.com/BeamoTech/beamo-wipe/blob/be26f24ac08aefa708cf9dd5a0045eb915abd7c0/docs/evidence/physical-acceptance-111/README.md#post-flash-readback"
+    },
+    {
+      "final_url": "https://github.com/BeamoTech/beamo-wipe/blob/e986419379f512f8088f5982ee02a51dc91a9dae/packaging/release-keys/KEYS.md",
+      "http_status": 200,
+      "url": "https://github.com/BeamoTech/beamo-wipe/blob/e986419379f512f8088f5982ee02a51dc91a9dae/packaging/release-keys/KEYS.md"
+    },
+    {
+      "final_url": "https://github.com/BeamoTech/beamo-wipe/releases/tag/v0.2.12",
+      "http_status": 200,
+      "url": "https://github.com/BeamoTech/beamo-wipe/releases/tag/v0.2.12"
+    }
+  ],
+  "macos": "not available for this follow-up; earlier fixture result retained separately",
+  "media_writes": false,
+  "metadata_gap": "none: generator and public authenticated inventory contain compressed/raw byte sizes and hashes",
+  "new_hosted_ci": false,
+  "production_signing_or_publication": false,
+  "public_network_walkthrough": {
+    "authenticated_identity": {
+      "beamo_wipe_version": "0.2.12",
+      "qualified_build_id": "625971a4-afef-5398-9bec-d96455192ab3",
+      "source_commit": "e986419379f512f8088f5982ee02a51dc91a9dae"
+    },
+    "command": "/bin/sh -c <exact USB-VERIFY-WALKTHROUGH block; only absolute checkout path replaced>",
+    "command_block_sha256": "4339ce50bc4bd8cb27b97c81ac78c3d9a1f4b73e406a67b992185f9a1e56cd3b",
+    "curl": "curl 8.5.0 (x86_64-pc-linux-gnu) libcurl/8.5.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 (+libidn2/2.3.7) libssh/0.10.6/openssl/zlib nghttp2/1.59.0 librtmp/2.3 OpenLDAP/2.6.10",
+    "cwd": "unrelated empty directory",
+    "exit_code": 0,
+    "files": {
+      "beamo-wipe-0.2.12-amd64.img": {
+        "bytes": 2147483648,
+        "sha256": "1e807895ee643a35d90a0c2302143f02b01de91aec564a3972d86740c55ae10b"
+      },
+      "beamo-wipe-0.2.12-amd64.img.gz": {
+        "bytes": 601441384,
+        "sha256": "a3d2a65d8941facbd30b794b083419dc694511903281e57cd028db565bdc1972"
+      },
+      "beamo-wipe-0.2.12-amd64.img.json": {
+        "bytes": 356,
+        "sha256": "e1ad82cf060b9d1a1424e19ff989e7ad2db10c2c5f414f8dbf3697107c155d37"
+      },
+      "beamo-wipe-0.2.12-amd64.manifest.json": {
+        "bytes": 85269,
+        "sha256": "0bb56538500330086f507538e94ec68846ff5ab39ddf491dbeaf467a50cfd5b8"
+      },
+      "beamo-wipe-0.2.12-amd64.manifest.json.sig": {
+        "bytes": 406,
+        "sha256": "3fc11d5a039a2ddfa964c7bd983eda545623dbf4013c79963857263a759f62cb"
+      },
+      "release-downloads.json": {
+        "bytes": 2337,
+        "sha256": "2023d3aa84a84f406a1d0f0b230d38293eb1b74275cf068088408209a296511c"
+      },
+      "release-downloads.json.sig": {
+        "bytes": 406,
+        "sha256": "93b1f8da89c80bdeec400a750549c8e2d4ac700a50d822a4bf652202638f83b2"
+      }
+    },
+    "finished_at": "2026-10-02T22:46:48.250057+00:00",
+    "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "real_disk_writes": false,
+    "source_base": "be26f24ac08aefa708cf9dd5a0045eb915abd7c0",
+    "started_at": "2026-10-02T22:41:01.248298+00:00",
+    "transport": "actual public HTTPS release downloads",
+    "working_directory": "/tmp/beamo-usb-download-125-20261002T223645Z/beamo-usb-verify.PfWtbfk9"
+  },
+  "registry_bytes": {
+    "bytes": 275,
+    "sha256": "545e39ad52215228dd13d24b0fb2e39c1819c80d2f0ff40eb78ab06b4a27443c"
+  },
+  "remaining_remote_actions": "follow-up PR, exact-commit required Blacksmith CI and authorized merge; no release republishing needed",
+  "schema": "beamo-wipe-usb-download-local-followup/1",
+  "shell_checks": [
+    {
+      "command": [
+        "/bin/sh",
+        "-n",
+        "/tmp/beamo-usb-download-125-20261002T223645Z/results/public-walkthrough.sh"
+      ],
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "command": [
+        "shellcheck",
+        "-s",
+        "sh",
+        "/tmp/beamo-usb-download-125-20261002T223645Z/results/public-walkthrough.sh"
+      ],
+      "exit_code": 0,
+      "output": ""
+    }
+  ],
+  "source_base": "be26f24ac08aefa708cf9dd5a0045eb915abd7c0",
+  "source_files": {
+    "README.md": {
+      "bytes": 15203,
+      "sha256": "5f90c4431f1dee815f3748294073d6fe0d38744f0260d8fe4f2c843202940620"
+    },
+    "docs/release-verification.md": {
+      "bytes": 27567,
+      "sha256": "9c8285606748fdc0c651e78dccc6b3f0b71295c4b99188280c965f8a82855513"
+    },
+    "docs/runbook.md": {
+      "bytes": 43516,
+      "sha256": "aa8e600ce9786b1a0ba7c63a6e443404013c80f388c3028440f1af928cf4df8a"
+    },
+    "packaging/release-keys/keys.json": {
+      "bytes": 275,
+      "sha256": "545e39ad52215228dd13d24b0fb2e39c1819c80d2f0ff40eb78ab06b4a27443c"
+    },
+    "scripts/build-usb-image.sh": {
+      "bytes": 13196,
+      "sha256": "0d1be5f4154bf1fa84c75c6e9dd385696a0ff44eda42fd66479f69f0beca984f"
+    },
+    "scripts/prepare_release_assets.py": {
+      "bytes": 5961,
+      "sha256": "00f98c984db1f2b756e40965a10ca49471d8b5da5c605c45a3f64565ba842069"
+    },
+    "scripts/publish-release-blacksmith.sh": {
+      "bytes": 3971,
+      "sha256": "ed272184ea80c1f9c8e2ac1063214226d684f7176563de28d188ba583836ae84"
+    },
+    "scripts/verify-usb-download.py": {
+      "bytes": 9008,
+      "sha256": "a03e66c289ca56777e10c0ef49f385397077999570d39d274b001556487d4f02"
+    },
+    "src/beamo_wipe/release_signing.py": {
+      "bytes": 21738,
+      "sha256": "6268c368988fe9201a3e652fec7b2acc295bff3882048dcde10c5c99222680f6"
+    },
+    "tests/test_usb_download_verification.py": {
+      "bytes": 11049,
+      "sha256": "fdf80d340be72c152c7d8aaaaddd83344466ea40ac741d7d95a1b8ec71b7e643"
+    },
+    "tests/test_usb_verification_docs.py": {
+      "bytes": 4206,
+      "sha256": "c9a179fa649aaad26969941142f0588af74bb778c899ae02ed036a283e0146c1"
+    }
+  },
+  "task": 125,
+  "trust_registry": {
+    "fingerprint": "93caaf7ca93eff4d7fa1c16e360f9d6aa17ced0155a56d4cf89d8f6d429e66f7",
+    "key_id": "93caaf7ca93eff4d",
+    "path": "existing independently maintained checkout registry; no new key ceremony",
+    "status": "active"
+  },
+  "windows": {
+    "native_pytest": "unavailable in interpreter",
+    "native_usb_walkthrough": "not documented/supported",
+    "python": "3.13",
+    "standalone_documentation_assertions": "3 passed"
+  }
+}

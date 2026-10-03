@@ -548,6 +548,8 @@ def run_console(wizard: Wizard) -> int:
         # this session may still own a running engine.
         wizard.settle_failed_interface()
         raise
+    finally:
+        wizard.cancel_audio()
 
 
 class _InventoryRefreshed(Exception):
@@ -1034,7 +1036,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
                     if command == "sounds":
                         wizard.toggle_sounds()
                     elif command == "hear":
-                        wizard.hear_both_sounds()
+                        wizard.request_hear_both_sounds()
                     elif wizard.stop_confirmation is not None:
                         if command == "stop":
                             print(C.CON_STOPPING_NOW + C.STOPPING_TEXT)
@@ -1052,7 +1054,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 raise EOFError from exc
             continue
         if screen == Screen.DONE:
-            wizard.maybe_play_outcome_sound()
+            wizard.request_auto_outcome_sound()
             print(wizard.method_result)
             print(wizard.elapsed_text)
             report = wizard.report_view
@@ -1089,7 +1091,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 elif ans == "sounds":
                     wizard.toggle_sounds()
                 elif ans == "hear":
-                    wizard.hear_outcome_sound()
+                    wizard.request_hear_outcome_sound()
                 else:
                     wizard.reset_for_preview()
             else:
@@ -1108,7 +1110,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 if action == "SOUNDS":
                     wizard.toggle_sounds()
                 elif action == "HEAR":
-                    wizard.hear_outcome_sound()
+                    wizard.request_hear_outcome_sound()
                 elif action == "RETRY" and report.can_retry_evidence:
                     wizard.retry_evidence_save()
                 elif action == "SAVE" and report.can_save:
@@ -1628,7 +1630,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 lines.extend(_lines(wizard.power_text, w))
             limits_offset = _paint_paged(stdscr, y, lines, limits_offset, y_max, w)
         elif wizard.screen == Screen.DONE:
-            wizard.maybe_play_outcome_sound()
+            wizard.request_auto_outcome_sound()
             report = wizard.report_view
             sections = recovery_for_view(wizard.result_view)
             # First 80x24 page keeps the pre-#107 landmarks: outcome, next
@@ -1954,9 +1956,9 @@ def _handle(wizard: Wizard, ch: int) -> None:
         return
     if wizard.screen in (Screen.WORKING, Screen.DONE) and ch in (ord("h"), ord("H")):
         if wizard.screen == Screen.DONE:
-            wizard.hear_outcome_sound()
+            wizard.request_hear_outcome_sound()
         else:
-            wizard.hear_both_sounds()
+            wizard.request_hear_both_sounds()
         return
     if wizard.screen == Screen.REFRESH_CONFIRM:
         if ch in (curses.KEY_ENTER, 10, 13):

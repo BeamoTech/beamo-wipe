@@ -3,12 +3,12 @@
 Use **throwaway virtual disks only**.
 
 Do not treat this Apple silicon Mac as the ISO/QEMU gate. Docker `linux/amd64`
-and `qemu-system-x86_64` here are TCG. The hosted ISO build is Google Cloud
-Build: `./scripts/ci-cloud.sh` (project `beamo-wipe`). Interactive QEMU wipe
-below uses an **x86_64 Linux VM** via `gcloud`/`aws`; prefer KVM when
-project policy permits it. If hardware acceleration is prohibited, preserve that
-policy and use bounded x64 TCG runs with the accelerator recorded in evidence.
-Copy hashes out and delete the VM. Pytest and `./preview` stay local.
+and `qemu-system-x86_64` here are TCG. The required hosted ISO/KVM gate is
+[Blacksmith through GitHub Actions](ci.md); it needs no developer cloud login.
+Interactive QEMU below is optional lab work on an already authorized disposable
+**x86_64 Linux KVM worker**. Provisioning a cloud VM is a separate operation,
+not an onboarding prerequisite. Copy receipts/hashes out and tear down only
+the verified task-owned VM. Pytest and `./preview` stay local.
 
 ## Demo (no ISO)
 
@@ -22,7 +22,8 @@ Keyboard-only can finish `./preview --console`.
 
 ## ISO in QEMU (x86_64)
 
-Build:
+On that isolated worker only, build using the shared implementation (not a
+replacement for the exact-source hosted `CI gate`):
 
 ```bash
 ./scripts/build-iso.sh
@@ -31,10 +32,11 @@ Build:
 Two disks: the ISO (live) and a 10G target.
 
 ```bash
-qemu-img create -f qcow2 /tmp/beamo-wipe-target.qcow2 10G
-qemu-system-x86_64 -m 2048 \
-  -cdrom dist/beamo-wipe-0.2.11-amd64.iso \
-  -drive file=/tmp/beamo-wipe-target.qcow2,if=virtio,format=qcow2 \
+lab_dir=$(mktemp -d "${TMPDIR:-/tmp}/beamo-wipe-lab.XXXXXX")
+qemu-img create -f qcow2 "$lab_dir/target.qcow2" 10G
+qemu-system-x86_64 -enable-kvm -nic none -m 2048 \
+  -cdrom dist/beamo-wipe-0.2.12-amd64.iso \
+  -drive "file=$lab_dir/target.qcow2,if=virtio,format=qcow2" \
   -boot order=d
 ```
 

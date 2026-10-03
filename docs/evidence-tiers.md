@@ -99,7 +99,7 @@ citing it must name the commit and the environment, never just "tests pass".
 | Wizard flow / gates / screens | `wizard.py`, `ui/*`, `copy.py` wording | Pytest plus Xvfb 72 DPI layout/keyboard suites; `docs/screens.md` sync (pinned by test) |
 | Evidence / outcomes / reports | `evidence.py`, `outcomes.py`, `result_summary.py`, `privacy.py`, `support_export.py` | Evidence/report/shutdown suites plus Tier 2 report checks; `docs/runbook.md` sync |
 | Image / boot / power config | `packaging/live/**`, `package-lists`, nwipe hook, xorg, keyboard, logind/sleep, bootloaders, kernel `linux-image-*` | `test_live_image.py`, lint, full ISO build, Tier 2 image inspection and `debsecan`; display/power rows re-checked |
-| Verification workflow | `scripts/qemu-verify.sh`, `cloudbuild.yaml`, `scripts/ci-hosted.sh` | Shellcheck plus at least one executed Tier 2 run with the new workflow |
+| Verification workflow | `.github/workflows/ci.yml`, `scripts/ci-blacksmith.sh`, `scripts/qemu-verify.sh`, `scripts/ci-hosted.sh`; `cloudbuild.yaml` is retained legacy compatibility | Shellcheck plus at least one executed Tier 2 run with the new workflow; see [current CI](ci.md) |
 | New claimed hardware / firmware | Matrix row added or widened | Tier 3 receipt on the named configuration, or keep it unsupported |
 | Docs / copy only | `docs/*`, `helper/*`, gallery | Link/text checks plus the suites named in §5; no Tier 2 needed unless a claim widened |
 
@@ -112,10 +112,16 @@ never transfer to 0.2.7.
 
 ### Firmware and boot mode (matrix §4)
 
+**Current correction (#119):** this index is historical 0.2.7 evidence, not
+the current physical expectation. [Q12 component inspection and cases](secure-boot-acceptance.md)
+establish conditional Debian-chain acceptance/refusal and explicit unknown
+states. Enforced OVMF acceptance is virtual evidence only. All physical
+trust/revocation cases remain NOT TESTED; no old receipt is upgraded.
+
 | IDs | Tier | Best receipt on file | Gap |
 | --- | --- | --- | --- |
 | FW-01 (SeaBIOS), FW-02/FW-04 (UEFI, Secure Boot off), FW-05 (CSM/virtio) | Tier 1 now; Tier 2 historical | Tier 2: [hosted 0.2.5 excerpts](evidence/bugfix-20260908/hosted-verification-excerpts.txt) (2026-09-08, wrapper 0.2.5: BIOS export, UEFI WHAT, BIOS/USB and UEFI/USB boots) | `UNVERIFIED` at 0.2.7: no executed `qemu-verify.sh` run on file for this source. The `feat/qemu-three-method-journeys` workflow is also uncommitted, so its three-method journeys have no receipt yet |
-| FW-03 (Secure Boot enabled, unsigned image refuses) | Tier 1 + Tier 2 historical | Tier 2: same 0.2.5 excerpts (`secureboot-usb` probe) for refusal behavior | `UNVERIFIED` at 0.2.7 as above; refusal is by design per `docs/claims.md`, never a bypass |
+| FW-03 (Secure Boot enforcing, image-specific policy outcome) | Tier 1 + Tier 2 historical | Tier 2: same 0.2.5 excerpts (`secureboot-usb` probe); the probe name alone does not prove refusal | `UNVERIFIED` at 0.2.7 as above; current expectations use the inspected chain and actual trust/revocation state, never a bypass |
 | FW-06 (boot-menu keys) | Tier 1 (doc render) | `tests/test_helper_boot_guidance.py` (non-pixel) plus helper page | Physical key behavior per vendor is Tier 3 `UNVERIFIED` by nature; the card documents keys, it does not prove firmware menus |
 
 ### Boot-media identification (matrix §5, BM-01…BM-17)

@@ -30,7 +30,7 @@ install_test_deps() {
   if [ "${BEAMO_GATE_CHILD:-0}" = "1" ]; then return; fi
   apt-get update -qq
   apt-get install -y -qq --no-install-recommends \
-    xvfb \
+    xvfb x11-utils \
     xauth libxtst6 \
     python3-tk dosfstools mtools xorriso \
     python3-gi gir1.2-gtk-3.0 librsvg2-common python3-pyatspi at-spi2-core dbus-x11 orca speech-dispatcher speech-dispatcher-espeak-ng pulseaudio \
@@ -117,9 +117,9 @@ install_qemu_deps() {
 
 run_lint() {
   log "blocking syntax, shell and security lint"
-  python3 -m compileall -q src/beamo_wipe dev.py scripts/build_desktop.py
-  python3 -m ruff check dev.py scripts/build_desktop.py developer_tests
-  python3 -m ruff format --check dev.py scripts/build_desktop.py developer_tests
+  python3 -m compileall -q src/beamo_wipe dev.py scripts/build_desktop.py scripts/agent_pr.py
+  python3 -m ruff check dev.py scripts/build_desktop.py scripts/agent_pr.py developer_tests
+  python3 -m ruff format --check dev.py scripts/build_desktop.py scripts/agent_pr.py developer_tests
   shellcheck preview scripts/*.sh packaging/live/inside-docker.sh \
     packaging/live/config/hooks/normal/0500-build-nwipe.hook.chroot
   python3 -m ruff check --select S102,S103,S104,S105,S106,S107,S113,S307,S501,S506,S508,S602,S604,S605,S606,S608,S609,S610,S611,S612 src/beamo_wipe
@@ -134,6 +134,8 @@ run_lint() {
 
 run_pytest() (
   export BEAMO_ISOLATED_X11_TEST=1
+  # GTK is optional only for local development, never for qualification.
+  python3 -c 'import gi; gi.require_version("Gtk", "3.0"); gi.require_version("Atk", "1.0"); from gi.repository import Gtk, Atk'
   # Private runtime directories prevent AT-SPI/Pulse from sharing sockets.
   # Independent D-Bus and Xvfb sessions preserve the clean Orca environment
   # while the rest of pytest runs concurrently. Never raise its timeout.
@@ -164,6 +166,7 @@ run_pytest() (
   failed=0
   wait "$orca_pid" || failed=1
   wait "$suite_pid" || failed=1
+  python3 scripts/check-gtk-test-results.py "${BEAMO_GATE_JUNIT:-$ROOT/dist/evidence/tests.xml}" || failed=1
   exit "$failed"
 )
 
@@ -236,7 +239,7 @@ PY
 
 inspect_iso() {
   local iso version size magic
-  version="${BEAMO_WIPE_VERSION:-0.2.11}"
+  version="${BEAMO_WIPE_VERSION:-0.2.12}"
   iso="$ROOT/dist/beamo-wipe-${version}-amd64.iso"
   [ -f "$iso" ] || {
     printf 'ISO missing: %s\n' "$iso" >&2
@@ -319,7 +322,7 @@ PY
   log "controlled QEMU verification (disposable qcow2, TCG where KVM absent)"
   ./scripts/build-usb-image.sh
   local qemu_code=0
-  BEAMO_WIPE_VERSION="${BEAMO_WIPE_VERSION:-0.2.11}" ./scripts/qemu-verify.sh || qemu_code=$?
+  BEAMO_WIPE_VERSION="${BEAMO_WIPE_VERSION:-0.2.12}" ./scripts/qemu-verify.sh || qemu_code=$?
   # Copy private temporary evidence into the ignored workspace directory for
   # the explicit post-QEMU publisher. Verification-only builds discard it.
   if [ -L "$ROOT/qemu-evidence/PATH" ] || [ ! -f "$ROOT/qemu-evidence/PATH" ]; then

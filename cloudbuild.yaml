@@ -1,10 +1,12 @@
 # Legacy Google Cloud tooling; current CI uses Blacksmith (.github/workflows/ci.yml).
-# Beamo Wipe CI — Google Cloud Build, project beamo-wipe only.
-# This is the project's CI gate. GitHub Actions is not used.
+# Retained Cloud Build compatibility configuration, project beamo-wipe only.
+# Not the required CI gate or current release route; see docs/development.md.
+# Invocation requires separate authorization for legacy maintenance.
 #
 #   ./scripts/ci-cloud.sh
 #
-# GitHub App triggers (same project; see scripts/install-cloud-triggers.sh):
+# Legacy GitHub App trigger definitions (not current branch qualification;
+# same project; see scripts/install-cloud-triggers.sh):
 #   - Pull requests targeting main (beamo-wipe-pr-gate, QEMU skipped)
 #   - Pushes to main (beamo-wipe-main-gate, full gate incl. QEMU)
 #
@@ -92,7 +94,7 @@ steps:
       - SKIP_ISO=${_SKIP_ISO}
       - ALLOW_DIRTY=${_ALLOW_DIRTY}
       - BUILD_ID=$BUILD_ID
-      - BEAMO_WIPE_VERSION=0.2.11
+      - BEAMO_WIPE_VERSION=0.2.12
     args:
       - -ceu
       - |
@@ -108,7 +110,7 @@ steps:
     env:
       - SKIP_QEMU=${_SKIP_QEMU}
       - ALLOW_DIRTY=${_ALLOW_DIRTY}
-      - BEAMO_WIPE_VERSION=0.2.11
+      - BEAMO_WIPE_VERSION=0.2.12
     args:
       - -ceu
       - |
@@ -123,7 +125,7 @@ steps:
       - PUBLISH_RELEASE=${_PUBLISH_RELEASE}
       - SKIP_ISO=${_SKIP_ISO}
       - SKIP_QEMU=${_SKIP_QEMU}
-      - BEAMO_WIPE_VERSION=0.2.11
+      - BEAMO_WIPE_VERSION=0.2.12
       - BUILD_ID=$BUILD_ID
     args:
       - -ceu

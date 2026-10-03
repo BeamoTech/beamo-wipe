@@ -8,17 +8,57 @@ rollout status. A configured workflow is not proof of a successful hosted run.
 
 ## Execution
 
-PRs targeting `main` and pushes to `main` run every gate. Verification branches
-can use manual dispatch; pushing them does not start another full run:
+GTK bindings (`gi`, GTK 3 and ATK 1) are optional on the macOS development
+setup. Mixed test modules skip only their GTK runtime tests when `gi` is
+absent, using the existing `pytest.importorskip` pattern before GTK imports;
+their non-GTK tests still run. An installed but broken binding, wrong GTK
+version, initialization error or assertion failure is not a dependency skip.
+
+Linux qualification requires the declared `python3-gi` and `gir1.2-gtk-3.0`
+packages (including ATK). The shared `ci-hosted.sh` test gate imports the
+required namespaces before pytest and checks its JUnit report with
+`scripts/check-gtk-test-results.py`: both mixed-module GTK regressions must
+execute and pass exactly once. Missing, skipped, failed or duplicated cases
+fail the gate. This applies to both CI and release qualification through
+`ci-blacksmith.sh sources`; local skips are not Linux qualification evidence.
+
+Local Orca tests start a private Xvfb at 72 DPI and use `xdpyinfo` from
+`x11-utils` to check that an X11 client can connect. This also works when WSL
+provides a read-only `/tmp/.X11-unix` and Xvfb serves an abstract socket.
+The test never replaces the desktop's X server or changes that mount.
+
+Start with [local development and operation-specific doctor checks](development.md).
+PRs targeting `main` and pushes to `main` run every gate. Pushing a branch with
+an open PR updates that PR and triggers CI; only branches without a PR avoid
+automatic qualification. Opening a PR, pushing its updates, merging to main,
+or manually dispatching is consequential hosted execution. Do none of these
+during a local-only task.
+
+Local checks (no hosted execution):
 
 ```bash
 python3 -m pytest
 ./scripts/test-all.sh
-# After the workflow has been installed on GitHub:
-gh workflow run ci.yml --repo BeamoTech/beamo-wipe --ref main
-gh workflow run ci.yml --repo BeamoTech/beamo-wipe --ref codex/ci-blacksmith
+```
+
+Inspect existing runs through GitHub's web UI or the optional authenticated
+GitHub CLI (read-only):
+
+```bash
 gh run list --repo BeamoTech/beamo-wipe --workflow ci.yml
 ```
+
+Only when a new hosted run is authorized and no equivalent run exists, dispatch
+the current verification branch explicitly:
+
+```bash
+gh workflow run ci.yml --repo BeamoTech/beamo-wipe --ref "$(git branch --show-current)"
+```
+
+Record the actual tested SHA: PR runs use GitHub's merge revision and its
+base/head parents; main runs use the pushed main revision. Release readiness
+requires a successful main `push` run for the exact tagged commit. Neither
+local checks, PR qualification nor a manual branch run replaces it.
 
 The Linux image runner is `blacksmith-4vcpu-ubuntu-2404`. A full
 [qualification run](https://github.com/BeamoTech/beamo-wipe/actions/runs/36293739547)
@@ -95,14 +135,30 @@ were the same measurement.
 
 ## Required checks and rollout
 
-Require `CI gate` on `main`, with up-to-date branches, pull-request review,
-no force pushes and no deletion. Enable the requirement only after the new
-check has actually run successfully, to avoid a permanently pending check.
-Use the GitHub Actions app identity observed on that run when binding the
-required check. Verify enforcement through the API afterward.
+Require `CI gate` on `main`, with up-to-date branches, no force pushes and no
+deletion. Administrator enforcement remains enabled, and the required check
+stays bound to the GitHub Actions app. Changes to workflow and protection files
+use the same PR and CI gate.
 
-At audit start, GitHub reported no classic protection or ruleset on `main`,
-and no custom Actions workflow. Blacksmith is installed in the organization
+On 2026-10-01 the sole maintainer removed the separate non-author approval
+requirement. A qualified PR may be merged with maintainer authorization,
+including an agent-authored PR opened through the maintainer's account. No
+approving-review count or alternate PR author is required. CI has no bypass.
+Review comments and automated findings still need assessment; their resolution
+does not replace the exact-commit `CI gate`. Publication remains separately
+authorized. The [policy verification](evidence/sole-maintainer-policy-20261001.md)
+records the owner decision and actual protection settings. It supersedes the
+review requirement in older dated audits.
+
+The optional `.github/workflows/agent-pr.yml` authoring route is retained; it
+is not a prerequisite for this sole-maintainer workflow. Its historical setup
+and unverified App/environment dependencies remain in the
+[dated review audit](evidence/pr-review-enforcement-20260928.md).
+
+At the initial CI migration audit, GitHub reported no classic protection or
+ruleset on `main`, and no custom Actions workflow. By 2026-09-28, classic
+protection required the strict `CI gate` but no approving review; this later
+state is recorded in the dated review audit. Blacksmith is installed in the organization
 with selected repository access; repository enrollment is demonstrated by hosted Linux and Windows execution. Current canonical repository is `BeamoTech/beamo-wipe`;
 `BeamoINT/beamo-wipe` redirects there. Current rollout evidence belongs in the
 linked dated audit, not in claims inferred from this configuration.
@@ -138,8 +194,9 @@ project currently pins them, but Debian package repositories remain mutable;
 this does **not** establish bit-for-bit reproducible ISO bytes. Record installed
 package versions and hashes for each build.
 
-Rollback remains the signed `beamo-wipe-0.2.10-amd64.iso`, SHA-256
-`3f18759f52ed029b949e054573b37cbcc37859d0f62148d9215995b071a36d73`.
+The recorded prior-stable rollback for v0.2.12 is the signed
+`beamo-wipe-0.2.11-amd64.iso`, SHA-256
+`9694068e4d70824b316f12da9bd4c0ee964809d15ce5ad4d406333f710176305`.
 See [release verification](release-verification.md) and [runbook](runbook.md).
 Do not relabel a fresh build as the old verified artifact.
 

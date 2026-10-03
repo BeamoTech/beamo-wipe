@@ -2,12 +2,13 @@
 
 **Current gate (2026-09-27):** Blacksmith GitHub Actions runs the full Linux ISO/QEMU and native Windows checks on each main commit. The signed release workflow is manual and requires its dedicated GCP publishing identity. The older Cloud Build notes below are historical.
 
-**Cross-platform verification (2026-09-08):** current source checks, the actual
+**Historical cross-platform verification (2026-09-08):** then-current source checks, the actual
 platform boundaries, and outstanding gates are recorded in
 [the independent second-pass evidence](evidence/cross-platform-verify-20260908/README.md)
 and [the first pass](evidence/cross-platform-20260908/README.md).
-The PR gate passed at `1ccac62`, but skips QEMU; direct full-gate submission
-remains blocked by Cloud Build bucket access. Evaluate subsequent commits using
+The then-used PR gate passed at `1ccac62`, but skipped QEMU; direct full-gate submission
+was blocked by Cloud Build bucket access at that time. Current PRs run the full
+Blacksmith gate, including QEMU. Evaluate subsequent commits using
 their own check results. Historical rows below do not prove current firmware
 boot or wipe behavior. Native Windows/macOS runtime and physical acceptance
 remain separate requirements. The operator matrix for manufactured media on
@@ -22,6 +23,13 @@ and signed Debian EFI components are described in
 and remaining hardware requirements are recorded separately; older Secure
 Boot rows below must not be used as evidence for the new image.
 
+**Secure Boot expectations (2026-09-29, #119):** current physical outcomes
+come from [the inspected-chain cases](secure-boot-acceptance.md), including
+the exact Q12 image identity. Debian-signed shim/GRUB/kernel can be accepted
+without a Beamo firmware key when the actual databases and revocation policy
+permit them. Unknown state cannot qualify a Pass. No firmware changes are
+prescribed to make a case pass; physical coverage remains NOT TESTED.
+
 Shutdown actions described below now request the shared shutdown decision:
 when a report was requested but no current verified export is confirmed,
 **Shut down without saving?** requires a separate choice. **Keep session open**
@@ -30,8 +38,8 @@ The screen-reader view exposes Keep first and both native buttons. See
 [the state, console, and recovery rules](report-shutdown.md). No report survives
 live-session shutdown or power loss unless it has been exported.
 
-> **Matrix v1.12 — for Beamo Wipe 0.2.11 (nwipe 0.42)**
-> Date: 2026-09-27
+> **Matrix v1.14 — for Beamo Wipe 0.2.12 (nwipe 0.42)**
+> Date: 2026-09-29
 > Author: Accountable senior engineer (this checkout)
 > Status: Versioned release target. No physical destructives on the developer host. Production evidence requires the exact-source Blacksmith gate and signed release manifest.
 
@@ -76,10 +84,10 @@ Environments map to evidence tiers defined in [`docs/evidence-tiers.md`](evidenc
 
 | Artifact | Version | Path | Size | SHA-256 | Build inputs pinned |
 | --- | --- | --- | --- | --- | --- |
-| Beamo Wipe wrapper | **0.2.11** | `src/beamo_wipe/__init__.py:__version__` | — | — | `pyproject.toml 0.2.11`, `NWIPE_PINNED_VERSION 0.42`, `NWIPE_PINNED_COMMIT 6082bde0…67105` |
-| Staged chroot copy | 0.2.11 | `packaging/live/config/includes.chroot/usr/lib/python3/dist-packages/beamo_wipe/__init__.py` | — | — | Synced from `src/` by `scripts/build-iso.sh` (hook `0500-build-nwipe` clones at pinned commit, `GIT_CONFIG_*` isolated, fails closed if compiler packages remain) |
-| Prior stable ISO | **0.2.10** | GitHub release `v0.2.10` | 538 MiB | `3f18759f52ed029b949e054573b37cbcc37859d0f62148d9215995b071a36d73` | Source `4feb25a6996268fd0890e7570e8cd3548b53c993`; signed release and retained rollback target |
-| Release target | **0.2.11** | `dist/beamo-wipe-0.2.11-amd64.iso` | Set by hosted build | Set by manifest | Content-addressed build inputs; production upload only after full hosted/QEMU success |
+| Beamo Wipe wrapper | **0.2.12** | `src/beamo_wipe/__init__.py:__version__` | — | — | `pyproject.toml 0.2.12`, `NWIPE_PINNED_VERSION 0.42`, `NWIPE_PINNED_COMMIT 6082bde0…67105` |
+| Staged chroot copy | 0.2.12 | `packaging/live/config/includes.chroot/usr/lib/python3/dist-packages/beamo_wipe/__init__.py` | — | — | Synced from `src/` by `scripts/build-iso.sh` (hook `0500-build-nwipe` clones at pinned commit, `GIT_CONFIG_*` isolated, fails closed if compiler packages remain) |
+| Prior stable ISO | **0.2.11** | GitHub release `v0.2.11` | 564,133,888 bytes | `9694068e4d70824b316f12da9bd4c0ee964809d15ce5ad4d406333f710176305` | Source `662cf470f9fcedf710d897591560267575745fea`; signed release and retained rollback target |
+| Release target | **0.2.12** | `dist/beamo-wipe-0.2.12-amd64.iso` | Set by hosted build | Set by manifest | Content-addressed build inputs; production upload only after full hosted/QEMU success |
 
 `packaging/live/config/bootstrap` and `binary` are `https://deb.debian.org` / `https://security.debian.org` only, use debootstrap `minbase` with system defaults ignored, `firmware false`, `bootappend live: noeject nopersistence noswap ip=frommedia nox11autologin`, and `bootloaders syslinux grub-efi` (BIOS + UEFI). Full apt/package list: `packaging/live/config/package-lists/beamo.list.chroot` (kept minimal — no `curl/git/build-essential/sudo/network-manager/openssh-server`).
 
@@ -93,8 +101,8 @@ All ISO boot tests are **QEMU x86_64**; on Apple silicon they are TCG and marked
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | **FW-01** | Legacy BIOS (SeaBIOS) | USB-A direct | SATA HDD 500 GB (ST500) + NVMe 256 GB | Boots via `syslinux`, wizard is first UI, lists SATA+NVMe, boot USB not selectable | QEMU `-boot order=d` boots; fixture `lsblk_same_size.json` via `discover()` boots equivalently | **Supported** | `cloudbuild.yaml` iso-build PVD CD001; `tests/test_discover.py::test_boot_usb_excluded_and_marked` | `qemu-system-x86_64 -m 2048 -cdrom dist/*.iso -drive file=/tmp/...qcow2,if=virtio -boot order=d` |
 | **FW-02** | UEFI (OVMF) | USB-C via adapter | NVMe Samsung 970 256 GB + SATA WDC 1 TB + Crucial SSD | Boots via `grub-efi`, wizard first UI, same disk list | QEMU `-bios OVMF_CODE.fd` boots; same fixture passes | **Supported** | `packaging/live/config/binary:LB_BOOTLOADERS="syslinux grub-efi"`; same test as FW-01 | `qemu-system-x86_64 -m 2048 -bios /usr/share/OVMF/OVMF_CODE.fd -cdrom dist/*.iso -drive ...` |
-| **FW-03** | UEFI Secure Boot **enabled** (firmware refuses Debian's signed boot files) | USB-A | Any | **Image does not boot** when firmware rejects the signed Debian EFI components — wizard never runs, so no wipe | Documented; QEMU enrolled-key USB is a later hosted-gate receipt, not a physical guarantee; declaration per `docs/claims.md` and `docs/boot-card.md` | **Degraded / firmware-dependent** | Current image includes signed Debian EFI; `docs/claims.md` forbids circumvention. Older sticks may be unsigned. | Enable Secure Boot in firmware, insert USB, record the firmware message; do not ship a bypass |
-| **FW-04** | UEFI Secure Boot **disabled** | USB-A | Any | Boots as FW-02 | Same as FW-02 | **Supported** | Same as FW-02 | Disable Secure Boot, boot as FW-02 |
+| **FW-03** | x64 UEFI Secure Boot enforcing; actual trust/revocations inspected | USB-A | Any eligible target; no erase needed for boot test | Known permitted Q12 chain reaches guide; proven denial refuses at its identified stage; unknown policy/inspection failure never qualifies Pass | Q12 signature inspection and enforced OVMF USB acceptance; physical cases NOT TESTED | **Firmware-dependent**; no universal acceptance claim | [Exact image, component identities and cases](secure-boot-acceptance.md); `docs/claims.md` forbids circumvention | Use an already configured dedicated machine; capture db/dbx, shim/SBAT, enforcement and selected entry; apply SB-ACCEPT / SB-NO-ANCHOR / SB-DBX / SB-SHIM / SB-UNKNOWN / SB-INSPECTION |
+| **FW-04** | UEFI already non-enforcing | USB-A | Any | Ordinary boot as FW-02; not Secure Boot evidence | Same as FW-02 | **Supported ordinary boot path** | Same as FW-02 | Record the existing state; this case does not prescribe disabling Secure Boot |
 | **FW-05** | Legacy BIOS with CSM on UEFI machine | USB-A | Virtio 10 GB (`/dev/vda`) via QEMU | Boots via BIOS compatibility; lists virtio disk as HDD kind | Fixture `lsblk_vm_iso.json` (`vda` tran virtio, rota true) → kind HDD, size 11 GB | **Supported** | `tests/test_discover.py::test_vm_iso_boot_marks_rom_and_lists_virtio` | QEMU default SeaBIOS; `discover(payload=lsblk_vm_iso.json, boot_path=/dev/sr0)` |
 | **FW-06** | BIOS boot menu key variant (F12/Esc/F9) | — | — | Not a Beamo bug — user uses firmware key from `docs/boot-card.md`; helper page lists per-vendor keys | Manual doc check | **Supported via docs** | `docs/boot-card.md`, `helper/index.html` (key caps F12/Esc/F9) | Follow card: Dell F12, HP F9/Esc, Lenovo F12, etc.; `helper/index.html` renders key caps |
 
@@ -238,7 +246,7 @@ Preview/dry-run cannot exec real `NwipeRunner`: `test_confirm_erase_refuses_real
 - **eMMC/mmcblk:** `mmcblk0boot0/1/rpmb` (4 MiB) are hidden — correct (they are not wipe targets) the ordinary `mmcblk0` user-data device remains eligible when all disk safety checks pass. Only firmware-area nodes alone yield `PICK_EMPTY`.
 - **USB hubs / keyboard hubs:** May hide the stick from firmware boot menu; degraded boot findability (try direct port, disable Fast Boot per `docs/boot-card.md`).
 - **HiDPI:** May exhibit clipping at non-gate DPI; not automated at those DPIs. 800×600 and 1280×720 are supported short layouts.
-- **Secure Boot enabled:** Degraded to **unsupported** unless user disables it; we do not ship a bypass.
+- **Secure Boot enforcing:** Firmware-dependent acceptance of the inspected Debian chain; trust, revocations, SBAT and firmware architecture decide. Use [the physical cases](secure-boot-acceptance.md). Unknown policy cannot Pass. We do not prescribe security changes or ship a bypass.
 - **Xorg driverless fallback:** Very old GPUs may fall back to `vesa`/`fbdev` (still works but slower); we deliberately do not force VESA on every GPU.
 
 ### Unsupported (honest)
@@ -255,7 +263,13 @@ Preview/dry-run cannot exec real `NwipeRunner`: `test_confirm_erase_refuses_real
 
 ## 11. Backlog findings (numbered, separate from matrix verdicts)
 
-Each finding is a defect, limit, or follow-up that the matrix work surfaced. They are **not** hidden in a pass count.
+These are historical findings from the original matrix audits, not current
+execution instructions. Provider migrations, old version numbers and suggested
+commands below describe that audit's state. In particular, BF-001/BF-008's
+Cloud Build follow-ups and BF-012's non-blocking lint description are superseded
+by [current CI](ci.md): Blacksmith runs blocking lint/types and full PR/main
+qualification. Consult the linked current guidance before executing commands.
+The original findings remain visible rather than hidden in a pass count.
 
 **BF-001 — Staged chroot drift: `__init__.py` 0.1.0 vs 0.1.1**
 Evidence: `tests/test_live_image.py::test_staged_chroot_package_matches_src` failed (byte 129 `0` vs `1`). Root: bump to `0.1.1` in `src/beamo_wipe/__init__.py` not yet copied to `packaging/live/config/includes.chroot/.../beamo_wipe/__init__.py` (bind-mount not live). Fix: `cp src/beamo_wipe/__init__.py packaging/live/.../__init__.py` (done in this change). Remaining: need fresh Cloud Build to produce `dist/beamo-wipe-0.1.1-amd64.iso`.
@@ -269,8 +283,8 @@ The window minimum is 800×600. 1280×720 uses compact pads and a scrolling body
 **BF-004 — HiDPI not gated**
 `xvfb-run @72 DPI` is the only automated gate. At 144 DPI, `WRAP` labels and `_Box` halo may clip. No failure seen in gallery/tk at 72 DPI. Follow-up: add a separate 144 DPI smoke on the hosted gate (not required for 1.0).
 
-**BF-005 — Secure Boot unsigned image**
-`LB_UEFI_SECURE_BOOT="auto"` + no enrolled key → firmware rejects USB when Secure Boot is on. This is *correct* (we do not ship circumvention), but the matrix must not claim "any UEFI". Follow-up: keep `docs/boot-card.md` and `docs/claims.md` language; consider documenting "disable Secure Boot" steps per vendor if support load justifies.
+**BF-005 — Earlier Secure Boot expectation superseded (#119)**
+The earlier unsigned-image assumption does not describe the inspected Q12 bytes. The current builder explicitly uses `--uefi-secure-boot enable`; the shipped x64 path is Microsoft-signed Debian shim, Debian-signed GRUB, then Debian-signed kernel. [Artifact inspection and the physical cases](secure-boot-acceptance.md) replace the enrollment-based verdict. Existing release assets and earlier execution logs remain historical; no universal acceptance or firmware-change workaround is authorized.
 
 **BF-006 — eMMC only machines show empty pick**
 Machines whose only non-boot storage is `mmcblk0` with only eMMC (laptops/tablets) correctly show a single selectable `mmcblk0` (ST-09). If that machine exposes only `mmcblk0boot0` (firmware area) the list is empty → `PICK_EMPTY` with "plug in the drive you want to erase" — honest but not ergonomic for eMMC-only recycle. Follow-up: keep as supported with `PICK_EMPTY`; do not auto-promote `mmcblk0boot0` to a target.
@@ -318,18 +332,18 @@ BEAMO_WIPE_NO_OPEN=1 ./preview --web && ls web-preview/index.html
 ```bash
 # Main/PR workflow: Blacksmith full gate with native Windows and KVM guests.
 gh run list --repo BeamoTech/beamo-wipe --workflow ci.yml
-# After signed-release access is configured and the exact tagged main commit passes:
-gh workflow run release.yml --repo BeamoTech/beamo-wipe --ref main -f version=0.2.11
+# Only after separate publication authorization and exact tagged-main qualification:
+gh workflow run release.yml --repo BeamoTech/beamo-wipe --ref main -f version=0.2.12
 # Published GCS path: gs://beamo-wipe_cloudbuild/releases/<BUILD_ID>/
-sha256sum dist/beamo-wipe-0.2.11-amd64.iso
-dd if=dist/beamo-wipe-0.2.11-amd64.iso bs=1 skip=32769 count=5 2>/dev/null | od -An -tx1  # CD001
+sha256sum dist/beamo-wipe-0.2.12-amd64.iso
+dd if=dist/beamo-wipe-0.2.12-amd64.iso bs=1 skip=32769 count=5 2>/dev/null | od -An -tx1  # CD001
 ```
 
 ### Disposable QEMU destructive (isolated x86_64 VM only)
 
 ```bash
 # On a throwaway x86_64 Linux VM with /dev/kvm, no host disks passed through:
-BEAMO_WIPE_VERSION=0.2.11 ./scripts/qemu-verify.sh
+BEAMO_WIPE_VERSION=0.2.12 ./scripts/qemu-verify.sh
 # Checklist per docs/vm-test.md:
 # - exact manifest/ISO checksums
 # - shipped nwipe 0.42 bytes only
@@ -379,6 +393,8 @@ BEAMO_WIPE_VERSION=0.2.11 ./scripts/qemu-verify.sh
 | **1.10** | 2026-09-13 | 0.2.9 | Bounded kiosk recovery and portable developer tooling. Exact qualification is recorded in the release manifest; hardware support is unchanged. |
 | **1.11** | 2026-09-25 | 0.2.10 | Safety, recovery, desktop media, release packaging, and verification fixes from the comprehensive audit. Hardware support and pinned nwipe remain unchanged. |
 | **1.12** | 2026-09-27 | 0.2.11 | Blacksmith release target and signed publication workflow; exact qualification belongs in the eventual release manifest. Physical hardware support and pinned nwipe remain unchanged. |
+| **1.13** | 2026-09-28 | 0.2.12 | Kiosk terminal EOF and persistent input-failure recovery, uncertain-cleanup support wording, and draft asset verification; pending exact-source qualification. Hardware support and pinned nwipe remain unchanged. |
+| **1.14** | 2026-09-29 | 0.2.12 | Development/doctor and CI guidance corrected to the configured Blacksmith route; runbook 1.12 separates local subsets, main qualification and authorized publication. Legacy tooling retained. No hosted run triggered for this correction. |
 
 ---
 

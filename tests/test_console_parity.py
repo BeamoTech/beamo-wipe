@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
+import time
 
 import pytest
 
@@ -72,6 +73,14 @@ def _draw(monkeypatch, wiz, **kw):
 def _footer(term, rows=4):
     last = term.frames[-1]
     return " ".join(last.get(y, "") for y in range(max(0, term.h - rows), term.h))
+
+
+def _await_audio(wizard):
+    end = time.monotonic() + 1
+    while wizard._audio_request is not None and time.monotonic() < end:
+        wizard.tick()
+        time.sleep(0.005)
+    assert wizard._audio_request is None
 
 
 def _at_pick():
@@ -273,6 +282,7 @@ def test_working_sounds_keys_toggle_and_hear(monkeypatch):
     shown, packed, term = _draw(
         monkeypatch, wiz, keys=[ord("o"), ord("h")]
     )
+    _await_audio(wiz)
     assert wiz.sounds_enabled is True
     assert wiz.sound_message == C.SOUND_OUTCOME_OFF_LIVE
     footer = _footer(term)
@@ -295,15 +305,14 @@ def test_done_sounds_auto_play_once_with_replay_footer(monkeypatch):
     wiz.wipe_result = WipeResult(True, 0, "Erase completed", "/tmp/x.log")
     wiz.set_sounds_enabled(True)
     calls = []
-    monkeypatch.setattr(
-        sound_module,
-        "play_outcome",
-        lambda kind: calls.append(kind) or sound_module.SoundResult(True, ""),
-    )
+    monkeypatch.setattr(sound_module, "play_test", lambda kind: calls.append(kind) or sound_module.SoundResult(False, C.SOUND_OUTCOME_OFF_LIVE))
+    wiz.request_auto_outcome_sound()
+    _await_audio(wiz)
     shown, packed, term = _draw(
         monkeypatch, wiz, keys=[console.curses.KEY_DOWN, ord("h")]
     )
-    assert calls == [sound_module.KIND_ATTENTION]
+    _await_audio(wiz)
+    assert calls == [sound_module.KIND_ATTENTION, sound_module.KIND_ATTENTION]
     assert wiz.sound_message == C.SOUND_OUTCOME_OFF_LIVE
     footer = _footer(term)
     assert "O: Sounds on" in footer

@@ -48,6 +48,14 @@ def _needs_display():
     except Exception as exc:  # noqa: BLE001
         pytest.skip(f"no display: {exc}")
 
+
+def _await_sound(wizard):
+    deadline = time.monotonic() + 2
+    while wizard._audio_request is not None and time.monotonic() < deadline:
+        wizard.tick()
+        time.sleep(0.005)
+    assert wizard._audio_request is None
+
 WINDOW = (1280, 820)
 MIN_WINDOW = (1024, 740)  # Comfortable tall layout; minsize is 800x600
 SHORT_WINDOW = (1280, 720)
@@ -880,8 +888,153 @@ def test_x11_space_release_press_pair_does_not_shutdown_done(ui):
     assert app._space_held
 
 
+def test_space_report_export_retargets_focus_before_worker_starts():
+    """The report-start marker must never race release to a destroyed button."""
+    app = object.__new__(TkWizard)
+    events = []
+
+    class Root:
+        def focus_get(self):
+            return None
+
+        def focus_set(self):
+            events.append("stable-focus")
+
+    class Wizard:
+        def begin_report_export(self):
+            events.append("report-start")
+            return True
+
+    app.root = Root()
+    app.w = Wizard()
+    app._space_action_active = True
+    app._draw = lambda: events.append("redraw")
+
+    app._click_save_report()
+    assert events == ["stable-focus", "report-start", "redraw"]
+
+
+def test_space_release_finishes_while_idle_queue_is_busy(ui):
+    """A delivered release must clear the hold without waiting for global idle."""
+    wiz, app = ui(scenario="empty")
+    wiz.preview = False
+    wiz.skip_intro()
+    wiz.accept_what()
+    wiz.set_owner(True)
+    wiz.continue_owner()
+    app._draw()
+    app.root.update()
+    app._space_held = True
+    observations = []
+    busy = [None]
+
+    def keep_busy():
+        busy[0] = app.root.after(0, keep_busy)
+
+    def observe():
+        observations.append(app._space_held)
+        app.root.after_cancel(busy[0])
+        app.root.quit()
+
+    keep_busy()
+    app._on_space_release(SimpleNamespace(time=123))
+    app.root.after(100, observe)
+    app.root.mainloop()
+    assert observations == [False], "delivered Space release starved in idle queue"
+    assert not wiz.wants_shutdown
+    # A same-timestamp X11 repeat press must still be refused after cleanup.
+    assert not app._claim_space_press(SimpleNamespace(time=123))
+    assert not wiz.wants_shutdown
+
+
+@pytest.mark.parametrize("run", range(5))
+def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypatch, run):
+    """Use server-delivered release after Save destroys the initiating control."""
+    import ctypes
+    import ctypes.util
+    import os
+    import sys
+
+    if sys.platform != "linux" or os.environ.get("BEAMO_ISOLATED_X11_TEST") != "1":
+        pytest.skip("physical key injection requires an isolated test X server")
+    x11 = ctypes.CDLL(ctypes.util.find_library("X11"))
+    xtst = ctypes.CDLL(ctypes.util.find_library("Xtst"))
+    x11.XOpenDisplay.argtypes = [ctypes.c_char_p]
+    x11.XOpenDisplay.restype = ctypes.c_void_p
+    x11.XKeysymToKeycode.argtypes = [ctypes.c_void_p, ctypes.c_ulong]
+    x11.XKeysymToKeycode.restype = ctypes.c_uint
+    x11.XFlush.argtypes = [ctypes.c_void_p]
+    x11.XCloseDisplay.argtypes = [ctypes.c_void_p]
+    xtst.XTestFakeKeyEvent.argtypes = [ctypes.c_void_p, ctypes.c_uint, ctypes.c_int, ctypes.c_ulong]
+    monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+    wiz, app = ui(fail=True)
+    wiz.preview = False
+    wiz.runner.duration_s = 0.05
+    _drive_to(wiz, app, Screen.LAST_CHANCE)
+    wiz._erase_until = 0
+    wiz.tick()
+    wiz.confirm_erase()
+    deadline = time.monotonic() + 3
+    while wiz.screen != Screen.DONE and time.monotonic() < deadline:
+        wiz.tick()
+        app.root.update()
+    assert wiz.screen == Screen.DONE
+
+    def exporter(**kwargs):
+        from test_usb_report_workflow import _success_receipt
+
+        return _success_receipt(**kwargs)
+
+    wiz._report_exporter = exporter
+    app._draw()
+    save = _button_named(app, "Save report to USB")
+    app._primary.focus_set()
+    app.root.update()
+    connection = x11.XOpenDisplay(None)
+    assert connection
+    code = x11.XKeysymToKeycode(connection, 0x20)
+    try:
+        tab = x11.XKeysymToKeycode(connection, 0xFF09)
+        for _ in range(2):
+            xtst.XTestFakeKeyEvent(connection, tab, 1, 0)
+            xtst.XTestFakeKeyEvent(connection, tab, 0, 0)
+            x11.XFlush(connection)
+            deadline = time.monotonic() + 0.4
+            while time.monotonic() < deadline:
+                app.root.update()
+                time.sleep(0.01)
+        assert app.root.focus_get() is save
+        xtst.XTestFakeKeyEvent(connection, code, 1, 0)
+        x11.XFlush(connection)
+        deadline = time.monotonic() + 3
+        while not app._report_space_release_pending and time.monotonic() < deadline:
+            app.root.update()
+            time.sleep(0.01)
+        assert app._report_space_release_pending
+        assert not save.winfo_exists()
+        assert not wiz.wants_shutdown
+        held_until = time.monotonic() + 1.2
+        while time.monotonic() < held_until:
+            app.root.update()
+            time.sleep(0.01)
+        assert app._space_held
+        assert not wiz.wants_shutdown
+        xtst.XTestFakeKeyEvent(connection, code, 0, 0)
+        x11.XFlush(connection)
+        deadline = time.monotonic() + 3
+        while app._space_held and time.monotonic() < deadline:
+            app.root.update()
+            time.sleep(0.01)
+        assert not app._space_held, "server-delivered Space release was lost"
+        assert not wiz.wants_shutdown
+    finally:
+        xtst.XTestFakeKeyEvent(connection, code, 0, 0)
+        x11.XFlush(connection)
+        x11.XCloseDisplay(connection)
+
+
 def test_held_space_from_save_cannot_repeat_onto_shutdown(ui, tmp_path, monkeypatch):
-    """A fast report completion cannot move one held Space to Shut down."""
+    """A report redraw retains key-up routing and cannot turn a hold into shutdown."""
     monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
     wiz, app = ui(fail=True)
     wiz.preview = False
@@ -906,17 +1059,27 @@ def test_held_space_from_save_cannot_repeat_onto_shutdown(ui, tmp_path, monkeypa
     save = _button_named(app, "Save report to USB")
     save.focus_set()
     save._key()
+    # QEMU sends key-up after the report-start marker, while the Save control
+    # may already have been destroyed. Keep focus on the stable toplevel until
+    # that physical release has been delivered.
+    assert app.root.focus_get() is app.root
     deadline = time.monotonic() + 3
     while wiz.report_view.exporting and time.monotonic() < deadline:
         app.root.update()
     app._draw()
     assert wiz.report_status == "saved"
     assert not wiz._done_keyboard_armed
+    assert app.root.focus_get() is app.root
 
     shut = app._primary
     assert shut is not None
     shut._key()
     assert not wiz.wants_shutdown
+
+    app.root.event_generate("<KeyRelease>", keysym="space")
+    app.root.update()
+    assert not app._space_held
+    assert app.root.focus_get() is app._primary
 
 
 def test_escape_goes_back(ui):
@@ -1799,11 +1962,11 @@ def test_split_space_repeat_does_not_toggle_owner_twice(ui):
     app._owner_key(SimpleNamespace(time=100))
     assert wiz.owner_ok
     app._on_space_release(SimpleNamespace(time=200))
-    app.root.update_idletasks()
+    app.root.update()
     app._owner_key(SimpleNamespace(time=200))
     assert wiz.owner_ok
     app._on_space_release(SimpleNamespace(time=300))
-    app.root.update_idletasks()
+    app.root.update()
     app._owner_key(SimpleNamespace(time=400))
     assert not wiz.owner_ok
 
@@ -2366,6 +2529,7 @@ def test_working_sounds_toggle_and_hear(ui, size, monkeypatch):
     app.root.update_idletasks()
     hear = _button_named(app, C.SOUND_HEAR)
     hear._command()
+    _await_sound(wiz)
     assert wiz.sound_message == C.SOUND_OUTCOME_OFF_LIVE
 
 
@@ -2384,7 +2548,7 @@ def test_done_auto_plays_once_and_offers_replay(ui, size):
     wiz.set_sounds_enabled(True)
     calls = []
     with patch.object(
-        sound_module, "play_outcome",
+        sound_module, "play_test",
         lambda kind: calls.append(kind) or sound_module.SoundResult(True, ""),
     ):
         app._draw()
@@ -2392,6 +2556,7 @@ def test_done_auto_plays_once_and_offers_replay(ui, size):
         message_before = wiz.result_view.message
         app._draw()
         app.root.update_idletasks()
+        _await_sound(wiz)
     assert calls == [sound_module.KIND_ATTENTION]
     assert wiz.result_view.message == message_before
     _button_named(app, C.SOUND_TOGGLE_ON)
@@ -2402,6 +2567,7 @@ def test_done_auto_plays_once_and_offers_replay(ui, size):
         or sound_module.SoundResult(True, "played"),
     ):
         replay._command()
+        _await_sound(wiz)
     assert calls[-1] == ("hear", sound_module.KIND_ATTENTION)
 
 

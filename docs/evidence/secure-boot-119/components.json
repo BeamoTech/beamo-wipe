@@ -1,0 +1,282 @@
+{
+  "schema": "beamo-wipe-secure-boot-inspection/1",
+  "inspection_date_utc": "2026-09-29",
+  "source_commit": "e986419379f512f8088f5982ee02a51dc91a9dae",
+  "tag": "v0.2.12",
+  "build_id": "625971a4-afef-5398-9bec-d96455192ab3",
+  "iso_sha256": "73554d35aecafac7fc6dffe41d1f1efdb658b43c39da85a2f0bebfe8f1beb598",
+  "iso_size_bytes": 564133888,
+  "usb_gzip_sha256": "a3d2a65d8941facbd30b794b083419dc694511903281e57cd028db565bdc1972",
+  "usb_gzip_size_bytes": 601441384,
+  "usb_sha256": "1e807895ee643a35d90a0c2302143f02b01de91aec564a3972d86740c55ae10b",
+  "usb_size_bytes": 2147483648,
+  "manifest_sha256": "0bb56538500330086f507538e94ec68846ff5ab39ddf491dbeaf467a50cfd5b8",
+  "release_inventory_sha256": "2023d3aa84a84f406a1d0f0b230d38293eb1b74275cf068088408209a296511c",
+  "manifest_and_inventory_signature": "verified using repository publisher registry, key 93caaf7ca93eff4d",
+  "physical_status": "NOT TESTED",
+  "corruption_control": "rejected",
+  "tools": {
+    "osslsigncode": "2.14",
+    "source_archive_sha256": "bdf249cbf23a84262dd30bb9b3a96a17109ff8de5ea30212e26af173cc8b2195",
+    "openssl": "3.6.4",
+    "platform": "Darwin arm64"
+  },
+  "signature_scope": "PE digests and cryptographic signing chains; no physical db/dbx or SBAT policy verification. Shim verified at offline reference time 2026-05-14T00:00:00Z with timestamp/online CRL checks disabled. Debian components verified at inspection time with online CRL checks disabled. No firmware state changed.",
+  "debian_ca_der_sha256": "079646974bce09b1f04da67bd722d1fb0947ae4c4010bccdbba52d5b23cbf1a2",
+  "microsoft_uefi_ca_der_sha256": "48e99b991f57fc52f76149599bff0a58c47154229b9f8d603ac40d3500248507",
+  "microsoft_root_der_sha256": "2848361a9c1e32df1d3e2ed6a7b9e67a525cf8a13b164f8006c9479578f746de",
+  "vendor_dbx_sha256": "45e89b4a5f8283cd8ae7c66bda8346697120c84880537aadb49a665c7d7eec0f",
+  "shim_sbat": [
+    "shim,4",
+    "shim.debian,1"
+  ],
+  "shim_sbatlevel_automatic": [
+    "sbat,1,2025021800",
+    "shim,4",
+    "grub,5"
+  ],
+  "shim_sbatlevel_latest": [
+    "sbat,1,2025051000",
+    "shim,4",
+    "grub,5",
+    "grub.proxmox,2"
+  ],
+  "grub_sbat": [
+    "grub,5",
+    "grub.debian,5",
+    "grub.debian12,1"
+  ],
+  "eltorito_iso_usb_efi_identical": true,
+  "components": [
+    {
+      "path": "EFI/boot/bootx64.efi",
+      "role": "removable-media entry",
+      "size": 1048504,
+      "sha256": "0fc347af103ec1dfac6e3f184c0a5241a2ce756a0932b359c404d39c45423806",
+      "machine": "0x8664",
+      "signer": "CN=Microsoft Windows UEFI Driver Publisher,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US",
+      "issuer": "CN=Microsoft Corporation UEFI CA 2011,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US",
+      "authenticode_sha256": "80a66d53a945d2286fcadd780fae1c225aa732079cd67b5225dc78aaab4e2ff8",
+      "verification": "cryptographic signature and PE digest verified",
+      "iso_usb_identical": true
+    },
+    {
+      "path": "EFI/boot/grubx64.efi",
+      "role": "removable-media entry",
+      "size": 3835328,
+      "sha256": "f0cf6c345219815d6cd51e42736074e0fe466dfe57b86d6469afeddb16fec1eb",
+      "machine": "0x8664",
+      "signer": "CN=Debian Secure Boot Signer 2022 - grub2",
+      "issuer": "CN=Debian Secure Boot CA",
+      "authenticode_sha256": "dca841985136f0533ecd18b589ddf75503660b499c2dcd77b7c7efa7bc5d6a02",
+      "verification": "cryptographic signature and PE digest verified",
+      "iso_usb_identical": true
+    },
+    {
+      "path": "EFI/boot/bootia32.efi",
+      "role": "IA32 entry; not qualified",
+      "size": 360448,
+      "sha256": "499283b5cbe9073ae4aca04711dbbc6754d923885b385ebf4eaf649162123628",
+      "machine": "0x14c",
+      "signer": null,
+      "issuer": null,
+      "verification": "unsigned",
+      "iso_usb_identical": true
+    },
+    {
+      "path": "live/vmlinuz-6.1.0-53-amd64",
+      "role": "kernel selected by all live GRUB entries",
+      "size": 8230848,
+      "sha256": "d66b8bc4b8330f4e98257602449feeeed696b860bf147a40477e7f4cfc48e704",
+      "machine": "0x8664",
+      "signer": "CN=Debian Secure Boot Signer 2022 - linux",
+      "issuer": "CN=Debian Secure Boot CA",
+      "authenticode_sha256": "b2fc604c57cfdefd59e36f664fdbc1d0c4e2dad7b3cbe874637d64618e6feda9",
+      "verification": "cryptographic signature and PE digest verified",
+      "iso_usb_identical": true
+    },
+    {
+      "path": "live/initrd.img-6.1.0-53-amd64",
+      "role": "non-PE boot payload",
+      "size": 42316615,
+      "sha256": "a2ede448da4cd056387b7e134affddf1cb9ffb53a37cace8ad34dbe3799fa415",
+      "verification": "outside PE signature chain",
+      "iso_usb_identical": true
+    },
+    {
+      "path": "boot/grub/grub.cfg",
+      "role": "non-PE boot payload",
+      "size": 1891,
+      "sha256": "dd8ad5530b08e28fe9599d29acd8ba4a07d66adc720ae8e9af39429b87b7b23e",
+      "verification": "outside PE signature chain",
+      "iso_usb_identical": true
+    },
+    {
+      "path": "live/filesystem.squashfs",
+      "role": "non-PE boot payload",
+      "size": 480309248,
+      "sha256": "65cfac6320ba44a70c1a7c9abd47496e73a5c1e2fe1c5740e57806ed6ca46f2d",
+      "verification": "outside PE signature chain"
+    },
+    {
+      "path": "usr/lib/grub/x86_64-efi-signed/gcdx64.efi.signed",
+      "role": "installed copy; not separately selected by live menu",
+      "size": 3835328,
+      "sha256": "f0cf6c345219815d6cd51e42736074e0fe466dfe57b86d6469afeddb16fec1eb",
+      "machine": "0x8664",
+      "signer": "CN=Debian Secure Boot Signer 2022 - grub2",
+      "issuer": "CN=Debian Secure Boot CA",
+      "authenticode_sha256": "dca841985136f0533ecd18b589ddf75503660b499c2dcd77b7c7efa7bc5d6a02",
+      "verification": "cryptographic signature and PE digest verified"
+    },
+    {
+      "path": "usr/lib/grub/x86_64-efi-signed/grubnetx64-installer.efi.signed",
+      "role": "installed copy; not separately selected by live menu",
+      "size": 3843520,
+      "sha256": "4e68d24c65995ff384e73398897526eaa8412fa2101f58a43a49fbc07f66936f",
+      "machine": "0x8664",
+      "signer": "CN=Debian Secure Boot Signer 2022 - grub2",
+      "issuer": "CN=Debian Secure Boot CA",
+      "authenticode_sha256": "551b2be8d060a2b9199f8d6fd4a2f137f0a6f79d6054f5954a04518156e88cbc",
+      "verification": "cryptographic signature and PE digest verified"
+    },
+    {
+      "path": "usr/lib/grub/x86_64-efi-signed/grubnetx64.efi.signed",
+      "role": "installed copy; not separately selected by live menu",
+      "size": 3843520,
+      "sha256": "a376f239f40fc54aa63e343f3d2ab254c4a1ebcaec1a3fe5de0497aa640362d9",
+      "machine": "0x8664",
+      "signer": "CN=Debian Secure Boot Signer 2022 - grub2",
+      "issuer": "CN=Debian Secure Boot CA",
+      "authenticode_sha256": "f85e271fd67bfb46fc14e90af0962f311de7e6a77ce46d210244835ccac469ed",
+      "verification": "cryptographic signature and PE digest verified"
+    },
+    {
+      "path": "usr/lib/grub/x86_64-efi-signed/grubx64.efi.signed",
+      "role": "installed copy; not separately selected by live menu",
+      "size": 4183488,
+      "sha256": "78313ff24688c8b2e1d4f4e1eff13236b2bd29b0f76ba749fd7fff4d305a1d94",
+      "machine": "0x8664",
+      "signer": "CN=Debian Secure Boot Signer 2022 - grub2",
+      "issuer": "CN=Debian Secure Boot CA",
+      "authenticode_sha256": "a68f6d71ebddaa19751ff8d729f67d11b0df8e4c49400c3e7e90de16119e1265",
+      "verification": "cryptographic signature and PE digest verified"
+    },
+    {
+      "path": "usr/lib/shim/fbx64.efi",
+      "role": "installed copy; not separately selected by live menu",
+      "size": 117360,
+      "sha256": "63b1cd20052977115d0982ccd064d54a4859752ff52210910719d5b3099a5981",
+      "machine": "0x8664",
+      "signer": null,
+      "issuer": null,
+      "verification": "unsigned"
+    },
+    {
+      "path": "usr/lib/shim/fbx64.efi.signed",
+      "role": "installed copy; not separately selected by live menu",
+      "size": 118832,
+      "sha256": "c26e4084d56a59aacba2ad4ef4f2749b96a0dafc82fa67e75e81e5e90e250595",
+      "machine": "0x8664",
+      "signer": "CN=Debian Secure Boot Signer 2022 - shim",
+      "issuer": "CN=Debian Secure Boot CA",
+      "authenticode_sha256": "f08e1ed5914bd0f4d1dd8731e53c8bc54ad0ce7daf49bfbea01d760b249b136f",
+      "verification": "cryptographic signature and PE digest verified"
+    },
+    {
+      "path": "usr/lib/shim/mmx64.efi",
+      "role": "installed copy; not separately selected by live menu",
+      "size": 876516,
+      "sha256": "99f7d0ec42e0f390eae3cd13521facb8026ce485d027b856eb2ad90fc62d0e9d",
+      "machine": "0x8664",
+      "signer": null,
+      "issuer": null,
+      "verification": "unsigned"
+    },
+    {
+      "path": "usr/lib/shim/mmx64.efi.signed",
+      "role": "installed copy; not separately selected by live menu",
+      "size": 877992,
+      "sha256": "f80377ddda1904ef3be061536d60da60e6d51d8be9691e46a7aa519c6576f9d0",
+      "machine": "0x8664",
+      "signer": "CN=Debian Secure Boot Signer 2022 - shim",
+      "issuer": "CN=Debian Secure Boot CA",
+      "authenticode_sha256": "0acfb229cd4f28f785811feed45dcea07d0bdaeb9e231793371c659980c0fe51",
+      "verification": "cryptographic signature and PE digest verified"
+    },
+    {
+      "path": "usr/lib/shim/shimx64.efi",
+      "role": "installed copy; not separately selected by live menu",
+      "size": 1029134,
+      "sha256": "d2812715520bf3b73fb37a9563b897ba6a5f6fa846b60cc35a4c190d54965d9c",
+      "machine": "0x8664",
+      "signer": null,
+      "issuer": null,
+      "verification": "unsigned"
+    },
+    {
+      "path": "usr/lib/shim/shimx64.efi.signed",
+      "role": "installed copy; not separately selected by live menu",
+      "size": 1048504,
+      "sha256": "0fc347af103ec1dfac6e3f184c0a5241a2ce756a0932b359c404d39c45423806",
+      "machine": "0x8664",
+      "signer": "CN=Microsoft Windows UEFI Driver Publisher,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US",
+      "issuer": "CN=Microsoft Corporation UEFI CA 2011,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US",
+      "authenticode_sha256": "80a66d53a945d2286fcadd780fae1c225aa732079cd67b5225dc78aaab4e2ff8",
+      "verification": "cryptographic signature and PE digest verified"
+    },
+    {
+      "path": "usr/lib/grub/x86_64-efi/monolithic/gcdx64.efi",
+      "role": "installed unsigned copy; not selected by live menu",
+      "size": 3833856,
+      "sha256": "737a90c9e0e71ff8d1da67d38b47f9a616e02c004c8f30b5c95fb2efbef5f3be",
+      "machine": "0x8664",
+      "verification": "unsigned"
+    },
+    {
+      "path": "usr/lib/grub/x86_64-efi/monolithic/grubnetx64-installer.efi",
+      "role": "installed unsigned copy; not selected by live menu",
+      "size": 3842048,
+      "sha256": "8d5c3ed582abee47c878cdbc33bd4e0b6923fca2f1727ce9a94d3357076bba14",
+      "machine": "0x8664",
+      "verification": "unsigned"
+    },
+    {
+      "path": "usr/lib/grub/x86_64-efi/monolithic/grubnetx64.efi",
+      "role": "installed unsigned copy; not selected by live menu",
+      "size": 3842048,
+      "sha256": "110b9006f4a4bd67005b7b92d10d0a5c600107987703f94bc7e4ed72c66717a2",
+      "machine": "0x8664",
+      "verification": "unsigned"
+    },
+    {
+      "path": "usr/lib/grub/x86_64-efi/monolithic/grubx64.efi",
+      "role": "installed unsigned copy; not selected by live menu",
+      "size": 4182016,
+      "sha256": "777c2879db15c6c4a2ccd618575d37312a09ce65092adac5cf5d580c6bb03479",
+      "machine": "0x8664",
+      "verification": "unsigned"
+    },
+    {
+      "path": "isolinux/isolinux.bin",
+      "role": "BIOS-only; outside UEFI Secure Boot",
+      "size": 38912,
+      "sha256": "bd180e8b9c78cebbaccd08f1bfc3929ce65e268079fc69f6fdbcd886dd5f8cf3",
+      "verification": "outside PE signature chain"
+    },
+    {
+      "path": "isolinux/ldlinux.sys",
+      "role": "BIOS-only; outside UEFI Secure Boot",
+      "size": 59392,
+      "sha256": "9211c9b314412f228329d7aa155cbcaa4fa1f613f49a81cc85ac07d4681ed2f2",
+      "verification": "outside PE signature chain"
+    },
+    {
+      "path": "isolinux/ldlinux.c32",
+      "role": "BIOS-only; outside UEFI Secure Boot",
+      "size": 119532,
+      "sha256": "087ab8d6fba4beb6ff0043b66c7199f31f2e4080e0ebd487798f9f5395c7794e",
+      "verification": "outside PE signature chain"
+    }
+  ]
+}

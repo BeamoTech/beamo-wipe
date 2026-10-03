@@ -14,8 +14,12 @@ This is a safety-critical wrapper around nwipe. Prefer obvious code over clever 
 
 ```bash
 python3 -m pytest
-./scripts/ci-cloud.sh    # Google Cloud Build: pytest + ISO (required hosted gate)
+./scripts/test-all.sh
 ```
 
-Open PRs into `main`. Google Cloud Build in project `beamo-wipe` is the
-hosted check (`docs/ci.md`); there are no GitHub Actions workflows.
+Open PRs into `main`; the sole maintainer may authorize merge without a
+separate non-author approval. The required hosted check is `CI gate` in
+`.github/workflows/ci.yml`, which runs on Blacksmith through
+GitHub Actions for PRs to `main`. The branch must be up to date and the check
+must pass before merge. See [CI and branch policy](docs/ci.md). Release
+publication is a separate, explicitly authorized workflow.

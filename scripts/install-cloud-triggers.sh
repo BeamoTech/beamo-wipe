@@ -5,6 +5,13 @@
 #   https://console.cloud.google.com/cloud-build/triggers;add=github?project=beamo-wipe
 set -euo pipefail
 
+if [[ "${1:-}" == --help || "${1:-}" == -h ]]; then
+  printf 'usage: %s\n' "$0"
+  printf 'Legacy Cloud Build trigger reconciliation; execution changes remote settings.\n'
+  printf 'Not current onboarding or qualification. Separate legacy-maintenance authorization required; see docs/development.md.\n'
+  exit 0
+fi
+
 project="${BEAMO_WIPE_GCP_PROJECT:-beamo-wipe}"
 default_service_account="projects/beamo-wipe/serviceAccounts/368895881889-compute@developer.gserviceaccount.com"
 if [[ -n "${BEAMO_WIPE_CLOUD_BUILD_SERVICE_ACCOUNT:-}" ]]; then

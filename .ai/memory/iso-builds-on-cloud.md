@@ -4,7 +4,8 @@ The operator explicitly corrected the CI platform on 2026-09-26: **use
 Blacksmith, not Google Cloud**. This supersedes the older GCP instructions.
 
 - Workflow: `.github/workflows/ci.yml`, stable check name `CI gate`.
-- Runner: `blacksmith-8vcpu-ubuntu-2404`, disposable x86_64 Linux with KVM.
+- Linux image runner: `blacksmith-4vcpu-ubuntu-2404`, disposable x86_64 with KVM;
+  native Windows launcher tests: `blacksmith-2vcpu-windows-2025`.
 - Shared gate implementation: `scripts/ci-hosted.sh`; isolated Docker runner:
   `scripts/ci-blacksmith.sh`. All image/test userspace is pinned Debian bookworm.
 - Run all gates on PRs/main, including QEMU and the image vulnerability check.
