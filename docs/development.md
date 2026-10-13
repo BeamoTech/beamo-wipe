@@ -71,11 +71,19 @@ python3 dev.py setup
 python3 dev.py doctor
 ```
 
-`setup` installs project development dependencies and the CI Ruff/mypy versions
+`setup` installs project development dependencies, including the support QR
+generator (`qrcode` 8.2) and signing-test `cryptography`, and the CI Ruff/mypy versions
 inside `.venv-linux` or `.venv-darwin`. It never installs packages into system
 Python. It is safe to rerun after a failed download. Activation is unnecessary:
 `dev.py test` selects the host's environment automatically. On macOS the Tk
 preview retains the existing modern-Tk interpreter selection.
+
+Use `doctor --for preview-web` before web preview and `doctor --for test` before
+the full source suite. Both preview modes need `qrcode` to generate the support
+QR; web mode needs no Tk. The full suite also needs `cryptography` for signing
+fixtures. Missing modules stop preflight with setup guidance. Native Windows
+developer-tool tests (`test --native`) require pytest and do not need those
+wizard/signing modules. Module presence still does not prove a passing suite.
 
 On Windows, install WSL2 and Ubuntu following Microsoft's WSL setup, then open
 Ubuntu and run the Debian/Ubuntu setup above. Prefer cloning inside Ubuntu's

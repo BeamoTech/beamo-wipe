@@ -165,8 +165,12 @@ def doctor(operation="local"):
         modules = ["venv", "pip"] if operation == "local" else []
         if operation in ("test", "test-native"):
             modules = ["pytest"]
+        if operation == "test":
+            modules.extend(["cryptography", "qrcode"])
+        if operation in ("preview", "preview-web"):
+            modules = ["qrcode"]
         if operation == "preview":
-            modules = ["tkinter"]
+            modules.append("tkinter")
         output, error = doctor_probe(
             [
                 python(),

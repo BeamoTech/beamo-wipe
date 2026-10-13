@@ -96,6 +96,10 @@ def test_default_local_needs_no_go_tk_or_cloud(doctor, capsys):
         ("local", "pip"),
         ("test", "pytest"),
         ("test-native", "pytest"),
+        ("test", "cryptography"),
+        ("test", "qrcode"),
+        ("preview", "qrcode"),
+        ("preview-web", "qrcode"),
     ],
 )
 def test_missing_selected_module_is_actionable(doctor, capsys, operation, module):
@@ -133,7 +137,7 @@ def test_preview_keeps_tk_fallback_optional(doctor, capsys, operation):
     assert dev.doctor(operation) == 0
     data = json.loads(capsys.readouterr().out)
     if operation == "preview-web":
-        assert not data["modules"]
+        assert data["modules"] == {"qrcode": True}
     else:
         assert data["modules"]["tkinter"] is False
         assert "console" in " ".join(data["notes"])
@@ -154,8 +158,9 @@ def test_windows_requires_actual_wsl_preflight(
 
 
 def test_windows_native_tools_do_not_require_wsl(doctor, monkeypatch):
-    dev, _, requested, _, _ = doctor
+    dev, _, requested, _, missing = doctor
     monkeypatch.setattr(dev.sys, "platform", "win32")
+    missing.update(("qrcode", "cryptography", "tkinter"))
     assert dev.doctor("test-native") == 0
     assert "wsl.exe" not in requested
 

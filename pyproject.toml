@@ -20,7 +20,7 @@ Source = "https://github.com/BeamoTech/beamo-wipe"
 beamo-wipe = "beamo_wipe.app:main"
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "cryptography==50.0.1"]
+dev = ["pytest>=8", "cryptography==50.0.1", "qrcode==8.2"]
 release = ["cryptography==50.0.1"]
 
 [tool.setuptools.packages.find]
