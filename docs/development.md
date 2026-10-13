@@ -1,5 +1,10 @@
 # Developing Beamo Wipe
 
+For the unattended Windows development PC, follow
+[remote-only development](remote-development.md) before setup or testing.
+Keep connected USBs and Windows remote access intact. Reboot-dependent setup,
+physical media preparation and physical acceptance are deferred on that host.
+
 Use a normal development computer and fake devices. The same source checkout
 supports development from Windows, macOS and Linux; the Linux live USB remains
 the only supported erasure runtime. Doctor, preview and local test commands use
