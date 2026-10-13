@@ -337,8 +337,16 @@ def main(argv=None):
         )
         return run([python(), "-m", "pip", "install", *packages])
     if args.command == "test":
-        cmd = [python(), "-m", "pytest"] + (["developer_tests"] if args.native else [])
+        selected_python = python()
+        cmd = [selected_python, "-m", "pytest"] + (
+            ["developer_tests"] if args.native else []
+        )
         env = fake_environment()
+        # Tests spawn Python helpers by name; keep them in the selected venv
+        # without requiring shell activation or changing the caller's PATH.
+        env["PATH"] = str(Path(selected_python).parent) + os.pathsep + env.get(
+            "PATH", os.defpath
+        )
         # Isolated Xvfb avoids replacing the user's desktop or depending on its DPI.
         if (
             not args.native

@@ -75,7 +75,9 @@ python3 dev.py doctor
 generator (`qrcode` 8.2) and signing-test `cryptography`, and the CI Ruff/mypy versions
 inside `.venv-linux` or `.venv-darwin`. It never installs packages into system
 Python. It is safe to rerun after a failed download. Activation is unnecessary:
-`dev.py test` selects the host's environment automatically. On macOS the Tk
+`dev.py test` selects the host's environment automatically and gives child
+Python commands that environment's executable directory on process-local PATH.
+The caller's PATH stays unchanged. On macOS the Tk
 preview retains the existing modern-Tk interpreter selection.
 
 Use `doctor --for preview-web` before web preview and `doctor --for test` before
