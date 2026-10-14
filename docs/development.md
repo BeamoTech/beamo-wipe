@@ -77,8 +77,11 @@ inside `.venv-linux` or `.venv-darwin`. It never installs packages into system
 Python. It is safe to rerun after a failed download. Activation is unnecessary:
 `dev.py test` selects the host's environment automatically and gives child
 Python commands that environment's executable directory on process-local PATH.
-The caller's PATH stays unchanged. On macOS the Tk
-preview retains the existing modern-Tk interpreter selection.
+The caller's PATH stays unchanged. On macOS, web and console previews use that
+selected environment. Windowed preview first tries it, then checks installed
+interpreters for both QR support and modern Tk; console fallback uses the selected
+environment. An explicit `BEAMO_WIPE_PREVIEW_PYTHON` override is also the Python
+checked by the Mac preview doctor. Doctor does not open a window or qualify Tk.
 
 Use `doctor --for preview-web` before web preview and `doctor --for test` before
 the full source suite. Both preview modes need `qrcode` to generate the support

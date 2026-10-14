@@ -143,6 +143,32 @@ def test_preview_keeps_tk_fallback_optional(doctor, capsys, operation):
         assert "console" in " ".join(data["notes"])
 
 
+@pytest.mark.parametrize("operation", ["preview", "preview-web"])
+def test_mac_preview_preflight_honors_explicit_interpreter(
+    doctor, monkeypatch, capsys, operation
+):
+    dev, _, _, _, _ = doctor
+    monkeypatch.setattr(dev.sys, "platform", "darwin")
+    selected = "/fixture/explicit preview/python"
+    monkeypatch.setenv("BEAMO_WIPE_PREVIEW_PYTHON", selected)
+    calls = []
+
+    def probe(argv, **kwargs):
+        calls.append(argv)
+        return json.dumps(
+            {
+                "version": [3, 12, 1],
+                "modules": {name: name != "qrcode" for name in argv[3:]},
+            }
+        ), None
+
+    monkeypatch.setattr(dev, "doctor_probe", probe)
+    assert dev.doctor(operation) == 2
+    report = json.loads(capsys.readouterr().out)
+    assert calls[0][0] == selected == report["environment_python"]
+    assert "qrcode" in " ".join(report["problems"])
+
+
 @pytest.mark.parametrize("installed", [False, True])
 @pytest.mark.parametrize("operation", ["test", "preview", "preview-web"])
 def test_windows_requires_actual_wsl_preflight(

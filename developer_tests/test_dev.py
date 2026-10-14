@@ -215,6 +215,28 @@ def test_preview_keeps_argument_order(dev, monkeypatch):
     assert calls[0][-3:] == ["--scenario", "empty", "--console"]
 
 
+@pytest.mark.parametrize("host", ["darwin", "linux"])
+@pytest.mark.parametrize("arguments", [[], ["--web"], ["--console"]])
+def test_preview_uses_selected_environment_without_bypassing_mac_tk(
+    dev, monkeypatch, host, arguments
+):
+    monkeypatch.setattr(dev.sys, "platform", host)
+    monkeypatch.setattr(dev, "live_environment", lambda: False)
+    monkeypatch.setattr(dev, "python", lambda: "/fixture/venv with spaces/python")
+    monkeypatch.delenv("BEAMO_WIPE_PREVIEW_PYTHON", raising=False)
+    calls = []
+    monkeypatch.setattr(dev, "run", lambda cmd, **kw: calls.append((cmd, kw)) or 0)
+    assert dev.main(["preview", *arguments]) == 0
+    env = calls[0][1]["env"]
+    if host == "darwin":
+        assert env["BEAMO_WIPE_PREVIEW_PREFERRED_PYTHON"] == dev.python()
+        assert "BEAMO_WIPE_PREVIEW_PYTHON" not in env
+    else:
+        assert env["BEAMO_WIPE_PREVIEW_PYTHON"] == dev.python()
+    assert env["BEAMO_WIPE_DRY_RUN"] == "1"
+    assert env["BEAMO_WIPE_DEMO"] == "1"
+
+
 @pytest.mark.parametrize(
     "host,native", [("linux", False), ("darwin", False), ("win32", True)]
 )

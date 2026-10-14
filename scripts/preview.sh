@@ -6,7 +6,7 @@ cd "$ROOT"
 export PYTHONPATH="$ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
 export BEAMO_WIPE_DRY_RUN=1
 export BEAMO_WIPE_DEMO=1
-PYTHON_BIN="${BEAMO_WIPE_PREVIEW_PYTHON:-python3}"
+PYTHON_BIN="${BEAMO_WIPE_PREVIEW_PYTHON:-${BEAMO_WIPE_PREVIEW_PREFERRED_PYTHON:-python3}}"
 # Older python.org macOS bundles can abort on window close with Tk 8.6.11.
 # Prefer an installed modern Tk for the desktop preview only. The live Linux
 # launcher and all wipe-environment checks are unchanged.
@@ -20,9 +20,13 @@ for arg in "$@"; do
 done
 if [ "$(uname -s)" = Darwin ] && [ "$needs_tk" = true ] && [ -z "${BEAMO_WIPE_PREVIEW_PYTHON:-}" ]; then
   found_tk=false
-  for candidate in python3.14 python3.13 python3.12 python3.11 python3; do
-    if command -v "$candidate" >/dev/null 2>&1 && "$candidate" -c '
+  for candidate in "${BEAMO_WIPE_PREVIEW_PREFERRED_PYTHON:-}" python3.14 python3.13 python3.12 python3.11 python3; do
+    if [ -n "$candidate" ] && command -v "$candidate" >/dev/null 2>&1 && "$candidate" -c '
 import os
+import sys
+if sys.version_info < (3, 10):
+    raise SystemExit(1)
+import qrcode
 import tkinter
 root = tkinter.Tk()
 root.withdraw()
@@ -37,7 +41,7 @@ os._exit(0 if version >= (8, 6, 13) else 1)
     fi
   done
   if [ "$found_tk" = false ]; then
-    printf 'No usable Tk 8.6.13 or newer found. Using the keyboard preview; install a modern Python/Tk for the window.\n' >&2
+    printf 'No usable Python with QR support and Tk 8.6.13 or newer found. Using the keyboard preview; install the development dependencies and modern Python/Tk for the window.\n' >&2
     set -- --console "$@"
   fi
 fi

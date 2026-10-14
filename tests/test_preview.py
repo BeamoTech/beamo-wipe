@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 from pathlib import Path
 
+import pytest
+
 from beamo_wipe.app import _parser
 from beamo_wipe.demo import discovery_for_scenario
 from beamo_wipe.gallery import gallery_html, write_gallery
@@ -233,6 +235,52 @@ def test_macos_preview_uses_modern_tk_without_changing_dry_run(tmp_path):
     assert result.stdout.splitlines() == [
         "dry=1 demo=1", "-m", "beamo_wipe", "--preview",
     ]
+
+
+@pytest.mark.parametrize("headless", [True, False])
+def test_macos_preview_binds_headless_python_and_requires_qr_in_tk_candidate(
+    tmp_path, headless
+):
+    import os
+    import subprocess
+
+    fake_bin = tmp_path / "bin"
+    fake_bin.mkdir()
+    scripts = {
+        "uname": "#!/bin/sh\nprintf 'Darwin\\n'\n",
+        "python3": "#!/bin/sh\nprintf 'unselected Python\\n'\n",
+        "python3.14": (
+            '#!/bin/sh\nif [ "$1" = -c ]; then\n'
+            '  case "$2" in *"import qrcode"*) exit 0;; *) exit 9;; esac\n'
+            "fi\nprintf 'modern QR Python\\n'\n"
+        ),
+    }
+    for name, content in scripts.items():
+        path = fake_bin / name
+        path.write_text(content)
+        path.chmod(0o755)
+    selected = tmp_path / "selected Python with spaces"
+    selected.write_text(
+        '#!/bin/sh\nif [ "$1" = -c ]; then\n'
+        '  case "$2" in *"import qrcode"*) exit 1;; *) exit 0;; esac\n'
+        "fi\nprintf 'selected environment\\n'\n"
+    )
+    selected.chmod(0o755)
+    env = {
+        **os.environ,
+        "PATH": f"{fake_bin}:/usr/bin:/bin",
+        "BEAMO_WIPE_PREVIEW_PREFERRED_PYTHON": str(selected),
+    }
+    env.pop("BEAMO_WIPE_PREVIEW_PYTHON", None)
+    env.pop("BEAMO_WIPE_UI", None)
+    root = Path(__file__).resolve().parents[1]
+    result = subprocess.run(
+        [str(root / "preview"), *(["--web"] if headless else [])],
+        env=env, text=True, capture_output=True, check=True, timeout=10,
+    )
+    assert result.stdout.strip() == (
+        "selected environment" if headless else "modern QR Python"
+    )
 
 
 def test_accessible_cli_and_tk_switch_share_wizard(monkeypatch):
