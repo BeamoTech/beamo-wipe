@@ -198,7 +198,8 @@ def test_test_child_helpers_use_selected_python(dev, monkeypatch, tmp_path):
     argv, kwargs = calls[0]
     assert argv[:3] == [str(selected), "-m", "pytest"]
     assert kwargs["env"]["PATH"].split(dev.os.pathsep) == [
-        str(selected.parent), "/fixture/original-tools"
+        str(selected.parent),
+        "/fixture/original-tools",
     ]
     assert kwargs["env"]["BEAMO_WIPE_DRY_RUN"] == "1"
     assert "BEAMO_WIPE_LIVE" not in kwargs["env"]

@@ -344,8 +344,8 @@ def main(argv=None):
         env = fake_environment()
         # Tests spawn Python helpers by name; keep them in the selected venv
         # without requiring shell activation or changing the caller's PATH.
-        env["PATH"] = str(Path(selected_python).parent) + os.pathsep + env.get(
-            "PATH", os.defpath
+        env["PATH"] = (
+            str(Path(selected_python).parent) + os.pathsep + env.get("PATH", os.defpath)
         )
         # Isolated Xvfb avoids replacing the user's desktop or depending on its DPI.
         if (
