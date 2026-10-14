@@ -186,6 +186,26 @@ def test_test_environment_does_not_disguise_fake_as_demo(dev, monkeypatch):
     assert "BEAMO_WIPE_DEMO" not in dev.fake_environment()
 
 
+def test_test_child_helpers_use_selected_python(dev, monkeypatch, tmp_path):
+    selected = tmp_path / "venv with spaces" / "bin" / "python"
+    monkeypatch.setattr(dev, "python", lambda: str(selected))
+    monkeypatch.setattr(dev, "live_environment", lambda: False)
+    monkeypatch.setenv("PATH", "/fixture/original-tools")
+    monkeypatch.setenv("BEAMO_WIPE_LIVE", "1")
+    calls = []
+    monkeypatch.setattr(dev, "run", lambda argv, **kw: calls.append((argv, kw)) or 0)
+    assert dev.main(["test", "--native"]) == 0
+    argv, kwargs = calls[0]
+    assert argv[:3] == [str(selected), "-m", "pytest"]
+    assert kwargs["env"]["PATH"].split(dev.os.pathsep) == [
+        str(selected.parent),
+        "/fixture/original-tools",
+    ]
+    assert kwargs["env"]["BEAMO_WIPE_DRY_RUN"] == "1"
+    assert "BEAMO_WIPE_LIVE" not in kwargs["env"]
+    assert dev.os.environ["PATH"] == "/fixture/original-tools"
+
+
 def test_preview_keeps_argument_order(dev, monkeypatch):
     calls = []
     monkeypatch.setattr(dev, "live_environment", lambda: False)
@@ -193,6 +213,28 @@ def test_preview_keeps_argument_order(dev, monkeypatch):
     monkeypatch.setattr(dev, "run", lambda argv, **kw: calls.append(argv) or 0)
     assert dev.main(["preview", "--scenario", "empty", "--console"]) == 0
     assert calls[0][-3:] == ["--scenario", "empty", "--console"]
+
+
+@pytest.mark.parametrize("host", ["darwin", "linux"])
+@pytest.mark.parametrize("arguments", [[], ["--web"], ["--console"]])
+def test_preview_uses_selected_environment_without_bypassing_mac_tk(
+    dev, monkeypatch, host, arguments
+):
+    monkeypatch.setattr(dev.sys, "platform", host)
+    monkeypatch.setattr(dev, "live_environment", lambda: False)
+    monkeypatch.setattr(dev, "python", lambda: "/fixture/venv with spaces/python")
+    monkeypatch.delenv("BEAMO_WIPE_PREVIEW_PYTHON", raising=False)
+    calls = []
+    monkeypatch.setattr(dev, "run", lambda cmd, **kw: calls.append((cmd, kw)) or 0)
+    assert dev.main(["preview", *arguments]) == 0
+    env = calls[0][1]["env"]
+    if host == "darwin":
+        assert env["BEAMO_WIPE_PREVIEW_PREFERRED_PYTHON"] == dev.python()
+        assert "BEAMO_WIPE_PREVIEW_PYTHON" not in env
+    else:
+        assert env["BEAMO_WIPE_PREVIEW_PYTHON"] == dev.python()
+    assert env["BEAMO_WIPE_DRY_RUN"] == "1"
+    assert env["BEAMO_WIPE_DEMO"] == "1"
 
 
 @pytest.mark.parametrize(

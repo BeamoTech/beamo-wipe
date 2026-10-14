@@ -139,6 +139,17 @@ def doctor(operation="local"):
         "Current qualification: Blacksmith via .github/workflows/ci.yml (CI gate).",
         "Publication is separately authorized release.yml; see docs/ci.md.",
     ]
+    if sys.platform == "darwin" and operation in ("preview", "preview-web"):
+        checks["environment_python"] = (
+            os.environ.get("BEAMO_WIPE_PREVIEW_PYTHON") or python()
+        )
+        notes.append(
+            "Mac headless/console preview uses this Python. Without an explicit override, windowed preview checks QR support in each modern-Tk candidate before selecting it."
+        )
+        if os.environ.get("BEAMO_WIPE_PREVIEW_PYTHON"):
+            notes.append(
+                "Repair missing packages in the explicit preview interpreter, or unset BEAMO_WIPE_PREVIEW_PYTHON to use the development environment."
+            )
     if not checks["git"]:
         problems.append("Install Git for this checkout.")
     if checks["live_environment"]:
@@ -165,11 +176,15 @@ def doctor(operation="local"):
         modules = ["venv", "pip"] if operation == "local" else []
         if operation in ("test", "test-native"):
             modules = ["pytest"]
+        if operation == "test":
+            modules.extend(["cryptography", "qrcode"])
+        if operation in ("preview", "preview-web"):
+            modules = ["qrcode"]
         if operation == "preview":
-            modules = ["tkinter"]
+            modules.append("tkinter")
         output, error = doctor_probe(
             [
-                python(),
+                checks["environment_python"],
                 "-c",
                 "import importlib.util,json,sys; print(json.dumps({'version':list(sys.version_info[:3]),"
                 "'modules':{n:importlib.util.find_spec(n) is not None for n in sys.argv[1:]}}))",
@@ -302,7 +317,9 @@ def main(argv=None):
         env = fake_environment(preview=True)
         # Preserve the canonical Mac Tk >=8.6.13 selection and console fallback.
         # Other hosts use the development venv when present.
-        if sys.platform != "darwin":
+        if sys.platform == "darwin":
+            env["BEAMO_WIPE_PREVIEW_PREFERRED_PYTHON"] = python()
+        else:
             env["BEAMO_WIPE_PREVIEW_PYTHON"] = python()
         return run(["sh", str(ROOT / "scripts/preview.sh"), *preview_args], env=env)
     if (
@@ -333,8 +350,16 @@ def main(argv=None):
         )
         return run([python(), "-m", "pip", "install", *packages])
     if args.command == "test":
-        cmd = [python(), "-m", "pytest"] + (["developer_tests"] if args.native else [])
+        selected_python = python()
+        cmd = [selected_python, "-m", "pytest"] + (
+            ["developer_tests"] if args.native else []
+        )
         env = fake_environment()
+        # Tests spawn Python helpers by name; keep them in the selected venv
+        # without requiring shell activation or changing the caller's PATH.
+        env["PATH"] = (
+            str(Path(selected_python).parent) + os.pathsep + env.get("PATH", os.defpath)
+        )
         # Isolated Xvfb avoids replacing the user's desktop or depending on its DPI.
         if (
             not args.native

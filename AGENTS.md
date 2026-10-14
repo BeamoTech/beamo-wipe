@@ -39,6 +39,44 @@ Repo: `https://github.com/BeamoTech/beamo-wipe` (old BeamoINT URL redirects) (sl
 
 Other agents may be working here. Stage explicit paths only. Never `git add -A`. Never commit `*.iso`, USB images, or secrets.
 
+## Unattended development host
+
+The owner's Windows development PC has no physical access or independent
+firmware/live-environment recovery available. Preserve its running Windows
+session and every connected physical USB. This constraint applies to WSL,
+containers, helpers and child processes as well as the Windows shell.
+
+- Do not restart, shut down, log off, suspend or hibernate this host; change
+  BootNext/BootOrder, firmware, Secure Boot or recovery settings; or disconnect
+  its network/remote-access service. Do not weaken UAC or protections to get
+  around an inaccessible prompt. A dependency requiring these actions is blocked.
+- Do not eject, dismount, offline, reset, unbind, pass through, repartition,
+  format or raw-write a connected physical disk, or modify a physical USB for
+  development. Keep them connected. Do not use `wsl --mount`, USB/IP or VM
+  passthrough on this host's devices. Existing read-only inventory is not
+  permission for a write.
+- Use `dev.py` fake previews/tests, regular temporary files and fake firmware.
+  Privileged ISO/QEMU/loop-device acceptance belongs on a separately authorized,
+  disposable isolated worker with no host-disk passthrough. Its cleanup may
+  detach only its positively identified fixture, never this PC's USB.
+- Use the existing WSL2 distribution if usable; do not install/reconfigure
+  virtualization, drivers, remote access or reboot-dependent features here.
+  Missing native platforms stay pending; do not relabel cross-builds as acceptance.
+- Coordinate local guests with the dual-USB agent's common OS byte-locked
+  `%USERPROFILE%\beamo-release-evidence\coordination\vm-slot.lock`, held through
+  owned teardown. At most one owned guest, 2 vCPU, 6 GB RAM and 100 GB newly
+  allocated internal storage. Unknown active workers or lock contention block
+  admission; never stop a peer or delete a lock to take over. No local guest
+  is authorized merely by this documentation.
+- Physical reconnect/readback, firmware boot, valuable-disk disconnection and
+  real-device acceptance remain **NOT TESTED / BLOCKED** as their procedure
+  requires. A warm read or virtual hotplug cannot satisfy a physical reconnect.
+
+See [remote-only development](docs/remote-development.md) for commands, evidence
+boundaries and coordination. A future physical session requires an explicit
+owner update and the original safety/recovery prerequisites; elapsed time or
+an earlier USB-write approval does not lift this constraint.
+
 ## Canonical commands
 
 ```bash

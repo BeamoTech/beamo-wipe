@@ -1,5 +1,12 @@
 # Physical Secure Boot acceptance
 
+**Unattended development PC:** this procedure cannot be executed on that host
+while physical access and recovery are unavailable. Follow the
+[remote-only development boundary](remote-development.md). Keep its USBs
+connected and preserve Windows; do not boot, eject, reflash or replace the
+required reconnect with a software reset. Retain these physical cases as
+NOT TESTED and unavailable media inspection as BLOCKED / SB-INSPECTION.
+
 This is the current operator procedure. [Claims](claims.md) still limit the
 product to x64 PCs that start from this USB. A Debian-signed boot path is not
 a promise of acceptance by every firmware. Beamo's Ed25519 release key
