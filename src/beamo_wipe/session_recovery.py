@@ -68,7 +68,7 @@ def _disk(raw):
             if type(value) is not bool:
                 raise ValueError("Invalid disk flag")
         elif key == "size_bytes":
-            if type(value) is not int or not 0 < value < 2**64:
+            if type(value) is not int or not 0 <= value < 2**64:
                 raise ValueError("Invalid disk size")
         elif key == "mountpoints":
             if value != []:
@@ -359,6 +359,14 @@ class SessionStore:
             or [d.path for d in disks if d.is_boot] != [context["boot"]]
         ):
             raise ValueError("Contradictory disk identities")
+        # Empty readers belong in the baseline, but neither the authorized
+        # target nor the identified boot medium may have zero capacity.
+        if any(
+            disk.size_bytes <= 0
+            for disk in disks
+            if disk.path in (context["target"], context["boot"])
+        ):
+            raise ValueError("Invalid target or boot disk size")
         MethodId(context["method"])
         if Path(context["logfile"]).parent != self.directory or not re.fullmatch(
             r"[A-Za-z0-9_.-]+", Path(context["logfile"]).name

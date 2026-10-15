@@ -62,6 +62,10 @@ NWIPE_VERIFY_SUFFIX_RE = re.compile(
 NWIPE_WRITE_SUFFIX_RE = re.compile(
     r"\s*,\s*eta\s+\d{2,6}:[0-5]\d:[0-5]\d,\s*<?\[writing\]>?\s*", re.I
 )
+NWIPE_METHOD_COUNTER_SUFFIX_RE = re.compile(
+    r"\s*,\s*eta\s+\d{2,6}:[0-5]\d:[0-5]\d,\s*<?"
+    r"\[(?:writing|verifying|blanking|syncing|retrying)\]>?\s*", re.I
+)
 # nwipe 0.42 (device.c / nwipe.c) when the target is mounted and --force is unset.
 NWIPE_BUSY_RE = re.compile(
     r"(?:is reported as IN USE|is IN USE but --force is not set, not wiping it)"
@@ -737,6 +741,11 @@ def _iter_target_progress(log_text: str, device: str):
             continue
         if not (0.0 <= value <= 100.0 and 1 <= round_i <= round_n):
             continue
+        whole, _dot, fraction = match.group(2).partition(".")
+        if int(whole) == 100 and fraction.strip("0"):
+            # A tiny excess above 100 can float-round back to 100. Exact
+            # range validation must precede using that rounded display value.
+            continue
         if (pass_i is None) != (pass_n is None):
             continue
         if pass_i is not None and pass_n is not None and not (1 <= pass_i <= pass_n):
@@ -797,7 +806,7 @@ def logged_last_pass_total(
     Erased row does not carry a pass count; callers treat that row separately.
     """
     total: Optional[int] = None
-    for match, value in _iter_target_progress(log_text, device):
+    for match, _value in _iter_target_progress(log_text, device):
         verified_phase = (
             NWIPE_VERIFY_SUFFIX_RE.fullmatch(match.string[match.end() :]) is not None
         )
@@ -805,7 +814,7 @@ def logged_last_pass_total(
             NWIPE_WRITE_SUFFIX_RE.fullmatch(match.string[match.end() :]) is not None
         )
         if (
-            value >= 100.0
+            _progress_is_complete_percent(match)
             and _progress_is_final_pass(match)
             and (verified_phase if require_verifying else writing_phase)
         ):
@@ -820,24 +829,45 @@ def completion_for_method(
 ) -> tuple[bool, str, str]:
     """Engine completion constrained to the method that was launched.
 
-    ``| Erased |`` has no pass count and stays a completion marker. The
+    ``| Erased |`` has no pass count and stays a completion marker unless
+    complete target progress contradicts the launched method. The
     100% fallback is completion only when the logged pass count is the
     method's overwrite count. A one-pass line must not finish Three
     overwrites.
     """
     ok, summary, reason = evaluate_nwipe_outcome(exit_code, log_text, device)
-    if not ok or _target_reported_success(log_text, device):
+    if not ok:
         return ok, summary, reason
     spec = METHODS.get(method)
     if (
         spec is None
-        or logged_last_pass_total(
-            log_text, device, require_verifying=spec.verify != "off"
+        or (
+            not _target_reported_success(log_text, device)
+            and logged_last_pass_total(
+                log_text, device, require_verifying=spec.verify != "off"
+            ) != spec.overwrite_passes
         )
-        != spec.overwrite_passes
     ):
         return False, "nwipe exited without wiping", "completion_missing"
+    for match, _value in _iter_target_progress(log_text, device):
+        if _progress_has_method_counters(match) and (
+            int(match.group(4)) != spec.rounds
+            or int(match.group(6)) != spec.overwrite_passes
+        ):
+            return False, "nwipe progress contradicted the confirmed method", "indeterminate"
     return ok, summary, reason
+
+
+def _progress_has_method_counters(match: re.Match) -> bool:
+    """Complete known phases constrain initialized round/pass denominators."""
+    suffix = match.string[match.end() :]
+    return (match.group(6) is not None
+            and NWIPE_METHOD_COUNTER_SUFFIX_RE.fullmatch(suffix) is not None)
+
+
+def _progress_is_complete_percent(match: re.Match) -> bool:
+    """Only exact decimal 100 is a terminal marker; float rounding is display-only."""
+    return re.fullmatch(r"100(?:\.0+)?", match.group(2)) is not None
 
 
 def _target_reached_last_pass(log_text: str, device: str) -> bool:
@@ -847,13 +877,13 @@ def _target_reached_last_pass(log_text: str, device: str) -> bool:
     That is not Finished unless the last logged pass is the last pass.
     """
     last = None
-    for match, value in _iter_target_progress(log_text, device):
+    for match, _value in _iter_target_progress(log_text, device):
         suffix = match.string[match.end() :]
         valid_phase = (
             NWIPE_VERIFY_SUFFIX_RE.fullmatch(suffix) is not None
             or NWIPE_WRITE_SUFFIX_RE.fullmatch(suffix) is not None
         )
-        last = value >= 100.0 and _progress_is_final_pass(match) and valid_phase
+        last = _progress_is_complete_percent(match) and _progress_is_final_pass(match) and valid_phase
     return bool(last)
 
 
@@ -1021,6 +1051,7 @@ class NwipeRunner:
         self._cancelling: Optional[subprocess.Popen] = None
         self._status_polling: Optional[subprocess.Popen] = None
         self.progress_observation: Optional[Observation] = None
+        self._progress_read_seq = 0
         self.finalizing = False
         self.progress: Optional[float] = None
         self.result: Optional[WipeResult] = None
@@ -1063,6 +1094,7 @@ class NwipeRunner:
             # A new launch attempt owns the runner state even if an early
             # preflight check refuses it. A later poll must not return the
             # previous session's terminal verdict as this attempt's result.
+            self._progress_read_seq += 1
             self.result = None
             self.progress = None
             self.progress_observation = None
@@ -1470,6 +1502,7 @@ class NwipeRunner:
                 retained: list[str] = []
                 retained_bytes = 0
                 last_progress = ""
+                progress_totals: set[tuple[int, int]] = set()
                 shared_path = ""
                 in_error_summary = False
                 remaining = st.st_size
@@ -1491,14 +1524,23 @@ class NwipeRunner:
                                 and nwipe_status_device_field(match.group(0)).strip()
                                 == target_column):
                             shared_path = match.group(0)
-                    if next(_iter_target_progress(line, device), None) is not None:
+                    progress = next(_iter_target_progress(line, device), None)
+                    new_totals = False
+                    if progress is not None:
                         last_progress = line
+                        match = progress[0]
+                        if _progress_has_method_counters(match):
+                            totals = (int(match.group(4)), int(match.group(6)))
+                            if totals not in progress_totals:
+                                progress_totals.add(totals)
+                                new_totals = True
                     if _is_error_summary_header(line):
                         in_error_summary = True
                     elif in_error_summary and line.lstrip().startswith("***"):
                         in_error_summary = False
                     relevant = (
-                        in_error_summary
+                        new_totals
+                        or in_error_summary
                         or _is_error_summary_header(line)
                         or "Erasure Summary" in line
                         or "HIDDEN SECTORS" in line
@@ -1541,6 +1583,12 @@ class NwipeRunner:
         *,
         expected_proc: Optional[subprocess.Popen] = None,
     ) -> None:
+        with self._lock:
+            read_proc = self._proc
+            if expected_proc is not None and read_proc is not expected_proc:
+                return
+            self._progress_read_seq += 1
+            read_seq = self._progress_read_seq
         text = self._read_log_tail(logfile, NWIPE_PROGRESS_LOG_BYTES)
         from beamo_wipe.progress import observe
 
@@ -1550,7 +1598,7 @@ class NwipeRunner:
         # both the stage and the number shown to the owner.
         percent = observation.percent if observation is not None else None
         with self._lock:
-            if expected_proc is not None and self._proc is not expected_proc:
+            if self._proc is not read_proc or read_seq != self._progress_read_seq:
                 return
             self.progress_observation = observation
             if text:

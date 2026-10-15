@@ -290,20 +290,30 @@ def _hardware_identity(value: Any, field: str) -> str:
 
 def _node_mountpoints(node: Dict[str, Any]) -> List[str]:
     found: List[str] = []
+
+    def add(value: Any) -> None:
+        if value is None or value == "":
+            return
+        if not isinstance(value, str):
+            raise ValueError("lsblk mountpoint has invalid shape")
+        cleaned = _clean(value)
+        if not cleaned:
+            # Display cleanup must not turn an observed mount into evidence
+            # that a disk is unmounted.
+            raise ValueError("lsblk mountpoint is malformed")
+        found.append(cleaned)
+
     mps = node.get("mountpoints")
     if isinstance(mps, list):
-        found.extend(_clean(x) for x in mps if x)
+        for value in mps:
+            add(value)
     elif mps is not None:
         # Some util-linux/schema variants emit a scalar. Treat it as mounted,
         # never as an empty list; malformed containers are rejected below.
         if not isinstance(mps, str):
             raise ValueError("lsblk mountpoints has invalid shape")
-        mp = _clean(mps)
-        if mp:
-            found.append(mp)
-    mp = _clean(node.get("mountpoint"))
-    if mp:
-        found.append(mp)
+        add(mps)
+    add(node.get("mountpoint"))
     for child in node.get("children") or []:
         found.extend(_node_mountpoints(child))
     return list(dict.fromkeys(x for x in found if x))
@@ -341,7 +351,7 @@ def paths_under(node: Dict[str, Any]) -> List[str]:
 def disk_nodes(blockdevices: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
     disks = []
     for node, _parent in flatten_blockdevices(blockdevices):
-        if (node.get("type") or "") == "disk":
+        if _node_type(node) == "disk":
             disks.append(node)
     return disks
 
@@ -387,6 +397,14 @@ def _disk_identity_contradicts(blockdevices: Sequence[Dict[str, Any]]) -> bool:
             continue
         if resolved:
             canonical = os.path.realpath(resolved)
+            if (
+                kind in {"loop", "ram"}
+                and canonical.startswith("/dev/")
+                and KERNEL_NAME_RE.fullmatch(canonical[5:])
+            ):
+                # A false virtual type would bypass physical mount/alias
+                # reconciliation for a kernel disk or partition path.
+                return True
             by_path.setdefault(canonical, set()).add((name, kind))
             if kind in {"disk", "rom"}:
                 physical_paths.add(canonical)
@@ -504,13 +522,15 @@ def _mounted_holder_hides_members(kind: str) -> bool:
     return kind.startswith("raid") or kind in _UNRESOLVED_HOLDER_TYPES
 
 
-def _cover_mounted_identifier_aliases(disks: Sequence[Disk]) -> List[Disk]:
+def _cover_mounted_identifier_aliases(
+    disks: Sequence[Disk], *, mounted_observations: Sequence[Disk] = ()
+) -> List[Disk]:
     """Copy a mount onto paths sharing a hardware identifier with that disk.
 
     Multipath can record the mount on one path only. A repeated meaningful
     WWN or serial makes another path ambiguous, so it must not stay selectable.
     """
-    mounted = [disk for disk in disks if disk.mountpoints]
+    mounted = [disk for disk in (*disks, *mounted_observations) if disk.mountpoints]
     if not mounted:
         return list(disks)
     covered: List[Disk] = []
@@ -1810,6 +1830,19 @@ def parse_lsblk_json(
     _cover_shared_filesystem_members(flat_nodes, flat_mounts, by_name)
     _reject_shared_device_ancestry(flat_nodes, by_name)
 
+    # Mounted physical observations remain exclusion evidence even when a
+    # device is hidden from the picker. Validate them before per-row display
+    # filtering can discard a malformed model or another identity field.
+    mounted_observations = []
+    for node, _parent in flat_nodes:
+        if _node_type(node) not in {"disk", "rom"}:
+            continue
+        name = _identity_text(node.get("name"), "name")
+        effective_mounts = tuple(dict.fromkeys((*_node_mountpoints(node), *flat_mounts.get(name, []))))
+        if effective_mounts:
+            mounted_observations.append(replace(
+                node_to_disk(node, is_boot=False), mountpoints=effective_mounts
+            ))
     disks: List[Disk] = []
     identified_boot: Optional[Disk] = None
     for node in disk_nodes(blockdevices):
@@ -1898,7 +1931,9 @@ def parse_lsblk_json(
             raise ValueError("lsblk has conflicting observations for one disk")
         observed_disks[canonical] = disk
     # A second path with a mounted disk's identifier may be the same LUN.
-    disks = _cover_mounted_identifier_aliases(disks)
+    disks = _cover_mounted_identifier_aliases(
+        disks, mounted_observations=mounted_observations
+    )
     if boot is not None:
         boot = next((item for item in disks if item.path == boot.path), boot)
     # Retain even identical rows: final identity validation requires exactly

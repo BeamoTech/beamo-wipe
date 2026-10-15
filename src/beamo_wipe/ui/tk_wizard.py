@@ -2831,7 +2831,7 @@ class TkWizard:
             section, text=inventory.COMPARE_TITLE, variable=opened,
             command=toggle, font=self.font_s_bold,
         )
-        toggle_button.pack(anchor="w")
+        toggle_button.pack(anchor="w", fill=tk.X)
         intro = self._p(content, inventory.COMPARE_INTRO, font=self.font_s)
         intro.pack(fill=tk.X)
         content.bind("<Configure>", lambda e: intro.configure(wraplength=max(1, e.width - 12)))

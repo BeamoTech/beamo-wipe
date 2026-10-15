@@ -21,6 +21,36 @@ SERIAL_MARKER_RE = re.compile(r"^BEAMO_WIPE_[A-Z0-9_]{1,64}$")
 SERIAL_DEVICE = "/dev/ttyS0"
 
 
+def _verify_directory(directory: Path, fd: int) -> None:
+    opened = os.fstat(fd)
+    named = os.stat(directory, follow_symlinks=False)
+    if (
+        (opened.st_dev, opened.st_ino) != (named.st_dev, named.st_ino)
+        or not stat.S_ISDIR(named.st_mode)
+        or named.st_uid != os.getuid()
+        or stat.S_IMODE(named.st_mode) != 0o700
+    ):
+        raise OSError("unsafe diagnostics directory")
+
+
+def _open_diagnostics(directory: Path, flags: int) -> tuple[int, int]:
+    """Bind the file open to one validated directory, without following links."""
+    directory_fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    fd = -1
+    try:
+        _verify_directory(directory, directory_fd)
+        fd = os.open("diagnostics.log", flags, 0o600, dir_fd=directory_fd)
+        _verify_directory(directory, directory_fd)
+        return directory_fd, fd
+    except BaseException:
+        try:
+            if fd >= 0:
+                os.close(fd)
+        finally:
+            os.close(directory_fd)
+        raise
+
+
 def _write_all(fd: int, data: bytes) -> None:
     view = memoryview(data)
     while view:
@@ -105,7 +135,6 @@ def log_diag(
             pass
         return False
     # Atomic append: open with O_APPEND, write, fsync; best-effort
-    path = Path(directory) / "diagnostics.log"
     # Sanitize structured fields (basename only, no serials)
     entry: dict[str, Any] = {
         "ts_wall": _iso_now(),
@@ -152,7 +181,9 @@ def log_diag(
         # If file doesn't exist, create 0o600; if exists, append.
         # O_RDWR (not O_WRONLY): the size-bound rotation below must read the
         # tail through this fd; a write-only fd fails the read with EBADF.
-        fd = os.open(str(path), os.O_RDWR | os.O_CREAT | os.O_APPEND | os.O_NOFOLLOW, 0o600)
+        directory_fd, fd = _open_diagnostics(
+            Path(directory), os.O_RDWR | os.O_CREAT | os.O_APPEND | os.O_NOFOLLOW
+        )
         try:
             opened = os.fstat(fd)
             if not stat.S_ISREG(opened.st_mode):
@@ -188,8 +219,12 @@ def log_diag(
                     _write_all(fd, tail)
             except OSError:
                 pass
+            _verify_directory(Path(directory), directory_fd)
         finally:
-            os.close(fd)
+            try:
+                os.close(fd)
+            finally:
+                os.close(directory_fd)
         return True
     except OSError as exc:
         # Fallback to stderr so failure is visible to maintainer (sanitized:
@@ -228,9 +263,10 @@ def read_diagnostics(log_dir: Optional[Path] = None, limit: int = 100) -> list[d
         directory = log_dir if log_dir is not None else default_log_dir()
     except Exception:
         return []
-    path = Path(directory) / "diagnostics.log"
     try:
-        fd = os.open(str(path), os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        directory_fd, fd = _open_diagnostics(
+            Path(directory), os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+        )
         try:
             opened = os.fstat(fd)
             if not stat.S_ISREG(opened.st_mode) or opened.st_uid != os.getuid():
@@ -250,9 +286,12 @@ def read_diagnostics(log_dir: Optional[Path] = None, limit: int = 100) -> list[d
             if start and b"\n" in raw:
                 raw = raw.split(b"\n", 1)[1]
             text = raw.decode("utf-8", errors="replace")
+            _verify_directory(Path(directory), directory_fd)
         finally:
-            if fd >= 0:
+            try:
                 os.close(fd)
+            finally:
+                os.close(directory_fd)
     except OSError:
         return []
     lines = [ln for ln in text.splitlines() if ln.strip()]
