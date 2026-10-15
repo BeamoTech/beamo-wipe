@@ -1,0 +1,1725 @@
+Baseline 20ae39a556ab961baf204e3108e6ebc93b695ac5
+FFFFFFFFFFF.FFFF....FFFF..FF...FFFFFFFFFFFFFFF...FFFFF.......FFFFF.FFFFF [ 71%]
+FFF............FFFF.FFFFFFFFF                                            [100%]
+=================================== FAILURES ===================================
+__ test_malformed_mounted_alias_cannot_disappear[False-model-bad\nmodel-wwn] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6db72c0>
+alias = 'wwn', field = 'model', bad = 'bad\nmodel', mounted_child = False
+
+    @pytest.mark.parametrize("alias", ["wwn", "serial"])
+    @pytest.mark.parametrize("field,bad", [("model", "bad\nmodel"), ("vendor", "v" * 129)])
+    @pytest.mark.parametrize("mounted_child", [False, True])
+    def test_malformed_mounted_alias_cannot_disappear(monkeypatch, alias, field, bad, mounted_child):
+        observed = disk("sdc", wwn="0x5000abc" if alias == "wwn" else "", serial="SHARED")
+        observed[field] = bad
+        if mounted_child:
+            observed["children"] = [{
+                "name": "sdc1", "path": "/dev/sdc1", "type": "part", "pkname": "sdc",
+                "size": 99_000_000_000, "mountpoint": "/media/data", "mountpoints": [None],
+            }]
+        else:
+            observed["mountpoints"] = ["/media/data"]
+        result = scan(monkeypatch, observed)
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...('identity could not be confirmed',), path='', parent_path='', kind_label='', summary='', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:42: AssertionError
+_ test_malformed_mounted_alias_cannot_disappear[False-model-bad\nmodel-serial] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6e79d00>
+alias = 'serial', field = 'model', bad = 'bad\nmodel', mounted_child = False
+
+    @pytest.mark.parametrize("alias", ["wwn", "serial"])
+    @pytest.mark.parametrize("field,bad", [("model", "bad\nmodel"), ("vendor", "v" * 129)])
+    @pytest.mark.parametrize("mounted_child", [False, True])
+    def test_malformed_mounted_alias_cannot_disappear(monkeypatch, alias, field, bad, mounted_child):
+        observed = disk("sdc", wwn="0x5000abc" if alias == "wwn" else "", serial="SHARED")
+        observed[field] = bad
+        if mounted_child:
+            observed["children"] = [{
+                "name": "sdc1", "path": "/dev/sdc1", "type": "part", "pkname": "sdc",
+                "size": 99_000_000_000, "mountpoint": "/media/data", "mountpoints": [None],
+            }]
+        else:
+            observed["mountpoints"] = ["/media/data"]
+        result = scan(monkeypatch, observed)
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...('identity could not be confirmed',), path='', parent_path='', kind_label='', summary='', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:42: AssertionError
+_ test_malformed_mounted_alias_cannot_disappear[False-vendor-vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-wwn] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6e7bb60>
+alias = 'wwn', field = 'vendor'
+bad = 'vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv'
+mounted_child = False
+
+    @pytest.mark.parametrize("alias", ["wwn", "serial"])
+    @pytest.mark.parametrize("field,bad", [("model", "bad\nmodel"), ("vendor", "v" * 129)])
+    @pytest.mark.parametrize("mounted_child", [False, True])
+    def test_malformed_mounted_alias_cannot_disappear(monkeypatch, alias, field, bad, mounted_child):
+        observed = disk("sdc", wwn="0x5000abc" if alias == "wwn" else "", serial="SHARED")
+        observed[field] = bad
+        if mounted_child:
+            observed["children"] = [{
+                "name": "sdc1", "path": "/dev/sdc1", "type": "part", "pkname": "sdc",
+                "size": 99_000_000_000, "mountpoint": "/media/data", "mountpoints": [None],
+            }]
+        else:
+            observed["mountpoints"] = ["/media/data"]
+        result = scan(monkeypatch, observed)
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...('identity could not be confirmed',), path='', parent_path='', kind_label='', summary='', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:42: AssertionError
+_ test_malformed_mounted_alias_cannot_disappear[False-vendor-vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-serial] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6e7b980>
+alias = 'serial', field = 'vendor'
+bad = 'vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv'
+mounted_child = False
+
+    @pytest.mark.parametrize("alias", ["wwn", "serial"])
+    @pytest.mark.parametrize("field,bad", [("model", "bad\nmodel"), ("vendor", "v" * 129)])
+    @pytest.mark.parametrize("mounted_child", [False, True])
+    def test_malformed_mounted_alias_cannot_disappear(monkeypatch, alias, field, bad, mounted_child):
+        observed = disk("sdc", wwn="0x5000abc" if alias == "wwn" else "", serial="SHARED")
+        observed[field] = bad
+        if mounted_child:
+            observed["children"] = [{
+                "name": "sdc1", "path": "/dev/sdc1", "type": "part", "pkname": "sdc",
+                "size": 99_000_000_000, "mountpoint": "/media/data", "mountpoints": [None],
+            }]
+        else:
+            observed["mountpoints"] = ["/media/data"]
+        result = scan(monkeypatch, observed)
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...('identity could not be confirmed',), path='', parent_path='', kind_label='', summary='', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:42: AssertionError
+___ test_malformed_mounted_alias_cannot_disappear[True-model-bad\nmodel-wwn] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6fc83e0>
+alias = 'wwn', field = 'model', bad = 'bad\nmodel', mounted_child = True
+
+    @pytest.mark.parametrize("alias", ["wwn", "serial"])
+    @pytest.mark.parametrize("field,bad", [("model", "bad\nmodel"), ("vendor", "v" * 129)])
+    @pytest.mark.parametrize("mounted_child", [False, True])
+    def test_malformed_mounted_alias_cannot_disappear(monkeypatch, alias, field, bad, mounted_child):
+        observed = disk("sdc", wwn="0x5000abc" if alias == "wwn" else "", serial="SHARED")
+        observed[field] = bad
+        if mounted_child:
+            observed["children"] = [{
+                "name": "sdc1", "path": "/dev/sdc1", "type": "part", "pkname": "sdc",
+                "size": 99_000_000_000, "mountpoint": "/media/data", "mountpoints": [None],
+            }]
+        else:
+            observed["mountpoints"] = ["/media/data"]
+        result = scan(monkeypatch, observed)
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...'/dev/sdc1', parent_path='/dev/sdc', kind_label='Partition', summary='Partition · 99 GB', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:42: AssertionError
+_ test_malformed_mounted_alias_cannot_disappear[True-model-bad\nmodel-serial] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6fcb3e0>
+alias = 'serial', field = 'model', bad = 'bad\nmodel', mounted_child = True
+
+    @pytest.mark.parametrize("alias", ["wwn", "serial"])
+    @pytest.mark.parametrize("field,bad", [("model", "bad\nmodel"), ("vendor", "v" * 129)])
+    @pytest.mark.parametrize("mounted_child", [False, True])
+    def test_malformed_mounted_alias_cannot_disappear(monkeypatch, alias, field, bad, mounted_child):
+        observed = disk("sdc", wwn="0x5000abc" if alias == "wwn" else "", serial="SHARED")
+        observed[field] = bad
+        if mounted_child:
+            observed["children"] = [{
+                "name": "sdc1", "path": "/dev/sdc1", "type": "part", "pkname": "sdc",
+                "size": 99_000_000_000, "mountpoint": "/media/data", "mountpoints": [None],
+            }]
+        else:
+            observed["mountpoints"] = ["/media/data"]
+        result = scan(monkeypatch, observed)
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...'/dev/sdc1', parent_path='/dev/sdc', kind_label='Partition', summary='Partition · 99 GB', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:42: AssertionError
+_ test_malformed_mounted_alias_cannot_disappear[True-vendor-vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-wwn] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6fc8ec0>
+alias = 'wwn', field = 'vendor'
+bad = 'vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv'
+mounted_child = True
+
+    @pytest.mark.parametrize("alias", ["wwn", "serial"])
+    @pytest.mark.parametrize("field,bad", [("model", "bad\nmodel"), ("vendor", "v" * 129)])
+    @pytest.mark.parametrize("mounted_child", [False, True])
+    def test_malformed_mounted_alias_cannot_disappear(monkeypatch, alias, field, bad, mounted_child):
+        observed = disk("sdc", wwn="0x5000abc" if alias == "wwn" else "", serial="SHARED")
+        observed[field] = bad
+        if mounted_child:
+            observed["children"] = [{
+                "name": "sdc1", "path": "/dev/sdc1", "type": "part", "pkname": "sdc",
+                "size": 99_000_000_000, "mountpoint": "/media/data", "mountpoints": [None],
+            }]
+        else:
+            observed["mountpoints"] = ["/media/data"]
+        result = scan(monkeypatch, observed)
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...'/dev/sdc1', parent_path='/dev/sdc', kind_label='Partition', summary='Partition · 99 GB', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:42: AssertionError
+_ test_malformed_mounted_alias_cannot_disappear[True-vendor-vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-serial] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6db9eb0>
+alias = 'serial', field = 'vendor'
+bad = 'vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv'
+mounted_child = True
+
+    @pytest.mark.parametrize("alias", ["wwn", "serial"])
+    @pytest.mark.parametrize("field,bad", [("model", "bad\nmodel"), ("vendor", "v" * 129)])
+    @pytest.mark.parametrize("mounted_child", [False, True])
+    def test_malformed_mounted_alias_cannot_disappear(monkeypatch, alias, field, bad, mounted_child):
+        observed = disk("sdc", wwn="0x5000abc" if alias == "wwn" else "", serial="SHARED")
+        observed[field] = bad
+        if mounted_child:
+            observed["children"] = [{
+                "name": "sdc1", "path": "/dev/sdc1", "type": "part", "pkname": "sdc",
+                "size": 99_000_000_000, "mountpoint": "/media/data", "mountpoints": [None],
+            }]
+        else:
+            observed["mountpoints"] = ["/media/data"]
+        result = scan(monkeypatch, observed)
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...'/dev/sdc1', parent_path='/dev/sdc', kind_label='Partition', summary='Partition · 99 GB', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:42: AssertionError
+_______________ test_case_variant_type_cannot_hide_mounted_alias _______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6dbb710>
+
+    def test_case_variant_type_cannot_hide_mounted_alias(monkeypatch):
+        observed = disk("sdc", wwn="0x5000abc", mounts=["/media/data"])
+        observed["type"] = "DISK"
+        result = scan(monkeypatch, observed)
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...h='/dev/sdc', parent_path='', kind_label='Disk', summary='Disk · 100 GB · Ordinary disk', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:50: AssertionError
+_ test_nonempty_malformed_mount_is_not_repaired_into_unmounted[mountpoint-\n] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6dbaa50>
+field = 'mountpoint', value = '\n'
+
+    @pytest.mark.parametrize("field,value", [("mountpoint", "\n"), ("mountpoints", [" "])])
+    def test_nonempty_malformed_mount_is_not_repaired_into_unmounted(monkeypatch, field, value):
+        observed = disk("sdc", wwn="0x5000abc")
+        observed[field] = value
+        result = scan(monkeypatch, observed)
+>       assert "/dev/sdc" not in {item.path for item in result.selectable}
+E       AssertionError: assert '/dev/sdc' not in {'/dev/sda', '/dev/sdc'}
+
+tests/test_malformed_mounted_alias_regression.py:58: AssertionError
+_ test_nonempty_malformed_mount_is_not_repaired_into_unmounted[mountpoints-value1] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6db8470>
+field = 'mountpoints', value = [' ']
+
+    @pytest.mark.parametrize("field,value", [("mountpoint", "\n"), ("mountpoints", [" "])])
+    def test_nonempty_malformed_mount_is_not_repaired_into_unmounted(monkeypatch, field, value):
+        observed = disk("sdc", wwn="0x5000abc")
+        observed[field] = value
+        result = scan(monkeypatch, observed)
+>       assert "/dev/sdc" not in {item.path for item in result.selectable}
+E       AssertionError: assert '/dev/sdc' not in {'/dev/sda', '/dev/sdc'}
+
+tests/test_malformed_mounted_alias_regression.py:58: AssertionError
+_ test_hidden_mounted_physical_alias_remains_exclusion_evidence[False-sr1-rom] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6db9a00>
+name = 'sr1', kind = 'rom', malformed = False
+
+    @pytest.mark.parametrize("name,kind", [("sr1", "rom"), ("mmcblk0boot0", "disk")])
+    @pytest.mark.parametrize("malformed", [False, True])
+    def test_hidden_mounted_physical_alias_remains_exclusion_evidence(monkeypatch, name, kind, malformed):
+        observed = disk(name, wwn="0x5000abc", mounts=["/media/data"])
+        observed["type"] = kind
+        if malformed:
+            observed["model"] = "bad\nmodel"
+        result = scan(monkeypatch, observed)
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...rent_path='', kind_label='Optical disc', summary='Optical disc · 100 GB · Ordinary disk', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:78: AssertionError
+_ test_hidden_mounted_physical_alias_remains_exclusion_evidence[False-mmcblk0boot0-disk] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6dbb950>
+name = 'mmcblk0boot0', kind = 'disk', malformed = False
+
+    @pytest.mark.parametrize("name,kind", [("sr1", "rom"), ("mmcblk0boot0", "disk")])
+    @pytest.mark.parametrize("malformed", [False, True])
+    def test_hidden_mounted_physical_alias_remains_exclusion_evidence(monkeypatch, name, kind, malformed):
+        observed = disk(name, wwn="0x5000abc", mounts=["/media/data"])
+        observed["type"] = kind
+        if malformed:
+            observed["model"] = "bad\nmodel"
+        result = scan(monkeypatch, observed)
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...mcblk0boot0', parent_path='', kind_label='Disk', summary='Disk · 100 GB · Ordinary disk', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:78: AssertionError
+_ test_hidden_mounted_physical_alias_remains_exclusion_evidence[True-sr1-rom] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6db99d0>
+name = 'sr1', kind = 'rom', malformed = True
+
+    @pytest.mark.parametrize("name,kind", [("sr1", "rom"), ("mmcblk0boot0", "disk")])
+    @pytest.mark.parametrize("malformed", [False, True])
+    def test_hidden_mounted_physical_alias_remains_exclusion_evidence(monkeypatch, name, kind, malformed):
+        observed = disk(name, wwn="0x5000abc", mounts=["/media/data"])
+        observed["type"] = kind
+        if malformed:
+            observed["model"] = "bad\nmodel"
+        result = scan(monkeypatch, observed)
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...('identity could not be confirmed',), path='', parent_path='', kind_label='', summary='', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:78: AssertionError
+_ test_hidden_mounted_physical_alias_remains_exclusion_evidence[True-mmcblk0boot0-disk] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6dbb650>
+name = 'mmcblk0boot0', kind = 'disk', malformed = True
+
+    @pytest.mark.parametrize("name,kind", [("sr1", "rom"), ("mmcblk0boot0", "disk")])
+    @pytest.mark.parametrize("malformed", [False, True])
+    def test_hidden_mounted_physical_alias_remains_exclusion_evidence(monkeypatch, name, kind, malformed):
+        observed = disk(name, wwn="0x5000abc", mounts=["/media/data"])
+        observed["type"] = kind
+        if malformed:
+            observed["model"] = "bad\nmodel"
+        result = scan(monkeypatch, observed)
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...('identity could not be confirmed',), path='', parent_path='', kind_label='', summary='', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:78: AssertionError
+_____ test_flat_mounted_child_preserves_physical_alias_exclusion[True-wwn] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6fc86e0>
+alias = 'wwn', malformed = True
+
+    @pytest.mark.parametrize("alias", ["wwn", "serial"])
+    @pytest.mark.parametrize("malformed", [False, True])
+    def test_flat_mounted_child_preserves_physical_alias_exclusion(monkeypatch, alias, malformed):
+        monkeypatch.setenv("BEAMO_WIPE_DRY_RUN", "1")
+        boot = disk("sdb", serial="BOOT", mounts=["/run/live/medium"])
+        target = disk("sda", wwn="0x5000abc", serial="SHARED")
+        observed = disk("sdc", wwn="0x5000abc" if alias == "wwn" else "", serial="SHARED")
+        if malformed:
+            observed["model"] = "bad\nmodel"
+        child = {
+            "name": "sdc1", "path": "/dev/sdc1", "type": "part", "pkname": "sdc",
+            "size": 99_000_000_000, "mountpoints": ["/media/data"], "mountpoint": None,
+        }
+        result = discover(
+            lsblk_payload={"blockdevices": [boot, target, observed, child]},
+            mount_sources=["/dev/sdb"], env={},
+        )
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...'/dev/sdc1', parent_path='/dev/sdc', kind_label='Partition', summary='Partition · 99 GB', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:113: AssertionError
+___ test_flat_mounted_child_preserves_physical_alias_exclusion[True-serial] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6fc9580>
+alias = 'serial', malformed = True
+
+    @pytest.mark.parametrize("alias", ["wwn", "serial"])
+    @pytest.mark.parametrize("malformed", [False, True])
+    def test_flat_mounted_child_preserves_physical_alias_exclusion(monkeypatch, alias, malformed):
+        monkeypatch.setenv("BEAMO_WIPE_DRY_RUN", "1")
+        boot = disk("sdb", serial="BOOT", mounts=["/run/live/medium"])
+        target = disk("sda", wwn="0x5000abc", serial="SHARED")
+        observed = disk("sdc", wwn="0x5000abc" if alias == "wwn" else "", serial="SHARED")
+        if malformed:
+            observed["model"] = "bad\nmodel"
+        child = {
+            "name": "sdc1", "path": "/dev/sdc1", "type": "part", "pkname": "sdc",
+            "size": 99_000_000_000, "mountpoints": ["/media/data"], "mountpoint": None,
+        }
+        result = discover(
+            lsblk_payload={"blockdevices": [boot, target, observed, child]},
+            mount_sources=["/dev/sdb"], env={},
+        )
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...'/dev/sdc1', parent_path='/dev/sdc', kind_label='Partition', summary='Partition · 99 GB', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:113: AssertionError
+________ test_virtual_type_cannot_hide_mounted_kernel_disk_alias[loop] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b6fc8080>
+kind = 'loop'
+
+    @pytest.mark.parametrize("kind", ["loop", "ram"])
+    def test_virtual_type_cannot_hide_mounted_kernel_disk_alias(monkeypatch, kind):
+        observed = disk("sdc", wwn="0x5000abc", mounts=["/media/data"])
+        observed["type"] = kind
+        result = scan(monkeypatch, observed)
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...parent_path='', kind_label='Loop device', summary='Loop device · 100 GB · Ordinary disk', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:125: AssertionError
+_________ test_virtual_type_cannot_hide_mounted_kernel_disk_alias[ram] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b740e8a0>
+kind = 'ram'
+
+    @pytest.mark.parametrize("kind", ["loop", "ram"])
+    def test_virtual_type_cannot_hide_mounted_kernel_disk_alias(monkeypatch, kind):
+        observed = disk("sdc", wwn="0x5000abc", mounts=["/media/data"])
+        observed["type"] = kind
+        result = scan(monkeypatch, observed)
+>       assert not result.selectable
+E       AssertionError: assert not (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),)
+E        +  where (Disk(path='/dev/sda', name='sda', model='Ordinary disk', serial='SHARED', size_bytes=100000000000, size_gb_label='100...000abc', vendor='Vendor', mountpoints=(), raw_model='Ordinary disk', contents='unknown', hotplug=False, layout_id=''),) = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Ordinary disk', serial='BOOT', size_bytes=100000000000...kind_label='Technical component', summary='Technical component · 100 GB · Ordinary disk', children=())), error_code='').selectable
+
+tests/test_malformed_mounted_alias_regression.py:125: AssertionError
+___ test_unrelated_zero_capacity_survives_armed_restart_without_eligibility ____
+
+session = <function session.<locals>.factory at 0x7162b67b96c0>
+
+    def test_unrelated_zero_capacity_survives_armed_restart_without_eligibility(session):
+        first = session()
+        discovery, request = _baseline(first)
+        assert [disk.path for disk in selectable_disks(discovery)] == [request.device]
+>       first.arm(discovery, request)
+
+tests/test_recovery_zero_capacity_baseline_regression.py:38:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass3-original-brsdy57b/beamo_wipe/session_recovery.py:502: in arm
+    self.save(
+/tmp/beamo-pass3-original-brsdy57b/beamo_wipe/session_recovery.py:394: in save
+    self.validate(record)
+/tmp/beamo-pass3-original-brsdy57b/beamo_wipe/session_recovery.py:352: in validate
+    disks = [_disk(item) for item in context["disks"]]
+             ^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+raw = {'bus': 'USB', 'contents': 'unknown', 'hotplug': True, 'is_boot': False, ...}
+
+    def _disk(raw):
+        if not isinstance(raw, dict) or set(raw) != set(Disk.__dataclass_fields__):
+            raise ValueError("Invalid disk fields")
+        for key, value in raw.items():
+            if key in {"is_boot", "read_only", "hotplug"}:
+                if type(value) is not bool:
+                    raise ValueError("Invalid disk flag")
+            elif key == "size_bytes":
+                if type(value) is not int or not 0 < value < 2**64:
+>                   raise ValueError("Invalid disk size")
+E                   ValueError: Invalid disk size
+
+/tmp/beamo-pass3-original-brsdy57b/beamo_wipe/session_recovery.py:72: ValueError
+___________ test_unrelated_zero_capacity_preserves_terminal_recovery ___________
+
+session = <function session.<locals>.factory at 0x7162b67bb6a0>
+
+    def test_unrelated_zero_capacity_preserves_terminal_recovery(session):
+        first = session()
+        discovery, request = _baseline(first)
+>       first.arm(discovery, request)
+
+tests/test_recovery_zero_capacity_baseline_regression.py:56:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass3-original-brsdy57b/beamo_wipe/session_recovery.py:502: in arm
+    self.save(
+/tmp/beamo-pass3-original-brsdy57b/beamo_wipe/session_recovery.py:394: in save
+    self.validate(record)
+/tmp/beamo-pass3-original-brsdy57b/beamo_wipe/session_recovery.py:352: in validate
+    disks = [_disk(item) for item in context["disks"]]
+             ^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+raw = {'bus': 'USB', 'contents': 'unknown', 'hotplug': True, 'is_boot': False, ...}
+
+    def _disk(raw):
+        if not isinstance(raw, dict) or set(raw) != set(Disk.__dataclass_fields__):
+            raise ValueError("Invalid disk fields")
+        for key, value in raw.items():
+            if key in {"is_boot", "read_only", "hotplug"}:
+                if type(value) is not bool:
+                    raise ValueError("Invalid disk flag")
+            elif key == "size_bytes":
+                if type(value) is not int or not 0 < value < 2**64:
+>                   raise ValueError("Invalid disk size")
+E                   ValueError: Invalid disk size
+
+/tmp/beamo-pass3-original-brsdy57b/beamo_wipe/session_recovery.py:72: ValueError
+__ test_erased_row_cannot_hide_method_counter_contradiction[passes-everyday] ___
+
+method = <MethodId.EVERYDAY: 'everyday'>, wrong_counter = 'passes'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("wrong_counter", ["passes", "rounds"])
+    def test_erased_row_cannot_hide_method_counter_contradiction(method, wrong_counter):
+        spec = METHODS[method]
+        passes = spec.overwrite_passes + (1 if wrong_counter == "passes" else 0)
+        rounds = spec.rounds + (1 if wrong_counter == "rounds" else 0)
+        phase = "writing" if spec.verify == "off" else "verifying"
+        text = (
+            f"/dev/sda: 100.00%, round {rounds} of {rounds}, pass {passes} of {passes}, "
+            f"eta 00:00:00, [{phase}]\n" + STATUS
+        )
+        ok, _summary, reason = completion_for_method(0, text, "/dev/sda", method)
+>       assert not ok
+E       assert not True
+
+tests/test_completion_method_contradictions.py:28: AssertionError
+____ test_erased_row_cannot_hide_method_counter_contradiction[passes-extra] ____
+
+method = <MethodId.EXTRA: 'extra'>, wrong_counter = 'passes'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("wrong_counter", ["passes", "rounds"])
+    def test_erased_row_cannot_hide_method_counter_contradiction(method, wrong_counter):
+        spec = METHODS[method]
+        passes = spec.overwrite_passes + (1 if wrong_counter == "passes" else 0)
+        rounds = spec.rounds + (1 if wrong_counter == "rounds" else 0)
+        phase = "writing" if spec.verify == "off" else "verifying"
+        text = (
+            f"/dev/sda: 100.00%, round {rounds} of {rounds}, pass {passes} of {passes}, "
+            f"eta 00:00:00, [{phase}]\n" + STATUS
+        )
+        ok, _summary, reason = completion_for_method(0, text, "/dev/sda", method)
+>       assert not ok
+E       assert not True
+
+tests/test_completion_method_contradictions.py:28: AssertionError
+_ test_erased_row_cannot_hide_method_counter_contradiction[passes-quick_zero] __
+
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, wrong_counter = 'passes'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("wrong_counter", ["passes", "rounds"])
+    def test_erased_row_cannot_hide_method_counter_contradiction(method, wrong_counter):
+        spec = METHODS[method]
+        passes = spec.overwrite_passes + (1 if wrong_counter == "passes" else 0)
+        rounds = spec.rounds + (1 if wrong_counter == "rounds" else 0)
+        phase = "writing" if spec.verify == "off" else "verifying"
+        text = (
+            f"/dev/sda: 100.00%, round {rounds} of {rounds}, pass {passes} of {passes}, "
+            f"eta 00:00:00, [{phase}]\n" + STATUS
+        )
+        ok, _summary, reason = completion_for_method(0, text, "/dev/sda", method)
+>       assert not ok
+E       assert not True
+
+tests/test_completion_method_contradictions.py:28: AssertionError
+__ test_erased_row_cannot_hide_method_counter_contradiction[rounds-everyday] ___
+
+method = <MethodId.EVERYDAY: 'everyday'>, wrong_counter = 'rounds'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("wrong_counter", ["passes", "rounds"])
+    def test_erased_row_cannot_hide_method_counter_contradiction(method, wrong_counter):
+        spec = METHODS[method]
+        passes = spec.overwrite_passes + (1 if wrong_counter == "passes" else 0)
+        rounds = spec.rounds + (1 if wrong_counter == "rounds" else 0)
+        phase = "writing" if spec.verify == "off" else "verifying"
+        text = (
+            f"/dev/sda: 100.00%, round {rounds} of {rounds}, pass {passes} of {passes}, "
+            f"eta 00:00:00, [{phase}]\n" + STATUS
+        )
+        ok, _summary, reason = completion_for_method(0, text, "/dev/sda", method)
+>       assert not ok
+E       assert not True
+
+tests/test_completion_method_contradictions.py:28: AssertionError
+____ test_erased_row_cannot_hide_method_counter_contradiction[rounds-extra] ____
+
+method = <MethodId.EXTRA: 'extra'>, wrong_counter = 'rounds'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("wrong_counter", ["passes", "rounds"])
+    def test_erased_row_cannot_hide_method_counter_contradiction(method, wrong_counter):
+        spec = METHODS[method]
+        passes = spec.overwrite_passes + (1 if wrong_counter == "passes" else 0)
+        rounds = spec.rounds + (1 if wrong_counter == "rounds" else 0)
+        phase = "writing" if spec.verify == "off" else "verifying"
+        text = (
+            f"/dev/sda: 100.00%, round {rounds} of {rounds}, pass {passes} of {passes}, "
+            f"eta 00:00:00, [{phase}]\n" + STATUS
+        )
+        ok, _summary, reason = completion_for_method(0, text, "/dev/sda", method)
+>       assert not ok
+E       assert not True
+
+tests/test_completion_method_contradictions.py:28: AssertionError
+_ test_erased_row_cannot_hide_method_counter_contradiction[rounds-quick_zero] __
+
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, wrong_counter = 'rounds'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("wrong_counter", ["passes", "rounds"])
+    def test_erased_row_cannot_hide_method_counter_contradiction(method, wrong_counter):
+        spec = METHODS[method]
+        passes = spec.overwrite_passes + (1 if wrong_counter == "passes" else 0)
+        rounds = spec.rounds + (1 if wrong_counter == "rounds" else 0)
+        phase = "writing" if spec.verify == "off" else "verifying"
+        text = (
+            f"/dev/sda: 100.00%, round {rounds} of {rounds}, pass {passes} of {passes}, "
+            f"eta 00:00:00, [{phase}]\n" + STATUS
+        )
+        ok, _summary, reason = completion_for_method(0, text, "/dev/sda", method)
+>       assert not ok
+E       assert not True
+
+tests/test_completion_method_contradictions.py:28: AssertionError
+_ test_other_complete_engine_phases_cannot_hide_counter_contradictions[everyday-syncing] _
+
+phase = 'syncing', method = <MethodId.EVERYDAY: 'everyday'>
+
+    @pytest.mark.parametrize("phase", ["syncing", "retrying", "blanking"])
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_other_complete_engine_phases_cannot_hide_counter_contradictions(phase, method):
+        spec = METHODS[method]
+        wrong_passes = spec.overwrite_passes + 1
+        text = (
+            f"/dev/sda: 010.00%, round 1 of 1, pass 1 of {wrong_passes}, "
+            f"eta 00:00:10, [{phase}]\n" + STATUS
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_method_contradictions.py:41: AssertionError
+_ test_other_complete_engine_phases_cannot_hide_counter_contradictions[everyday-retrying] _
+
+phase = 'retrying', method = <MethodId.EVERYDAY: 'everyday'>
+
+    @pytest.mark.parametrize("phase", ["syncing", "retrying", "blanking"])
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_other_complete_engine_phases_cannot_hide_counter_contradictions(phase, method):
+        spec = METHODS[method]
+        wrong_passes = spec.overwrite_passes + 1
+        text = (
+            f"/dev/sda: 010.00%, round 1 of 1, pass 1 of {wrong_passes}, "
+            f"eta 00:00:10, [{phase}]\n" + STATUS
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_method_contradictions.py:41: AssertionError
+_ test_other_complete_engine_phases_cannot_hide_counter_contradictions[everyday-blanking] _
+
+phase = 'blanking', method = <MethodId.EVERYDAY: 'everyday'>
+
+    @pytest.mark.parametrize("phase", ["syncing", "retrying", "blanking"])
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_other_complete_engine_phases_cannot_hide_counter_contradictions(phase, method):
+        spec = METHODS[method]
+        wrong_passes = spec.overwrite_passes + 1
+        text = (
+            f"/dev/sda: 010.00%, round 1 of 1, pass 1 of {wrong_passes}, "
+            f"eta 00:00:10, [{phase}]\n" + STATUS
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_method_contradictions.py:41: AssertionError
+_ test_other_complete_engine_phases_cannot_hide_counter_contradictions[extra-syncing] _
+
+phase = 'syncing', method = <MethodId.EXTRA: 'extra'>
+
+    @pytest.mark.parametrize("phase", ["syncing", "retrying", "blanking"])
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_other_complete_engine_phases_cannot_hide_counter_contradictions(phase, method):
+        spec = METHODS[method]
+        wrong_passes = spec.overwrite_passes + 1
+        text = (
+            f"/dev/sda: 010.00%, round 1 of 1, pass 1 of {wrong_passes}, "
+            f"eta 00:00:10, [{phase}]\n" + STATUS
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_method_contradictions.py:41: AssertionError
+_ test_other_complete_engine_phases_cannot_hide_counter_contradictions[extra-retrying] _
+
+phase = 'retrying', method = <MethodId.EXTRA: 'extra'>
+
+    @pytest.mark.parametrize("phase", ["syncing", "retrying", "blanking"])
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_other_complete_engine_phases_cannot_hide_counter_contradictions(phase, method):
+        spec = METHODS[method]
+        wrong_passes = spec.overwrite_passes + 1
+        text = (
+            f"/dev/sda: 010.00%, round 1 of 1, pass 1 of {wrong_passes}, "
+            f"eta 00:00:10, [{phase}]\n" + STATUS
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_method_contradictions.py:41: AssertionError
+_ test_other_complete_engine_phases_cannot_hide_counter_contradictions[extra-blanking] _
+
+phase = 'blanking', method = <MethodId.EXTRA: 'extra'>
+
+    @pytest.mark.parametrize("phase", ["syncing", "retrying", "blanking"])
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_other_complete_engine_phases_cannot_hide_counter_contradictions(phase, method):
+        spec = METHODS[method]
+        wrong_passes = spec.overwrite_passes + 1
+        text = (
+            f"/dev/sda: 010.00%, round 1 of 1, pass 1 of {wrong_passes}, "
+            f"eta 00:00:10, [{phase}]\n" + STATUS
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_method_contradictions.py:41: AssertionError
+_ test_other_complete_engine_phases_cannot_hide_counter_contradictions[quick_zero-syncing] _
+
+phase = 'syncing', method = <MethodId.QUICK_ZERO: 'quick_zero'>
+
+    @pytest.mark.parametrize("phase", ["syncing", "retrying", "blanking"])
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_other_complete_engine_phases_cannot_hide_counter_contradictions(phase, method):
+        spec = METHODS[method]
+        wrong_passes = spec.overwrite_passes + 1
+        text = (
+            f"/dev/sda: 010.00%, round 1 of 1, pass 1 of {wrong_passes}, "
+            f"eta 00:00:10, [{phase}]\n" + STATUS
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_method_contradictions.py:41: AssertionError
+_ test_other_complete_engine_phases_cannot_hide_counter_contradictions[quick_zero-retrying] _
+
+phase = 'retrying', method = <MethodId.QUICK_ZERO: 'quick_zero'>
+
+    @pytest.mark.parametrize("phase", ["syncing", "retrying", "blanking"])
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_other_complete_engine_phases_cannot_hide_counter_contradictions(phase, method):
+        spec = METHODS[method]
+        wrong_passes = spec.overwrite_passes + 1
+        text = (
+            f"/dev/sda: 010.00%, round 1 of 1, pass 1 of {wrong_passes}, "
+            f"eta 00:00:10, [{phase}]\n" + STATUS
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_method_contradictions.py:41: AssertionError
+_ test_other_complete_engine_phases_cannot_hide_counter_contradictions[quick_zero-blanking] _
+
+phase = 'blanking', method = <MethodId.QUICK_ZERO: 'quick_zero'>
+
+    @pytest.mark.parametrize("phase", ["syncing", "retrying", "blanking"])
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_other_complete_engine_phases_cannot_hide_counter_contradictions(phase, method):
+        spec = METHODS[method]
+        wrong_passes = spec.overwrite_passes + 1
+        text = (
+            f"/dev/sda: 010.00%, round 1 of 1, pass 1 of {wrong_passes}, "
+            f"eta 00:00:10, [{phase}]\n" + STATUS
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_method_contradictions.py:41: AssertionError
+_______ test_final_progress_cannot_claim_an_unrequested_round[everyday] ________
+
+method = <MethodId.EVERYDAY: 'everyday'>
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_final_progress_cannot_claim_an_unrequested_round(method):
+        spec = METHODS[method]
+        phase = "writing" if spec.verify == "off" else "verifying"
+        text = (
+            f"/dev/sda: 100.00%, round 2 of 2, pass {spec.overwrite_passes} "
+            f"of {spec.overwrite_passes}, eta 00:00:00, [{phase}]\n"
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_method_contradictions.py:69: AssertionError
+_________ test_final_progress_cannot_claim_an_unrequested_round[extra] _________
+
+method = <MethodId.EXTRA: 'extra'>
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_final_progress_cannot_claim_an_unrequested_round(method):
+        spec = METHODS[method]
+        phase = "writing" if spec.verify == "off" else "verifying"
+        text = (
+            f"/dev/sda: 100.00%, round 2 of 2, pass {spec.overwrite_passes} "
+            f"of {spec.overwrite_passes}, eta 00:00:00, [{phase}]\n"
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_method_contradictions.py:69: AssertionError
+______ test_final_progress_cannot_claim_an_unrequested_round[quick_zero] _______
+
+method = <MethodId.QUICK_ZERO: 'quick_zero'>
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_final_progress_cannot_claim_an_unrequested_round(method):
+        spec = METHODS[method]
+        phase = "writing" if spec.verify == "off" else "verifying"
+        text = (
+            f"/dev/sda: 100.00%, round 2 of 2, pass {spec.overwrite_passes} "
+            f"of {spec.overwrite_passes}, eta 00:00:00, [{phase}]\n"
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_method_contradictions.py:69: AssertionError
+___ test_later_matching_progress_cannot_hide_earlier_method_conflict[False] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-145/test_later_matching_progress_c0')
+large_log = False
+
+    @pytest.mark.parametrize("large_log", [False, True])
+    def test_later_matching_progress_cannot_hide_earlier_method_conflict(
+        tmp_path, large_log
+    ):
+        early = (
+            "/dev/sda: 010.00%, round 1 of 1, pass 1 of 1, "
+            "eta 00:10:00, [writing]\n"
+        )
+        late = (
+            "/dev/sda: 100.00%, round 1 of 1, pass 3 of 3, "
+            "eta 00:00:00, [verifying]\n"
+        )
+        padding = "ordinary message\n" * 70000 if large_log else ""
+        logfile = tmp_path / "nwipe.log"
+        logfile.write_text(early + padding + late + STATUS)
+        runner = module.NwipeRunner()
+
+        class Exited:
+            def poll(self):
+                return 0
+
+        runner._proc = Exited()
+        request = WipeRequest("/dev/sda", MethodId.EXTRA, "/dev/sr0", str(logfile))
+        result = runner.poll(request)
+>       assert result is not None and not result.ok
+E       AssertionError: assert (WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-145/test_later_matching_progress_c0/nwipe.log', reason='completed') is not None and not True)
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-145/test_later_matching_progress_c0/nwipe.log', reason='completed').ok
+
+tests/test_completion_method_contradictions.py:96: AssertionError
+____ test_later_matching_progress_cannot_hide_earlier_method_conflict[True] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-145/test_later_matching_progress_c1')
+large_log = True
+
+    @pytest.mark.parametrize("large_log", [False, True])
+    def test_later_matching_progress_cannot_hide_earlier_method_conflict(
+        tmp_path, large_log
+    ):
+        early = (
+            "/dev/sda: 010.00%, round 1 of 1, pass 1 of 1, "
+            "eta 00:10:00, [writing]\n"
+        )
+        late = (
+            "/dev/sda: 100.00%, round 1 of 1, pass 3 of 3, "
+            "eta 00:00:00, [verifying]\n"
+        )
+        padding = "ordinary message\n" * 70000 if large_log else ""
+        logfile = tmp_path / "nwipe.log"
+        logfile.write_text(early + padding + late + STATUS)
+        runner = module.NwipeRunner()
+
+        class Exited:
+            def poll(self):
+                return 0
+
+        runner._proc = Exited()
+        request = WipeRequest("/dev/sda", MethodId.EXTRA, "/dev/sr0", str(logfile))
+        result = runner.poll(request)
+>       assert result is not None and not result.ok
+E       AssertionError: assert (WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-145/test_later_matching_progress_c1/nwipe.log', reason='completed') is not None and not True)
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-145/test_later_matching_progress_c1/nwipe.log', reason='completed').ok
+
+tests/test_completion_method_contradictions.py:96: AssertionError
+___ test_counter_projection_refuses_when_distinct_totals_exceed_evidence_cap ___
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-145/test_counter_projection_refuse0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b731b740>
+
+    def test_counter_projection_refuses_when_distinct_totals_exceed_evidence_cap(
+        tmp_path, monkeypatch
+    ):
+        logfile = tmp_path / "nwipe.log"
+        samples = "".join(
+            f"/dev/sda: 010.00%, round 1 of 1, pass 1 of {total}, "
+            "eta 00:10:00, [writing]\n" for total in range(1, 5)
+        )
+        logfile.write_text(samples + STATUS)
+        monkeypatch.setattr(module, "NWIPE_COMPLETION_EVIDENCE_BYTES", 250)
+        projection = module.NwipeRunner()._scan_completion_log(
+            str(logfile), "/dev/sda", module._log_signature(logfile.stat())
+        )
+>       assert projection is None
+E       AssertionError: assert '********************************* Drive Status *********************************\n      sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n/dev/sda: 010.00%, round 1 of 1, pass 1 of 4, eta 00:10:00, [writing]\n' is None
+
+tests/test_completion_method_contradictions.py:129: AssertionError
+____ test_directory_replacement_during_file_open_is_refused[symlink-write] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-145/test_directory_replacement_dur0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b731b980>
+operation = 'write', replacement = 'symlink'
+
+    @pytest.mark.parametrize("operation", ["write", "read"])
+    @pytest.mark.parametrize("replacement", ["symlink", "directory"])
+    def test_directory_replacement_during_file_open_is_refused(
+        tmp_path, monkeypatch, operation, replacement
+    ):
+        directory = tmp_path / "private"
+        directory.mkdir(mode=0o700)
+        outside = tmp_path / "outside"
+        outside.mkdir(mode=0o700)
+        logfile = directory / "diagnostics.log"
+        logfile.write_text('{"code":"original"}\n')
+        logfile.chmod(0o600)
+        (outside / "diagnostics.log").write_text('{"code":"outside"}\n')
+        (outside / "diagnostics.log").chmod(0o600)
+        before = (outside / "diagnostics.log").read_bytes()
+        original_open = os.open
+        swapped = False
+
+        def swap_before_open(path, *args, **kwargs):
+            nonlocal swapped
+            if not swapped and os.fspath(path) in {str(logfile), "diagnostics.log"}:
+                swapped = True
+                directory.rename(tmp_path / "retired")
+                if replacement == "symlink":
+                    directory.symlink_to(outside, target_is_directory=True)
+                else:
+                    directory.mkdir(mode=0o700)
+                    (directory / "diagnostics.log").write_text('{"code":"replacement"}\n')
+                    (directory / "diagnostics.log").chmod(0o600)
+            return original_open(path, *args, **kwargs)
+
+        monkeypatch.setattr(diagnostics.os, "open", swap_before_open)
+        if operation == "write":
+>           assert diagnostics.log_diag("audit", "test", log_dir=directory) is False
+E           AssertionError: assert True is False
+E            +  where True = <function log_diag at 0x7162b74d89a0>('audit', 'test', log_dir=PosixPath('/tmp/pytest-of-root/pytest-145/test_directory_replacement_dur0/private'))
+E            +    where <function log_diag at 0x7162b74d89a0> = diagnostics.log_diag
+
+tests/test_diagnostics_directory_binding_regression.py:44: AssertionError
+_____ test_directory_replacement_during_file_open_is_refused[symlink-read] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-145/test_directory_replacement_dur1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b7437830>
+operation = 'read', replacement = 'symlink'
+
+    @pytest.mark.parametrize("operation", ["write", "read"])
+    @pytest.mark.parametrize("replacement", ["symlink", "directory"])
+    def test_directory_replacement_during_file_open_is_refused(
+        tmp_path, monkeypatch, operation, replacement
+    ):
+        directory = tmp_path / "private"
+        directory.mkdir(mode=0o700)
+        outside = tmp_path / "outside"
+        outside.mkdir(mode=0o700)
+        logfile = directory / "diagnostics.log"
+        logfile.write_text('{"code":"original"}\n')
+        logfile.chmod(0o600)
+        (outside / "diagnostics.log").write_text('{"code":"outside"}\n')
+        (outside / "diagnostics.log").chmod(0o600)
+        before = (outside / "diagnostics.log").read_bytes()
+        original_open = os.open
+        swapped = False
+
+        def swap_before_open(path, *args, **kwargs):
+            nonlocal swapped
+            if not swapped and os.fspath(path) in {str(logfile), "diagnostics.log"}:
+                swapped = True
+                directory.rename(tmp_path / "retired")
+                if replacement == "symlink":
+                    directory.symlink_to(outside, target_is_directory=True)
+                else:
+                    directory.mkdir(mode=0o700)
+                    (directory / "diagnostics.log").write_text('{"code":"replacement"}\n')
+                    (directory / "diagnostics.log").chmod(0o600)
+            return original_open(path, *args, **kwargs)
+
+        monkeypatch.setattr(diagnostics.os, "open", swap_before_open)
+        if operation == "write":
+            assert diagnostics.log_diag("audit", "test", log_dir=directory) is False
+        else:
+>           assert diagnostics.read_diagnostics(directory) == []
+E           AssertionError: assert [{'code': 'outside'}] == []
+E
+E             Left contains one more item: {'code': 'outside'}
+E             Use -v to get more diff
+
+tests/test_diagnostics_directory_binding_regression.py:46: AssertionError
+___ test_directory_replacement_during_file_open_is_refused[directory-write] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-145/test_directory_replacement_dur2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b7437170>
+operation = 'write', replacement = 'directory'
+
+    @pytest.mark.parametrize("operation", ["write", "read"])
+    @pytest.mark.parametrize("replacement", ["symlink", "directory"])
+    def test_directory_replacement_during_file_open_is_refused(
+        tmp_path, monkeypatch, operation, replacement
+    ):
+        directory = tmp_path / "private"
+        directory.mkdir(mode=0o700)
+        outside = tmp_path / "outside"
+        outside.mkdir(mode=0o700)
+        logfile = directory / "diagnostics.log"
+        logfile.write_text('{"code":"original"}\n')
+        logfile.chmod(0o600)
+        (outside / "diagnostics.log").write_text('{"code":"outside"}\n')
+        (outside / "diagnostics.log").chmod(0o600)
+        before = (outside / "diagnostics.log").read_bytes()
+        original_open = os.open
+        swapped = False
+
+        def swap_before_open(path, *args, **kwargs):
+            nonlocal swapped
+            if not swapped and os.fspath(path) in {str(logfile), "diagnostics.log"}:
+                swapped = True
+                directory.rename(tmp_path / "retired")
+                if replacement == "symlink":
+                    directory.symlink_to(outside, target_is_directory=True)
+                else:
+                    directory.mkdir(mode=0o700)
+                    (directory / "diagnostics.log").write_text('{"code":"replacement"}\n')
+                    (directory / "diagnostics.log").chmod(0o600)
+            return original_open(path, *args, **kwargs)
+
+        monkeypatch.setattr(diagnostics.os, "open", swap_before_open)
+        if operation == "write":
+>           assert diagnostics.log_diag("audit", "test", log_dir=directory) is False
+E           AssertionError: assert True is False
+E            +  where True = <function log_diag at 0x7162b74d89a0>('audit', 'test', log_dir=PosixPath('/tmp/pytest-of-root/pytest-145/test_directory_replacement_dur2/private'))
+E            +    where <function log_diag at 0x7162b74d89a0> = diagnostics.log_diag
+
+tests/test_diagnostics_directory_binding_regression.py:44: AssertionError
+____ test_directory_replacement_during_file_open_is_refused[directory-read] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-145/test_directory_replacement_dur3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b7435280>
+operation = 'read', replacement = 'directory'
+
+    @pytest.mark.parametrize("operation", ["write", "read"])
+    @pytest.mark.parametrize("replacement", ["symlink", "directory"])
+    def test_directory_replacement_during_file_open_is_refused(
+        tmp_path, monkeypatch, operation, replacement
+    ):
+        directory = tmp_path / "private"
+        directory.mkdir(mode=0o700)
+        outside = tmp_path / "outside"
+        outside.mkdir(mode=0o700)
+        logfile = directory / "diagnostics.log"
+        logfile.write_text('{"code":"original"}\n')
+        logfile.chmod(0o600)
+        (outside / "diagnostics.log").write_text('{"code":"outside"}\n')
+        (outside / "diagnostics.log").chmod(0o600)
+        before = (outside / "diagnostics.log").read_bytes()
+        original_open = os.open
+        swapped = False
+
+        def swap_before_open(path, *args, **kwargs):
+            nonlocal swapped
+            if not swapped and os.fspath(path) in {str(logfile), "diagnostics.log"}:
+                swapped = True
+                directory.rename(tmp_path / "retired")
+                if replacement == "symlink":
+                    directory.symlink_to(outside, target_is_directory=True)
+                else:
+                    directory.mkdir(mode=0o700)
+                    (directory / "diagnostics.log").write_text('{"code":"replacement"}\n')
+                    (directory / "diagnostics.log").chmod(0o600)
+            return original_open(path, *args, **kwargs)
+
+        monkeypatch.setattr(diagnostics.os, "open", swap_before_open)
+        if operation == "write":
+            assert diagnostics.log_diag("audit", "test", log_dir=directory) is False
+        else:
+>           assert diagnostics.read_diagnostics(directory) == []
+E           AssertionError: assert [{'code': 'replacement'}] == []
+E
+E             Left contains one more item: {'code': 'replacement'}
+E             Use -v to get more diff
+
+tests/test_diagnostics_directory_binding_regression.py:46: AssertionError
+_________________ test_symlink_log_directory_is_refused[write] _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-145/test_symlink_log_directory_is_0')
+operation = 'write'
+
+    @pytest.mark.parametrize("operation", ["write", "read"])
+    def test_symlink_log_directory_is_refused(tmp_path, operation):
+        outside = tmp_path / "outside"
+        outside.mkdir(mode=0o700)
+        (outside / "diagnostics.log").write_text('{"code":"outside"}\n')
+        link = tmp_path / "link"
+        link.symlink_to(outside, target_is_directory=True)
+        if operation == "write":
+>           assert diagnostics.log_diag("audit", "test", log_dir=link) is False
+E           AssertionError: assert True is False
+E            +  where True = <function log_diag at 0x7162b74d89a0>('audit', 'test', log_dir=PosixPath('/tmp/pytest-of-root/pytest-145/test_symlink_log_directory_is_0/link'))
+E            +    where <function log_diag at 0x7162b74d89a0> = diagnostics.log_diag
+
+tests/test_diagnostics_directory_binding_regression.py:67: AssertionError
+_________________ test_symlink_log_directory_is_refused[read] __________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-145/test_symlink_log_directory_is_1')
+operation = 'read'
+
+    @pytest.mark.parametrize("operation", ["write", "read"])
+    def test_symlink_log_directory_is_refused(tmp_path, operation):
+        outside = tmp_path / "outside"
+        outside.mkdir(mode=0o700)
+        (outside / "diagnostics.log").write_text('{"code":"outside"}\n')
+        link = tmp_path / "link"
+        link.symlink_to(outside, target_is_directory=True)
+        if operation == "write":
+            assert diagnostics.log_diag("audit", "test", log_dir=link) is False
+        else:
+>           assert diagnostics.read_diagnostics(link) == []
+E           AssertionError: assert [{'code': 'outside'}] == []
+E
+E             Left contains one more item: {'code': 'outside'}
+E             Use -v to get more diff
+
+tests/test_diagnostics_directory_binding_regression.py:69: AssertionError
+_ test_inexact_percent_cannot_round_into_completion[everyday-99.99999999999999999999] _
+
+percent = '99.99999999999999999999', method = <MethodId.EVERYDAY: 'everyday'>
+
+    @pytest.mark.parametrize("percent", ["99.99999999999999999999", "100.00000000000000000001"])
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_inexact_percent_cannot_round_into_completion(percent, method):
+        passes = 3 if method == MethodId.EXTRA else 1
+        phase = "writing" if method == MethodId.QUICK_ZERO else "verifying"
+        text = (
+            f"/dev/sda: {percent}%, round 1 of 1, pass {passes} of {passes}, "
+            f"eta 00:00:00, [{phase}]\n"
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_percent_precision.py:18: AssertionError
+_ test_inexact_percent_cannot_round_into_completion[everyday-100.00000000000000000001] _
+
+percent = '100.00000000000000000001', method = <MethodId.EVERYDAY: 'everyday'>
+
+    @pytest.mark.parametrize("percent", ["99.99999999999999999999", "100.00000000000000000001"])
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_inexact_percent_cannot_round_into_completion(percent, method):
+        passes = 3 if method == MethodId.EXTRA else 1
+        phase = "writing" if method == MethodId.QUICK_ZERO else "verifying"
+        text = (
+            f"/dev/sda: {percent}%, round 1 of 1, pass {passes} of {passes}, "
+            f"eta 00:00:00, [{phase}]\n"
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_percent_precision.py:18: AssertionError
+_ test_inexact_percent_cannot_round_into_completion[extra-99.99999999999999999999] _
+
+percent = '99.99999999999999999999', method = <MethodId.EXTRA: 'extra'>
+
+    @pytest.mark.parametrize("percent", ["99.99999999999999999999", "100.00000000000000000001"])
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_inexact_percent_cannot_round_into_completion(percent, method):
+        passes = 3 if method == MethodId.EXTRA else 1
+        phase = "writing" if method == MethodId.QUICK_ZERO else "verifying"
+        text = (
+            f"/dev/sda: {percent}%, round 1 of 1, pass {passes} of {passes}, "
+            f"eta 00:00:00, [{phase}]\n"
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_percent_precision.py:18: AssertionError
+_ test_inexact_percent_cannot_round_into_completion[extra-100.00000000000000000001] _
+
+percent = '100.00000000000000000001', method = <MethodId.EXTRA: 'extra'>
+
+    @pytest.mark.parametrize("percent", ["99.99999999999999999999", "100.00000000000000000001"])
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_inexact_percent_cannot_round_into_completion(percent, method):
+        passes = 3 if method == MethodId.EXTRA else 1
+        phase = "writing" if method == MethodId.QUICK_ZERO else "verifying"
+        text = (
+            f"/dev/sda: {percent}%, round 1 of 1, pass {passes} of {passes}, "
+            f"eta 00:00:00, [{phase}]\n"
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_percent_precision.py:18: AssertionError
+_ test_inexact_percent_cannot_round_into_completion[quick_zero-99.99999999999999999999] _
+
+percent = '99.99999999999999999999'
+method = <MethodId.QUICK_ZERO: 'quick_zero'>
+
+    @pytest.mark.parametrize("percent", ["99.99999999999999999999", "100.00000000000000000001"])
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_inexact_percent_cannot_round_into_completion(percent, method):
+        passes = 3 if method == MethodId.EXTRA else 1
+        phase = "writing" if method == MethodId.QUICK_ZERO else "verifying"
+        text = (
+            f"/dev/sda: {percent}%, round 1 of 1, pass {passes} of {passes}, "
+            f"eta 00:00:00, [{phase}]\n"
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_percent_precision.py:18: AssertionError
+_ test_inexact_percent_cannot_round_into_completion[quick_zero-100.00000000000000000001] _
+
+percent = '100.00000000000000000001'
+method = <MethodId.QUICK_ZERO: 'quick_zero'>
+
+    @pytest.mark.parametrize("percent", ["99.99999999999999999999", "100.00000000000000000001"])
+    @pytest.mark.parametrize("method", list(MethodId))
+    def test_inexact_percent_cannot_round_into_completion(percent, method):
+        passes = 3 if method == MethodId.EXTRA else 1
+        phase = "writing" if method == MethodId.QUICK_ZERO else "verifying"
+        text = (
+            f"/dev/sda: {percent}%, round 1 of 1, pass {passes} of {passes}, "
+            f"eta 00:00:00, [{phase}]\n"
+        )
+>       assert completion_for_method(0, text, "/dev/sda", method)[0] is False
+E       assert True is False
+
+tests/test_completion_percent_precision.py:18: AssertionError
+_________ test_true_excess_above_hundred_is_not_a_progress_observation _________
+
+    def test_true_excess_above_hundred_is_not_a_progress_observation():
+        text = (
+            "/dev/sda: 100.00000000000000000001%, round 1 of 1, pass 1 of 1, "
+            "eta 00:00:00, [verifying]\n"
+        )
+>       assert list(_iter_target_progress(text, "/dev/sda")) == []
+E       AssertionError: assert [(<re.Match o...of 1>, 100.0)] == []
+E
+E         Left contains one more item: (<re.Match object; span=(0, 62), match='/dev/sda: 100.00000000000000000001%, round 1 of 1>, 100.0)
+E         Use -v to get more diff
+
+tests/test_completion_percent_precision.py:38: AssertionError
+_______ test_late_progress_read_does_not_rewind_phase_or_freshness[True] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b73e5820>
+newer_available = True
+
+    @pytest.mark.parametrize("newer_available", [True, False])
+    def test_late_progress_read_does_not_rewind_phase_or_freshness(monkeypatch, newer_available):
+        request = WipeRequest("/dev/sda", MethodId.EVERYDAY, "/dev/sr0", "fake-log")
+
+        class Running:
+            def poll(self):
+                return None
+
+            def send_signal(self, _signal):
+                pass
+
+        runner = NwipeRunner()
+        runner._proc = Running()
+        runner._active_request = request
+        runner._sigusr1_armed = True
+        waiting, resume = threading.Event(), threading.Event()
+        errors = []
+
+        def read_log(*_args):
+            if threading.current_thread() is older:
+                waiting.set()
+                assert resume.wait(5)
+                percent, phase = "020.00", "writing"
+            else:
+                if not newer_available:
+                    return ""  # empty, missing and failed reads all expose no observation
+                percent, phase = "080.00", "verifying"
+            return (
+                f"/dev/sda: {percent}%, round 1 of 1, pass 1 of 1, "
+                f"eta 00:00:10, [{phase}]\n"
+            )
+
+        def poll_older():
+            try:
+                runner.poll(request)
+            except BaseException as exc:
+                errors.append(exc)
+
+        monkeypatch.setattr(runner, "_read_log_tail", read_log)
+        older = threading.Thread(target=poll_older)
+        older.start()
+        try:
+            assert waiting.wait(5)
+            assert runner.poll(request) is None
+            if newer_available:
+                assert runner.progress_observation.phase == "Verifying"
+            else:
+                assert runner.progress_observation is None
+            resume.set()
+            older.join(5)
+            assert not older.is_alive() and not errors
+            if newer_available:
+                assert runner.progress == 80
+>               assert runner.progress_observation.phase == "Verifying"
+E               AssertionError: assert 'Writing' == 'Verifying'
+E
+E                 - Verifying
+E                 + Writing
+
+tests/test_runner_concurrent_progress_order.py:65: AssertionError
+______ test_late_progress_read_does_not_rewind_phase_or_freshness[False] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b73e50a0>
+newer_available = False
+
+    @pytest.mark.parametrize("newer_available", [True, False])
+    def test_late_progress_read_does_not_rewind_phase_or_freshness(monkeypatch, newer_available):
+        request = WipeRequest("/dev/sda", MethodId.EVERYDAY, "/dev/sr0", "fake-log")
+
+        class Running:
+            def poll(self):
+                return None
+
+            def send_signal(self, _signal):
+                pass
+
+        runner = NwipeRunner()
+        runner._proc = Running()
+        runner._active_request = request
+        runner._sigusr1_armed = True
+        waiting, resume = threading.Event(), threading.Event()
+        errors = []
+
+        def read_log(*_args):
+            if threading.current_thread() is older:
+                waiting.set()
+                assert resume.wait(5)
+                percent, phase = "020.00", "writing"
+            else:
+                if not newer_available:
+                    return ""  # empty, missing and failed reads all expose no observation
+                percent, phase = "080.00", "verifying"
+            return (
+                f"/dev/sda: {percent}%, round 1 of 1, pass 1 of 1, "
+                f"eta 00:00:10, [{phase}]\n"
+            )
+
+        def poll_older():
+            try:
+                runner.poll(request)
+            except BaseException as exc:
+                errors.append(exc)
+
+        monkeypatch.setattr(runner, "_read_log_tail", read_log)
+        older = threading.Thread(target=poll_older)
+        older.start()
+        try:
+            assert waiting.wait(5)
+            assert runner.poll(request) is None
+            if newer_available:
+                assert runner.progress_observation.phase == "Verifying"
+            else:
+                assert runner.progress_observation is None
+            resume.set()
+            older.join(5)
+            assert not older.is_alive() and not errors
+            if newer_available:
+                assert runner.progress == 80
+                assert runner.progress_observation.phase == "Verifying"
+                assert runner.progress_observation.percent == 80
+            else:
+>               assert runner.progress is None
+E               assert 20.0 is None
+E                +  where 20.0 = <beamo_wipe.nwipe_runner.NwipeRunner object at 0x7162b7356690>.progress
+
+tests/test_runner_concurrent_progress_order.py:68: AssertionError
+_____________ test_direct_refresh_remains_ordered_across_new_start _____________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-145/test_direct_refresh_remains_or0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7162b73566f0>
+
+    def test_direct_refresh_remains_ordered_across_new_start(tmp_path, monkeypatch):
+        monkeypatch.setenv("BEAMO_WIPE_DRY_RUN", "1")
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+        process = Mock(returncode=None)
+        process.poll.return_value = None
+        monkeypatch.setattr("beamo_wipe.nwipe_runner.subprocess.Popen", lambda *_a, **_kw: process)
+        runner = NwipeRunner(binary=str(tmp_path / "fake-engine"))
+        request = WipeRequest("/dev/sda", MethodId.EVERYDAY, "/dev/sr0", str(tmp_path / "new.log"))
+        waiting, resume = threading.Event(), threading.Event()
+        errors = []
+
+        def read_log(*_args):
+            if threading.current_thread() is older:
+                waiting.set()
+                assert resume.wait(5)
+                percent, phase = "020.00", "writing"
+            else:
+                percent, phase = "080.00", "verifying"
+            return (
+                f"/dev/sda: {percent}%, round 1 of 1, pass 1 of 1, "
+                f"eta 00:00:10, [{phase}]\n"
+            )
+
+        def direct_refresh():
+            try:
+                runner._refresh_progress("old-log", "/dev/sda")
+            except BaseException as exc:
+                errors.append(exc)
+
+        monkeypatch.setattr(runner, "_read_log_tail", read_log)
+        older = threading.Thread(target=direct_refresh)
+        older.start()
+        try:
+            assert waiting.wait(5)
+            runner.start(request)
+            runner._refresh_progress(request.logfile, request.device)
+            resume.set()
+            older.join(5)
+            assert not older.is_alive() and not errors
+            assert runner.progress == 80
+>           assert runner.progress_observation.phase == "Verifying"
+E           AssertionError: assert 'Writing' == 'Verifying'
+E
+E             - Verifying
+E             + Writing
+
+tests/test_runner_concurrent_progress_order.py:115: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size0-en] __
+
+request = <FixtureRequest for <Function test_comparison_title_uses_available_width_without_midword_breaks[size0-en]>>
+code = 'en', size = (800, 600)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(request, code, size):
+        try:
+            wizard, app = request.getfixturevalue("ui")(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 65 >= 100
+E            +  where 65 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame3.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:28: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size0-fr] __
+
+request = <FixtureRequest for <Function test_comparison_title_uses_available_width_without_midword_breaks[size0-fr]>>
+code = 'fr', size = (800, 600)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(request, code, size):
+        try:
+            wizard, app = request.getfixturevalue("ui")(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 80 >= 147
+E            +  where 80 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame3.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:28: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size0-de] __
+
+request = <FixtureRequest for <Function test_comparison_title_uses_available_width_without_midword_breaks[size0-de]>>
+code = 'de', size = (800, 600)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(request, code, size):
+        try:
+            wizard, app = request.getfixturevalue("ui")(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 84 >= 168
+E            +  where 84 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame3.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:28: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size1-en] __
+
+request = <FixtureRequest for <Function test_comparison_title_uses_available_width_without_midword_breaks[size1-en]>>
+code = 'en', size = (1280, 820)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(request, code, size):
+        try:
+            wizard, app = request.getfixturevalue("ui")(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 75 >= 116
+E            +  where 75 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame2.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:28: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size1-fr] __
+
+request = <FixtureRequest for <Function test_comparison_title_uses_available_width_without_midword_breaks[size1-fr]>>
+code = 'fr', size = (1280, 820)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(request, code, size):
+        try:
+            wizard, app = request.getfixturevalue("ui")(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 82 >= 172
+E            +  where 82 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame2.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:28: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size1-de] __
+
+request = <FixtureRequest for <Function test_comparison_title_uses_available_width_without_midword_breaks[size1-de]>>
+code = 'de', size = (1280, 820)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(request, code, size):
+        try:
+            wizard, app = request.getfixturevalue("ui")(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 78 >= 197
+E            +  where 78 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame2.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:28: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size2-en] __
+
+request = <FixtureRequest for <Function test_comparison_title_uses_available_width_without_midword_breaks[size2-en]>>
+code = 'en', size = (1600, 1000)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(request, code, size):
+        try:
+            wizard, app = request.getfixturevalue("ui")(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 74 >= 134
+E            +  where 74 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame3.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:28: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size2-fr] __
+
+request = <FixtureRequest for <Function test_comparison_title_uses_available_width_without_midword_breaks[size2-fr]>>
+code = 'fr', size = (1600, 1000)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(request, code, size):
+        try:
+            wizard, app = request.getfixturevalue("ui")(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 74 >= 196
+E            +  where 74 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame3.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:28: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size2-de] __
+
+request = <FixtureRequest for <Function test_comparison_title_uses_available_width_without_midword_breaks[size2-de]>>
+code = 'de', size = (1600, 1000)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(request, code, size):
+        try:
+            wizard, app = request.getfixturevalue("ui")(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 74 >= 220
+E            +  where 74 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame3.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:28: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_malformed_mounted_alias_regression.py::test_malformed_mounted_alias_cannot_disappear[False-model-bad\nmodel-wwn]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_malformed_mounted_alias_cannot_disappear[False-model-bad\nmodel-serial]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_malformed_mounted_alias_cannot_disappear[False-vendor-vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-wwn]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_malformed_mounted_alias_cannot_disappear[False-vendor-vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-serial]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_malformed_mounted_alias_cannot_disappear[True-model-bad\nmodel-wwn]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_malformed_mounted_alias_cannot_disappear[True-model-bad\nmodel-serial]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_malformed_mounted_alias_cannot_disappear[True-vendor-vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-wwn]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_malformed_mounted_alias_cannot_disappear[True-vendor-vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-serial]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_case_variant_type_cannot_hide_mounted_alias
+FAILED tests/test_malformed_mounted_alias_regression.py::test_nonempty_malformed_mount_is_not_repaired_into_unmounted[mountpoint-\n]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_nonempty_malformed_mount_is_not_repaired_into_unmounted[mountpoints-value1]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_hidden_mounted_physical_alias_remains_exclusion_evidence[False-sr1-rom]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_hidden_mounted_physical_alias_remains_exclusion_evidence[False-mmcblk0boot0-disk]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_hidden_mounted_physical_alias_remains_exclusion_evidence[True-sr1-rom]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_hidden_mounted_physical_alias_remains_exclusion_evidence[True-mmcblk0boot0-disk]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_flat_mounted_child_preserves_physical_alias_exclusion[True-wwn]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_flat_mounted_child_preserves_physical_alias_exclusion[True-serial]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_virtual_type_cannot_hide_mounted_kernel_disk_alias[loop]
+FAILED tests/test_malformed_mounted_alias_regression.py::test_virtual_type_cannot_hide_mounted_kernel_disk_alias[ram]
+FAILED tests/test_recovery_zero_capacity_baseline_regression.py::test_unrelated_zero_capacity_survives_armed_restart_without_eligibility
+FAILED tests/test_recovery_zero_capacity_baseline_regression.py::test_unrelated_zero_capacity_preserves_terminal_recovery
+FAILED tests/test_completion_method_contradictions.py::test_erased_row_cannot_hide_method_counter_contradiction[passes-everyday]
+FAILED tests/test_completion_method_contradictions.py::test_erased_row_cannot_hide_method_counter_contradiction[passes-extra]
+FAILED tests/test_completion_method_contradictions.py::test_erased_row_cannot_hide_method_counter_contradiction[passes-quick_zero]
+FAILED tests/test_completion_method_contradictions.py::test_erased_row_cannot_hide_method_counter_contradiction[rounds-everyday]
+FAILED tests/test_completion_method_contradictions.py::test_erased_row_cannot_hide_method_counter_contradiction[rounds-extra]
+FAILED tests/test_completion_method_contradictions.py::test_erased_row_cannot_hide_method_counter_contradiction[rounds-quick_zero]
+FAILED tests/test_completion_method_contradictions.py::test_other_complete_engine_phases_cannot_hide_counter_contradictions[everyday-syncing]
+FAILED tests/test_completion_method_contradictions.py::test_other_complete_engine_phases_cannot_hide_counter_contradictions[everyday-retrying]
+FAILED tests/test_completion_method_contradictions.py::test_other_complete_engine_phases_cannot_hide_counter_contradictions[everyday-blanking]
+FAILED tests/test_completion_method_contradictions.py::test_other_complete_engine_phases_cannot_hide_counter_contradictions[extra-syncing]
+FAILED tests/test_completion_method_contradictions.py::test_other_complete_engine_phases_cannot_hide_counter_contradictions[extra-retrying]
+FAILED tests/test_completion_method_contradictions.py::test_other_complete_engine_phases_cannot_hide_counter_contradictions[extra-blanking]
+FAILED tests/test_completion_method_contradictions.py::test_other_complete_engine_phases_cannot_hide_counter_contradictions[quick_zero-syncing]
+FAILED tests/test_completion_method_contradictions.py::test_other_complete_engine_phases_cannot_hide_counter_contradictions[quick_zero-retrying]
+FAILED tests/test_completion_method_contradictions.py::test_other_complete_engine_phases_cannot_hide_counter_contradictions[quick_zero-blanking]
+FAILED tests/test_completion_method_contradictions.py::test_final_progress_cannot_claim_an_unrequested_round[everyday]
+FAILED tests/test_completion_method_contradictions.py::test_final_progress_cannot_claim_an_unrequested_round[extra]
+FAILED tests/test_completion_method_contradictions.py::test_final_progress_cannot_claim_an_unrequested_round[quick_zero]
+FAILED tests/test_completion_method_contradictions.py::test_later_matching_progress_cannot_hide_earlier_method_conflict[False]
+FAILED tests/test_completion_method_contradictions.py::test_later_matching_progress_cannot_hide_earlier_method_conflict[True]
+FAILED tests/test_completion_method_contradictions.py::test_counter_projection_refuses_when_distinct_totals_exceed_evidence_cap
+FAILED tests/test_diagnostics_directory_binding_regression.py::test_directory_replacement_during_file_open_is_refused[symlink-write]
+FAILED tests/test_diagnostics_directory_binding_regression.py::test_directory_replacement_during_file_open_is_refused[symlink-read]
+FAILED tests/test_diagnostics_directory_binding_regression.py::test_directory_replacement_during_file_open_is_refused[directory-write]
+FAILED tests/test_diagnostics_directory_binding_regression.py::test_directory_replacement_during_file_open_is_refused[directory-read]
+FAILED tests/test_diagnostics_directory_binding_regression.py::test_symlink_log_directory_is_refused[write]
+FAILED tests/test_diagnostics_directory_binding_regression.py::test_symlink_log_directory_is_refused[read]
+FAILED tests/test_completion_percent_precision.py::test_inexact_percent_cannot_round_into_completion[everyday-99.99999999999999999999]
+FAILED tests/test_completion_percent_precision.py::test_inexact_percent_cannot_round_into_completion[everyday-100.00000000000000000001]
+FAILED tests/test_completion_percent_precision.py::test_inexact_percent_cannot_round_into_completion[extra-99.99999999999999999999]
+FAILED tests/test_completion_percent_precision.py::test_inexact_percent_cannot_round_into_completion[extra-100.00000000000000000001]
+FAILED tests/test_completion_percent_precision.py::test_inexact_percent_cannot_round_into_completion[quick_zero-99.99999999999999999999]
+FAILED tests/test_completion_percent_precision.py::test_inexact_percent_cannot_round_into_completion[quick_zero-100.00000000000000000001]
+FAILED tests/test_completion_percent_precision.py::test_true_excess_above_hundred_is_not_a_progress_observation
+FAILED tests/test_runner_concurrent_progress_order.py::test_late_progress_read_does_not_rewind_phase_or_freshness[True]
+FAILED tests/test_runner_concurrent_progress_order.py::test_late_progress_read_does_not_rewind_phase_or_freshness[False]
+FAILED tests/test_runner_concurrent_progress_order.py::test_direct_refresh_remains_ordered_across_new_start
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size0-en]
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size0-fr]
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size0-de]
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size1-en]
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size1-fr]
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size1-de]
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size2-en]
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size2-fr]
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size2-de]
+67 failed, 34 passed in 4.05s
+
+exit=1

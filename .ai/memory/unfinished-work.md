@@ -1,5 +1,72 @@
 # Unfinished work
 
+## BW-BUG-AUDIT-20261015-CONTINUOUS — DONE (local acceptance and source push)
+
+- Date/author: 2026-10-15 / Codex.
+- Request/goal: repeat comprehensive audit/fix passes until a fresh whole pass
+  finds no further reproducible actionable defect in authorized safe local
+  scope. Acceptance achieved after fixes, independent reviews, fresh source/
+  fixture/matrix/actual-Tk checks and the final complete local gates. This is
+  not an absolute proof of no bugs or image/hardware acceptance.
+- Repo/worktree/branch: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`;
+  `fix/safety-audit-20261015`. Baseline `20ae39a556ab961baf204e3108e6ebc93b695ac5`;
+  implementation `af2b6e9c3d053b65e666d807a87207db14521cb2`, pushed to origin.
+- Result/evidence: `docs/evidence/bug-audit-20261015-continuous/README.md` with
+  exact-original failures, fixed regression transcript, final full gate logs,
+  source/test hashes, independent review summaries, reproducible mutation/
+  exploration scripts, and actual picker before/after screenshots. Evidence
+  and this complete local handoff are retained alongside the implementation;
+  final remote HEAD verification confirms their subsequent documentation push.
+- Seven verified finding groups fixed: mounted aliases lost through malformed/
+  hidden/type/flat-ancestry filtering; unrelated empty readers blocking recovery
+  journals; diagnostic-directory substitution; completion overriding method
+  counter contradictions; float-rounded malformed percentages falsely completing;
+  stale concurrent runner telemetry publication; Tk comparison title mid-word
+  wrapping. No method/argv/confirmation/claim/version/surface-boundary relaxation.
+- Proof before fixes: private exact-baseline import tree yields67 intended
+  failures /34 normal controls across101 new cases; fixed101 pass. Original
+  checkout was never reverted or mutated. Every source change has a regression.
+- Draft history retained: mounted-root draft missed hidden/flat observations and
+  false loop/ram types; extra failing proofs drove effective mount reconciliation.
+  Counter draft omitted syncing/retrying/blanking and was corrected after9
+  failures against pinned engine semantics. An actual72-DPI fullscreen preview
+  exposed the title bug after an early full run started;9 original layout cases
+  failed, then passed after the one-line fill-X fix. That obsolete full run was
+  deliberately interrupted on its exact owned pytest PID; its missing-JUnit
+  failure is not a passing gate. Replacement final run passed after all changes.
+- Final local gates: main pytest5,888 pass /14 image-only skips, private Orca1
+  pass; combined5,889 unique passes, zero failures/errors. Mandatory GTK result
+  guard passes. Lint/types/security/shell/developer-format, preview web/console/
+  helper/JS, negative mutation, pinned Go1.26.8 uncached race/vet and350,000 parser
+  fuzz executions pass. All12 changed source/test hashes match frozen and
+  committed bytes. No source/tests changed after final freeze.
+- Fresh no-new-findings evidence: discovery132-case graph matrix; runner1,176-
+  case completion matrix and595-test sweep; recovery/report/diagnostics/export
+ 331-test sweep; primary100 fake wizard sessions/30,000 public actions/10 explicit
+  fake starts preserved safety invariants;185 boot/build/compatibility cases.
+  All4 isolated Tk startup cases passed. These overlap full tests; do not sum.
+- Independent approvals: discovery/recovery216 cases; recovery/diagnostics88;
+  final runner242 plus27 cancel/retry cases on hash2979312e...; final Tk UI524
+  unique cases across main and supplementary runs (all11 initial dependency/
+  isolated-X11 skips resolved). Reviewer summaries are labeled as summaries,
+  not fabricated raw terminal transcripts. All temporary fixtures were fake.
+- Resolved exploratory setup history: initial wizard harness keyword typo was
+  corrected; two baseline fullscreen cases initially lacked isolated-X11 opt-in
+  and later ran/passed. Expected missing-fake-device rdev notices are not live
+  identity evidence. Existing TODO-regex warning/mypy notes are informational.
+- Limits/current publication state: source branch pushed, unmerged, unreleased.
+  No hosted CI/PR/ISO/guest/physical-device operation performed. T3 status/open
+  worked but snapshot client errored again; no manual web inspection claimed.
+  Repository browser regressions and actual Tk navigation passed separately.
+  Owned preview HTTP server and Tk/Xvfb sessions were retired. Go native
+  inventory override unset; this is not native Windows/hardware qualification.
+- Remaining local acceptance/blockers: none. Exact next action, only for a
+  selected public candidate, is the existing separate qualification item below.
+  Report export can conservatively refuse unidentified/zero-capacity optional
+  inventory; large-log recovery can remain indeterminate without retained
+  completion evidence. These fail-closed limits are documented, not relaxed.
+  Missing shared guide remains resolved by prior owner continue direction.
+
 ## BW-BUG-AUDIT-20261015-PASS2 — DONE (local fixes verified and pushed)
 
 - Date/author: 2026-10-15 / Codex.
@@ -176,7 +243,8 @@
 - Date/author: 2026-10-15 / Codex.
 - Repo/worktree/branch: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`;
   `fix/safety-audit-20261015`; latest implementation
-  `57ead7e4304f7f373a0c862ff36335c949f4cf7a` (prior audit implementation
+  `af2b6e9c3d053b65e666d807a87207db14521cb2` (prior audit implementations
+  `57ead7e4304f7f373a0c862ff36335c949f4cf7a` and
   `ff0a3da08e56c3fb38941be20e42db9553269f32` retained as history).
 - Remaining acceptance: final-public-candidate exact-source Blacksmith ISO/QEMU
   and native Windows gates, plus applicable physical firmware/media acceptance.

@@ -1,0 +1,256 @@
+FFFFFFFFF                                                                [100%]
+=================================== FAILURES ===================================
+_ test_comparison_title_uses_available_width_without_midword_breaks[size0-en] __
+
+ui = <function ui.<locals>.build at 0x7e44cf325d00>, code = 'en'
+size = (800, 600)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(ui, code, size):
+        try:
+            wizard, app = ui(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 65 >= 100
+E            +  where 65 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame3.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:27: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size0-fr] __
+
+ui = <function ui.<locals>.build at 0x7e44cf327ba0>, code = 'fr'
+size = (800, 600)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(ui, code, size):
+        try:
+            wizard, app = ui(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 80 >= 147
+E            +  where 80 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame3.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:27: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size0-de] __
+
+ui = <function ui.<locals>.build at 0x7e44cf3a6d40>, code = 'de'
+size = (800, 600)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(ui, code, size):
+        try:
+            wizard, app = ui(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 84 >= 168
+E            +  where 84 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame3.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:27: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size1-en] __
+
+ui = <function ui.<locals>.build at 0x7e44cf348860>, code = 'en'
+size = (1280, 820)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(ui, code, size):
+        try:
+            wizard, app = ui(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 75 >= 116
+E            +  where 75 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame2.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:27: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size1-fr] __
+
+ui = <function ui.<locals>.build at 0x7e44cf34b880>, code = 'fr'
+size = (1280, 820)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(ui, code, size):
+        try:
+            wizard, app = ui(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 82 >= 172
+E            +  where 82 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame2.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:27: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size1-de] __
+
+ui = <function ui.<locals>.build at 0x7e44cf34b740>, code = 'de'
+size = (1280, 820)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(ui, code, size):
+        try:
+            wizard, app = ui(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 78 >= 197
+E            +  where 78 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame2.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:27: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size2-en] __
+
+ui = <function ui.<locals>.build at 0x7e44cf3487c0>, code = 'en'
+size = (1600, 1000)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(ui, code, size):
+        try:
+            wizard, app = ui(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 74 >= 134
+E            +  where 74 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame3.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:27: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size2-fr] __
+
+ui = <function ui.<locals>.build at 0x7e44cf3a4c20>, code = 'fr'
+size = (1600, 1000)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(ui, code, size):
+        try:
+            wizard, app = ui(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 74 >= 196
+E            +  where 74 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame3.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:27: AssertionError
+_ test_comparison_title_uses_available_width_without_midword_breaks[size2-de] __
+
+ui = <function ui.<locals>.build at 0x7e44cf34b880>, code = 'de'
+size = (1600, 1000)
+
+    @pytest.mark.parametrize("code", ["en", "fr", "de"])
+    @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
+    def test_comparison_title_uses_available_width_without_midword_breaks(ui, code, size):
+        try:
+            wizard, app = ui(size=size)
+            wizard.set_language(code)
+            wizard.screen = Screen.PICK
+            app._draw()
+            app.root.update_idletasks()
+            row = next(
+                widget for widget in descendants(app.root)
+                if isinstance(widget, _CheckRow) and widget.cget("text") == inventory.COMPARE_TITLE
+            )
+            label = row._label
+            text_width = app.font_s_bold.measure(inventory.COMPARE_TITLE)
+            assert row.master.winfo_width() > text_width + 60
+>           assert label.winfo_width() >= text_width
+E           assert 74 >= 220
+E            +  where 74 = winfo_width()
+E            +    where winfo_width = <tkinter.Label object .!frame3.!frame3.!frame2.!canvas.!frame.!frame2.!_checkrow.!label>.winfo_width
+
+tests/test_comparison_toggle_layout_regression.py:27: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size0-en]
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size0-fr]
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size0-de]
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size1-en]
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size1-fr]
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size1-de]
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size2-en]
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size2-fr]
+FAILED tests/test_comparison_toggle_layout_regression.py::test_comparison_title_uses_available_width_without_midword_breaks[size2-de]
+9 failed in 1.86s

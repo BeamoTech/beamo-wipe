@@ -1,0 +1,7 @@
+T3 preview_status: available true, tab_5 (previous stopped localhost:8766).
+Owned regular-file HTTP preview started on port8767.
+T3 preview_open http://localhost:8767 reuseExistingTab=false: available true, tab_6.
+T3 preview_snapshot tab_6 includeImage=false:
+Preview automation snapshot failed on client preview-70e73d4ac267299fcf5cd6122df47155.
+No successful manual browser inspection claimed; no alternative browser automation used.
+Owned HTTP process identity checked and server stopped.
