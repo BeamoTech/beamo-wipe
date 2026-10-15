@@ -1,5 +1,57 @@
 # Unfinished work
 
+## BW-BUG-AUDIT-20261015-PASS2 — DONE (local fixes verified and pushed)
+
+- Date/author: 2026-10-15 / Codex.
+- Request: another thorough, comprehensive bug audit and regression pass.
+- Repo/worktree/branch: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`;
+  `fix/safety-audit-20261015`. Baseline `8a5dced72b044f22b8dee168f76a2ea882083124`;
+  implementation `57ead7e4304f7f373a0c862ff36335c949f4cf7a`, pushed to origin.
+- Result/evidence: `docs/evidence/bug-audit-20261015-pass2/README.md` is the
+  durable report, with original failures, fixed regressions, final transcripts,
+  19-file source/test SHA-256 manifest, independent descriptor review and a Tk
+  preview screenshot. Committed bytes match final tested bytes.
+- Completed scope: three bounded reviewers revisited discovery/identity,
+  runner/progress/log/evidence/cancel/retry, recovery/reporting and boot/build.
+  Primary reviewed wizard state/confirmation/stop/retry/shutdown, language/UI,
+  packaging boundaries, independently proved every finding and reviewed all
+  changes. Fake devices/process boundaries/files/firmware only.
+- Fixed seven finding groups: retired recovery-directory ownership, obsolete
+  report preference snapshots/destinations, lock replacement before exec,
+  substituted/reused log inode evidence, delayed-start overwriting ambiguous
+  ownership, missing translated uncertainty warnings, English-only inventory
+  counts. Added 71 regression/lifecycle cases; existing fixtures retain their
+  assertions and now retire actual regular-log descriptors.
+- Proof: baseline-compatible regressions on a private exact-original import
+  tree produce 44 intended failures / 19 passing controls; all 71 new fixed
+  tests pass. Original checkout was never reverted or mutated for proof.
+- Review history: an intermediate dev/inode-only log fix was rejected after
+  immediate inode reuse falsely completed. Retained-FD protection resisted
+  1,000 unlink/recreates, refused replacement evidence and retired the handle.
+  A draft transfer leak was proved and fixed. Independent approval: 76 tests
+  with zero surviving temporary-file descriptors, plus 20 adjacent cases.
+- Final applicable local gates PASSED: main pytest 5,787 pass / 14 image-only
+  skips; private Orca 1 pass; combined 5,788 pass, no failures. Mandatory GTK
+  result guard passes. Lint/types/security/shell/format, web/console/helper/JS
+  preview, negative mutation, Go 1.26.8 race/vet and 350,000 firmware-parser fuzz
+  executions pass. Native inventory override unset. Frozen hashes rechecked
+  after the full gate and against the committed tree; all 19 match.
+- Focused overlapping evidence: 56 baseline, 273 wizard, 108 inventory/language,
+  222 discovery/safety, 812 recovery/report/boot, and 494 affected runner cases
+  pass. The initial display-less recovery GTK failure is historical, not a pass;
+  corrected runs use private 72-DPI D-Bus/Xvfb. Actual `./preview` welcome screen
+  inspected at 72 DPI with no clipping. T3 web snapshot client is unavailable;
+  existing browser regression tests passed separately, no interactive web
+  inspection claimed. Owned preview HTTP server was positively identified/stopped.
+- Current state/remaining criteria: local audit acceptance complete; no local
+  blocker. No PR, hosted CI, ISO, guest, device operation, deployment or release.
+  Exact next action for a public candidate is the separate qualification item
+  below. Do not infer release authority from this record. Shared-guide absence
+  remains resolved by the owner's earlier continue instruction.
+- Conservative behavior retained: large-log recovery can become indeterminate
+  if an early completion marker lies outside authenticated retained suffix
+  evidence. Recorded in the report; no false success or schema expansion.
+
 ## BW-BUG-AUDIT-20261015 — DONE (local source fixes verified and pushed)
 
 - Date/author: 2026-10-15 / Codex.
@@ -123,8 +175,9 @@
 
 - Date/author: 2026-10-15 / Codex.
 - Repo/worktree/branch: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`;
-  `fix/safety-audit-20261015`; implementation
-  `ff0a3da08e56c3fb38941be20e42db9553269f32`.
+  `fix/safety-audit-20261015`; latest implementation
+  `57ead7e4304f7f373a0c862ff36335c949f4cf7a` (prior audit implementation
+  `ff0a3da08e56c3fb38941be20e42db9553269f32` retained as history).
 - Remaining acceptance: final-public-candidate exact-source Blacksmith ISO/QEMU
   and native Windows gates, plus applicable physical firmware/media acceptance.
   The 14 local skips need generated live-build config/manufacturing ISO bytes.
