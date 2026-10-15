@@ -1523,10 +1523,20 @@ class NwipeRunner:
             if not stat.S_ISREG(st.st_mode):
                 raise SafetyError("Wipe lock is not a regular file.")
             fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            # flock protects an inode, not its pathname. If the name was
+            # replaced during acquisition, another runner could lock the
+            # replacement and both would believe they own the wipe slot.
+            try:
+                named = os.lstat(lock_path)
+            except OSError as exc:
+                raise SafetyError("Wipe lock changed during acquisition.") from exc
+            if (not stat.S_ISREG(named.st_mode)
+                    or (named.st_dev, named.st_ino) != (st.st_dev, st.st_ino)):
+                raise SafetyError("Wipe lock changed during acquisition.")
         except BlockingIOError:
             os.close(fd)
             raise SafetyError("A wipe is already running.")
-        except Exception:
+        except BaseException:
             os.close(fd)
             raise
         self._lock_fd = fd

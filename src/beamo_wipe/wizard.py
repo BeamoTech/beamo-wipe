@@ -780,8 +780,9 @@ class Wizard:
                 stages, self._observation_for_stage(observation)
             )
             old = bool(percent is not None and stale_for is not None)
+            # Both lines describe job progress; share throttling and monotonicity.
             step_percent = (
-                observation.percent
+                (percent if percent is not None else observation.percent)
                 if observation is not None
                 and position is not None
                 and not mismatch

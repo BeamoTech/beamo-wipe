@@ -432,11 +432,26 @@ def evaluate_engine_checks(
     disk: Optional[Disk] = None,
 ) -> list[CheckResult]:
     """Return the three structured checks. Order is stable."""
-    return [
+    checks = [
         _parse_hidden_capacity(log_text, device),
         _parse_io_media(log_text, device),
         _parse_coverage(disk),
     ]
+    # nwipe terminates every record with LF. A missing final LF may cut a
+    # zero error count or a hidden-storage result before contradictory text.
+    # Keep warning/failure evidence, but never turn an incomplete log into a
+    # passing report check, even if its current numeric prefix looks valid.
+    if log_text and not log_text.endswith("\n"):
+        checks = [
+            _check(
+                item.id, "unavailable",
+                HIDDEN_UNAVAILABLE if item.id == "hidden_capacity" else IO_UNAVAILABLE,
+                "The nwipe log ended before its final record was complete.",
+                _provenance(item.provenance["parser"]),
+            ) if item.status == "pass" else item
+            for item in checks
+        ]
+    return checks
 
 
 def check_payloads(

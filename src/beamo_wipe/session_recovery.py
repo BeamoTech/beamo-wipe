@@ -176,6 +176,23 @@ class SessionStore:
         finally:
             os.close(fd)
 
+    def _verify_named_lock(self, name, fd):
+        """A flock on a replaced inode does not coordinate other callers."""
+        try:
+            opened = os.fstat(fd)
+            named = os.stat(name, dir_fd=self.fd, follow_symlinks=False)
+            if (
+                (opened.st_dev, opened.st_ino) != (named.st_dev, named.st_ino)
+                or not stat.S_ISREG(opened.st_mode)
+                or opened.st_uid != os.getuid()
+                or stat.S_IMODE(opened.st_mode) != 0o600
+                or opened.st_nlink != 1
+            ):
+                raise SafetyError(RECOVERY_UNSAFE_RECOVERY_FILE)
+        except (OSError, SafetyError) as exc:
+            self.invalid = True
+            raise SafetyError(RECOVERY_UNSAFE_RECOVERY_FILE) from exc
+
     def open(self):
         # A second open on this object would replace fd/owner before flock()
         # fails, orphaning the first interface lock in this process.
@@ -211,6 +228,7 @@ class SessionStore:
                 raise SafetyError(RECOVERY_DIRECTORY_NOT_VOLATILE)
         self.owner = self._file("interface.lock", os.O_RDWR | os.O_CREAT)
         fcntl.flock(self.owner, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        self._verify_named_lock("interface.lock", self.owner)
         if self.boot is None:
             self.boot = Path("/proc/sys/kernel/random/boot_id").read_text().strip()
         if self.build is None:
@@ -344,6 +362,7 @@ class SessionStore:
     def save(self, changes):
         if self.invalid or self.owner < 0:
             raise SafetyError(RECOVERY_RECOVERY_IS_UNAVAILABLE)
+        self._verify_named_lock("interface.lock", self.owner)
         record = {
             "schema": 1,
             "boot": self.boot,
@@ -501,11 +520,14 @@ class SessionStore:
         )
 
     def is_quiescent(self):
+        self._verify_named_lock("interface.lock", self.owner)
         if self.quiescent >= 0:
+            self._verify_named_lock("wipe.lock", self.quiescent)
             return True
         fd = self._file("wipe.lock", os.O_RDWR | os.O_CREAT)
         try:
             fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            self._verify_named_lock("wipe.lock", fd)
         except BlockingIOError:
             os.close(fd)
             return False

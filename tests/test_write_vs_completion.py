@@ -9,22 +9,22 @@ from test_operation_sequence import _working
 from test_progress_timing import sample
 
 
-def test_step_line_carries_live_step_percent():
+def test_step_line_labels_job_percent_overall():
     wiz, _clock = _working(MethodId.EXTRA)
     wiz.runner.progress_observation = sample(40, counters="round 1 of 1, pass 2 of 3")
     assert (
-        "Step 2 of 4: Overwrite 2 of 3 (40% of this step)"
+        "Step 2 of 4: Overwrite 2 of 3 (40% overall)"
         in wiz.progress_view.status_text
     )
 
 
-def test_engine_100_midplan_is_step_scoped():
+def test_engine_100_midplan_is_not_completion():
     wiz, _clock = _working(MethodId.EXTRA)
     wiz.runner.progress = 99.9
     wiz.runner.progress_observation = sample(100, counters="round 1 of 1, pass 1 of 3")
     text = wiz.progress_view.status_text
     assert text.startswith("99%.")
-    assert "Step 1 of 4: Overwrite 1 of 3 (100% of this step)" in text
+    assert "Step 1 of 4: Overwrite 1 of 3 (99% overall)" in text
     assert "100%." not in text.splitlines()[0]
 
 
@@ -32,11 +32,11 @@ def test_stale_step_percent_marked_old():
     wiz, clock = _working(MethodId.EXTRA)
     wiz.runner.progress = 40.0
     wiz.runner.progress_observation = sample(40, counters="round 1 of 1, pass 2 of 3")
-    assert "(40% of this step)" in wiz.progress_view.status_text
+    assert "(40% overall)" in wiz.progress_view.status_text
     clock.advance(30)
     text = wiz.progress_view.status_text
-    assert "last reported 40% of this step" in text
-    assert "(40% of this step)" not in text
+    assert "last reported 40% overall" in text
+    assert "(40% overall)" not in text
 
 
 def test_unknown_step_shows_no_step_percent():
@@ -44,7 +44,7 @@ def test_unknown_step_shows_no_step_percent():
     wiz.runner.progress_observation = None
     text = wiz.progress_view.status_text
     assert "Current step not reported yet" in text
-    assert "of this step" not in text
+    assert "overall" not in text
 
 
 def test_mismatch_shows_no_step_percent():
@@ -54,7 +54,7 @@ def test_mismatch_shows_no_step_percent():
     )
     text = wiz.progress_view.status_text
     assert "Engine step does not match the planned method" in text
-    assert "of this step" not in text
+    assert "overall" not in text
 
 
 def test_verify_phase_note_explains_transition():
@@ -124,19 +124,19 @@ def test_stopping_has_no_transition_note():
             MethodId.EVERYDAY,
             "round 1 of 1, pass 1 of 1",
             "writing",
-            "Step 1 of 2: Overwrite 1 of 1 (40% of this step)",
+            "Step 1 of 2: Overwrite 1 of 1 (40% overall)",
         ),
         (
             MethodId.EXTRA,
             "round 1 of 1, pass 2 of 3",
             "writing",
-            "Step 2 of 4: Overwrite 2 of 3 (40% of this step)",
+            "Step 2 of 4: Overwrite 2 of 3 (40% overall)",
         ),
         (
             MethodId.QUICK_ZERO,
             "round 1 of 1, pass 1 of 1",
             "writing",
-            "Step 1 of 1: Overwrite 1 of 1 (40% of this step)",
+            "Step 1 of 1: Overwrite 1 of 1 (40% overall)",
         ),
     ],
 )
@@ -154,17 +154,17 @@ def test_french_and_german_step_percent_and_notes():
     lang.set_language("fr")
     try:
         text = wiz.progress_view.status_text
-        assert "de cette étape" in text
+        assert "au total" in text
         assert "écran de résultat" in text
-        assert "of this step" not in text
+        assert "overall" not in text
     finally:
         lang.set_language("en")
     lang.set_language("de")
     try:
         text = wiz.progress_view.status_text
-        assert "dieses Schritts" in text
+        assert "insgesamt" in text
         assert "Ergebnisbildschirm" in text
-        assert "of this step" not in text
+        assert "overall" not in text
     finally:
         lang.set_language("en")
 
@@ -176,7 +176,7 @@ def test_preview_ticks_show_step_percent():
     wiz.runner._started = 0.0
     clock.mono = 30.0
     wiz.tick()
-    assert "(30% of this step)" in wiz.progress_view.status_text
+    assert "(30% overall)" in wiz.progress_view.status_text
 
 
 def test_german_transition_note_wraps_on_80x24(monkeypatch):
@@ -192,7 +192,7 @@ def test_german_transition_note_wraps_on_80x24(monkeypatch):
     finally:
         lang.set_language("en")
     assert "Ergebnisbildschirm" in packed
-    assert "dieses Schritts" in packed
+    assert "insgesamt" in packed
     assert all(len(line) < 80 for line in term.frames[-1].values())
 
 
@@ -203,7 +203,7 @@ def test_gallery_step_percent_comes_from_progress_view():
     html = gallery_html("en")
     payload = _progress_preview_payload()
     writing = payload["states"]["writing"]
-    assert "42% of this step" in writing["stepText"]
+    assert "42% overall" in writing["stepText"]
     assert writing["stepText"] in html
     assert "demoPct / 100 * stages.length" not in html
     assert "P.stageStepPct" not in html
