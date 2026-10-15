@@ -53,7 +53,7 @@ def test_interrupted_pre_spawn_log_preparation_releases_lock(tmp_path, monkeypat
         logfile=str(tmp_path / "nwipe-vda.log"),
     )
 
-    def interrupted_log_preparation(_logfile, _device):
+    def interrupted_log_preparation(_logfile, _device, **_kwargs):
         raise KeyboardInterrupt
 
     monkeypatch.setattr(

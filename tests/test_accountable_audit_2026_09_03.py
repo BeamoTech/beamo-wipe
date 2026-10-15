@@ -152,7 +152,7 @@ def test_cross_process_lock_refusal_precedes_log_truncation(tmp_path, monkeypatc
     assert log.read_text(encoding="utf-8") == "other process progress\n"
 
 
-def test_locked_boundary_refuses_a_different_disk_on_the_same_name(monkeypatch):
+def test_locked_boundary_refuses_a_different_disk_on_the_same_name(tmp_path, monkeypatch):
     """Kernel names keep their device numbers. A rescan has to see the swap."""
     from dataclasses import replace
 
@@ -198,7 +198,7 @@ def test_locked_boundary_refuses_a_different_disk_on_the_same_name(monkeypatch):
         "/dev/vda",
         MethodId.EVERYDAY,
         "/dev/sdb",
-        "/tmp/fake.log",
+        str(tmp_path / "fake.log"),
         device_rdev=1,
         device_size_bytes=500,
         boot_rdev=2,
@@ -213,9 +213,8 @@ def test_locked_boundary_refuses_a_different_disk_on_the_same_name(monkeypatch):
     monkeypatch.setattr(nr, "block_rdev", lambda p: 1 if p == "/dev/vda" else 2)
     monkeypatch.setattr(nr, "assert_not_boot", lambda *_a, **_k: None)
     monkeypatch.setattr(nr, "assert_log_not_on_target", lambda *_a, **_k: None)
-    monkeypatch.setattr(nr, "truncate_log_file", lambda *_a, **_k: None)
+    monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
     monkeypatch.setattr(runner, "_acquire_wipe_lock", lambda _r: None)
-    monkeypatch.setattr(runner, "_release_wipe_lock", lambda: None)
     monkeypatch.setattr("beamo_wipe.discover.discover", lambda **_k: fresh)
     monkeypatch.setattr(
         nr.subprocess, "Popen", lambda *_a, **_k: pytest.fail("exec reached")
@@ -224,7 +223,7 @@ def test_locked_boundary_refuses_a_different_disk_on_the_same_name(monkeypatch):
         runner.start(req)
 
 
-def test_locked_boundary_rechecks_size_before_exec(monkeypatch):
+def test_locked_boundary_rechecks_size_before_exec(tmp_path, monkeypatch):
     import beamo_wipe.nwipe_runner as nr
 
     runner = nr.NwipeRunner()
@@ -232,7 +231,7 @@ def test_locked_boundary_rechecks_size_before_exec(monkeypatch):
         "/dev/vda",
         MethodId.EVERYDAY,
         "/dev/sdb",
-        "/tmp/fake.log",
+        str(tmp_path / "fake.log"),
         device_rdev=1,
         device_size_bytes=500,
         boot_rdev=2,
@@ -254,7 +253,7 @@ def test_locked_boundary_rechecks_size_before_exec(monkeypatch):
     monkeypatch.setattr(nr, "block_rdev", lambda p: 1 if p == "/dev/vda" else 2)
     monkeypatch.setattr(nr, "assert_not_boot", lambda *_a, **_k: None)
     monkeypatch.setattr(nr, "assert_log_not_on_target", lambda *_a, **_k: None)
-    monkeypatch.setattr(nr, "truncate_log_file", lambda *_a, **_k: None)
+    monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
     monkeypatch.setattr(runner, "_acquire_wipe_lock", lambda _r: None)
     monkeypatch.setattr(
         nr.subprocess, "Popen", lambda *_a, **_k: pytest.fail("exec reached")

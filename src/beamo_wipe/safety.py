@@ -985,8 +985,13 @@ def logfile_for(target: str, log_dir: Optional[Path] = None) -> str:
     return str(path)
 
 
-def truncate_log_file(log_path: str, target: str) -> None:
-    """Create/truncate a regular log file. Never follows symlinks or opens devices."""
+def truncate_log_file(
+    log_path: str, target: str, *, retain_fd: bool = False
+) -> Optional[int]:
+    """Safely truncate a log, optionally transferring its validated descriptor.
+
+    Never follows symlinks or opens devices.
+    """
     assert_log_not_on_target(log_path, target)
     directory = os.path.dirname(log_path)
     name = os.path.basename(log_path)
@@ -997,6 +1002,7 @@ def truncate_log_file(log_path: str, target: str) -> None:
         dirfd = os.open(directory, flags)
     except OSError as exc:
         raise SafetyError(f"Cannot open log directory: {exc}") from exc
+    retained_fd = None
     try:
         st = os.fstat(dirfd)
         if not stat.S_ISDIR(st.st_mode):
@@ -1019,10 +1025,22 @@ def truncate_log_file(log_path: str, target: str) -> None:
             # Truncate only after validating the opened inode. O_TRUNC would
             # destroy a hardlink peer before fstat can reject it.
             os.ftruncate(fd, 0)
+            if retain_fd:
+                retained_fd = fd
+                fd = -1
         finally:
-            os.close(fd)
+            if fd >= 0:
+                os.close(fd)
     finally:
-        os.close(dirfd)
+        try:
+            os.close(dirfd)
+        except BaseException:
+            # The caller cannot receive ownership until directory cleanup
+            # succeeds. Close our still-local log handle on a failed transfer.
+            if retained_fd is not None:
+                os.close(retained_fd)
+            raise
+    return retained_fd
 
 
 def assert_ready_to_wipe(

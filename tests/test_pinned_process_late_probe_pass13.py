@@ -7,12 +7,12 @@ from beamo_wipe.models import MethodId, WipeRequest
 from beamo_wipe.safety import SafetyError
 
 
-def test_new_pinned_engine_after_initial_probe_blocks_spawn(monkeypatch):
+def test_new_pinned_engine_after_initial_probe_blocks_spawn(tmp_path, monkeypatch):
     request = WipeRequest(
         device="/dev/vda",
         method=MethodId.EVERYDAY,
         boot_device="/dev/sdb",
-        logfile="/tmp/beamo-wipe/nwipe-vda.log",
+        logfile=str(tmp_path / "nwipe-vda.log"),
         device_rdev=1,
         boot_rdev=2,
         device_size_bytes=10_000_000_000,
@@ -20,11 +20,16 @@ def test_new_pinned_engine_after_initial_probe_blocks_spawn(monkeypatch):
     runner = runner_module.NwipeRunner()
     probes = 0
     released = []
+    release = runner._release_wipe_lock
 
     def pinned_probe(**_kwargs):
         nonlocal probes
         probes += 1
         return probes >= 2
+
+    def release_owned_handles():
+        released.append(True)
+        release()
 
     monkeypatch.setattr(runner_module, "pinned_nwipe_already_running", pinned_probe)
     monkeypatch.setattr(runner_module, "require_real_live_for_nwipe", lambda: None)
@@ -41,10 +46,10 @@ def test_new_pinned_engine_after_initial_probe_blocks_spawn(monkeypatch):
     )
     monkeypatch.setattr(runner_module, "assert_not_boot", lambda *_a, **_k: None)
     monkeypatch.setattr(runner_module, "assert_log_not_on_target", lambda *_a: None)
-    monkeypatch.setattr(runner_module, "truncate_log_file", lambda *_a: None)
+    monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
     monkeypatch.setattr(runner_module, "_recheck_identity_under_lock", lambda *_a: None)
     monkeypatch.setattr(runner, "_acquire_wipe_lock", lambda _r: None)
-    monkeypatch.setattr(runner, "_release_wipe_lock", lambda: released.append(True))
+    monkeypatch.setattr(runner, "_release_wipe_lock", release_owned_handles)
     monkeypatch.setattr(runner._sleep_inhibit, "start", lambda: None)
     monkeypatch.setattr(
         runner_module.subprocess,

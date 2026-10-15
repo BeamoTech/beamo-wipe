@@ -996,6 +996,18 @@ def evaluate_nwipe_completion(
     return ok, detail
 
 
+def _assert_named_wipe_lock(fd: int, lock_path: str) -> None:
+    """The coordination name must still refer to our locked inode."""
+    try:
+        opened = os.fstat(fd)
+        named = os.lstat(lock_path)
+    except OSError as exc:
+        raise SafetyError("Wipe lock changed during acquisition.") from exc
+    if (not stat.S_ISREG(named.st_mode)
+            or (named.st_dev, named.st_ino) != (opened.st_dev, opened.st_ino)):
+        raise SafetyError("Wipe lock changed during acquisition.")
+
+
 class NwipeRunner:
     """Real subprocess runner. Use DryRunRunner in tests and --demo."""
 
@@ -1004,6 +1016,7 @@ class NwipeRunner:
         self._proc: Optional[subprocess.Popen] = None
         self._lock = threading.Lock()
         self._lock_fd: Optional[int] = None
+        self._lock_path = ""
         self._cleanup_failed = False
         self._cancelling: Optional[subprocess.Popen] = None
         self._status_polling: Optional[subprocess.Popen] = None
@@ -1015,6 +1028,8 @@ class NwipeRunner:
         self._last_sigusr1 = 0.0
         self._sigusr1_armed = False
         self._last_logfile = ""
+        self._log_fd: Optional[int] = None
+        self._active_log_identity: Optional[tuple[str, int, int]] = None
         self._active_request: Optional[WipeRequest] = None
         self._sleep_inhibit = SleepInhibit()
         self._spawned_this_attempt = False
@@ -1033,6 +1048,7 @@ class NwipeRunner:
                 not self._spawned_this_attempt
                 and self._proc is None
                 and self._lock_fd is None
+                and self._log_fd is None
                 and not self._cleanup_failed
             )
 
@@ -1041,7 +1057,8 @@ class NwipeRunner:
         with self._lock:
             if self._cleanup_failed:
                 raise SafetyError("Runner cleanup could not be confirmed.")
-            if self._proc is not None:
+            if (self._proc is not None or self._lock_fd is not None
+                    or self._log_fd is not None):
                 raise SafetyError("A wipe is already running.")
             # A new launch attempt owns the runner state even if an early
             # preflight check refuses it. A later poll must not return the
@@ -1054,6 +1071,7 @@ class NwipeRunner:
             self._assessment_log_text = None
             self._assessment_ready = False
             self._last_logfile = ""
+            self._active_log_identity = None
             self._spawned_this_attempt = False
             self._active_request = None
         resolved = resolve_nwipe_binary(self.binary)
@@ -1087,13 +1105,22 @@ class NwipeRunner:
         with self._lock:
             if self._cleanup_failed:
                 raise SafetyError("Runner cleanup could not be confirmed.")
-            if self._proc is not None:
+            if (self._proc is not None or self._lock_fd is not None
+                    or self._log_fd is not None):
                 raise SafetyError("A wipe is already running.")
             self._acquire_wipe_lock(request)
             try:
                 # A losing concurrent process must never truncate the active
                 # runner's log. Touch the logfile only after flock succeeds.
-                truncate_log_file(request.logfile, request.device)
+                self._log_fd = truncate_log_file(
+                    request.logfile, request.device, retain_fd=True
+                )
+                if self._log_fd is None:
+                    raise SafetyError("Cannot retain the validated log file.")
+                log_stat = os.fstat(self._log_fd)
+                self._active_log_identity = (
+                    request.logfile, log_stat.st_dev, log_stat.st_ino
+                )
                 if real_engine:
                     # Recheck both identities while holding the exclusive wipe
                     # lock, immediately before Popen. This narrows the hotplug
@@ -1151,8 +1178,23 @@ class NwipeRunner:
             }
             # Python os.open uses O_CLOEXEC. pass_fds keeps the flock in the
             # child so a crashed wizard cannot start a second nwipe.
-            if self._lock_fd is not None:
-                popen_kwargs["pass_fds"] = (self._lock_fd,)
+            try:
+                if self._lock_fd is not None:
+                    popen_kwargs["pass_fds"] = (self._lock_fd,)
+                    # Preparation and rediscovery can take time. Ownership
+                    # checked at flock acquisition must still govern the
+                    # pathname another interface will use before we exec.
+                    _assert_named_wipe_lock(self._lock_fd, self._lock_path)
+                current_log = os.lstat(request.logfile)
+                if (not stat.S_ISREG(current_log.st_mode)
+                        or current_log.st_uid != os.getuid()
+                        or self._active_log_identity != (
+                            request.logfile, current_log.st_dev, current_log.st_ino
+                        )):
+                    raise SafetyError("Log file changed before launch.")
+            except BaseException:
+                self._release_wipe_lock()
+                raise
             try:
                 self._proc = subprocess.Popen(argv, **popen_kwargs)
                 self._active_request = request
@@ -1348,6 +1390,15 @@ class NwipeRunner:
                     f"mode={oct(st.st_mode)}",
                 )
                 return ""
+            expected = self._active_log_identity
+            if (expected is not None and expected[0] == logfile
+                    and (st.st_dev, st.st_ino) != expected[1:]):
+                # A stable read of a replacement file is still unrelated to
+                # the log created for this process. Do not accept its status,
+                # readiness or terminal markers, even when it looks complete.
+                self._log_read_state.truncated = True
+                _try_log_diag("nwipe", "log_identity_changed")
+                return ""
             with os.fdopen(fd, "rb") as fh:
                 fd = -1
                 fh.seek(0, os.SEEK_END)
@@ -1526,13 +1577,7 @@ class NwipeRunner:
             # flock protects an inode, not its pathname. If the name was
             # replaced during acquisition, another runner could lock the
             # replacement and both would believe they own the wipe slot.
-            try:
-                named = os.lstat(lock_path)
-            except OSError as exc:
-                raise SafetyError("Wipe lock changed during acquisition.") from exc
-            if (not stat.S_ISREG(named.st_mode)
-                    or (named.st_dev, named.st_ino) != (st.st_dev, st.st_ino)):
-                raise SafetyError("Wipe lock changed during acquisition.")
+            _assert_named_wipe_lock(fd, lock_path)
         except BlockingIOError:
             os.close(fd)
             raise SafetyError("A wipe is already running.")
@@ -1540,28 +1585,39 @@ class NwipeRunner:
             os.close(fd)
             raise
         self._lock_fd = fd
+        self._lock_path = lock_path
 
     def _release_wipe_lock(self) -> None:
         self._sleep_inhibit.stop()
         if self._cleanup_failed:
             raise SafetyError("Runner cleanup could not be confirmed.")
         fd = self._lock_fd
-        if fd is None:
-            return
-        try:
-            fcntl.flock(fd, fcntl.LOCK_UN)
-        except OSError as exc:
-            _try_log_diag("nwipe", "unlock_failed", type(exc).__name__)
-            raise SafetyError("Runner cleanup could not be confirmed.") from exc
-        self._lock_fd = None
-        try:
-            os.close(fd)
-        except OSError as exc:
-            # A failed close has platform-dependent ownership. Never close the
-            # number again (it may be reused), or publish a clean terminal state.
-            self._cleanup_failed = True
-            _try_log_diag("nwipe", "lock_close_failed", type(exc).__name__)
-            raise SafetyError("Runner cleanup could not be confirmed.") from exc
+        if fd is not None:
+            try:
+                fcntl.flock(fd, fcntl.LOCK_UN)
+            except OSError as exc:
+                _try_log_diag("nwipe", "unlock_failed", type(exc).__name__)
+                raise SafetyError("Runner cleanup could not be confirmed.") from exc
+            self._lock_fd = None
+            try:
+                os.close(fd)
+            except OSError as exc:
+                # A failed close has platform-dependent ownership. Never close
+                # the number again, or publish a clean terminal state.
+                self._cleanup_failed = True
+                _try_log_diag("nwipe", "lock_close_failed", type(exc).__name__)
+                raise SafetyError("Runner cleanup could not be confirmed.") from exc
+        log_fd = self._log_fd
+        if log_fd is not None:
+            # Keep the original inode allocated until cleanup is confirmed,
+            # so unlink/recreate cannot reuse its device/inode identity.
+            self._log_fd = None
+            try:
+                os.close(log_fd)
+            except OSError as exc:
+                self._cleanup_failed = True
+                _try_log_diag("nwipe", "log_close_failed", type(exc).__name__)
+                raise SafetyError("Runner cleanup could not be confirmed.") from exc
 
     def cancel(self) -> None:
         # Snapshot under lock but keep _proc registered until the outcome is

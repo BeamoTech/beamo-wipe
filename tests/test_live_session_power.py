@@ -238,6 +238,7 @@ def test_failed_engine_spawn_releases_sleep_inhibitor(tmp_path, monkeypatch):
     runner = NwipeRunner()
     runner._sleep_inhibit = Mock()
     runner._acquire_wipe_lock = Mock()
+    release = runner._release_wipe_lock
     runner._release_wipe_lock = Mock()
     monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
     monkeypatch.setattr(runner_module, "resolve_nwipe_binary", lambda _binary: "/usr/lib/beamo-wipe/nwipe")
@@ -250,7 +251,6 @@ def test_failed_engine_spawn_releases_sleep_inhibitor(tmp_path, monkeypatch):
     monkeypatch.setattr(runner_module, "assert_local_device_transport", lambda _path: None)
     monkeypatch.setattr(runner_module, "block_rdev", lambda path: 1 if path == "/dev/vda" else 2)
     monkeypatch.setattr(runner_module, "_recheck_identity_under_lock", lambda _request: None)
-    monkeypatch.setattr(runner_module, "truncate_log_file", lambda *_a: None)
     # A child-reported exec failure names the executable and is proven
     # reaped; a generic parent OSError after fork cannot release ownership.
     monkeypatch.setattr(
@@ -262,10 +262,13 @@ def test_failed_engine_spawn_releases_sleep_inhibitor(tmp_path, monkeypatch):
         "/dev/vda", MethodId.EVERYDAY, "/dev/sdb", str(tmp_path / "nwipe.log"),
         device_rdev=1, device_size_bytes=500_000_000_000, boot_rdev=2,
     )
-    with pytest.raises(OSError, match="fake spawn failure"):
-        runner.start(request)
-    runner._sleep_inhibit.start.assert_called_once()
-    runner._sleep_inhibit.stop.assert_called_once()
+    try:
+        with pytest.raises(OSError, match="fake spawn failure"):
+            runner.start(request)
+        runner._sleep_inhibit.start.assert_called_once()
+        runner._sleep_inhibit.stop.assert_called_once()
+    finally:
+        release()
 
 
 @pytest.mark.parametrize("screen", [Screen.WORKING, Screen.CHECKING, Screen.STOPPING])
