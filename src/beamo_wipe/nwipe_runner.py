@@ -125,8 +125,8 @@ NWIPE_GEOMETRY_TARGET_RE = re.compile(
 # signal-handler thread exist. Until then SIGUSR1 uses the default action
 # (terminate). The PRNG auto-bench (8 generators × 1.0s) runs before that.
 NWIPE_SIGUSR1_READY_RE = re.compile(
-    r"^(?:(?:\[\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\]\s*)?"
-    r"(?:debug|info|notice|sanity):\s*)?"
+    r"^\[\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\]\s+"
+    r"(?:debug|info|notice|sanity):\s*"
     r"(?:Program options are set as follows\b|do not show GUI interface\b|"
     r"Using direct I/O\b|Using cached I/O\b)"
 )
@@ -559,8 +559,8 @@ def nwipe_accepts_sigusr1(log_text: str) -> bool:
     """True once the log shows nwipe 0.42 has installed its SIGUSR1 handler."""
     text = log_text or ""
     # Model and serial fields are supplied by the disk. They may contain a
-    # readiness phrase, but cannot make that phrase the start of an nwipe
-    # option/I/O record. An unprefixed record supports synthetic test logs.
+    # readiness phrase after an embedded newline. Require the full timestamped
+    # option/I/O record rather than trusting a model's continuation line.
     return any(
         NWIPE_SIGUSR1_READY_RE.match(line.strip(" \t\r"))
         for line in text.split("\n")[:-1]

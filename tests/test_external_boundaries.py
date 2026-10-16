@@ -386,7 +386,7 @@ def test_sigusr1_not_sent_before_ready_and_throttled(tmp_path, monkeypatch):
     runner.poll(req)
     assert signals == []
     # log with ready marker should send after 2s throttle
-    log.write_text("Program options are set as follows\n")
+    log.write_text("[2026/10/16 12:00:00] info: Program options are set as follows\n")
     runner._last_sigusr1 = time.monotonic() - 3
     runner.poll(req)
     # should send SIGUSR1 (signal number varies by platform)

@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 import os
 import re
-from typing import Any, Mapping
+from typing import Any, Mapping, cast
 
 POLICY_VERSION = 1
 POLICY_ID = "beamo-wipe-sharing-v1"
@@ -151,10 +151,10 @@ def collect_secrets(evidence: Mapping[str, Any]) -> tuple[str, ...]:
 
 def _scrub(value: object, secrets: tuple[str, ...]) -> object:
     if isinstance(value, str):
-        out = value
-        for secret in secrets:
-            out = re.sub(re.escape(secret), WITHHELD, out, flags=re.IGNORECASE)
-        return out
+        if not secrets:
+            return value
+        pattern = "|".join(re.escape(secret) for secret in secrets)
+        return re.sub(pattern, lambda _match: WITHHELD, value, flags=re.IGNORECASE)
     if isinstance(value, list):
         return [_scrub(item, secrets) for item in value]
     if isinstance(value, dict):
@@ -166,10 +166,79 @@ def _pick(mapping: Mapping[str, Any], allowed: frozenset[str]) -> dict[str, Any]
     return {key: mapping[key] for key in allowed if key in mapping}
 
 
+def _scalar_fields(mapping: Mapping[str, Any]) -> dict[str, Any]:
+    """Allowed leaves cannot carry arbitrary nested keys into a sharing copy."""
+    return {
+        key: value for key, value in mapping.items()
+        if value is None or isinstance(value, (str, int, float, bool))
+    }
+
+
+def _restore_safe_strings(shared: dict[str, Any], evidence: Mapping[str, Any]) -> None:
+    """Identifiers cannot redact validated codes or canonical application copy."""
+    from beamo_wipe import NWIPE_PINNED_COMMIT, NWIPE_PINNED_VERSION, __version__, lang
+    from beamo_wipe.build_identity import BUILD_ID_RE, COMMIT_RE, STATUSES
+    from beamo_wipe.evidence import ALLOWED_OUTCOMES, WALL_PROVENANCE, valid_wall
+    from beamo_wipe.keyboard import LAYOUTS
+    from beamo_wipe.methods import METHODS
+    from beamo_wipe.models import MethodId
+    from beamo_wipe.outcomes import VIEWS, present_evidence
+
+    def keep(section: str | None, key: str, allowed) -> None:
+        source = evidence if section is None else _object_mapping(evidence.get(section))
+        target = shared if section is None else shared.get(section)
+        value = source.get(key)
+        if isinstance(target, dict) and isinstance(value, str) and value in allowed:
+            target[key] = value
+
+    reasons = {*VIEWS, "completed"}
+    keep(None, "outcome", ALLOWED_OUTCOMES)
+    keep(None, "failure_reason", reasons)
+    keep("completion", "reason", reasons)
+    keep(None, "build_status", STATUSES)
+    for key, expected in (
+        ("beamo_wipe_version", __version__),
+        ("nwipe_version", NWIPE_PINNED_VERSION),
+        ("nwipe_commit", NWIPE_PINNED_COMMIT),
+    ):
+        keep(None, key, {expected})
+    for key, pattern in (("source_commit", COMMIT_RE), ("build_id", BUILD_ID_RE)):
+        value = evidence.get(key)
+        if isinstance(value, str) and pattern.fullmatch(value):
+            keep(None, key, {value})
+    keep("nwipe", "version", {NWIPE_PINNED_VERSION})
+    keep("locale", "language", lang.LANGUAGE_ORDER)
+    keep("locale", "keyboard_layout", LAYOUTS)
+    keep("interruption", "origin", {"user", "system", "none"})
+    keep("timestamps", "duration_source", {"monotonic"})
+    keep("timestamps", "wall_confidence", {"unverified", "unavailable"})
+    keep("timestamps", "wall_provenance", WALL_PROVENANCE)
+    for key in ("started_at_wall", "ended_at_wall"):
+        value = _object_mapping(evidence.get("timestamps")).get(key)
+        if isinstance(value, str) and valid_wall(value):
+            keep("timestamps", key, {value})
+
+    method = _object_mapping(evidence.get("method"))
+    method_id = method.get("id")
+    if isinstance(method_id, str) and method_id in {item.value for item in MethodId}:
+        spec = METHODS[MethodId(method_id)]
+        keep("method", "id", {spec.method_id.value})
+        keep("method", "nwipe_method", {spec.nwipe_method})
+        keep("method", "verify", {spec.verify})
+        keep("verification", "requested", {spec.verify})
+
+    # Rebuild fixed result prose from the original validated core, rather than
+    # trusting arbitrary copied prose or weakening sharing-result validation.
+    # The current report language may differ from the original session's.
+    view = present_evidence(evidence)
+    shared["presentation"] = _pick(view.payload(), _KEEP_PRESENTATION)
+    shared["result_description"] = view.message
+
+
 def make_sharing_copy(evidence: Mapping[str, Any]) -> dict[str, Any]:
     """Build a new sharing document. Does not mutate ``evidence``."""
     secrets = collect_secrets(evidence)
-    root = _pick(evidence, _KEEP_ROOT)
+    root = _scalar_fields(_pick(evidence, _KEEP_ROOT))
     for key, allowed in (
         ("device", _KEEP_DEVICE),
         ("device_presentation", _KEEP_DEVICE_PRESENTATION),
@@ -183,21 +252,24 @@ def make_sharing_copy(evidence: Mapping[str, Any]) -> dict[str, Any]:
         ("presentation", _KEEP_PRESENTATION),
         ("locale", _KEEP_LOCALE),
     ):
-        if key not in root:
-            continue
-        section = root[key]
+        root.pop(key, None)
+        section = evidence.get(key)
         if isinstance(section, dict):
-            root[key] = _pick(section, allowed)
-        else:
-            del root[key]
-    root["privacy"] = {
+            root[key] = _scalar_fields(_pick(section, allowed))
+    root.pop("warnings", None)
+    warnings = evidence.get("warnings")
+    if isinstance(warnings, list):
+        root["warnings"] = [item for item in warnings if isinstance(item, str)]
+    shared = cast(dict[str, Any], _scrub(root, secrets))
+    _restore_safe_strings(shared, evidence)
+    shared["privacy"] = {
         "policy_version": POLICY_VERSION,
         "policy": POLICY_ID,
         "copy": "sharing",
         "unsuitable_for_identity_evidence": True,
         "notice": NOTICE,
     }
-    return _scrub(root, secrets)  # type: ignore[return-value]
+    return shared
 
 
 def encode_sharing_copy(payload: Mapping[str, Any]) -> bytes:

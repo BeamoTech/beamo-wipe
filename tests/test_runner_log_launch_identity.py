@@ -47,7 +47,7 @@ def test_replaced_live_log_cannot_arm_signals_or_supply_progress(tmp_path, monke
     try:
         logfile.rename(tmp_path / "original-engine.log")
         logfile.write_text(
-            "Program options are set as follows\n"
+            "[2026/10/16 12:00:00] info: Program options are set as follows\n"
             "/dev/sda: 050.00%, round 1 of 1, pass 1 of 1, "
             "eta 00:00:10, [writing]\n"
         )
