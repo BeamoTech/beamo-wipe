@@ -1,0 +1,45 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__ test_lock_close_error_still_removes_owned_mount_directory_and_closes_root ___
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-159/test_lock_close_error_still_re0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7eb093821970>
+
+    def test_lock_close_error_still_removes_owned_mount_directory_and_closes_root(
+        tmp_path, monkeypatch
+    ):
+        root = tmp_path / "run"
+        monkeypatch.setattr(export, "MOUNT_ROOT", root)
+        real_open, real_close = os.open, os.close
+        opened = {}
+
+        def record_open(path, flags, *args, **kwargs):
+            fd = real_open(path, flags, *args, **kwargs)
+            opened[str(path)] = fd
+            return fd
+
+        def close_with_error(fd):
+            real_close(fd)
+            if fd == opened.get(".lock"):
+                # Linux releases the descriptor even when close reports EIO.
+                raise OSError(errno.EIO, "fake close failure")
+
+        def refuse_mount(*_args, **_kwargs):
+            raise SafetyError("fake mount refusal")
+
+        try:
+            with monkeypatch.context() as patch:
+                patch.setattr(os, "open", record_open)
+                patch.setattr(os, "close", close_with_error)
+                patch.setattr(export, "_run_command", refuse_mount)
+                with pytest.raises(OSError, match="fake close failure"):
+                    export._persist_and_verify_report(
+                        SimpleNamespace(fstype="vfat"), None, b"", "unavailable", 0
+                    )
+>           with pytest.raises(OSError) as error:
+E           Failed: DID NOT RAISE <class 'OSError'>
+
+tests/test_export_mount_cleanup_regression.py:44: Failed
+=========================== short test summary info ============================
+FAILED tests/test_export_mount_cleanup_regression.py::test_lock_close_error_still_removes_owned_mount_directory_and_closes_root
+1 failed in 0.24s

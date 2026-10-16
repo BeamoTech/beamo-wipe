@@ -1,0 +1,37 @@
+Selected modules 66
+dbus-daemon[177946]: [session uid=0 pid=177946] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=177961 comm="/tmp/beamo-wipe-audit-python/bin/python -m pytest" label="unconfined")
+dbus-daemon[177946]: [session uid=0 pid=177946] Successfully activated service 'org.a11y.Bus'
+..........................................dbus-daemon[177989]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=177961 comm="/tmp/beamo-wipe-audit-python/bin/python -m pytest" label="unconfined")
+dbus-daemon[177989]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+.............................. [  5%]
+........................................................................ [ 11%]
+........................................................................ [ 17%]
+........................................................................ [ 23%]
+........................................................................ [ 29%]
+........................................................................ [ 35%]
+........................................................................ [ 40%]
+........................................................................ [ 46%]
+........................................................................ [ 52%]
+.......ssssssssssssssssssssss........................................... [ 58%]
+........................................................................ [ 64%]
+....................................ss...................s.............. [ 70%]
+.........................................sssss.......................... [ 75%]
+........................................................................ [ 81%]
+...........s............................................................ [ 87%]
+........................................................................ [ 93%]
+........................................................................ [ 99%]
+..........                                                               [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/test_launcher_readiness.py:135: Launcher renders require Chrome, Go and Python Playwright
+SKIPPED [1] tests/test_launcher_readiness.py:151: Launcher renders require Chrome, Go and Python Playwright
+SKIPPED [11] tests/test_launcher_readiness.py:170: Launcher renders require Chrome, Go and Python Playwright
+SKIPPED [3] tests/test_launcher_readiness.py:195: Launcher renders require Chrome, Go and Python Playwright
+SKIPPED [2] tests/test_launcher_readiness.py:213: Launcher renders require Chrome, Go and Python Playwright
+SKIPPED [3] tests/test_launcher_readiness.py:241: Launcher renders require Chrome, Go and Python Playwright
+SKIPPED [1] tests/test_launcher_readiness.py:261: Launcher renders require Chrome, Go and Python Playwright
+SKIPPED [2] tests/test_startup_stages.py:198: live kiosk fullscreen requires an isolated Linux X server
+SKIPPED [1] tests/test_tk_runtime.py:106: bare X11 fullscreen check requires an isolated X server
+SKIPPED [5] tests/test_tk_runtime.py:959: physical key injection requires an isolated test X server
+SKIPPED [1] tests/test_tk_runtime.py:1872: physical key injection requires an isolated test X server
+1203 passed, 31 skipped in 288.30s (0:04:48)

@@ -1,0 +1,72 @@
+....dbus-daemon[216406]: [session uid=0 pid=216406] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=216420 comm="/tmp/beamo-wipe-audit-python/bin/python -m pytest" label="unconfined")
+dbus-daemon[216406]: [session uid=0 pid=216406] Successfully activated service 'org.a11y.Bus'
+FF                                                                   [100%]
+=================================== FAILURES ===================================
+____________ test_spoken_startup_status_uses_selected_language[fr] _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7a551e5a46b0>
+language = 'fr'
+
+    @pytest.mark.parametrize("language", ["fr", "de"])
+    def test_spoken_startup_status_uses_selected_language(monkeypatch, language):
+        pytest.importorskip("gi")
+        from beamo_wipe.ui import accessible_wizard as ui
+
+        lang.set_language(language)
+        captured = []
+        unrelated = ui.Gtk.Window(title="Unrelated existing window")
+        unrelated_destroyed = []
+        unrelated.connect("destroy", lambda *_args: unrelated_destroyed.append(True))
+        previous_windows = set(ui.Gtk.Window.list_toplevels())
+        monkeypatch.setattr(ui, "_ensure_gtk_display", lambda: None)
+        monkeypatch.setattr("beamo_wipe.startup_stages._emit", lambda *_args: None)
+
+        def inspect_window():
+            window = ui.Gtk.Window.list_toplevels()[0]
+            captured.extend(labels(window, ui))
+            window.emit("delete-event", None)
+
+        monkeypatch.setattr(ui.Gtk, "main", inspect_window)
+        try:
+            ui.run_accessible_startup(lambda _report: object())
+>           assert C.STARTUP_TITLE in captured
+E           AssertionError: assert 'Démarrage de Beamo Wipe' in []
+E            +  where 'Démarrage de Beamo Wipe' = C.STARTUP_TITLE
+
+tests/test_startup_language_refresh_regression.py:74: AssertionError
+____________ test_spoken_startup_status_uses_selected_language[de] _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7a551db77d40>
+language = 'de'
+
+    @pytest.mark.parametrize("language", ["fr", "de"])
+    def test_spoken_startup_status_uses_selected_language(monkeypatch, language):
+        pytest.importorskip("gi")
+        from beamo_wipe.ui import accessible_wizard as ui
+
+        lang.set_language(language)
+        captured = []
+        unrelated = ui.Gtk.Window(title="Unrelated existing window")
+        unrelated_destroyed = []
+        unrelated.connect("destroy", lambda *_args: unrelated_destroyed.append(True))
+        previous_windows = set(ui.Gtk.Window.list_toplevels())
+        monkeypatch.setattr(ui, "_ensure_gtk_display", lambda: None)
+        monkeypatch.setattr("beamo_wipe.startup_stages._emit", lambda *_args: None)
+
+        def inspect_window():
+            window = ui.Gtk.Window.list_toplevels()[0]
+            captured.extend(labels(window, ui))
+            window.emit("delete-event", None)
+
+        monkeypatch.setattr(ui.Gtk, "main", inspect_window)
+        try:
+            ui.run_accessible_startup(lambda _report: object())
+>           assert C.STARTUP_TITLE in captured
+E           AssertionError: assert 'Beamo Wipe startet' in []
+E            +  where 'Beamo Wipe startet' = C.STARTUP_TITLE
+
+tests/test_startup_language_refresh_regression.py:74: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_startup_language_refresh_regression.py::test_spoken_startup_status_uses_selected_language[fr]
+FAILED tests/test_startup_language_refresh_regression.py::test_spoken_startup_status_uses_selected_language[de]
+2 failed, 4 passed in 0.38s

@@ -1,5 +1,64 @@
 # Unfinished work
 
+## BW-BUG-AUDIT-20261015-PASS5 — DONE (local acceptance and source push)
+
+- Date/author: 2026-10-15–16 / Codex.
+- Request: another thorough and comprehensive pass after the completed
+  continuous audit; prior passing evidence is baseline history, not new proof.
+- Repo/worktree/branch: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`;
+  `fix/safety-audit-20261015`; clean baseline
+  `604e72b3ae1fe1a2abdda08200b8f271cb5c675d` (implementation `af2b6e9`).
+- Scope/acceptance: fresh source review of discovery/identity/authorization,
+  runner/argv/progress/log/completion/cancel/retry, wizard/Tk/GTK/console/app,
+  recovery/report/export/diagnostics and boot/build/compatibility. Prove any
+  suspected defect before a minimal regression-backed fix; independent review;
+  final frozen-source full local gates and artifact/diff inspection.
+- Progress: read current guide/record and verified clean source. Three bounded
+  reviewers resumed with rotated scopes; primary owns persistence/export/
+  diagnostic integration and final independent verification.
+- Proven findings this pass: falsey malformed `children` values accepted as
+  empty topology (original regression fails; minimal fix now frozen);
+  malformed findmnt bracket suffix trusted as a different source; embedded
+  model newlines forging positive hidden-capacity/error-summary checks; stale
+  import-time startup translations and hardcoded GTK status. Each reviewer
+  saved a failing fake/isolated-label proof before authorized source edits.
+- Additional proven fix: report mount cleanup skipped owned directory removal/
+  descriptor close after lock-close or unmount I/O errors, and worker child
+  close EIO skipped parent close. Original fake-only proofs fail3 cases;4
+  regressions/controls now pass with independently reviewed nested-finally fixes.
+- Final local acceptance PASS:59 new cases, exact-original38 intended failures/
+ 21 controls and fixed59 passes. Main5947 pass/14 expected image skips plus
+  private Orca1 pass =5948 unique passes, no errors/failures or duplicate case
+  IDs. Lint/types/security/shell/preview/negative and refreshed Go1.26.8
+  uncached race/vet/350000 fuzz executions PASS. All20 frozen hashes match.
+- Integration history:2 preliminary runs deliberately interrupted on exact
+  owned pytest PIDs for final proven source variants; later integration run
+  completed3 failed/5944 passed/14 skips from1 remaining short positive-header
+  fixture and2 GTK tests selecting an unrelated global window. Original
+  assertions retained; fixture corrections pass12 parser/60 ordered UI cases;
+  replacement full frozen-source gate PASS above. Superseded runs are not passes.
+- Evidence checkpoint: docs/evidence/bug-audit-20261015-pass5/README.md contains
+  original proof, fixed cases, reviews, complete final logs, hashes and exact
+  image skip reasons. Independent sweeps394 discovery,499 runner,1176 matrix,
+ 1203 UI plus31 resolved setup skips,380 parent persistence; overlapping counts.
+- Source state: implementation `cdfe9fac6238c8fd3d867c9ef48c4ca3248facce` committed with safety prefix and
+  pushed to origin after all applicable local gates passed. All20 frozen
+  source/test hashes match committed bytes. No open PR or branch hosted run;
+  no merge/deployment/release. Evidence/handoff are the only subsequent edits.
+- Result: fresh bounded reviews and final complete local gate found no further
+  reproducible actionable defect in authorized local scope. Local acceptance
+  criteria passed; this is not an absolute proof of no bugs or image/hardware
+  qualification. No unresolved local implementation blocker remains.
+- Exact next action: no further local implementation fix required. Review the
+  source/evidence if desired; any selected public candidate must follow the
+  separate qualification item below. No PR/hosted run/release is part of this task.
+- Constraints: fake fixtures only, isolated72-DPI Xvfb, no host/physical device
+  operation, guest, hosted CI, PR, production publication or release. Current
+  Blacksmith/project guidance applies; shared-guide absence remains resolved
+  by prior owner continue direction. Image/native/physical qualification stays
+  in the separate existing item below. Logs use `/tmp/beamo-pass5-*`; retain
+  final evidence in repository before completion.
+
 ## BW-BUG-AUDIT-20261015-CONTINUOUS — DONE (local acceptance and source push)
 
 - Date/author: 2026-10-15 / Codex.
@@ -243,7 +302,8 @@
 - Date/author: 2026-10-15 / Codex.
 - Repo/worktree/branch: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`;
   `fix/safety-audit-20261015`; latest implementation
-  `af2b6e9c3d053b65e666d807a87207db14521cb2` (prior audit implementations
+  `cdfe9fac6238c8fd3d867c9ef48c4ca3248facce` (prior audit implementations
+  `af2b6e9c3d053b65e666d807a87207db14521cb2`,
   `57ead7e4304f7f373a0c862ff36335c949f4cf7a` and
   `ff0a3da08e56c3fb38941be20e42db9553269f32` retained as history).
 - Remaining acceptance: final-public-candidate exact-source Blacksmith ISO/QEMU
