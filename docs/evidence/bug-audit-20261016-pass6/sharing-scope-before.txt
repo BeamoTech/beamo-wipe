@@ -1,0 +1,23 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______________ test_verification_scope_keeps_identifier_redaction ______________
+
+    def test_verification_scope_keeps_identifier_redaction():
+        evidence, _ = _collision(CASES[0], "overwrite")
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert shared["verification"]["scope"] == privacy._scrub(
+            evidence["verification"]["scope"], privacy.collect_secrets(evidence)
+        )
+E       AssertionError: assert 'Read-back ve... were erased.' == 'Read-back ve... were erased.'
+E
+E         Skipping 54 identical leading characters in diff, use -v to show
+E         - the final withheld. It does not prove that hidden copies were erased.
+E         ?              -- --
+E         + the final overwrite. It does not prove that hidden copies were erased.
+E         ?           ++++ +
+
+tests/test_sharing_semantic_collision_regression.py:113: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_sharing_semantic_collision_regression.py::test_verification_scope_keeps_identifier_redaction
+1 failed in 0.27s

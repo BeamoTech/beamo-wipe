@@ -1,0 +1,1 @@
+1408 malformed-core mutations across all existing outcome fixtures: no semantic upgrade, private marker leak, or input mutation

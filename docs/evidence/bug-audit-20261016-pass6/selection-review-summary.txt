@@ -1,0 +1,21 @@
+2026-10-16 /root/runner_audit bounded PASS6 rotated review
+Repo /root/dev/Beamo Wipe branch fix/safety-audit-20261015; baseline6bf8c54ce6b25dd21f8be730f705a54c2c8c3ff8 / implementationcdfe9fa. Current AGENTS and relevant unfinished record read; shared-guide absence previously explicitly waived. No source/test edits by reviewer.
+
+Scope: disk classification/eligibility; boot mount/typed/cmdline/USB-label precedence and unresolved/conflicting identities; malformed schema, nested/flat ancestry, duplicates and mounted exclusions; hardware alias protection; tokens, displayed size identity, owner checkbox, countdown and separate erase action; request rediscovery and runner argv/preexec lock/FD ownership; permission/concurrent/retry admission. Inspected source discover.py, safety.py, methods.py, relevant wizard countdown/authorization and nwipe_runner build/validate/start gates. No NEW actionable reproducible defect found in this bounded scope. This is not whole-project or physical acceptance proof.
+
+Evidence:
+- /tmp/beamo-pass6-selection-sweep.txt and .xml:18modules357passed22.18s, no skips/failures.
+- /tmp/beamo-pass6-admission-adjacent.txt:11modules58passed1.53s, no skips/failures. Covers fake sysfs permission failures, preexec named lock replacement, retained descriptor lifetime/concurrent admission, failed-start retries, recovery preflight, countdown restart, boot identity handoff/cmdline competition, findmnt/overmount and missing udev-link boundaries. Initial command contained nonexistent test filename and collected no tests; corrected command is this final passing transcript, not a gate retry of failing behavior.
+- /tmp/beamo-pass6-selection-matrix.py and .txt:364controlledcases0failures (64mounted/RO/remote/duplicate combinations,7boot-source missing/conflicting/unresolved cases,242token pairings across duplicate/distinct sizes and ambiguous/kernel-name serials,51argv flag deletion/duplication/force/wrong-method/extra-target mutations).
+
+Source SHA256:
+discover.py6528038ba87a46e2d58957cccdbf1a7b963d77b9961b724883f7809e93e9c7a4
+safety.py6b69c10e9aafcd8c11ca03563dd04ac90e3aa89fc2be3106aafe4144fb558360
+methods.pyedf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13
+nwipe_runner.py2979312e1b415b9d3e367133817d46d4e1650b33c82ba03f082a02045efa37c5
+wizard.pybe375a0861ec569a652e15f9f572bfa689f40048d736c5bedef641453d464bbb
+
+Safety: fake inventory/processes and ordinary temporary files only; no actual engine/device/native inventory/hosted CI/guest/commit/push/release. Parent owns pending final integration and canonical unfinished-record update.
+
+2026-10-16 follow-up independent readiness change review:
+Parent found separate SIGUSR1 readiness ATA model continuation defect; parent owns source+fixture edits and original proof. Independently approved full patch at nwipe_runner.pySHA2564ee2cd0f28391389a49e95b9808bbcb577a25954263f6064c8999a5f33d1348b. Requires complete timestamp+level before readiness phrase; <=40byte model newline continuations can no longer arm signal handler readiness. Pinned positive records retained. All assertions in five changed existing fixture modules preserved; substitutes timestamped positive records to maintain their original checks. New12case file covers8forged model cases and4genuinecontrols through parser and actual fake-runner poll. Independently ran11modules213passed4.85s (/tmp/beamo-pass6-readiness-independent.txt), including cancellation, failed-start/retry, retainedFD ownership, truncatedhead/unterminatedtail and logreplacement. Diffcheck clean. No edits by reviewer. Original baseline reproduction was parent-owned /tmp/beamo-pass6-readiness-before.txt; reviewer did not rerun that original snapshot. Parent final full gate still pending.

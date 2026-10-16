@@ -1,5 +1,56 @@
 # Unfinished work
 
+## BW-BUG-AUDIT-20261016-PASS6 — DONE (local acceptance and source push)
+
+- Date/author: 2026-10-16 / Codex.
+- Request: another fresh thorough comprehensive audit; prior evidence was
+  baseline history, not proof for this pass. Three bounded reviewers rotated
+  discovery/safety, persistence/report/privacy, UI/boot/build ownership; primary
+  independently reviewed runner/progress/evidence and all fixes/original proofs.
+- Repo/worktree/branch: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`;
+  `fix/safety-audit-20261015`; baseline
+  `6bf8c54ce6b25dd21f8be730f705a54c2c8c3ff8`; implementation
+  `ac6ed67c496090c26a9520d0244100ca371ce192`, committed with safety prefix and pushed to origin.
+- Fixed: model-LF spoofed readiness could trigger premature SIGUSR1; sharing
+  identifier/control collisions and UI-language restarts could corrupt valid
+  results; malformed nested dictionary keys leaked private identifiers; later
+  identifiers could re-redact inserted placeholders. Full timestamped readiness,
+  validated machine controls/canonical presentation, scalar-only sharing leaves
+  and single-pass escaped substitution fix these without touching original data.
+  Method and verification prose keep intended redactions; outcomes parser strict.
+- Proof/evidence: docs/evidence/bug-audit-20261016-pass6/README.md retains exact
+  original/fixed cases, final logs/JUnit-derived skip list, reviews, matrices and
+  scripts, preview screenshot, hashes and unsuccessful draft history. New180
+  cases yield120 intended failures/60 controls on exact baseline; fixed180 PASS.
+- Final local gate: main6127 PASS/14 expected image-only skips plus private
+  Orca1 PASS =6128 unique passes; no errors/failures/duplicates. Mandatory GTK
+  guard PASS. Lint/types/security/shell/preview/negative and pinned Go1.26.8
+  uncached race/vet/350000 fuzz PASS. All9 tested hashes match committed bytes.
+- Independent coverage: discovery415 +364 controlled cases; runner213/1176
+  matrix plus189 primary; privacy482 adjacent/305 independent and1408 malformed
+  core/118 nested-container/330 multisecret cases; UI955+358adjacent/242build
+  and20000 navigation events, with2 generated lb-config skips classified.
+  Overlapping counts are not summed as unique passes. Actual ./preview at72DPI
+  inspected by reviewer and primary, owned subprocesses retired.
+- Draft history: first complete integration FAILED1/6089pass/14skips because
+  approved draft restored too much method prose. Existing pass37 test stayed
+  unchanged. Method/scope redaction restored; collision tests check semantic
+  controls and valid redacted prose. Cross-review then proved pre-existing
+  placeholder re-scrubbing (24fail/12controls), fixed single-pass. Early
+  replacement intentionally stopped on owned PID269626; missing-JUnit failure
+  superseded, not a pass. Final replacement full frozen-source gate PASS above.
+- Result/state: no further reproducible actionable local defect or blocker
+  remains in reviewed scope. Source branch pushed; no open PR, hosted run,
+  merge/deployment/release. Only evidence/handoff documentation changed after
+  implementation; these artifacts accompany source. This is not proof of no bugs.
+- Remaining acceptance/next action: none for local audit. A selected public
+  candidate needs the separate exact-source ISO/QEMU/native/physical
+  qualification item below; no guest/hosted/physical/publication authority here.
+- Safety: fake targets/process boundaries, ordinary temporary files and private
+  72-DPI sessions only. No real nwipe/device operation/guest/native inventory;
+  current Blacksmith guidance applies, not legacy Cloud Build. Shared-guide
+  absence remains resolved by prior owner continue direction. Logs /tmp/beamo-pass6-*.
+
 ## BW-BUG-AUDIT-20261015-PASS5 — DONE (local acceptance and source push)
 
 - Date/author: 2026-10-15–16 / Codex.
@@ -302,7 +353,8 @@
 - Date/author: 2026-10-15 / Codex.
 - Repo/worktree/branch: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`;
   `fix/safety-audit-20261015`; latest implementation
-  `cdfe9fac6238c8fd3d867c9ef48c4ca3248facce` (prior audit implementations
+  `ac6ed67c496090c26a9520d0244100ca371ce192` (prior audit implementations
+  `cdfe9fac6238c8fd3d867c9ef48c4ca3248facce`,
   `af2b6e9c3d053b65e666d807a87207db14521cb2`,
   `57ead7e4304f7f373a0c862ff36335c949f4cf7a` and
   `ff0a3da08e56c3fb38941be20e42db9553269f32` retained as history).

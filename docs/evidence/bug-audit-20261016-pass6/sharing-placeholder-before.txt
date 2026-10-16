@@ -1,0 +1,521 @@
+FFFFFFFFFFFFFFFFFFFFFFFF............                                     [100%]
+=================================== FAILURES ===================================
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-verified-everyday] _
+
+case = ('verified', <MethodId.EVERYDAY: 'everyday'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-unverified-quick_zero] _
+
+case = ('unverified', <MethodId.QUICK_ZERO: 'quick_zero'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'unverified'
+E
+E         - unverified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-occupied-everyday] _
+
+case = ('occupied', <MethodId.EVERYDAY: 'everyday'>, 0, '{path} is reported as IN USE', False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'occupied'
+E
+E         - occupied
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-open_failed-everyday] _
+
+case = ('open_failed', <MethodId.EVERYDAY: 'everyday'>, 0, "Unable to open device '{path}'.", False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'open_failed'
+E
+E         - open_failed
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-geometry_unusable-everyday] _
+
+case = ('geometry_unusable', <MethodId.EVERYDAY: 'everyday'>, 0, "No sane device geometry for '{path}'.", False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'geometry_unusable'
+E
+E         - geometry_unusable
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-interrupted-everyday] _
+
+case = ('interrupted', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'interrupted'
+E
+E         - interrupted
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-cancelled-everyday] _
+
+case = ('cancelled', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, True)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'cancelled'
+E
+E         - cancelled
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-completion_missing-everyday] _
+
+case = ('completion_missing', <MethodId.EVERYDAY: 'everyday'>, 0, '', False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'completion_missing'
+E
+E         - completion_missing
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-verification_failed-everyday] _
+
+case = ('verification_failed', <MethodId.EVERYDAY: 'everyday'>, 1, "Verification mismatch on '{path}' at offset 4096", False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'verification_failed'
+E
+E         - verification_failed
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-process_failed-everyday] _
+
+case = ('process_failed', <MethodId.EVERYDAY: 'everyday'>, 2, '', False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'process_failed'
+E
+E         - process_failed
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-engine_failed-everyday] _
+
+case = ('engine_failed', <MethodId.EVERYDAY: 'everyday'>, 0, '{path}: >>> FAILURE! <<<', False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'engine_failed'
+E
+E         - engine_failed
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-verified-extra] _
+
+case = ('verified', <MethodId.EXTRA: 'extra'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-verified-everyday] _
+
+case = ('verified', <MethodId.EVERYDAY: 'everyday'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-unverified-quick_zero] _
+
+case = ('unverified', <MethodId.QUICK_ZERO: 'quick_zero'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'unverified'
+E
+E         - unverified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-occupied-everyday] _
+
+case = ('occupied', <MethodId.EVERYDAY: 'everyday'>, 0, '{path} is reported as IN USE', False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'occupied'
+E
+E         - occupied
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-open_failed-everyday] _
+
+case = ('open_failed', <MethodId.EVERYDAY: 'everyday'>, 0, "Unable to open device '{path}'.", False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'open_failed'
+E
+E         - open_failed
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-geometry_unusable-everyday] _
+
+case = ('geometry_unusable', <MethodId.EVERYDAY: 'everyday'>, 0, "No sane device geometry for '{path}'.", False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'geometry_unusable'
+E
+E         - geometry_unusable
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-interrupted-everyday] _
+
+case = ('interrupted', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'interrupted'
+E
+E         - interrupted
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-cancelled-everyday] _
+
+case = ('cancelled', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, True)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'cancelled'
+E
+E         - cancelled
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-completion_missing-everyday] _
+
+case = ('completion_missing', <MethodId.EVERYDAY: 'everyday'>, 0, '', False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'completion_missing'
+E
+E         - completion_missing
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-verification_failed-everyday] _
+
+case = ('verification_failed', <MethodId.EVERYDAY: 'everyday'>, 1, "Verification mismatch on '{path}' at offset 4096", False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'verification_failed'
+E
+E         - verification_failed
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-process_failed-everyday] _
+
+case = ('process_failed', <MethodId.EVERYDAY: 'everyday'>, 2, '', False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'process_failed'
+E
+E         - process_failed
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-engine_failed-everyday] _
+
+case = ('engine_failed', <MethodId.EVERYDAY: 'everyday'>, 0, '{path}: >>> FAILURE! <<<', False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'engine_failed'
+E
+E         - engine_failed
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-verified-extra] _
+
+case = ('verified', <MethodId.EXTRA: 'extra'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-verified-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-cancelled-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-verified-extra]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-verified-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-unverified-quick_zero]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-occupied-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-open_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-geometry_unusable-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-interrupted-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-cancelled-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-completion_missing-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-verification_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-process_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-engine_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-verified-extra]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-verified-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-unverified-quick_zero]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-occupied-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-open_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-geometry_unusable-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-interrupted-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-cancelled-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-completion_missing-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-verification_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-process_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-engine_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-verified-extra]
+24 failed, 12 passed, 132 deselected in 1.09s

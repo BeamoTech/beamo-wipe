@@ -1,0 +1,629 @@
+........................................................................ [ 14%]
+........................................................................ [ 29%]
+........................................................................ [ 44%]
+........................................................................ [ 59%]
+........................................................................ [ 74%]
+........................................................................ [ 89%]
+..................................................                       [100%]
+==================================== PASSES ====================================
+____ test_engine_start_error_keeps_technical_details_out_of_primary_message ____
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+________ test_controller_checkpoint_failure_prevents_fake_runner_start _________
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+_ test_preflight_is_saved_before_discovery_and_recovery_survives_discovery_failure _
+----------------------------- Captured stdout call -----------------------------
+Starting Beamo Wipe.
+Getting ready.
+----------------------------- Captured stderr call -----------------------------
+Startup blocked (io_failed).
+_________ test_informational_cli_does_not_create_a_session[--version] __________
+----------------------------- Captured stderr call -----------------------------
+Beamo Wipe 0.2.12
+This session is not a manufactured USB image.
+Release build: not packaged
+Source: not packaged
+Build status: not a manufactured image
+___________ test_informational_cli_does_not_create_a_session[--help] ___________
+----------------------------- Captured stdout call -----------------------------
+usage: beamo-wipe [-h] [--demo] [--web] [--lang {en,fr,de}] [--helper]
+                  [--scenario {happy,empty,blocked,fail}] [--empty]
+                  [--blocked] [--fail] [--plain-console] [--console]
+                  [--accessible] [--fullscreen] [--dry-run]
+                  [--lsblk-json LSBLK_JSON] [--boot-device BOOT_DEVICE]
+                  [--version]
+
+Guided front-end for nwipe. This is not a wipe engine. It will not erase disks
+from inside Windows or macOS. On this computer, use --preview or ./preview
+(fake disks).
+
+options:
+  -h, --help            show this help message and exit
+  --demo, --preview     Tk window with fake disks. Nothing is erased.
+  --web, --gallery      Open a browser click-through of the screens. Does not
+                        wipe.
+  --lang {en,fr,de}     Gallery language: en, fr, or de. Preview only; ignored
+                        on the live USB.
+  --helper              Open the boot-menu helper page (does not wipe).
+  --scenario {happy,empty,blocked,fail}
+                        Preview disk list: happy, empty, blocked, or fail.
+  --empty               Preview: only the Beamo USB.
+  --blocked             Preview: cannot identify USB.
+  --fail, --fail-demo   Preview a failed wipe.
+  --plain-console       Use sequential text prompts without curses screen
+                        redraws.
+  --console             Use the keyboard console UI.
+  --accessible          Use the Linux GTK screen-reader view.
+  --fullscreen          Fill the screen (live USB).
+  --dry-run             Do not invoke nwipe. Test only; ignored on the live
+                        USB.
+  --lsblk-json LSBLK_JSON
+                        Read disks from an lsblk JSON file. Test only; ignored
+                        on the live USB.
+  --boot-device BOOT_DEVICE
+                        Override live-medium path. Test only; ignored on the
+                        live USB.
+  --version             Show version and USB image identity.
+______________ test_plain_done_requires_literal_save_or_shutdown _______________
+----------------------------- Captured stdout call -----------------------------
+
+============================================================
+Beamo Wipe
+Result
+The result could not be confirmed
+============================================================
+The result could not be confirmed
+Elapsed: unavailable
+Everyday: 1 overwrite pass: random data. Then we check the last overwrite.
+Samsung SSD 970 EVO
+256 GB  SSD  NVMe
+Serial number: S4EVNX0N123456
+What happened
+The result could not be confirmed
+
+What it means for your disk
+The result could not be confirmed. Treat the disk as still containing data.
+
+What to do next
+Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting.
+
+Technical details
+Result code: indeterminate
+For help, visit beamosupport.com.
+If this was the disk your computer starts from, the computer may not start normally now. To use that computer again, you may need to install an operating system first.
+Sounds: off
+Type SOUNDS then Enter for on/off; HEAR then Enter to hear it again.
+Report status
+Report not saved to USB
+Saving or checking a report does not change the erase result.
+1. Insert the report USB (now)
+2. Check the USB
+3. Save the report
+4. Verify the copy
+5. Safe removal
+No erase is running. Leave the boot USB and selected disk connected. Insert one separate FAT32 USB, then choose Save report to USB. The original report includes disk identifiers. A sharing copy, if saved, is not identity evidence. Any unsaved report is lost when this live session shuts down or loses power.
+Remove the report USB first. Keep the Beamo USB connected.
+
+============================================================
+Beamo Wipe
+Result
+The result could not be confirmed
+============================================================
+The result could not be confirmed
+Elapsed: unavailable
+Everyday: 1 overwrite pass: random data. Then we check the last overwrite.
+Samsung SSD 970 EVO
+256 GB  SSD  NVMe
+Serial number: S4EVNX0N123456
+What happened
+The result could not be confirmed
+
+What it means for your disk
+The result could not be confirmed. Treat the disk as still containing data.
+
+What to do next
+Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting.
+
+Technical details
+Result code: indeterminate
+For help, visit beamosupport.com.
+If this was the disk your computer starts from, the computer may not start normally now. To use that computer again, you may need to install an operating system first.
+Sounds: off
+Type SOUNDS then Enter for on/off; HEAR then Enter to hear it again.
+Report status
+Report not saved to USB
+Saving or checking a report does not change the erase result.
+1. Insert the report USB (now)
+2. Check the USB
+3. Save the report
+4. Verify the copy
+5. Safe removal
+No erase is running. Leave the boot USB and selected disk connected. Insert one separate FAT32 USB, then choose Save report to USB. The original report includes disk identifiers. A sharing copy, if saved, is not identity evidence. Any unsaved report is lost when this live session shuts down or loses power.
+Remove the report USB first. Keep the Beamo USB connected.
+=========================== short test summary info ============================
+PASSED tests/test_method_copy_evidence_pass37.py::test_forged_method_copy_cannot_keep_green_result_or_report[title]
+PASSED tests/test_method_copy_evidence_pass37.py::test_forged_method_copy_cannot_keep_green_result_or_report[operation_summary]
+PASSED tests/test_method_copy_evidence_pass37.py::test_forged_method_copy_cannot_keep_green_result_or_report[description]
+PASSED tests/test_method_copy_evidence_pass37.py::test_forged_method_copy_cannot_keep_green_result_or_report[docs_name]
+PASSED tests/test_method_copy_evidence_pass37.py::test_saved_method_copy_is_checked_in_its_own_language[fr]
+PASSED tests/test_method_copy_evidence_pass37.py::test_saved_method_copy_is_checked_in_its_own_language[de]
+PASSED tests/test_method_copy_evidence_pass37.py::test_sharing_method_redaction_is_retained_in_readable_report
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-verified-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-cancelled-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-verified-extra]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-verified-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-cancelled-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-verified-extra]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-verified-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-cancelled-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-verified-extra]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-verified-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-cancelled-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-verified-extra]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-verified-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-cancelled-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-verified-extra]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-verified-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-cancelled-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-verified-extra]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-verified-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-cancelled-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-verified-extra]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-verified-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-cancelled-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-verified-extra]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-verified-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-cancelled-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-verified-extra]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[en-en]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[en-fr]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[en-de]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[fr-en]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[fr-fr]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[fr-de]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[de-en]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[de-fr]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[de-de]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_exported_sharing_summary_keeps_success_quickzero_and_cancel_outcomes[case0]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_exported_sharing_summary_keeps_success_quickzero_and_cancel_outcomes[case1]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_exported_sharing_summary_keeps_success_quickzero_and_cancel_outcomes[case2]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_unknown_control_values_are_still_scrubbed_and_never_upgraded[None-outcome]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_unknown_control_values_are_still_scrubbed_and_never_upgraded[method-id]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_unknown_control_values_are_still_scrubbed_and_never_upgraded[completion-reason]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_unknown_control_values_are_still_scrubbed_and_never_upgraded[locale-language]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_unknown_control_values_are_still_scrubbed_and_never_upgraded[None-build_id]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_unknown_control_values_are_still_scrubbed_and_never_upgraded[None-source_commit]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_validated_build_and_clock_values_survive_short_identifier_collision
+PASSED tests/test_sharing_semantic_collision_regression.py::test_verification_scope_keeps_identifier_redaction
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-verified-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-cancelled-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-verified-extra]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-verified-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-cancelled-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-verified-extra]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-verified-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-cancelled-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-verified-extra]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_malformed_container_keys_never_export_private_identifiers[warnings_dict]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_malformed_container_keys_never_export_private_identifiers[warnings_list]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_malformed_container_keys_never_export_private_identifiers[root_scalar]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_malformed_container_keys_never_export_private_identifiers[section_scalar]
+PASSED tests/test_privacy_sharing_copy.py::test_sharing_copy_is_new_document_and_keeps_original
+PASSED tests/test_privacy_sharing_copy.py::test_bundle_keeps_owner_original_and_adds_labeled_sharing_files
+PASSED tests/test_privacy_sharing_copy.py::test_sharing_summary_checksum_is_the_sharing_json_not_the_original
+PASSED tests/test_privacy_sharing_copy.py::test_without_privacy_reduced_no_sharing_files_are_emitted
+PASSED tests/test_privacy_sharing_copy.py::test_collect_secrets_includes_paths_and_identifiers
+PASSED tests/test_privacy_sharing_copy.py::test_sharing_copy_scrubs_case_variants_in_failure_text
+PASSED tests/test_privacy_sharing_copy.py::test_sharing_copy_drops_unlisted_locale_fields
+PASSED tests/test_privacy_sharing_copy.py::test_sharing_copy_drops_malformed_nested_sections
+PASSED tests/test_privacy_sharing_copy.py::test_result_summary_from_sharing_copy_preserves_outcome
+PASSED tests/test_build_identity.py::test_reproducible_production_identity
+PASSED tests/test_build_identity.py::test_dirty_build_is_not_production
+PASSED tests/test_build_identity.py::test_local_build_is_development
+PASSED tests/test_build_identity.py::test_absent_and_invalid_metadata_are_unavailable
+PASSED tests/test_build_identity.py::test_hash_mismatch_is_explicit
+PASSED tests/test_build_identity.py::test_hosted_production_refuses_local_and_dirty_identity
+PASSED tests/test_build_identity.py::test_schema_v1_migrates_without_claiming_a_release
+PASSED tests/test_build_identity.py::test_schema_v1_and_v2_finished_records_export
+PASSED tests/test_build_identity.py::test_clock_jump_does_not_change_monotonic_duration
+PASSED tests/test_build_identity.py::test_invalid_dates_are_unavailable
+PASSED tests/test_build_identity.py::test_timezone_change_cannot_leak_into_utc_stamps
+PASSED tests/test_build_identity.py::test_format_alone_does_not_verify_a_clock
+PASSED tests/test_build_identity.py::test_injected_identity_reaches_evidence
+PASSED tests/test_build_identity.py::test_classify_status_matrix
+PASSED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[verified]
+PASSED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[unverified]
+PASSED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[occupied]
+PASSED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[open_failed]
+PASSED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[geometry_unusable]
+PASSED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[interrupted]
+PASSED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[cancelled]
+PASSED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[completion_missing]
+PASSED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[verification_failed]
+PASSED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[process_failed]
+PASSED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[engine_failed]
+PASSED tests/test_result_summary.py::test_missing_fields_are_explicitly_unavailable
+PASSED tests/test_result_summary.py::test_malformed_report_metadata_is_unavailable_without_crashing[payload0-Build status]
+PASSED tests/test_result_summary.py::test_malformed_report_metadata_is_unavailable_without_crashing[payload1-Clock]
+PASSED tests/test_result_summary.py::test_malformed_report_metadata_is_unavailable_without_crashing[payload2-Elapsed]
+PASSED tests/test_result_summary.py::test_untrusted_clocks_are_not_presented_as_fact
+PASSED tests/test_result_summary.py::test_impossible_wall_time_is_not_printed_as_a_report_timestamp[2026-02-30T12:00:00Z]
+PASSED tests/test_result_summary.py::test_impossible_wall_time_is_not_printed_as_a_report_timestamp[2026-13-09T25:00:00Z]
+PASSED tests/test_result_summary.py::test_long_unicode_is_stable_and_cannot_inject_headings
+PASSED tests/test_result_summary.py::test_logs_cannot_shape_the_summary
+PASSED tests/test_result_summary.py::test_redacted_share_withholds_identifiers_and_keeps_owner_original
+PASSED tests/test_result_summary.py::test_bundle_checksums_cover_the_summary
+PASSED tests/test_result_summary.py::test_sanitize_flattens_control_and_blank_values
+PASSED tests/test_result_summary.py::test_report_identifier_accepts_only_evidence_basenames
+PASSED tests/test_result_summary.py::test_redaction_does_not_rewrite_model_from_vendor
+PASSED tests/test_result_summary.py::test_share_preference_only_changes_on_report_help
+PASSED tests/test_result_summary.py::test_diagnostic_bundle_does_not_grow_a_wipe_summary
+PASSED tests/test_result_presentations.py::test_every_canonical_result_has_a_supported_consistent_icon
+PASSED tests/test_result_presentations.py::test_recovery_and_export_agree_on_normalized_engine_log
+PASSED tests/test_result_presentations.py::test_engine_start_error_keeps_technical_details_out_of_primary_message
+PASSED tests/test_result_presentations.py::test_case_evidence_preserves_active_language
+PASSED tests/test_result_presentations.py::test_every_reason_console_report_and_recovery[verified]
+PASSED tests/test_result_presentations.py::test_every_reason_console_report_and_recovery[unverified]
+PASSED tests/test_result_presentations.py::test_every_reason_console_report_and_recovery[occupied]
+PASSED tests/test_result_presentations.py::test_every_reason_console_report_and_recovery[open_failed]
+PASSED tests/test_result_presentations.py::test_every_reason_console_report_and_recovery[geometry_unusable]
+PASSED tests/test_result_presentations.py::test_every_reason_console_report_and_recovery[interrupted]
+PASSED tests/test_result_presentations.py::test_every_reason_console_report_and_recovery[cancelled]
+PASSED tests/test_result_presentations.py::test_every_reason_console_report_and_recovery[completion_missing]
+PASSED tests/test_result_presentations.py::test_every_reason_console_report_and_recovery[verification_failed]
+PASSED tests/test_result_presentations.py::test_every_reason_console_report_and_recovery[process_failed]
+PASSED tests/test_result_presentations.py::test_every_reason_console_report_and_recovery[engine_failed]
+PASSED tests/test_result_presentations.py::test_malformed_records_are_indeterminate[None]
+PASSED tests/test_result_presentations.py::test_malformed_records_are_indeterminate[bad1]
+PASSED tests/test_result_presentations.py::test_malformed_records_are_indeterminate[verified]
+PASSED tests/test_result_presentations.py::test_malformed_records_are_indeterminate[True]
+PASSED tests/test_result_presentations.py::test_malformed_records_are_indeterminate[0]
+PASSED tests/test_result_presentations.py::test_malformed_records_are_indeterminate[bad5]
+PASSED tests/test_result_presentations.py::test_malformed_records_are_indeterminate[bad6]
+PASSED tests/test_result_presentations.py::test_inconsistent_success_fails_closed[verification-value0]
+PASSED tests/test_result_presentations.py::test_inconsistent_success_fails_closed[completion-value1]
+PASSED tests/test_result_presentations.py::test_inconsistent_success_fails_closed[exit_evidence-value2]
+PASSED tests/test_result_presentations.py::test_inconsistent_success_fails_closed[interruption-value3]
+PASSED tests/test_result_presentations.py::test_inconsistent_success_fails_closed[log_checksum_sha256-None]
+PASSED tests/test_result_presentations.py::test_inconsistent_success_fails_closed[outcome-completed]
+PASSED tests/test_result_presentations.py::test_inconsistent_success_fails_closed[method-value6]
+PASSED tests/test_result_presentations.py::test_missing_saved_evidence_cannot_keep_green_runner_result
+PASSED tests/test_result_presentations.py::test_verification_failure_for_another_disk_is_not_relabelled
+PASSED tests/test_result_presentations.py::test_curses_result_at_80x24[verified]
+PASSED tests/test_result_presentations.py::test_curses_result_at_80x24[unverified]
+PASSED tests/test_result_presentations.py::test_curses_result_at_80x24[occupied]
+PASSED tests/test_result_presentations.py::test_curses_result_at_80x24[open_failed]
+PASSED tests/test_result_presentations.py::test_curses_result_at_80x24[geometry_unusable]
+PASSED tests/test_result_presentations.py::test_curses_result_at_80x24[interrupted]
+PASSED tests/test_result_presentations.py::test_curses_result_at_80x24[cancelled]
+PASSED tests/test_result_presentations.py::test_curses_result_at_80x24[completion_missing]
+PASSED tests/test_result_presentations.py::test_curses_result_at_80x24[verification_failed]
+PASSED tests/test_result_presentations.py::test_curses_result_at_80x24[process_failed]
+PASSED tests/test_result_presentations.py::test_curses_result_at_80x24[engine_failed]
+PASSED tests/test_release_evidence_privacy_pass10.py::test_receipt_rejects_private_host_path_in_scalar_fields[command-pytest /Users/alice/private/test.py]
+PASSED tests/test_release_evidence_privacy_pass10.py::test_receipt_rejects_private_host_path_in_scalar_fields[command-/opt/runner/venv/bin/python -m pytest]
+PASSED tests/test_release_evidence_privacy_pass10.py::test_receipt_rejects_private_host_path_in_scalar_fields[build_id-/home/alice/build]
+PASSED tests/test_release_evidence_privacy_pass10.py::test_receipt_rejects_private_host_path_in_scalar_fields[reason-see /home/alice/failure.txt]
+PASSED tests/test_release_evidence_privacy_pass10.py::test_junit_skip_reason_redacts_path_after_colon
+PASSED tests/test_release_evidence_privacy_pass10.py::test_inventory_rejects_repository_uri_with_embedded_credentials[https://alice:private-password@repo.example/debian]
+PASSED tests/test_release_evidence_privacy_pass10.py::test_inventory_rejects_repository_uri_with_embedded_credentials[https://repo.example/debian?access_token=private-value]
+PASSED tests/test_evidence_privacy_pass8.py::test_redacted_summary_scrubs_case_variants_and_boot_path
+PASSED tests/test_pass25_report_readme_privacy.py::test_privacy_report_readme_rejects_identifier_and_forged_check_line
+PASSED tests/test_pass25_report_readme_privacy.py::test_privacy_report_readme_keeps_canonical_check_summary
+PASSED tests/test_pass30_file_uri_privacy.py::test_junit_skip_redacts_local_path[file:///Users/alice/private/run.log]
+PASSED tests/test_pass30_file_uri_privacy.py::test_junit_skip_redacts_local_path[file://localhost/home/alice/run.log]
+PASSED tests/test_pass30_file_uri_privacy.py::test_junit_skip_redacts_local_path[C:\\Users\\alice\\private\\run.log]
+PASSED tests/test_pass30_file_uri_privacy.py::test_junit_skip_redacts_local_path[\\\\server\\share\\private\\run.log]
+PASSED tests/test_pass30_file_uri_privacy.py::test_junit_skip_redacts_local_path[//server/share/private/run.log]
+PASSED tests/test_pass30_file_uri_privacy.py::test_gate_receipt_rejects_private_path_in_command[python file:///Users/alice/private/check.py]
+PASSED tests/test_pass30_file_uri_privacy.py::test_gate_receipt_rejects_private_path_in_command[C:\\Users\\alice\\private\\check.py]
+PASSED tests/test_pass30_file_uri_privacy.py::test_gate_receipt_rejects_private_path_in_command[\\\\server\\share\\private\\check.py]
+PASSED tests/test_pass30_file_uri_privacy.py::test_gate_receipt_rejects_private_path_in_command[//server/share/private/check.py]
+PASSED tests/test_pass30_file_uri_privacy.py::test_public_https_url_is_not_treated_as_a_network_share
+PASSED tests/test_report_intent.py::test_optional_help_only_records_intent[True-what]
+PASSED tests/test_report_intent.py::test_optional_help_only_records_intent[True-owner]
+PASSED tests/test_report_intent.py::test_optional_help_only_records_intent[True-method]
+PASSED tests/test_report_intent.py::test_optional_help_only_records_intent[True-advanced]
+PASSED tests/test_report_intent.py::test_optional_help_only_records_intent[False-what]
+PASSED tests/test_report_intent.py::test_optional_help_only_records_intent[False-owner]
+PASSED tests/test_report_intent.py::test_optional_help_only_records_intent[False-method]
+PASSED tests/test_report_intent.py::test_optional_help_only_records_intent[False-advanced]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[splash]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[keyboard]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[pick]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[disk_help]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[pick_blocked]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[pick_empty]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[confirm]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[last_chance]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[checking]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[stopping]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[working]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[done]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[report_help]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[shutdown_confirm]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[limits]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[refreshing]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[refresh_confirm]
+PASSED tests/test_report_intent.py::test_help_cannot_interrupt_or_advance_other_screens[diagnostic]
+PASSED tests/test_report_intent.py::test_intent_retained_on_refresh_but_all_confirmation_is_required[False-True]
+PASSED tests/test_report_intent.py::test_intent_retained_on_refresh_but_all_confirmation_is_required[False-False]
+PASSED tests/test_report_intent.py::test_intent_retained_on_refresh_but_all_confirmation_is_required[True-True]
+PASSED tests/test_report_intent.py::test_intent_retained_on_refresh_but_all_confirmation_is_required[True-False]
+PASSED tests/test_report_intent.py::test_report_intent_does_not_skip_final_rediscovery[True]
+PASSED tests/test_report_intent.py::test_report_intent_does_not_skip_final_rediscovery[False]
+PASSED tests/test_report_intent.py::test_early_report_media_must_be_removed_before_refreshed_final_inventory
+PASSED tests/test_report_intent.py::test_evidence_eligibility_and_explicit_save_are_independent[True]
+PASSED tests/test_report_intent.py::test_evidence_eligibility_and_explicit_save_are_independent[False]
+PASSED tests/test_report_intent.py::test_plain_console_report_choice_is_optional_rendered_and_paged[True]
+PASSED tests/test_report_intent.py::test_plain_console_report_choice_is_optional_rendered_and_paged[False]
+PASSED tests/test_report_intent.py::test_curses_help_scrolls_all_media_guidance_at_small_sizes[size0-True]
+PASSED tests/test_report_intent.py::test_curses_help_scrolls_all_media_guidance_at_small_sizes[size0-False]
+PASSED tests/test_report_intent.py::test_curses_help_scrolls_all_media_guidance_at_small_sizes[size1-True]
+PASSED tests/test_report_intent.py::test_curses_help_scrolls_all_media_guidance_at_small_sizes[size1-False]
+PASSED tests/test_report_intent.py::test_console_aftercare_displays_actual_unsupported_media_error[exfat-None]
+PASSED tests/test_report_intent.py::test_console_aftercare_displays_actual_unsupported_media_error[ntfs-None]
+PASSED tests/test_report_intent.py::test_console_aftercare_displays_actual_unsupported_media_error[vfat-FAT12]
+PASSED tests/test_report_intent.py::test_console_aftercare_displays_actual_unsupported_media_error[vfat-FAT16]
+PASSED tests/test_report_intent.py::test_console_aftercare_displays_actual_unsupported_media_error[None-None]
+PASSED tests/test_report_intent.py::test_aftercare_never_promises_unavailable_report_or_safe_removal
+PASSED tests/test_report_intent.py::test_plain_console_advanced_is_reachable_and_displays_synchronized_guidance
+PASSED tests/test_report_intent.py::test_curses_advanced_help_returns_without_advancing_method
+PASSED tests/test_report_intent.py::test_console_removal_error_and_explicit_retry_keep_report_unsaved
+PASSED tests/test_report_intent_identity_regression.py::test_load_does_not_return_an_obsolete_false_preference
+PASSED tests/test_report_intent_identity_regression.py::test_preference_operation_cannot_succeed_in_retired_directory[load]
+PASSED tests/test_report_intent_identity_regression.py::test_preference_operation_cannot_succeed_in_retired_directory[save]
+PASSED tests/test_session_recovery.py::test_completed_recovered_only_with_pinned_evidence_and_log[everyday]
+PASSED tests/test_session_recovery.py::test_completed_recovered_only_with_pinned_evidence_and_log[extra]
+PASSED tests/test_session_recovery.py::test_completed_recovered_only_with_pinned_evidence_and_log[quick_zero]
+PASSED tests/test_session_recovery.py::test_process_crash_boundaries_never_resume[discovery]
+PASSED tests/test_session_recovery.py::test_process_crash_boundaries_never_resume[confirmation]
+PASSED tests/test_session_recovery.py::test_process_crash_boundaries_never_resume[writing]
+PASSED tests/test_session_recovery.py::test_process_crash_boundaries_never_resume[verification]
+PASSED tests/test_session_recovery.py::test_process_crash_boundaries_never_resume[final_save]
+PASSED tests/test_session_recovery.py::test_process_crash_boundaries_never_resume[export]
+PASSED tests/test_session_recovery.py::test_corrupt_foreign_and_migration_records_are_rejected[json]
+PASSED tests/test_session_recovery.py::test_corrupt_foreign_and_migration_records_are_rejected[digest]
+PASSED tests/test_session_recovery.py::test_corrupt_foreign_and_migration_records_are_rejected[boot]
+PASSED tests/test_session_recovery.py::test_corrupt_foreign_and_migration_records_are_rejected[build]
+PASSED tests/test_session_recovery.py::test_corrupt_foreign_and_migration_records_are_rejected[schema0]
+PASSED tests/test_session_recovery.py::test_corrupt_foreign_and_migration_records_are_rejected[schema2]
+PASSED tests/test_session_recovery.py::test_corrupt_foreign_and_migration_records_are_rejected[bool_schema]
+PASSED tests/test_session_recovery.py::test_corrupt_foreign_and_migration_records_are_rejected[partial]
+PASSED tests/test_session_recovery.py::test_corrupt_foreign_and_migration_records_are_rejected[contradictory]
+PASSED tests/test_session_recovery.py::test_corrupt_foreign_and_migration_records_are_rejected[duplicate]
+PASSED tests/test_session_recovery.py::test_corrupt_foreign_and_migration_records_are_rejected[future]
+PASSED tests/test_session_recovery.py::test_unsafe_file_permissions_fail_closed[420-session-recovery.json]
+PASSED tests/test_session_recovery.py::test_unsafe_file_permissions_fail_closed[420-interface.lock]
+PASSED tests/test_session_recovery.py::test_unsafe_file_permissions_fail_closed[420-wipe.lock]
+PASSED tests/test_session_recovery.py::test_unsafe_file_permissions_fail_closed[438-session-recovery.json]
+PASSED tests/test_session_recovery.py::test_unsafe_file_permissions_fail_closed[438-interface.lock]
+PASSED tests/test_session_recovery.py::test_unsafe_file_permissions_fail_closed[438-wipe.lock]
+PASSED tests/test_session_recovery.py::test_unsafe_file_permissions_fail_closed[256-session-recovery.json]
+PASSED tests/test_session_recovery.py::test_unsafe_file_permissions_fail_closed[256-interface.lock]
+PASSED tests/test_session_recovery.py::test_unsafe_file_permissions_fail_closed[256-wipe.lock]
+PASSED tests/test_session_recovery.py::test_unsafe_directory_is_not_repaired
+PASSED tests/test_session_recovery.py::test_linked_state_is_rejected[symbolic]
+PASSED tests/test_session_recovery.py::test_linked_state_is_rejected[hard]
+PASSED tests/test_session_recovery.py::test_concurrent_ui_owners_and_orphan_runner
+PASSED tests/test_session_recovery.py::test_atomic_crash_keeps_prior_record_and_never_launches[write]
+PASSED tests/test_session_recovery.py::test_atomic_crash_keeps_prior_record_and_never_launches[fsync]
+PASSED tests/test_session_recovery.py::test_atomic_crash_keeps_prior_record_and_never_launches[replace]
+PASSED tests/test_session_recovery.py::test_missing_journal_does_not_migrate_legacy_logs_or_results
+PASSED tests/test_session_recovery.py::test_success_requires_all_terminal_proof[log]
+PASSED tests/test_session_recovery.py::test_success_requires_all_terminal_proof[log_mode]
+PASSED tests/test_session_recovery.py::test_success_requires_all_terminal_proof[evidence_mode]
+PASSED tests/test_session_recovery.py::test_success_requires_all_terminal_proof[sidecar]
+PASSED tests/test_session_recovery.py::test_success_requires_all_terminal_proof[identity]
+PASSED tests/test_session_recovery.py::test_unknown_boot_identity_refuses_startup
+PASSED tests/test_session_recovery.py::test_abrupt_process_exit_at_each_boundary[discovery]
+PASSED tests/test_session_recovery.py::test_abrupt_process_exit_at_each_boundary[confirmation]
+PASSED tests/test_session_recovery.py::test_abrupt_process_exit_at_each_boundary[writing]
+PASSED tests/test_session_recovery.py::test_abrupt_process_exit_at_each_boundary[verification]
+PASSED tests/test_session_recovery.py::test_abrupt_process_exit_at_each_boundary[final_save]
+PASSED tests/test_session_recovery.py::test_abrupt_process_exit_at_each_boundary[export]
+PASSED tests/test_session_recovery.py::test_controller_checkpoint_failure_prevents_fake_runner_start
+PASSED tests/test_session_recovery.py::test_preflight_is_saved_before_discovery_and_recovery_survives_discovery_failure
+PASSED tests/test_session_recovery.py::test_export_failure_after_recovery_remains_retryable
+PASSED tests/test_session_recovery.py::test_crash_after_terminal_evidence_before_journal_commit[replace]
+PASSED tests/test_session_recovery.py::test_crash_after_terminal_evidence_before_journal_commit[directory_fsync]
+PASSED tests/test_session_recovery.py::test_contradictory_terminal_clock_is_not_success
+PASSED tests/test_session_recovery.py::test_record_owner_mismatch_is_rejected
+PASSED tests/test_session_recovery.py::test_recovered_console_shows_loss_warning_and_exports_on_explicit_action
+PASSED tests/test_session_recovery.py::test_diagnostic_recovery_report_does_not_claim_engine_never_started
+PASSED tests/test_session_recovery.py::test_informational_cli_does_not_create_a_session[--version]
+PASSED tests/test_session_recovery.py::test_informational_cli_does_not_create_a_session[--help]
+PASSED tests/test_session_recovery_reopen_pass11.py::test_second_open_keeps_first_lock_owned_and_close_releases_it
+PASSED tests/test_usb_report_workflow.py::test_relocated_blank_disk_is_not_a_report_volume
+PASSED tests/test_usb_report_workflow.py::test_blank_disk_with_a_different_model_can_still_receive_the_report
+PASSED tests/test_usb_report_workflow.py::test_blank_boot_stick_moved_to_an_empty_model_name_is_not_a_report_volume
+PASSED tests/test_usb_report_workflow.py::test_blank_baseline_replaced_by_a_named_disk_is_not_still_present
+PASSED tests/test_usb_report_workflow.py::test_copied_wwn_does_not_hide_a_second_report_stick
+PASSED tests/test_usb_report_workflow.py::test_blank_boot_still_accepts_a_report_stick_that_has_a_serial
+PASSED tests/test_usb_report_workflow.py::test_blank_report_with_a_different_size_is_selected
+PASSED tests/test_usb_report_workflow.py::test_selects_exactly_one_new_unmounted_fat32_usb
+PASSED tests/test_usb_report_workflow.py::test_report_usb_malformed_duplicate_or_unsafe_fails_closed[<lambda>-exactly one0]
+PASSED tests/test_usb_report_workflow.py::test_report_usb_malformed_duplicate_or_unsafe_fails_closed[<lambda>-metadata0]
+PASSED tests/test_usb_report_workflow.py::test_report_usb_malformed_duplicate_or_unsafe_fails_closed[<lambda>-removable]
+PASSED tests/test_usb_report_workflow.py::test_report_usb_malformed_duplicate_or_unsafe_fails_closed[<lambda>-writable]
+PASSED tests/test_usb_report_workflow.py::test_report_usb_malformed_duplicate_or_unsafe_fails_closed[<lambda>-mounted]
+PASSED tests/test_usb_report_workflow.py::test_report_usb_malformed_duplicate_or_unsafe_fails_closed[<lambda>-FAT32_0]
+PASSED tests/test_usb_report_workflow.py::test_report_usb_malformed_duplicate_or_unsafe_fails_closed[<lambda>-FAT32_1]
+PASSED tests/test_usb_report_workflow.py::test_report_usb_malformed_duplicate_or_unsafe_fails_closed[<lambda>-exactly one1]
+PASSED tests/test_usb_report_workflow.py::test_report_usb_malformed_duplicate_or_unsafe_fails_closed[<lambda>-parent0]
+PASSED tests/test_usb_report_workflow.py::test_report_usb_malformed_duplicate_or_unsafe_fails_closed[<lambda>-parent1]
+PASSED tests/test_usb_report_workflow.py::test_report_usb_malformed_duplicate_or_unsafe_fails_closed[<lambda>-metadata1]
+PASSED tests/test_usb_report_workflow.py::test_report_usb_malformed_duplicate_or_unsafe_fails_closed[<lambda>-Leave the Beamo]
+PASSED tests/test_usb_report_workflow.py::test_report_usb_malformed_duplicate_or_unsafe_fails_closed[<lambda>-could not be verified]
+PASSED tests/test_usb_report_workflow.py::test_multiple_new_usb_devices_are_ambiguous
+PASSED tests/test_usb_report_workflow.py::test_optical_boot_remains_present_but_is_never_an_export_candidate
+PASSED tests/test_usb_report_workflow.py::test_nonterminal_evidence_cannot_reach_usb[started]
+PASSED tests/test_usb_report_workflow.py::test_nonterminal_evidence_cannot_reach_usb[running]
+PASSED tests/test_usb_report_workflow.py::test_export_log_requires_the_terminal_evidence_snapshot
+PASSED tests/test_usb_report_workflow.py::test_controller_uses_two_stable_scans_and_exact_private_worker_command
+PASSED tests/test_usb_report_workflow.py::test_controller_allows_an_unrelated_optional_disk_to_be_removed
+PASSED tests/test_usb_report_workflow.py::test_controller_rejects_changed_second_scan_before_open
+PASSED tests/test_usb_report_workflow.py::test_controller_rejects_an_evidence_hash_other_than_the_claim
+PASSED tests/test_usb_report_workflow.py::test_controller_permission_timeout_and_worker_failure_are_visible
+PASSED tests/test_usb_report_workflow.py::test_controller_rejects_block_alias_to_target
+PASSED tests/test_usb_report_workflow.py::test_controller_rejects_alias_to_a_protected_partition
+PASSED tests/test_usb_report_workflow.py::test_display_model_fallback_is_not_used_as_protected_hardware_identity[None-Unknown model]
+PASSED tests/test_usb_report_workflow.py::test_display_model_fallback_is_not_used_as_protected_hardware_identity[DATA-DATA]
+PASSED tests/test_usb_report_workflow.py::test_export_ignores_the_same_non_target_root_devices_as_discovery[/dev/fd0]
+PASSED tests/test_usb_report_workflow.py::test_export_ignores_the_same_non_target_root_devices_as_discovery[/dev/ram0]
+PASSED tests/test_usb_report_workflow.py::test_export_ignores_the_same_non_target_root_devices_as_discovery[/dev/zram0]
+PASSED tests/test_usb_report_workflow.py::test_export_ignores_the_same_non_target_root_devices_as_discovery[/dev/mmcblk0boot0]
+PASSED tests/test_usb_report_workflow.py::test_export_ignores_the_same_non_target_root_devices_as_discovery[/dev/mmcblk0boot1]
+PASSED tests/test_usb_report_workflow.py::test_export_ignores_the_same_non_target_root_devices_as_discovery[/dev/mmcblk0rpmb]
+PASSED tests/test_usb_report_workflow.py::test_export_still_rejects_an_unknown_root_device_path
+PASSED tests/test_usb_report_workflow.py::test_real_raw_model_change_still_fails_closed
+PASSED tests/test_usb_report_workflow.py::test_legacy_disk_without_raw_model_keeps_model_identity
+PASSED tests/test_usb_report_workflow.py::test_bundle_is_completion_marked_and_readback_verified
+PASSED tests/test_usb_report_workflow.py::test_partial_bundle_does_not_block_unique_retry
+PASSED tests/test_usb_report_workflow.py::test_late_directory_fsync_failure_leaves_no_success_claim
+PASSED tests/test_usb_report_workflow.py::test_worker_mount_state_failures_never_claim_safe[mount-mounted safely]
+PASSED tests/test_usb_report_workflow.py::test_worker_mount_state_failures_never_claim_safe[sync-synchronized]
+PASSED tests/test_usb_report_workflow.py::test_worker_mount_state_failures_never_claim_safe[unmount-could not be unmounted]
+PASSED tests/test_usb_report_workflow.py::test_worker_mount_state_failures_never_claim_safe[remount-remounted for verification]
+PASSED tests/test_usb_report_workflow.py::test_worker_mount_state_failures_never_claim_safe[readback-read-back]
+PASSED tests/test_usb_report_workflow.py::test_worker_mount_state_failures_never_claim_safe[final_unmount-verified report USB could not be unmounted]
+PASSED tests/test_usb_report_workflow.py::test_worker_duplicate_export_is_blocked_then_retry_succeeds
+PASSED tests/test_usb_report_workflow.py::test_wizard_only_announces_safe_after_verified_unmount
+PASSED tests/test_usb_report_workflow.py::test_wizard_rejects_stale_or_failed_terminal_evidence_write
+PASSED tests/test_usb_report_workflow.py::test_wizard_export_claim_rejects_same_outcome_stale_payload
+PASSED tests/test_usb_report_workflow.py::test_wizard_rejects_success_receipt_for_different_evidence_hash
+PASSED tests/test_usb_report_workflow.py::test_wizard_rejects_terminal_evidence_from_a_different_result
+PASSED tests/test_usb_report_workflow.py::test_wizard_report_failure_is_retryable_with_a_new_attempt
+PASSED tests/test_usb_report_workflow.py::test_concurrent_report_requests_run_one_worker_and_block_shutdown
+PASSED tests/test_usb_report_workflow.py::test_report_changed_during_export_cannot_publish_saved
+PASSED tests/test_usb_report_workflow.py::test_report_view_revision_publishes_coherent_export_states
+PASSED tests/test_usb_report_workflow.py::test_mount_commands_never_use_force_or_lazy_flags
+PASSED tests/test_usb_report_workflow.py::test_plain_done_requires_literal_save_or_shutdown
+PASSED tests/test_usb_report_workflow.py::test_plain_done_hides_save_when_terminal_evidence_unavailable
+PASSED tests/test_usb_report_workflow.py::test_curses_enter_requires_a_full_quiet_interval_before_rearm
+PASSED tests/test_usb_report_workflow.py::test_no_shipped_ui_accepts_a_report_destination_path
+PASSED tests/test_usb_report_workflow.py::test_live_service_has_private_mount_namespace
+PASSED tests/test_usb_report_workflow.py::test_isolated_linux_gate_exercises_real_fat32_and_crash_cleanup
+PASSED tests/test_usb_report_workflow.py::test_qemu_report_volume_label_fits_fat_limit
+PASSED tests/test_usb_report_workflow.py::test_qemu_key_steps_synchronize_press_redraw_and_release
+PASSED tests/test_usb_report_workflow.py::test_qemu_types_the_token_required_for_current_guest_disk_size
+PASSED tests/test_usb_report_workflow.py::test_owner_card_space_suppresses_x11_autorepeat_pair
+PASSED tests/test_usb_report_workflow.py::test_confirm_screen_recovers_entry_focus_without_window_manager
+PASSED tests/test_usb_report_workflow.py::test_confirm_focus_retries_after_async_x11_focus_request
+PASSED tests/test_usb_report_workflow.py::test_qemu_screen_markers_require_exact_full_lines
+PASSED tests/test_usb_report_workflow.py::test_qemu_marker_waits_recheck_after_the_final_sleep
+PASSED tests/test_usb_report_workflow.py::test_qemu_report_failure_trace_identifies_the_last_safe_export_boundary
+PASSED tests/test_usb_report_workflow.py::test_qemu_tcg_boot_gets_a_larger_bounded_startup_budget
+PASSED tests/test_usb_report_workflow.py::test_qemu_boot_readiness_uses_the_rendered_tk_screen_not_the_wrapper_marker
+482 passed in 13.48s
