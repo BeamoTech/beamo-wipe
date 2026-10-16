@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/tmp/beamo-pass7-export-controller.py", line 14, in <module>
+    evidence=_terminal_evidence(Path(directory))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/dev/Beamo Wipe/tests/test_usb_report_workflow.py", line 406, in _terminal_evidence
+    return write_evidence_atomic(
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/evidence.py", line 515, in write_evidence_atomic
+    assert_log_not_on_target(str(path), target_device or device_path, log_dir=Path(directory))
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/safety.py", line 866, in assert_log_not_on_target
+    raise SafetyError("Refusing to write logs onto the target disk.")
+beamo_wipe.safety.SafetyError: Refusing to write logs onto the target disk.

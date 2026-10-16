@@ -1,0 +1,25 @@
+ss.                                                                      [100%]
+1 passed, 2 skipped in 0.01s
+
+{
+  "passed": 1,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 2,
+  "xfailed": 0,
+  "deselected": 0,
+  "total": 3,
+  "skips": [
+    {
+      "id": "test_fixture.test_one",
+      "kind": "skip",
+      "reason": "fixture unavailable"
+    },
+    {
+      "id": "test_fixture.test_one",
+      "kind": "skip",
+      "reason": "fixture unavailable"
+    }
+  ]
+}
+PASS: real pytest call+teardown skips with identical ID/kind/reason are intentionally retained as two measured outcomes; positive control passed; receipt roundtrip preserves truth.

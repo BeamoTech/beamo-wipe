@@ -1,0 +1,1665 @@
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF...................................FFFF... [ 96%]
+.FF                                                                      [100%]
+=================================== FAILURES ===================================
+___________ test_unchanged_padded_hardware_can_export[ -model-boot] ____________
+
+index = 0, field = 'model', padding = ' '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:733: in _fingerprint_node
+    model=_strict_text(node, "model"),
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'model'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+__________ test_unchanged_padded_hardware_can_export[ -model-target] ___________
+
+index = 1, field = 'model', padding = ' '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:733: in _fingerprint_node
+    model=_strict_text(node, "model"),
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 0, ...}
+key = 'model'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+__________ test_unchanged_padded_hardware_can_export[ -model-report] ___________
+
+index = 2, field = 'model', padding = ' '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:733: in _fingerprint_node
+    model=_strict_text(node, "model"),
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [{'children': [], 'fstype': 'vfat', 'fsver': 'FAT32', 'model': None, ...}], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'model'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+___________ test_unchanged_padded_hardware_can_export[ -serial-boot] ___________
+
+index = 0, field = 'serial', padding = ' '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:734: in _fingerprint_node
+    serial=_strict_text(node, "serial"),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'serial'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+__________ test_unchanged_padded_hardware_can_export[ -serial-target] __________
+
+index = 1, field = 'serial', padding = ' '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:734: in _fingerprint_node
+    serial=_strict_text(node, "serial"),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 0, ...}
+key = 'serial'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+__________ test_unchanged_padded_hardware_can_export[ -serial-report] __________
+
+index = 2, field = 'serial', padding = ' '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:734: in _fingerprint_node
+    serial=_strict_text(node, "serial"),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [{'children': [], 'fstype': 'vfat', 'fsver': 'FAT32', 'model': None, ...}], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'serial'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+____________ test_unchanged_padded_hardware_can_export[ -wwn-boot] _____________
+
+index = 0, field = 'wwn', padding = ' '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:735: in _fingerprint_node
+    wwn=_strict_text(node, "wwn"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'wwn'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+___________ test_unchanged_padded_hardware_can_export[ -wwn-target] ____________
+
+index = 1, field = 'wwn', padding = ' '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:735: in _fingerprint_node
+    wwn=_strict_text(node, "wwn"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 0, ...}
+key = 'wwn'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+___________ test_unchanged_padded_hardware_can_export[ -wwn-report] ____________
+
+index = 2, field = 'wwn', padding = ' '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:735: in _fingerprint_node
+    wwn=_strict_text(node, "wwn"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [{'children': [], 'fstype': 'vfat', 'fsver': 'FAT32', 'model': None, ...}], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'wwn'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+__________ test_unchanged_padded_hardware_can_export[   -model-boot] ___________
+
+index = 0, field = 'model', padding = '   '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:733: in _fingerprint_node
+    model=_strict_text(node, "model"),
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'model'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+_________ test_unchanged_padded_hardware_can_export[   -model-target] __________
+
+index = 1, field = 'model', padding = '   '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:733: in _fingerprint_node
+    model=_strict_text(node, "model"),
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 0, ...}
+key = 'model'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+_________ test_unchanged_padded_hardware_can_export[   -model-report] __________
+
+index = 2, field = 'model', padding = '   '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:733: in _fingerprint_node
+    model=_strict_text(node, "model"),
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [{'children': [], 'fstype': 'vfat', 'fsver': 'FAT32', 'model': None, ...}], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'model'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+__________ test_unchanged_padded_hardware_can_export[   -serial-boot] __________
+
+index = 0, field = 'serial', padding = '   '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:734: in _fingerprint_node
+    serial=_strict_text(node, "serial"),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'serial'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+_________ test_unchanged_padded_hardware_can_export[   -serial-target] _________
+
+index = 1, field = 'serial', padding = '   '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:734: in _fingerprint_node
+    serial=_strict_text(node, "serial"),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 0, ...}
+key = 'serial'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+_________ test_unchanged_padded_hardware_can_export[   -serial-report] _________
+
+index = 2, field = 'serial', padding = '   '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:734: in _fingerprint_node
+    serial=_strict_text(node, "serial"),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [{'children': [], 'fstype': 'vfat', 'fsver': 'FAT32', 'model': None, ...}], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'serial'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+___________ test_unchanged_padded_hardware_can_export[   -wwn-boot] ____________
+
+index = 0, field = 'wwn', padding = '   '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:735: in _fingerprint_node
+    wwn=_strict_text(node, "wwn"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'wwn'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+__________ test_unchanged_padded_hardware_can_export[   -wwn-target] ___________
+
+index = 1, field = 'wwn', padding = '   '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:735: in _fingerprint_node
+    wwn=_strict_text(node, "wwn"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 0, ...}
+key = 'wwn'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+__________ test_unchanged_padded_hardware_can_export[   -wwn-report] ___________
+
+index = 2, field = 'wwn', padding = '   '
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:735: in _fingerprint_node
+    wwn=_strict_text(node, "wwn"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [{'children': [], 'fstype': 'vfat', 'fsver': 'FAT32', 'model': None, ...}], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'wwn'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+__________ test_unchanged_padded_hardware_can_export[\xa0-model-boot] __________
+
+index = 0, field = 'model', padding = '\xa0'
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:733: in _fingerprint_node
+    model=_strict_text(node, "model"),
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'model'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+_________ test_unchanged_padded_hardware_can_export[\xa0-model-target] _________
+
+index = 1, field = 'model', padding = '\xa0'
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:733: in _fingerprint_node
+    model=_strict_text(node, "model"),
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 0, ...}
+key = 'model'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+_________ test_unchanged_padded_hardware_can_export[\xa0-model-report] _________
+
+index = 2, field = 'model', padding = '\xa0'
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:733: in _fingerprint_node
+    model=_strict_text(node, "model"),
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [{'children': [], 'fstype': 'vfat', 'fsver': 'FAT32', 'model': None, ...}], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'model'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+_________ test_unchanged_padded_hardware_can_export[\xa0-serial-boot] __________
+
+index = 0, field = 'serial', padding = '\xa0'
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:734: in _fingerprint_node
+    serial=_strict_text(node, "serial"),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'serial'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+________ test_unchanged_padded_hardware_can_export[\xa0-serial-target] _________
+
+index = 1, field = 'serial', padding = '\xa0'
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:734: in _fingerprint_node
+    serial=_strict_text(node, "serial"),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 0, ...}
+key = 'serial'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+________ test_unchanged_padded_hardware_can_export[\xa0-serial-report] _________
+
+index = 2, field = 'serial', padding = '\xa0'
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:734: in _fingerprint_node
+    serial=_strict_text(node, "serial"),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [{'children': [], 'fstype': 'vfat', 'fsver': 'FAT32', 'model': None, ...}], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'serial'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+___________ test_unchanged_padded_hardware_can_export[\xa0-wwn-boot] ___________
+
+index = 0, field = 'wwn', padding = '\xa0'
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:735: in _fingerprint_node
+    wwn=_strict_text(node, "wwn"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'wwn'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+__________ test_unchanged_padded_hardware_can_export[\xa0-wwn-target] __________
+
+index = 1, field = 'wwn', padding = '\xa0'
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:735: in _fingerprint_node
+    wwn=_strict_text(node, "wwn"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 0, ...}
+key = 'wwn'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+__________ test_unchanged_padded_hardware_can_export[\xa0-wwn-report] __________
+
+index = 2, field = 'wwn', padding = '\xa0'
+
+    @pytest.mark.parametrize("index", [0, 1, 2], ids=["boot", "target", "report"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    @pytest.mark.parametrize("padding", [" ", "   ", "\u00a0"])
+    def test_unchanged_padded_hardware_can_export(index, field, padding):
+        payload, _ = _payload()
+        node = payload["blockdevices"][index]
+        node[field] = padding + node[field] + padding
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+        original = copy.deepcopy(payload)
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:25:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:735: in _fingerprint_node
+    wwn=_strict_text(node, "wwn"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [{'children': [], 'fstype': 'vfat', 'fsver': 'FAT32', 'model': None, ...}], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+key = 'wwn'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+            raise SafetyError(USB_META_MALFORMED)
+        text = value.strip()
+        if text != value or (required and not text):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:659: SafetyError
+_________ test_maximum_hardware_length_with_padding_can_export[model] __________
+
+field = 'model'
+
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    def test_maximum_hardware_length_with_padding_can_export(field):
+        payload, _ = _payload()
+        payload["blockdevices"][1][field] = " " + "T" * 128 + " "
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+>       assert select_export_volume(payload, baseline_fingerprints(disks)).path == "/dev/sdc1"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:39:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:733: in _fingerprint_node
+    model=_strict_text(node, "model"),
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 0, ...}
+key = 'model'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:656: SafetyError
+_________ test_maximum_hardware_length_with_padding_can_export[serial] _________
+
+field = 'serial'
+
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    def test_maximum_hardware_length_with_padding_can_export(field):
+        payload, _ = _payload()
+        payload["blockdevices"][1][field] = " " + "T" * 128 + " "
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+>       assert select_export_volume(payload, baseline_fingerprints(disks)).path == "/dev/sdc1"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:39:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:734: in _fingerprint_node
+    serial=_strict_text(node, "serial"),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 0, ...}
+key = 'serial'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:656: SafetyError
+__________ test_maximum_hardware_length_with_padding_can_export[wwn] ___________
+
+field = 'wwn'
+
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    def test_maximum_hardware_length_with_padding_can_export(field):
+        payload, _ = _payload()
+        payload["blockdevices"][1][field] = " " + "T" * 128 + " "
+        disks = tuple(
+            node_to_disk(item, is_boot=i == 0)
+            for i, item in enumerate(payload["blockdevices"][:2])
+        )
+>       assert select_export_volume(payload, baseline_fingerprints(disks)).path == "/dev/sdc1"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py:39:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:978: in select_export_volume
+    _require_baseline_present(roots, baseline)
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:951: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:735: in _fingerprint_node
+    wwn=_strict_text(node, "wwn"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [], 'fstype': None, 'fsver': None, 'hotplug': 0, ...}
+key = 'wwn'
+
+    def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+        value = node.get(key)
+        if value is None:
+            if required:
+                raise SafetyError(USB_META_INCOMPLETE)
+            return ""
+        if (
+            not isinstance(value, str)
+            or (value and not SAFE_ID_RE.fullmatch(value))
+            or any(unicodedata.category(ch).startswith("C") for ch in value)
+        ):
+>           raise SafetyError(USB_META_MALFORMED)
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+/tmp/beamo-pass7-original-6v4g__8e/src/beamo_wipe/support_export.py:656: SafetyError
+___ test_gate_rejects_skip_kind_counts_that_only_match_in_total[1-0-kinds0] ____
+
+skipped = 1, xfailed = 0, kinds = ['xfail']
+
+    @pytest.mark.parametrize(
+        ('skipped', 'xfailed', 'kinds'),
+        [(1, 0, ['xfail']), (0, 1, ['skip']), (2, 0, ['skip', 'xfail']),
+         (0, 2, ['xfail', 'skip'])],
+    )
+    def test_gate_rejects_skip_kind_counts_that_only_match_in_total(skipped, xfailed, kinds):
+>       with pytest.raises(RuntimeError, match='skip list does not match its counts'):
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_gate_receipt_skip_kind_counts_pass7.py:16: Failed
+___ test_gate_rejects_skip_kind_counts_that_only_match_in_total[0-1-kinds1] ____
+
+skipped = 0, xfailed = 1, kinds = ['skip']
+
+    @pytest.mark.parametrize(
+        ('skipped', 'xfailed', 'kinds'),
+        [(1, 0, ['xfail']), (0, 1, ['skip']), (2, 0, ['skip', 'xfail']),
+         (0, 2, ['xfail', 'skip'])],
+    )
+    def test_gate_rejects_skip_kind_counts_that_only_match_in_total(skipped, xfailed, kinds):
+>       with pytest.raises(RuntimeError, match='skip list does not match its counts'):
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_gate_receipt_skip_kind_counts_pass7.py:16: Failed
+___ test_gate_rejects_skip_kind_counts_that_only_match_in_total[2-0-kinds2] ____
+
+skipped = 2, xfailed = 0, kinds = ['skip', 'xfail']
+
+    @pytest.mark.parametrize(
+        ('skipped', 'xfailed', 'kinds'),
+        [(1, 0, ['xfail']), (0, 1, ['skip']), (2, 0, ['skip', 'xfail']),
+         (0, 2, ['xfail', 'skip'])],
+    )
+    def test_gate_rejects_skip_kind_counts_that_only_match_in_total(skipped, xfailed, kinds):
+>       with pytest.raises(RuntimeError, match='skip list does not match its counts'):
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_gate_receipt_skip_kind_counts_pass7.py:16: Failed
+___ test_gate_rejects_skip_kind_counts_that_only_match_in_total[0-2-kinds3] ____
+
+skipped = 0, xfailed = 2, kinds = ['xfail', 'skip']
+
+    @pytest.mark.parametrize(
+        ('skipped', 'xfailed', 'kinds'),
+        [(1, 0, ['xfail']), (0, 1, ['skip']), (2, 0, ['skip', 'xfail']),
+         (0, 2, ['xfail', 'skip'])],
+    )
+    def test_gate_rejects_skip_kind_counts_that_only_match_in_total(skipped, xfailed, kinds):
+>       with pytest.raises(RuntimeError, match='skip list does not match its counts'):
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_gate_receipt_skip_kind_counts_pass7.py:16: Failed
+_ test_stored_gate_rejects_misclassified_skip_records_even_with_valid_digest[skip] _
+
+kind = 'skip'
+
+    @pytest.mark.parametrize('kind', ['skip', 'xfail'])
+    def test_stored_gate_rejects_misclassified_skip_records_even_with_valid_digest(kind):
+        receipt = _receipt(int(kind == 'skip'), int(kind == 'xfail'), [kind])
+        receipt['skips'][0]['kind'] = 'xfail' if kind == 'skip' else 'skip'
+        receipt['receipt_sha256'] = canonical_digest(
+            {key: value for key, value in receipt.items() if key != 'receipt_sha256'}
+        )
+>       with pytest.raises(RuntimeError, match='skip list does not match its counts'):
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_gate_receipt_skip_kind_counts_pass7.py:48: Failed
+_ test_stored_gate_rejects_misclassified_skip_records_even_with_valid_digest[xfail] _
+
+kind = 'xfail'
+
+    @pytest.mark.parametrize('kind', ['skip', 'xfail'])
+    def test_stored_gate_rejects_misclassified_skip_records_even_with_valid_digest(kind):
+        receipt = _receipt(int(kind == 'skip'), int(kind == 'xfail'), [kind])
+        receipt['skips'][0]['kind'] = 'xfail' if kind == 'skip' else 'skip'
+        receipt['receipt_sha256'] = canonical_digest(
+            {key: value for key, value in receipt.items() if key != 'receipt_sha256'}
+        )
+>       with pytest.raises(RuntimeError, match='skip list does not match its counts'):
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+/tmp/beamo-pass7-original-6v4g__8e/tests/test_gate_receipt_skip_kind_counts_pass7.py:48: Failed
+=========================== short test summary info ============================
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[ -model-boot]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[ -model-target]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[ -model-report]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[ -serial-boot]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[ -serial-target]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[ -serial-report]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[ -wwn-boot]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[ -wwn-target]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[ -wwn-report]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[   -model-boot]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[   -model-target]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[   -model-report]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[   -serial-boot]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[   -serial-target]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[   -serial-report]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[   -wwn-boot]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[   -wwn-target]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[   -wwn-report]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[\xa0-model-boot]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[\xa0-model-target]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[\xa0-model-report]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[\xa0-serial-boot]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[\xa0-serial-target]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[\xa0-serial-report]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[\xa0-wwn-boot]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[\xa0-wwn-target]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_unchanged_padded_hardware_can_export[\xa0-wwn-report]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_maximum_hardware_length_with_padding_can_export[model]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_maximum_hardware_length_with_padding_can_export[serial]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_export_hardware_padding_regression.py::test_maximum_hardware_length_with_padding_can_export[wwn]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_gate_receipt_skip_kind_counts_pass7.py::test_gate_rejects_skip_kind_counts_that_only_match_in_total[1-0-kinds0]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_gate_receipt_skip_kind_counts_pass7.py::test_gate_rejects_skip_kind_counts_that_only_match_in_total[0-1-kinds1]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_gate_receipt_skip_kind_counts_pass7.py::test_gate_rejects_skip_kind_counts_that_only_match_in_total[2-0-kinds2]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_gate_receipt_skip_kind_counts_pass7.py::test_gate_rejects_skip_kind_counts_that_only_match_in_total[0-2-kinds3]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_gate_receipt_skip_kind_counts_pass7.py::test_stored_gate_rejects_misclassified_skip_records_even_with_valid_digest[skip]
+FAILED ../../../tmp/beamo-pass7-original-6v4g__8e/tests/test_gate_receipt_skip_kind_counts_pass7.py::test_stored_gate_rejects_misclassified_skip_records_even_with_valid_digest[xfail]

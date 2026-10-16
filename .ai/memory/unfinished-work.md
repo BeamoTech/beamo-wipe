@@ -1,5 +1,65 @@
 # Unfinished work
 
+## BW-BUG-AUDIT-20261016-PASS7 — DONE (local acceptance and source push)
+
+- Date/author: 2026-10-16 / Codex. Request: another fresh comprehensive pass.
+- Repo/worktree/branch: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`;
+  `fix/safety-audit-20261015`; baseline
+  `f102dfbe5a705fda10880fecc24626c7693c10f0`; implementation
+  `de55b078514e2028a2a22633f1d7aa2941f9e0b6`, safety-prefixed commit pushed to origin.
+- Outcome: fixed unchanged padded model/serial/WWN blocking report export, and
+  verification receipts accepting mismatched skip/xfail kind counts. Only
+  harmless hardware padding is normalized before existing strict validation;
+  original safe Unicode model-to-generic-receipt behavior preserved. Paths,
+  UUIDs, controls, protected identity and receipt schema/gates stay intact.
+- Proof:75 new cases produce36 intended failures/39 passing controls, zero
+  setup errors, on isolated exact baseline; corrected75 PASS. Original checkout
+  never reverted; existing tests unchanged. All4 frozen hashes match committed
+  source/test bytes. Runtime source digest
+  `ff52fe2414436c9bec18cee235ee8a104fe16f567f7cd4237dabe62dcbdc0d42`.
+- Final local gate: main6202PASS/14expected image-only skips (476.19s), private
+  Orca1PASS =6203 unique passes; no failures/errors/duplicate IDs. Mandatory GTK
+  result guardPASS. Corrected-source lint/types/security/shell/developer-format,
+  preview, private negative mutation, pinned Go1.26.8 uncached race/vet/350000fuzz
+  PASS. All skip reasons retained:2generated lb-config and12manufacturing ISO.
+- Independent coverage: discovery648tests/454controlled sequence+retry/
+  160concurrent observations; engine699tests/21600 completion projection cases/
+  24readiness controls; corrected export731adjacent/1120helper-equivalence/
+  240boundary cases, primary27controller roundtrips+27changed-scan refusals;
+  receipt59adjacent/2268kind-count combinations. UI1359unique passes,
+  build487PASS/2expectedskips; reviewer union1862PASS/2skips. Navigation54000
+  events+54countdown detours;40concurrentfake sessions; primary5760malformed
+  rendering/sharing calls with no unhandled exceptions. Overlaps not summed.
+  Actual ./preview72DPI inspected by reviewer and primary; owned process retired.
+- Draft history retained: first full integration2FAIL/6200PASS/14expected skips,
+  private OrcaPASS. Discovery-parser reuse broke unchanged Unicode receipt
+  contract. Focused2FAIL/3PASS proved it; narrow hardware-padding fix preserves
+  original parser/display behavior. Existing tests unchanged; corrected80focused
+  PASS and expanded independent sweep above. Earlier narrow reviewer approval
+  superseded. Final replacement full frozen-source gate PASS as measured above.
+- Setup history: initial reviewer DISPLAY/Chromium-PATH failures/skips resolved
+  by private72DPI complete replacements/browser-case reruns; originals retained.
+  Initial permission harness allowed predecessor read-only mount/cmdline probes;
+  corrected fully fake harness reran PASS. Primary controller harness initially
+  lacked preview mode; live tmpfs guard refused regular-file evidence directory
+  before write; corrected explicit fake mode PASS, guard unchanged. No native
+  lsblk inventory, actual nwipe, device/USB write, guest or host power action.
+- Evidence: docs/evidence/bug-audit-20261016-pass7/README.md retains original and
+  fixed proofs, failed draft gate, final raw logs/JUnit-derived skip list,
+  independent matrices/scripts/reviews, screenshot, hashes and content manifest.
+  A duplicate-skip suspicion was rejected with a real pytest call+teardown trace;
+  duplicate outcome IDs are intentionally preserved, not silently deduplicated.
+- State/remaining acceptance: no local audit blocker or further reproducible
+  actionable finding remains in reviewed scope. Source pushed; no open PR,
+  hosted run, merge/deployment/release. Documentation accompanies source; only
+  docs changed after tested source freeze. Local acceptance is not a bug-free
+  guarantee. No next action for this local pass; a selected public candidate
+  needs separate exact-source ISO/QEMU/native/physical qualification below.
+- Authorization: fake targets/process boundaries and ordinary temporary files
+  only. No hosted/ISO/QEMU/native-platform/physical acceptance or publication
+  authorized here. Current Blacksmith guidance applies, not legacy Cloud Build.
+  Missing shared guide remains resolved by prior owner continue direction.
+
 ## BW-BUG-AUDIT-20261016-PASS6 — DONE (local acceptance and source push)
 
 - Date/author: 2026-10-16 / Codex.
@@ -353,7 +413,8 @@
 - Date/author: 2026-10-15 / Codex.
 - Repo/worktree/branch: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`;
   `fix/safety-audit-20261015`; latest implementation
-  `ac6ed67c496090c26a9520d0244100ca371ce192` (prior audit implementations
+  `de55b078514e2028a2a22633f1d7aa2941f9e0b6` (prior audit implementations
+  `ac6ed67c496090c26a9520d0244100ca371ce192`,
   `cdfe9fac6238c8fd3d867c9ef48c4ca3248facce`,
   `af2b6e9c3d053b65e666d807a87207db14521cb2`,
   `57ead7e4304f7f373a0c862ff36335c949f4cf7a` and
