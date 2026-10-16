@@ -2280,17 +2280,25 @@ def _persist_and_verify_report(
             diagnostic=_is_diagnostic_evidence(evidence.data),
         )
     finally:
-        if mountpoint is not None and mounted:
-            _ordinary_unmount(mountpoint, volume)
-        if lock_fd >= 0:
-            os.close(lock_fd)
-        if mount_name and root_fd >= 0:
+        # An I/O error during one cleanup must not abandon the other owned
+        # resources. Never retry close: Linux may already have released the FD.
+        try:
+            if mountpoint is not None and mounted:
+                _ordinary_unmount(mountpoint, volume)
+        finally:
             try:
-                os.rmdir(mount_name, dir_fd=root_fd)
-            except OSError:
-                pass
-        if root_fd >= 0:
-            os.close(root_fd)
+                if lock_fd >= 0:
+                    os.close(lock_fd)
+            finally:
+                try:
+                    if mount_name and root_fd >= 0:
+                        try:
+                            os.rmdir(mount_name, dir_fd=root_fd)
+                        except OSError:
+                            pass
+                finally:
+                    if root_fd >= 0:
+                        os.close(root_fd)
 
 
 def _worker() -> ExportReceipt:
@@ -2334,9 +2342,11 @@ def _worker() -> ExportReceipt:
             volume, evidence, log_data, log_status, volume_fd, privacy_reduced
         )
     finally:
-        if volume_fd >= 0:
-            os.close(volume_fd)
-        os.close(parent_fd)
+        try:
+            if volume_fd >= 0:
+                os.close(volume_fd)
+        finally:
+            os.close(parent_fd)
 
 
 def worker_main() -> int:

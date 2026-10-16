@@ -44,7 +44,7 @@ def test_incomplete_whole_log_assessment_cannot_trust_a_successful_tail(
     assert request is not None
     target = request.device.rsplit("/", 1)[-1]
     tail = (
-        f"No hidden sectors on {request.device}\n"
+        f"[2026/07/15 12:00:00] info: No hidden sectors on {request.device}\n"
         + STATUS + f"{target} | Erased |  120MB/s | 01:25:04 | QEMU/DISK\n"
     )
     wizard.runner._log_tail = tail

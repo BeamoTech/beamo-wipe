@@ -1238,7 +1238,7 @@ def run_accessible_startup(build, *, fullscreen: bool = False,
         stall.set_text(note or "")
         active = [row for row in snap if row["state"] == "active"]
         if active:
-            status_line.set_text(f"{active[0]['title']} — working.")
+            status_line.set_text(f"{active[0]['title']} — {C.STARTUP_STATE_WORKING}")
 
     def finish(result) -> bool:
         outcome.append(result)

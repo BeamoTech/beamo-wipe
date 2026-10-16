@@ -22,7 +22,7 @@ def test_foreign_erased_row_does_not_complete_eight_character_target():
 
 
 def test_foreign_zero_error_row_does_not_pass_target_io_check():
-    text = f"{FOREIGN}: selected\nError Summary\n sdabcdef | 0 | 0 | 0\n***\n"
+    text = f"{FOREIGN}: selected\n******************************** Error Summary *********************************\n sdabcdef | 0 | 0 | 0\n***\n"
     assert _checks(text)["io_media"].status == "unavailable"
 
 
@@ -40,5 +40,5 @@ def test_explicit_target_failure_remains_a_failure_with_shared_column():
 
 def test_unshared_eight_character_target_still_accepts_own_rows():
     assert evaluate_nwipe_outcome(0, STATUS + ERASED_ROW, TARGET)[0] is True
-    text = "Error Summary\n sdabcdef | 0 | 0 | 0\n***\n"
+    text = "******************************** Error Summary *********************************\n sdabcdef | 0 | 0 | 0\n***\n"
     assert _checks(text)["io_media"].status == "pass"

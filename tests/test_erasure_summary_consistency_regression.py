@@ -5,7 +5,7 @@ from beamo_wipe.engine_checks import evaluate_engine_checks
 
 def _hidden_status(rows: str) -> str:
     log = (
-        "info: No hidden sectors on /dev/sda\n"
+        "[2026/07/15 12:00:00] info: No hidden sectors on /dev/sda\n"
         "************************ Erasure Summary ************************\n"
         "! Device | Bytes Erased | Bytes Total | Percentage Erased\n"
         + rows

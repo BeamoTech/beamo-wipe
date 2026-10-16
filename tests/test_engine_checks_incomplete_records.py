@@ -4,12 +4,15 @@ import pytest
 
 from beamo_wipe.engine_checks import evaluate_engine_checks
 
+HIDDEN = "[2026/07/15 12:00:00] info: No hidden sectors on /dev/sda"
+ERROR_HEADER = "******************************** Error Summary *********************************\n"
+
 
 @pytest.mark.parametrize(
     ("text", "check_id"),
     [
-        ("No hidden sectors on /dev/sda", "hidden_capacity"),
-        ("Error Summary\n  sda | 0 | 0 | 0", "io_media"),
+        (HIDDEN, "hidden_capacity"),
+        (ERROR_HEADER + "  sda | 0 | 0 | 0", "io_media"),
     ],
 )
 def test_unterminated_positive_record_is_unavailable(text, check_id):
@@ -21,8 +24,8 @@ def test_unterminated_positive_record_is_unavailable(text, check_id):
 @pytest.mark.parametrize(
     ("text", "check_id"),
     [
-        ("No hidden sectors on /dev/sda\n", "hidden_capacity"),
-        ("Error Summary\n  sda | 0 | 0 | 0\n", "io_media"),
+        (HIDDEN + "\n", "hidden_capacity"),
+        (ERROR_HEADER + "  sda | 0 | 0 | 0\n", "io_media"),
     ],
 )
 def test_complete_positive_record_still_passes(text, check_id):

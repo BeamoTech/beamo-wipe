@@ -33,11 +33,14 @@ STAGE_DONE_MARKER = "BEAMO_WIPE_STAGE_DONE"
 STAGE_FAILED_MARKER = "BEAMO_WIPE_STAGE_FAILED"
 STAGE_STALLED_MARKER = "BEAMO_WIPE_STAGE_STALLED"
 
-STAGE_COPY = {
-    STAGE_STARTING: (C.STARTUP_TITLE, C.STARTUP_TITLE_HINT),
-    STAGE_BOOT_USB: (C.STARTUP_STAGE_BOOT_USB, C.STARTUP_STAGE_BOOT_USB_HINT),
-    STAGE_FINDING: (C.STARTUP_STAGE_FINDING, C.STARTUP_STAGE_FINDING_HINT),
-}
+def _stage_copy():
+    # A subsequent erase uses the owner's retained language. Resolve text
+    # when rendering, rather than keeping the module's import-time English.
+    return {
+        STAGE_STARTING: (C.STARTUP_TITLE, C.STARTUP_TITLE_HINT),
+        STAGE_BOOT_USB: (C.STARTUP_STAGE_BOOT_USB, C.STARTUP_STAGE_BOOT_USB_HINT),
+        STAGE_FINDING: (C.STARTUP_STAGE_FINDING, C.STARTUP_STAGE_FINDING_HINT),
+    }
 
 
 def _emit(marker: str) -> None:
@@ -110,11 +113,12 @@ class StartupStages:
         return True
 
     def snapshot(self) -> list:
+        stage_copy = _stage_copy()
         return [
             {
                 "key": stage,
-                "title": STAGE_COPY[stage][0],
-                "hint": STAGE_COPY[stage][1],
+                "title": stage_copy[stage][0],
+                "hint": stage_copy[stage][1],
                 "state": self.states[stage],
             }
             for stage in STAGES

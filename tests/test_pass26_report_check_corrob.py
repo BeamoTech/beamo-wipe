@@ -48,8 +48,9 @@ def test_readme_keeps_pass_checks_corrobated_by_exported_log():
     device = claim["device"]["path"]
     name = claim["device"]["name"]
     log = (
-        f"No hidden sectors on {device}\n"
-        f"Error Summary\n  {name} | 0 | 0 | 0\n***\n"
+        f"[2026/07/15 12:00:00] info: No hidden sectors on {device}\n"
+        "******************************** Error Summary *********************************\n"
+        f"  {name} | 0 | 0 | 0\n***\n"
     ).encode()
     files = _bundle_files(json.dumps(claim).encode(), log, "complete")
     readme = files["README.txt"].decode()

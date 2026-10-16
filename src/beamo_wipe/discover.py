@@ -334,8 +334,10 @@ def flatten_blockdevices(
         if not isinstance(node, dict):
             raise ValueError("lsblk JSON node must be an object")
         yield node, parent
-        children = node.get("children") or []
-        if children and not isinstance(children, (list, tuple)):
+        children = node.get("children")
+        if children is None:
+            children = []
+        if not isinstance(children, (list, tuple)):
             raise ValueError("lsblk JSON children must be a list")
         for child_pair in flatten_blockdevices(children, node):
             yield child_pair
@@ -466,6 +468,20 @@ def normalize_mount_source(raw: str) -> str:
         KERNEL_NAME_RE.fullmatch(bare)
         or (bare.startswith("/dev/") and KERNEL_NAME_RE.fullmatch(bare[5:]))
     ):
+        # An actual alias wins over an annotation guess, even when its name
+        # begins with a kernel node. Resolution failures must not shorten it
+        # into a different disk's identity.
+        if src.startswith("/dev/"):
+            try:
+                os.lstat(src)
+            except FileNotFoundError:
+                pass
+            else:
+                return src
+            if os.path.realpath(src) != src:
+                return src
+        if not src.endswith("]") or len(src) <= len(bare) + 2:
+            return src  # Incomplete/empty annotations prove no kernel source.
         src = bare
     if src.startswith("/dev/"):
         return src

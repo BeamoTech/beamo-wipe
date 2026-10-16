@@ -127,7 +127,7 @@ def test_large_log_preserves_contradictory_hidden_capacity_lines(tmp_path):
     logfile.write_text(
         "*** HIDDEN SECTORS DETECTED ! *** on /dev/sda\n"
         + PADDING
-        + "No hidden sectors on /dev/sda\n" + STATUS + ERASED_ROW,
+        + "[2026/07/15 12:00:00] info: No hidden sectors on /dev/sda\n" + STATUS + ERASED_ROW,
         encoding="utf-8",
     )
     runner = NwipeRunner()
