@@ -1,0 +1,14 @@
+{
+  "counts": {
+    "docs.evidence.bug-audit-20261017-pass17.discovery.bridge_probe": {
+      "fail": 48,
+      "pass": 152
+    },
+    "docs.evidence.bug-audit-20261017-pass17.discovery.bridge_duplicate_probe": {
+      "fail": 24,
+      "pass": 8
+    }
+  },
+  "cases": 232,
+  "notes": "Current proposed discovery identity resolver loses valid candidate exclusion facts; source-only preparation kept outside frozeninputs."
+}

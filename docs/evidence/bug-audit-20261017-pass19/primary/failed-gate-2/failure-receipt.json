@@ -1,0 +1,13 @@
+{
+  "at_utc": "2026-10-17T16:44:43.969840+00:00",
+  "status": "FAILED",
+  "main_junit_present": false,
+  "main_fatal": "Fatal Python error: Aborted; GC on audio worker",
+  "visible_pytest_failure_glyphs_before_abort": 7,
+  "orca_passes": 1,
+  "pytest_plugins": null,
+  "observer": null,
+  "no_cancellation": true,
+  "cause_attribution": "UNEXPLAINED; repeats without extra observer",
+  "campaigns": "HELD"
+}

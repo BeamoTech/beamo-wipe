@@ -1,0 +1,20 @@
+{
+  "review": "Root inspected the complete 919-line incremental diff and source ownership/proof paths",
+  "changed_runtime": [
+    "src/beamo_wipe/audio_jobs.py",
+    "src/beamo_wipe/discover.py",
+    "src/beamo_wipe/ui/tk_wizard.py"
+  ],
+  "critical_unchanged": {
+    "src/beamo_wipe/safety.py": "ba07089fa9ed77e3616af67147201a16b15b8c8582ca0ca9724e58ef980ecd9b",
+    "src/beamo_wipe/methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13",
+    "src/beamo_wipe/nwipe_runner.py": "465d3495bd36b3be2507798ad3b57930645c165ba025a2afbe2ea0ca6c45e39d",
+    "src/beamo_wipe/wizard.py": "be375a0861ec569a652e15f9f572bfa689f40048d736c5bedef641453d464bbb",
+    "src/beamo_wipe/recovery.py": "2c9d7994872173b92225efb953d48ad25e3a77c4824632530b400d86005f5aa7",
+    "src/beamo_wipe/copy.py": "91b68c6aeb8187d47038c3d5c0d0d53be23e31b61d35c69fbc66217417758034"
+  },
+  "source_freeze_sha256": "bc83136ee6bd52c8ef4c80206c9b80b958845f839546eb57d8d518263d59ca04",
+  "scope": "Discovery tightens mounted generic dm uncertainty; audio revokes failed launch acceptance; Tk lifetime/closed callbacks only",
+  "erase_authorization_or_method_change": false,
+  "prior_native_abort_attributed": false
+}

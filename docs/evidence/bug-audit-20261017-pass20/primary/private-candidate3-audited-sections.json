@@ -1,0 +1,21 @@
+{
+  "sha256": "b3d66bdb83213000c9623a2a48c25cf39b089289a388aba67507f117b4a59546",
+  "sections": {
+    "_CheckRow.__init__": {
+      "line": 956,
+      "end": 1005
+    },
+    "TkWizard.__init__": {
+      "line": 1142,
+      "end": 1296
+    },
+    "TkWizard._teardown": {
+      "line": 1669,
+      "end": 1733
+    },
+    "TkWizard.run": {
+      "line": 4680,
+      "end": 4702
+    }
+  }
+}

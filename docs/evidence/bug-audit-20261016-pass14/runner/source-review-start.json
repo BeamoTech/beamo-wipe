@@ -1,0 +1,15 @@
+{
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "branch": "fix/safety-audit-20261015",
+  "sha256": {
+    "src/beamo_wipe/nwipe_runner.py": "7672c9c0646aa9679b87d9b729c3f9228f0cf1b7f9bb4b1c162a7e37e16dbf9b",
+    "src/beamo_wipe/progress.py": "fef87a29ceabb1fb97b8abc521d55cea1ceb9428989104973783da6eb52c4fa6",
+    "src/beamo_wipe/engine_checks.py": "a93a8c91feab0db967e6834367856b5d3a77b37d32a0d7c3bd8b6b7fb4b24183",
+    "src/beamo_wipe/session_recovery.py": "128c5daa4c53197437682c637d3078917a79037a9edf5d1796fc9916cdd4ba53",
+    "src/beamo_wipe/sleep_inhibit.py": "b7df5b80f7d87ae0bcac0be2ddcf082ff887e5492fb8da088237b5b02a9bf11d",
+    "src/beamo_wipe/evidence.py": "512c9b024b3231bf2625b6c802a8dc2282c275153b62e2995d4d01ba9466b5c5",
+    "src/beamo_wipe/wizard.py": "be375a0861ec569a652e15f9f572bfa689f40048d736c5bedef641453d464bbb"
+  },
+  "review": "pass14",
+  "prior_pass13_hashes_reconfirmed_before_runtime": true
+}

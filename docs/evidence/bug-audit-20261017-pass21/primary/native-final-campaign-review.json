@@ -1,0 +1,49 @@
+{
+  "completed_utc": "2026-10-17T21:26:03.637500+00:00",
+  "provenance": {
+    "source": "/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py",
+    "sha256": "5b1fc0e16f95176ae706a9677d082d2daae7eb3d70a43ce244ce77363e35f9f5"
+  },
+  "serial_after_full_gate": true,
+  "source_inputs_unchanged": 788,
+  "repeated": {
+    "provenance": {
+      "source": "/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py",
+      "sha256": "5b1fc0e16f95176ae706a9677d082d2daae7eb3d70a43ce244ce77363e35f9f5"
+    },
+    "sessions": 10,
+    "resources": 220,
+    "finalizers": 220,
+    "all_owner_thread": true,
+    "all_returned": true,
+    "gc_events": 160,
+    "max_gc_depth": 1,
+    "registered_callbacks": 1,
+    "pools_empty": true,
+    "effects": [],
+    "unraisables": []
+  },
+  "pressure": {
+    "runs": 12,
+    "native_fonts_per_run": 128,
+    "errors": [],
+    "alive_after_owner_sweep": 0,
+    "observed_gc_functions": [
+      "_collect_retired_interpreters",
+      "_drain_retired_assets"
+    ],
+    "limit": "Bounded fixture pressure; observed positions do not prove all possible GC phases. Fixture GC settings restored; product GC modes unchanged."
+  },
+  "status_sha256": {
+    "tk-pool-repeated-final": "35be70421bc1c30de3057773dce2841f011996a075a6229aeac3ba207acddf85",
+    "tk-drain-gc-pressure-final": "a603ad6af269463ea757764a1327f23d53366b73e1cb4a2115fa4034b1e9721e"
+  },
+  "log_sha256": {
+    "tk-pool-repeated-final": "19307f73050e69dd8b16b3f32d0035b9e4c64598494b996535327610eb775c08",
+    "tk-drain-gc-pressure-final": "dbb301781754ab71f47f0d06edce84f8f8cb4bdf690e97e09017b8ab3acc8e8e"
+  },
+  "script_sha256": {
+    "tk-pool-repeated-final.py": "3c1b85fd7b0d43a1ce55613f15ac45a4fac158f6b93ac00d6b40a778d48c770f",
+    "tk-drain-gc-pressure-observed.py": "a649ba96e07a15f42e60c5b79886ebaa1f2c9eaa90547b18eb6564269f44c73d"
+  }
+}

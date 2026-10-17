@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="11" skipped="0" tests="53" time="12.707" timestamp="2026-10-16T20:56:32.564366+00:00" hostname="srv1606478"><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[inside-False-65307]" time="0.405"><failure message="AssertionError: {'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)}&#10;assert ({'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)} and False)">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+key = 65307, fullscreen = False, pointer = 'inside'
+
+    @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
+    def test_first_native_key_works_with_pointer_outside_window(native, key, fullscreen, pointer):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        errors = []
+    
+        def send():
+            try:
+                root = app.root
+                rect = (root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height())
+                point = ((rect[0] + 20, rect[1] + 20) if pointer == "inside" else
+                         (root.winfo_screenwidth() - 1, root.winfo_screenheight() - 1))
+                native.pointer(*point)
+                seen.update(rect=rect, pointer=point, focused=root.focus_get() is app._primary)
+                native.key(key, True)
+                native.key(key, False)
+            except BaseException as error:
+                errors.append(error)
+    
+        app.root.after(120, send)
+        app.root.after(320, app._teardown)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and seen["focused"], seen
+E           AssertionError: {'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)}
+E           assert ({'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)} and False)
+
+tests/test_tk_input_scroll_pass13.py:97: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[inside-False-65293]" time="0.365"><failure message="AssertionError: {'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)}&#10;assert ({'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)} and False)">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+key = 65293, fullscreen = False, pointer = 'inside'
+
+    @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
+    def test_first_native_key_works_with_pointer_outside_window(native, key, fullscreen, pointer):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        errors = []
+    
+        def send():
+            try:
+                root = app.root
+                rect = (root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height())
+                point = ((rect[0] + 20, rect[1] + 20) if pointer == "inside" else
+                         (root.winfo_screenwidth() - 1, root.winfo_screenheight() - 1))
+                native.pointer(*point)
+                seen.update(rect=rect, pointer=point, focused=root.focus_get() is app._primary)
+                native.key(key, True)
+                native.key(key, False)
+            except BaseException as error:
+                errors.append(error)
+    
+        app.root.after(120, send)
+        app.root.after(320, app._teardown)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and seen["focused"], seen
+E           AssertionError: {'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)}
+E           assert ({'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)} and False)
+
+tests/test_tk_input_scroll_pass13.py:97: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[inside-False-65421]" time="0.367"><failure message="AssertionError: {'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)}&#10;assert ({'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)} and False)">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+key = 65421, fullscreen = False, pointer = 'inside'
+
+    @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
+    def test_first_native_key_works_with_pointer_outside_window(native, key, fullscreen, pointer):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        errors = []
+    
+        def send():
+            try:
+                root = app.root
+                rect = (root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height())
+                point = ((rect[0] + 20, rect[1] + 20) if pointer == "inside" else
+                         (root.winfo_screenwidth() - 1, root.winfo_screenheight() - 1))
+                native.pointer(*point)
+                seen.update(rect=rect, pointer=point, focused=root.focus_get() is app._primary)
+                native.key(key, True)
+                native.key(key, False)
+            except BaseException as error:
+                errors.append(error)
+    
+        app.root.after(120, send)
+        app.root.after(320, app._teardown)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and seen["focused"], seen
+E           AssertionError: {'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)}
+E           assert ({'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)} and False)
+
+tests/test_tk_input_scroll_pass13.py:97: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[inside-False-32]" time="0.366"><failure message="AssertionError: {'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)}&#10;assert ({'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)} and False)">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+key = 32, fullscreen = False, pointer = 'inside'
+
+    @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
+    def test_first_native_key_works_with_pointer_outside_window(native, key, fullscreen, pointer):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        errors = []
+    
+        def send():
+            try:
+                root = app.root
+                rect = (root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height())
+                point = ((rect[0] + 20, rect[1] + 20) if pointer == "inside" else
+                         (root.winfo_screenwidth() - 1, root.winfo_screenheight() - 1))
+                native.pointer(*point)
+                seen.update(rect=rect, pointer=point, focused=root.focus_get() is app._primary)
+                native.key(key, True)
+                native.key(key, False)
+            except BaseException as error:
+                errors.append(error)
+    
+        app.root.after(120, send)
+        app.root.after(320, app._teardown)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and seen["focused"], seen
+E           AssertionError: {'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)}
+E           assert ({'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)} and False)
+
+tests/test_tk_input_scroll_pass13.py:97: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[inside-True-65307]" time="0.361" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[inside-True-65293]" time="0.365" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[inside-True-65421]" time="0.369" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[inside-True-32]" time="0.366" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[far_corner-False-65307]" time="0.366"><failure message="AssertionError: {'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)}&#10;assert ({'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)} and False)">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+key = 65307, fullscreen = False, pointer = 'far_corner'
+
+    @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
+    def test_first_native_key_works_with_pointer_outside_window(native, key, fullscreen, pointer):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        errors = []
+    
+        def send():
+            try:
+                root = app.root
+                rect = (root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height())
+                point = ((rect[0] + 20, rect[1] + 20) if pointer == "inside" else
+                         (root.winfo_screenwidth() - 1, root.winfo_screenheight() - 1))
+                native.pointer(*point)
+                seen.update(rect=rect, pointer=point, focused=root.focus_get() is app._primary)
+                native.key(key, True)
+                native.key(key, False)
+            except BaseException as error:
+                errors.append(error)
+    
+        app.root.after(120, send)
+        app.root.after(320, app._teardown)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and seen["focused"], seen
+E           AssertionError: {'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)}
+E           assert ({'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)} and False)
+
+tests/test_tk_input_scroll_pass13.py:97: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[far_corner-False-65293]" time="0.368"><failure message="AssertionError: {'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)}&#10;assert ({'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)} and False)">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+key = 65293, fullscreen = False, pointer = 'far_corner'
+
+    @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
+    def test_first_native_key_works_with_pointer_outside_window(native, key, fullscreen, pointer):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        errors = []
+    
+        def send():
+            try:
+                root = app.root
+                rect = (root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height())
+                point = ((rect[0] + 20, rect[1] + 20) if pointer == "inside" else
+                         (root.winfo_screenwidth() - 1, root.winfo_screenheight() - 1))
+                native.pointer(*point)
+                seen.update(rect=rect, pointer=point, focused=root.focus_get() is app._primary)
+                native.key(key, True)
+                native.key(key, False)
+            except BaseException as error:
+                errors.append(error)
+    
+        app.root.after(120, send)
+        app.root.after(320, app._teardown)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and seen["focused"], seen
+E           AssertionError: {'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)}
+E           assert ({'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)} and False)
+
+tests/test_tk_input_scroll_pass13.py:97: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[far_corner-False-65421]" time="0.362"><failure message="AssertionError: {'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)}&#10;assert ({'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)} and False)">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+key = 65421, fullscreen = False, pointer = 'far_corner'
+
+    @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
+    def test_first_native_key_works_with_pointer_outside_window(native, key, fullscreen, pointer):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        errors = []
+    
+        def send():
+            try:
+                root = app.root
+                rect = (root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height())
+                point = ((rect[0] + 20, rect[1] + 20) if pointer == "inside" else
+                         (root.winfo_screenwidth() - 1, root.winfo_screenheight() - 1))
+                native.pointer(*point)
+                seen.update(rect=rect, pointer=point, focused=root.focus_get() is app._primary)
+                native.key(key, True)
+                native.key(key, False)
+            except BaseException as error:
+                errors.append(error)
+    
+        app.root.after(120, send)
+        app.root.after(320, app._teardown)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and seen["focused"], seen
+E           AssertionError: {'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)}
+E           assert ({'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)} and False)
+
+tests/test_tk_input_scroll_pass13.py:97: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[far_corner-False-32]" time="0.366"><failure message="AssertionError: {'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)}&#10;assert ({'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)} and False)">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+key = 32, fullscreen = False, pointer = 'far_corner'
+
+    @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
+    def test_first_native_key_works_with_pointer_outside_window(native, key, fullscreen, pointer):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        errors = []
+    
+        def send():
+            try:
+                root = app.root
+                rect = (root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height())
+                point = ((rect[0] + 20, rect[1] + 20) if pointer == "inside" else
+                         (root.winfo_screenwidth() - 1, root.winfo_screenheight() - 1))
+                native.pointer(*point)
+                seen.update(rect=rect, pointer=point, focused=root.focus_get() is app._primary)
+                native.key(key, True)
+                native.key(key, False)
+            except BaseException as error:
+                errors.append(error)
+    
+        app.root.after(120, send)
+        app.root.after(320, app._teardown)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and seen["focused"], seen
+E           AssertionError: {'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)}
+E           assert ({'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)} and False)
+
+tests/test_tk_input_scroll_pass13.py:97: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[far_corner-True-65307]" time="0.371" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[far_corner-True-65293]" time="0.366" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[far_corner-True-65421]" time="0.364" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[far_corner-True-32]" time="0.373" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_initial_focus_is_claimed_once_and_held_return_keeps_gate" time="0.453"><failure message="AssertionError: assert {'held_before...eclaim': True} == {'held_before...eclaim': True}&#10;  &#10;  Omitting 3 identical items, use -vv to show&#10;  Differing items:&#10;  {'initial_child': False} != {'initial_child': True}&#10;  Use -v to get more diff">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+
+    def test_initial_focus_is_claimed_once_and_held_return_keeps_gate(native):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard)
+        seen, errors = {}, []
+    
+        def first():
+            try:
+                native.pointer(app.root.winfo_screenwidth() - 1, app.root.winfo_screenheight() - 1)
+                seen["initial_child"] = app.root.focus_get() is app._primary
+                native.key(Gdk.KEY_Return, True)
+            except BaseException as error:
+                errors.append(error)
+    
+        def held():
+            try:
+                seen["held_before"] = app._return_held
+                app._on_return(SimpleNamespace(time=123))
+                seen["held_screen"] = wizard.screen.name
+                native.key(Gdk.KEY_Return, False)
+                native.root_focus()
+            except BaseException as error:
+                errors.append(error)
+    
+        def inspect():
+            seen["no_reclaim"] = app.root.focus_get() is None
+            app._teardown()
+    
+        app.root.after(120, first)
+        app.root.after(200, held)
+        app.root.after(400, inspect)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen == {"initial_child": True, "held_before": True, "held_screen": "KEYBOARD", "no_reclaim": True}
+E           AssertionError: assert {'held_before...eclaim': True} == {'held_before...eclaim': True}
+E             
+E             Omitting 3 identical items, use -vv to show
+E             Differing items:
+E             {'initial_child': False} != {'initial_child': True}
+E             Use -v to get more diff
+
+tests/test_tk_input_scroll_pass13.py:140: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;Button-5&gt;-None-1-label]" time="0.149" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;Button-5&gt;-None-1-canvas]" time="0.141" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;Button-5&gt;-None-1-inner]" time="0.143" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;Button-5&gt;-None-1-panel]" time="0.162" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;Button-4&gt;-None--1-label]" time="0.149" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;Button-4&gt;-None--1-canvas]" time="0.159" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;Button-4&gt;-None--1-inner]" time="0.141" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;Button-4&gt;-None--1-panel]" time="0.156" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;MouseWheel&gt;--120-1-label]" time="0.148" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;MouseWheel&gt;--120-1-canvas]" time="0.157" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;MouseWheel&gt;--120-1-inner]" time="0.147" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;MouseWheel&gt;--120-1-panel]" time="0.142" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;MouseWheel&gt;-120--1-label]" time="0.145" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;MouseWheel&gt;-120--1-canvas]" time="0.166" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;MouseWheel&gt;-120--1-inner]" time="0.148" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;MouseWheel&gt;-120--1-panel]" time="0.176" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_small_wheel_deltas_do_not_move_body[-119]" time="0.217" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_small_wheel_deltas_do_not_move_body[-1]" time="0.143" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_small_wheel_deltas_do_not_move_body[0]" time="0.161" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_small_wheel_deltas_do_not_move_body[1]" time="0.174" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_small_wheel_deltas_do_not_move_body[119]" time="0.161" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;Button-5&gt;-Text]" time="0.183" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;Button-5&gt;-Listbox]" time="0.148" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;Button-5&gt;-Treeview]" time="0.167" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;Button-5&gt;-nested_canvas]" time="0.142" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;Button-5&gt;-custom_scrollbar]" time="0.142" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;Button-5&gt;-footer]" time="0.145"><failure message="_tkinter.TclError: cannot use geometry manager pack inside .!frame2 which already has slaves managed by grid">kind = 'footer', sequence = '&lt;Button-5&gt;'
+
+    @pytest.mark.parametrize("kind", ["Text", "Listbox", "Treeview", "nested_canvas", "custom_scrollbar", "footer"])
+    @pytest.mark.parametrize("sequence", ["&lt;Button-5&gt;", "&lt;MouseWheel&gt;"])
+    def test_independent_scroll_surfaces_and_footer_do_not_scroll_parent(kind, sequence):
+        app = _app()
+        try:
+            parent = app._body_canvas
+            parent.yview_moveto(0.2)
+            if kind == "Text":
+                target = tk.Text(app._body_inner, height=2)
+                target.insert("1.0", "\n".join(str(n) for n in range(60)))
+            elif kind == "Listbox":
+                target = tk.Listbox(app._body_inner, height=2)
+                for n in range(60):
+                    target.insert(tk.END, str(n))
+            elif kind == "Treeview":
+                target = ttk.Treeview(app._body_inner, height=2)
+                for n in range(60):
+                    target.insert("", tk.END, text=str(n))
+            elif kind == "nested_canvas":
+                target = tk.Canvas(app._body_inner, height=20, scrollregion=(0, 0, 100, 1000))
+                target.bind(sequence, lambda _event: target.yview_scroll(1, "units"))
+            elif kind == "custom_scrollbar":
+                calls = []
+                target = _Scrollbar(app._body_inner, lambda *args: calls.append(args))
+            else:
+                target = tk.Label(app._footer, text="Outside the body")
+&gt;           target.pack()
+
+tests/test_tk_input_scroll_pass13.py:219: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;tkinter.Label object .!frame2.!label&gt;, cnf = {}, kw = {}
+
+    def pack_configure(self, cnf={}, **kw):
+        """Pack a widget in the parent widget. Use as options:
+        after=widget - pack it after you have packed widget
+        anchor=NSEW (or subset) - position widget according to
+                                  given direction
+        before=widget - pack it before you will pack widget
+        expand=bool - expand widget if parent size grows
+        fill=NONE or X or Y or BOTH - fill widget if widget grows
+        in=master - use master to contain this widget
+        in_=master - see 'in' option description
+        ipadx=amount - add internal padding in x direction
+        ipady=amount - add internal padding in y direction
+        padx=amount - add padding in x direction
+        pady=amount - add padding in y direction
+        side=TOP or BOTTOM or LEFT or RIGHT -  where to add this widget.
+        """
+&gt;       self.tk.call(
+              ('pack', 'configure', self._w)
+              + self._options(cnf, kw))
+E       _tkinter.TclError: cannot use geometry manager pack inside .!frame2 which already has slaves managed by grid
+
+/usr/lib/python3.12/tkinter/__init__.py:2472: TclError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;MouseWheel&gt;-Text]" time="0.156" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;MouseWheel&gt;-Listbox]" time="0.152" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;MouseWheel&gt;-Treeview]" time="0.151" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;MouseWheel&gt;-nested_canvas]" time="0.176" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;MouseWheel&gt;-custom_scrollbar]" time="0.160" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;MouseWheel&gt;-footer]" time="0.163"><failure message="_tkinter.TclError: cannot use geometry manager pack inside .!frame2 which already has slaves managed by grid">kind = 'footer', sequence = '&lt;MouseWheel&gt;'
+
+    @pytest.mark.parametrize("kind", ["Text", "Listbox", "Treeview", "nested_canvas", "custom_scrollbar", "footer"])
+    @pytest.mark.parametrize("sequence", ["&lt;Button-5&gt;", "&lt;MouseWheel&gt;"])
+    def test_independent_scroll_surfaces_and_footer_do_not_scroll_parent(kind, sequence):
+        app = _app()
+        try:
+            parent = app._body_canvas
+            parent.yview_moveto(0.2)
+            if kind == "Text":
+                target = tk.Text(app._body_inner, height=2)
+                target.insert("1.0", "\n".join(str(n) for n in range(60)))
+            elif kind == "Listbox":
+                target = tk.Listbox(app._body_inner, height=2)
+                for n in range(60):
+                    target.insert(tk.END, str(n))
+            elif kind == "Treeview":
+                target = ttk.Treeview(app._body_inner, height=2)
+                for n in range(60):
+                    target.insert("", tk.END, text=str(n))
+            elif kind == "nested_canvas":
+                target = tk.Canvas(app._body_inner, height=20, scrollregion=(0, 0, 100, 1000))
+                target.bind(sequence, lambda _event: target.yview_scroll(1, "units"))
+            elif kind == "custom_scrollbar":
+                calls = []
+                target = _Scrollbar(app._body_inner, lambda *args: calls.append(args))
+            else:
+                target = tk.Label(app._footer, text="Outside the body")
+&gt;           target.pack()
+
+tests/test_tk_input_scroll_pass13.py:219: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;tkinter.Label object .!frame2.!label&gt;, cnf = {}, kw = {}
+
+    def pack_configure(self, cnf={}, **kw):
+        """Pack a widget in the parent widget. Use as options:
+        after=widget - pack it after you have packed widget
+        anchor=NSEW (or subset) - position widget according to
+                                  given direction
+        before=widget - pack it before you will pack widget
+        expand=bool - expand widget if parent size grows
+        fill=NONE or X or Y or BOTH - fill widget if widget grows
+        in=master - use master to contain this widget
+        in_=master - see 'in' option description
+        ipadx=amount - add internal padding in x direction
+        ipady=amount - add internal padding in y direction
+        padx=amount - add padding in x direction
+        pady=amount - add padding in y direction
+        side=TOP or BOTTOM or LEFT or RIGHT -  where to add this widget.
+        """
+&gt;       self.tk.call(
+              ('pack', 'configure', self._w)
+              + self._options(cnf, kw))
+E       _tkinter.TclError: cannot use geometry manager pack inside .!frame2 which already has slaves managed by grid
+
+/usr/lib/python3.12/tkinter/__init__.py:2472: TclError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_wheel_uses_current_body_after_redraw_and_leaves_picker_controls_intact" time="0.275" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_native_wheel_over_hit_tested_prose_works[4]" time="0.163" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_native_wheel_over_hit_tested_prose_works[5]" time="0.149" /></testsuite></testsuites>

@@ -1,0 +1,478 @@
+--- candidate3/tk_wizard.py
++++ candidate4/tk_wizard.py
+@@ -963,6 +963,7 @@
+         font: tkfont.Font,
+         wraplength: int = 0,
+     ) -> None:
++        self._native_owner = threading.current_thread()
+         bg = parent.cget("bg")
+         super().__init__(
+             parent,
+@@ -1020,21 +1021,35 @@
+         self._sync()
+         self._paint()
+ 
+-    def _retire_variable_trace(self, event) -> None:
+-        if event.widget is not self or self._variable_trace is None:
+-            return
+-        token = self._variable_trace
++    def _retire_native_refs(self) -> None:
++        owner = getattr(self, "_native_owner", threading.current_thread())
++        variable = getattr(self, "_variable", None)
++        font = getattr(self, "_font", None)
++        _pin_retired_assets((variable, font), owner)
++        _pin_retired_interpreter(self, owner)
++        token = getattr(self, "_variable_trace", None)
+         self._variable_trace = None
+         try:
+-            # Variable callbacks outlive widgets unless explicitly removed.
+-            # Keep other rows and independent observers on this variable.
+-            self._variable.trace_remove("write", token)
++            if token is not None and variable is not None:
++                variable.trace_remove("write", token)
+         except tk.TclError:
+-            # Interpreter teardown may already have removed the variable.
+             pass
+         finally:
+             self._command = lambda: None
+-            del self._variable, self._font, self._label, self._icon
++            for name in ("_variable", "_font", "_label", "_icon"):
++                setattr(self, name, None)
++
++    def _retire_variable_trace(self, event) -> None:
++        if event.widget is self:
++            self._retire_native_refs()
++
++    def destroy(self) -> None:
++        try:
++            super().destroy()
++        finally:
++            # Also covers constructor failures before the Destroy binding.
++            self._retire_native_refs()
++            _drain_retired_native()
+ 
+     def _row_bg(self) -> str:
+         if self._pressed:
+@@ -1115,25 +1130,110 @@
+         self._icon = icon
+ 
+ 
+-# Closed Tcl interpreters can remain in preserved traceback/widget cycles.
+-# Pin them until their creating thread is the sole remaining owner.
++# Retained frames and peer observers can outlive a closed window. Keep their
++# native resources until the creating thread can release the final reference.
++_TK_ROOT_CLASS = tk.Tk
++_TK_ASSET_CLASSES = (tkfont.Font, tk.Variable, tk.Image)
+ _RETIRED_INTERPRETERS: list[tuple[threading.Thread, object]] = []
+-
+-
+-def _pin_retired_interpreter(root: tk.Misc) -> None:
+-    interpreter = root.tk
+-    if not any(record[1] is interpreter for record in _RETIRED_INTERPRETERS):
+-        _RETIRED_INTERPRETERS.append((threading.current_thread(), interpreter))
++_RETIRED_NATIVE_ASSETS: list[tuple[threading.Thread, object]] = []
++
++
++def _pin_retired_interpreter(root: tk.Misc, owner: threading.Thread | None = None) -> None:
++    interpreter = getattr(root, "tk", None)
++    if interpreter is not None and not any(record[1] is interpreter for record in _RETIRED_INTERPRETERS):
++        _RETIRED_INTERPRETERS.append((owner or threading.current_thread(), interpreter))
++
++
++def _pin_retired_assets(assets, owner: threading.Thread) -> None:
++    for asset in assets:
++        if isinstance(asset, _TK_ASSET_CLASSES) and not any(record[1] is asset for record in _RETIRED_NATIVE_ASSETS):
++            _RETIRED_NATIVE_ASSETS.append((owner, asset))
++
++
++def _drain_retired_assets() -> None:
++    owner = threading.current_thread()
++    for record in _RETIRED_NATIVE_ASSETS[:]:
++        # The tuple owns one asset reference; getrefcount adds its argument.
++        if record[0] is owner and sys.getrefcount(record[1]) == 2:
++            _RETIRED_NATIVE_ASSETS.remove(record)
++
++
++def _drain_retired_interpreters() -> None:
++    owner = threading.current_thread()
++    for record in _RETIRED_INTERPRETERS[:]:
++        if record[0] is owner and sys.getrefcount(record[1]) == 2:
++            _RETIRED_INTERPRETERS.remove(record)
++
++
++def _drain_retired_native() -> None:
++    # The asset helper must return first: its loop/snapshot tuple references
++    # can otherwise keep the last asset's raw interpreter alive for this pass.
++    _drain_retired_assets()
++    _drain_retired_interpreters()
+ 
+ 
+ def _collect_retired_interpreters() -> None:
+     gc.collect()
+-    owner = threading.current_thread()
+-    for record in _RETIRED_INTERPRETERS[:]:
+-        # One reference from record, one temporary getrefcount argument.
+-        # Any surviving wrapper/native frame defers release to a later pass.
+-        if record[0] is owner and sys.getrefcount(record[1]) == 2:
+-            _RETIRED_INTERPRETERS.remove(record)
++    _drain_retired_native()
++
++
++def _note_tk_cleanup_failure(original: BaseException, cleanup: BaseException) -> None:
++    # Keep the original failure/traceback; report the distinct cleanup failure.
++    add_note = getattr(original, "add_note", None)
++    if callable(add_note):
++        add_note(f"Tk cleanup also failed: {type(cleanup).__name__}")
++    try:
++        from beamo_wipe.diagnostics import log_diag
++        log_diag("ui", "tk_cleanup_failed", type(cleanup).__name__)
++    except Exception:
++        pass
++
++
++def _retire_tk_owner(owner, original: BaseException | None = None) -> None:
++    try:
++        owner._teardown()
++    except BaseException as cleanup:
++        if original is None:
++            raise
++        _note_tk_cleanup_failure(original, cleanup)
++
++
++def _new_owned_root(owner: threading.Thread):
++    factory = tk.Tk
++    if not isinstance(factory, type) or not issubclass(factory, _TK_ROOT_CLASS):
++        return factory()  # Callable lightweight test factories retain their contract.
++    root = factory.__new__(factory)
++    if not isinstance(root, factory):
++        return root
++    try:
++        factory.__init__(root)
++    except BaseException as original:
++        _pin_retired_interpreter(root, owner)
++        if getattr(root, "tk", None) is not None:
++            try:
++                root.destroy()
++            except tk.TclError:
++                pass
++            except BaseException as cleanup:
++                _note_tk_cleanup_failure(original, cleanup)
++        raise
++    return root
++
++
++def _new_owned_native(native_root, factory, *args, **kwargs):
++    if not isinstance(factory, type) or not issubclass(factory, _TK_ASSET_CLASSES):
++        return factory(*args, **kwargs)
++    resource = factory.__new__(factory)
++    if not isinstance(resource, factory):
++        return resource
++    try:
++        factory.__init__(resource, *args, **kwargs)
++    except BaseException:
++        owner = threading.current_thread()
++        _pin_retired_assets((resource,), owner)
++        _pin_retired_interpreter(native_root, owner)
++        raise
++    return resource
+ 
+ 
+ class TkWizard:
+@@ -1141,10 +1241,11 @@
+     _NATIVE_ASSETS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_confirm_var', '_typing_var', '_owner_var')
+     def __init__(self, wizard: Wizard, fullscreen: bool = False) -> None:
+         _collect_retired_interpreters()
++        self._native_owner = threading.current_thread()
+         self._native_retired = False
+         try:
+             self.w = wizard
+-            self.root = tk.Tk()
++            self.root = _new_owned_root(self._native_owner)
+             self.root._tk_wizard = self  # type: ignore[attr-defined]
+             # Set the geometry scale; fonts below use explicit pixel sizes. The layout geometry below is fixed pixels (content
+             # column, minimum window, countdown ring), so point-sized fonts must
+@@ -1183,23 +1284,23 @@
+             # geometry in agreement. Type scale follows window size (compact on
+             # 800x600, slightly larger on 1600x1000+), never the X server DPI.
+             self.lay = layout_for(*DEFAULT_SIZE, getattr(wizard, "text_size", "standard"))
+-            self.font_hero = tkfont.Font(root=self.root, family=family, size=-52, weight="bold")
+-            self.font_h = tkfont.Font(root=self.root, family=family, size=-30, weight="bold")
+-            self.font_lead = tkfont.Font(root=self.root, family=family, size=-18)
+-            self.font_b = tkfont.Font(root=self.root, family=family, size=-16)
+-            self.font_bold = tkfont.Font(root=self.root, family=family, size=-16, weight="bold")
+-            self.font_size_big = tkfont.Font(root=self.root, family=family, size=-20, weight="bold")
+-            self.font_s = tkfont.Font(root=self.root, family=family, size=-14)
+-            self.font_s_bold = tkfont.Font(root=self.root, family=family, size=-14, weight="bold")
+-            self.font_tiny = tkfont.Font(root=self.root, family=family, size=-12, weight="bold")
+-            self.font_meta = tkfont.Font(root=self.root, family=family, size=-12)
+-            self.font_btn = tkfont.Font(root=self.root, family=family, size=-16, weight="bold")
+-            self.font_mono = tkfont.Font(root=self.root, family=mono, size=-14)
+-            self.font_mono_bold = tkfont.Font(root=self.root, family=mono, size=-14, weight="bold")
+-            self.font_mono_sm = tkfont.Font(root=self.root, family=mono, size=-13)
+-            self.font_entry = tkfont.Font(root=self.root, family=mono, size=-26, weight="bold")
+-            self.font_stat = tkfont.Font(root=self.root, family=family, size=-56, weight="bold")
+-            self.font_brand = tkfont.Font(root=self.root, family=family, size=-16, weight="bold")
++            self.font_hero = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-52, weight="bold")
++            self.font_h = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-30, weight="bold")
++            self.font_lead = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-18)
++            self.font_b = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-16)
++            self.font_bold = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-16, weight="bold")
++            self.font_size_big = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-20, weight="bold")
++            self.font_s = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-14)
++            self.font_s_bold = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-14, weight="bold")
++            self.font_tiny = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-12, weight="bold")
++            self.font_meta = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-12)
++            self.font_btn = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-16, weight="bold")
++            self.font_mono = _new_owned_native(self.root, tkfont.Font, root=self.root, family=mono, size=-14)
++            self.font_mono_bold = _new_owned_native(self.root, tkfont.Font, root=self.root, family=mono, size=-14, weight="bold")
++            self.font_mono_sm = _new_owned_native(self.root, tkfont.Font, root=self.root, family=mono, size=-13)
++            self.font_entry = _new_owned_native(self.root, tkfont.Font, root=self.root, family=mono, size=-26, weight="bold")
++            self.font_stat = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-56, weight="bold")
++            self.font_brand = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-16, weight="bold")
+             self._apply_fonts()
+             # The brand mark ships as PNGs (Tk cannot draw the SVG source).
+             # Bound to this app's root explicitly: tests run several roots per
+@@ -1209,9 +1310,9 @@
+             self._support_qr: Optional[tk.PhotoImage] = None
+             self._support_lead: Optional[tk.Label] = None
+             self._support_copy_bound = False
+-            self._confirm_var = tk.StringVar()
+-            self._typing_var = tk.StringVar()
+-            self._owner_var = tk.IntVar(value=0)
++            self._confirm_var = _new_owned_native(self.root, tk.StringVar)
++            self._typing_var = _new_owned_native(self.root, tk.StringVar)
++            self._owner_var = _new_owned_native(self.root, tk.IntVar, value=0)
+             self._body: Optional[tk.Frame] = None
+             self._footer: Optional[tk.Frame] = None
+             self._header: Optional[tk.Canvas] = None
+@@ -1291,8 +1392,8 @@
+             self.root.protocol("WM_DELETE_WINDOW", self._close)
+             self._draw()
+             self._after_id = self.root.after(100, self._tick)
+-        except BaseException:
+-            self._teardown()
++        except BaseException as original:
++            _retire_tk_owner(self, original)
+             raise
+ 
+     # -- chrome -------------------------------------------------------------
+@@ -1399,7 +1500,7 @@
+ 
+     def _load_image(self, name: str) -> Optional[tk.PhotoImage]:
+         try:
+-            return tk.PhotoImage(master=self.root, file=str(_ASSETS / name))
++            return _new_owned_native(self.root, tk.PhotoImage, master=self.root, file=str(_ASSETS / name))
+         except (tk.TclError, RuntimeError):
+             # Missing/unreadable file, or no root window yet: the drawn
+             # fallback emblem stands in for the brand mark.
+@@ -1671,66 +1772,77 @@
+             return
+         self._retiring = True
+         self._ui_dead = True
++        owner_thread = getattr(self, "_native_owner", threading.current_thread())
+         root = getattr(self, "root", None)
+         if isinstance(root, tk.Misc):
+-            _pin_retired_interpreter(root)
++            _pin_retired_interpreter(root, owner_thread)
+         pins = [getattr(self, name, None) for name in self._NATIVE_ASSETS]
+-        pending = [root] if isinstance(root, tk.Misc) else []
+-        owner = None
+-        while pending:
+-            owner = pending.pop()
+-            if isinstance(owner, _CheckRow):
+-                pins.append(getattr(owner, "_variable", None))
++        _pin_retired_assets(pins, owner_thread)
++        cleanup_error = None
++        try:
++            pending = [root] if isinstance(root, tk.Misc) else []
++            widget = None
++            while pending:
++                widget = pending.pop()
++                if isinstance(widget, _CheckRow):
++                    pins.extend((getattr(widget, "_variable", None), getattr(widget, "_font", None)))
++                try:
++                    pending.extend(widget.winfo_children())
++                except tk.TclError:
++                    pass
++            widget = None
++            _pin_retired_assets(pins, owner_thread)
++            for variable_name, token_name in (
++                ("_confirm_var", "_confirm_var_trace"), ("_typing_var", "_typing_var_trace"),
++            ):
++                token = getattr(self, token_name, None)
++                variable = getattr(self, variable_name, None)
++                if token is not None:
++                    setattr(self, token_name, None)
++                    if variable is not None:
++                        try:
++                            variable.trace_remove("write", token)
++                        except tk.TclError:
++                            pass
++            variable = None
+             try:
+-                pending.extend(owner.winfo_children())
+-            except tk.TclError:
+-                pass
+-        owner = None
+-        for variable_name, token_name in (
+-            ("_confirm_var", "_confirm_var_trace"), ("_typing_var", "_typing_var_trace"),
+-        ):
+-            token = getattr(self, token_name, None)
+-            variable = getattr(self, variable_name, None)
+-            if token is not None:
+-                setattr(self, token_name, None)
+-                if variable is not None:
++                getattr(self.w, "cancel_audio", lambda: None)()
++            except BaseException as error:
++                cleanup_error = error
++            self._cancel_pick_restore()
++            for attr in ("_return_release_after", "_space_release_after", "_after_id"):
++                callback = getattr(self, attr, None)
++                if callback is not None and root is not None:
+                     try:
+-                        variable.trace_remove("write", token)
++                        root.after_cancel(callback)
+                     except tk.TclError:
+                         pass
+-        variable = None
+-        getattr(self.w, "cancel_audio", lambda: None)()
+-        self._cancel_pick_restore()
+-        for attr in ("_return_release_after", "_space_release_after", "_after_id"):
+-            callback = getattr(self, attr, None)
+-            if callback is not None and root is not None:
++                    setattr(self, attr, None)
++            if root is not None:
++                self._cancel_widget_callbacks(root)
+                 try:
+-                    root.after_cancel(callback)
++                    root.destroy()
+                 except tk.TclError:
+                     pass
+-                setattr(self, attr, None)
+-        if root is not None:
+-            self._cancel_widget_callbacks(root)
+-            try:
+-                root.destroy()
+-            except tk.TclError:
+-                pass
+-            if getattr(root, "_tk_wizard", None) is self:
+-                del root._tk_wizard
+-        for name in self._NATIVE_FIELDS:
+-            if hasattr(self, name):
+-                setattr(self, name, {} if name in ("_pick_cards", "_keyboard_layout_cards", "_keyboard_language_cards") else None)
+-        lock = getattr(self, "_refresh_lock", None)
+-        if lock is not None:
+-            with lock:
+-                self._refresh_results.clear()
+-                self._refresh_threads.clear()
+-        self._native_retired = True
+-        gc.collect()
+-        pins.clear()
+-        root = None
+-        self._retiring = False
+-        _collect_retired_interpreters()
++                if getattr(root, "_tk_wizard", None) is self:
++                    del root._tk_wizard
++            for name in self._NATIVE_FIELDS:
++                if hasattr(self, name):
++                    setattr(self, name, {} if name in ("_pick_cards", "_keyboard_layout_cards", "_keyboard_language_cards") else None)
++            lock = getattr(self, "_refresh_lock", None)
++            if lock is not None:
++                with lock:
++                    self._refresh_results.clear()
++                    self._refresh_threads.clear()
++            self._native_retired = True
++            gc.collect()
++        finally:
++            pins.clear()
++            root = None
++            self._retiring = False
++            _collect_retired_interpreters()
++        if cleanup_error is not None:
++            raise cleanup_error
+ 
+     def _tick(self) -> None:
+         try:
+@@ -1866,6 +1978,7 @@
+             dispatch[screen]()
+         self._draw_header()
+         self._draw_strip()
++        _drain_retired_native()
+         self._shown = screen
+         self._shown_sound_revision = getattr(self.w, "sound_revision", 0)
+         if working_revision is not None:
+@@ -3001,7 +3114,7 @@
+         section = tk.Frame(parent, bg=BG)
+         section.pack(fill=tk.X, pady=(0, 10))
+         content = tk.Frame(section, bg=BG)
+-        opened = tk.BooleanVar(value=False)
++        opened = _new_owned_native(self.root, tk.BooleanVar, value=False)
+         def toggle():
+             if opened.get():
+                 content.pack(fill=tk.X)
+@@ -3284,8 +3397,8 @@
+                     for _ in range(scale)
+                 )
+                 rows.extend(["{" + line + "}"] * scale)
+-            image = tk.PhotoImage(
+-                master=self.root, width=len(matrix) * scale, height=len(matrix) * scale
++            image = _new_owned_native(
++                self.root, tk.PhotoImage, master=self.root, width=len(matrix) * scale, height=len(matrix) * scale
+             )
+             image.put(" ".join(rows))
+         except Exception:
+@@ -3781,7 +3894,7 @@
+         text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+         text.insert("1.0", C.REPORT_HELP_TEXT + ("\n\n" + self.w.report_recovery_warning if self.w.report_recovery_warning else ""))
+         text.configure(state=tk.DISABLED)
+-        choice = tk.BooleanVar(master=self.root, value=self.w.report_wanted)
++        choice = _new_owned_native(self.root, tk.BooleanVar, master=self.root, value=self.w.report_wanted)
+         wrap = max(200, self.lay.wrap - 40)
+ 
+         def set_preference():
+@@ -3798,7 +3911,7 @@
+             col, text=C.REPORT_WANTED, variable=choice,
+             command=set_preference, font=self.font_s, wraplength=wrap,
+         ).pack(anchor="w", fill=tk.X, pady=8)
+-        share = tk.BooleanVar(master=self.root, value=self.w.report_share_redacted)
++        share = _new_owned_native(self.root, tk.BooleanVar, master=self.root, value=self.w.report_share_redacted)
+ 
+         def set_share():
+             self.w.set_report_share_redacted(share.get())
+@@ -4697,8 +4810,11 @@
+             mapping = self.root.bind("<Map>", mapped, add="+")
+         try:
+             self.root.mainloop()
+-        finally:
+-            self._teardown()
++        except BaseException as original:
++            _retire_tk_owner(self, original)
++            raise
++        else:
++            _retire_tk_owner(self)
+         return 3 if self._fatal_ui else (4 if self._accessible_requested else 0)
+ 
+     def _click_accessible(self) -> None:
+@@ -4710,12 +4826,20 @@
+ 
+ def run_tk(wizard: Wizard, fullscreen: bool = False) -> int:
+     ui = None
++    original = None
+     try:
+         ui = TkWizard(wizard, fullscreen=fullscreen)
+         return ui.run()
++    except BaseException as error:
++        original = error
++        raise
+     finally:
+-        ui = None
+-        _collect_retired_interpreters()
++        try:
++            if ui is not None:
++                _retire_tk_owner(ui, original)
++        finally:
++            ui = None
++            _collect_retired_interpreters()
+ 
+ 
+ def _ensure_tk_display() -> None:

@@ -1,0 +1,19 @@
+{
+  "kind": "postprocessing count assumption error",
+  "incorrect_expected_groups": {
+    "identity": 330,
+    "boot": 360,
+    "equivalent": 36,
+    "tokens": 729
+  },
+  "actual_groups": {
+    "identity": 510,
+    "boot": 180,
+    "equivalent": 36,
+    "tokens": 729
+  },
+  "exit": 1,
+  "product_source_or_matrix_assertions_changed": false,
+  "total_cases_unchanged": 1455,
+  "correction": "Recompute groups from explicit Cartesian dimensions: identity=(35+50)*6=510, boot=6*5*3*2=180. No test or matrix rerun."
+}

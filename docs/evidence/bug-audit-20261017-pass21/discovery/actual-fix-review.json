@@ -1,0 +1,1681 @@
+{
+  "changed_top_level_definitions": [
+    "_as_int",
+    "node_to_disk"
+  ],
+  "current_sha256": "504315316ded12cf11502614d067139be25908418851895053339fde7bc38067",
+  "decision": "PASS for the two reviewed discovery edits; final canonical/frozen-source/full-gate acceptance remains root-owned and pending",
+  "exact_expected_two_edits": true,
+  "method": "source/text/AST/archived-byte/JUnit file inspection only; no application import or test runtime",
+  "other_source_hashes": {
+    "src/beamo_wipe/safety.py": "ba07089fa9ed77e3616af67147201a16b15b8c8582ca0ca9724e58ef980ecd9b",
+    "src/beamo_wipe/wizard.py": "be375a0861ec569a652e15f9f572bfa689f40048d736c5bedef641453d464bbb"
+  },
+  "probe_hashes": {
+    "missing-physical-name-probe.py": "6a8ba18b26bf539197f3a87c06c4cdf47e4d6cde3ef3090ebe3c8cb1f826dd1c",
+    "noncanonical-physical-name-probe.py": "aff66a05804c06116ceeffc986312e61163088b45b95bd9ca64d097cfac9b81f",
+    "nonfinite-size-probe.py": "1ba4604055fa2964ddf31f4ac5dcda43d9db3c2ce10792efb026a58823e0e4fb"
+  },
+  "proofs": {
+    "additional-original.xml": {
+      "counts": {
+        "fail": 9,
+        "pass": 63
+      },
+      "sha256": "e26d0cee802ef70a8f28165d5a5303cd5d7fc0610cd8d8ee6aedaa5387d3c5cb",
+      "testcases": [
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-boot-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-boot-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-boot-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-target-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-target-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-target-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-partition-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-partition-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-partition-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-boot-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-boot-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-boot-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-target-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-target-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-target-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-partition-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-partition-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-partition-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-boot-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-boot-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-boot-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-target-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-target-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-target-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-partition-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-partition-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-partition-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-boot-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-boot-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-boot-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-target-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-target-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-target-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-partition-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-partition-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-partition-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-boot-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-boot-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-boot-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-target-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-target-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-target-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-partition-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-partition-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-partition-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-boot-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-boot-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-boot-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-target-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-target-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-target-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-partition-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-partition-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-partition-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-boot-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-boot-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-boot-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-target-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-target-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-target-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-partition-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-partition-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-partition-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-boot-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-boot-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-boot-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-target-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-target-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-target-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-partition-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-partition-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-partition-production-metadata-stub]",
+          "outcome": "pass"
+        }
+      ]
+    },
+    "discovery-original.xml": {
+      "counts": {
+        "fail": 16,
+        "pass": 44
+      },
+      "sha256": "618e0c55d71b54f2d1e4929368caa2d18c220696160687017502c139f4ddd8c0",
+      "testcases": [
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-present-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-present-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-present-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-empty-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-empty-injected]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-empty-production-metadata-stub]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-null-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-null-injected]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-null-production-metadata-stub]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-omitted-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-omitted-injected]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-omitted-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-present-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-present-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-present-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-empty-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-empty-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-empty-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-null-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-null-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-null-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-omitted-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-omitted-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-omitted-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-present-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-present-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-present-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-empty-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-empty-injected]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-empty-production-metadata-stub]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-null-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-null-injected]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-null-production-metadata-stub]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-omitted-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-omitted-injected]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-omitted-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-present-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-present-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-present-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-empty-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-empty-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-empty-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-null-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-null-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-null-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-omitted-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-omitted-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-omitted-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[present-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[present-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[present-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[empty-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[empty-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[empty-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[null-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[null-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[null-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[omitted-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[omitted-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[omitted-production-metadata-stub]",
+          "outcome": "pass"
+        }
+      ]
+    },
+    "fixes-focused.xml": {
+      "counts": {
+        "pass": 162
+      },
+      "sha256": "7e9466f0c606bc393637673d8feccf2f33e2fcf692434fd04058d7285e7c8179",
+      "testcases": [
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-present-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-present-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-present-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-empty-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-empty-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-empty-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-null-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-null-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-null-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-omitted-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-omitted-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-omitted-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-present-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-present-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-present-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-empty-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-empty-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-empty-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-null-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-null-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-null-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-omitted-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-omitted-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_drop_observed_windows_and_layout_evidence[nested-omitted-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-present-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-present-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-present-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-empty-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-empty-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-empty-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-null-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-null-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-null-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-omitted-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-omitted-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[flat-omitted-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-present-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-present-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-present-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-empty-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-empty-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-empty-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-null-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-null-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-null-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-omitted-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-omitted-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_name_gap_cannot_merge_changed_partition_identity[nested-omitted-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[present-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[present-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[present-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[empty-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[empty-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[empty-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[null-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[null-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[null-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[omitted-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[omitted-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.missing-physical-name-probe",
+          "name": "test_missing_name_cannot_drop_mount_on_flat_partition[omitted-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[./sda-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[./sda-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[./sda-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[x/../sda-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[x/../sda-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[x/../sda-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda/-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda/-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda/-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[/sda-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[/sda-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[/sda-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[./sda-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[./sda-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[./sda-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[x/../sda-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[x/../sda-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[x/../sda-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda/-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda/-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda/-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[/sda-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[/sda-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[/sda-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-boot-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-boot-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-boot-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-target-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-target-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-target-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-partition-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-partition-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[NaN-partition-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-boot-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-boot-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-boot-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-target-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-target-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-target-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-partition-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-partition-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[Infinity-partition-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-boot-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-boot-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-boot-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-target-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-target-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-target-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-partition-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-partition-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[-Infinity-partition-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-boot-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-boot-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-boot-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-target-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-target-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-target-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-partition-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-partition-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_nonfinite_size_does_not_escape_discovery_or_authorize_target[1e999-partition-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-boot-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-boot-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-boot-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-target-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-target-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-target-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-partition-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-partition-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000-partition-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-boot-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-boot-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-boot-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-target-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-target-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-target-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-partition-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-partition-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[128000000000.0-partition-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-boot-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-boot-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-boot-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-target-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-target-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-target-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-partition-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-partition-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1.28e11-partition-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-boot-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-boot-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-boot-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-target-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-target-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-target-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-partition-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-partition-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.nonfinite-size-probe",
+          "name": "test_finite_integer_float_exponent_and_large_integer_controls[1267650600228229401496703205376-partition-production-metadata-stub]",
+          "outcome": "pass"
+        }
+      ]
+    },
+    "noncanonical-name-original.xml": {
+      "counts": {
+        "fail": 24,
+        "pass": 6
+      },
+      "sha256": "6dd36b982ef6061d88cbf1f2c5bbb679093f4234b4b3add234b7be907570bf32",
+      "testcases": [
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[./sda-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[./sda-injected]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[./sda-production-metadata-stub]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[x/../sda-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[x/../sda-injected]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[x/../sda-production-metadata-stub]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda/-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda/-injected]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda/-production-metadata-stub]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[/sda-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[/sda-injected]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[/sda-production-metadata-stub]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda-direct]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda-injected]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda-production-metadata-stub]",
+          "outcome": "pass"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[./sda-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[./sda-injected]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[./sda-production-metadata-stub]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[x/../sda-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[x/../sda-injected]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[x/../sda-production-metadata-stub]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda/-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda/-injected]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda/-production-metadata-stub]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[/sda-direct]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[/sda-injected]",
+          "outcome": "fail"
+        },
+        {
+          "classname": "docs.evidence.bug-audit-20261017-pass21.discovery.noncanonical-physical-name-probe",
+          "name": "test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[/sda-production-metadata-stub]",
+          "outcome": "fail"
+        }
+      ]
+    }
+  },
+  "reviewed_utc": "2026-10-17T21:01:47.397393+00:00",
+  "reviewer": "pass21_discovery",
+  "source": "src/beamo_wipe/discover.py",
+  "starting_sha256": "9f5a5a36ddf9dad77c7195920ed6290ed745d4684d63beeac103882fb6198f65",
+  "unchanged_top_level_definition_count": 81
+}

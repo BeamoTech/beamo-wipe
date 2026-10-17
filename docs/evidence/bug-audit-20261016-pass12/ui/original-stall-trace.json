@@ -1,0 +1,88 @@
+{
+  "display": ":120",
+  "results": [
+    {
+      "surface": "tk",
+      "outcome": "abandoned",
+      "phases": [
+        {
+          "frame": "first-stall",
+          "clock": 11,
+          "stall_visible": true,
+          "active_stage": "starting",
+          "stalled_reported": true
+        },
+        {
+          "frame": "later-stall",
+          "clock": 11,
+          "stall_visible": false,
+          "active_stage": "starting",
+          "stalled_reported": true
+        },
+        {
+          "frame": "new-stage-reset",
+          "clock": 12,
+          "stall_visible": false,
+          "active_stage": "checking-boot-usb",
+          "stalled_reported": false
+        },
+        {
+          "frame": "new-stage-first-stall",
+          "clock": 23,
+          "stall_visible": true,
+          "active_stage": "checking-boot-usb",
+          "stalled_reported": true
+        },
+        {
+          "frame": "new-stage-later-stall",
+          "clock": 23,
+          "stall_visible": true,
+          "active_stage": "checking-boot-usb",
+          "stalled_reported": true
+        }
+      ]
+    },
+    {
+      "surface": "gtk",
+      "outcome": "abandoned",
+      "phases": [
+        {
+          "frame": "first-stall",
+          "clock": 11,
+          "stall_visible": false,
+          "active_stage": "starting",
+          "stalled_reported": false
+        },
+        {
+          "frame": "later-stall",
+          "clock": 11,
+          "stall_visible": true,
+          "active_stage": "starting",
+          "stalled_reported": true
+        },
+        {
+          "frame": "new-stage-reset",
+          "clock": 12,
+          "stall_visible": false,
+          "active_stage": "starting",
+          "stalled_reported": true
+        },
+        {
+          "frame": "new-stage-first-stall",
+          "clock": 23,
+          "stall_visible": false,
+          "active_stage": "checking-boot-usb",
+          "stalled_reported": false
+        },
+        {
+          "frame": "new-stage-later-stall",
+          "clock": 23,
+          "stall_visible": true,
+          "active_stage": "checking-boot-usb",
+          "stalled_reported": true
+        }
+      ]
+    }
+  ],
+  "owned_teardown": true
+}

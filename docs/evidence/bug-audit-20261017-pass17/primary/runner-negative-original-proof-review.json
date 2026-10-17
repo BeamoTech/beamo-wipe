@@ -1,0 +1,9 @@
+{
+  "docs.evidence.bug-audit-20261017-pass17.runner.negative-origin-proof": {
+    "fail": 108
+  },
+  "tests.test_runner_prefixed_error_context_pass12": {
+    "pass": 3,
+    "fail": 3
+  }
+}

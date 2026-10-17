@@ -1,0 +1,28 @@
+{
+  "display": ":116",
+  "pointer": [
+    1550,
+    950
+  ],
+  "phases": [
+    {
+      "phase": "before-native-escape",
+      "focused_xid": 1,
+      "window_xid": 2097155,
+      "mapped": true,
+      "gtk_child_focus": true
+    },
+    {
+      "phase": "native-escape-had-no-effect",
+      "focused_xid": 1,
+      "window_xid": 2097155,
+      "mapped": true,
+      "gtk_child_focus": true
+    },
+    {
+      "phase": "result",
+      "outcome": "abandoned"
+    }
+  ],
+  "owned_teardown": true
+}

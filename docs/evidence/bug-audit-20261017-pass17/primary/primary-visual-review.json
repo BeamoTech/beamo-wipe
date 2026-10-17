@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-17",
+  "author": "Codex primary",
+  "actual_pngs_viewed": {
+    "fixed-geometry-gtk-en-large-LAST_CHANCE.png": "acc8c902c763a3edb2e82d02fccc4f8eaf1648c28ba7ced7548649b702393b2a",
+    "fixed-geometry-gtk-en-extra-OWNER.png": "e7081082a7a83f5c1d771f5b31067a7cc66b617f766895880e5bdd84c78c40f2",
+    "fixed-geometry-tk-en-standard-OWNER.png": "23d39d387cb1f32e00d8610950e9ca5235f0a5cebc072fb62b7539816a333354",
+    "fixed-geometry-tk-en-large-CONFIRM.png": "114121a896ef7b420552f3eb3cbdfb74439f5b27eb964e937667c7ed2372ed63",
+    "fixed-geometry-tk-en-extra-KEYBOARD.png": "0bf869dc96abcadc3fa60bebb8a2b78c6156de58cc380bfd7f72b848c59fbe69"
+  },
+  "display": "800x600 at72DPI, private X11",
+  "observations": [
+    "GTK final review shows disk, method, five-second delay and disabled Erase now.",
+    "Tk owner checkbox, confirmation entry and keyboard entry are fully visible at their sampled sizes; all27 critical Tk matrix inputs also have independently measured visibility.",
+    "Long body content intentionally scrolls. The extra-large GTK owner capture shows the beginning of that scrollable content; this is not a claim that every paragraph or control is visible simultaneously."
+  ],
+  "result": "No new visual defect found in the five retained captures; matrix and native regression tests provide the broader stated coverage."
+}

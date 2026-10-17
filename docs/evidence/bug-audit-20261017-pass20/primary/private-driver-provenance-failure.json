@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-17T18:30:13.349648+00:00",
+  "result": "INVALID PRIVATE CANDIDATE ACCEPTANCE: shared source imported by parent pytest",
+  "cause": "pyproject.toml pythonpath=[src] prepends shared source over PYTHONPATH",
+  "run": "private-candidate3-focused",
+  "exit_code": 134,
+  "junit_exists": false,
+  "trace_shared_file": "src/beamo_wipe/build_identity.py",
+  "child_proofs_scope": "Earlier28 lifecycle cases run direct subprocesses, explicitly inheriting private PYTHONPATH; no pytest config in those child processes",
+  "correction": "Explicit -o pythonpath=/tmp/pass20-primary/private-graph/src in driver; fresh import proof pending",
+  "shared_tk_sha256": "23d280b0451d3e25d64387de62d4912a8867ffbdec934244efe6a7f7a7ee0615"
+}

@@ -1,0 +1,264 @@
+--- starting/src/beamo_wipe/discover.py
++++ final/src/beamo_wipe/discover.py
+@@ -23,7 +23,7 @@
+     DiskKind,
+     DiscoveryResult,
+ )
+-from beamo_wipe.safety import protected_hardware_aliases
++from beamo_wipe.safety import canonical_wwn, meaningful_serial, protected_hardware_aliases
+ 
+ IDENTITY_UNAVAILABLE = "Device identity unavailable"
+ IDENTITY_UNCONFIRMED = "identity could not be confirmed"
+@@ -952,13 +952,49 @@
+         return ""
+ 
+ 
++def _hardware_identity_key(value: str, field: str) -> str:
++    return canonical_wwn(value) if field == "wwn" else meaningful_serial(value).casefold()
++
++
++def _node_hardware_identity(node: Dict[str, Any], field: str) -> str:
++    reported = _hardware_identity(node.get(field), field)
++    if _hardware_identity_key(reported, field):
++        return reported
++    inherited = _first_descendant_field(node, field)
++    if _hardware_identity_key(inherited, field):
++        return inherited
++    # Preserve raw placeholder observations when no meaningful ID is available.
++    return reported or inherited
++
++
+ def _first_descendant_field(node: Dict[str, Any], key: str) -> str:
++    if key in {"serial", "wwn"}:
++        first_raw = ""
++        first_meaningful = ""
++        comparison = ""
++
++        def visit(parent: Dict[str, Any]) -> None:
++            nonlocal first_raw, first_meaningful, comparison
++            for child in parent.get("children") or []:
++                if not isinstance(child, dict):
++                    continue
++                got = _hardware_identity(child.get(key), key)
++                if got and not first_raw:
++                    first_raw = got
++                identity = _hardware_identity_key(got, key)
++                if identity:
++                    if comparison and identity != comparison:
++                        raise ValueError(f"lsblk descendant {key} identity conflicts")
++                    if not first_meaningful:
++                        first_meaningful, comparison = got, identity
++                visit(child)
++
++        visit(node)
++        return first_meaningful or first_raw
+     for child in node.get("children") or []:
+         if not isinstance(child, dict):
+             continue
+-        if key in {"serial", "wwn"}:
+-            got = _hardware_identity(child.get(key), key)
+-        elif key == "vendor":
++        if key == "vendor":
+             got = _bounded_identity_metadata(child.get(key), key)
+         else:
+             got = _clean(child.get(key))
+@@ -1296,8 +1332,7 @@
+         path=path,
+         name=name,
+         model=raw_model or label or UNKNOWN_MODEL,
+-        serial=_hardware_identity(node.get("serial"), "serial")
+-        or _first_descendant_field(node, "serial"),
++        serial=_node_hardware_identity(node, "serial"),
+         size_bytes=_as_int(node.get("size")),
+         size_gb_label=size_gb_label(_as_int(node.get("size"))),
+         kind=classify_kind(name, node.get("tran"), node.get("rota")),
+@@ -1307,8 +1342,7 @@
+         # lsblk RO missing (older fakes) means writable: exclude only an
+         # explicit read-only flag, never on unknown.
+         read_only=_as_bool(node.get("ro")) is True,
+-        wwn=_hardware_identity(node.get("wwn"), "wwn")
+-        or _first_descendant_field(node, "wwn"),
++        wwn=_node_hardware_identity(node, "wwn"),
+         vendor=_bounded_identity_metadata(node.get("vendor"), "vendor")
+         or _first_descendant_field(node, "vendor"),
+         mountpoints=mountpoints,
+@@ -1328,8 +1362,7 @@
+     """Retain safety facts without depending on display or layout metadata."""
+     def hardware(field: str) -> Tuple[str, bool]:
+         try:
+-            return (_hardware_identity(node.get(field), field)
+-                    or _first_descendant_field(node, field)), False
++            return _node_hardware_identity(node, field), False
+         except ValueError:
+             # This projection never supplies target identity. Keep a valid
+             # other ID without repairing the unusable field; duplicate rows
+--- starting/src/beamo_wipe/nwipe_runner.py
++++ final/src/beamo_wipe/nwipe_runner.py
+@@ -89,6 +89,14 @@
+ NWIPE_LOG_PREFIX_RE = re.compile(
+     r"^\s*(?:\[[^\]\r\n]*\]\s*)?"
+     r"(?:(?:debug|info|notice|warning|error|fatal|sanity):\s*)?",
++    re.I,
++)
++# Real v0.42 records include a timestamp and severity. A device model can
++# contain an LF plus a bare skip/open/geometry sentence, but not that sentence
++# and this full prefix inside its 40-byte field.
++NWIPE_RECORD_PREFIX_RE = re.compile(
++    r"^\s*\[\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\]\s+"
++    r"(?:debug|info|notice|warning|error|fatal|sanity):\s*",
+     re.I,
+ )
+ NWIPE_DIRECT_FAILURE_RE = re.compile(
+@@ -541,7 +549,14 @@
+ 
+ def _target_has_record(log_text: str, device: str, pattern: re.Pattern[str]) -> bool:
+     target = os.path.realpath(device)
+-    for line in (log_text or "").split("\n"):
++    lines = (log_text or "").split("\n")
++    timestamped = any(NWIPE_RECORD_PREFIX_RE.match(line) for line in lines)
++    for line in lines:
++        # Preserve entirely bare legacy parser inputs. In an actual engine
++        # log, only another timestamped record can establish no erasure; an
++        # unprefixed continuation may still belong to device-controlled data.
++        if timestamped and not NWIPE_RECORD_PREFIX_RE.match(line):
++            continue
+         match = pattern.match(_engine_log_body(line))
+         if match is not None and any(
+             part is not None and os.path.realpath(part) == target
+@@ -1513,6 +1528,7 @@
+                 progress_totals: set[tuple[int, int]] = set()
+                 shared_path = ""
+                 in_error_summary = False
++                native_record_seen = False
+                 remaining = st.st_size
+                 while remaining:
+                     raw = fh.readline(
+@@ -1532,6 +1548,12 @@
+                     # Summary parsers recognize prefixed rows and separators.
+                     # Classify that same body, but retain the original record.
+                     body = _engine_log_body(line)
++                    native_context = (
++                        not native_record_seen
++                        and NWIPE_RECORD_PREFIX_RE.match(line) is not None
++                    )
++                    if native_context:
++                        native_record_seen = True
+                     for match in _LOG_DEVICE_RE.finditer(line):
+                         other = os.path.basename(os.path.realpath(match.group(0)))
+                         if (other != target_name
+@@ -1554,7 +1576,11 @@
+                     elif in_error_summary and body.lstrip().startswith("***"):
+                         in_error_summary = False
+                     relevant = (
+-                        new_totals
++                        # Keep the first real record in its original position
++                        # and byte budget. Otherwise projection could promote
++                        # a model continuation to a trusted bare legacy log.
++                        native_context
++                        or new_totals
+                         or in_error_summary
+                         or _is_error_summary_header(line)
+                         or "Erasure Summary" in line
+--- starting/src/beamo_wipe/ui/console_wizard.py
++++ final/src/beamo_wipe/ui/console_wizard.py
+@@ -583,6 +583,36 @@
+     _emit(getattr(wizard, "operation_method_text", "") or "", width)
+ 
+ 
++def _retire_erase_typeahead(wizard: Wizard) -> None:
++    """Require fresh terminal input after the visible final review."""
++    try:
++        terminal = sys.stdin.isatty()
++    except (OSError, ValueError, AttributeError) as exc:
++        raise EOFError from exc
++    if not terminal:
++        # Fake previews/tests may inject complete lines without a terminal.
++        # A real erase cannot establish fresh consent from a queued pipe.
++        if wizard.dry_run or wizard.preview:
++            return
++        raise EOFError
++    try:
++        import termios
++    except ImportError as exc:
++        raise EOFError from exc
++    try:
++        descriptor = sys.stdin.fileno()
++        if type(descriptor) is not int or descriptor < 0:
++            raise ValueError("Invalid console input descriptor")
++        attributes = termios.tcgetattr(descriptor)
++        if not attributes[3] & termios.ICANON:
++            raise ValueError("Canonical console input is required")
++        # Canonical reads deliver at most one line. Discard the kernel's
++        # queued complete lines and partial input before accepting Erase.
++        termios.tcflush(descriptor, termios.TCIFLUSH)
++    except (OSError, ValueError, AttributeError, termios.error) as exc:
++        raise EOFError from exc
++
++
+ def _answer(wizard: Wizard, prompt: str) -> str:
+     confirm_token = wizard.confirm if wizard.screen == Screen.CONFIRM else None
+     confirm_word = confirm_token.token.casefold() if confirm_token is not None else ""
+@@ -992,6 +1022,7 @@
+                 wizard.tick()
+                 print(C.CON_COUNTDOWN.format(seconds=wizard.countdown_display))
+                 time.sleep(0.4)
++            _retire_erase_typeahead(wizard)
+             ans = _answer(wizard, C.CON_ERASE_PROMPT).strip()
+             if ans.upper() == "ERASE":
+                 wizard.confirm_erase()
+--- starting/src/beamo_wipe/ui/tk_wizard.py
++++ final/src/beamo_wipe/ui/tk_wizard.py
+@@ -4681,6 +4681,8 @@
+         root.geometry(f"{width}x{height}+{x}+{y}")
+     root.configure(bg=BG)
+     outcome: list = []
++    poll_after: Optional[str] = None
++    focus_after: Optional[str] = None
+ 
+     body = tk.Frame(root, bg=BG)
+     body.pack(fill=tk.BOTH, expand=True, padx=48, pady=36)
+@@ -4722,6 +4724,8 @@
+             pass
+ 
+     def poll_once() -> None:
++        nonlocal poll_after
++        poll_after = None
+         if outcome:
+             return
+         try:
+@@ -4732,7 +4736,7 @@
+         if result is None:
+             try:
+                 if poll is not None:
+-                    root.after(100, poll)
++                    poll_after = root.after(100, poll)
+             except tk.TclError:
+                 pass
+             return
+@@ -4754,15 +4758,24 @@
+     try:
+         render()
+         run.start()
+-        root.after(100, poll_once)
++        poll_after = root.after(100, poll_once)
+         # Bare X11 has no window manager to give this mapped startup input.
+-        root.after_idle(root.focus_force)
++        focus_after = root.after_idle(root.focus_force)
+         root.mainloop()
+     finally:
+         # The recursive callback otherwise retains itself and the destroyed
+         # Tcl interpreter in a cycle. Worker-thread GC can then finalize Tcl
+         # on the wrong thread and abort the process after startup completes.
+         poll = None
++        # Window destruction deletes Python's Tcl commands but does not
++        # remove pending after scripts. Retire our exact timers even when
++        # an external close already destroyed the startup widgets.
++        for callback in (poll_after, focus_after):
++            if callback is not None:
++                try:
++                    root.after_cancel(callback)
++                except tk.TclError:
++                    pass
+         try:
+             root.destroy()
+         except tk.TclError:

@@ -1,0 +1,26 @@
+{
+  "ui_before": {
+    "path": "/tmp/pass11-ui/accessible_wizard-before.py",
+    "sha256": "43839785353f5f3d644112d28645a7c7c8c950e23df92323ee3b42cc894f7758"
+  },
+  "ui_after": {
+    "path": "src/beamo_wipe/ui/accessible_wizard.py",
+    "sha256": "9243f5f2dcb011419542bf67f7dda3d028f15eea3c3d7dcea3b6dc54a1fdcc46"
+  },
+  "ui_tests": {
+    "path": "tests/test_accessible_focus_input_pass11.py",
+    "sha256": "84a639b875e884c157bb88b3ecb34886f5739fc043240db0f1aef85ff14f9ba9"
+  },
+  "runner_before": {
+    "path": "/tmp/pass11-runner/nwipe_runner-start.py",
+    "sha256": "e2fe3d2c35640ad179ed81eabaacf833f0762b06e2514951712af3ec378376c6"
+  },
+  "runner_after": {
+    "path": "src/beamo_wipe/nwipe_runner.py",
+    "sha256": "10dddb6380568da269e2a773f0c2250e947d206985ac6cbb275456ef6c587943"
+  },
+  "runner_tests": {
+    "path": "tests/test_runner_projection_summary_context_pass11.py",
+    "sha256": "6d96aea29951521b15725119a3d0107fab502886b0ee002096382ed937071173"
+  }
+}

@@ -1,0 +1,120 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.3, pluggy-1.7.0 -- /tmp/beamo-wipe-audit-python/bin/python3
+cachedir: .pytest_cache
+rootdir: /root/dev/Beamo Wipe
+configfile: pyproject.toml
+collecting ... dbus-daemon[607050]: [session uid=0 pid=607050] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=607064 comm="/tmp/beamo-wipe-audit-python/bin/python3 -m pytest" label="unconfined")
+dbus-daemon[607050]: [session uid=0 pid=607050] Successfully activated service 'org.a11y.Bus'
+collected 90 items
+
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-en-keyboard] PASSED [  1%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-en-owner] PASSED [  2%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-en-confirm] PASSED [  3%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-fr-keyboard] PASSED [  4%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-fr-owner] PASSED [  5%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-fr-confirm] PASSED [  6%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-de-keyboard] PASSED [  7%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-de-owner] PASSED [  8%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-de-confirm] PASSED [ 10%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-en-keyboard] PASSED [ 11%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-en-owner] PASSED [ 12%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-en-confirm] PASSED [ 13%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-fr-keyboard] PASSED [ 14%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-fr-owner] PASSED [ 15%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-fr-confirm] PASSED [ 16%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-de-keyboard] PASSED [ 17%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-de-owner] PASSED [ 18%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-de-confirm] PASSED [ 20%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-en-keyboard] PASSED [ 21%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-en-owner] PASSED [ 22%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-en-confirm] PASSED [ 23%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-fr-keyboard] PASSED [ 24%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-fr-owner] PASSED [ 25%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-fr-confirm] PASSED [ 26%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-de-keyboard] PASSED [ 27%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-de-owner] PASSED [ 28%]
+tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-de-confirm] PASSED [ 30%]
+tests/test_tk_focus_reveal_pass14.py::test_manual_scroll_is_preserved_until_focus_changes PASSED [ 31%]
+tests/test_tk_focus_reveal_pass14.py::test_stale_focus_callback_cannot_scroll_replacement_screen PASSED [ 32%]
+tests/test_tk_input_scroll_pass13.py::test_first_native_key_works_with_pointer_outside_window[inside-False-65307] dbus-daemon[607073]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=607064 comm="/tmp/beamo-wipe-audit-python/bin/python3 -m pytest" label="unconfined")
+dbus-daemon[607073]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+PASSED [ 33%]
+tests/test_tk_input_scroll_pass13.py::test_first_native_key_works_with_pointer_outside_window[inside-False-65293] PASSED [ 34%]
+tests/test_tk_input_scroll_pass13.py::test_first_native_key_works_with_pointer_outside_window[inside-False-65421] PASSED [ 35%]
+tests/test_tk_input_scroll_pass13.py::test_first_native_key_works_with_pointer_outside_window[inside-False-32] PASSED [ 36%]
+tests/test_tk_input_scroll_pass13.py::test_first_native_key_works_with_pointer_outside_window[inside-True-65307] PASSED [ 37%]
+tests/test_tk_input_scroll_pass13.py::test_first_native_key_works_with_pointer_outside_window[inside-True-65293] PASSED [ 38%]
+tests/test_tk_input_scroll_pass13.py::test_first_native_key_works_with_pointer_outside_window[inside-True-65421] PASSED [ 40%]
+tests/test_tk_input_scroll_pass13.py::test_first_native_key_works_with_pointer_outside_window[inside-True-32] PASSED [ 41%]
+tests/test_tk_input_scroll_pass13.py::test_first_native_key_works_with_pointer_outside_window[far_corner-False-65307] PASSED [ 42%]
+tests/test_tk_input_scroll_pass13.py::test_first_native_key_works_with_pointer_outside_window[far_corner-False-65293] PASSED [ 43%]
+tests/test_tk_input_scroll_pass13.py::test_first_native_key_works_with_pointer_outside_window[far_corner-False-65421] PASSED [ 44%]
+tests/test_tk_input_scroll_pass13.py::test_first_native_key_works_with_pointer_outside_window[far_corner-False-32] PASSED [ 45%]
+tests/test_tk_input_scroll_pass13.py::test_first_native_key_works_with_pointer_outside_window[far_corner-True-65307] PASSED [ 46%]
+tests/test_tk_input_scroll_pass13.py::test_first_native_key_works_with_pointer_outside_window[far_corner-True-65293] PASSED [ 47%]
+tests/test_tk_input_scroll_pass13.py::test_first_native_key_works_with_pointer_outside_window[far_corner-True-65421] PASSED [ 48%]
+tests/test_tk_input_scroll_pass13.py::test_first_native_key_works_with_pointer_outside_window[far_corner-True-32] PASSED [ 50%]
+tests/test_tk_input_scroll_pass13.py::test_initial_focus_is_claimed_once_and_held_return_keeps_gate PASSED [ 51%]
+tests/test_tk_input_scroll_pass13.py::test_first_run_restores_each_screen_focus_without_changing_state[keyboard-False] PASSED [ 52%]
+tests/test_tk_input_scroll_pass13.py::test_first_run_restores_each_screen_focus_without_changing_state[keyboard-True] PASSED [ 53%]
+tests/test_tk_input_scroll_pass13.py::test_first_run_restores_each_screen_focus_without_changing_state[owner-False] PASSED [ 54%]
+tests/test_tk_input_scroll_pass13.py::test_first_run_restores_each_screen_focus_without_changing_state[owner-True] PASSED [ 55%]
+tests/test_tk_input_scroll_pass13.py::test_first_run_restores_each_screen_focus_without_changing_state[confirm-False] PASSED [ 56%]
+tests/test_tk_input_scroll_pass13.py::test_first_run_restores_each_screen_focus_without_changing_state[confirm-True] PASSED [ 57%]
+tests/test_tk_input_scroll_pass13.py::test_first_run_restores_each_screen_focus_without_changing_state[last_chance-False] PASSED [ 58%]
+tests/test_tk_input_scroll_pass13.py::test_first_run_restores_each_screen_focus_without_changing_state[last_chance-True] PASSED [ 60%]
+tests/test_tk_input_scroll_pass13.py::test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[<Button-5>-None-1-label] PASSED [ 61%]
+tests/test_tk_input_scroll_pass13.py::test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[<Button-5>-None-1-canvas] PASSED [ 62%]
+tests/test_tk_input_scroll_pass13.py::test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[<Button-5>-None-1-inner] PASSED [ 63%]
+tests/test_tk_input_scroll_pass13.py::test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[<Button-5>-None-1-panel] PASSED [ 64%]
+tests/test_tk_input_scroll_pass13.py::test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[<Button-4>-None--1-label] PASSED [ 65%]
+tests/test_tk_input_scroll_pass13.py::test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[<Button-4>-None--1-canvas] PASSED [ 66%]
+tests/test_tk_input_scroll_pass13.py::test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[<Button-4>-None--1-inner] PASSED [ 67%]
+tests/test_tk_input_scroll_pass13.py::test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[<Button-4>-None--1-panel] PASSED [ 68%]
+tests/test_tk_input_scroll_pass13.py::test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[<MouseWheel>--120-1-label] PASSED [ 70%]
+tests/test_tk_input_scroll_pass13.py::test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[<MouseWheel>--120-1-canvas] PASSED [ 71%]
+tests/test_tk_input_scroll_pass13.py::test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[<MouseWheel>--120-1-inner] PASSED [ 72%]
+tests/test_tk_input_scroll_pass13.py::test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[<MouseWheel>--120-1-panel] PASSED [ 73%]
+tests/test_tk_input_scroll_pass13.py::test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[<MouseWheel>-120--1-label] PASSED [ 74%]
+tests/test_tk_input_scroll_pass13.py::test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[<MouseWheel>-120--1-canvas] PASSED [ 75%]
+tests/test_tk_input_scroll_pass13.py::test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[<MouseWheel>-120--1-inner] PASSED [ 76%]
+tests/test_tk_input_scroll_pass13.py::test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[<MouseWheel>-120--1-panel] PASSED [ 77%]
+tests/test_tk_input_scroll_pass13.py::test_small_wheel_deltas_do_not_move_body[-119] PASSED [ 78%]
+tests/test_tk_input_scroll_pass13.py::test_small_wheel_deltas_do_not_move_body[-1] PASSED [ 80%]
+tests/test_tk_input_scroll_pass13.py::test_small_wheel_deltas_do_not_move_body[0] PASSED [ 81%]
+tests/test_tk_input_scroll_pass13.py::test_small_wheel_deltas_do_not_move_body[1] PASSED [ 82%]
+tests/test_tk_input_scroll_pass13.py::test_small_wheel_deltas_do_not_move_body[119] PASSED [ 83%]
+tests/test_tk_input_scroll_pass13.py::test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[<Button-5>-Text] PASSED [ 84%]
+tests/test_tk_input_scroll_pass13.py::test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[<Button-5>-Listbox] PASSED [ 85%]
+tests/test_tk_input_scroll_pass13.py::test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[<Button-5>-Treeview] PASSED [ 86%]
+tests/test_tk_input_scroll_pass13.py::test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[<Button-5>-nested_canvas] PASSED [ 87%]
+tests/test_tk_input_scroll_pass13.py::test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[<Button-5>-custom_scrollbar] PASSED [ 88%]
+tests/test_tk_input_scroll_pass13.py::test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[<Button-5>-footer] PASSED [ 90%]
+tests/test_tk_input_scroll_pass13.py::test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[<MouseWheel>-Text] PASSED [ 91%]
+tests/test_tk_input_scroll_pass13.py::test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[<MouseWheel>-Listbox] PASSED [ 92%]
+tests/test_tk_input_scroll_pass13.py::test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[<MouseWheel>-Treeview] PASSED [ 93%]
+tests/test_tk_input_scroll_pass13.py::test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[<MouseWheel>-nested_canvas] PASSED [ 94%]
+tests/test_tk_input_scroll_pass13.py::test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[<MouseWheel>-custom_scrollbar] PASSED [ 95%]
+tests/test_tk_input_scroll_pass13.py::test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[<MouseWheel>-footer] PASSED [ 96%]
+tests/test_tk_input_scroll_pass13.py::test_wheel_uses_current_body_after_redraw_and_leaves_picker_controls_intact PASSED [ 97%]
+tests/test_tk_input_scroll_pass13.py::test_native_wheel_over_hit_tested_prose_works[4] FAILED [ 98%]
+tests/test_tk_input_scroll_pass13.py::test_native_wheel_over_hit_tested_prose_works[5] FAILED [100%]
+
+=================================== FAILURES ===================================
+_______________ test_native_wheel_over_hit_tested_prose_works[4] _______________
+tests/test_tk_input_scroll_pass13.py:346: in test_native_wheel_over_hit_tested_prose_works
+    assert (1 if button == 5 else -1) * (canvas.yview()[0] - before[0]) > 0
+E   assert (-1 * (0.29497568881685576 - 0.1993517017828201)) > 0
+_______________ test_native_wheel_over_hit_tested_prose_works[5] _______________
+tests/test_tk_input_scroll_pass13.py:320: in test_native_wheel_over_hit_tested_prose_works
+    app = _app()
+          ^^^^^^
+tests/test_tk_input_scroll_pass13.py:56: in _app
+    assert app._body_canvas.yview()[1] < 1
+E   assert 1.0 < 1
+------ generated xml file: /tmp/pass14-primary/ui-adjacent-diagnostic.xml ------
+=========================== short test summary info ============================
+FAILED tests/test_tk_input_scroll_pass13.py::test_native_wheel_over_hit_tested_prose_works[4]
+FAILED tests/test_tk_input_scroll_pass13.py::test_native_wheel_over_hit_tested_prose_works[5]
+======================== 2 failed, 88 passed in 20.50s =========================

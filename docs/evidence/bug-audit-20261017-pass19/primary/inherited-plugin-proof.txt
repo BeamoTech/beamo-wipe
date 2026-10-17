@@ -1,0 +1,69 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________ test_junit_accepts_authentic_pytest_lifecycle_outcomes ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-55/test_junit_accepts_authentic_p0')
+
+    def test_junit_accepts_authentic_pytest_lifecycle_outcomes(tmp_path):
+        """Pytest emits both split IDs and multiple outcomes in one testcase."""
+        import os
+        import subprocess
+    
+        source = tmp_path / "test_lifecycle.py"
+        source.write_text('''import pytest
+    @pytest.fixture
+    def setup_bad():
+        raise RuntimeError("setup fixture failed")
+    @pytest.fixture
+    def teardown_bad():
+        yield
+        raise RuntimeError("teardown fixture failed")
+    def test_pass(): pass
+    def test_fail(): assert False
+    def test_setup(setup_bad): pass
+    def test_teardown(teardown_bad): pass
+    def test_both(teardown_bad): assert False
+    @pytest.mark.skip(reason="fixture skip")
+    def test_skip(): pass
+    @pytest.mark.xfail(reason="fixture xfail")
+    def test_xfail(): assert False
+    def test_skip_teardown(teardown_bad): pytest.skip("fixture skip teardown")
+    @pytest.mark.xfail(reason="fixture xfail teardown")
+    def test_xfail_teardown(teardown_bad): assert False
+    ''')
+        report = tmp_path / "junit.xml"
+        env = dict(os.environ, PYTEST_DISABLE_PLUGIN_AUTOLOAD="1", PYTEST_ADDOPTS="")
+        proc = subprocess.run(
+            [sys.executable, "-m", "pytest", "-q", "-c", "/dev/null",
+             f"--junitxml={report}", str(source)],
+            cwd=tmp_path, env=env, capture_output=True, text=True, timeout=30,
+        )
+        assert proc.returncode == 1, proc.stdout + proc.stderr
+>       measured = parse_junit_xml(report.read_text())
+                                   ^^^^^^^^^^^^^^^^^^
+
+tests/test_bug_audit_runner_20260913.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-root/pytest-55/test_junit_accepts_authentic_p0/junit.xml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-root/pytest-55/test_junit_accepts_authentic_p0/junit.xml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_bug_audit_runner_20260913.py::test_junit_accepts_authentic_pytest_lifecycle_outcomes

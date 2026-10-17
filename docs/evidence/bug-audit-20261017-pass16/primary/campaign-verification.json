@@ -1,0 +1,100 @@
+{
+  "peer_reviews": {
+    "discovery": {
+      "exact_matched_final_files": [
+        "src/beamo_wipe/discover.py",
+        "tests/test_discovery_observation_fallback_pass16.py"
+      ]
+    },
+    "ui": {
+      "exact_matched_final_files": [
+        "src/beamo_wipe/ui/accessible_wizard.py",
+        "src/beamo_wipe/ui/tk_wizard.py",
+        "tests/test_accessible_key_repeat.py",
+        "tests/test_accessible_last_chance_actions_pass12_ui.py",
+        "tests/test_accessible_modal_key_hold_pass16.py",
+        "tests/test_confirm_focus_callback_lifetime_pass16.py",
+        "tests/test_pick_scroll_restore.py",
+        "tests/test_tk_input_scroll_pass13.py"
+      ]
+    },
+    "runner": {
+      "exact_matched_final_files": [
+        "src/beamo_wipe/__init__.py",
+        "src/beamo_wipe/__main__.py",
+        "src/beamo_wipe/app.py",
+        "src/beamo_wipe/assets/logo-header.png",
+        "src/beamo_wipe/assets/logo-mark.svg",
+        "src/beamo_wipe/assets/logo-splash.png",
+        "src/beamo_wipe/audio_jobs.py",
+        "src/beamo_wipe/build_identity.py",
+        "src/beamo_wipe/ci_evidence.py",
+        "src/beamo_wipe/compat_story.py",
+        "src/beamo_wipe/copy.py",
+        "src/beamo_wipe/demo.py",
+        "src/beamo_wipe/demo_blocked.json",
+        "src/beamo_wipe/demo_empty.json",
+        "src/beamo_wipe/demo_lsblk.json",
+        "src/beamo_wipe/diagnostic_report.py",
+        "src/beamo_wipe/diagnostics.py",
+        "src/beamo_wipe/discover.py",
+        "src/beamo_wipe/engine_checks.py",
+        "src/beamo_wipe/evidence.py",
+        "src/beamo_wipe/gallery.py",
+        "src/beamo_wipe/identify.py",
+        "src/beamo_wipe/identity.py",
+        "src/beamo_wipe/inventory.py",
+        "src/beamo_wipe/keyboard.py",
+        "src/beamo_wipe/lang.py",
+        "src/beamo_wipe/locales/__init__.py",
+        "src/beamo_wipe/locales/de.py",
+        "src/beamo_wipe/locales/fr.py",
+        "src/beamo_wipe/methods.py",
+        "src/beamo_wipe/models.py",
+        "src/beamo_wipe/nwipe_runner.py",
+        "src/beamo_wipe/outcomes.py",
+        "src/beamo_wipe/power.py",
+        "src/beamo_wipe/privacy.py",
+        "src/beamo_wipe/progress.py",
+        "src/beamo_wipe/recovery.py",
+        "src/beamo_wipe/release_manifest.py",
+        "src/beamo_wipe/release_signing.py",
+        "src/beamo_wipe/report_intent.py",
+        "src/beamo_wipe/result_summary.py",
+        "src/beamo_wipe/safety.py",
+        "src/beamo_wipe/session_recovery.py",
+        "src/beamo_wipe/sleep_inhibit.py",
+        "src/beamo_wipe/sound.py",
+        "src/beamo_wipe/startup_stages.py",
+        "src/beamo_wipe/storage_limits.py",
+        "src/beamo_wipe/support_code.py",
+        "src/beamo_wipe/support_contact.py",
+        "src/beamo_wipe/support_export.py",
+        "src/beamo_wipe/ui/__init__.py",
+        "src/beamo_wipe/ui/accessible_wizard.py",
+        "src/beamo_wipe/ui/console_wizard.py",
+        "src/beamo_wipe/ui/layout.py",
+        "src/beamo_wipe/ui/sound_dialog.py",
+        "src/beamo_wipe/ui/tk_wizard.py",
+        "src/beamo_wipe/verification_evidence.py",
+        "src/beamo_wipe/wizard.py"
+      ]
+    }
+  },
+  "runner_short": 153,
+  "runner_actual_large": 153,
+  "runner_fixture_files_hashed": 333,
+  "authenticated_evidence_sidecar_pairs": 90,
+  "runner_cancellation_cases": 144,
+  "geometry_cases": 270,
+  "critical_tk_fully_visible": 27,
+  "captures_for_primary_view": [
+    "fixed-geometry-gtk-en-large-LAST_CHANCE.png",
+    "fixed-geometry-gtk-en-extra-OWNER.png",
+    "fixed-geometry-tk-en-standard-OWNER.png",
+    "fixed-geometry-tk-en-large-CONFIRM.png",
+    "fixed-geometry-tk-en-extra-KEYBOARD.png"
+  ],
+  "native_effects": 0,
+  "callback_errors": 0
+}

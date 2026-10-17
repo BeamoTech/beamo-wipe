@@ -1,0 +1,17 @@
+{
+  "runtime_source_sha256": "9f34e674c64184b4a7d36fb77498d8dee7ad71321bb979c1616b7cc1772be43a",
+  "fresh_phases_validated": 7,
+  "adjacent_cases_passed": 2275,
+  "alias_cases_passed": 288,
+  "duplicate_cases_passed": 36,
+  "wheel_cases_passed": 8,
+  "valid_utf8_roundtrips": 30,
+  "valid_utf8_fixtures_authenticated": 10,
+  "short_full_projection_cases": 432,
+  "actual_large_poll_stop_cases": 324,
+  "large_fixtures_authenticated": 108,
+  "native_layout_cases": 270,
+  "critical_tk_focus_fully_visible": 27,
+  "native_application_effects": 0,
+  "callback_errors": 0
+}

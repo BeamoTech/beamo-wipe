@@ -1,0 +1,68 @@
+{
+  "counts_overlap_final_gate": true,
+  "checks": {
+    "primary-baseline": {
+      "file": "/tmp/pass13-primary/baseline.xml",
+      "cases": 733,
+      "passed": 733,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite_seconds": 56.454
+    },
+    "discovery-fixed": {
+      "file": "/tmp/pass13-discovery/fixed.xml",
+      "cases": 104,
+      "passed": 104,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite_seconds": 0.452
+    },
+    "discovery-adjacent": {
+      "file": "/tmp/pass13-discovery/focused.xml",
+      "cases": 644,
+      "passed": 644,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite_seconds": 9.846
+    },
+    "runner-adjacent": {
+      "file": "/tmp/pass13-runner/focused.xml",
+      "cases": 686,
+      "passed": 686,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite_seconds": 67.285
+    },
+    "ui-fixed-expanded": {
+      "file": "/tmp/pass13-ui/fixed-focused-expanded.xml",
+      "cases": 61,
+      "passed": 61,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite_seconds": 17.195
+    },
+    "ui-adjacent": {
+      "file": "/tmp/pass13-ui/fixed-adjacent.xml",
+      "cases": 630,
+      "passed": 630,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite_seconds": 120.512
+    },
+    "original-independent": {
+      "file": "/tmp/pass13-primary/original.xml",
+      "cases": 165,
+      "passed": 105,
+      "failed": 60,
+      "errors": 0,
+      "skipped": 0,
+      "suite_seconds": 15.252
+    }
+  }
+}

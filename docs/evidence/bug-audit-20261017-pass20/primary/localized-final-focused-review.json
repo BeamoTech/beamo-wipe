@@ -1,0 +1,11 @@
+{
+  "total": 663,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "xml_sha256": "f5e7b8aeb6695d3b9ca3154e8d9d83a341a134a91d9f0e432e07ec0bea92cb35",
+  "source_sha256": {
+    "src/beamo_wipe/audio_jobs.py": "07e34b995a4df7424e6e1c5cd1a345856cd6b9ff622606fa74a79af2688597e0",
+    "src/beamo_wipe/discover.py": "9f5a5a36ddf9dad77c7195920ed6290ed745d4684d63beeac103882fb6198f65"
+  }
+}

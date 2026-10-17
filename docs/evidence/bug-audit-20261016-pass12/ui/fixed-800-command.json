@@ -1,0 +1,16 @@
+[
+  "xvfb-run",
+  "-a",
+  "-n",
+  "120",
+  "-s",
+  "-screen 0 800x600x24 -dpi 72",
+  "dbus-run-session",
+  "--",
+  "/tmp/beamo-wipe-audit-python/bin/python",
+  "-m",
+  "pytest",
+  "tests/test_sound_dialog_state_pass12.py",
+  "tests/test_tk_startup_focus_geometry_pass12.py",
+  "--junitxml=/tmp/pass12-ui/fixed-800.xml"
+]

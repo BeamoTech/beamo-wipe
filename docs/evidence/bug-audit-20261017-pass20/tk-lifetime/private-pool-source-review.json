@@ -1,0 +1,39 @@
+{
+  "source": "/tmp/pass20-primary/private-graph/src/beamo_wipe/ui/tk_wizard.py",
+  "sha256": "b3d66bdb83213000c9623a2a48c25cf39b089289a388aba67507f117b4a59546",
+  "status": "SOURCE ONLY independent review; no candidate imports/runtime/tests executed",
+  "pool_uses_creating_thread_identity": "Current implementation pins threading.current_thread() during teardown; creator identity is inferred from caller, not stored at construction.",
+  "pool_refcount_argument": "On CPython, tuple-list/snapshot/loop ownership does not itself add raw tkapp references. Refcount2 is one record element plus getrefcount temporary. Removing entry leaves loop/snapshot references to same tuple, finally released on this caller thread.",
+  "pool_deferred_scope": "External peer variables/tracebacks may keep raw interpreter alive until later creating-thread sweep or process exit. Closed root retained by UI remains protected when UI dies on a worker.",
+  "uncovered_native_constructor_boundary": "self.root = tk.Tk() assigns only after full Tk.__init__. Native creation may succeed and _loadtk/readprofile then raise, leaving failed root and raw tkapp only in preserved Tk traceback; teardown cannot pin absent self.root.",
+  "cleanup_exception_boundary": "Constructor except calls _teardown then bare raise, so an unexpected cleanup exception masks the original. _retiring is set without finally reset; an interrupted cleanup prevents retry.",
+  "candidate3_root_retain_assessment": "Retaining self.root closed wrapper is compatible with raw interpreter pool and existing post-close fixture access; run_tk finally should ui=None then owner sweep. Native resources/other47 finite fields must still detach.",
+  "not_proved": [
+    "native constructor exception reproduction",
+    "exact native abort cause",
+    "cross-platform behavior",
+    "eventual drain and absence of pool growth",
+    "shared source acceptance"
+  ],
+  "relevant_sections": {
+    "_pin_retired_interpreter": {
+      "line": 1123,
+      "end_line": 1126
+    },
+    "_collect_retired_interpreters": {
+      "line": 1129,
+      "end_line": 1136
+    },
+    "run_tk": {
+      "line": 4711,
+      "end_line": 4718
+    }
+  },
+  "teardown": {
+    "line": 1669,
+    "end_line": 1733
+  },
+  "root_cleared_in_candidate": false,
+  "partial_checkrow_boundary": "CheckRow stores _variable/_font/_command before Label/_sync/trace_add and before binding Destroy retirement. A preserved constructor traceback can retain partial row native wrappers because only Destroy binding clears them. Add idempotent destroy-finally retirement with getattr defaults and prove pre-binding failure; current app._apply_fonts constructor case does not cover it.",
+  "approval": "Core CPython raw-interpreter pin/refcount mechanism accepted as a bounded direction, not complete-source approval: native Tk construction-before-assignment and partial CheckRow construction require proof/correction; cleanup exception semantics and owner identity need explicit review."
+}

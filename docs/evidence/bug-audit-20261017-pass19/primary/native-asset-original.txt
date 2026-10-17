@@ -1,0 +1,65 @@
+....F.F.                                                                 [100%]
+=================================== FAILURES ===================================
+_ test_full_supported_run_releases_assets_before_later_worker_collection[return-False] _
+
+request = <FixtureRequest for <Function test_full_supported_run_releases_assets_before_later_worker_collection[return-False]>>
+retained = False, route = 'return'
+
+    @pytest.mark.parametrize("retained", [False, True])
+    @pytest.mark.parametrize("route", ["return", "raise"])
+    def test_full_supported_run_releases_assets_before_later_worker_collection(request, retained, route):
+        _admit_private_x11()
+        assert not os.environ.get("PYTEST_PLUGINS")
+        source = Path(__file__).resolve()
+        command = [sys.executable, str(source), "--owned-child", "retained" if retained else "unretained", route]
+        # This is the only child launch. The fixed script/arguments are local and
+        # child-side guards reject every native application action, including a
+        # second process. Private display ownership belongs to the root runner.
+        env = dict(os.environ, PYTHONFAULTHANDLER="1")
+        try:
+            result = subprocess.run(command, env=env, capture_output=True, text=True, timeout=8, check=False)
+            evidence = dict(command=command, retained=retained, route=route, returncode=result.returncode,
+                            stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            evidence = dict(command=command, retained=retained, route=route, timed_out=True,
+                            stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("owned_native_collection_child", json.dumps(evidence)))
+        assert not evidence["timed_out"], evidence
+>       assert evidence["returncode"] == 0, evidence
+E       AssertionError: {'command': ['/tmp/beamo-pass19-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass19/ui-...etime-probe.py', '--owned-child', 'unretained', 'return'], 'retained': False, 'returncode': 91, 'route': 'return', ...}
+E       assert 91 == 0
+
+docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py:256: AssertionError
+_ test_full_supported_run_releases_assets_before_later_worker_collection[raise-False] _
+
+request = <FixtureRequest for <Function test_full_supported_run_releases_assets_before_later_worker_collection[raise-False]>>
+retained = False, route = 'raise'
+
+    @pytest.mark.parametrize("retained", [False, True])
+    @pytest.mark.parametrize("route", ["return", "raise"])
+    def test_full_supported_run_releases_assets_before_later_worker_collection(request, retained, route):
+        _admit_private_x11()
+        assert not os.environ.get("PYTEST_PLUGINS")
+        source = Path(__file__).resolve()
+        command = [sys.executable, str(source), "--owned-child", "retained" if retained else "unretained", route]
+        # This is the only child launch. The fixed script/arguments are local and
+        # child-side guards reject every native application action, including a
+        # second process. Private display ownership belongs to the root runner.
+        env = dict(os.environ, PYTHONFAULTHANDLER="1")
+        try:
+            result = subprocess.run(command, env=env, capture_output=True, text=True, timeout=8, check=False)
+            evidence = dict(command=command, retained=retained, route=route, returncode=result.returncode,
+                            stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            evidence = dict(command=command, retained=retained, route=route, timed_out=True,
+                            stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("owned_native_collection_child", json.dumps(evidence)))
+        assert not evidence["timed_out"], evidence
+>       assert evidence["returncode"] == 0, evidence
+E       AssertionError: {'command': ['/tmp/beamo-pass19-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass19/ui-...ifetime-probe.py', '--owned-child', 'unretained', 'raise'], 'retained': False, 'returncode': 91, 'route': 'raise', ...}
+E       assert 91 == 0
+
+docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py:256: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py::test_full_supported_run_releases_assets_before_later_worker_collection[return-False]
+FAILED docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py::test_full_supported_run_releases_assets_before_later_worker_collection[raise-False]

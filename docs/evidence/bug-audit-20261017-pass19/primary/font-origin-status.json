@@ -1,0 +1,26 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "200",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass19-python/bin/python3",
+    "-m",
+    "pytest",
+    "--deselect=tests/test_accessible_runtime.py::test_orca_announces_every_result",
+    "--maxfail=1",
+    "-p",
+    "docs.evidence.bug-audit-20261017-pass19.primary.font_origin_observer",
+    "--junitxml=/tmp/pass19-primary/font-origin.xml"
+  ],
+  "exit_code": 143,
+  "started_utc": "2026-10-17T16:51:14.012572+00:00",
+  "ended_utc": "2026-10-17T16:57:22.389012+00:00",
+  "observer": "parent-only Font init/del scalar provenance wrappers; original calls unchanged",
+  "final_phase_environment": true,
+  "concurrent_orca": false
+}

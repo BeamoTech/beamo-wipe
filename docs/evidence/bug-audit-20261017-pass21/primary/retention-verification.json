@@ -1,0 +1,30 @@
+{
+  "compacted_raw_files": 17,
+  "completed_utc": "2026-10-17T21:32:18.405114+00:00",
+  "deployed": false,
+  "duplicate_source_files_indexed": 58,
+  "existing_files_overwritten": 0,
+  "failed_gate_directories": [],
+  "final_campaigns": "PASS; exact artifact readback",
+  "historical_runs": "All pass21 original proof failures, corrected fixtures and actual selection failures retained; no earlier abort/signal/latency attribution",
+  "index_empty": true,
+  "inflight_checkpoint_unchanged": true,
+  "local_gate": "PASS; all nine fresh phases",
+  "pushed": false,
+  "raw_archive_bytes": 5218520,
+  "raw_archive_readback": true,
+  "raw_original_bytes": 14484263,
+  "report_artifact_files": 70,
+  "runner_fixture_files": 621,
+  "screenshots": 5,
+  "source_archives_retained": [
+    "starting-inputs.tar.gz",
+    "final-source-inputs.tar.gz"
+  ],
+  "source_committed": false,
+  "source_freeze_sha256": "c4ecdfc8e8c814bd3d033bd478472cbd498a766c76e077006ba2bfb093093dac",
+  "source_inputs_unchanged": 788,
+  "staged_files": 0,
+  "unique_private_sources_preserved": 0,
+  "working_staging_retained": "/tmp/pass21-primary"
+}

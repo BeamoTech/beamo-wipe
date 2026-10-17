@@ -75,6 +75,11 @@ class AccessibleWizard:
             height = min(height, workarea.height)
         self.window.set_default_size(width, height)
         if fullscreen:
+            # Bare X11 marks fullscreen without a window manager to resize it.
+            if monitor is not None:
+                geometry = monitor.get_geometry()
+                self.window.set_default_size(geometry.width, geometry.height)
+                self.window.move(geometry.x, geometry.y)
             self.window.fullscreen()
         self.window.connect("delete-event", self._close)
         self.window.connect("key-press-event", self._key_press)
@@ -252,6 +257,7 @@ class AccessibleWizard:
         return view
 
     def render(self):
+        self._live_sound_dialog()
         first_review_frame = (
             self.w.screen == Screen.LAST_CHANCE and self.shown != Screen.LAST_CHANCE
         )
@@ -792,11 +798,9 @@ class AccessibleWizard:
         if not self.utilities.get_children():
             self.footer.remove(self.utilities)
             self.utilities.destroy()
-        self.window.present()
-        if self.window.get_window():
-            self.window.get_window().focus(Gdk.CURRENT_TIME)
         self.arrival = arrival
-        arrival.grab_focus()
+        if self._focus_active_window() is self.window:
+            arrival.grab_focus()
         if first_review_frame:
             # Building and showing the first review may consume its original
             # timer. Give Orca users the full five seconds after arrival.
@@ -828,10 +832,37 @@ class AccessibleWizard:
     def open_sound_check(self):
         from beamo_wipe.ui.sound_dialog import SoundDialog
 
-        if self._sound_dialog is not None and self._sound_dialog.dialog is not None:
-            self._sound_dialog.dialog.present()
+        if self._live_sound_dialog() is not None:
+            self._focus_active_window()
             return
         self._sound_dialog = SoundDialog(Gtk, self.window, self.w, on_stop=self.render)
+        self._sound_dialog.dialog.connect("destroy", self._sound_closed)
+        self._sound_dialog.dialog.connect("key-press-event", self._modal_key_press)
+        self._sound_dialog.dialog.connect("key-release-event", self._key_release)
+        self._focus_active_window()
+
+    def _live_sound_dialog(self):
+        controller = getattr(self, "_sound_dialog", None)
+        if controller is None or controller.dialog is None:
+            return None
+        if controller.screen != self.w.screen or controller.screen_epoch != self.w._screen_epoch:
+            controller.close()
+            return None
+        return controller.dialog
+
+    def _focus_active_window(self):
+        # Bare X11 has no window manager to keep the modal above its parent.
+        if getattr(self, "closed", False):
+            return None
+        window = self._live_sound_dialog() or self.window
+        window.present()
+        if window.get_window():
+            window.get_window().focus(Gdk.CURRENT_TIME)
+        return window
+
+    def _sound_closed(self, *_args):
+        if self._focus_active_window() is self.window:
+            self.arrival.grab_focus()
 
     def _select(self, path):
         self.w.select_disk(path)
@@ -884,28 +915,36 @@ class AccessibleWizard:
         seq = self.w.begin_refresh()
         if seq is None:
             return False
-        launch_decided = threading.Event()
+        launch_decided = None
         launch_allowed = [False]
 
         def run_if_launched() -> None:
+            if launch_decided is None:
+                return
             launch_decided.wait()
-            if launch_allowed[0]:
+            with self._refresh_lock:
+                accepted = launch_allowed[0]
+            if accepted:
                 self._refresh_worker(seq)
 
         try:
+            launch_decided = threading.Event()
             threading.Thread(
                 target=run_if_launched,
                 name=f"beamo-accessible-refresh-{seq}",
                 daemon=True,
             ).start()
+            with self._refresh_lock:
+                launch_decided.set()
+                launch_allowed[0] = True
         except BaseException as exc:
-            # Thread.start may be interrupted after the OS thread exists.
-            # It must never scan after this claimed refresh was abandoned.
-            launch_decided.set()
+            if launch_decided is not None:
+                try:
+                    launch_decided.set()
+                except BaseException as cleanup:
+                    exc.add_note(f"Refresh wake also failed: {type(cleanup).__name__}")
             self.w.finish_refresh(seq, exc)
             return True
-        launch_allowed[0] = True
-        launch_decided.set()
         return True
 
     def _refresh_worker(self, seq: int) -> None:
@@ -946,7 +985,7 @@ class AccessibleWizard:
             self.update_status()
         return True
 
-    def _key_press(self, _window, event):
+    def _remember_key_press(self, event):
         key = event.keyval
         guarded = key in {
             Gdk.KEY_Return,
@@ -970,6 +1009,17 @@ class AccessibleWizard:
             return True
         self._release_times.pop(key, None)
         self.held.add(key)
+        return False
+
+    def _modal_key_press(self, _window, event):
+        # A modal may close on key-down. Its held key still belongs to the
+        # same physical press when auto-repeat reaches the parent window.
+        return self._remember_key_press(event)
+
+    def _key_press(self, _window, event):
+        if self._remember_key_press(event):
+            return True
+        key = event.keyval
         if key in (Gdk.KEY_l, Gdk.KEY_L) and self.w.screen == Screen.METHOD:
             self.w.open_limits()
             self.render()
@@ -1034,16 +1084,27 @@ class AccessibleWizard:
         if self.closed:
             return
         self.closed = True
-        getattr(self.w, "cancel_audio", lambda: None)()
+        errors = []
+
+        def cleanup(action):
+            try:
+                action()
+            except BaseException as error:
+                errors.append(error)
+
+        cleanup(getattr(self.w, "cancel_audio", lambda: None))
         dialog = getattr(self, "_sound_dialog", None)
         if dialog is not None:
-            dialog.close()
+            cleanup(dialog.close)
         if self.timer:
-            GLib.source_remove(self.timer)
-            self.timer = 0
-        self.window.destroy()
-        if Gtk.main_level():
-            Gtk.main_quit()
+            timer, self.timer = self.timer, 0
+            cleanup(lambda: GLib.source_remove(timer))
+        cleanup(self.window.destroy)
+        cleanup(lambda: Gtk.main_quit() if Gtk.main_level() else None)
+        if errors:
+            for error in errors[1:]:
+                errors[0].add_note(f"GTK cleanup also failed: {type(error).__name__}")
+            raise errors[0]
 
     def _runtime_failure(self, _kind, error, _traceback):
         self.failed = True
@@ -1202,6 +1263,12 @@ def run_accessible_startup(build, *, fullscreen: bool = False,
     window.set_name("beamo-accessible")
     window.set_default_size(640, 420)
     if fullscreen:
+        display = window.get_display()
+        monitor = display.get_primary_monitor() or display.get_monitor(0)
+        if monitor is not None:
+            geometry = monitor.get_geometry()
+            window.set_default_size(geometry.width, geometry.height)
+            window.move(geometry.x, geometry.y)
         window.fullscreen()
     box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
     box.set_border_width(24)
@@ -1234,7 +1301,7 @@ def run_accessible_startup(build, *, fullscreen: bool = False,
             status.set_text(_STATUS_WORDS[row["state"]])
             title.set_text(row["title"])
             hint.set_text(row["hint"])
-        note = run.stalled_note()
+        note = run.stalled_note(persistent=True)
         stall.set_text(note or "")
         active = [row for row in snap if row["state"] == "active"]
         if active:
@@ -1270,6 +1337,9 @@ def run_accessible_startup(build, *, fullscreen: bool = False,
     window.connect("key-press-event", lambda _w, event: close()
                    if event.keyval in (Gdk.KEY_Escape,) else None)
     window.show_all()
+    window.present()
+    if window.get_window():
+        window.get_window().focus(Gdk.CURRENT_TIME)
     status_line.grab_focus()
     render()
     try:

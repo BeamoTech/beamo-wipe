@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/tmp/beamo-pass8-runner-diagnostic-matrix.py", line 31, in <module>
+    assert e._bundle_files(blob,b'','unavailable')['result.json']==blob
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+KeyError: 'result.json'

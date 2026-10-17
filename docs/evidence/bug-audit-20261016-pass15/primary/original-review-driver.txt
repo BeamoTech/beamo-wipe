@@ -1,0 +1,40 @@
+{
+  "cases": 578,
+  "intended_failures": 298,
+  "passing_controls": 280,
+  "errors": 0,
+  "skips": 0,
+  "exact_missing_SafetyError_failures": 60,
+  "intended_AssertionErrors": 238,
+  "per_module": {
+    "tests.test_empty_inventory_wheel_pass15": {
+      "failed": 32,
+      "passed": 32
+    },
+    "tests.test_hidden_positive_record_pass15": {
+      "passed": 32,
+      "failed": 40
+    },
+    "tests.test_physical_observation_context_pass15": {
+      "passed": 199,
+      "failed": 205
+    },
+    "tests.test_utf8_log_snapshot_bounds_pass15": {
+      "passed": 17,
+      "failed": 21
+    }
+  },
+  "per_function": {
+    "test_inventory_wheel_scrolls_only_its_reader": 24,
+    "test_empty_inventory_scrollbar_keeps_its_own_wheel_command": 8,
+    "test_hidden_positive_requires_complete_target_record": 22,
+    "test_malformed_positive_is_unavailable_in_runner_evidence": 18,
+    "test_omitted_physical_bridge_keeps_boot_and_mount_protection": 120,
+    "test_final_boot_guard_rechecks_retained_physical_evidence": 60,
+    "test_display_error_cannot_hide_conflicting_physical_observation": 20,
+    "test_conflicting_observation_refusal_can_recover_on_clean_retry": 1,
+    "test_unusable_duplicate_id_cannot_compare_equal_to_missing": 4,
+    "test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip": 18,
+    "test_bounded_invalid_utf8_capture_preserves_terminal_roundtrip": 3
+  }
+}

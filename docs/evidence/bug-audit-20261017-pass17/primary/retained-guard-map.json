@@ -1,0 +1,34 @@
+{
+  "/tmp/beamo-pass17-fallback-guard/aws": {
+    "retained_path": "guards/aws",
+    "sha256": "cba41168ef00df7373f4415f3de107c7b0ab47927121235609e4e5749c97c051"
+  },
+  "/tmp/beamo-pass17-fallback-guard/curl": {
+    "retained_path": "guards/curl",
+    "sha256": "cba41168ef00df7373f4415f3de107c7b0ab47927121235609e4e5749c97c051"
+  },
+  "/tmp/beamo-pass17-fallback-guard/docker": {
+    "retained_path": "guards/docker",
+    "sha256": "cba41168ef00df7373f4415f3de107c7b0ab47927121235609e4e5749c97c051"
+  },
+  "/tmp/beamo-pass17-fallback-guard/gcloud": {
+    "retained_path": "guards/gcloud",
+    "sha256": "a91cacf1cb44f2d32e58062682b1c33ce58ff8d3e808dc1162ae0de06a1603ec"
+  },
+  "/tmp/beamo-pass17-fallback-guard/gh": {
+    "retained_path": "guards/gh",
+    "sha256": "cba41168ef00df7373f4415f3de107c7b0ab47927121235609e4e5749c97c051"
+  },
+  "/tmp/beamo-pass17-fallback-guard/losetup": {
+    "retained_path": "guards/losetup",
+    "sha256": "cba41168ef00df7373f4415f3de107c7b0ab47927121235609e4e5749c97c051"
+  },
+  "/tmp/beamo-pass17-fallback-guard/qemu-system-x86_64": {
+    "retained_path": "guards/qemu-system-x86_64",
+    "sha256": "cba41168ef00df7373f4415f3de107c7b0ab47927121235609e4e5749c97c051"
+  },
+  "/tmp/beamo-pass17-fallback-guard/sudo": {
+    "retained_path": "guards/sudo",
+    "sha256": "cba41168ef00df7373f4415f3de107c7b0ab47927121235609e4e5749c97c051"
+  }
+}

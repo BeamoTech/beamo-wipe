@@ -1,0 +1,1 @@
+Three original-source redraws delete scheduled Tcl commands; all produce Tcl bgerror, state unchanged, no effects.

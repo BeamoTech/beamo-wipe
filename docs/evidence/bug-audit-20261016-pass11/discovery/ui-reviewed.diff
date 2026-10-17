@@ -1,0 +1,20 @@
+--- /tmp/pass11-ui/accessible_wizard-before.py
++++ src/beamo_wipe/ui/accessible_wizard.py
+@@ -832,6 +832,7 @@
+             return
+         self._sound_dialog = SoundDialog(Gtk, self.window, self.w, on_stop=self.render)
+         self._sound_dialog.dialog.connect("destroy", self._sound_closed)
++        self._sound_dialog.dialog.connect("key-release-event", self._key_release)
+         self._focus_active_window()
+ 
+     def _live_sound_dialog(self):
+@@ -1294,6 +1295,9 @@
+     window.connect("key-press-event", lambda _w, event: close()
+                    if event.keyval in (Gdk.KEY_Escape,) else None)
+     window.show_all()
++    window.present()
++    if window.get_window():
++        window.get_window().focus(Gdk.CURRENT_TIME)
+     status_line.grab_focus()
+     render()
+     try:

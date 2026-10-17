@@ -1,0 +1,15 @@
+{
+  "source": "src/beamo_wipe/discover.py",
+  "before_sha256": "b66f3f50692dbeaa7cfad3ed87ed1edea4530756e45b3bbd057fff0ee0278a29",
+  "after_sha256": "523c1443360dd89e6c4e436695c56df878f2bfef24086cecb6a98c110ddfb406",
+  "test": "tests/test_unbound_bcache_filesystem_pass19.py",
+  "test_sha256": "0d85a54e13de50b18b3402896f2bb426e0adad6e3bfd96b2c86cef21cdf4e127",
+  "patch_sha256": "d188fde6f0585b4b68994676a5942302800cd495e92081550a5719fd64e2b20d",
+  "root_reported_original_proof": {
+    "failed_assertions": 24,
+    "passed_controls": 6,
+    "errors": 0,
+    "skips": 0
+  },
+  "child_runtime_executed": false
+}

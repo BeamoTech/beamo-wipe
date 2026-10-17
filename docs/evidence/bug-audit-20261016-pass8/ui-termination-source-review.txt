@@ -1,0 +1,31 @@
+Termination source review (2026-10-16)
+Candidate: tests/test_tk_runtime.py::test_rebuilt_last_chance_rejects_old_erase_callback.
+The test creates a fake demo wizard/Tk window and drives it to Last Chance.
+It monkeypatches begin_erase to append to an ordinary list, captures the old
+callback, redraws, proves stale callback rejection, then invokes the current
+callback and proves one list append. It never launches a runner or process.
+Its _drive_to helper changes fake Wizard state, redraws and services Tk.
+The ui fixture teardown calls TkWizard._teardown: set UI-dead, cancel an audio
+ticket, cancel owned Tk timer/restore callbacks, then destroy the Tk root.
+Wizard.cancel_audio and AudioTicket.cancel set a threading.Event; they do not
+signal an OS process. Candidate does not request audio playback.
+The adjacent busy-transition test uses DryRunRunner.start/cancel and an
+in-process Event barrier. Its finally releases the barrier and joins only
+the Wizard-owned operation thread; no kill, process termination or power.
+Adjacent working-timer test likewise uses the demo runner and no OS signaling.
+The file has no os.kill, killpg, SIGTERM, subprocess.terminate or os._exit call.
+Production sound.py has owned audio-child terminate paths, but they require
+an actual audio Popen; neither candidate nor its preceding barrier test
+requests that path. No sender evidence exists for the original main-gate
+exit 143. A passing reproduction cannot identify or exonerate that sender.
+
+Completed reproduction results: 16 focused neighbor/candidate cases passed
+(8.791s), 40 actual repeated candidate executions passed (36.109s), and the
+complete 311-case Tk runtime module passed in original order (200.151s).
+An earlier duplicate-node command ran only one case because pytest deduplicated
+explicit node IDs; retained as one pass, not forty. Replacement file-based
+collection selected forty actual executions, confirmed in its JUnit.
+All four traced pytest processes exited normally with exit_group(0), are
+retired, and captured no kill/tkill/tgkill calls or delivered SIGTERM.
+Exact reviewed hashes still match. The original main-gate exit 143 remains
+unexplained; these successful traces provide no original sender evidence.

@@ -1,0 +1,26 @@
+{
+  "runtime_source_sha256": "9f34e674c64184b4a7d36fb77498d8dee7ad71321bb979c1616b7cc1772be43a",
+  "final_inputs": 751,
+  "changed_starting_paths": [
+    "src/beamo_wipe/discover.py",
+    "src/beamo_wipe/engine_checks.py",
+    "src/beamo_wipe/models.py",
+    "src/beamo_wipe/nwipe_runner.py",
+    "src/beamo_wipe/outcomes.py",
+    "src/beamo_wipe/safety.py",
+    "src/beamo_wipe/ui/tk_wizard.py"
+  ],
+  "unchanged_starting_inputs": 740,
+  "new_modules": [
+    "tests/test_empty_inventory_wheel_pass15.py",
+    "tests/test_hidden_positive_record_pass15.py",
+    "tests/test_physical_observation_context_pass15.py",
+    "tests/test_utf8_log_snapshot_bounds_pass15.py"
+  ],
+  "retained_untracked_test_modules": 22,
+  "source_and_fixture_patch_exact": true,
+  "starting_source_archive_members": 58,
+  "independent_peer_approval_for_all_changed_source": true,
+  "git_index_empty": true,
+  "primary_review": "Complete accumulated/incremental source diff, tracked fixtures, four new modules, exact peer reviews and all relevant adjacent safety contracts read. No source objection remains; final gates required."
+}

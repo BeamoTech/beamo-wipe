@@ -1,0 +1,350 @@
+{
+  "original-replay/src/beamo_wipe/__init__.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/__init__.py",
+    "sha256": "b686d2f0d7d67a152c60427c69a81e9d06f509df5e48a846ed1652da8c1c4868"
+  },
+  "original-replay/src/beamo_wipe/__main__.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/__main__.py",
+    "sha256": "15e046c6e1a2bb023b75b727ffa4308caf37338264d17d471302ffbe9baae1db"
+  },
+  "original-replay/src/beamo_wipe/app.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/app.py",
+    "sha256": "30e005d148b07415b57fa293762f142a491fa1ec012661cf02ed2739bfb261e5"
+  },
+  "original-replay/src/beamo_wipe/assets/logo-header.png": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/assets/logo-header.png",
+    "sha256": "b2e016485525bbc8c035fb62c1f8493bea30a9b827c99bc1d0be3dfbfc1464a5"
+  },
+  "original-replay/src/beamo_wipe/assets/logo-mark.svg": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/assets/logo-mark.svg",
+    "sha256": "826bfba0b2d24dc83e913f3154d5055e302f81d37923dfef6b20a8f2869e452a"
+  },
+  "original-replay/src/beamo_wipe/assets/logo-splash.png": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/assets/logo-splash.png",
+    "sha256": "c8f8b9011709519a1aaebb901fdc4ecbc4ee790cd771eb34b6788f7220dbdbd0"
+  },
+  "original-replay/src/beamo_wipe/audio_jobs.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/audio_jobs.py",
+    "sha256": "07e34b995a4df7424e6e1c5cd1a345856cd6b9ff622606fa74a79af2688597e0"
+  },
+  "original-replay/src/beamo_wipe/build_identity.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/build_identity.py",
+    "sha256": "74c64c98e83869895a971c7481780d7aca52c6eb92d3e514a11d3d7a7b58c86d"
+  },
+  "original-replay/src/beamo_wipe/ci_evidence.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/ci_evidence.py",
+    "sha256": "3fbc420892d16f2358a3799256284cd071151b7c3cba23a3ab9fbf68ab71d6ef"
+  },
+  "original-replay/src/beamo_wipe/compat_story.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/compat_story.py",
+    "sha256": "b2a5f36279a507a7c65dfb65f8b772c5dcc79b2a531d805716ddc06066e9a816"
+  },
+  "original-replay/src/beamo_wipe/copy.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/copy.py",
+    "sha256": "91b68c6aeb8187d47038c3d5c0d0d53be23e31b61d35c69fbc66217417758034"
+  },
+  "original-replay/src/beamo_wipe/demo.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/demo.py",
+    "sha256": "00fa36bb9078c7a81efce7b08a1b8d4a646a4e224dd7f141df822fb45810426a"
+  },
+  "original-replay/src/beamo_wipe/demo_blocked.json": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/demo_blocked.json",
+    "sha256": "4fbef2fba82ede3f8034054e305dbdfda62e16e65f83aeb8b02bf6251159edf6"
+  },
+  "original-replay/src/beamo_wipe/demo_empty.json": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/demo_empty.json",
+    "sha256": "64ea475eaf3b286e3b014e971bd19a1bddb057bfb4bc19411e63a5461dbdf557"
+  },
+  "original-replay/src/beamo_wipe/demo_lsblk.json": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/demo_lsblk.json",
+    "sha256": "11ced7f80a9a8a14ebf70065ef50b1f992ff4885c5b7d463c10c1e6fc9124d1e"
+  },
+  "original-replay/src/beamo_wipe/diagnostic_report.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/diagnostic_report.py",
+    "sha256": "fc01e84c6f917d679ea743bc104c5c5d6031de34bd9d68b6f6ee43f63986a1dd"
+  },
+  "original-replay/src/beamo_wipe/diagnostics.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/diagnostics.py",
+    "sha256": "274af6f2c094f2a2320cf26025f6fde4de463e47324aba8298ea1e96da8f9963"
+  },
+  "original-replay/src/beamo_wipe/discover.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/discover.py",
+    "sha256": "9f5a5a36ddf9dad77c7195920ed6290ed745d4684d63beeac103882fb6198f65"
+  },
+  "original-replay/src/beamo_wipe/engine_checks.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/engine_checks.py",
+    "sha256": "858da2ba9ac347df0b4a92bc196e90949d4279f155e21c98f0ac01b8caa743f3"
+  },
+  "original-replay/src/beamo_wipe/evidence.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/evidence.py",
+    "sha256": "512c9b024b3231bf2625b6c802a8dc2282c275153b62e2995d4d01ba9466b5c5"
+  },
+  "original-replay/src/beamo_wipe/gallery.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/gallery.py",
+    "sha256": "2fa9810b5527aa05408fcee2899c258ad9af4868ea18dcda08d37814292c958c"
+  },
+  "original-replay/src/beamo_wipe/identify.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/identify.py",
+    "sha256": "cdb31f6f871fdd94e53a6dfab5006f77a04a47c212c351de8e40caede327116e"
+  },
+  "original-replay/src/beamo_wipe/identity.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/identity.py",
+    "sha256": "4ccada033bab0c3811450cb9ab4e85c74936af56e8cd94fdf84f8d5566942050"
+  },
+  "original-replay/src/beamo_wipe/inventory.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/inventory.py",
+    "sha256": "bd594d0f6279181bb01bfa96c07ed8041d3da09fbee9ae9baf16dba60caa6acd"
+  },
+  "original-replay/src/beamo_wipe/keyboard.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/keyboard.py",
+    "sha256": "9ad34bfb4c91972e29a63c00058a82c9050e74c91beee7c7bf04d871c31599d0"
+  },
+  "original-replay/src/beamo_wipe/lang.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/lang.py",
+    "sha256": "490786bbd8971678d82969b2180ecb5aa94f86785b52323f1dddbec1353878ba"
+  },
+  "original-replay/src/beamo_wipe/locales/__init__.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/locales/__init__.py",
+    "sha256": "457e7460ea1148762cd7fd6a0aa9bf1920ade58d1a98db3cc0d5e16933078682"
+  },
+  "original-replay/src/beamo_wipe/locales/de.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/locales/de.py",
+    "sha256": "5f2a27cf2a7d53cc58b65ca5c8377bb7f3212461f47b0273be7662902ab675c3"
+  },
+  "original-replay/src/beamo_wipe/locales/fr.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/locales/fr.py",
+    "sha256": "3b7be0a0bf1799dbb25df69fe421386a2f12b0ff579435b00b7aec5e1ef633c8"
+  },
+  "original-replay/src/beamo_wipe/methods.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/methods.py",
+    "sha256": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13"
+  },
+  "original-replay/src/beamo_wipe/models.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/models.py",
+    "sha256": "9fb0bcb97d35b1ee0f041f8ccb728fe8a2b9f173242a904bf2af6f7b5f42b95c"
+  },
+  "original-replay/src/beamo_wipe/nwipe_runner.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/nwipe_runner.py",
+    "sha256": "465d3495bd36b3be2507798ad3b57930645c165ba025a2afbe2ea0ca6c45e39d"
+  },
+  "original-replay/src/beamo_wipe/outcomes.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/outcomes.py",
+    "sha256": "4af35b516e728d1b46fd8b242346c7ded29e61a0bbb9e827a617d155267bd8ba"
+  },
+  "original-replay/src/beamo_wipe/power.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/power.py",
+    "sha256": "70fd7c90188b3f00dc082755ea4550d18b0884246e6fcd6b45f9c0e7ded7638b"
+  },
+  "original-replay/src/beamo_wipe/privacy.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/privacy.py",
+    "sha256": "bcb9c6ce4764a7e6df54b970aede4003c3f90357535fc42530b831eeef0face2"
+  },
+  "original-replay/src/beamo_wipe/progress.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/progress.py",
+    "sha256": "fef87a29ceabb1fb97b8abc521d55cea1ceb9428989104973783da6eb52c4fa6"
+  },
+  "original-replay/src/beamo_wipe/recovery.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/recovery.py",
+    "sha256": "2c9d7994872173b92225efb953d48ad25e3a77c4824632530b400d86005f5aa7"
+  },
+  "original-replay/src/beamo_wipe/release_manifest.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/release_manifest.py",
+    "sha256": "4f2ab923d177a4440143e116f0d4bfc096aa2f22f91679df672956c8ed888307"
+  },
+  "original-replay/src/beamo_wipe/release_signing.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/release_signing.py",
+    "sha256": "6268c368988fe9201a3e652fec7b2acc295bff3882048dcde10c5c99222680f6"
+  },
+  "original-replay/src/beamo_wipe/report_intent.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/report_intent.py",
+    "sha256": "f147d8840ae6f8f9d58d07111b2f6c4db9e8792e1e30beb1f96f82afdb482c25"
+  },
+  "original-replay/src/beamo_wipe/result_summary.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/result_summary.py",
+    "sha256": "b059c558e913348887a24b2ade36b8e34bfa01aa7acb1e64ee8a47e996cdb430"
+  },
+  "original-replay/src/beamo_wipe/safety.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/safety.py",
+    "sha256": "ba07089fa9ed77e3616af67147201a16b15b8c8582ca0ca9724e58ef980ecd9b"
+  },
+  "original-replay/src/beamo_wipe/session_recovery.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/session_recovery.py",
+    "sha256": "128c5daa4c53197437682c637d3078917a79037a9edf5d1796fc9916cdd4ba53"
+  },
+  "original-replay/src/beamo_wipe/sleep_inhibit.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/sleep_inhibit.py",
+    "sha256": "b7df5b80f7d87ae0bcac0be2ddcf082ff887e5492fb8da088237b5b02a9bf11d"
+  },
+  "original-replay/src/beamo_wipe/sound.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/sound.py",
+    "sha256": "891ba8bb93d291a5fda74c7a9967787e62608a1e60e66f8711c9c2647e7099af"
+  },
+  "original-replay/src/beamo_wipe/startup_stages.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/startup_stages.py",
+    "sha256": "131d5966f9e45505e248e8192d33a1eb39be135246d1a7191ef82b6dba832477"
+  },
+  "original-replay/src/beamo_wipe/storage_limits.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/storage_limits.py",
+    "sha256": "66b28e84a66d778a0e86b7360389fcfb6b88059eb37ffdc65a14ebecbef4f56d"
+  },
+  "original-replay/src/beamo_wipe/support_code.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/support_code.py",
+    "sha256": "785d5522763154902cf768e4eb7804e72040e61ace6b571adf99b6ebb767ce10"
+  },
+  "original-replay/src/beamo_wipe/support_contact.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/support_contact.py",
+    "sha256": "29800afc9fa7ffde8bf134944f5541e96fa7a6b829836666c6a8e46e3af9fa8a"
+  },
+  "original-replay/src/beamo_wipe/support_export.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/support_export.py",
+    "sha256": "23308f130079eb98cc8f77c597e227efbbf1cdb06234dd1336b2e034660bcc04"
+  },
+  "original-replay/src/beamo_wipe/ui/__init__.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/ui/__init__.py",
+    "sha256": "0de0337e4e6993b390c0b6316f230d3d719d5f19c2a41aae50623cd371aa98d0"
+  },
+  "original-replay/src/beamo_wipe/ui/accessible_wizard.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/ui/accessible_wizard.py",
+    "sha256": "2179d1be8dfa960266e611eb0429b1a33670c3ca25111a899355e39a8ca35fed"
+  },
+  "original-replay/src/beamo_wipe/ui/console_wizard.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/ui/console_wizard.py",
+    "sha256": "d9f78e2470823629b31c9e7b755a76efc61b03a06f03153834b27c47661e2fd8"
+  },
+  "original-replay/src/beamo_wipe/ui/layout.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/ui/layout.py",
+    "sha256": "31dbf17a973a0f48f7b1cc17d07d2552cd65207dfa4c8fd1f2d02a18ee1ef758"
+  },
+  "original-replay/src/beamo_wipe/ui/sound_dialog.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/ui/sound_dialog.py",
+    "sha256": "9165731d320e6f19de3e6632a7b0c43a4c688a72dbd6558b39ba46c0052aed9e"
+  },
+  "original-replay/src/beamo_wipe/ui/tk_wizard.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/ui/tk_wizard.py",
+    "sha256": "3f702e1ac6c3564372f9b633a2dcf0ea3e9d46553e29ceaf4cfa781e181e8ea7"
+  },
+  "original-replay/src/beamo_wipe/verification_evidence.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/verification_evidence.py",
+    "sha256": "b76adeb6f595987863e67255c94f05ee424e8f515037b5c69c824e2f14bbb73a"
+  },
+  "original-replay/src/beamo_wipe/wizard.py": {
+    "archive": "starting-inputs.tar.gz",
+    "archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+    "member": "src/beamo_wipe/wizard.py",
+    "sha256": "be375a0861ec569a652e15f9f572bfa689f40048d736c5bedef641453d464bbb"
+  }
+}

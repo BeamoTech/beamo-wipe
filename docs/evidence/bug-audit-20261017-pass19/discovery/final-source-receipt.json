@@ -1,0 +1,26 @@
+{
+  "initial_sha256": "b66f3f50692dbeaa7cfad3ed87ed1edea4530756e45b3bbd057fff0ee0278a29",
+  "before_sha256": "158fae213e088c7dfcd0296eee78f4c68b8e3a732914cb2f05f3b1a8e1b24224",
+  "final_sha256": "47d73620758d07f6352e9afd6f8430091c35f1b6df9f113a0502f352465145e8",
+  "tests": {
+    "test_unbound_bcache_filesystem_pass19.py": "0d85a54e13de50b18b3402896f2bb426e0adad6e3bfd96b2c86cef21cdf4e127",
+    "test_descendant_holder_filesystem_pass19.py": "91d29c2893a48dd878faf06089053714b092a5a424e58f9b23e5a5d1bdb09a10",
+    "test_duplicate_bcache_filesystem_pass19.py": "fe520ce1c5adfde6cdac781c2edc9b4d85ddf1298cf70871944f624acbd16c7e",
+    "test_holder_ancestor_contradiction_pass19.py": "64d68bef146c0298cae17398b5e31286a8aa63ab00aceb4fee4c18bf29762736"
+  },
+  "patches": {
+    "discover-pass19.patch": "d188fde6f0585b4b68994676a5942302800cd495e92081550a5719fd64e2b20d",
+    "discover-pass19-adjacent.patch": "795425b63fb1b6857954a4dbb6b5cee9ce7382575a02540717962acc33ff2d77",
+    "discover-pass19-through-adjacent.patch": "f57be3e56a503e7ef65b17ecee4292be76f7f3b6eb5b61df7d373dd6b56b2f62",
+    "discover-pass19-transitive.patch": "d1b48109a4c47a473d2508521dd8aa3194735f8809db01df47cb9a453ce72be4",
+    "discover-pass19-current.patch": "9b7aea0d1bf544ce3fb02a63bc03ade97bd5de8d19088eb2e6ddc4bff369cb47"
+  },
+  "root_reported_transitive_proof": {
+    "failed_assertions": 24,
+    "passed_controls": 48,
+    "existing134_cases": "all pass in same run",
+    "errors": 0,
+    "skips": 0
+  },
+  "child_runtime_executed": false
+}

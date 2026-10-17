@@ -1,0 +1,19 @@
+{
+  "status": "PREPARED / NOT RUN by author; source AST parse PASS",
+  "source": "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/image-preinit-boundary-probe.py",
+  "sha256": "495a98db722f22344ba305def406998c974c1e2d0b17dd964371917807e13ba3",
+  "cases": [
+    "before-init",
+    "after-init",
+    "live-control"
+  ],
+  "expected_original_failure": "before-init: unchanged Image.__del__ may raise AttributeError for missing name when creator-thread pool drains the uninitialized wrapper. Sys unraisable hook captures only type/message/function scalars; test explicitly fails on any unraisable.",
+  "controls": [
+    "after-init: actual native image allocated, original initialization ValueError retained, worker releases original frames, creator drains original destructor safely",
+    "live-control: two actual logo images, live owned window, ordinary teardown and worker collection leave no native finalizer errors"
+  ],
+  "provenance": "Mandatory BEAMO_TK_PROBE_SOURCE + BEAMO_TK_PROBE_SHA256 in parent and child",
+  "isolation": "Fixed bounded owned script child; 8s child timeout, 2s collector join, exact child os._exit91 only on its collector timeout; application disk/audio/power/native subprocess/network effects forbidden",
+  "no_mutation": "Original Image.__del__ body invoked unchanged; no handles or traceback frames altered. Hook observations do not retain exception/object/traceback. Shared/active source untouched.",
+  "if_proved_fix_scope": "Before initializing a newly allocated real Image wrapper with no existing name field, set name=None as original Image.__init__ does first. Do not clear an actual created native handle or neutralize destructor."
+}

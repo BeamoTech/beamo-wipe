@@ -1,0 +1,146 @@
+dbus-daemon[159112]: [session uid=0 pid=159112] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=159126 comm="/tmp/beamo-pass19-python/bin/python3 -m pytest --d" label="unconfined")
+dbus-daemon[159112]: [session uid=0 pid=159112] Successfully activated service 'org.a11y.Bus'
+........................................................................ [  0%]
+....dbus-daemon[159135]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=159126 comm="/tmp/beamo-pass19-python/bin/python3 -m pytest --d" label="unconfined")
+dbus-daemon[159135]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+.................................................................... [  1%]
+........................................................................ [  2%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+........................................................................ [  4%]
+.............................................F
+=================================== FAILURES ===================================
+_ test_start_error_after_spawn_never_leaves_a_competing_worker[False-False-True] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71434067f050>
+rejected_protected = True, active_protected = False, next_protected = False
+
+    @pytest.mark.parametrize('rejected_protected', [False, True])
+    @pytest.mark.parametrize('active_protected', [False, True])
+    @pytest.mark.parametrize('next_protected', [False, True])
+    def test_start_error_after_spawn_never_leaves_a_competing_worker(monkeypatch, rejected_protected, active_protected, next_protected):
+        real_thread = threading.Thread
+        old_gate, active_entered, next_entered, release = [threading.Event() for _ in range(4)]
+        threads, rejected_actions = [], []
+    
+        class StartedThenRaised(real_thread):
+            def __init__(self, *args, **kwargs):
+                first = not threads
+                target = kwargs['target']
+                if first:
+                    def delayed():
+                        assert old_gate.wait(2)
+                        target()
+                    kwargs['target'] = delayed
+                super().__init__(*args, **kwargs)
+                self.first = first
+                threads.append(self)
+    
+            def start(self):
+                super().start()
+                if self.first:
+                    raise RuntimeError('controlled start error after owned spawn')
+    
+        worker = audio_jobs.AudioWorker()
+        monkeypatch.setattr(audio_jobs.threading, 'Thread', StartedThenRaised)
+        try:
+            rejected = worker.submit(lambda: rejected_actions.append(True), protected=rejected_protected)
+            ready, value = rejected.poll()
+            assert ready and isinstance(value, RuntimeError)
+    
+            def active():
+                active_entered.set()
+                assert release.wait(2)
+                return 'active'
+    
+            def following():
+                next_entered.set()
+                return 'following'
+    
+            worker.submit(active, protected=active_protected)
+            assert active_entered.wait(1)
+            old_gate.set()
+            worker.submit(following, protected=next_protected)
+            overlapped = next_entered.wait(0.1)
+            assert not rejected_actions
+            assert not overlapped, 'Two audio actions ran together after rejected launch'
+            release.set()
+>           assert next_entered.wait(1)
+E           assert False
+E            +  where False = wait(1)
+E            +    where wait = <threading.Event at 0x71434060d400: unset>.wait
+
+tests/test_audio_launch_ownership_pass14.py:59: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71434067f050>
+rejected_protected = True, active_protected = False, next_protected = False
+
+    @pytest.mark.parametrize('rejected_protected', [False, True])
+    @pytest.mark.parametrize('active_protected', [False, True])
+    @pytest.mark.parametrize('next_protected', [False, True])
+    def test_start_error_after_spawn_never_leaves_a_competing_worker(monkeypatch, rejected_protected, active_protected, next_protected):
+        real_thread = threading.Thread
+        old_gate, active_entered, next_entered, release = [threading.Event() for _ in range(4)]
+        threads, rejected_actions = [], []
+    
+        class StartedThenRaised(real_thread):
+            def __init__(self, *args, **kwargs):
+                first = not threads
+                target = kwargs['target']
+                if first:
+                    def delayed():
+                        assert old_gate.wait(2)
+                        target()
+                    kwargs['target'] = delayed
+                super().__init__(*args, **kwargs)
+                self.first = first
+                threads.append(self)
+    
+            def start(self):
+                super().start()
+                if self.first:
+                    raise RuntimeError('controlled start error after owned spawn')
+    
+        worker = audio_jobs.AudioWorker()
+        monkeypatch.setattr(audio_jobs.threading, 'Thread', StartedThenRaised)
+        try:
+            rejected = worker.submit(lambda: rejected_actions.append(True), protected=rejected_protected)
+            ready, value = rejected.poll()
+            assert ready and isinstance(value, RuntimeError)
+    
+            def active():
+                active_entered.set()
+                assert release.wait(2)
+                return 'active'
+    
+            def following():
+                next_entered.set()
+                return 'following'
+    
+            worker.submit(active, protected=active_protected)
+            assert active_entered.wait(1)
+            old_gate.set()
+            worker.submit(following, protected=next_protected)
+            overlapped = next_entered.wait(0.1)
+            assert not rejected_actions
+            assert not overlapped, 'Two audio actions ran together after rejected launch'
+            release.set()
+            assert next_entered.wait(1)
+        finally:
+            old_gate.set()
+            release.set()
+            worker.close()
+            for thread in threads:
+                thread.join(2)
+>           assert all(not thread.is_alive() for thread in threads)
+E           assert False
+E            +  where False = all(<generator object test_start_error_after_spawn_never_leaves_a_competing_worker.<locals>.<genexpr> at 0x71433c49d150>)
+
+tests/test_audio_launch_ownership_pass14.py:66: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_audio_launch_ownership_pass14.py::test_start_error_after_spawn_never_leaves_a_competing_worker[False-False-True]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 477 passed in 85.01s (0:01:25)

@@ -1,0 +1,26 @@
+{
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "branch": "fix/safety-audit-20261015",
+  "frozen_inputs": 788,
+  "runtime_source_sha256": "8e18e259414408eff434768ad24b38432bf913b12a864439f40b585a264496c1",
+  "changed": [
+    "src/beamo_wipe/diagnostics.py",
+    "src/beamo_wipe/discover.py",
+    "src/beamo_wipe/ui/accessible_wizard.py",
+    "src/beamo_wipe/ui/tk_wizard.py"
+  ],
+  "added": [
+    "tests/test_accessible_close_cleanup_pass21.py",
+    "tests/test_diagnostics_line_separators_pass21.py",
+    "tests/test_discovery_nonfinite_size_pass21.py",
+    "tests/test_disk_name_alias_layout_pass21.py",
+    "tests/test_disk_name_layout_pass21.py",
+    "tests/test_refresh_acceptance_interruptions_pass21.py",
+    "tests/test_refresh_commit_concurrency_pass21.py",
+    "tests/test_tk_trace_adoption_pass21.py",
+    "tests/test_tk_variable_interpreter_pass21.py"
+  ],
+  "unchanged_start_inputs": 775,
+  "new_untracked_test_modules": 59,
+  "index_empty": true
+}

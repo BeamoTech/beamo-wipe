@@ -1,0 +1,21 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass17-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "/tmp/pass17-primary/wwn-unknown-proof.py",
+    "--junitxml=/tmp/pass17-primary/wwn-unknown-original-proof.xml"
+  ],
+  "exit_code": 1,
+  "started_utc": "2026-10-17T06:06:17.366480+00:00",
+  "ended_utc": "2026-10-17T06:06:17.998488+00:00"
+}

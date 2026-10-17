@@ -1,0 +1,13 @@
+{
+  "recorded_utc": "2026-10-17T19:08:52.278680+00:00",
+  "source_files": 778,
+  "main_status": "RUNNING with1F glyph, no main JUnit; not acceptance",
+  "orca_status": "1PASS59.94s",
+  "index_empty": true,
+  "raw_staging": "/tmp/pass20-primary",
+  "native_campaigns": "HELD / NOT RUN",
+  "prepared_additional_proofs": [
+    "ROW-ADOPTION",
+    "IMAGE-PREINIT"
+  ]
+}

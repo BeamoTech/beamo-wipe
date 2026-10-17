@@ -1,0 +1,32 @@
+--- a/src/beamo_wipe/ui/tk_wizard.py
++++ b/src/beamo_wipe/ui/tk_wizard.py
+@@ -983,7 +983,8 @@
+         self.bind("<Configure>", self._flow_label, add="+")
+         self._sync()
+         self._paint()
+-        variable.trace_add("write", self._on_variable)
++        self._variable_trace: Optional[str] = variable.trace_add("write", self._on_variable)
++        self.bind("<Destroy>", self._retire_variable_trace, add="+")
+         self.bind("<Enter>", self._enter)
+         self.bind("<Leave>", self._leave)
+         self.bind("<ButtonPress-1>", self._press)
+@@ -1010,6 +1011,19 @@
+     def _on_variable(self, *_args) -> None:
+         self._sync()
+         self._paint()
++
++    def _retire_variable_trace(self, event) -> None:
++        if event.widget is not self or self._variable_trace is None:
++            return
++        token = self._variable_trace
++        self._variable_trace = None
++        try:
++            # Variable callbacks outlive widgets unless explicitly removed.
++            # Keep other rows and independent observers on this variable.
++            self._variable.trace_remove("write", token)
++        except tk.TclError:
++            # Interpreter teardown may already have removed the variable.
++            pass
+ 
+     def _row_bg(self) -> str:
+         if self._pressed:

@@ -1,0 +1,905 @@
+FFFFFFFFFFFFFFFF................FFFFFFFFFFFF....FFFF                     [100%]
+=================================== FAILURES ===================================
+_ test_malformed_pathless_overlap_cannot_expose_alias[boot-identity0-malformed-serial] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x71b8e1b627a0>
+kind = 'boot', identity = ('', ''), defect = 'malformed', field = 'serial'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("defect", ("malformed", "conflicting"))
+    @pytest.mark.parametrize("identity", PATHLESS)
+    @pytest.mark.parametrize("kind", ("boot", "mounted"))
+    def test_malformed_pathless_overlap_cannot_expose_alias(
+        fake_machine, kind, identity, defect, field  # noqa: F811 - imported pytest fixture
+    ):
+        bridge = _uncertain_bridge(field, defect, overlap=True, identity=identity)
+        leaf = _disk("sdd", serial="FAKE-LEAF", wwn=X)
+        result, _boot_path = _scan(fake_machine, kind, [bridge, leaf])
+>       assert leaf["path"] not in {disk.path for disk in result.selectable}
+E       AssertionError: assert '/dev/sdd' not in {'/dev/sdd'}
+
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:58: AssertionError
+_ test_malformed_pathless_overlap_cannot_expose_alias[boot-identity0-malformed-wwn] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x71b8e1b63b00>
+kind = 'boot', identity = ('', ''), defect = 'malformed', field = 'wwn'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("defect", ("malformed", "conflicting"))
+    @pytest.mark.parametrize("identity", PATHLESS)
+    @pytest.mark.parametrize("kind", ("boot", "mounted"))
+    def test_malformed_pathless_overlap_cannot_expose_alias(
+        fake_machine, kind, identity, defect, field  # noqa: F811 - imported pytest fixture
+    ):
+        bridge = _uncertain_bridge(field, defect, overlap=True, identity=identity)
+        leaf = _disk("sdd", serial="FAKE-LEAF", wwn=X)
+        result, _boot_path = _scan(fake_machine, kind, [bridge, leaf])
+>       assert leaf["path"] not in {disk.path for disk in result.selectable}
+E       AssertionError: assert '/dev/sdd' not in {'/dev/sdd'}
+
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:58: AssertionError
+_ test_malformed_pathless_overlap_cannot_expose_alias[boot-identity0-conflicting-serial] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x71b8e1b63920>
+kind = 'boot', identity = ('', ''), defect = 'conflicting', field = 'serial'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("defect", ("malformed", "conflicting"))
+    @pytest.mark.parametrize("identity", PATHLESS)
+    @pytest.mark.parametrize("kind", ("boot", "mounted"))
+    def test_malformed_pathless_overlap_cannot_expose_alias(
+        fake_machine, kind, identity, defect, field  # noqa: F811 - imported pytest fixture
+    ):
+        bridge = _uncertain_bridge(field, defect, overlap=True, identity=identity)
+        leaf = _disk("sdd", serial="FAKE-LEAF", wwn=X)
+        result, _boot_path = _scan(fake_machine, kind, [bridge, leaf])
+>       assert leaf["path"] not in {disk.path for disk in result.selectable}
+E       AssertionError: assert '/dev/sdd' not in {'/dev/sdd'}
+
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:58: AssertionError
+_ test_malformed_pathless_overlap_cannot_expose_alias[boot-identity0-conflicting-wwn] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x71b8e1990180>
+kind = 'boot', identity = ('', ''), defect = 'conflicting', field = 'wwn'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("defect", ("malformed", "conflicting"))
+    @pytest.mark.parametrize("identity", PATHLESS)
+    @pytest.mark.parametrize("kind", ("boot", "mounted"))
+    def test_malformed_pathless_overlap_cannot_expose_alias(
+        fake_machine, kind, identity, defect, field  # noqa: F811 - imported pytest fixture
+    ):
+        bridge = _uncertain_bridge(field, defect, overlap=True, identity=identity)
+        leaf = _disk("sdd", serial="FAKE-LEAF", wwn=X)
+        result, _boot_path = _scan(fake_machine, kind, [bridge, leaf])
+>       assert leaf["path"] not in {disk.path for disk in result.selectable}
+E       AssertionError: assert '/dev/sdd' not in {'/dev/sdd'}
+
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:58: AssertionError
+_ test_malformed_pathless_overlap_cannot_expose_alias[boot-identity1-malformed-serial] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x71b8e1990e00>
+kind = 'boot', identity = (None, None), defect = 'malformed', field = 'serial'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("defect", ("malformed", "conflicting"))
+    @pytest.mark.parametrize("identity", PATHLESS)
+    @pytest.mark.parametrize("kind", ("boot", "mounted"))
+    def test_malformed_pathless_overlap_cannot_expose_alias(
+        fake_machine, kind, identity, defect, field  # noqa: F811 - imported pytest fixture
+    ):
+        bridge = _uncertain_bridge(field, defect, overlap=True, identity=identity)
+        leaf = _disk("sdd", serial="FAKE-LEAF", wwn=X)
+        result, _boot_path = _scan(fake_machine, kind, [bridge, leaf])
+>       assert leaf["path"] not in {disk.path for disk in result.selectable}
+E       AssertionError: assert '/dev/sdd' not in {'/dev/sdd'}
+
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:58: AssertionError
+_ test_malformed_pathless_overlap_cannot_expose_alias[boot-identity1-malformed-wwn] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x71b8e1b627a0>
+kind = 'boot', identity = (None, None), defect = 'malformed', field = 'wwn'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("defect", ("malformed", "conflicting"))
+    @pytest.mark.parametrize("identity", PATHLESS)
+    @pytest.mark.parametrize("kind", ("boot", "mounted"))
+    def test_malformed_pathless_overlap_cannot_expose_alias(
+        fake_machine, kind, identity, defect, field  # noqa: F811 - imported pytest fixture
+    ):
+        bridge = _uncertain_bridge(field, defect, overlap=True, identity=identity)
+        leaf = _disk("sdd", serial="FAKE-LEAF", wwn=X)
+        result, _boot_path = _scan(fake_machine, kind, [bridge, leaf])
+>       assert leaf["path"] not in {disk.path for disk in result.selectable}
+E       AssertionError: assert '/dev/sdd' not in {'/dev/sdd'}
+
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:58: AssertionError
+_ test_malformed_pathless_overlap_cannot_expose_alias[boot-identity1-conflicting-serial] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x71b8e1990900>
+kind = 'boot', identity = (None, None), defect = 'conflicting', field = 'serial'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("defect", ("malformed", "conflicting"))
+    @pytest.mark.parametrize("identity", PATHLESS)
+    @pytest.mark.parametrize("kind", ("boot", "mounted"))
+    def test_malformed_pathless_overlap_cannot_expose_alias(
+        fake_machine, kind, identity, defect, field  # noqa: F811 - imported pytest fixture
+    ):
+        bridge = _uncertain_bridge(field, defect, overlap=True, identity=identity)
+        leaf = _disk("sdd", serial="FAKE-LEAF", wwn=X)
+        result, _boot_path = _scan(fake_machine, kind, [bridge, leaf])
+>       assert leaf["path"] not in {disk.path for disk in result.selectable}
+E       AssertionError: assert '/dev/sdd' not in {'/dev/sdd'}
+
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:58: AssertionError
+_ test_malformed_pathless_overlap_cannot_expose_alias[boot-identity1-conflicting-wwn] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x71b8e1990220>
+kind = 'boot', identity = (None, None), defect = 'conflicting', field = 'wwn'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("defect", ("malformed", "conflicting"))
+    @pytest.mark.parametrize("identity", PATHLESS)
+    @pytest.mark.parametrize("kind", ("boot", "mounted"))
+    def test_malformed_pathless_overlap_cannot_expose_alias(
+        fake_machine, kind, identity, defect, field  # noqa: F811 - imported pytest fixture
+    ):
+        bridge = _uncertain_bridge(field, defect, overlap=True, identity=identity)
+        leaf = _disk("sdd", serial="FAKE-LEAF", wwn=X)
+        result, _boot_path = _scan(fake_machine, kind, [bridge, leaf])
+>       assert leaf["path"] not in {disk.path for disk in result.selectable}
+E       AssertionError: assert '/dev/sdd' not in {'/dev/sdd'}
+
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:58: AssertionError
+_ test_malformed_pathless_overlap_cannot_expose_alias[mounted-identity0-malformed-serial] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x71b8e1991080>
+kind = 'mounted', identity = ('', ''), defect = 'malformed', field = 'serial'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("defect", ("malformed", "conflicting"))
+    @pytest.mark.parametrize("identity", PATHLESS)
+    @pytest.mark.parametrize("kind", ("boot", "mounted"))
+    def test_malformed_pathless_overlap_cannot_expose_alias(
+        fake_machine, kind, identity, defect, field  # noqa: F811 - imported pytest fixture
+    ):
+        bridge = _uncertain_bridge(field, defect, overlap=True, identity=identity)
+        leaf = _disk("sdd", serial="FAKE-LEAF", wwn=X)
+        result, _boot_path = _scan(fake_machine, kind, [bridge, leaf])
+>       assert leaf["path"] not in {disk.path for disk in result.selectable}
+E       AssertionError: assert '/dev/sdd' not in {'/dev/sdd'}
+
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:58: AssertionError
+_ test_malformed_pathless_overlap_cannot_expose_alias[mounted-identity0-malformed-wwn] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x71b8e1991440>
+kind = 'mounted', identity = ('', ''), defect = 'malformed', field = 'wwn'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("defect", ("malformed", "conflicting"))
+    @pytest.mark.parametrize("identity", PATHLESS)
+    @pytest.mark.parametrize("kind", ("boot", "mounted"))
+    def test_malformed_pathless_overlap_cannot_expose_alias(
+        fake_machine, kind, identity, defect, field  # noqa: F811 - imported pytest fixture
+    ):
+        bridge = _uncertain_bridge(field, defect, overlap=True, identity=identity)
+        leaf = _disk("sdd", serial="FAKE-LEAF", wwn=X)
+        result, _boot_path = _scan(fake_machine, kind, [bridge, leaf])
+>       assert leaf["path"] not in {disk.path for disk in result.selectable}
+E       AssertionError: assert '/dev/sdd' not in {'/dev/sdd'}
+
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:58: AssertionError
+_ test_malformed_pathless_overlap_cannot_expose_alias[mounted-identity0-conflicting-serial] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x71b8e19913a0>
+kind = 'mounted', identity = ('', ''), defect = 'conflicting', field = 'serial'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("defect", ("malformed", "conflicting"))
+    @pytest.mark.parametrize("identity", PATHLESS)
+    @pytest.mark.parametrize("kind", ("boot", "mounted"))
+    def test_malformed_pathless_overlap_cannot_expose_alias(
+        fake_machine, kind, identity, defect, field  # noqa: F811 - imported pytest fixture
+    ):
+        bridge = _uncertain_bridge(field, defect, overlap=True, identity=identity)
+        leaf = _disk("sdd", serial="FAKE-LEAF", wwn=X)
+        result, _boot_path = _scan(fake_machine, kind, [bridge, leaf])
+>       assert leaf["path"] not in {disk.path for disk in result.selectable}
+E       AssertionError: assert '/dev/sdd' not in {'/dev/sdd'}
+
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:58: AssertionError
+_ test_malformed_pathless_overlap_cannot_expose_alias[mounted-identity0-conflicting-wwn] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x71b8e1991d00>
+kind = 'mounted', identity = ('', ''), defect = 'conflicting', field = 'wwn'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("defect", ("malformed", "conflicting"))
+    @pytest.mark.parametrize("identity", PATHLESS)
+    @pytest.mark.parametrize("kind", ("boot", "mounted"))
+    def test_malformed_pathless_overlap_cannot_expose_alias(
+        fake_machine, kind, identity, defect, field  # noqa: F811 - imported pytest fixture
+    ):
+        bridge = _uncertain_bridge(field, defect, overlap=True, identity=identity)
+        leaf = _disk("sdd", serial="FAKE-LEAF", wwn=X)
+        result, _boot_path = _scan(fake_machine, kind, [bridge, leaf])
+>       assert leaf["path"] not in {disk.path for disk in result.selectable}
+E       AssertionError: assert '/dev/sdd' not in {'/dev/sdd'}
+
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:58: AssertionError
+_ test_malformed_pathless_overlap_cannot_expose_alias[mounted-identity1-malformed-serial] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x71b8e1991260>
+kind = 'mounted', identity = (None, None), defect = 'malformed'
+field = 'serial'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("defect", ("malformed", "conflicting"))
+    @pytest.mark.parametrize("identity", PATHLESS)
+    @pytest.mark.parametrize("kind", ("boot", "mounted"))
+    def test_malformed_pathless_overlap_cannot_expose_alias(
+        fake_machine, kind, identity, defect, field  # noqa: F811 - imported pytest fixture
+    ):
+        bridge = _uncertain_bridge(field, defect, overlap=True, identity=identity)
+        leaf = _disk("sdd", serial="FAKE-LEAF", wwn=X)
+        result, _boot_path = _scan(fake_machine, kind, [bridge, leaf])
+>       assert leaf["path"] not in {disk.path for disk in result.selectable}
+E       AssertionError: assert '/dev/sdd' not in {'/dev/sdd'}
+
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:58: AssertionError
+_ test_malformed_pathless_overlap_cannot_expose_alias[mounted-identity1-malformed-wwn] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x71b8e1992340>
+kind = 'mounted', identity = (None, None), defect = 'malformed', field = 'wwn'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("defect", ("malformed", "conflicting"))
+    @pytest.mark.parametrize("identity", PATHLESS)
+    @pytest.mark.parametrize("kind", ("boot", "mounted"))
+    def test_malformed_pathless_overlap_cannot_expose_alias(
+        fake_machine, kind, identity, defect, field  # noqa: F811 - imported pytest fixture
+    ):
+        bridge = _uncertain_bridge(field, defect, overlap=True, identity=identity)
+        leaf = _disk("sdd", serial="FAKE-LEAF", wwn=X)
+        result, _boot_path = _scan(fake_machine, kind, [bridge, leaf])
+>       assert leaf["path"] not in {disk.path for disk in result.selectable}
+E       AssertionError: assert '/dev/sdd' not in {'/dev/sdd'}
+
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:58: AssertionError
+_ test_malformed_pathless_overlap_cannot_expose_alias[mounted-identity1-conflicting-serial] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x71b8e19922a0>
+kind = 'mounted', identity = (None, None), defect = 'conflicting'
+field = 'serial'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("defect", ("malformed", "conflicting"))
+    @pytest.mark.parametrize("identity", PATHLESS)
+    @pytest.mark.parametrize("kind", ("boot", "mounted"))
+    def test_malformed_pathless_overlap_cannot_expose_alias(
+        fake_machine, kind, identity, defect, field  # noqa: F811 - imported pytest fixture
+    ):
+        bridge = _uncertain_bridge(field, defect, overlap=True, identity=identity)
+        leaf = _disk("sdd", serial="FAKE-LEAF", wwn=X)
+        result, _boot_path = _scan(fake_machine, kind, [bridge, leaf])
+>       assert leaf["path"] not in {disk.path for disk in result.selectable}
+E       AssertionError: assert '/dev/sdd' not in {'/dev/sdd'}
+
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:58: AssertionError
+_ test_malformed_pathless_overlap_cannot_expose_alias[mounted-identity1-conflicting-wwn] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x71b8e1992d40>
+kind = 'mounted', identity = (None, None), defect = 'conflicting', field = 'wwn'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("defect", ("malformed", "conflicting"))
+    @pytest.mark.parametrize("identity", PATHLESS)
+    @pytest.mark.parametrize("kind", ("boot", "mounted"))
+    def test_malformed_pathless_overlap_cannot_expose_alias(
+        fake_machine, kind, identity, defect, field  # noqa: F811 - imported pytest fixture
+    ):
+        bridge = _uncertain_bridge(field, defect, overlap=True, identity=identity)
+        leaf = _disk("sdd", serial="FAKE-LEAF", wwn=X)
+        result, _boot_path = _scan(fake_machine, kind, [bridge, leaf])
+>       assert leaf["path"] not in {disk.path for disk in result.selectable}
+E       AssertionError: assert '/dev/sdd' not in {'/dev/sdd'}
+
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:58: AssertionError
+______ test_retained_variable_does_not_call_a_destroyed_row[row-boolean] _______
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font1'>, [('TclError', 'bad window path name ".!frame.!_checkrow"')])
+request = <FixtureRequest for <Function test_retained_variable_does_not_call_a_destroyed_row[row-boolean]>>
+kind = 'boolean', lifecycle = 'row'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_retained_variable_does_not_call_a_destroyed_row(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        peer_trace_calls = []
+        peer_token = variable.trace_add("write", lambda *_args: peer_trace_calls.append(variable.get()))
+        row = _CheckRow(parent, text="Report preference", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        before = [str(token) for _modes, token in variable.trace_info()]
+        row_tokens = set(before) - {peer_token}
+        assert len(row_tokens) == 1
+        root_jobs = []
+        root.after_idle(lambda: root_jobs.append("live root"))
+        _retire_row(root, parent, row, lifecycle)
+        variable.set(1)
+        root.update()
+        after = [str(token) for _modes, token in variable.trace_info()]
+        native_errors = list(root.tk.call("set", "pass18_trace_bgerrors"))
+        request.node.user_properties.append(("trace_retirement", json.dumps({
+            "kind": kind, "lifecycle": lifecycle, "before": before, "after": after,
+            "python_errors": errors, "tcl_errors": native_errors, "root_jobs": root_jobs,
+            "peer_calls": peer_trace_calls,
+        })))
+>       assert not errors
+E       assert not [('TclError', 'bad window path name ".!frame.!_checkrow"')]
+
+tests/test_checkrow_trace_lifetime_pass18.py:116: AssertionError
+______ test_retained_variable_does_not_call_a_destroyed_row[row-integer] _______
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font2'>, [('TclError', 'bad window path name ".!frame.!_checkrow"')])
+request = <FixtureRequest for <Function test_retained_variable_does_not_call_a_destroyed_row[row-integer]>>
+kind = 'integer', lifecycle = 'row'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_retained_variable_does_not_call_a_destroyed_row(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        peer_trace_calls = []
+        peer_token = variable.trace_add("write", lambda *_args: peer_trace_calls.append(variable.get()))
+        row = _CheckRow(parent, text="Report preference", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        before = [str(token) for _modes, token in variable.trace_info()]
+        row_tokens = set(before) - {peer_token}
+        assert len(row_tokens) == 1
+        root_jobs = []
+        root.after_idle(lambda: root_jobs.append("live root"))
+        _retire_row(root, parent, row, lifecycle)
+        variable.set(1)
+        root.update()
+        after = [str(token) for _modes, token in variable.trace_info()]
+        native_errors = list(root.tk.call("set", "pass18_trace_bgerrors"))
+        request.node.user_properties.append(("trace_retirement", json.dumps({
+            "kind": kind, "lifecycle": lifecycle, "before": before, "after": after,
+            "python_errors": errors, "tcl_errors": native_errors, "root_jobs": root_jobs,
+            "peer_calls": peer_trace_calls,
+        })))
+>       assert not errors
+E       assert not [('TclError', 'bad window path name ".!frame.!_checkrow"')]
+
+tests/test_checkrow_trace_lifetime_pass18.py:116: AssertionError
+_____ test_retained_variable_does_not_call_a_destroyed_row[parent-boolean] _____
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font3'>, [('TclError', 'bad window path name ".!frame.!_checkrow"')])
+request = <FixtureRequest for <Function test_retained_variable_does_not_call_a_destroyed_row[parent-boolean]>>
+kind = 'boolean', lifecycle = 'parent'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_retained_variable_does_not_call_a_destroyed_row(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        peer_trace_calls = []
+        peer_token = variable.trace_add("write", lambda *_args: peer_trace_calls.append(variable.get()))
+        row = _CheckRow(parent, text="Report preference", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        before = [str(token) for _modes, token in variable.trace_info()]
+        row_tokens = set(before) - {peer_token}
+        assert len(row_tokens) == 1
+        root_jobs = []
+        root.after_idle(lambda: root_jobs.append("live root"))
+        _retire_row(root, parent, row, lifecycle)
+        variable.set(1)
+        root.update()
+        after = [str(token) for _modes, token in variable.trace_info()]
+        native_errors = list(root.tk.call("set", "pass18_trace_bgerrors"))
+        request.node.user_properties.append(("trace_retirement", json.dumps({
+            "kind": kind, "lifecycle": lifecycle, "before": before, "after": after,
+            "python_errors": errors, "tcl_errors": native_errors, "root_jobs": root_jobs,
+            "peer_calls": peer_trace_calls,
+        })))
+>       assert not errors
+E       assert not [('TclError', 'bad window path name ".!frame.!_checkrow"')]
+
+tests/test_checkrow_trace_lifetime_pass18.py:116: AssertionError
+_____ test_retained_variable_does_not_call_a_destroyed_row[parent-integer] _____
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font4'>, [('TclError', 'bad window path name ".!frame.!_checkrow"')])
+request = <FixtureRequest for <Function test_retained_variable_does_not_call_a_destroyed_row[parent-integer]>>
+kind = 'integer', lifecycle = 'parent'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_retained_variable_does_not_call_a_destroyed_row(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        peer_trace_calls = []
+        peer_token = variable.trace_add("write", lambda *_args: peer_trace_calls.append(variable.get()))
+        row = _CheckRow(parent, text="Report preference", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        before = [str(token) for _modes, token in variable.trace_info()]
+        row_tokens = set(before) - {peer_token}
+        assert len(row_tokens) == 1
+        root_jobs = []
+        root.after_idle(lambda: root_jobs.append("live root"))
+        _retire_row(root, parent, row, lifecycle)
+        variable.set(1)
+        root.update()
+        after = [str(token) for _modes, token in variable.trace_info()]
+        native_errors = list(root.tk.call("set", "pass18_trace_bgerrors"))
+        request.node.user_properties.append(("trace_retirement", json.dumps({
+            "kind": kind, "lifecycle": lifecycle, "before": before, "after": after,
+            "python_errors": errors, "tcl_errors": native_errors, "root_jobs": root_jobs,
+            "peer_calls": peer_trace_calls,
+        })))
+>       assert not errors
+E       assert not [('TclError', 'bad window path name ".!frame.!_checkrow"')]
+
+tests/test_checkrow_trace_lifetime_pass18.py:116: AssertionError
+__ test_retained_variable_does_not_call_a_destroyed_row[redraw-clear-boolean] __
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font5'>, [('TclError', 'bad window path name ".!frame.!_checkrow"')])
+request = <FixtureRequest for <Function test_retained_variable_does_not_call_a_destroyed_row[redraw-clear-boolean]>>
+kind = 'boolean', lifecycle = 'redraw-clear'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_retained_variable_does_not_call_a_destroyed_row(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        peer_trace_calls = []
+        peer_token = variable.trace_add("write", lambda *_args: peer_trace_calls.append(variable.get()))
+        row = _CheckRow(parent, text="Report preference", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        before = [str(token) for _modes, token in variable.trace_info()]
+        row_tokens = set(before) - {peer_token}
+        assert len(row_tokens) == 1
+        root_jobs = []
+        root.after_idle(lambda: root_jobs.append("live root"))
+        _retire_row(root, parent, row, lifecycle)
+        variable.set(1)
+        root.update()
+        after = [str(token) for _modes, token in variable.trace_info()]
+        native_errors = list(root.tk.call("set", "pass18_trace_bgerrors"))
+        request.node.user_properties.append(("trace_retirement", json.dumps({
+            "kind": kind, "lifecycle": lifecycle, "before": before, "after": after,
+            "python_errors": errors, "tcl_errors": native_errors, "root_jobs": root_jobs,
+            "peer_calls": peer_trace_calls,
+        })))
+>       assert not errors
+E       assert not [('TclError', 'bad window path name ".!frame.!_checkrow"')]
+
+tests/test_checkrow_trace_lifetime_pass18.py:116: AssertionError
+__ test_retained_variable_does_not_call_a_destroyed_row[redraw-clear-integer] __
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font6'>, [('TclError', 'bad window path name ".!frame.!_checkrow"')])
+request = <FixtureRequest for <Function test_retained_variable_does_not_call_a_destroyed_row[redraw-clear-integer]>>
+kind = 'integer', lifecycle = 'redraw-clear'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_retained_variable_does_not_call_a_destroyed_row(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        peer_trace_calls = []
+        peer_token = variable.trace_add("write", lambda *_args: peer_trace_calls.append(variable.get()))
+        row = _CheckRow(parent, text="Report preference", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        before = [str(token) for _modes, token in variable.trace_info()]
+        row_tokens = set(before) - {peer_token}
+        assert len(row_tokens) == 1
+        root_jobs = []
+        root.after_idle(lambda: root_jobs.append("live root"))
+        _retire_row(root, parent, row, lifecycle)
+        variable.set(1)
+        root.update()
+        after = [str(token) for _modes, token in variable.trace_info()]
+        native_errors = list(root.tk.call("set", "pass18_trace_bgerrors"))
+        request.node.user_properties.append(("trace_retirement", json.dumps({
+            "kind": kind, "lifecycle": lifecycle, "before": before, "after": after,
+            "python_errors": errors, "tcl_errors": native_errors, "root_jobs": root_jobs,
+            "peer_calls": peer_trace_calls,
+        })))
+>       assert not errors
+E       assert not [('TclError', 'bad window path name ".!frame.!_checkrow"')]
+
+tests/test_checkrow_trace_lifetime_pass18.py:116: AssertionError
+______ test_destroyed_local_row_and_variable_are_collectable[row-boolean] ______
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font7'>, [])
+request = <FixtureRequest for <Function test_destroyed_local_row_and_variable_are_collectable[row-boolean]>>
+kind = 'boolean', lifecycle = 'row'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_destroyed_local_row_and_variable_are_collectable(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        row = _CheckRow(parent, text="Compare disks", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        row_ref, variable_ref = weakref.ref(row), weakref.ref(variable)
+        _retire_row(root, parent, row, lifecycle)
+        del row, variable
+        gc.collect()
+        request.node.user_properties.append(("local_trace_release", json.dumps({
+            "kind": kind, "lifecycle": lifecycle,
+            "row_alive": row_ref() is not None, "variable_alive": variable_ref() is not None,
+        })))
+>       assert row_ref() is None
+E       AssertionError: assert <beamo_wipe.ui.tk_wizard._CheckRow object .!frame.!_checkrow> is None
+E        +  where <beamo_wipe.ui.tk_wizard._CheckRow object .!frame.!_checkrow> = <weakref at 0x71b8e1a70180; to '_CheckRow' at 0x71b8e19f9dc0>()
+
+tests/test_checkrow_trace_lifetime_pass18.py:141: AssertionError
+______ test_destroyed_local_row_and_variable_are_collectable[row-integer] ______
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font8'>, [])
+request = <FixtureRequest for <Function test_destroyed_local_row_and_variable_are_collectable[row-integer]>>
+kind = 'integer', lifecycle = 'row'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_destroyed_local_row_and_variable_are_collectable(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        row = _CheckRow(parent, text="Compare disks", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        row_ref, variable_ref = weakref.ref(row), weakref.ref(variable)
+        _retire_row(root, parent, row, lifecycle)
+        del row, variable
+        gc.collect()
+        request.node.user_properties.append(("local_trace_release", json.dumps({
+            "kind": kind, "lifecycle": lifecycle,
+            "row_alive": row_ref() is not None, "variable_alive": variable_ref() is not None,
+        })))
+>       assert row_ref() is None
+E       AssertionError: assert <beamo_wipe.ui.tk_wizard._CheckRow object .!frame.!_checkrow> is None
+E        +  where <beamo_wipe.ui.tk_wizard._CheckRow object .!frame.!_checkrow> = <weakref at 0x71b8e2b06e80; to '_CheckRow' at 0x71b8e19965d0>()
+
+tests/test_checkrow_trace_lifetime_pass18.py:141: AssertionError
+____ test_destroyed_local_row_and_variable_are_collectable[parent-boolean] _____
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font9'>, [])
+request = <FixtureRequest for <Function test_destroyed_local_row_and_variable_are_collectable[parent-boolean]>>
+kind = 'boolean', lifecycle = 'parent'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_destroyed_local_row_and_variable_are_collectable(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        row = _CheckRow(parent, text="Compare disks", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        row_ref, variable_ref = weakref.ref(row), weakref.ref(variable)
+        _retire_row(root, parent, row, lifecycle)
+        del row, variable
+        gc.collect()
+        request.node.user_properties.append(("local_trace_release", json.dumps({
+            "kind": kind, "lifecycle": lifecycle,
+            "row_alive": row_ref() is not None, "variable_alive": variable_ref() is not None,
+        })))
+>       assert row_ref() is None
+E       AssertionError: assert <beamo_wipe.ui.tk_wizard._CheckRow object .!frame.!_checkrow> is None
+E        +  where <beamo_wipe.ui.tk_wizard._CheckRow object .!frame.!_checkrow> = <weakref at 0x71b8e2b07f10; to '_CheckRow' at 0x71b8e1995e80>()
+
+tests/test_checkrow_trace_lifetime_pass18.py:141: AssertionError
+____ test_destroyed_local_row_and_variable_are_collectable[parent-integer] _____
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font10'>, [])
+request = <FixtureRequest for <Function test_destroyed_local_row_and_variable_are_collectable[parent-integer]>>
+kind = 'integer', lifecycle = 'parent'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_destroyed_local_row_and_variable_are_collectable(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        row = _CheckRow(parent, text="Compare disks", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        row_ref, variable_ref = weakref.ref(row), weakref.ref(variable)
+        _retire_row(root, parent, row, lifecycle)
+        del row, variable
+        gc.collect()
+        request.node.user_properties.append(("local_trace_release", json.dumps({
+            "kind": kind, "lifecycle": lifecycle,
+            "row_alive": row_ref() is not None, "variable_alive": variable_ref() is not None,
+        })))
+>       assert row_ref() is None
+E       AssertionError: assert <beamo_wipe.ui.tk_wizard._CheckRow object .!frame.!_checkrow> is None
+E        +  where <beamo_wipe.ui.tk_wizard._CheckRow object .!frame.!_checkrow> = <weakref at 0x71b8e2b07e20; to '_CheckRow' at 0x71b8e1b473b0>()
+
+tests/test_checkrow_trace_lifetime_pass18.py:141: AssertionError
+_ test_destroyed_local_row_and_variable_are_collectable[redraw-clear-boolean] __
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font11'>, [])
+request = <FixtureRequest for <Function test_destroyed_local_row_and_variable_are_collectable[redraw-clear-boolean]>>
+kind = 'boolean', lifecycle = 'redraw-clear'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_destroyed_local_row_and_variable_are_collectable(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        row = _CheckRow(parent, text="Compare disks", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        row_ref, variable_ref = weakref.ref(row), weakref.ref(variable)
+        _retire_row(root, parent, row, lifecycle)
+        del row, variable
+        gc.collect()
+        request.node.user_properties.append(("local_trace_release", json.dumps({
+            "kind": kind, "lifecycle": lifecycle,
+            "row_alive": row_ref() is not None, "variable_alive": variable_ref() is not None,
+        })))
+>       assert row_ref() is None
+E       AssertionError: assert <beamo_wipe.ui.tk_wizard._CheckRow object .!frame.!_checkrow> is None
+E        +  where <beamo_wipe.ui.tk_wizard._CheckRow object .!frame.!_checkrow> = <weakref at 0x71b8e2b065c0; to '_CheckRow' at 0x71b8e2b79790>()
+
+tests/test_checkrow_trace_lifetime_pass18.py:141: AssertionError
+_ test_destroyed_local_row_and_variable_are_collectable[redraw-clear-integer] __
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font12'>, [])
+request = <FixtureRequest for <Function test_destroyed_local_row_and_variable_are_collectable[redraw-clear-integer]>>
+kind = 'integer', lifecycle = 'redraw-clear'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_destroyed_local_row_and_variable_are_collectable(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        row = _CheckRow(parent, text="Compare disks", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        row_ref, variable_ref = weakref.ref(row), weakref.ref(variable)
+        _retire_row(root, parent, row, lifecycle)
+        del row, variable
+        gc.collect()
+        request.node.user_properties.append(("local_trace_release", json.dumps({
+            "kind": kind, "lifecycle": lifecycle,
+            "row_alive": row_ref() is not None, "variable_alive": variable_ref() is not None,
+        })))
+>       assert row_ref() is None
+E       AssertionError: assert <beamo_wipe.ui.tk_wizard._CheckRow object .!frame.!_checkrow> is None
+E        +  where <beamo_wipe.ui.tk_wizard._CheckRow object .!frame.!_checkrow> = <weakref at 0x71b8e2b05fd0; to '_CheckRow' at 0x71b8e2b79c40>()
+
+tests/test_checkrow_trace_lifetime_pass18.py:141: AssertionError
+____ test_live_and_peer_rows_keep_their_variable_callbacks[True-0-boolean] _____
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font17'>, [('TclError', 'bad window path name ".!_checkrow"')])
+kind = 'boolean', initial = 0, retire_first = True
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("initial", [0, 1])
+    @pytest.mark.parametrize("retire_first", [False, True])
+    def test_live_and_peer_rows_keep_their_variable_callbacks(native_root, kind, initial, retire_first):
+        root, font, errors = native_root
+        variable = _variable(root, kind)
+        variable.set(initial)
+        actions = []
+        first = _CheckRow(root, text="First", variable=variable, command=lambda: actions.append("first"), font=font)
+        peer = _CheckRow(root, text="Peer", variable=variable, command=lambda: actions.append("peer"), font=font)
+        first.pack()
+        peer.pack()
+        assert len(variable.trace_info()) == 2
+        first.invoke()
+        root.update()
+        assert variable.get() == (not initial)
+        assert actions == ["first"]
+        assert not errors
+        if not retire_first:
+            peer.invoke()
+            root.update()
+            assert variable.get() == bool(initial)
+            assert actions == ["first", "peer"]
+            assert len(variable.trace_info()) == 2
+            assert not errors
+            return
+        _retire_fixture_callbacks(first)
+        first.destroy()
+        _retire_fixture_callbacks(peer)
+        peer.invoke()
+        root.update()
+        assert variable.get() == bool(initial)
+        assert actions == ["first", "peer"]
+>       assert len(variable.trace_info()) == 1
+E       AssertionError: assert 2 == 1
+E        +  where 2 = len([(('write',), '125038891172160_on_variable'), (('write',), '125038891032576_on_variable')])
+E        +    where [(('write',), '125038891172160_on_variable'), (('write',), '125038891032576_on_variable')] = trace_info()
+E        +      where trace_info = <tkinter.BooleanVar object at 0x71b8e2b4f860>.trace_info
+
+tests/test_checkrow_trace_lifetime_pass18.py:179: AssertionError
+____ test_live_and_peer_rows_keep_their_variable_callbacks[True-0-integer] _____
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font18'>, [('TclError', 'bad window path name ".!_checkrow"')])
+kind = 'integer', initial = 0, retire_first = True
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("initial", [0, 1])
+    @pytest.mark.parametrize("retire_first", [False, True])
+    def test_live_and_peer_rows_keep_their_variable_callbacks(native_root, kind, initial, retire_first):
+        root, font, errors = native_root
+        variable = _variable(root, kind)
+        variable.set(initial)
+        actions = []
+        first = _CheckRow(root, text="First", variable=variable, command=lambda: actions.append("first"), font=font)
+        peer = _CheckRow(root, text="Peer", variable=variable, command=lambda: actions.append("peer"), font=font)
+        first.pack()
+        peer.pack()
+        assert len(variable.trace_info()) == 2
+        first.invoke()
+        root.update()
+        assert variable.get() == (not initial)
+        assert actions == ["first"]
+        assert not errors
+        if not retire_first:
+            peer.invoke()
+            root.update()
+            assert variable.get() == bool(initial)
+            assert actions == ["first", "peer"]
+            assert len(variable.trace_info()) == 2
+            assert not errors
+            return
+        _retire_fixture_callbacks(first)
+        first.destroy()
+        _retire_fixture_callbacks(peer)
+        peer.invoke()
+        root.update()
+        assert variable.get() == bool(initial)
+        assert actions == ["first", "peer"]
+>       assert len(variable.trace_info()) == 1
+E       AssertionError: assert 2 == 1
+E        +  where 2 = len([(('write',), '125038890918016_on_variable'), (('write',), '125038890920064_on_variable')])
+E        +    where [(('write',), '125038890918016_on_variable'), (('write',), '125038890920064_on_variable')] = trace_info()
+E        +      where trace_info = <tkinter.IntVar object at 0x71b8e2b4d100>.trace_info
+
+tests/test_checkrow_trace_lifetime_pass18.py:179: AssertionError
+____ test_live_and_peer_rows_keep_their_variable_callbacks[True-1-boolean] _____
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font19'>, [('TclError', 'bad window path name ".!_checkrow"')])
+kind = 'boolean', initial = 1, retire_first = True
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("initial", [0, 1])
+    @pytest.mark.parametrize("retire_first", [False, True])
+    def test_live_and_peer_rows_keep_their_variable_callbacks(native_root, kind, initial, retire_first):
+        root, font, errors = native_root
+        variable = _variable(root, kind)
+        variable.set(initial)
+        actions = []
+        first = _CheckRow(root, text="First", variable=variable, command=lambda: actions.append("first"), font=font)
+        peer = _CheckRow(root, text="Peer", variable=variable, command=lambda: actions.append("peer"), font=font)
+        first.pack()
+        peer.pack()
+        assert len(variable.trace_info()) == 2
+        first.invoke()
+        root.update()
+        assert variable.get() == (not initial)
+        assert actions == ["first"]
+        assert not errors
+        if not retire_first:
+            peer.invoke()
+            root.update()
+            assert variable.get() == bool(initial)
+            assert actions == ["first", "peer"]
+            assert len(variable.trace_info()) == 2
+            assert not errors
+            return
+        _retire_fixture_callbacks(first)
+        first.destroy()
+        _retire_fixture_callbacks(peer)
+        peer.invoke()
+        root.update()
+        assert variable.get() == bool(initial)
+        assert actions == ["first", "peer"]
+>       assert len(variable.trace_info()) == 1
+E       AssertionError: assert 2 == 1
+E        +  where 2 = len([(('write',), '125038892660224_on_variable'), (('write',), '125038892658752_on_variable')])
+E        +    where [(('write',), '125038892660224_on_variable'), (('write',), '125038892658752_on_variable')] = trace_info()
+E        +      where trace_info = <tkinter.BooleanVar object at 0x71b8e2b2a150>.trace_info
+
+tests/test_checkrow_trace_lifetime_pass18.py:179: AssertionError
+____ test_live_and_peer_rows_keep_their_variable_callbacks[True-1-integer] _____
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font20'>, [('TclError', 'bad window path name ".!_checkrow"')])
+kind = 'integer', initial = 1, retire_first = True
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("initial", [0, 1])
+    @pytest.mark.parametrize("retire_first", [False, True])
+    def test_live_and_peer_rows_keep_their_variable_callbacks(native_root, kind, initial, retire_first):
+        root, font, errors = native_root
+        variable = _variable(root, kind)
+        variable.set(initial)
+        actions = []
+        first = _CheckRow(root, text="First", variable=variable, command=lambda: actions.append("first"), font=font)
+        peer = _CheckRow(root, text="Peer", variable=variable, command=lambda: actions.append("peer"), font=font)
+        first.pack()
+        peer.pack()
+        assert len(variable.trace_info()) == 2
+        first.invoke()
+        root.update()
+        assert variable.get() == (not initial)
+        assert actions == ["first"]
+        assert not errors
+        if not retire_first:
+            peer.invoke()
+            root.update()
+            assert variable.get() == bool(initial)
+            assert actions == ["first", "peer"]
+            assert len(variable.trace_info()) == 2
+            assert not errors
+            return
+        _retire_fixture_callbacks(first)
+        first.destroy()
+        _retire_fixture_callbacks(peer)
+        peer.invoke()
+        root.update()
+        assert variable.get() == bool(initial)
+        assert actions == ["first", "peer"]
+>       assert len(variable.trace_info()) == 1
+E       AssertionError: assert 2 == 1
+E        +  where 2 = len([(('write',), '125038891290432_on_variable'), (('write',), '125038891302784_on_variable')])
+E        +    where [(('write',), '125038891290432_on_variable'), (('write',), '125038891302784_on_variable')] = trace_info()
+E        +      where trace_info = <tkinter.IntVar object at 0x71b8e2b2baa0>.trace_info
+
+tests/test_checkrow_trace_lifetime_pass18.py:179: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py::test_malformed_pathless_overlap_cannot_expose_alias[boot-identity0-malformed-serial]
+FAILED docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py::test_malformed_pathless_overlap_cannot_expose_alias[boot-identity0-malformed-wwn]
+FAILED docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py::test_malformed_pathless_overlap_cannot_expose_alias[boot-identity0-conflicting-serial]
+FAILED docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py::test_malformed_pathless_overlap_cannot_expose_alias[boot-identity0-conflicting-wwn]
+FAILED docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py::test_malformed_pathless_overlap_cannot_expose_alias[boot-identity1-malformed-serial]
+FAILED docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py::test_malformed_pathless_overlap_cannot_expose_alias[boot-identity1-malformed-wwn]
+FAILED docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py::test_malformed_pathless_overlap_cannot_expose_alias[boot-identity1-conflicting-serial]
+FAILED docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py::test_malformed_pathless_overlap_cannot_expose_alias[boot-identity1-conflicting-wwn]
+FAILED docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py::test_malformed_pathless_overlap_cannot_expose_alias[mounted-identity0-malformed-serial]
+FAILED docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py::test_malformed_pathless_overlap_cannot_expose_alias[mounted-identity0-malformed-wwn]
+FAILED docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py::test_malformed_pathless_overlap_cannot_expose_alias[mounted-identity0-conflicting-serial]
+FAILED docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py::test_malformed_pathless_overlap_cannot_expose_alias[mounted-identity0-conflicting-wwn]
+FAILED docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py::test_malformed_pathless_overlap_cannot_expose_alias[mounted-identity1-malformed-serial]
+FAILED docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py::test_malformed_pathless_overlap_cannot_expose_alias[mounted-identity1-malformed-wwn]
+FAILED docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py::test_malformed_pathless_overlap_cannot_expose_alias[mounted-identity1-conflicting-serial]
+FAILED docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py::test_malformed_pathless_overlap_cannot_expose_alias[mounted-identity1-conflicting-wwn]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[row-boolean]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[row-integer]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[parent-boolean]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[parent-integer]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[redraw-clear-boolean]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[redraw-clear-integer]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[row-boolean]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[row-integer]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[parent-boolean]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[parent-integer]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[redraw-clear-boolean]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[redraw-clear-integer]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-0-boolean]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-0-integer]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-1-boolean]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-1-integer]

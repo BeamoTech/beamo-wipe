@@ -1,0 +1,17 @@
+{
+  "cases": 425,
+  "passed": 425,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "suite": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "425",
+    "time": "6.523",
+    "timestamp": "2026-10-16T16:22:39.933489+00:00",
+    "hostname": "srv1606478"
+  }
+}

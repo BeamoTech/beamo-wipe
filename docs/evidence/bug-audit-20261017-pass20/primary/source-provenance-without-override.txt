@@ -1,0 +1,20 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________________________ test_private_source_provenance ________________________
+
+request = <FixtureRequest for <Function test_private_source_provenance>>
+
+    def test_private_source_provenance(request):
+        from beamo_wipe.ui import tk_wizard
+        from beamo_wipe import build_identity
+        expected=Path('/tmp/pass20-primary/private-graph/src').resolve()
+        actual={module.__name__:str(Path(module.__file__).resolve()) for module in (tk_wizard,build_identity)}
+        request.node.user_properties.append(('source_provenance',json.dumps(actual)))
+>       assert all(Path(path).is_relative_to(expected) for path in actual.values()), actual
+E       AssertionError: {'beamo_wipe.build_identity': '/root/dev/Beamo Wipe/src/beamo_wipe/build_identity.py', 'beamo_wipe.ui.tk_wizard': '/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py'}
+E       assert False
+E        +  where False = all(<generator object test_private_source_provenance.<locals>.<genexpr> at 0x76859258adc0>)
+
+/tmp/pass20-primary/test_private_source_provenance.py:10: AssertionError
+=========================== short test summary info ============================
+FAILED ::test_private_source_provenance - AssertionError: {'beamo_wipe.build_...

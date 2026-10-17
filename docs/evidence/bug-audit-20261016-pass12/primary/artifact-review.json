@@ -1,0 +1,9 @@
+{
+  "report_cases": 90,
+  "report_files_hashed": 70,
+  "report_matrix_runtime_source_sha256": "2033156897c47190995f47499a87c761e4d9c7bc7a1124d0bafd91722ab3ec31",
+  "preview_file": "web-preview/index.html",
+  "preview_size_bytes": 185540,
+  "preview_sha256": "5492d76fb06bee55066b55cc305c66bd6149514d3367456337f045032f752880",
+  "preview_languages_js_checked_by_gate": true
+}

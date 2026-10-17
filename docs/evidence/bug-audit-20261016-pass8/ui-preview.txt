@@ -1,0 +1,2 @@
+Actual ./preview screenshot captured on private72DPI Xvfb; PID 344126
+Owned preview child retired,returncode -15

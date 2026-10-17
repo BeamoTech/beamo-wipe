@@ -1,0 +1,3676 @@
+{
+  "cases": 588,
+  "targets_present": 67,
+  "safe_refusals": 521,
+  "native_attempts": [],
+  "cases_sha256": "8fe2338e160d27c50cae25ada3f4e4ba49f51e0d0a42e5373c5366cc54e24933",
+  "observations": [
+    {
+      "case": "ownership/usb/sda/tree/none/correct/ext4",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/none/correct/ntfs",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/none/correct/crypto_LUKS",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/none/missing/ext4",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/none/missing/ntfs",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/none/missing/crypto_LUKS",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/none/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/none/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/none/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/list/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/list/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/list/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/list/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/list/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/list/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/list/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/list/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/list/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/scalar/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/scalar/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/scalar/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/scalar/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/scalar/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/scalar/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/scalar/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/scalar/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/scalar/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/single/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/single/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/single/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/single/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/single/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/single/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/tree/single/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/single/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/single/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/malformed/correct/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/malformed/correct/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/malformed/correct/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/malformed/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/malformed/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/malformed/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/malformed/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/malformed/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/tree/malformed/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/none/correct/ext4",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/flat/none/correct/ntfs",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/flat/none/correct/crypto_LUKS",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/flat/none/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/none/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/none/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/none/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/none/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/none/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/list/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/flat/list/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/flat/list/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/flat/list/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/list/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/list/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/list/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/list/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/list/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/scalar/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/flat/scalar/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/flat/scalar/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/flat/scalar/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/scalar/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/scalar/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/scalar/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/scalar/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/scalar/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/single/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/flat/single/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/flat/single/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/sda/flat/single/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/single/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/single/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/single/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/single/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/single/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/malformed/correct/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/malformed/correct/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/malformed/correct/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/malformed/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/malformed/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/malformed/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/malformed/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/malformed/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/sda/flat/malformed/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/none/correct/ext4",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/none/correct/ntfs",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/none/correct/crypto_LUKS",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/none/missing/ext4",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/none/missing/ntfs",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/none/missing/crypto_LUKS",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/none/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/none/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/none/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/list/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/list/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/list/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/list/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/list/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/list/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/list/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/list/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/list/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/scalar/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/scalar/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/scalar/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/scalar/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/scalar/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/scalar/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/scalar/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/scalar/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/scalar/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/single/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/single/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/single/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/single/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/single/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/single/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/single/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/single/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/single/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/malformed/correct/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/malformed/correct/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/malformed/correct/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/malformed/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/malformed/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/malformed/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/malformed/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/malformed/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/tree/malformed/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/none/correct/ext4",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/none/correct/ntfs",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/none/correct/crypto_LUKS",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/none/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/none/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/none/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/none/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/none/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/none/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/list/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/list/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/list/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/list/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/list/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/list/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/list/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/list/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/list/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/scalar/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/scalar/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/scalar/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/scalar/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/scalar/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/scalar/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/scalar/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/scalar/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/scalar/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/single/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/single/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/single/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/single/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/single/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/single/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/single/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/single/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/single/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/malformed/correct/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/malformed/correct/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/malformed/correct/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/malformed/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/malformed/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/malformed/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/malformed/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/malformed/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/nvme0n1/flat/malformed/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/none/correct/ext4",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/none/correct/ntfs",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/none/correct/crypto_LUKS",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/none/missing/ext4",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/none/missing/ntfs",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/none/missing/crypto_LUKS",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/none/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/none/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/none/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/list/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/list/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/list/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/list/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/list/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/list/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/list/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/list/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/list/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/scalar/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/scalar/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/scalar/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/scalar/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/scalar/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/scalar/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/scalar/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/scalar/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/scalar/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/single/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/single/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/single/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/single/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/single/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/single/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/tree/single/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/single/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/single/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/malformed/correct/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/malformed/correct/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/malformed/correct/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/malformed/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/malformed/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/malformed/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/malformed/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/malformed/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/tree/malformed/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/none/correct/ext4",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/flat/none/correct/ntfs",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/flat/none/correct/crypto_LUKS",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/flat/none/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/none/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/none/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/none/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/none/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/none/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/list/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/flat/list/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/flat/list/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/flat/list/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/list/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/list/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/list/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/list/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/list/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/scalar/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/flat/scalar/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/flat/scalar/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/flat/scalar/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/scalar/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/scalar/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/scalar/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/scalar/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/scalar/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/single/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/flat/single/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/flat/single/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/usb/vda/flat/single/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/single/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/single/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/single/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/single/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/single/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/malformed/correct/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/malformed/correct/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/malformed/correct/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/malformed/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/malformed/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/malformed/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/malformed/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/malformed/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/usb/vda/flat/malformed/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/none/correct/ext4",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/none/correct/ntfs",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/none/correct/crypto_LUKS",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/none/missing/ext4",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/none/missing/ntfs",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/none/missing/crypto_LUKS",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/none/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/none/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/none/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/list/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/list/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/list/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/list/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/list/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/list/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/list/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/list/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/list/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/scalar/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/scalar/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/scalar/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/scalar/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/scalar/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/scalar/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/scalar/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/scalar/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/scalar/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/single/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/single/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/single/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/single/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/single/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/single/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/tree/single/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/single/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/single/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/malformed/correct/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/malformed/correct/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/malformed/correct/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/malformed/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/malformed/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/malformed/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/malformed/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/malformed/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/tree/malformed/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/none/correct/ext4",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/flat/none/correct/ntfs",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/flat/none/correct/crypto_LUKS",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/flat/none/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/none/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/none/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/none/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/none/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/none/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/list/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/flat/list/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/flat/list/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/flat/list/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/list/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/list/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/list/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/list/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/list/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/scalar/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/flat/scalar/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/flat/scalar/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/flat/scalar/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/scalar/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/scalar/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/scalar/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/scalar/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/scalar/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/single/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/flat/single/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/flat/single/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/sda/flat/single/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/single/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/single/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/single/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/single/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/single/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/malformed/correct/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/malformed/correct/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/malformed/correct/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/malformed/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/malformed/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/malformed/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/malformed/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/malformed/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/sda/flat/malformed/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/none/correct/ext4",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/none/correct/ntfs",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/none/correct/crypto_LUKS",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/none/missing/ext4",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/none/missing/ntfs",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/none/missing/crypto_LUKS",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/none/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/none/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/none/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/list/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/list/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/list/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/list/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/list/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/list/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/list/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/list/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/list/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/scalar/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/scalar/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/scalar/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/scalar/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/scalar/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/scalar/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/scalar/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/scalar/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/scalar/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/single/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/single/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/single/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/single/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/single/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/single/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/single/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/single/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/single/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/malformed/correct/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/malformed/correct/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/malformed/correct/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/malformed/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/malformed/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/malformed/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/malformed/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/malformed/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/tree/malformed/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/none/correct/ext4",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/none/correct/ntfs",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/none/correct/crypto_LUKS",
+      "targets": [
+        "/dev/nvme0n1"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/none/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/none/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/none/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/none/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/none/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/none/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/list/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/list/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/list/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/list/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/list/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/list/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/list/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/list/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/list/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/scalar/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/scalar/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/scalar/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/scalar/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/scalar/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/scalar/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/scalar/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/scalar/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/scalar/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/single/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/single/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/single/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/single/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/single/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/single/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/single/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/single/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/single/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/malformed/correct/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/malformed/correct/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/malformed/correct/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/malformed/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/malformed/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/malformed/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/malformed/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/malformed/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/nvme0n1/flat/malformed/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/none/correct/ext4",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/none/correct/ntfs",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/none/correct/crypto_LUKS",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/none/missing/ext4",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/none/missing/ntfs",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/none/missing/crypto_LUKS",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/none/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/none/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/none/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/list/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/list/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/list/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/list/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/list/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/list/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/list/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/list/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/list/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/scalar/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/scalar/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/scalar/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/scalar/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/scalar/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/scalar/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/scalar/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/scalar/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/scalar/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/single/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/single/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/single/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/single/missing/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/single/missing/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/single/missing/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/tree/single/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/single/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/single/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/malformed/correct/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/malformed/correct/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/malformed/correct/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/malformed/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/malformed/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/malformed/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/malformed/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/malformed/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/tree/malformed/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/none/correct/ext4",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/flat/none/correct/ntfs",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/flat/none/correct/crypto_LUKS",
+      "targets": [
+        "/dev/vda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/flat/none/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/none/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/none/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/none/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/none/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/none/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/list/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/flat/list/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/flat/list/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/flat/list/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/list/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/list/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/list/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/list/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/list/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/scalar/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/flat/scalar/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/flat/scalar/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/flat/scalar/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/scalar/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/scalar/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/scalar/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/scalar/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/scalar/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/single/correct/ext4",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/flat/single/correct/ntfs",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/flat/single/correct/crypto_LUKS",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "ownership/rom/vda/flat/single/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/single/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/single/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/single/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/single/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/single/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/malformed/correct/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/malformed/correct/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/malformed/correct/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/malformed/missing/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/malformed/missing/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/malformed/missing/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/malformed/wrong/ext4",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/malformed/wrong/ntfs",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "ownership/rom/vda/flat/malformed/wrong/crypto_LUKS",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot//dev/sdb/None",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "boot//dev/sdb//dev/sda",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot//dev/sdb/UUID=TARGET-UUID",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot//dev/sdb/UUID=MISSING",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot//dev/sdb/overlay",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot//dev/sdb//dev/loop99",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot//dev/sdb1/None",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "boot//dev/sdb1//dev/sda",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot//dev/sdb1/UUID=TARGET-UUID",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot//dev/sdb1/UUID=MISSING",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot//dev/sdb1/overlay",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot//dev/sdb1//dev/loop99",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/UUID=BOOT-UUID/None",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "boot/UUID=BOOT-UUID//dev/sda",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/UUID=BOOT-UUID/UUID=TARGET-UUID",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/UUID=BOOT-UUID/UUID=MISSING",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/UUID=BOOT-UUID/overlay",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/UUID=BOOT-UUID//dev/loop99",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/LABEL=BEAMO_WIPE/None",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "boot/LABEL=BEAMO_WIPE//dev/sda",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/LABEL=BEAMO_WIPE/UUID=TARGET-UUID",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/LABEL=BEAMO_WIPE/UUID=MISSING",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/LABEL=BEAMO_WIPE/overlay",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/LABEL=BEAMO_WIPE//dev/loop99",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/PARTUUID=BOOT-PART/None",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "boot/PARTUUID=BOOT-PART//dev/sda",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/PARTUUID=BOOT-PART/UUID=TARGET-UUID",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/PARTUUID=BOOT-PART/UUID=MISSING",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/PARTUUID=BOOT-PART/overlay",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/PARTUUID=BOOT-PART//dev/loop99",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/PARTLABEL=boot partition/None",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "boot/PARTLABEL=boot partition//dev/sda",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/PARTLABEL=boot partition/UUID=TARGET-UUID",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/PARTLABEL=boot partition/UUID=MISSING",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/PARTLABEL=boot partition/overlay",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "boot/PARTLABEL=boot partition//dev/loop99",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "aliases/shared-serial/False",
+      "targets": [
+        "/dev/sda",
+        "/dev/sdc"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "aliases/shared-serial/True",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "aliases/shared-wwn/False",
+      "targets": [
+        "/dev/sda",
+        "/dev/sdc"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "aliases/shared-wwn/True",
+      "targets": [],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "aliases/distinct-wwn/False",
+      "targets": [
+        "/dev/sda",
+        "/dev/sdc"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "aliases/distinct-wwn/True",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "aliases/zero-serial/False",
+      "targets": [
+        "/dev/sda",
+        "/dev/sdc"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "aliases/zero-serial/True",
+      "targets": [
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "duplicate/identical",
+      "targets": [
+        "/dev/sda",
+        "/dev/sda"
+      ],
+      "identified": true,
+      "error": false
+    },
+    {
+      "case": "duplicate/size",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "duplicate/ro",
+      "targets": [],
+      "identified": false,
+      "error": true
+    },
+    {
+      "case": "duplicate/mount",
+      "targets": [],
+      "identified": false,
+      "error": true
+    }
+  ]
+}

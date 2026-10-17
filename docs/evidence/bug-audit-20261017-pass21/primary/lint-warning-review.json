@@ -1,0 +1,12 @@
+{
+  "status": "Reviewed inherited non-material output; no product/automation change",
+  "identical_to_prior_lint": true,
+  "existing_annotation_notes": 5,
+  "todo_warning": "Unchanged PLACEHOLDER_RE regular expression contains literal TODO, not an outstanding task",
+  "unchanged_source": {
+    "src/beamo_wipe/release_manifest.py": "4f2ab923d177a4440143e116f0d4bfc096aa2f22f91679df672956c8ed888307",
+    "src/beamo_wipe/audio_jobs.py": "07e34b995a4df7424e6e1c5cd1a345856cd6b9ff622606fa74a79af2688597e0",
+    "src/beamo_wipe/session_recovery.py": "128c5daa4c53197437682c637d3078917a79037a9edf5d1796fc9916cdd4ba53"
+  },
+  "current_log_sha256": "8f516a7b4cdf99e4a7010798da05d2e8ef77892c31a6a56ac32cd2ac243232e4"
+}

@@ -1,0 +1,41 @@
+{
+  "exact_starting_source_files": 58,
+  "shared_source_reverted": false,
+  "modules": {
+    "test_audio_launch_ownership_pass14": {
+      "cases": 10,
+      "failed": 8,
+      "passed": 2,
+      "errors": 0,
+      "skipped": 0,
+      "failure_functions": {
+        "test_start_error_after_spawn_never_leaves_a_competing_worker": 8
+      }
+    },
+    "test_protected_alias_chains_pass14": {
+      "cases": 168,
+      "failed": 72,
+      "passed": 96,
+      "errors": 0,
+      "skipped": 0,
+      "failure_functions": {
+        "test_composed_protection_preserves_stronger_contrary_wwns": 48,
+        "test_final_boot_guard_rechecks_complete_alias_context": 24
+      }
+    },
+    "test_tk_focus_reveal_pass14": {
+      "cases": 29,
+      "failed": 28,
+      "passed": 1,
+      "errors": 0,
+      "skipped": 0,
+      "failure_functions": {
+        "test_initial_typing_and_consent_focus_is_visible": 26,
+        "test_manual_scroll_is_preserved_until_focus_changes": 1,
+        "test_stale_focus_callback_cannot_scroll_replacement_screen": 1
+      }
+    }
+  },
+  "junit_sha256": "1b3ebffed796e5d2003195bc5bc6bd2a13e292fa7e5815b61ef58b04535286dd",
+  "disposition": "Intended original product assertion failures with adjacent passing controls; not a passing product gate."
+}

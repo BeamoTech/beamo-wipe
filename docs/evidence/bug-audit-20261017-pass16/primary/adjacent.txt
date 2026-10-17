@@ -1,0 +1,505 @@
+dbus-daemon[20846]: [session uid=0 pid=20846] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=20860 comm="/root/dev/Beamo Wipe/.venv-linux/bin/python3 -m py" label="unconfined")
+dbus-daemon[20846]: [session uid=0 pid=20846] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[20872]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=20860 comm="/root/dev/Beamo Wipe/.venv-linux/bin/python3 -m py" label="unconfined")
+dbus-daemon[20872]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+........................................................................ [  3%]
+........................................................................ [  6%]
+........................................................................ [ 10%]
+........................................................................ [ 13%]
+........................................................................ [ 17%]
+........................................................................ [ 20%]
+........................................................................ [ 24%]
+........................................................................ [ 27%]
+........................................................................ [ 31%]
+........................................................................ [ 34%]
+........................................................................ [ 38%]
+........................................................................ [ 41%]
+........................................................................ [ 44%]
+........................................................................ [ 48%]
+........................................................................ [ 51%]
+........................................................................ [ 55%]
+........................................................................ [ 58%]
+........................................................................ [ 62%]
+........................................................................ [ 65%]
+........................................................................ [ 69%]
+........................................................................ [ 72%]
+........................................................................ [ 76%]
+........................................................................ [ 79%]
+........................................................................ [ 83%]
+........................................................................ [ 86%]
+........................................................................ [ 89%]
+........................................................................ [ 93%]
+........................................................................ [ 96%]
+..................FFFF...F...................FFF.................        [100%]
+=================================== FAILURES ===================================
+_ test_native_escape_closes_modal_once_and_waits_for_a_fresh_press[False-owner] _
+
+ui = <function ui.<locals>.build at 0x73abb8348b80>
+native = <class 'test_accessible_focus_input_pass11.native.<locals>.Input'>
+screen = <Screen.OWNER: 'owner'>, rerender = False
+
+    @pytest.mark.parametrize("screen", [Screen.OWNER, Screen.METHOD, Screen.LAST_CHANCE, Screen.WORKING])
+    @pytest.mark.parametrize("rerender", [False, True])
+    def test_native_escape_closes_modal_once_and_waits_for_a_fresh_press(ui, native, screen, rerender):  # noqa: F811
+        app, clock = ui(screen)
+        controller = _open(app)
+        if rerender:
+            app.render()
+            _drain()
+            assert app._sound_dialog is controller and controller.dialog is not None
+        before = _authority(app.w)
+        observed = []
+    
+        def observe(_widget, event):
+            if event.type == Gdk.EventType.KEY_PRESS and event.keyval == Gdk.KEY_Escape:
+                observed.append(event.time)
+            return False
+    
+        # GtkWidget::event precedes its key-specific handler, including a handler
+        # that returns True to consume repeats. This only observes native events.
+        controller.dialog.connect("event", observe)
+        app.window.connect("event", observe)
+        native.key(Gdk.KEY_Escape, True)
+        _wait(lambda: controller.dialog is None)
+        _drain(0.85)
+        assert len(observed) >= 2, "The private X server did not deliver native hold-repeat"
+        assert app.w.screen is screen
+        assert app.w.stop_confirmation is None
+        assert _authority(app.w) == before
+        assert not app.w.runner.started and not app.w.runner.cancelled
+        if screen is Screen.LAST_CHANCE:
+            clock.value = 4.0
+            assert not app.w.erase_enabled
+    
+        native.key(Gdk.KEY_Escape, False)
+        native.key(Gdk.KEY_Escape, True)
+        native.key(Gdk.KEY_Escape, False)
+        expected = {Screen.OWNER: Screen.KEYBOARD, Screen.METHOD: Screen.CONFIRM,
+                    Screen.LAST_CHANCE: Screen.METHOD, Screen.WORKING: Screen.WORKING}[screen]
+>       assert app.w.screen is expected
+E       AssertionError: assert <Screen.OWNER: 'owner'> is <Screen.KEYBOARD: 'keyboard'>
+E        +  where <Screen.OWNER: 'owner'> = <beamo_wipe.wizard.Wizard object at 0x73abb84f9790>.screen
+E        +    where <beamo_wipe.wizard.Wizard object at 0x73abb84f9790> = <beamo_wipe.ui.accessible_wizard.AccessibleWizard object at 0x73abb84e05f0>.w
+
+tests/test_accessible_modal_key_hold_pass16.py:199: AssertionError
+_ test_native_escape_closes_modal_once_and_waits_for_a_fresh_press[False-method] _
+
+ui = <function ui.<locals>.build at 0x73abb834b100>
+native = <class 'test_accessible_focus_input_pass11.native.<locals>.Input'>
+screen = <Screen.METHOD: 'method'>, rerender = False
+
+    @pytest.mark.parametrize("screen", [Screen.OWNER, Screen.METHOD, Screen.LAST_CHANCE, Screen.WORKING])
+    @pytest.mark.parametrize("rerender", [False, True])
+    def test_native_escape_closes_modal_once_and_waits_for_a_fresh_press(ui, native, screen, rerender):  # noqa: F811
+        app, clock = ui(screen)
+        controller = _open(app)
+        if rerender:
+            app.render()
+            _drain()
+            assert app._sound_dialog is controller and controller.dialog is not None
+        before = _authority(app.w)
+        observed = []
+    
+        def observe(_widget, event):
+            if event.type == Gdk.EventType.KEY_PRESS and event.keyval == Gdk.KEY_Escape:
+                observed.append(event.time)
+            return False
+    
+        # GtkWidget::event precedes its key-specific handler, including a handler
+        # that returns True to consume repeats. This only observes native events.
+        controller.dialog.connect("event", observe)
+        app.window.connect("event", observe)
+        native.key(Gdk.KEY_Escape, True)
+        _wait(lambda: controller.dialog is None)
+        _drain(0.85)
+        assert len(observed) >= 2, "The private X server did not deliver native hold-repeat"
+        assert app.w.screen is screen
+        assert app.w.stop_confirmation is None
+        assert _authority(app.w) == before
+        assert not app.w.runner.started and not app.w.runner.cancelled
+        if screen is Screen.LAST_CHANCE:
+            clock.value = 4.0
+            assert not app.w.erase_enabled
+    
+        native.key(Gdk.KEY_Escape, False)
+        native.key(Gdk.KEY_Escape, True)
+        native.key(Gdk.KEY_Escape, False)
+        expected = {Screen.OWNER: Screen.KEYBOARD, Screen.METHOD: Screen.CONFIRM,
+                    Screen.LAST_CHANCE: Screen.METHOD, Screen.WORKING: Screen.WORKING}[screen]
+>       assert app.w.screen is expected
+E       AssertionError: assert <Screen.METHOD: 'method'> is <Screen.CONFIRM: 'confirm'>
+E        +  where <Screen.METHOD: 'method'> = <beamo_wipe.wizard.Wizard object at 0x73abb885ede0>.screen
+E        +    where <beamo_wipe.wizard.Wizard object at 0x73abb885ede0> = <beamo_wipe.ui.accessible_wizard.AccessibleWizard object at 0x73abb88178c0>.w
+
+tests/test_accessible_modal_key_hold_pass16.py:199: AssertionError
+_ test_native_escape_closes_modal_once_and_waits_for_a_fresh_press[False-last_chance] _
+
+ui = <function ui.<locals>.build at 0x73abb834b9c0>
+native = <class 'test_accessible_focus_input_pass11.native.<locals>.Input'>
+screen = <Screen.LAST_CHANCE: 'last_chance'>, rerender = False
+
+    @pytest.mark.parametrize("screen", [Screen.OWNER, Screen.METHOD, Screen.LAST_CHANCE, Screen.WORKING])
+    @pytest.mark.parametrize("rerender", [False, True])
+    def test_native_escape_closes_modal_once_and_waits_for_a_fresh_press(ui, native, screen, rerender):  # noqa: F811
+        app, clock = ui(screen)
+        controller = _open(app)
+        if rerender:
+            app.render()
+            _drain()
+            assert app._sound_dialog is controller and controller.dialog is not None
+        before = _authority(app.w)
+        observed = []
+    
+        def observe(_widget, event):
+            if event.type == Gdk.EventType.KEY_PRESS and event.keyval == Gdk.KEY_Escape:
+                observed.append(event.time)
+            return False
+    
+        # GtkWidget::event precedes its key-specific handler, including a handler
+        # that returns True to consume repeats. This only observes native events.
+        controller.dialog.connect("event", observe)
+        app.window.connect("event", observe)
+        native.key(Gdk.KEY_Escape, True)
+        _wait(lambda: controller.dialog is None)
+        _drain(0.85)
+        assert len(observed) >= 2, "The private X server did not deliver native hold-repeat"
+        assert app.w.screen is screen
+        assert app.w.stop_confirmation is None
+        assert _authority(app.w) == before
+        assert not app.w.runner.started and not app.w.runner.cancelled
+        if screen is Screen.LAST_CHANCE:
+            clock.value = 4.0
+            assert not app.w.erase_enabled
+    
+        native.key(Gdk.KEY_Escape, False)
+        native.key(Gdk.KEY_Escape, True)
+        native.key(Gdk.KEY_Escape, False)
+        expected = {Screen.OWNER: Screen.KEYBOARD, Screen.METHOD: Screen.CONFIRM,
+                    Screen.LAST_CHANCE: Screen.METHOD, Screen.WORKING: Screen.WORKING}[screen]
+>       assert app.w.screen is expected
+E       AssertionError: assert <Screen.LAST_CHANCE: 'last_chance'> is <Screen.METHOD: 'method'>
+E        +  where <Screen.LAST_CHANCE: 'last_chance'> = <beamo_wipe.wizard.Wizard object at 0x73abb885dac0>.screen
+E        +    where <beamo_wipe.wizard.Wizard object at 0x73abb885dac0> = <beamo_wipe.ui.accessible_wizard.AccessibleWizard object at 0x73abb8684d40>.w
+
+tests/test_accessible_modal_key_hold_pass16.py:199: AssertionError
+_ test_native_escape_closes_modal_once_and_waits_for_a_fresh_press[False-working] _
+
+ui = <function ui.<locals>.build at 0x73abb8348cc0>
+native = <class 'test_accessible_focus_input_pass11.native.<locals>.Input'>
+screen = <Screen.WORKING: 'working'>, rerender = False
+
+    @pytest.mark.parametrize("screen", [Screen.OWNER, Screen.METHOD, Screen.LAST_CHANCE, Screen.WORKING])
+    @pytest.mark.parametrize("rerender", [False, True])
+    def test_native_escape_closes_modal_once_and_waits_for_a_fresh_press(ui, native, screen, rerender):  # noqa: F811
+        app, clock = ui(screen)
+        controller = _open(app)
+        if rerender:
+            app.render()
+            _drain()
+            assert app._sound_dialog is controller and controller.dialog is not None
+        before = _authority(app.w)
+        observed = []
+    
+        def observe(_widget, event):
+            if event.type == Gdk.EventType.KEY_PRESS and event.keyval == Gdk.KEY_Escape:
+                observed.append(event.time)
+            return False
+    
+        # GtkWidget::event precedes its key-specific handler, including a handler
+        # that returns True to consume repeats. This only observes native events.
+        controller.dialog.connect("event", observe)
+        app.window.connect("event", observe)
+        native.key(Gdk.KEY_Escape, True)
+        _wait(lambda: controller.dialog is None)
+        _drain(0.85)
+        assert len(observed) >= 2, "The private X server did not deliver native hold-repeat"
+        assert app.w.screen is screen
+        assert app.w.stop_confirmation is None
+        assert _authority(app.w) == before
+        assert not app.w.runner.started and not app.w.runner.cancelled
+        if screen is Screen.LAST_CHANCE:
+            clock.value = 4.0
+            assert not app.w.erase_enabled
+    
+        native.key(Gdk.KEY_Escape, False)
+        native.key(Gdk.KEY_Escape, True)
+        native.key(Gdk.KEY_Escape, False)
+        expected = {Screen.OWNER: Screen.KEYBOARD, Screen.METHOD: Screen.CONFIRM,
+                    Screen.LAST_CHANCE: Screen.METHOD, Screen.WORKING: Screen.WORKING}[screen]
+        assert app.w.screen is expected
+>       assert (app.w.stop_confirmation is not None) is (screen is Screen.WORKING)
+E       AssertionError: assert (None is not None) is (<Screen.WORKING: 'working'> is <Screen.WORKING: 'working'>)
+E        +  where None = <beamo_wipe.wizard.Wizard object at 0x73abb8685580>.stop_confirmation
+E        +    where <beamo_wipe.wizard.Wizard object at 0x73abb8685580> = <beamo_wipe.ui.accessible_wizard.AccessibleWizard object at 0x73abb879b140>.w
+E        +  and   <Screen.WORKING: 'working'> = Screen.WORKING
+
+tests/test_accessible_modal_key_hold_pass16.py:200: AssertionError
+_ test_native_escape_closes_modal_once_and_waits_for_a_fresh_press[True-working] _
+
+ui = <function ui.<locals>.build at 0x73abb8349760>
+native = <class 'test_accessible_focus_input_pass11.native.<locals>.Input'>
+screen = <Screen.WORKING: 'working'>, rerender = True
+
+    @pytest.mark.parametrize("screen", [Screen.OWNER, Screen.METHOD, Screen.LAST_CHANCE, Screen.WORKING])
+    @pytest.mark.parametrize("rerender", [False, True])
+    def test_native_escape_closes_modal_once_and_waits_for_a_fresh_press(ui, native, screen, rerender):  # noqa: F811
+        app, clock = ui(screen)
+        controller = _open(app)
+        if rerender:
+            app.render()
+            _drain()
+            assert app._sound_dialog is controller and controller.dialog is not None
+        before = _authority(app.w)
+        observed = []
+    
+        def observe(_widget, event):
+            if event.type == Gdk.EventType.KEY_PRESS and event.keyval == Gdk.KEY_Escape:
+                observed.append(event.time)
+            return False
+    
+        # GtkWidget::event precedes its key-specific handler, including a handler
+        # that returns True to consume repeats. This only observes native events.
+        controller.dialog.connect("event", observe)
+        app.window.connect("event", observe)
+        native.key(Gdk.KEY_Escape, True)
+        _wait(lambda: controller.dialog is None)
+        _drain(0.85)
+        assert len(observed) >= 2, "The private X server did not deliver native hold-repeat"
+        assert app.w.screen is screen
+        assert app.w.stop_confirmation is None
+        assert _authority(app.w) == before
+        assert not app.w.runner.started and not app.w.runner.cancelled
+        if screen is Screen.LAST_CHANCE:
+            clock.value = 4.0
+            assert not app.w.erase_enabled
+    
+        native.key(Gdk.KEY_Escape, False)
+        native.key(Gdk.KEY_Escape, True)
+        native.key(Gdk.KEY_Escape, False)
+        expected = {Screen.OWNER: Screen.KEYBOARD, Screen.METHOD: Screen.CONFIRM,
+                    Screen.LAST_CHANCE: Screen.METHOD, Screen.WORKING: Screen.WORKING}[screen]
+        assert app.w.screen is expected
+>       assert (app.w.stop_confirmation is not None) is (screen is Screen.WORKING)
+E       AssertionError: assert (None is not None) is (<Screen.WORKING: 'working'> is <Screen.WORKING: 'working'>)
+E        +  where None = <beamo_wipe.wizard.Wizard object at 0x73abb86b6ea0>.stop_confirmation
+E        +    where <beamo_wipe.wizard.Wizard object at 0x73abb86b6ea0> = <beamo_wipe.ui.accessible_wizard.AccessibleWizard object at 0x73abb860d970>.w
+E        +  and   <Screen.WORKING: 'working'> = Screen.WORKING
+
+tests/test_accessible_modal_key_hold_pass16.py:200: AssertionError
+_ test_obsolete_confirmation_callbacks_do_not_outlive_their_owner[navigate-idle-standard] _
+
+ui = <function ui.<locals>.build at 0x73abb83a0cc0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x73abb8899910>
+text_size = 'standard', pending = 'idle', lifecycle = 'navigate'
+
+    @pytest.mark.parametrize("text_size", ["standard", "large", "extra"])
+    @pytest.mark.parametrize("pending", ["idle", "retry"])
+    @pytest.mark.parametrize("lifecycle", ["redraw", "navigate", "destroy"])
+    def test_obsolete_confirmation_callbacks_do_not_outlive_their_owner(
+        ui, monkeypatch, text_size, pending, lifecycle
+    ):
+        app, _clock, errors = ui(text_size)
+        # Match run()'s mapped native input claim before creating the Entry whose
+        # pending work this case retires. Never replace child focus after retirement.
+        app.root.update()
+        app.root.focus_force()
+        app._draw()
+        old_entry = _entry(app)
+        before = _authority(app.w)
+        attempts = []
+        if pending == "retry":
+            original = app._ensure_confirm_focus
+    
+            def observe(entry, *args, **kwargs):
+                attempts.append((entry, app.root.focus_get() is entry))
+                return original(entry, *args, **kwargs)
+    
+            monkeypatch.setattr(app, "_ensure_confirm_focus", observe)
+            app.root.withdraw()
+            app.root.update_idletasks()
+            assert any(entry is old_entry and not focused for entry, focused in attempts)
+            assert not errors
+    
+        if lifecycle != "destroy":
+            app.root.geometry("800x600+0+0")
+            app.root.deiconify()
+            # Claim native input before the renderer establishes its child focus.
+            # A later root.focus_force() would replace that correct child focus.
+            app.root.focus_force()
+        if lifecycle == "navigate":
+            app.w.back()
+            before = _authority(app.w)
+            assert app.w.screen is Screen.PICK
+            app._draw()
+        elif lifecycle == "redraw":
+            app._draw()
+        else:
+            app._teardown()
+    
+        assert not app.root.tk.call("info", "commands", str(old_entry))
+        if lifecycle == "destroy":
+            _pump(app.root)
+        else:
+            app.root.update()
+            _pump(app.root)
+            focus = app.root.focus_get()
+            assert focus is not old_entry
+            if lifecycle == "redraw":
+                current = _entry(app)
+                assert focus is current
+                assert current.get() == app.w.confirm_input
+            else:
+                assert app.w.screen is Screen.PICK
+>               assert focus is app._primary
+E               assert None is <beamo_wipe.ui.tk_wizard._Button object .!frame.!frame4.!frame3.!frame2.!_button>
+E                +  where <beamo_wipe.ui.tk_wizard._Button object .!frame.!frame4.!frame3.!frame2.!_button> = <beamo_wipe.ui.tk_wizard.TkWizard object at 0x73abb882f4a0>._primary
+
+tests/test_confirm_focus_callback_lifetime_pass16.py:162: AssertionError
+_ test_obsolete_confirmation_callbacks_do_not_outlive_their_owner[navigate-idle-large] _
+
+ui = <function ui.<locals>.build at 0x73abb83a02c0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x73abd2152690>
+text_size = 'large', pending = 'idle', lifecycle = 'navigate'
+
+    @pytest.mark.parametrize("text_size", ["standard", "large", "extra"])
+    @pytest.mark.parametrize("pending", ["idle", "retry"])
+    @pytest.mark.parametrize("lifecycle", ["redraw", "navigate", "destroy"])
+    def test_obsolete_confirmation_callbacks_do_not_outlive_their_owner(
+        ui, monkeypatch, text_size, pending, lifecycle
+    ):
+        app, _clock, errors = ui(text_size)
+        # Match run()'s mapped native input claim before creating the Entry whose
+        # pending work this case retires. Never replace child focus after retirement.
+        app.root.update()
+        app.root.focus_force()
+        app._draw()
+        old_entry = _entry(app)
+        before = _authority(app.w)
+        attempts = []
+        if pending == "retry":
+            original = app._ensure_confirm_focus
+    
+            def observe(entry, *args, **kwargs):
+                attempts.append((entry, app.root.focus_get() is entry))
+                return original(entry, *args, **kwargs)
+    
+            monkeypatch.setattr(app, "_ensure_confirm_focus", observe)
+            app.root.withdraw()
+            app.root.update_idletasks()
+            assert any(entry is old_entry and not focused for entry, focused in attempts)
+            assert not errors
+    
+        if lifecycle != "destroy":
+            app.root.geometry("800x600+0+0")
+            app.root.deiconify()
+            # Claim native input before the renderer establishes its child focus.
+            # A later root.focus_force() would replace that correct child focus.
+            app.root.focus_force()
+        if lifecycle == "navigate":
+            app.w.back()
+            before = _authority(app.w)
+            assert app.w.screen is Screen.PICK
+            app._draw()
+        elif lifecycle == "redraw":
+            app._draw()
+        else:
+            app._teardown()
+    
+        assert not app.root.tk.call("info", "commands", str(old_entry))
+        if lifecycle == "destroy":
+            _pump(app.root)
+        else:
+            app.root.update()
+            _pump(app.root)
+            focus = app.root.focus_get()
+            assert focus is not old_entry
+            if lifecycle == "redraw":
+                current = _entry(app)
+                assert focus is current
+                assert current.get() == app.w.confirm_input
+            else:
+                assert app.w.screen is Screen.PICK
+>               assert focus is app._primary
+E               assert None is <beamo_wipe.ui.tk_wizard._Button object .!frame.!frame4.!frame3.!frame2.!_button>
+E                +  where <beamo_wipe.ui.tk_wizard._Button object .!frame.!frame4.!frame3.!frame2.!_button> = <beamo_wipe.ui.tk_wizard.TkWizard object at 0x73abb83e5220>._primary
+
+tests/test_confirm_focus_callback_lifetime_pass16.py:162: AssertionError
+_ test_obsolete_confirmation_callbacks_do_not_outlive_their_owner[navigate-idle-extra] _
+
+ui = <function ui.<locals>.build at 0x73abb83a2de0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x73abb883ae70>
+text_size = 'extra', pending = 'idle', lifecycle = 'navigate'
+
+    @pytest.mark.parametrize("text_size", ["standard", "large", "extra"])
+    @pytest.mark.parametrize("pending", ["idle", "retry"])
+    @pytest.mark.parametrize("lifecycle", ["redraw", "navigate", "destroy"])
+    def test_obsolete_confirmation_callbacks_do_not_outlive_their_owner(
+        ui, monkeypatch, text_size, pending, lifecycle
+    ):
+        app, _clock, errors = ui(text_size)
+        # Match run()'s mapped native input claim before creating the Entry whose
+        # pending work this case retires. Never replace child focus after retirement.
+        app.root.update()
+        app.root.focus_force()
+        app._draw()
+        old_entry = _entry(app)
+        before = _authority(app.w)
+        attempts = []
+        if pending == "retry":
+            original = app._ensure_confirm_focus
+    
+            def observe(entry, *args, **kwargs):
+                attempts.append((entry, app.root.focus_get() is entry))
+                return original(entry, *args, **kwargs)
+    
+            monkeypatch.setattr(app, "_ensure_confirm_focus", observe)
+            app.root.withdraw()
+            app.root.update_idletasks()
+            assert any(entry is old_entry and not focused for entry, focused in attempts)
+            assert not errors
+    
+        if lifecycle != "destroy":
+            app.root.geometry("800x600+0+0")
+            app.root.deiconify()
+            # Claim native input before the renderer establishes its child focus.
+            # A later root.focus_force() would replace that correct child focus.
+            app.root.focus_force()
+        if lifecycle == "navigate":
+            app.w.back()
+            before = _authority(app.w)
+            assert app.w.screen is Screen.PICK
+            app._draw()
+        elif lifecycle == "redraw":
+            app._draw()
+        else:
+            app._teardown()
+    
+        assert not app.root.tk.call("info", "commands", str(old_entry))
+        if lifecycle == "destroy":
+            _pump(app.root)
+        else:
+            app.root.update()
+            _pump(app.root)
+            focus = app.root.focus_get()
+            assert focus is not old_entry
+            if lifecycle == "redraw":
+                current = _entry(app)
+                assert focus is current
+                assert current.get() == app.w.confirm_input
+            else:
+                assert app.w.screen is Screen.PICK
+>               assert focus is app._primary
+E               assert None is <beamo_wipe.ui.tk_wizard._Button object .!frame.!frame4.!frame3.!frame2.!_button>
+E                +  where <beamo_wipe.ui.tk_wizard._Button object .!frame.!frame4.!frame3.!frame2.!_button> = <beamo_wipe.ui.tk_wizard.TkWizard object at 0x73abb89b8a40>._primary
+
+tests/test_confirm_focus_callback_lifetime_pass16.py:162: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_accessible_modal_key_hold_pass16.py::test_native_escape_closes_modal_once_and_waits_for_a_fresh_press[False-owner]
+FAILED tests/test_accessible_modal_key_hold_pass16.py::test_native_escape_closes_modal_once_and_waits_for_a_fresh_press[False-method]
+FAILED tests/test_accessible_modal_key_hold_pass16.py::test_native_escape_closes_modal_once_and_waits_for_a_fresh_press[False-last_chance]
+FAILED tests/test_accessible_modal_key_hold_pass16.py::test_native_escape_closes_modal_once_and_waits_for_a_fresh_press[False-working]
+FAILED tests/test_accessible_modal_key_hold_pass16.py::test_native_escape_closes_modal_once_and_waits_for_a_fresh_press[True-working]
+FAILED tests/test_confirm_focus_callback_lifetime_pass16.py::test_obsolete_confirmation_callbacks_do_not_outlive_their_owner[navigate-idle-standard]
+FAILED tests/test_confirm_focus_callback_lifetime_pass16.py::test_obsolete_confirmation_callbacks_do_not_outlive_their_owner[navigate-idle-large]
+FAILED tests/test_confirm_focus_callback_lifetime_pass16.py::test_obsolete_confirmation_callbacks_do_not_outlive_their_owner[navigate-idle-extra]

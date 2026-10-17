@@ -1,0 +1,127 @@
+--- starting/src/beamo_wipe/discover.py
++++ current/src/beamo_wipe/discover.py
+@@ -1641,13 +1641,17 @@
+         # ambiguous, including when both paths report a small SATA disk.
+         hit = cmdline_hits[0]
+         hit_aliases = _path_aliases(hit)
++        physical_nodes = [
++            node for node, _parent in flatten_blockdevices(blockdevices)
++            if _node_type(node) in {"disk", "rom"}
++        ]
+         hit_node = None
+-        for node in disk_nodes(blockdevices):
++        for node in physical_nodes:
+             if hit_aliases & _path_aliases(node_path(node)):
+                 hit_node = node
+                 break
+         if hit_node is not None:
+-            for node in disk_nodes(blockdevices):
++            for node in physical_nodes:
+                 if hit_aliases & _path_aliases(node_path(node)):
+                     continue
+                 if _could_be_live_medium(node):
+@@ -1886,6 +1890,7 @@
+     # before display filtering, without turning them into picker candidates.
+     physical_observations = []
+     physical_by_path: Dict[str, Tuple[Disk, Optional[bool], Tuple[bool, bool]]] = {}
++    repeated_physical_paths: set[str] = set()
+     for node, _parent in flat_nodes:
+         if _node_type(node) not in {"disk", "rom"}:
+             continue
+@@ -1908,6 +1913,8 @@
+         previous_physical = physical_by_path.get(canonical)
+         if previous_physical is not None and previous_physical != signature:
+             raise ValueError("lsblk has conflicting physical observations for one disk")
++        if previous_physical is not None:
++            repeated_physical_paths.add(canonical)
+         physical_by_path[canonical] = signature
+         physical_observations.append(observation)
+     disks: List[Disk] = []
+@@ -2010,6 +2017,9 @@
+     # Retain even identical rows: final identity validation requires exactly
+     # one observation and must continue refusing an ambiguous target.
+     selectable = tuple(d for d in disks if is_wipeable_disk(d))
++    for path in repeated_physical_paths:
++        if sum(os.path.realpath(d.path) == path for d in selectable) == 1:
++            raise ValueError("lsblk physical observations cannot establish a unique target")
+     # Health reporting: empty selectable while boot is identified is fail-closed
+     # but opaque. Distinguish "no disks on bus" from "all nodes hidden".
+     if boot is not None and not selectable and blockdevices:
+--- starting/src/beamo_wipe/ui/accessible_wizard.py
++++ current/src/beamo_wipe/ui/accessible_wizard.py
+@@ -837,6 +837,7 @@
+             return
+         self._sound_dialog = SoundDialog(Gtk, self.window, self.w, on_stop=self.render)
+         self._sound_dialog.dialog.connect("destroy", self._sound_closed)
++        self._sound_dialog.dialog.connect("key-press-event", self._modal_key_press)
+         self._sound_dialog.dialog.connect("key-release-event", self._key_release)
+         self._focus_active_window()
+ 
+@@ -976,7 +977,7 @@
+             self.update_status()
+         return True
+ 
+-    def _key_press(self, _window, event):
++    def _remember_key_press(self, event):
+         key = event.keyval
+         guarded = key in {
+             Gdk.KEY_Return,
+@@ -1000,6 +1001,17 @@
+             return True
+         self._release_times.pop(key, None)
+         self.held.add(key)
++        return False
++
++    def _modal_key_press(self, _window, event):
++        # A modal may close on key-down. Its held key still belongs to the
++        # same physical press when auto-repeat reaches the parent window.
++        return self._remember_key_press(event)
++
++    def _key_press(self, _window, event):
++        if self._remember_key_press(event):
++            return True
++        key = event.keyval
+         if key in (Gdk.KEY_l, Gdk.KEY_L) and self.w.screen == Screen.METHOD:
+             self.w.open_limits()
+             self.render()
+--- starting/src/beamo_wipe/ui/tk_wizard.py
++++ current/src/beamo_wipe/ui/tk_wizard.py
+@@ -1563,7 +1563,30 @@
+ 
+         canvas.after_idle(reveal)
+ 
++    def _cancel_widget_callbacks(self, widget: tk.Misc, *, include_self: bool = True) -> None:
++        """Retire pending Python callbacks owned by widgets being destroyed."""
++        if not isinstance(widget, tk.Misc):
++            return  # Lightweight non-Tk controllers do not own Tcl callbacks.
++        try:
++            pending = [widget] if include_self else list(widget.winfo_children())
++            owners: dict[str, tk.Misc] = {}
++            while pending:
++                owner = pending.pop()
++                owners.update((command, owner) for command in (owner._tclCommands or ()))
++                pending.extend(owner.winfo_children())
++            for callback in widget.tk.call("after", "info"):
++                script, _kind = widget.tk.call("after", "info", callback)
++                owner = owners.get(str(script))
++                if owner is not None:
++                    # after_cancel also removes the Tcl command from its
++                    # owning widget's registry. Preserve other owners' jobs.
++                    owner.after_cancel(callback)
++        except tk.TclError:
++            # Teardown may run again after this interpreter was destroyed.
++            pass
++
+     def _clear(self, frame: tk.Frame) -> None:
++        self._cancel_widget_callbacks(frame, include_self=False)
+         for child in frame.winfo_children():
+             child.destroy()
+ 
+@@ -1609,6 +1632,7 @@
+             except tk.TclError:
+                 pass
+             self._after_id = None
++        self._cancel_widget_callbacks(self.root)
+         try:
+             self.root.destroy()
+         except tk.TclError:

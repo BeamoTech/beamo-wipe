@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "main_junit_present": false,
+  "main_fatal": "Fatal Python error: Aborted; GC on audio worker",
+  "orca": "1PASS59.06s",
+  "full_early_failure_markers": 59,
+  "cause_attribution": "pending bounded diagnosis",
+  "no_cancellation": true,
+  "observer_sha256": "f2989d7ed4d50edfb0b31fd597ab63f305df0a3733c94238b3da41f910c8f145",
+  "at_utc": "2026-10-17T16:32:28.897347+00:00"
+}

@@ -1,0 +1,56 @@
+--- a/src/beamo_wipe/ui/tk_wizard.py
++++ b/src/beamo_wipe/ui/tk_wizard.py
+@@ -983,7 +983,8 @@
+         self.bind("<Configure>", self._flow_label, add="+")
+         self._sync()
+         self._paint()
+-        variable.trace_add("write", self._on_variable)
++        self._variable_trace: Optional[str] = variable.trace_add("write", self._on_variable)
++        self.bind("<Destroy>", self._retire_variable_trace, add="+")
+         self.bind("<Enter>", self._enter)
+         self.bind("<Leave>", self._leave)
+         self.bind("<ButtonPress-1>", self._press)
+@@ -1010,6 +1011,19 @@
+     def _on_variable(self, *_args) -> None:
+         self._sync()
+         self._paint()
++
++    def _retire_variable_trace(self, event) -> None:
++        if event.widget is not self or self._variable_trace is None:
++            return
++        token = self._variable_trace
++        self._variable_trace = None
++        try:
++            # Variable callbacks outlive widgets unless explicitly removed.
++            # Keep other rows and independent observers on this variable.
++            self._variable.trace_remove("write", token)
++        except tk.TclError:
++            # Interpreter teardown may already have removed the variable.
++            pass
+ 
+     def _row_bg(self) -> str:
+         if self._pressed:
+--- a/src/beamo_wipe/ui/console_wizard.py
++++ b/src/beamo_wipe/ui/console_wizard.py
+@@ -1248,6 +1248,7 @@
+         stdscr.erase()
+         h, w = stdscr.getmaxyx()
+         h, w = max(2, h), max(20, w)
++        review_ready_painted = wizard.screen == Screen.LAST_CHANCE and wizard.erase_enabled
+         footer = _footer_lines(wizard, inventory_open, w, h, review_overlay_held)
+         y_max = max(1, h - len(footer))
+         chrome = _chrome_lines(wizard, w)
+@@ -1870,6 +1871,13 @@
+             continue
+         if wizard.screen not in _paged:
+             limits_offset = 0
++        # A slow paint can consume the countdown while its footer still
++        # tells the owner to wait. Enter belongs to that displayed frame;
++        # require a visibly enabled action as well as _handle's live gate.
++        # Keep this after hold bookkeeping so repeating the rejected key
++        # cannot become a fresh action when the next frame is ready.
++        if wizard.screen == Screen.LAST_CHANCE and ch in (curses.KEY_ENTER, 10, 13) and not review_ready_painted:
++            continue
+         _handle(wizard, ch)
+     if review_overlay_held:
+         wizard.end_review_overlay()

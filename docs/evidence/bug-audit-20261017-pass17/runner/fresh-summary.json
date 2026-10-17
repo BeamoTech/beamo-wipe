@@ -1,0 +1,32 @@
+{
+  "source": {
+    "nwipe_runner.py": "465d3495bd36b3be2507798ad3b57930645c165ba025a2afbe2ea0ca6c45e39d",
+    "engine_checks.py": "858da2ba9ac347df0b4a92bc196e90949d4279f155e21c98f0ac01b8caa743f3",
+    "evidence.py": "512c9b024b3231bf2625b6c802a8dc2282c275153b62e2995d4d01ba9466b5c5",
+    "outcomes.py": "4af35b516e728d1b46fd8b242346c7ded29e61a0bbb9e827a617d155267bd8ba",
+    "support_export.py": "23308f130079eb98cc8f77c597e227efbbf1cdb06234dd1336b2e034660bcc04",
+    "session_recovery.py": "128c5daa4c53197437682c637d3078917a79037a9edf5d1796fc9916cdd4ba53",
+    "methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13",
+    "models.py": "9fb0bcb97d35b1ee0f041f8ccb728fe8a2b9f173242a904bf2af6f7b5f42b95c"
+  },
+  "guard_manifest": {
+    "/tmp/beamo-pass17-fallback-guard/aws": "cba41168ef00df7373f4415f3de107c7b0ab47927121235609e4e5749c97c051",
+    "/tmp/beamo-pass17-fallback-guard/curl": "cba41168ef00df7373f4415f3de107c7b0ab47927121235609e4e5749c97c051",
+    "/tmp/beamo-pass17-fallback-guard/docker": "cba41168ef00df7373f4415f3de107c7b0ab47927121235609e4e5749c97c051",
+    "/tmp/beamo-pass17-fallback-guard/gcloud": "a91cacf1cb44f2d32e58062682b1c33ce58ff8d3e808dc1162ae0de06a1603ec",
+    "/tmp/beamo-pass17-fallback-guard/gh": "cba41168ef00df7373f4415f3de107c7b0ab47927121235609e4e5749c97c051",
+    "/tmp/beamo-pass17-fallback-guard/losetup": "cba41168ef00df7373f4415f3de107c7b0ab47927121235609e4e5749c97c051",
+    "/tmp/beamo-pass17-fallback-guard/qemu-system-x86_64": "cba41168ef00df7373f4415f3de107c7b0ab47927121235609e4e5749c97c051",
+    "/tmp/beamo-pass17-fallback-guard/sudo": "cba41168ef00df7373f4415f3de107c7b0ab47927121235609e4e5749c97c051"
+  },
+  "interpreter": "/tmp/beamo-pass17-python/bin/python3",
+  "short_cases": 153,
+  "actual_large_cases": 153,
+  "successful_roundtrips": 90,
+  "mixed_advisory_traces": 54,
+  "mismatches": 0,
+  "semantic_errors": 0,
+  "native_acquisitions": 0,
+  "elapsed_s": 6.124542811001447,
+  "source_unchanged": true
+}

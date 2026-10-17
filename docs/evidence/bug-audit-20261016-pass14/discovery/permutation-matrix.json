@@ -1,0 +1,3756 @@
+{
+  "cases": 558,
+  "native_attempts": [],
+  "source_sha256": {
+    "src/beamo_wipe/discover.py": "9a95b24403dad52c2ca4212a25ccc069ac7c55eafc3a4cb366a0bf62fdbefd92",
+    "src/beamo_wipe/safety.py": "f0ad1dc5d32d5f71aa8d27c7172634ace061111a47f5135d4df55021121be818",
+    "src/beamo_wipe/wizard.py": "be375a0861ec569a652e15f9f572bfa689f40048d736c5bedef641453d464bbb"
+  },
+  "observations_sha256": "9191cde863a6f3971453787c5310ba18f1e129f9ab754104b9114beec1e58f93",
+  "observations": [
+    {
+      "case": "source/sda/tree/normal/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/normal/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/normal/label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/normal/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/normal/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/normal/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/normal/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/normal/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/normal/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/normal/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/normal/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/normal/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/normal/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/normal/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/sda/tree/normal/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/sda/tree/normal/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/sda/tree/reverse/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/reverse/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/reverse/label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/reverse/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/reverse/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/reverse/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/reverse/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/reverse/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/reverse/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/reverse/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/reverse/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/reverse/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/reverse/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/reverse/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/sda/tree/reverse/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/sda/tree/reverse/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/sda/tree/rotate/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/rotate/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/rotate/label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/rotate/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/rotate/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/rotate/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/rotate/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/rotate/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/rotate/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/rotate/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/rotate/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/rotate/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/rotate/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/tree/rotate/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/sda/tree/rotate/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/sda/tree/rotate/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/normal/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/normal/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/normal/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/normal/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/normal/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/normal/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/normal/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/normal/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/normal/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/normal/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/normal/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/normal/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/normal/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/normal/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/normal/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/reverse/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/reverse/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/reverse/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/reverse/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/reverse/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/reverse/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/reverse/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/reverse/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/reverse/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/reverse/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/reverse/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/reverse/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/reverse/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/reverse/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/reverse/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/rotate/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/rotate/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/rotate/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/rotate/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/rotate/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/rotate/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/rotate/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/rotate/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/rotate/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/tree/rotate/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/rotate/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/rotate/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/rotate/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/rotate/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/tree/rotate/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "source/sda/flat/normal/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/normal/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/normal/label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/normal/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/normal/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/normal/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/normal/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/normal/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/normal/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/normal/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/normal/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/normal/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/normal/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/normal/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/sda/flat/normal/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/sda/flat/normal/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/sda/flat/reverse/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/reverse/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/reverse/label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/reverse/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/reverse/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/reverse/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/reverse/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/reverse/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/reverse/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/reverse/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/reverse/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/reverse/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/reverse/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/reverse/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/sda/flat/reverse/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/sda/flat/reverse/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/sda/flat/rotate/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/rotate/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/rotate/label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/rotate/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/rotate/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/rotate/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/rotate/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/rotate/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/rotate/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/rotate/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/rotate/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/rotate/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/rotate/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "source/sda/flat/rotate/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/sda/flat/rotate/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/sda/flat/rotate/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/normal/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/normal/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/normal/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/normal/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/normal/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/normal/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/normal/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/normal/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/normal/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/normal/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/normal/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/normal/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/normal/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/normal/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/normal/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/reverse/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/reverse/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/reverse/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/reverse/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/reverse/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/reverse/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/reverse/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/reverse/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/reverse/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/reverse/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/reverse/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/reverse/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/reverse/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/reverse/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/reverse/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/rotate/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/rotate/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/rotate/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/rotate/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/rotate/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/rotate/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/rotate/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/rotate/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/rotate/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/sda"
+      ]
+    },
+    {
+      "case": "rediscovery/sda/flat/rotate/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/rotate/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/rotate/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/rotate/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/rotate/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/sda/flat/rotate/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/tree/normal/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/normal/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/normal/label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/normal/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/normal/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/normal/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/normal/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/normal/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/normal/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/normal/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/normal/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/normal/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/normal/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/normal/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/tree/normal/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/tree/normal/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/tree/reverse/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/reverse/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/reverse/label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/reverse/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/reverse/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/reverse/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/reverse/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/reverse/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/reverse/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/reverse/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/reverse/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/reverse/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/reverse/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/reverse/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/tree/reverse/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/tree/reverse/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/tree/rotate/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/rotate/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/rotate/label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/rotate/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/rotate/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/rotate/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/rotate/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/rotate/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/rotate/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/rotate/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/rotate/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/rotate/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/rotate/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/tree/rotate/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/tree/rotate/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/tree/rotate/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/normal/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/normal/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/normal/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/normal/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/normal/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/normal/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/normal/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/normal/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/normal/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/normal/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/normal/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/normal/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/normal/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/normal/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/normal/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/reverse/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/reverse/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/reverse/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/reverse/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/reverse/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/reverse/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/reverse/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/reverse/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/reverse/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/reverse/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/reverse/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/reverse/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/reverse/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/reverse/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/reverse/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/rotate/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/rotate/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/rotate/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/rotate/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/rotate/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/rotate/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/rotate/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/rotate/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/rotate/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/rotate/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/rotate/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/rotate/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/rotate/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/rotate/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/tree/rotate/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/flat/normal/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/normal/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/normal/label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/normal/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/normal/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/normal/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/normal/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/normal/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/normal/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/normal/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/normal/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/normal/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/normal/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/normal/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/flat/normal/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/flat/normal/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/flat/reverse/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/reverse/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/reverse/label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/reverse/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/reverse/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/reverse/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/reverse/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/reverse/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/reverse/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/reverse/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/reverse/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/reverse/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/reverse/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/reverse/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/flat/reverse/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/flat/reverse/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/flat/rotate/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/rotate/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/rotate/label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/rotate/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/rotate/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/rotate/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/rotate/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/rotate/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/rotate/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/rotate/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/rotate/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/rotate/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/rotate/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "source/nvme0n11/flat/rotate/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/flat/rotate/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/nvme0n11/flat/rotate/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/normal/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/normal/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/normal/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/normal/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/normal/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/normal/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/normal/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/normal/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/normal/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/normal/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/normal/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/normal/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/normal/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/normal/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/normal/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/reverse/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/reverse/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/reverse/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/reverse/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/reverse/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/reverse/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/reverse/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/reverse/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/reverse/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/reverse/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/reverse/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/reverse/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/reverse/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/reverse/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/reverse/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/rotate/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/rotate/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/rotate/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/rotate/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/rotate/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/rotate/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/rotate/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/rotate/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/rotate/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ]
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/rotate/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/rotate/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/rotate/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/rotate/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/rotate/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/nvme0n11/flat/rotate/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/tree/normal/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/normal/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/normal/label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/normal/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/normal/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/normal/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/normal/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/normal/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/normal/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/normal/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/normal/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/normal/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/normal/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/normal/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/tree/normal/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/tree/normal/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/tree/reverse/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/reverse/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/reverse/label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/reverse/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/reverse/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/reverse/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/reverse/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/reverse/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/reverse/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/reverse/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/reverse/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/reverse/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/reverse/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/reverse/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/tree/reverse/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/tree/reverse/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/tree/rotate/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/rotate/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/rotate/label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/rotate/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/rotate/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/rotate/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/rotate/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/rotate/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/rotate/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/rotate/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/rotate/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/rotate/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/rotate/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/tree/rotate/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/tree/rotate/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/tree/rotate/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/normal/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/normal/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/normal/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/normal/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/normal/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/normal/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/normal/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/normal/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/normal/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/normal/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/normal/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/normal/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/normal/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/normal/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/normal/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/reverse/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/reverse/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/reverse/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/reverse/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/reverse/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/reverse/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/reverse/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/reverse/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/reverse/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/reverse/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/reverse/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/reverse/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/reverse/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/reverse/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/reverse/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/rotate/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/rotate/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/rotate/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/rotate/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/rotate/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/rotate/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/rotate/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/rotate/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/rotate/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/rotate/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/rotate/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/rotate/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/rotate/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/rotate/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/tree/rotate/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/flat/normal/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/normal/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/normal/label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/normal/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/normal/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/normal/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/normal/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/normal/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/normal/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/normal/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/normal/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/normal/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/normal/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/normal/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/flat/normal/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/flat/normal/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/flat/reverse/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/reverse/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/reverse/label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/reverse/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/reverse/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/reverse/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/reverse/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/reverse/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/reverse/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/reverse/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/reverse/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/reverse/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/reverse/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/reverse/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/flat/reverse/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/flat/reverse/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/flat/rotate/direct-part",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/rotate/direct-disk",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/rotate/label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/rotate/quoted-label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/rotate/uuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/rotate/partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/rotate/partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/rotate/udev-label",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/rotate/udev-uuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/rotate/udev-partuuid",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/rotate/udev-partlabel",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/rotate/equivalent-triple",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/rotate/repeated",
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "source/mmcblk0/flat/rotate/wrong-case-label",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/flat/rotate/unknown-competing",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "source/mmcblk0/flat/rotate/conflicting-target",
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/normal/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/normal/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/normal/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/normal/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/normal/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/normal/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/normal/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/normal/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/normal/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/normal/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/normal/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/normal/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/normal/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/normal/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/normal/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/reverse/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/reverse/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/reverse/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/reverse/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/reverse/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/reverse/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/reverse/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/reverse/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/reverse/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/reverse/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/reverse/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/reverse/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/reverse/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/reverse/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/reverse/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/rotate/normal",
+      "accepted": true,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/rotate/target-ro",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/rotate/target-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/rotate/partition-mounted",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/rotate/serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/rotate/wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/rotate/layout-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/rotate/boot-serial-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/rotate/boot-wwn-changed",
+      "accepted": false,
+      "boot": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ]
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/rotate/duplicate-equal",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/rotate/duplicate-ro",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/rotate/duplicate-mounted",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/rotate/partition-parent-contradiction",
+      "accepted": false,
+      "boot": false,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/rotate/shared-boot-wwn",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    },
+    {
+      "case": "rediscovery/mmcblk0/flat/rotate/shared-mounted-serial",
+      "accepted": false,
+      "boot": true,
+      "targets": []
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"provenance": {"source": "/tmp/pass20-primary/private-graph/src/beamo_wipe/ui/tk_wizard.py", "sha256": "d639822ca03fccc2f9be78c476fc4b594118ac2b9195d2a2979b3c8f9a6e7cf8"}, "sessions": 10, "resources": 220, "finalizers": 220, "all_owner_thread": true, "all_returned": true, "gc_events": 160, "max_gc_depth": 1, "registered_callbacks": 1, "pools_empty": true, "effects": []}

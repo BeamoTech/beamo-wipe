@@ -1,0 +1,15 @@
+[
+  "xvfb-run",
+  "-a",
+  "-n",
+  "120",
+  "-s",
+  "-screen 0 800x600x24 -dpi 72",
+  "dbus-run-session",
+  "--",
+  "sh",
+  "-c",
+  "export BEAMO_TEST_PRIVATE_DISPLAY=\"$DISPLAY\"; exec /tmp/beamo-wipe-audit-python/bin/python \"$@\"",
+  "capture",
+  "/tmp/pass12-ui/capture_ui.py"
+]

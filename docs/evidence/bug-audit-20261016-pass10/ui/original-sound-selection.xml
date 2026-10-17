@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="8" skipped="0" tests="10" time="1.260" timestamp="2026-10-16T16:26:59.018435+00:00" hostname="srv1606478"><testcase classname="tests.test_sound_output_selection_pass10" name="test_output_selection_and_following_controls_agree[success]" time="0.133" /><testcase classname="tests.test_sound_output_selection_pass10" name="test_output_selection_and_following_controls_agree[refused]" time="0.067"><failure message="assert [False, True] == [True, False]&#10;  &#10;  At index 0 diff: False != True&#10;  Use -v to get more diff">ui = &lt;function ui.&lt;locals&gt;.build at 0x7eabce2a6a20&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7eabce286fc0&gt;
+selection_audio_worker = &lt;beamo_wipe.audio_jobs.AudioWorker object at 0x7eabce287c80&gt;
+outcome = 'refused'
+
+    @pytest.mark.parametrize("outcome", ["success", "refused", "exception", "timeout", "cancelled"])
+    def test_output_selection_and_following_controls_agree(
+        ui, monkeypatch, selection_audio_worker, outcome
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch)
+        _select(app, controller, monkeypatch, state, outcome)
+        selected = "headphones-id" if outcome == "success" else "speakers-id"
+        _dialog_button(controller.dialog, C.SOUND_LOUDER).clicked()
+        wait_sound(app)
+        _dialog_button(controller.dialog, C.SOUND_MUTE).clicked()
+        wait_sound(app)
+        assert ("volume", selected, sound.VOLUME_STEP) in calls
+        assert ("mute", selected, True) in calls
+        assert controller.chosen.id == selected
+&gt;       assert [radio.get_active() for radio in controller.radios] == [selected == "speakers-id", selected == "headphones-id"]
+E       assert [False, True] == [True, False]
+E         
+E         At index 0 diff: False != True
+E         Use -v to get more diff
+
+tests/test_sound_output_selection_pass10.py:105: AssertionError</failure></testcase><testcase classname="tests.test_sound_output_selection_pass10" name="test_output_selection_and_following_controls_agree[exception]" time="0.071"><failure message="assert [False, True] == [True, False]&#10;  &#10;  At index 0 diff: False != True&#10;  Use -v to get more diff">ui = &lt;function ui.&lt;locals&gt;.build at 0x7eabce2a6980&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7eabcdb20110&gt;
+selection_audio_worker = &lt;beamo_wipe.audio_jobs.AudioWorker object at 0x7eabddc79ee0&gt;
+outcome = 'exception'
+
+    @pytest.mark.parametrize("outcome", ["success", "refused", "exception", "timeout", "cancelled"])
+    def test_output_selection_and_following_controls_agree(
+        ui, monkeypatch, selection_audio_worker, outcome
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch)
+        _select(app, controller, monkeypatch, state, outcome)
+        selected = "headphones-id" if outcome == "success" else "speakers-id"
+        _dialog_button(controller.dialog, C.SOUND_LOUDER).clicked()
+        wait_sound(app)
+        _dialog_button(controller.dialog, C.SOUND_MUTE).clicked()
+        wait_sound(app)
+        assert ("volume", selected, sound.VOLUME_STEP) in calls
+        assert ("mute", selected, True) in calls
+        assert controller.chosen.id == selected
+&gt;       assert [radio.get_active() for radio in controller.radios] == [selected == "speakers-id", selected == "headphones-id"]
+E       assert [False, True] == [True, False]
+E         
+E         At index 0 diff: False != True
+E         Use -v to get more diff
+
+tests/test_sound_output_selection_pass10.py:105: AssertionError</failure></testcase><testcase classname="tests.test_sound_output_selection_pass10" name="test_output_selection_and_following_controls_agree[timeout]" time="0.077"><failure message="assert [False, True] == [True, False]&#10;  &#10;  At index 0 diff: False != True&#10;  Use -v to get more diff">ui = &lt;function ui.&lt;locals&gt;.build at 0x7eabcdb5b2e0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7eabcdb3dcd0&gt;
+selection_audio_worker = &lt;beamo_wipe.audio_jobs.AudioWorker object at 0x7eabcdb3dc40&gt;
+outcome = 'timeout'
+
+    @pytest.mark.parametrize("outcome", ["success", "refused", "exception", "timeout", "cancelled"])
+    def test_output_selection_and_following_controls_agree(
+        ui, monkeypatch, selection_audio_worker, outcome
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch)
+        _select(app, controller, monkeypatch, state, outcome)
+        selected = "headphones-id" if outcome == "success" else "speakers-id"
+        _dialog_button(controller.dialog, C.SOUND_LOUDER).clicked()
+        wait_sound(app)
+        _dialog_button(controller.dialog, C.SOUND_MUTE).clicked()
+        wait_sound(app)
+        assert ("volume", selected, sound.VOLUME_STEP) in calls
+        assert ("mute", selected, True) in calls
+        assert controller.chosen.id == selected
+&gt;       assert [radio.get_active() for radio in controller.radios] == [selected == "speakers-id", selected == "headphones-id"]
+E       assert [False, True] == [True, False]
+E         
+E         At index 0 diff: False != True
+E         Use -v to get more diff
+
+tests/test_sound_output_selection_pass10.py:105: AssertionError</failure></testcase><testcase classname="tests.test_sound_output_selection_pass10" name="test_output_selection_and_following_controls_agree[cancelled]" time="0.062"><failure message="assert [False, True] == [True, False]&#10;  &#10;  At index 0 diff: False != True&#10;  Use -v to get more diff">ui = &lt;function ui.&lt;locals&gt;.build at 0x7eabcdb5b1a0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7eabcdb3eba0&gt;
+selection_audio_worker = &lt;beamo_wipe.audio_jobs.AudioWorker object at 0x7eabcdb3f5c0&gt;
+outcome = 'cancelled'
+
+    @pytest.mark.parametrize("outcome", ["success", "refused", "exception", "timeout", "cancelled"])
+    def test_output_selection_and_following_controls_agree(
+        ui, monkeypatch, selection_audio_worker, outcome
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch)
+        _select(app, controller, monkeypatch, state, outcome)
+        selected = "headphones-id" if outcome == "success" else "speakers-id"
+        _dialog_button(controller.dialog, C.SOUND_LOUDER).clicked()
+        wait_sound(app)
+        _dialog_button(controller.dialog, C.SOUND_MUTE).clicked()
+        wait_sound(app)
+        assert ("volume", selected, sound.VOLUME_STEP) in calls
+        assert ("mute", selected, True) in calls
+        assert controller.chosen.id == selected
+&gt;       assert [radio.get_active() for radio in controller.radios] == [selected == "speakers-id", selected == "headphones-id"]
+E       assert [False, True] == [True, False]
+E         
+E         At index 0 diff: False != True
+E         Use -v to get more diff
+
+tests/test_sound_output_selection_pass10.py:105: AssertionError</failure></testcase><testcase classname="tests.test_sound_output_selection_pass10" name="test_failed_output_selection_can_retry_the_same_radio[refused]" time="0.052"><failure message="AssertionError: assert 'speakers-id' == 'headphones-id'&#10;  &#10;  - headphones-id&#10;  + speakers-id">ui = &lt;function ui.&lt;locals&gt;.build at 0x7eabcdb5b6a0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7eabcdb91d60&gt;
+selection_audio_worker = &lt;beamo_wipe.audio_jobs.AudioWorker object at 0x7eabcdb91760&gt;
+outcome = 'refused'
+
+    @pytest.mark.parametrize("outcome", ["refused", "exception", "timeout", "cancelled"])
+    def test_failed_output_selection_can_retry_the_same_radio(
+        ui, monkeypatch, selection_audio_worker, outcome
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch)
+        _select(app, controller, monkeypatch, state, outcome)
+        state["selection"] = "success"
+        controller.radios[1].set_active(True)
+        wait_sound(app)
+&gt;       assert controller.chosen.id == "headphones-id"
+E       AssertionError: assert 'speakers-id' == 'headphones-id'
+E         
+E         - headphones-id
+E         + speakers-id
+
+tests/test_sound_output_selection_pass10.py:121: AssertionError</failure></testcase><testcase classname="tests.test_sound_output_selection_pass10" name="test_failed_output_selection_can_retry_the_same_radio[exception]" time="0.062"><failure message="AssertionError: assert 'speakers-id' == 'headphones-id'&#10;  &#10;  - headphones-id&#10;  + speakers-id">ui = &lt;function ui.&lt;locals&gt;.build at 0x7eabcdb5afc0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7eabcdb3dee0&gt;
+selection_audio_worker = &lt;beamo_wipe.audio_jobs.AudioWorker object at 0x7eabcdb3fb00&gt;
+outcome = 'exception'
+
+    @pytest.mark.parametrize("outcome", ["refused", "exception", "timeout", "cancelled"])
+    def test_failed_output_selection_can_retry_the_same_radio(
+        ui, monkeypatch, selection_audio_worker, outcome
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch)
+        _select(app, controller, monkeypatch, state, outcome)
+        state["selection"] = "success"
+        controller.radios[1].set_active(True)
+        wait_sound(app)
+&gt;       assert controller.chosen.id == "headphones-id"
+E       AssertionError: assert 'speakers-id' == 'headphones-id'
+E         
+E         - headphones-id
+E         + speakers-id
+
+tests/test_sound_output_selection_pass10.py:121: AssertionError</failure></testcase><testcase classname="tests.test_sound_output_selection_pass10" name="test_failed_output_selection_can_retry_the_same_radio[timeout]" time="0.082"><failure message="AssertionError: assert 'speakers-id' == 'headphones-id'&#10;  &#10;  - headphones-id&#10;  + speakers-id">ui = &lt;function ui.&lt;locals&gt;.build at 0x7eabcdb84fe0&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7eabcdb92630&gt;
+selection_audio_worker = &lt;beamo_wipe.audio_jobs.AudioWorker object at 0x7eabcdb91bb0&gt;
+outcome = 'timeout'
+
+    @pytest.mark.parametrize("outcome", ["refused", "exception", "timeout", "cancelled"])
+    def test_failed_output_selection_can_retry_the_same_radio(
+        ui, monkeypatch, selection_audio_worker, outcome
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch)
+        _select(app, controller, monkeypatch, state, outcome)
+        state["selection"] = "success"
+        controller.radios[1].set_active(True)
+        wait_sound(app)
+&gt;       assert controller.chosen.id == "headphones-id"
+E       AssertionError: assert 'speakers-id' == 'headphones-id'
+E         
+E         - headphones-id
+E         + speakers-id
+
+tests/test_sound_output_selection_pass10.py:121: AssertionError</failure></testcase><testcase classname="tests.test_sound_output_selection_pass10" name="test_failed_output_selection_can_retry_the_same_radio[cancelled]" time="0.058"><failure message="AssertionError: assert 'speakers-id' == 'headphones-id'&#10;  &#10;  - headphones-id&#10;  + speakers-id">ui = &lt;function ui.&lt;locals&gt;.build at 0x7eabcdb86020&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7eabcdbdeae0&gt;
+selection_audio_worker = &lt;beamo_wipe.audio_jobs.AudioWorker object at 0x7eabcdbdeab0&gt;
+outcome = 'cancelled'
+
+    @pytest.mark.parametrize("outcome", ["refused", "exception", "timeout", "cancelled"])
+    def test_failed_output_selection_can_retry_the_same_radio(
+        ui, monkeypatch, selection_audio_worker, outcome
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch)
+        _select(app, controller, monkeypatch, state, outcome)
+        state["selection"] = "success"
+        controller.radios[1].set_active(True)
+        wait_sound(app)
+&gt;       assert controller.chosen.id == "headphones-id"
+E       AssertionError: assert 'speakers-id' == 'headphones-id'
+E         
+E         - headphones-id
+E         + speakers-id
+
+tests/test_sound_output_selection_pass10.py:121: AssertionError</failure></testcase><testcase classname="tests.test_sound_output_selection_pass10" name="test_closing_output_selection_discards_late_success" time="0.069" /></testsuite></testsuites>

@@ -1,0 +1,39 @@
+{
+  "status": "PREPARED / NOT RUN by author; AST source parse only",
+  "file": "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe.py",
+  "sha256": "0b2e1175c9cacc4bc6fbd6a34b63399c1edf2261e5a5b142b3529a967a949b4c",
+  "cases": [
+    "tk-load-before",
+    "tk-load-after",
+    "row-label",
+    "row-sync",
+    "row-trace",
+    "cleanup-error",
+    "root-control",
+    "row-control"
+  ],
+  "case_count": 8,
+  "required_environment": [
+    "BEAMO_ISOLATED_X11_TEST=1",
+    "owned private DISPLAY other than :1/:99",
+    "BEAMO_TK_PROBE_SOURCE=<absolute exact imported candidate path>",
+    "BEAMO_TK_PROBE_SHA256=<exact candidate sha256>",
+    "no PYTEST_PLUGINS"
+  ],
+  "fault_assertions": {
+    "tk-load-before": "Original fault after native creation and before Python _loadtk must propagate; positively identified native window must already be closed; original traceback then released on worker without native finalization there.",
+    "tk-load-after": "Same, after original _loadtk while before Tk.__init__ returns/self.root assignment.",
+    "row-label": "After failed Label allocation before Destroy binding, row exact native fields/command/token must retire while original traceback remains; later worker releases original frames; original destructors must only run on UI thread, with all assets settled after owner sweep.",
+    "row-sync": "Same, failure in initial _sync before trace assignment/Destroy binding.",
+    "row-trace": "Same, failure in trace_add before token assignment/Destroy binding.",
+    "cleanup-error": "Exact original ControlledConstructorFailure identity must propagate despite distinct first cancel_audio CleanupFailure; _retiring must reset; explicit retry must reach retired state and close owned native window."
+  },
+  "controls": {
+    "root-control": "Real KEYBOARD construction remains live, exact input callback works, ordinary close releases owned assets.",
+    "row-control": "Real PICK construction creates a live comparison row/trace, ordinary close releases all owned assets."
+  },
+  "native_ownership_boundary": "Original traceback may directly retain Font/Variable/command arguments. Weakref death is not required until original exception owner is released on worker and creator thread sweeps. Owned row fields/token must be detached at first boundary. No traceback clearing/native destructor neutralization.",
+  "guards": "Application disk/native/audio/power/network subprocess effects rejected inside each child; only parent invokes this fixed script. Native original constructors/destructors invoked unchanged by observation.",
+  "timeout_bounds": "fixed child8s; owned worker join2s; exact child os._exit91 only on collector timeout",
+  "limitations": "Observations change allocation pressure; full unchanged gate still required. root owns all executions and source provenance."
+}

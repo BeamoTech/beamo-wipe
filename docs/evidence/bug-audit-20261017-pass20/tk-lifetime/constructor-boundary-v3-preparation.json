@@ -1,0 +1,21 @@
+{
+  "status": "PREPARED / NOT RUN by author; AST parse only",
+  "v2_frozen": "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v2-frozen.py",
+  "v2_sha256": "f37d25cc7cdab71c61ed9bc603109f975d301520ce35954b4c99fa7bcc2506f7",
+  "v3": "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v3.py",
+  "v3_sha256": "09f7462d09343001d8880fb7379f7c3832b0207b77d18e8d0dac4a5588e5b282",
+  "cases": 19,
+  "added_cases": [
+    "startup-init-before",
+    "startup-load-before",
+    "startup-load-after",
+    "startup-frame",
+    "startup-label",
+    "startup-control"
+  ],
+  "startup_contract": "Actual run_tk_startup with only _ensure_tk_display bypassed plus native fault observations. Original exact exception retained. Before worker release, owned root window must already be closed. Later worker clears only exception owner and runs collection; raw interpreter must remain safe until creator-thread sweep. Native Tcl abort captured as diagnostic-child failure, not hidden.",
+  "startup_control": "Actual StartupRun/build worker + actual Tk mainloop/poll; build reports fake stage keys and returns plain sentinel, never an app or disks. Actual worker completion/thread identity asserted.",
+  "provenance": "Mandatory BEAMO_TK_PROBE_SOURCE + BEAMO_TK_PROBE_SHA256 in both parent and child",
+  "startup_guards": "App/native/audio/disk/network subprocess effects forbidden; startup serial stage emission replaced by fixture lambda; no inherited PYTEST_PLUGINS",
+  "limitations": "Weak root identity/open-window check and bounded owned-child survival prove lifecycle behavior; exact C destructor thread is not directly observed. Allocation-changing observation cannot replace full plain gate."
+}

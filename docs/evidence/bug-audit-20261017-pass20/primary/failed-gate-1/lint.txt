@@ -1,0 +1,14 @@
+[ci-hosted] blocking syntax, shell and security lint
+All checks passed!
+6 files already formatted
+All checks passed!
+All checks passed!
+[ci-hosted] blocking full lint and type checks
+All checks passed!
+src/beamo_wipe/audio_jobs.py:59: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]
+src/beamo_wipe/audio_jobs.py:60: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]
+src/beamo_wipe/audio_jobs.py:61: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]
+src/beamo_wipe/audio_jobs.py:63: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]
+src/beamo_wipe/session_recovery.py:114: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]
+src/beamo_wipe/ui/tk_wizard.py:3235: error: Item "None" of "Canvas | None" has no attribute "after_cancel"  [union-attr]
+Found 1 error in 1 file (checked 52 source files)

@@ -1,0 +1,53 @@
+[
+  {
+    "screen": "pick_empty",
+    "rows": {
+      "0": "Beamo Wipe \u2014 Preparation \u2014 No disk to erase",
+      "2": "What happened: No eligible disk is available. Review the reasons below. Keep",
+      "3": "the Beamo USB connected. Shut down before checking drive connections. If a",
+      "4": "disk remains unavailable or its identity is uncertain, contact support. Do not",
+      "5": "bypass protection.",
+      "6": "What it means for your disk: Nothing can be erased. Protected devices stay",
+      "7": "listed. Do not bypass protection.",
+      "8": "What to do next: Review the reasons below. Keep the Beamo USB connected. Shut",
+      "9": "down before checking drive connections. If a disk remains unavailable or its",
+      "10": "identity is uncertain, contact support.",
+      "11": "No disks available to erase \u00b7 Beamo USB protected \u00b7 1 other device not",
+      "12": "available",
+      "13": "For help, visit beamosupport.com.",
+      "14": "Support code  BW-S-EMPTY",
+      "15": "Build  unavailable",
+      "16": "Read these exact values to support if a report cannot be saved.",
+      "18": "More below. Use Up and Down.",
+      "19": "D: Diagnostic report (not erase evidence)    F5: Check disks again (clears",
+      "20": "preparation)    K: Keyboard layout",
+      "21": "Other detected devices (O): read reasons; not selectable.",
+      "22": "Protected boot media (B: identity)",
+      "23": "Enter: shut down    Esc: back"
+    }
+  },
+  {
+    "screen": "pick_empty",
+    "rows": {
+      "0": "Beamo Wipe \u2014 Preparation \u2014 No disk to erase",
+      "2": "Protected boot media",
+      "3": "Beamo USB \u2014 protected, cannot be erased",
+      "4": "Beamo Wipe; 16 GB; Hard disk; Connection: USB; Serial number: BEAMOUSB001",
+      "5": "On this disk (cannot be erased separately):",
+      "6": "Partition \u00b7 16 GB \u00b7 BEAMO_WIPE",
+      "23": "Read only. Up/Down, PgUp/PgDn: read. Esc: back."
+    }
+  },
+  {
+    "screen": "diagnostic",
+    "rows": {
+      "0": "Beamo Wipe \u2014 Diagnostic report \u2014 wipe could not start",
+      "2": "Protected boot media",
+      "3": "Beamo USB \u2014 protected, cannot be erased",
+      "4": "Beamo Wipe; 16 GB; Hard disk; Connection: USB; Serial number: BEAMOUSB001",
+      "5": "On this disk (cannot be erased separately):",
+      "6": "Partition \u00b7 16 GB \u00b7 BEAMO_WIPE",
+      "23": "Read only. Up/Down, PgUp/PgDn: read. Esc: back."
+    }
+  }
+]

@@ -1,0 +1,6 @@
+MODULES 19 ['tests/test_completion_method_contradictions.py', 'tests/test_completion_percent_precision.py', 'tests/test_completion_phase_regression.py', 'tests/test_engine_check_record_provenance.py', 'tests/test_engine_checks.py', 'tests/test_engine_checks_incomplete_records.py', 'tests/test_engine_checks_spoof_pass11.py', 'tests/test_progress_finish_clock_pass13.py', 'tests/test_progress_scope_regression.py', 'tests/test_progress_timing.py', 'tests/test_progress_unknown_final_stage_pass10.py', 'tests/test_runner_completion_scan_bound_pass11.py', 'tests/test_runner_completion_truncation_20260924.py', 'tests/test_runner_concurrent_progress_order.py', 'tests/test_runner_partial_progress_pass26.py', 'tests/test_runner_projection_progress_order_pass8.py', 'tests/test_runner_unterminated_completion_pass27.py', 'tests/test_stale_progress.py', 'tests/test_write_vs_completion.py']
+........................................................................ [ 27%]
+........................................................................ [ 55%]
+........................................................................ [ 83%]
+...........................................                              [100%]
+FAKE_HOST_READS {}

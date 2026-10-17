@@ -1,0 +1,11 @@
+--- prepared
++++ final-test
+@@ -123,7 +123,7 @@
+ def _disk(name, **changes):
+     row = dict(
+         name=name, path="/dev/" + name, type="disk", tran="sata", rota=False,
+-        size=128_000_000_000, serial="FAKE-" + name, wwn="50014ee20" + name,
++        size=128_000_000_000, serial="FAKE-" + name, wwn="50014ee20000000" + {"sda": "1", "sdz": "2", "sdc": "3", "sr0": "4", "sr1": "5"}[name],
+         model="Fake disk", vendor="Fake vendor", ro=False, mountpoints=[],
+     )
+     row.update(changes)

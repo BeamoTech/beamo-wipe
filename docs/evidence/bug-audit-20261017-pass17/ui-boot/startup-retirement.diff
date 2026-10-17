@@ -1,0 +1,56 @@
+--- starting/src/beamo_wipe/ui/tk_wizard.py
++++ final/src/beamo_wipe/ui/tk_wizard.py
+@@ -4681,6 +4681,8 @@
+         root.geometry(f"{width}x{height}+{x}+{y}")
+     root.configure(bg=BG)
+     outcome: list = []
++    poll_after: Optional[str] = None
++    focus_after: Optional[str] = None
+ 
+     body = tk.Frame(root, bg=BG)
+     body.pack(fill=tk.BOTH, expand=True, padx=48, pady=36)
+@@ -4722,6 +4724,8 @@
+             pass
+ 
+     def poll_once() -> None:
++        nonlocal poll_after
++        poll_after = None
+         if outcome:
+             return
+         try:
+@@ -4732,7 +4736,7 @@
+         if result is None:
+             try:
+                 if poll is not None:
+-                    root.after(100, poll)
++                    poll_after = root.after(100, poll)
+             except tk.TclError:
+                 pass
+             return
+@@ -4754,15 +4758,24 @@
+     try:
+         render()
+         run.start()
+-        root.after(100, poll_once)
++        poll_after = root.after(100, poll_once)
+         # Bare X11 has no window manager to give this mapped startup input.
+-        root.after_idle(root.focus_force)
++        focus_after = root.after_idle(root.focus_force)
+         root.mainloop()
+     finally:
+         # The recursive callback otherwise retains itself and the destroyed
+         # Tcl interpreter in a cycle. Worker-thread GC can then finalize Tcl
+         # on the wrong thread and abort the process after startup completes.
+         poll = None
++        # Window destruction deletes Python's Tcl commands but does not
++        # remove pending after scripts. Retire our exact timers even when
++        # an external close already destroyed the startup widgets.
++        for callback in (poll_after, focus_after):
++            if callback is not None:
++                try:
++                    root.after_cancel(callback)
++                except tk.TclError:
++                    pass
+         try:
+             root.destroy()
+         except tk.TclError:

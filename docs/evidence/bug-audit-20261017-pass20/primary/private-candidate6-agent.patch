@@ -1,0 +1,19 @@
+--- candidate5/tk_wizard.py
++++ candidate6/tk_wizard.py
+@@ -1177,6 +1177,16 @@
+     # can otherwise keep the last asset's raw interpreter alive for this pass.
+     _drain_retired_assets()
+     _drain_retired_interpreters()
++
++
++def _drain_retired_native_after_gc(phase: str, _info: dict) -> None:
++    if phase == "stop" and (_RETIRED_NATIVE_ASSETS or _RETIRED_INTERPRETERS):
++        # Collection can run on any thread. Each drain releases only this
++        # thread's sole-owned records; it never starts another collection.
++        _drain_retired_native()
++
++
++gc.callbacks.append(_drain_retired_native_after_gc)
+ 
+ 
+ def _collect_retired_interpreters() -> None:

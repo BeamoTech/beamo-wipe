@@ -1,0 +1,32 @@
+[
+  {
+    "label": "without-override",
+    "command": [
+      "/tmp/beamo-pass20-python/bin/python3",
+      "-m",
+      "pytest",
+      "-q",
+      "-c",
+      "pyproject.toml",
+      "/tmp/pass20-primary/test_private_source_provenance.py",
+      "--junitxml=/tmp/pass20-primary/source-provenance-without-override.xml"
+    ],
+    "exit_code": 1
+  },
+  {
+    "label": "with-override",
+    "command": [
+      "/tmp/beamo-pass20-python/bin/python3",
+      "-m",
+      "pytest",
+      "-q",
+      "-c",
+      "pyproject.toml",
+      "-o",
+      "pythonpath=/tmp/pass20-primary/private-graph/src",
+      "/tmp/pass20-primary/test_private_source_provenance.py",
+      "--junitxml=/tmp/pass20-primary/source-provenance-with-override.xml"
+    ],
+    "exit_code": 0
+  }
+]

@@ -1,0 +1,1 @@
+Initial auxiliary artifact review assumed SUMMARY.txt. Actual authenticated bundle entries have RESULT.txt, as printed by the initial archive listing. All70hashes had already matched. No product/bundle/source byte was changed. Review corrected to the shipped filename.

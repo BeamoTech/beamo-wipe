@@ -1,0 +1,27 @@
+{
+  "reports": {
+    "final.xml": {
+      "total": 6431,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 14,
+      "duration_seconds": 530.08,
+      "passed": 6417
+    },
+    "final.xml.orca.xml": {
+      "total": 1,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "duration_seconds": 60.086,
+      "passed": 1
+    }
+  },
+  "unique_case_ids": 6432,
+  "frozen_inputs_match": 738,
+  "new_test_modules_byte_exact": 9,
+  "source_patch_matches": true,
+  "source_diff_sha256": "7cc39757111a0cc4868ec74ef966ed40150efe0ddd5ba49a9b46e311ad9b7b2a",
+  "git_index_empty": true,
+  "review": "Full source diff, all new regression modules and four actual72DPI fullscreen PNGs inspected; original proofs and report integration independently validated; no further source changes."
+}

@@ -1,0 +1,426 @@
+diff --git a/.github/workflows/release.yml b/.github/workflows/release.yml
+index a08a85b..1d20d61 100644
+--- a/.github/workflows/release.yml
++++ b/.github/workflows/release.yml
+@@ -6,7 +6,7 @@ on:
+       version:
+         description: Version whose tag points at the qualified main commit
+         required: true
+-        default: '0.2.12'
++        default: '0.2.13'
+ 
+ permissions:
+   contents: read
+diff --git a/README.md b/README.md
+index 12ce99e..143551a 100644
+--- a/README.md
++++ b/README.md
+@@ -135,7 +135,7 @@ emulation is not the ISO or QEMU verification gate.
+ ./scripts/build-iso.sh
+ ```
+ 
+-The ISO lands in `dist/beamo-wipe-0.2.12-amd64.iso`. If Docker or live-build
++The ISO lands in `dist/beamo-wipe-0.2.13-amd64.iso`. If Docker or live-build
+ packages are missing, the script prints the missing pieces and exits non-zero.
+ 
+ `make iso` is the same command.
+@@ -154,7 +154,7 @@ packages are missing, the script prints the missing pieces and exits non-zero.
+ ```bash
+ qemu-img create -f qcow2 /tmp/beamo-wipe-target.qcow2 10G
+ qemu-system-x86_64 -m 2048 -enable-kvm \
+-  -cdrom dist/beamo-wipe-0.2.12-amd64.iso \
++  -cdrom dist/beamo-wipe-0.2.13-amd64.iso \
+   -drive file=/tmp/beamo-wipe-target.qcow2,if=virtio,format=qcow2 \
+   -boot d
+ ```
+@@ -173,7 +173,7 @@ cp /usr/share/OVMF/OVMF_VARS.fd /tmp/beamo-ovmf-vars.fd
+ qemu-system-x86_64 -m 2048 \
+   -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE.fd \
+   -drive if=pflash,format=raw,file=/tmp/beamo-ovmf-vars.fd \
+-  -cdrom dist/beamo-wipe-0.2.12-amd64.iso \
++  -cdrom dist/beamo-wipe-0.2.13-amd64.iso \
+   -drive file=/tmp/beamo-wipe-target.qcow2,if=virtio,format=qcow2
+ # No vars template (older OVMF_CODE.fd-only layout): -bios /usr/share/OVMF/OVMF_CODE.fd
+ ```
+@@ -194,7 +194,7 @@ device's contents; use a spare USB and follow
+ 
+ ```bash
+ # Linux (double-check the device name)
+-sudo dd if=dist/beamo-wipe-0.2.12-amd64.iso of=/dev/sdX bs=4M status=progress conv=fsync
++sudo dd if=dist/beamo-wipe-0.2.13-amd64.iso of=/dev/sdX bs=4M status=progress conv=fsync
+ 
+ # Or Raspberry Pi Imager / balenaEtcher: pick the ISO, pick the USB, flash.
+ ```
+diff --git a/cloudbuild.yaml b/cloudbuild.yaml
+index 75f5400..9b4c6b6 100644
+--- a/cloudbuild.yaml
++++ b/cloudbuild.yaml
+@@ -94,7 +94,7 @@ steps:
+       - SKIP_ISO=${_SKIP_ISO}
+       - ALLOW_DIRTY=${_ALLOW_DIRTY}
+       - BUILD_ID=$BUILD_ID
+-      - BEAMO_WIPE_VERSION=0.2.12
++      - BEAMO_WIPE_VERSION=0.2.13
+     args:
+       - -ceu
+       - |
+@@ -110,7 +110,7 @@ steps:
+     env:
+       - SKIP_QEMU=${_SKIP_QEMU}
+       - ALLOW_DIRTY=${_ALLOW_DIRTY}
+-      - BEAMO_WIPE_VERSION=0.2.12
++      - BEAMO_WIPE_VERSION=0.2.13
+     args:
+       - -ceu
+       - |
+@@ -125,7 +125,7 @@ steps:
+       - PUBLISH_RELEASE=${_PUBLISH_RELEASE}
+       - SKIP_ISO=${_SKIP_ISO}
+       - SKIP_QEMU=${_SKIP_QEMU}
+-      - BEAMO_WIPE_VERSION=0.2.12
++      - BEAMO_WIPE_VERSION=0.2.13
+       - BUILD_ID=$BUILD_ID
+     args:
+       - -ceu
+diff --git a/docs/compatibility-matrix.md b/docs/compatibility-matrix.md
+index 76e7d76..6864eea 100644
+--- a/docs/compatibility-matrix.md
++++ b/docs/compatibility-matrix.md
+@@ -38,8 +38,8 @@ The screen-reader view exposes Keep first and both native buttons. See
+ [the state, console, and recovery rules](report-shutdown.md). No report survives
+ live-session shutdown or power loss unless it has been exported.
+ 
+-> **Matrix v1.14 — for Beamo Wipe 0.2.12 (nwipe 0.42)**
+-> Date: 2026-09-29
++> **Matrix v1.15 — for Beamo Wipe 0.2.13 (nwipe 0.42)**
++> Date: 2026-10-17
+ > Author: Accountable senior engineer (this checkout)
+ > Status: Versioned release target. No physical destructives on the developer host. Production evidence requires the exact-source Blacksmith gate and signed release manifest.
+ 
+@@ -84,10 +84,10 @@ Environments map to evidence tiers defined in [`docs/evidence-tiers.md`](evidenc
+ 
+ | Artifact | Version | Path | Size | SHA-256 | Build inputs pinned |
+ | --- | --- | --- | --- | --- | --- |
+-| Beamo Wipe wrapper | **0.2.12** | `src/beamo_wipe/__init__.py:__version__` | — | — | `pyproject.toml 0.2.12`, `NWIPE_PINNED_VERSION 0.42`, `NWIPE_PINNED_COMMIT 6082bde0…67105` |
+-| Staged chroot copy | 0.2.12 | `packaging/live/config/includes.chroot/usr/lib/python3/dist-packages/beamo_wipe/__init__.py` | — | — | Synced from `src/` by `scripts/build-iso.sh` (hook `0500-build-nwipe` clones at pinned commit, `GIT_CONFIG_*` isolated, fails closed if compiler packages remain) |
++| Beamo Wipe wrapper | **0.2.13** | `src/beamo_wipe/__init__.py:__version__` | — | — | `pyproject.toml 0.2.13`, `NWIPE_PINNED_VERSION 0.42`, `NWIPE_PINNED_COMMIT 6082bde0…67105` |
++| Staged chroot copy | 0.2.13 | `packaging/live/config/includes.chroot/usr/lib/python3/dist-packages/beamo_wipe/__init__.py` | — | — | Synced from `src/` by `scripts/build-iso.sh` (hook `0500-build-nwipe` clones at pinned commit, `GIT_CONFIG_*` isolated, fails closed if compiler packages remain) |
+ | Prior stable ISO | **0.2.11** | GitHub release `v0.2.11` | 564,133,888 bytes | `9694068e4d70824b316f12da9bd4c0ee964809d15ce5ad4d406333f710176305` | Source `662cf470f9fcedf710d897591560267575745fea`; signed release and retained rollback target |
+-| Release target | **0.2.12** | `dist/beamo-wipe-0.2.12-amd64.iso` | Set by hosted build | Set by manifest | Content-addressed build inputs; production upload only after full hosted/QEMU success |
++| Release target | **0.2.13** | `dist/beamo-wipe-0.2.13-amd64.iso` | Set by hosted build | Set by manifest | Content-addressed build inputs; production upload only after full hosted/QEMU success |
+ 
+ `packaging/live/config/bootstrap` and `binary` are `https://deb.debian.org` / `https://security.debian.org` only, use debootstrap `minbase` with system defaults ignored, `firmware false`, `bootappend live: noeject nopersistence noswap ip=frommedia nox11autologin`, and `bootloaders syslinux grub-efi` (BIOS + UEFI). Full apt/package list: `packaging/live/config/package-lists/beamo.list.chroot` (kept minimal — no `curl/git/build-essential/sudo/network-manager/openssh-server`).
+ 
+@@ -333,17 +333,17 @@ BEAMO_WIPE_NO_OPEN=1 ./preview --web && ls web-preview/index.html
+ # Main/PR workflow: Blacksmith full gate with native Windows and KVM guests.
+ gh run list --repo BeamoTech/beamo-wipe --workflow ci.yml
+ # Only after separate publication authorization and exact tagged-main qualification:
+-gh workflow run release.yml --repo BeamoTech/beamo-wipe --ref main -f version=0.2.12
++gh workflow run release.yml --repo BeamoTech/beamo-wipe --ref main -f version=0.2.13
+ # Published GCS path: gs://beamo-wipe_cloudbuild/releases/<BUILD_ID>/
+-sha256sum dist/beamo-wipe-0.2.12-amd64.iso
+-dd if=dist/beamo-wipe-0.2.12-amd64.iso bs=1 skip=32769 count=5 2>/dev/null | od -An -tx1  # CD001
++sha256sum dist/beamo-wipe-0.2.13-amd64.iso
++dd if=dist/beamo-wipe-0.2.13-amd64.iso bs=1 skip=32769 count=5 2>/dev/null | od -An -tx1  # CD001
+ ```
+ 
+ ### Disposable QEMU destructive (isolated x86_64 VM only)
+ 
+ ```bash
+ # On a throwaway x86_64 Linux VM with /dev/kvm, no host disks passed through:
+-BEAMO_WIPE_VERSION=0.2.12 ./scripts/qemu-verify.sh
++BEAMO_WIPE_VERSION=0.2.13 ./scripts/qemu-verify.sh
+ # Checklist per docs/vm-test.md:
+ # - exact manifest/ISO checksums
+ # - shipped nwipe 0.42 bytes only
+@@ -395,6 +395,7 @@ BEAMO_WIPE_VERSION=0.2.12 ./scripts/qemu-verify.sh
+ | **1.12** | 2026-09-27 | 0.2.11 | Blacksmith release target and signed publication workflow; exact qualification belongs in the eventual release manifest. Physical hardware support and pinned nwipe remain unchanged. |
+ | **1.13** | 2026-09-28 | 0.2.12 | Kiosk terminal EOF and persistent input-failure recovery, uncertain-cleanup support wording, and draft asset verification; pending exact-source qualification. Hardware support and pinned nwipe remain unchanged. |
+ | **1.14** | 2026-09-29 | 0.2.12 | Development/doctor and CI guidance corrected to the configured Blacksmith route; runbook 1.12 separates local subsets, main qualification and authorized publication. Legacy tooling retained. No hosted run triggered for this correction. |
++| **1.15** | 2026-10-17 | 0.2.13 | Repeated safety and reliability audit fixes; runbook 1.13 and release defaults aligned. Exact-source hosted qualification and signed publication remain required. No expanded hardware claims or pin changes. |
+ 
+ ---
+ 
+diff --git a/docs/qemu-verify.md b/docs/qemu-verify.md
+index 0ed6473..6004861 100644
+--- a/docs/qemu-verify.md
++++ b/docs/qemu-verify.md
+@@ -72,7 +72,7 @@ The gate fails unless all of these pass:
+    that virtual policy, not a refusal test or physical-firmware guarantee.
+ 
+ ```sh
+-BEAMO_WIPE_VERSION=0.2.12 ./scripts/qemu-verify.sh
++BEAMO_WIPE_VERSION=0.2.13 ./scripts/qemu-verify.sh
+ evidence_dir=$(cat qemu-evidence/PATH)
+ find "$evidence_dir" -maxdepth 1 -type f -print
+ ```
+diff --git a/docs/runbook.md b/docs/runbook.md
+index f3778c1..3b53198 100644
+--- a/docs/runbook.md
++++ b/docs/runbook.md
+@@ -1,7 +1,7 @@
+ # Beamo Wipe — Production support and incident runbook
+ 
+-> **Version 1.12 — 2026-09-29 | Owner: Accountable senior engineer (this checkout) | Next review 2026-12-29**
+-> Pinned wrapper `0.2.12` / `nwipe v0.42` commit `6082bde060091e66365d852a1877f2ee80c67105` at `/usr/lib/beamo-wipe/nwipe`
++> **Version 1.13 — 2026-10-17 | Owner: Accountable senior engineer (this checkout) | Next review 2027-01-17**
++> Pinned wrapper `0.2.13` / `nwipe v0.42` commit `6082bde060091e66365d852a1877f2ee80c67105` at `/usr/lib/beamo-wipe/nwipe`
+ > Wrapper GPL-3.0-or-later; nwipe GPL-2.0. See `docs/storage-and-controller-limits.md`, `docs/compatibility-matrix.md`.
+ 
+ This runbook is for the support operator who answers "the USB won't boot / it shows no disks / the erase failed." It separates **verified behavior** (code, tests, build) from **unknowns**, gives decision trees that never weaken a safety gate, and defines how to reproduce safely, collect evidence with redaction, communicate, and when to quarantine or stop-ship.
+@@ -58,7 +58,7 @@ Collect in order shown. Redaction is mandatory before leaving the support queue.
+ | `REPORT.html` + `.sha256` | Same private bundle; open offline in any browser | Same identifiers as `RESULT.txt` — do not share; share only `SHARE.json`/`SHARE.txt` | Readable copy of `RESULT.txt` with the same canonical fields; checksum-covered by `COMPLETE`. |
+ | `lsblk` JSON snapshot | Live: run `lsblk -J -b -o NAME,PATH,SIZE,TYPE,TRAN,ROTA,MODEL,SERIAL,WWN,RM,HOTPLUG,MOUNTPOINTS,LABEL,FSTYPE,VENDOR,PKNAME,UUID` into a file on the second USB | Contains serials — treat as PII, keep in ticket private field | For L1 to file a fake fixture that reproduces without hardware (see §8) |
+ | Authenticated release inventory + matching artifact bytes | Follow [USB download verification](release-verification.md#usb-image-download-verification) for `.img.gz`/`.img`, or [ISO verification](release-verification.md#iso-verification) for `.iso` | No customer PII | Binds the checked bytes to the approved publisher key and signed source/build identity; a version string or unauthenticated checksum alone does not |
+-| Environment | Wrapper version (`src/beamo_wipe/__init__.py 0.2.12`), live `NWIPE_VERSION` on USB, firmware mode (BIOS vs UEFI, Secure Boot on/off), machine vendor/model, bus of target (`TRAN`), kind (`ROTA`→HDD vs SSD per `classify_kind`) | Strip customer name | Needed for §3 wear/raid decision |
++| Environment | Wrapper version (`src/beamo_wipe/__init__.py 0.2.13`), live `NWIPE_VERSION` on USB, firmware mode (BIOS vs UEFI, Secure Boot on/off), machine vendor/model, bus of target (`TRAN`), kind (`ROTA`→HDD vs SSD per `classify_kind`) | Strip customer name | Needed for §3 wear/raid decision |
+ 
+ **Privacy rule:** Support queue shows `device.serial` only to on-call and only when the customer consented. Public issues use `size_gb_label` + `kind` + sanitized `evidence.outcome`/`failure_reason` with serial replaced by `***`.
+ 
+@@ -74,7 +74,7 @@ Each tree ends in exactly one of: **resolve with guidance**, **collect evidence
+ Symptom: stick never appears (Dell F12, HP F9/Esc, Lenovo F12 not listed)
+   ├─ Ask: does live USB show on *another* x64 PC already configured to accept this image?
+   │   ├─ No on any PC → suspect stick or flash. Verify the actual downloaded format and post-flash readback (release verification).
+-  │   │       Reflash on Linux: `sudo dd if=dist/beamo-wipe-0.2.12-amd64.iso ...` (verify `/dev/sdX` *is* USB via `lsblk`), or BalenaEtcher. Retry.
++  │   │       Reflash on Linux: `sudo dd if=dist/beamo-wipe-0.2.13-amd64.iso ...` (verify `/dev/sdX` *is* USB via `lsblk`), or BalenaEtcher. Retry.
+   │   └─ Yes on at least one PC → firmware setting issue.
+   ├─ Secure Boot enabled? → This USB uses Debian's signed boot files; firmware may still refuse them (docs/claims.md). Do NOT ship a bypass.
+   │        Guidance: try a direct USB port, the computer manufacturer's startup instructions, or a PC that accepts Debian's signed boot files. Ask for the USB's START-HERE.html build identity. Older sticks may be unsigned. Link helper/index.html.
+@@ -297,7 +297,7 @@ On a throwaway x86_64 Linux VM with `/dev/kvm`, no host block passthrough, one n
+ 
+ ```bash
+ # On a throwaway x86_64 Linux VM with /dev/kvm (e.g., GCE n2-standard-4), ephemeral:
+-BEAMO_WIPE_VERSION=0.2.12 ./scripts/qemu-verify.sh
++BEAMO_WIPE_VERSION=0.2.13 ./scripts/qemu-verify.sh
+ evidence_dir=$(cat qemu-evidence/PATH)
+ find "$evidence_dir" -maxdepth 1 -type f -print
+ # Tear down the VM (gcloud compute instances delete ... --quiet)
+@@ -355,7 +355,7 @@ A release is suspect if any of:
+ - `result.json` shows a host disk (e.g. `boot_device` equals `device`, or `boot_device_in_selectable` regression) in QEMU evidence `wizard-exercise.txt` or `nwipe-boundary.txt`.
+ - Evidence shows `certificate`/`compliant` fields (forbidden by `tests/test_storage_limits.py`).
+ - ISO `sha256` mismatch between `dist/beamo-wipe-*.iso` and `dist/*.iso.sha256` + `manifest.json.sha256` and the published `SHA256SUMS` in `gs://beamo-wipe_cloudbuild/releases/<BUILD_ID>/` and GitHub release sidecars.
+-- Manifest `pinned nwipe commit 6082bde060091e66365d852a1877f2ee80c67105` or `__version__` drift from `src/beamo_wipe/__init__.py` (currently `0.2.12`; check `python -m pytest tests/test_live_image.py::test_staged_chroot_package_matches_src`).
++- Manifest `pinned nwipe commit 6082bde060091e66365d852a1877f2ee80c67105` or `__version__` drift from `src/beamo_wipe/__init__.py` (currently `0.2.13`; check `python -m pytest tests/test_live_image.py::test_staged_chroot_package_matches_src`).
+ - QEMU preflight aborts on host-backed device.
+ 
+ ### 8.b Immediate actions (page release manager)
+@@ -414,7 +414,7 @@ All three spies prove no real nwipe on the support host: `NwipeRunner.start` rai
+ 
+ ## 11. Change control for this runbook
+ 
+-This doc is versioned with the wrapper (`1.12` for `0.2.12`) and reviewed with `docs/storage-and-controller-limits.md` and `docs/compatibility-matrix.md` on each release or when the pinned nwipe commit, Debian base, or method mapping changes. Update `Version / Next review` at the top, `docs/compatibility-matrix.md` §15 changelog, and `tests/test_runbook.py` (below) in the same commit; CI (`test_ui_system` + `test_copy` + `test_storage_limits` + `test_runbook`) must still pass before push.
++This doc is versioned with the wrapper (`1.13` for `0.2.13`) and reviewed with `docs/storage-and-controller-limits.md` and `docs/compatibility-matrix.md` on each release or when the pinned nwipe commit, Debian base, or method mapping changes. Update `Version / Next review` at the top, `docs/compatibility-matrix.md` §15 changelog, and `tests/test_runbook.py` (below) in the same commit; CI (`test_ui_system` + `test_copy` + `test_storage_limits` + `test_runbook`) must still pass before push.
+ 
+ ---
+ 
+diff --git a/docs/vm-test.md b/docs/vm-test.md
+index e09cca1..8a2b309 100644
+--- a/docs/vm-test.md
++++ b/docs/vm-test.md
+@@ -35,7 +35,7 @@ Two disks: the ISO (live) and a 10G target.
+ lab_dir=$(mktemp -d "${TMPDIR:-/tmp}/beamo-wipe-lab.XXXXXX")
+ qemu-img create -f qcow2 "$lab_dir/target.qcow2" 10G
+ qemu-system-x86_64 -enable-kvm -nic none -m 2048 \
+-  -cdrom dist/beamo-wipe-0.2.12-amd64.iso \
++  -cdrom dist/beamo-wipe-0.2.13-amd64.iso \
+   -drive "file=$lab_dir/target.qcow2,if=virtio,format=qcow2" \
+   -boot order=d
+ ```
+diff --git a/helper/de.html b/helper/de.html
+index 9c2916d..978f8ba 100644
+--- a/helper/de.html
++++ b/helper/de.html
+@@ -235,7 +235,7 @@
+     <div class="card" id="this-usb">
+       <h2>Dieser USB-Stick</h2>
+       <p id="usb-build-label"><!--BEAMO_BUILD_LABEL-->Diese Kopie ist kein hergestelltes USB-Abbild. Sie ist die Quell-Hilfeseite, aus der ein solches Abbild erstellt wird.<!--/BEAMO_BUILD_LABEL--></p>
+-      <p>Beamo Wipe <!--BEAMO_VERSION-->0.2.12<!--/BEAMO_VERSION-->. Die folgenden Hinweise zum Start und zur Kompatibilität gelten für dieses Abbild, nicht für frühere Versionen.</p>
++      <p>Beamo Wipe <!--BEAMO_VERSION-->0.2.13<!--/BEAMO_VERSION-->. Die folgenden Hinweise zum Start und zur Kompatibilität gelten für dieses Abbild, nicht für frühere Versionen.</p>
+       <dl class="build-ids">
+         <dt>Release-Build</dt>
+         <dd data-field="build-id"><!--BEAMO_BUILD_ID-->nicht paketiert<!--/BEAMO_BUILD_ID--></dd>
+diff --git a/helper/fr.html b/helper/fr.html
+index 61d2a31..c4804ec 100644
+--- a/helper/fr.html
++++ b/helper/fr.html
+@@ -235,7 +235,7 @@
+     <div class="card" id="this-usb">
+       <h2>Cette clé USB</h2>
+       <p id="usb-build-label"><!--BEAMO_BUILD_LABEL-->Cette copie n’est pas une image USB fabriquée. C’est la page d’aide source utilisée pour en créer une.<!--/BEAMO_BUILD_LABEL--></p>
+-      <p>Beamo Wipe <!--BEAMO_VERSION-->0.2.12<!--/BEAMO_VERSION-->. Les lignes ci-dessous décrivent le démarrage et la compatibilité de cette image, et non l’historique d’autres versions.</p>
++      <p>Beamo Wipe <!--BEAMO_VERSION-->0.2.13<!--/BEAMO_VERSION-->. Les lignes ci-dessous décrivent le démarrage et la compatibilité de cette image, et non l’historique d’autres versions.</p>
+       <dl class="build-ids">
+         <dt>Version de livraison</dt>
+         <dd data-field="build-id"><!--BEAMO_BUILD_ID-->non empaquetée<!--/BEAMO_BUILD_ID--></dd>
+diff --git a/helper/index.html b/helper/index.html
+index 8474c35..3f7558a 100644
+--- a/helper/index.html
++++ b/helper/index.html
+@@ -318,7 +318,7 @@
+     <div class="card" id="this-usb">
+       <h2>This USB</h2>
+       <p id="usb-build-label"><!--BEAMO_BUILD_LABEL-->This copy is not a manufactured USB image. It is the source helper used while building one.<!--/BEAMO_BUILD_LABEL--></p>
+-      <p>Beamo Wipe <!--BEAMO_VERSION-->0.2.12<!--/BEAMO_VERSION-->. The lines below are this image's start and compatibility notes, not a history of other builds.</p>
++      <p>Beamo Wipe <!--BEAMO_VERSION-->0.2.13<!--/BEAMO_VERSION-->. The lines below are this image's start and compatibility notes, not a history of other builds.</p>
+       <dl class="build-ids">
+         <dt>Release build</dt>
+         <dd data-field="build-id"><!--BEAMO_BUILD_ID-->not packaged<!--/BEAMO_BUILD_ID--></dd>
+diff --git a/packaging/live/inside-docker.sh b/packaging/live/inside-docker.sh
+index a3579ae..8d4897f 100755
+--- a/packaging/live/inside-docker.sh
++++ b/packaging/live/inside-docker.sh
+@@ -3,7 +3,7 @@
+ # Builds on the container's own disk so debootstrap can mknod.
+ set -euo pipefail
+ export DEBIAN_FRONTEND=noninteractive
+-ISO_NAME="${BEAMO_WIPE_ISO_NAME:-beamo-wipe-${BEAMO_WIPE_VERSION:-0.2.12}-amd64.iso}"
++ISO_NAME="${BEAMO_WIPE_ISO_NAME:-beamo-wipe-${BEAMO_WIPE_VERSION:-0.2.13}-amd64.iso}"
+ if [[ ! "$ISO_NAME" =~ ^beamo-wipe-[0-9]+\.[0-9]+\.[0-9]+-amd64\.iso$ ]]; then
+   echo "invalid ISO output name" >&2
+   exit 2
+diff --git a/pyproject.toml b/pyproject.toml
+index 5604521..6e53f50 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
+ 
+ [project]
+ name = "beamo-wipe"
+-version = "0.2.12"
++version = "0.2.13"
+ description = "Guided nwipe front-end and live USB for Beamo Wipe."
+ readme = "README.md"
+ license = { text = "GPL-3.0-or-later" }
+diff --git a/scripts/build-iso.sh b/scripts/build-iso.sh
+index a4ab2c6..b988994 100755
+--- a/scripts/build-iso.sh
++++ b/scripts/build-iso.sh
+@@ -5,7 +5,7 @@ set -eu
+ 
+ ROOT="$(CDPATH='' cd -- "$(dirname "$0")/.." && pwd)"
+ cd "$ROOT"
+-VERSION="${BEAMO_WIPE_VERSION:-0.2.12}"
++VERSION="${BEAMO_WIPE_VERSION:-0.2.13}"
+ case "$VERSION" in
+   ''|*[!0-9.]*|.*|*..*|*.) echo "Invalid BEAMO_WIPE_VERSION" >&2; exit 2 ;;
+ esac
+diff --git a/scripts/ci-hosted.sh b/scripts/ci-hosted.sh
+index 79227ce..0f30893 100755
+--- a/scripts/ci-hosted.sh
++++ b/scripts/ci-hosted.sh
+@@ -239,7 +239,7 @@ PY
+ 
+ inspect_iso() {
+   local iso version size magic
+-  version="${BEAMO_WIPE_VERSION:-0.2.12}"
++  version="${BEAMO_WIPE_VERSION:-0.2.13}"
+   iso="$ROOT/dist/beamo-wipe-${version}-amd64.iso"
+   [ -f "$iso" ] || {
+     printf 'ISO missing: %s\n' "$iso" >&2
+@@ -322,7 +322,7 @@ PY
+   log "controlled QEMU verification (disposable qcow2, TCG where KVM absent)"
+   ./scripts/build-usb-image.sh
+   local qemu_code=0
+-  BEAMO_WIPE_VERSION="${BEAMO_WIPE_VERSION:-0.2.12}" ./scripts/qemu-verify.sh || qemu_code=$?
++  BEAMO_WIPE_VERSION="${BEAMO_WIPE_VERSION:-0.2.13}" ./scripts/qemu-verify.sh || qemu_code=$?
+   # Copy private temporary evidence into the ignored workspace directory for
+   # the explicit post-QEMU publisher. Verification-only builds discard it.
+   if [ -L "$ROOT/qemu-evidence/PATH" ] || [ ! -f "$ROOT/qemu-evidence/PATH" ]; then
+diff --git a/scripts/generate-release-manifest.sh b/scripts/generate-release-manifest.sh
+index 6a0421f..43a1152 100755
+--- a/scripts/generate-release-manifest.sh
++++ b/scripts/generate-release-manifest.sh
+@@ -3,7 +3,7 @@
+ set -eu
+ ROOT="$(CDPATH='' cd -- "$(dirname "$0")/.." && pwd)"
+ cd "$ROOT"
+-VERSION="${BEAMO_WIPE_VERSION:-0.2.12}"
++VERSION="${BEAMO_WIPE_VERSION:-0.2.13}"
+ DEST="${1:-dist/beamo-wipe-${VERSION}-amd64.manifest.json}"
+ EXPECTED_DEST="dist/beamo-wipe-${VERSION}-amd64.manifest.json"
+ case "$VERSION" in
+diff --git a/scripts/publish_release_gcs.py b/scripts/publish_release_gcs.py
+index 6afd254..5c24785 100644
+--- a/scripts/publish_release_gcs.py
++++ b/scripts/publish_release_gcs.py
+@@ -620,7 +620,7 @@ def publish() -> str | None:
+     if os.environ.get("SKIP_ISO", "false") == "true" or os.environ.get("SKIP_QEMU", "false") == "true":
+         raise PublishError("refusing release publication with a skipped ISO or QEMU gate")
+ 
+-    version = os.environ.get("BEAMO_WIPE_VERSION", "0.2.12")
++    version = os.environ.get("BEAMO_WIPE_VERSION", "0.2.13")
+     build_id = os.environ.get("BUILD_ID", "")
+     if not VERSION_RE.fullmatch(version):
+         raise PublishError("invalid BEAMO_WIPE_VERSION")
+diff --git a/scripts/qemu-verify.sh b/scripts/qemu-verify.sh
+index ce1a3a1..c976790 100755
+--- a/scripts/qemu-verify.sh
++++ b/scripts/qemu-verify.sh
+@@ -30,7 +30,7 @@ fi
+ BOOT_WAIT_SECONDS=120
+ if [[ ! -r /dev/kvm ]]; then BOOT_WAIT_SECONDS=300; fi
+ 
+-VERSION="${BEAMO_WIPE_VERSION:-0.2.12}"
++VERSION="${BEAMO_WIPE_VERSION:-0.2.13}"
+ if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+   echo "ABORT: invalid BEAMO_WIPE_VERSION" >&2
+   exit 2
+diff --git a/src/beamo_wipe/__init__.py b/src/beamo_wipe/__init__.py
+index 3659860..6c08d25 100644
+--- a/src/beamo_wipe/__init__.py
++++ b/src/beamo_wipe/__init__.py
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-3.0-or-later
+ """Beamo Wipe: guided front-end for nwipe. Not a wipe engine."""
+ 
+-__version__ = "0.2.12"
++__version__ = "0.2.13"
+ NWIPE_PINNED_VERSION = "0.42"
+ NWIPE_PINNED_COMMIT = "6082bde060091e66365d852a1877f2ee80c67105"
+ # Only this path is exec'd. A PATH stub refuses direct `nwipe` invocation.
+diff --git a/tests/test_compatibility_matrix.py b/tests/test_compatibility_matrix.py
+index 73896d9..d0fddd1 100644
+--- a/tests/test_compatibility_matrix.py
++++ b/tests/test_compatibility_matrix.py
+@@ -591,7 +591,7 @@ def test_matrix_gallery_and_helper_share_tokens():
+ def test_matrix_pinned_nwipe_version_and_commit():
+     from beamo_wipe import NWIPE_PINNED_COMMIT, NWIPE_PINNED_VERSION, __version__
+ 
+-    assert __version__ == "0.2.12"
++    assert __version__ == "0.2.13"
+     assert NWIPE_PINNED_VERSION == "0.42"
+     assert NWIPE_PINNED_COMMIT == "6082bde060091e66365d852a1877f2ee80c67105"
+ 
+diff --git a/tests/test_release_manifest_tag_pass10.py b/tests/test_release_manifest_tag_pass10.py
+index 976aadf..a69212a 100644
+--- a/tests/test_release_manifest_tag_pass10.py
++++ b/tests/test_release_manifest_tag_pass10.py
+@@ -6,8 +6,8 @@ from beamo_wipe import release_manifest as rm
+ 
+ 
+ def test_manifest_tag_prefers_its_release_version(monkeypatch):
+-    monkeypatch.setattr(rm, "_run", lambda *_args, **_kw: "v0.2.8\nv0.2.12")
+-    assert rm.git_tag_for_commit("a" * 40) == "v0.2.12"
++    monkeypatch.setattr(rm, "_run", lambda *_args, **_kw: "v0.2.8\nv0.2.13")
++    assert rm.git_tag_for_commit("a" * 40) == "v0.2.13"
+ 
+ 
+ @pytest.mark.parametrize("kind", ["file", "directory", "parent_directory"])
+diff --git a/tests/test_runbook.py b/tests/test_runbook.py
+index ab63afc..1ad86c8 100644
+--- a/tests/test_runbook.py
++++ b/tests/test_runbook.py
+@@ -12,11 +12,11 @@ def _lower(rel: str) -> str:
+ 
+ def test_runbook_exists_and_is_versioned():
+     text = _lower("docs/runbook.md")
+-    assert "version 1.12" in text
++    assert "version 1.13" in text
+     assert "next review" in text
+     assert "owner" in text
+     assert "beamo wipe" in text
+-    assert "0.2.12" in text
++    assert "0.2.13" in text
+     assert "nwipe v0.42" in text
+     assert "6082bde" in text
+ 

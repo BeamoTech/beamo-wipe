@@ -1,0 +1,1 @@
+{"cases": 30, "boundary_cuts": 18, "runner_success_presentation_indeterminate": 18, "controls_success": 12, "native_effects": 0}

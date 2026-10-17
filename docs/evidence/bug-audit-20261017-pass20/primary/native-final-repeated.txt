@@ -1,0 +1,1 @@
+{"provenance": {"source": "/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py", "sha256": "3f702e1ac6c3564372f9b633a2dcf0ea3e9d46553e29ceaf4cfa781e181e8ea7"}, "sessions": 10, "resources": 220, "finalizers": 220, "all_owner_thread": true, "all_returned": true, "gc_events": 160, "max_gc_depth": 1, "registered_callbacks": 1, "pools_empty": true, "effects": [], "unraisables": []}

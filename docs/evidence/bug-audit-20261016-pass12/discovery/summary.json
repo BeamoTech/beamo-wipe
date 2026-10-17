@@ -1,0 +1,17 @@
+{
+  "focused": {
+    "cases": 461,
+    "passed": 461,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "seconds": 8.003
+  },
+  "hashes_checked": 57,
+  "changed": [],
+  "matrix": {
+    "cases": 1455,
+    "native_attempts": [],
+    "cases_sha256": "f77ca9172febc0ddd3c927d624233dad70b117b1cd1bc53e3a1c2d81bc6bfdb0"
+  }
+}

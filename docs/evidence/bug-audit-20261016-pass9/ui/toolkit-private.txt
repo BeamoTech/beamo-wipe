@@ -1,0 +1,45 @@
+dbus-daemon[408395]: [session uid=0 pid=408395] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=408411 comm="python3 -m pytest -o addopts= -q tests/test_access" label="unconfined")
+dbus-daemon[408395]: [session uid=0 pid=408395] Successfully activated service 'org.a11y.Bus'
+................dbus-daemon[408438]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=408411 comm="python3 -m pytest -o addopts= -q tests/test_access" label="unconfined")
+dbus-daemon[408438]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+........................................................ [ 11%]
+........................................................................ [ 22%]
+......................F....................s............................ [ 34%]
+...........................sssss........................................ [ 45%]
+.....................................................................s.. [ 57%]
+........................................................................ [ 68%]
+........................................................................ [ 79%]
+........................................................................ [ 91%]
+.......................................................                  [100%]
+=================================== FAILURES ===================================
+_____ test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog _____
+
+ui = <function ui.<locals>.build at 0x71b9a0cb18a0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71b9a0c34c80>
+
+    def test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog(ui, monkeypatch):
+        from threading import Event
+        from beamo_wipe import sound
+
+        entered = Event()
+        release = Event()
+        calls = []
+        state = _canned_sound(monkeypatch, calls)
+        def slow_outputs():
+            entered.set()
+            release.wait(timeout=2)
+            return state
+        monkeypatch.setattr(sound, "list_outputs", slow_outputs)
+        app = ui()
+        started = time.perf_counter()
+        app.actions[C.SOUND_CHECK_BUTTON].clicked()
+>       assert time.perf_counter() - started < 0.06
+E       assert (77673.230111804 - 77673.092497372) < 0.06
+E        +  where 77673.230111804 = <built-in function perf_counter>()
+E        +    where <built-in function perf_counter> = time.perf_counter
+
+tests/test_accessible_runtime.py:1620: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_accessible_runtime.py::test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog
+1 failed, 623 passed, 7 skipped in 308.94s (0:05:08)

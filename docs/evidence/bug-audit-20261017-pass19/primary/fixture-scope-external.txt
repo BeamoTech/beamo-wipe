@@ -1,0 +1,8 @@
+: 8
+tests/test_tk_runtime.py: 1
+
+Traceback (most recent call last):
+  File "/tmp/pass19-primary/observe-fixture-scope.py", line 22, in <module>
+    assert rows[0]['autouse'] is (route == 'external')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

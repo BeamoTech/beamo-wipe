@@ -1,0 +1,95 @@
+dbus-daemon[502689]: [session uid=0 pid=502689] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=502703 comm="/tmp/beamo-wipe-audit-python/bin/python3 /tmp/pass" label="unconfined")
+dbus-daemon[502689]: [session uid=0 pid=502689] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[502712]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=502703 comm="/tmp/beamo-wipe-audit-python/bin/python3 /tmp/pass" label="unconfined")
+dbus-daemon[502712]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{
+  "display": ":122",
+  "states": [
+    {
+      "surface": "wizard",
+      "fullscreen_requested": false,
+      "size": [
+        900,
+        700
+      ],
+      "allocation": [
+        900,
+        700
+      ],
+      "monitor_geometry": [
+        0,
+        0,
+        1600,
+        1000
+      ],
+      "native_fullscreen_state": false,
+      "mapped": true,
+      "xid": 2097155
+    },
+    {
+      "surface": "wizard",
+      "fullscreen_requested": true,
+      "size": [
+        900,
+        700
+      ],
+      "allocation": [
+        900,
+        700
+      ],
+      "monitor_geometry": [
+        0,
+        0,
+        1600,
+        1000
+      ],
+      "native_fullscreen_state": true,
+      "mapped": true,
+      "xid": 2097218
+    },
+    {
+      "surface": "startup",
+      "fullscreen_requested": false,
+      "size": [
+        640,
+        420
+      ],
+      "allocation": [
+        640,
+        420
+      ],
+      "monitor_geometry": [
+        0,
+        0,
+        1600,
+        1000
+      ],
+      "native_fullscreen_state": false,
+      "mapped": true,
+      "xid": 2097254
+    },
+    {
+      "surface": "startup",
+      "fullscreen_requested": true,
+      "size": [
+        640,
+        420
+      ],
+      "allocation": [
+        640,
+        420
+      ],
+      "monitor_geometry": [
+        0,
+        0,
+        1600,
+        1000
+      ],
+      "native_fullscreen_state": true,
+      "mapped": true,
+      "xid": 2097263
+    }
+  ],
+  "owned_teardown": true
+}

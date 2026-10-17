@@ -1,0 +1,10 @@
+{
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "branch": "fix/safety-audit-20261015",
+  "frozen_inputs": 766,
+  "matches_pass18_final": true,
+  "index_empty": true,
+  "environment_status_tool": "not exposed",
+  "shared_guide": "absent",
+  "hosted_or_privileged_actions": false
+}

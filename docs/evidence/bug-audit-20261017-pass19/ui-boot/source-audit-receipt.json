@@ -1,0 +1,101 @@
+{
+  "at_utc": "2026-10-17T16:11:26.434751+00:00",
+  "author": "/root/pass19_ui_boot",
+  "branch": "fix/safety-audit-20261015",
+  "files": {
+    ".github/workflows/ci.yml": {
+      "bytes": 4345,
+      "sha256": "910fcf7b5e653919b1a400a2a6f0815755c192a0a794527b016f424fdb854e77"
+    },
+    ".github/workflows/release.yml": {
+      "bytes": 4933,
+      "sha256": "3506861987054841f929c49cd2a0c5212ca9307182914ea0d6649d7075e3eb2d"
+    },
+    "AGENTS.md": {
+      "bytes": 9774,
+      "sha256": "1e6f980d50267db488a9beb353802242ac57379450c1d9c0ad77c13928509290"
+    },
+    "docs/claims.md": {
+      "bytes": 1916,
+      "sha256": "7957215efb558d248a3af044432810035840e0ac9191a10a08c2848632c1f4c4"
+    },
+    "docs/evidence/bug-audit-20261017-pass19/ui-boot/source-audit.md": {
+      "bytes": 7218,
+      "sha256": "19d3f8f491a47c4470b042683947a6e16f1c790c67e5f3ed7c8d99b60e7044a2"
+    },
+    "docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-owner-trace-probe.py": {
+      "bytes": 6734,
+      "sha256": "dfa703b52c8f404771131afdd5a80235670bba31f87b747a7b6a414401d20d98"
+    },
+    "packaging/live/config/includes.chroot/etc/systemd/system/beamo-wipe-kiosk.service": {
+      "bytes": 937,
+      "sha256": "29042ffc1f4d6a60dc27878344909982dd9ff5980b4460c5ee841313cfbdaf07"
+    },
+    "packaging/live/config/includes.chroot/usr/local/bin/beamo-wipe": {
+      "bytes": 1403,
+      "sha256": "0a45eb29375be43b6d776d31d6dd3c22a52ab9a03fce493a9aa3c4b403b1a4ee"
+    },
+    "packaging/live/config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk": {
+      "bytes": 7654,
+      "sha256": "5532b8e162621be12b284c5a01eb4e1817b5b19bd242c3ad9ac50452c5c5e9a4"
+    },
+    "scripts/build-iso.sh": {
+      "bytes": 17556,
+      "sha256": "e5fc440e065fbb33ea1d6a580584aa0537390ba92e60e3cd331e9622cfb48a00"
+    },
+    "scripts/preview.sh": {
+      "bytes": 2026,
+      "sha256": "b7eb0108bcaa94876a75184c712e1a717cba1bf5e8bdf5b2649fd23dd676ea62"
+    },
+    "scripts/test-all.sh": {
+      "bytes": 355,
+      "sha256": "774bc049e483f107eedb2d0319bc62d3672cab66b086f70caed2dcdf6219912d"
+    },
+    "src/beamo_wipe/app.py": {
+      "bytes": 26392,
+      "sha256": "30e005d148b07415b57fa293762f142a491fa1ec012661cf02ed2739bfb261e5"
+    },
+    "src/beamo_wipe/compat_story.py": {
+      "bytes": 10459,
+      "sha256": "b2a5f36279a507a7c65dfb65f8b772c5dcc79b2a531d805716ddc06066e9a816"
+    },
+    "src/beamo_wipe/recovery.py": {
+      "bytes": 9553,
+      "sha256": "2c9d7994872173b92225efb953d48ad25e3a77c4824632530b400d86005f5aa7"
+    },
+    "src/beamo_wipe/session_recovery.py": {
+      "bytes": 25589,
+      "sha256": "128c5daa4c53197437682c637d3078917a79037a9edf5d1796fc9916cdd4ba53"
+    },
+    "src/beamo_wipe/startup_stages.py": {
+      "bytes": 8079,
+      "sha256": "131d5966f9e45505e248e8192d33a1eb39be135246d1a7191ef82b6dba832477"
+    },
+    "src/beamo_wipe/ui/accessible_wizard.py": {
+      "bytes": 58216,
+      "sha256": "2179d1be8dfa960266e611eb0429b1a33670c3ca25111a899355e39a8ca35fed"
+    },
+    "src/beamo_wipe/ui/console_wizard.py": {
+      "bytes": 87323,
+      "sha256": "d9f78e2470823629b31c9e7b755a76efc61b03a06f03153834b27c47661e2fd8"
+    },
+    "src/beamo_wipe/ui/layout.py": {
+      "bytes": 4752,
+      "sha256": "31dbf17a973a0f48f7b1cc17d07d2552cd65207dfa4c8fd1f2d02a18ee1ef758"
+    },
+    "src/beamo_wipe/ui/sound_dialog.py": {
+      "bytes": 13105,
+      "sha256": "9165731d320e6f19de3e6632a7b0c43a4c688a72dbd6558b39ba46c0052aed9e"
+    },
+    "src/beamo_wipe/ui/tk_wizard.py": {
+      "bytes": 202093,
+      "sha256": "612792b7c1328741cd8a194abd90cb297629b0f281cbf30538ca9bb9ae45f50d"
+    },
+    "src/beamo_wipe/wizard.py": {
+      "bytes": 140652,
+      "sha256": "be375a0861ec569a652e15f9f572bfa689f40048d736c5bedef641453d464bbb"
+    }
+  },
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "scope": "Source-only; no application/test runtime; root-run probe prepared only"
+}

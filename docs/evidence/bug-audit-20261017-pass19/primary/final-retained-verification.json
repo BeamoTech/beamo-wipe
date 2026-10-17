@@ -1,0 +1,40 @@
+{
+  "at_utc": "2026-10-17T17:01:58.948650+00:00",
+  "status": "BLOCKED",
+  "prior_manifest_files_verified": 195,
+  "raw_archive_files_verified": 29,
+  "source_inputs_verified": 771,
+  "index_empty": true,
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "canonical_local_gate": "FAILED",
+  "completed_local_phases": 8,
+  "uncanceled_full_abort_runs": 2,
+  "orca_single_case_reports_authenticated": 2,
+  "main_junit_absent": true,
+  "focused_passes": 329,
+  "original_final_proof": {
+    "assertion_failures": 118,
+    "passing_controls": 104
+  },
+  "unfixed_native_lifetime_proof": {
+    "assertion_failures": 2,
+    "passing_controls": 6
+  },
+  "canceled_font_diagnostic": {
+    "exit_code": 143,
+    "actor": "root Codex",
+    "signal": "SIGTERM",
+    "at_utc": "2026-10-17T16:57:22.335849+00:00",
+    "acceptance": false
+  },
+  "fresh_artifact_campaigns": "NOT RUN / HELD",
+  "windows_binary": {
+    "format": "PE32+ AMD64",
+    "bytes": 9021440,
+    "sha256": "d05ac4db6463aa6d7f51188f3bcfcfb4891aeab549ab481843538114904a76d9",
+    "native_acceptance": false
+  },
+  "source_committed": false,
+  "pushed": false,
+  "released": false
+}

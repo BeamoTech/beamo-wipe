@@ -1,0 +1,690 @@
+{
+  "review": "source/AST/archive/XML parsing only; no product imports or test execution",
+  "frozen_inputs": 788,
+  "starting_inputs": 779,
+  "unchanged_start_inputs": 775,
+  "source_freeze_sha256": "c4ecdfc8e8c814bd3d033bd478472cbd498a766c76e077006ba2bfb093093dac",
+  "archive_sha256": "44298537be1635bf6bc6d222bc8d743a697841588e030853358d489aed0c7078",
+  "all_current_and_archived_frozen_inputs_match": true,
+  "changed": [
+    "src/beamo_wipe/diagnostics.py",
+    "src/beamo_wipe/discover.py",
+    "src/beamo_wipe/ui/accessible_wizard.py",
+    "src/beamo_wipe/ui/tk_wizard.py"
+  ],
+  "added": [
+    "tests/test_accessible_close_cleanup_pass21.py",
+    "tests/test_diagnostics_line_separators_pass21.py",
+    "tests/test_discovery_nonfinite_size_pass21.py",
+    "tests/test_disk_name_alias_layout_pass21.py",
+    "tests/test_disk_name_layout_pass21.py",
+    "tests/test_refresh_acceptance_interruptions_pass21.py",
+    "tests/test_refresh_commit_concurrency_pass21.py",
+    "tests/test_tk_trace_adoption_pass21.py",
+    "tests/test_tk_variable_interpreter_pass21.py"
+  ],
+  "starting_archive_inputs_authenticated": 779,
+  "original_replay_runtime_inputs_authenticated": 58,
+  "runtime_inputs": 58,
+  "runtime_source_sha256": "8e18e259414408eff434768ad24b38432bf913b12a864439f40b585a264496c1",
+  "selected_ui_inputs": {
+    "src/beamo_wipe/ui/tk_wizard.py": "5b1fc0e16f95176ae706a9677d082d2daae7eb3d70a43ce244ce77363e35f9f5",
+    "src/beamo_wipe/ui/accessible_wizard.py": "dd2484ff669d1d08f4fa7927200517de07b420708094cd3249af5406fd0aac97",
+    "tests/test_tk_variable_interpreter_pass21.py": "a1adfa3427496bdb425dd780cef667d4ed5ae3eb10b76230848a84a3086f0e7d",
+    "tests/test_refresh_acceptance_interruptions_pass21.py": "44b5083fff5432658f4a943354789c891e43d94fd66ea3986caa1858c8906b24",
+    "tests/test_accessible_close_cleanup_pass21.py": "17d33a6646acf8471570be2696aafe00cc5b12a754492ccc37d2f4ab55af59a8",
+    "tests/test_tk_trace_adoption_pass21.py": "c042b2cb2a99996fc4796e2a07ea3e661adeac01daccef33a11494ddd2385d44",
+    "tests/test_refresh_commit_concurrency_pass21.py": "e90382eb12867eb0105071ac3b77369c76d3a400e146209b2894b587fa321652"
+  },
+  "ui_cases": 28,
+  "ast": [
+    {
+      "proof": "tk-variable-root-proof-v3.py",
+      "proof_sha256": "1f6549dd409148e6fab69fe75c145f78a45bde5461fd356f4e6ff51eba4962a9",
+      "canonical": "tests/test_tk_variable_interpreter_pass21.py",
+      "canonical_sha256": "a1adfa3427496bdb425dd780cef667d4ed5ae3eb10b76230848a84a3086f0e7d",
+      "cases": 7,
+      "changed_functions": [
+        "_admit",
+        "test_native_variables_use_the_owned_root"
+      ],
+      "unchanged_functions": [
+        "_child",
+        "_emit",
+        "_guard"
+      ],
+      "non_admission_assertions": 18,
+      "assertion_map": {
+        "_emit": 0,
+        "_guard": 0,
+        "_child": 14,
+        "test_native_variables_use_the_owned_root": 4
+      },
+      "all_non_admission_assertions_identical": true,
+      "static_import_class_constant_main_ast_identical": true
+    },
+    {
+      "proof": "refresh-acceptance-proof.py",
+      "proof_sha256": "cc5dcc5f778f6f28ebfc721aac2f6e98acf60984cf73bc8c0bcf243cdf8b390e",
+      "canonical": "tests/test_refresh_acceptance_interruptions_pass21.py",
+      "canonical_sha256": "44b5083fff5432658f4a943354789c891e43d94fd66ea3986caa1858c8906b24",
+      "cases": 8,
+      "changed_functions": [
+        "_accessible",
+        "_admit"
+      ],
+      "unchanged_functions": [
+        "test_refresh_acceptance_failure_resolves_claim"
+      ],
+      "non_admission_assertions": 11,
+      "assertion_map": {
+        "test_refresh_acceptance_failure_resolves_claim": 11
+      },
+      "all_non_admission_assertions_identical": true,
+      "static_import_class_constant_main_ast_identical": true
+    },
+    {
+      "proof": "gtk-close-cleanup-proof.py",
+      "proof_sha256": "c7ac00e1b72ddcac510a63e3eebf3609a487e2e20d20711ab7ae30cd2c8b1214",
+      "canonical": "tests/test_accessible_close_cleanup_pass21.py",
+      "canonical_sha256": "17d33a6646acf8471570be2696aafe00cc5b12a754492ccc37d2f4ab55af59a8",
+      "cases": 3,
+      "changed_functions": [
+        "_module"
+      ],
+      "unchanged_functions": [
+        "test_gtk_close_completes_independent_cleanup_after_audio_failure"
+      ],
+      "non_admission_assertions": 4,
+      "assertion_map": {
+        "test_gtk_close_completes_independent_cleanup_after_audio_failure": 4
+      },
+      "all_non_admission_assertions_identical": true,
+      "static_import_class_constant_main_ast_identical": true
+    },
+    {
+      "proof": "tk-trace-adoption-proof-v2.py",
+      "proof_sha256": "430ec2e4f9993a62bc5cf9a4b93debe3c1852b89fd220965621458e14f99dcb8",
+      "canonical": "tests/test_tk_trace_adoption_pass21.py",
+      "canonical_sha256": "c042b2cb2a99996fc4796e2a07ea3e661adeac01daccef33a11494ddd2385d44",
+      "cases": 4,
+      "changed_functions": [
+        "_admit",
+        "test_interrupted_owned_trace_is_retired"
+      ],
+      "unchanged_functions": [
+        "_child",
+        "_emit"
+      ],
+      "non_admission_assertions": 16,
+      "assertion_map": {
+        "_emit": 0,
+        "_child": 12,
+        "test_interrupted_owned_trace_is_retired": 4
+      },
+      "all_non_admission_assertions_identical": true,
+      "static_import_class_constant_main_ast_identical": true
+    },
+    {
+      "proof": "realthread-refresh-proof.py",
+      "proof_sha256": "c843f143e4d0b4b2fa78e97c0adfbcbec7df52a8f8bfd7e98d1a7f2080dbc1dc",
+      "canonical": "tests/test_refresh_commit_concurrency_pass21.py",
+      "canonical_sha256": "e90382eb12867eb0105071ac3b77369c76d3a400e146209b2894b587fa321652",
+      "cases": 6,
+      "changed_functions": [
+        "_accessible",
+        "_admit"
+      ],
+      "unchanged_functions": [
+        "test_actual_woken_refresh_worker_observes_locked_acceptance"
+      ],
+      "non_admission_assertions": 19,
+      "assertion_map": {
+        "test_actual_woken_refresh_worker_observes_locked_acceptance": 19
+      },
+      "all_non_admission_assertions_identical": true,
+      "static_import_class_constant_main_ast_identical": true
+    }
+  ],
+  "reports": {
+    "final-canonical-original": {
+      "sha256": "67d8c18bad77cc4c6e8b99cddb1d3dd8a70b04fb720ab612555b2c2561c233a4",
+      "counts": {
+        "tests": 219,
+        "failures": 89,
+        "errors": 0,
+        "skips": 0,
+        "passing": 130
+      },
+      "exit_code": 1,
+      "selected_actual_thread_traces": [
+        {
+          "surface": "tk",
+          "fault": "set-before",
+          "source": {
+            "source": "/tmp/pass21-primary/original-replay/src/beamo_wipe/ui/tk_wizard.py",
+            "sha256": "3f702e1ac6c3564372f9b633a2dcf0ea3e9d46553e29ceaf4cfa781e181e8ea7"
+          },
+          "first": {
+            "result": null,
+            "state_at_return": "REFRESHING",
+            "state_after_join": "REFRESHING",
+            "scans": [],
+            "errors": [
+              {
+                "type": "ControlledLaunchInterruption",
+                "identity": 134852477671072,
+                "original": true
+              }
+            ],
+            "completions": [],
+            "alive": [
+              true
+            ],
+            "registered": 1,
+            "gate_signalled": false,
+            "set_calls": 1,
+            "worker_passed": false,
+            "waits": []
+          },
+          "cleanup_alive": [
+            false
+          ]
+        },
+        {
+          "surface": "gtk",
+          "fault": "set-before",
+          "source": {
+            "source": "/tmp/pass21-primary/original-replay/src/beamo_wipe/ui/accessible_wizard.py",
+            "sha256": "2179d1be8dfa960266e611eb0429b1a33670c3ca25111a899355e39a8ca35fed"
+          },
+          "first": {
+            "result": null,
+            "state_at_return": "REFRESHING",
+            "state_after_join": "REFRESHING",
+            "scans": [],
+            "errors": [
+              {
+                "type": "ControlledLaunchInterruption",
+                "identity": 134852477674208,
+                "original": true
+              }
+            ],
+            "completions": [],
+            "alive": [
+              true
+            ],
+            "registered": 0,
+            "gate_signalled": false,
+            "set_calls": 1,
+            "worker_passed": false,
+            "waits": []
+          },
+          "cleanup_alive": [
+            false
+          ]
+        },
+        {
+          "surface": "tk",
+          "fault": "set-after",
+          "source": {
+            "source": "/tmp/pass21-primary/original-replay/src/beamo_wipe/ui/tk_wizard.py",
+            "sha256": "3f702e1ac6c3564372f9b633a2dcf0ea3e9d46553e29ceaf4cfa781e181e8ea7"
+          },
+          "first": {
+            "result": null,
+            "state_at_return": "REFRESHING",
+            "state_after_join": "REFRESHING",
+            "scans": [
+              {
+                "phase": "observed-launch",
+                "thread": 134852453361344
+              }
+            ],
+            "errors": [
+              {
+                "type": "ControlledLaunchInterruption",
+                "identity": 134852477666032,
+                "original": true
+              }
+            ],
+            "completions": [],
+            "alive": [
+              false
+            ],
+            "registered": 1,
+            "gate_signalled": true,
+            "set_calls": 1,
+            "worker_passed": true,
+            "waits": [
+              {
+                "signalled": true,
+                "thread": 134852453361344
+              }
+            ]
+          },
+          "cleanup_alive": [
+            false
+          ]
+        },
+        {
+          "surface": "gtk",
+          "fault": "set-after",
+          "source": {
+            "source": "/tmp/pass21-primary/original-replay/src/beamo_wipe/ui/accessible_wizard.py",
+            "sha256": "2179d1be8dfa960266e611eb0429b1a33670c3ca25111a899355e39a8ca35fed"
+          },
+          "first": {
+            "result": null,
+            "state_at_return": "REFRESHING",
+            "state_after_join": "REFRESHING",
+            "scans": [
+              {
+                "phase": "observed-launch",
+                "thread": 134852453361344
+              }
+            ],
+            "errors": [
+              {
+                "type": "ControlledLaunchInterruption",
+                "identity": 134852477670288,
+                "original": true
+              }
+            ],
+            "completions": [],
+            "alive": [
+              false
+            ],
+            "registered": 0,
+            "gate_signalled": true,
+            "set_calls": 1,
+            "worker_passed": true,
+            "waits": [
+              {
+                "signalled": true,
+                "thread": 134852453361344
+              }
+            ]
+          },
+          "cleanup_alive": [
+            false
+          ]
+        },
+        {
+          "surface": "tk",
+          "fault": "normal-control",
+          "source": {
+            "source": "/tmp/pass21-primary/original-replay/src/beamo_wipe/ui/tk_wizard.py",
+            "sha256": "3f702e1ac6c3564372f9b633a2dcf0ea3e9d46553e29ceaf4cfa781e181e8ea7"
+          },
+          "first": {
+            "result": 1,
+            "state_at_return": "REFRESHING",
+            "state_after_join": "REFRESHING",
+            "scans": [
+              {
+                "phase": "observed-launch",
+                "thread": 134852453361344
+              }
+            ],
+            "errors": [],
+            "completions": [],
+            "alive": [
+              false
+            ],
+            "registered": 1,
+            "gate_signalled": true,
+            "set_calls": 1,
+            "worker_passed": true,
+            "waits": [
+              {
+                "signalled": true,
+                "thread": 134852453361344
+              }
+            ]
+          },
+          "cleanup_alive": [
+            false
+          ]
+        },
+        {
+          "surface": "gtk",
+          "fault": "normal-control",
+          "source": {
+            "source": "/tmp/pass21-primary/original-replay/src/beamo_wipe/ui/accessible_wizard.py",
+            "sha256": "2179d1be8dfa960266e611eb0429b1a33670c3ca25111a899355e39a8ca35fed"
+          },
+          "first": {
+            "result": true,
+            "state_at_return": "REFRESHING",
+            "state_after_join": "REFRESHING",
+            "scans": [
+              {
+                "phase": "observed-launch",
+                "thread": 134852453361344
+              }
+            ],
+            "errors": [],
+            "completions": [],
+            "alive": [
+              false
+            ],
+            "registered": 0,
+            "gate_signalled": true,
+            "set_calls": 1,
+            "worker_passed": true,
+            "waits": [
+              {
+                "signalled": true,
+                "thread": 134852453361344
+              }
+            ]
+          },
+          "cleanup_alive": [
+            false
+          ]
+        }
+      ],
+      "actual_thread_retry_traces": []
+    },
+    "canonical-fixed": {
+      "sha256": "4ca009d172ab12b35d6093f4d17c7ba4101348284a4058b64ede28c7aaae4bb4",
+      "counts": {
+        "tests": 213,
+        "failures": 0,
+        "errors": 0,
+        "skips": 0,
+        "passing": 213
+      },
+      "exit_code": 0,
+      "selected_actual_thread_traces": [],
+      "actual_thread_retry_traces": []
+    },
+    "final-focused-corrected": {
+      "sha256": "c4ab05cec42bc579b42f9f557d4a6b58e9980342c03ead5440f9814db6e38575",
+      "counts": {
+        "tests": 290,
+        "failures": 0,
+        "errors": 0,
+        "skips": 0,
+        "passing": 290
+      },
+      "exit_code": 0,
+      "selected_actual_thread_traces": [
+        {
+          "surface": "tk",
+          "fault": "set-before",
+          "source": {
+            "source": "/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py",
+            "sha256": "5b1fc0e16f95176ae706a9677d082d2daae7eb3d70a43ce244ce77363e35f9f5"
+          },
+          "first": {
+            "result": 1,
+            "state_at_return": "PICK_BLOCKED",
+            "state_after_join": "PICK_BLOCKED",
+            "scans": [],
+            "errors": [],
+            "completions": [
+              {
+                "seq": 1,
+                "error_id": 123715775300560,
+                "thread": 123715810017408
+              }
+            ],
+            "alive": [
+              false
+            ],
+            "registered": 0,
+            "gate_signalled": true,
+            "set_calls": 2,
+            "worker_passed": true,
+            "waits": [
+              {
+                "signalled": true,
+                "thread": 123715757172416
+              }
+            ]
+          },
+          "cleanup_alive": [
+            false
+          ]
+        },
+        {
+          "surface": "gtk",
+          "fault": "set-before",
+          "source": {
+            "source": "/root/dev/Beamo Wipe/src/beamo_wipe/ui/accessible_wizard.py",
+            "sha256": "dd2484ff669d1d08f4fa7927200517de07b420708094cd3249af5406fd0aac97"
+          },
+          "first": {
+            "result": true,
+            "state_at_return": "PICK_BLOCKED",
+            "state_after_join": "PICK_BLOCKED",
+            "scans": [],
+            "errors": [],
+            "completions": [
+              {
+                "seq": 1,
+                "error_id": 123715775681984,
+                "thread": 123715810017408
+              }
+            ],
+            "alive": [
+              false
+            ],
+            "registered": 0,
+            "gate_signalled": true,
+            "set_calls": 2,
+            "worker_passed": true,
+            "waits": [
+              {
+                "signalled": true,
+                "thread": 123715757172416
+              }
+            ]
+          },
+          "cleanup_alive": [
+            false
+          ]
+        },
+        {
+          "surface": "tk",
+          "fault": "set-after",
+          "source": {
+            "source": "/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py",
+            "sha256": "5b1fc0e16f95176ae706a9677d082d2daae7eb3d70a43ce244ce77363e35f9f5"
+          },
+          "first": {
+            "result": 1,
+            "state_at_return": "PICK_BLOCKED",
+            "state_after_join": "PICK_BLOCKED",
+            "scans": [],
+            "errors": [],
+            "completions": [
+              {
+                "seq": 1,
+                "error_id": 123715775365872,
+                "thread": 123715810017408
+              }
+            ],
+            "alive": [
+              false
+            ],
+            "registered": 0,
+            "gate_signalled": true,
+            "set_calls": 2,
+            "worker_passed": true,
+            "waits": [
+              {
+                "signalled": true,
+                "thread": 123715757172416
+              }
+            ]
+          },
+          "cleanup_alive": [
+            false
+          ]
+        },
+        {
+          "surface": "gtk",
+          "fault": "set-after",
+          "source": {
+            "source": "/root/dev/Beamo Wipe/src/beamo_wipe/ui/accessible_wizard.py",
+            "sha256": "dd2484ff669d1d08f4fa7927200517de07b420708094cd3249af5406fd0aac97"
+          },
+          "first": {
+            "result": true,
+            "state_at_return": "PICK_BLOCKED",
+            "state_after_join": "PICK_BLOCKED",
+            "scans": [],
+            "errors": [],
+            "completions": [
+              {
+                "seq": 1,
+                "error_id": 123715775678400,
+                "thread": 123715810017408
+              }
+            ],
+            "alive": [
+              false
+            ],
+            "registered": 0,
+            "gate_signalled": true,
+            "set_calls": 2,
+            "worker_passed": true,
+            "waits": [
+              {
+                "signalled": true,
+                "thread": 123715757172416
+              }
+            ]
+          },
+          "cleanup_alive": [
+            false
+          ]
+        },
+        {
+          "surface": "tk",
+          "fault": "normal-control",
+          "source": {
+            "source": "/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py",
+            "sha256": "5b1fc0e16f95176ae706a9677d082d2daae7eb3d70a43ce244ce77363e35f9f5"
+          },
+          "first": {
+            "result": 1,
+            "state_at_return": "REFRESHING",
+            "state_after_join": "REFRESHING",
+            "scans": [
+              {
+                "phase": "observed-launch",
+                "thread": 123715757172416
+              }
+            ],
+            "errors": [],
+            "completions": [],
+            "alive": [
+              false
+            ],
+            "registered": 1,
+            "gate_signalled": true,
+            "set_calls": 1,
+            "worker_passed": true,
+            "waits": [
+              {
+                "signalled": true,
+                "thread": 123715757172416
+              }
+            ]
+          },
+          "cleanup_alive": [
+            false
+          ]
+        },
+        {
+          "surface": "gtk",
+          "fault": "normal-control",
+          "source": {
+            "source": "/root/dev/Beamo Wipe/src/beamo_wipe/ui/accessible_wizard.py",
+            "sha256": "dd2484ff669d1d08f4fa7927200517de07b420708094cd3249af5406fd0aac97"
+          },
+          "first": {
+            "result": true,
+            "state_at_return": "REFRESHING",
+            "state_after_join": "REFRESHING",
+            "scans": [
+              {
+                "phase": "observed-launch",
+                "thread": 123715757172416
+              }
+            ],
+            "errors": [],
+            "completions": [],
+            "alive": [
+              false
+            ],
+            "registered": 0,
+            "gate_signalled": true,
+            "set_calls": 1,
+            "worker_passed": true,
+            "waits": [
+              {
+                "signalled": true,
+                "thread": 123715757172416
+              }
+            ]
+          },
+          "cleanup_alive": [
+            false
+          ]
+        }
+      ],
+      "actual_thread_retry_traces": [
+        {
+          "state": "OWNER",
+          "scans": [
+            {
+              "phase": "retry",
+              "thread": 123715757172416
+            }
+          ],
+          "threads": 1,
+          "alive": false
+        },
+        {
+          "state": "OWNER",
+          "scans": [
+            {
+              "phase": "retry",
+              "thread": 123715757172416
+            }
+          ],
+          "threads": 1,
+          "alive": false
+        },
+        {
+          "state": "OWNER",
+          "scans": [
+            {
+              "phase": "retry",
+              "thread": 123715757172416
+            }
+          ],
+          "threads": 1,
+          "alive": false
+        },
+        {
+          "state": "OWNER",
+          "scans": [
+            {
+              "phase": "retry",
+              "thread": 123715757172416
+            }
+          ],
+          "threads": 1,
+          "alive": false
+        }
+      ]
+    }
+  },
+  "pending": "Root final full gates, campaign/artifact retention, broader qualification"
+}

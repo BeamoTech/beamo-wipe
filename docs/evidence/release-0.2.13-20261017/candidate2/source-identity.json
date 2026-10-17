@@ -1,0 +1,13 @@
+{
+  "version": "0.2.13",
+  "starting_head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "branch": "fix/safety-audit-20261015",
+  "frozen_inputs": 875,
+  "runtime_source_sha256": "781dc5f3dab8c8a07f799b17fd25583fe19c47267d22bcfbebfc2156520e8ea9",
+  "source_freeze_sha256": "f6b944b3e7f4d8c286cbfae80ececbd6cdec9bef10ca546acfd6ae241c9bf605",
+  "excluded_mutable_metadata": [
+    ".ai/memory/",
+    "docs/evidence/"
+  ],
+  "source_committed": false
+}

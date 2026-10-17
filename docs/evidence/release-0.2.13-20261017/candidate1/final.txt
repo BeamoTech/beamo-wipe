@@ -1,0 +1,1090 @@
+[ci-hosted] orca on a dedicated Xvfb 1600x1000 @ 72 DPI
+[ci-hosted] pytest under a separate Xvfb 1600x1000 @ 72 DPI
+dbus-daemon[239714]: [session uid=0 pid=239714] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=239742 comm="python3 -m pytest -p no:cacheprovider tests/test_a" label="unconfined")
+dbus-daemon[239714]: [session uid=0 pid=239714] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[239715]: [session uid=0 pid=239715] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=239743 comm="python3 -m pytest --deselect=tests/test_accessible" label="unconfined")
+dbus-daemon[239752]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=239742 comm="python3 -m pytest -p no:cacheprovider tests/test_a" label="unconfined")
+dbus-daemon[239715]: [session uid=0 pid=239715] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[239752]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+........................................................................ [  0%]
+.......dbus-daemon[239765]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=239743 comm="python3 -m pytest --deselect=tests/test_accessible" label="unconfined")
+dbus-daemon[239765]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+................................................................. [  1%]
+........................................................................ [  2%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+...                                                                        [100%]
+1 passed in 62.37s (0:01:02)
+...................................................................... [  4%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+........................................................................ [  9%]
+........................................................................ [  9%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 12%]
+........................................................................ [ 12%]
+........................................................................ [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 17%]
+........................................................................ [ 17%]
+........................................................................ [ 18%]
+........................................................................ [ 19%]
+........................................................................ [ 19%]
+........................................................................ [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 24%]
+........................................................................ [ 24%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 29%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................................ [ 31%]
+........................................................................ [ 32%]
+........................................................................ [ 33%]
+........................................................................ [ 34%]
+........................................................................ [ 34%]
+........................................................................ [ 35%]
+........................................................................ [ 36%]
+........................................................................ [ 36%]
+........................................................................ [ 37%]
+........................................................................ [ 38%]
+........................................................................ [ 39%]
+........................................................................ [ 39%]
+.............................................F......FFFFFF.F......F..... [ 40%]
+........................................................................ [ 41%]
+........................................................................ [ 41%]
+........................................................................ [ 42%]
+.................................s..s................................... [ 43%]
+......................................................F................. [ 44%]
+........................................................................ [ 44%]
+........................................................................ [ 45%]
+........................................................................ [ 46%]
+........................................................................ [ 46%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+........................................................................ [ 48%]
+........................................................................ [ 49%]
+........................................................................ [ 50%]
+........................................................................ [ 51%]
+........................................................................ [ 51%]
+........................................................................ [ 52%]
+........................................................................ [ 53%]
+........................................................................ [ 53%]
+........................................................................ [ 54%]
+........................................................................ [ 55%]
+........................................................................ [ 56%]
+........................................................................ [ 56%]
+........................................................................ [ 57%]
+........................................................................ [ 58%]
+........................................................................ [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 60%]
+........................................................................ [ 61%]
+...................................................sss..s.ssssssss...... [ 61%]
+........................................................................ [ 62%]
+........................................................................ [ 63%]
+........................................................................ [ 63%]
+........................................................................ [ 64%]
+..........................................FFFFFFFFFFF.......F.F......... [ 65%]
+........................................................................ [ 66%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 71%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 75%]
+........................................................................ [ 75%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 78%]
+........................................................................ [ 78%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+........................................................................ [ 80%]
+........................................................................ [ 81%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 83%]
+........................................................................ [ 84%]
+........................................................................ [ 85%]
+........................................................................ [ 85%]
+........................................................................ [ 86%]
+........................................................................ [ 87%]
+........................................................................ [ 88%]
+........................................................................ [ 88%]
+........................................................................ [ 89%]
+........................................................................ [ 90%]
+........................................................................ [ 90%]
+........................................................................ [ 91%]
+........................................................................ [ 92%]
+........................................................................ [ 93%]
+........................................................................ [ 93%]
+........................................................................ [ 94%]
+........................................................................ [ 95%]
+........................................................................ [ 95%]
+........................................................................ [ 96%]
+........................................................................ [ 97%]
+........................................................................ [ 97%]
+........................................................................ [ 98%]
+........................................................................ [ 99%]
+............................................................             [100%]
+=================================== FAILURES ===================================
+___________ test_iso_builder_rechecks_output_after_long_build_window ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-90/test_iso_builder_rechecks_outp0')
+
+    def test_iso_builder_rechecks_output_after_long_build_window(tmp_path):
+        project = tmp_path / "project"
+        scripts = project / "scripts"
+        scripts.mkdir(parents=True)
+        source = (ROOT / "scripts/build-iso.sh").read_text()
+        staging = source.index('echo "Staging live-build includes…"')
+        docker_failure = source.index('if [ "$docker_status" -ne 0 ]; then', staging)
+        post_docker = source.index("\nfi\n", docker_failure) + len("\nfi\n")
+        source = (
+            source[:staging]
+            + 'BUILD_OUT="$(mktemp -d "$OUT_DIR/.build-output.XXXXXX")"\n'
+            + 'mv "$OUT_DIR" "$ROOT/original-dist"\n'
+            + 'ln -s "$BEAMO_FIXTURE_FOREIGN" "$OUT_DIR"\n'
+            + 'foreign_stage="$BEAMO_FIXTURE_FOREIGN/${BUILD_OUT##*/}"\n'
+            + 'mkdir "$foreign_stage"\n'
+            + 'printf fake > "$foreign_stage/$ISO_NAME"\n'
+            + source[post_docker:]
+        )
+        # A swapped path can appear to contain the staged ISO. Stop before backup
+        # or publication, after the builder's staged-output and boundary checks.
+        source = (
+            source.split('BACKUP_DIR="$(mktemp -d "$OUT_DIR/.bundle-backup.', 1)[0]
+            + "exit 0\n"
+        )
+        (scripts / "build-iso.sh").write_text(source)
+        package = project / "src/beamo_wipe"
+        package.mkdir(parents=True)
+        (package / "__init__.py").write_text('__version__ = "0.2.12"\n')
+        (project / "dist").mkdir()
+        foreign = tmp_path / "foreign"
+        foreign.mkdir()
+        sentinel = foreign / "keep.txt"
+        sentinel.write_text("foreign output")
+    
+        fake_bin = tmp_path / "bin"
+        fake_bin.mkdir()
+        for name in ("docker", "sha256sum"):
+            command = fake_bin / name
+            command.write_text("#!/bin/sh\nexit 0\n")
+            command.chmod(0o755)
+        result = subprocess.run(
+            ["sh", str(scripts / "build-iso.sh")],
+            cwd=project,
+            env={
+                **os.environ,
+                "BEAMO_FIXTURE_FOREIGN": str(foreign),
+                "PATH": f"{fake_bin}{os.pathsep}{os.environ['PATH']}",
+            },
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    
+        assert result.returncode == 2
+>       assert "regular output directory" in result.stderr
+E       AssertionError: assert 'regular output directory' in 'BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n'
+E        +  where 'BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n' = CompletedProcess(args=['sh', '/tmp/pytest-of-root/pytest-90/test_iso_builder_rechecks_outp0/project/scripts/build-iso.sh'], returncode=2, stdout='', stderr='BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n').stderr
+
+tests/test_iso_dist_boundary_pass10.py:106: AssertionError
+______________ test_iso_preflight_refuses_unowned_regular_output _______________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-90/test_iso_preflight_refuses_uno0')
+
+    def test_iso_preflight_refuses_unowned_regular_output(tmp_path):
+        out, result = _preflight(tmp_path, lambda out: (out / ISO).write_text("user bytes"))
+        assert result.returncode != 0
+>       assert "Unverified prior ISO bundle" in result.stderr
+E       AssertionError: assert 'Unverified prior ISO bundle' in 'BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n'
+E        +  where 'BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n' = CompletedProcess(args=['sh', '/tmp/pytest-of-root/pytest-90/test_iso_preflight_refuses_uno0/project/scripts/build-iso.sh'], returncode=2, stdout='', stderr='BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n').stderr
+
+tests/test_iso_prior_bundle_pass23_build.py:103: AssertionError
+__________ test_iso_preflight_accepts_verified_complete_prior_bundle ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-90/test_iso_preflight_accepts_ver0')
+
+    def test_iso_preflight_accepts_verified_complete_prior_bundle(tmp_path):
+        _, result = _preflight(tmp_path, _complete_bundle)
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['sh', '/tmp/pytest-of-root/pytest-90/test_iso_preflight_accepts_ver0/project/scripts/build-iso.sh'], returncode=2, stdout='', stderr='BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n').returncode
+
+tests/test_iso_prior_bundle_pass23_build.py:109: AssertionError
+_____ test_iso_preflight_accepts_valid_checksum_list_from_previous_version _____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-90/test_iso_preflight_accepts_val0')
+
+    def test_iso_preflight_accepts_valid_checksum_list_from_previous_version(tmp_path):
+        _, result = _preflight(tmp_path, _previous_version_bundle)
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['sh', '/tmp/pytest-of-root/pytest-90/test_iso_preflight_accepts_val0/project/scripts/build-iso.sh'], returncode=2, stdout='', stderr='BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n').returncode
+
+tests/test_iso_prior_bundle_pass23_build.py:114: AssertionError
+______ test_iso_preflight_refuses_corrupt_previous_version_checksum_list _______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-90/test_iso_preflight_refuses_cor0')
+
+    def test_iso_preflight_refuses_corrupt_previous_version_checksum_list(tmp_path):
+        def corrupt(out):
+            _previous_version_bundle(out)
+            (out / "beamo-wipe-0.2.11-amd64.iso").write_bytes(b"changed prior ISO!!")
+    
+        _, result = _preflight(tmp_path, corrupt)
+        assert result.returncode != 0
+>       assert "Unverified prior ISO bundle" in result.stderr
+E       AssertionError: assert 'Unverified prior ISO bundle' in 'BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n'
+E        +  where 'BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n' = CompletedProcess(args=['sh', '/tmp/pytest-of-root/pytest-90/test_iso_preflight_refuses_cor0/project/scripts/build-iso.sh'], returncode=2, stdout='', stderr='BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n').stderr
+
+tests/test_iso_prior_bundle_pass23_build.py:124: AssertionError
+_________ test_iso_preflight_refuses_checksum_list_from_newer_version __________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-90/test_iso_preflight_refuses_che0')
+
+    def test_iso_preflight_refuses_checksum_list_from_newer_version(tmp_path):
+        _, result = _preflight(tmp_path, lambda out: _previous_version_bundle(out, "0.3.0"))
+        assert result.returncode != 0
+>       assert "Unverified prior ISO bundle" in result.stderr
+E       AssertionError: assert 'Unverified prior ISO bundle' in 'BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n'
+E        +  where 'BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n' = CompletedProcess(args=['sh', '/tmp/pytest-of-root/pytest-90/test_iso_preflight_refuses_che0/project/scripts/build-iso.sh'], returncode=2, stdout='', stderr='BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n').stderr
+
+tests/test_iso_prior_bundle_pass23_build.py:130: AssertionError
+_____ test_iso_preflight_refuses_old_manifest_with_invalid_internal_digest _____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-90/test_iso_preflight_refuses_old0')
+
+    def test_iso_preflight_refuses_old_manifest_with_invalid_internal_digest(tmp_path):
+        def corrupt(out):
+            _previous_version_bundle(out)
+            manifest = "beamo-wipe-0.2.11-amd64.manifest.json"
+            fields = json.loads((out / manifest).read_text())
+            fields["_manifest_sha256"] = "0" * 64
+            raw = json.dumps(fields).encode() + b"\n"
+            (out / manifest).write_bytes(raw)
+            manifest_sha = hashlib.sha256(raw).hexdigest()
+            (out / f"{manifest}.sha256").write_text(f"{manifest_sha}  {manifest}\n")
+            sums = (out / "SHA256SUMS").read_text().splitlines()
+            (out / "SHA256SUMS").write_text(f"{sums[0]}\n{manifest_sha}  {manifest}\n")
+    
+        _, result = _preflight(tmp_path, corrupt)
+        assert result.returncode != 0
+>       assert "Unverified prior ISO bundle" in result.stderr
+E       AssertionError: assert 'Unverified prior ISO bundle' in 'BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n'
+E        +  where 'BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n' = CompletedProcess(args=['sh', '/tmp/pytest-of-root/pytest-90/test_iso_preflight_refuses_old0/project/scripts/build-iso.sh'], returncode=2, stdout='', stderr='BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n').stderr
+
+tests/test_iso_prior_bundle_pass23_build.py:148: AssertionError
+______________ test_iso_preflight_rejects_corrupt_complete_bundle ______________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-90/test_iso_preflight_rejects_cor0')
+
+    def test_iso_preflight_rejects_corrupt_complete_bundle(tmp_path):
+        def corrupt(out):
+            _complete_bundle(out)
+            (out / ISO).write_bytes(b"Z" * len(b"owned prior ISO fixture"))
+    
+        out, result = _preflight(tmp_path, corrupt)
+        assert result.returncode != 0
+>       assert "Unverified prior ISO bundle" in result.stderr
+E       AssertionError: assert 'Unverified prior ISO bundle' in 'BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n'
+E        +  where 'BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n' = CompletedProcess(args=['sh', '/tmp/pytest-of-root/pytest-90/test_iso_preflight_rejects_cor0/project/scripts/build-iso.sh'], returncode=2, stdout='', stderr='BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n').stderr
+
+tests/test_iso_prior_bundle_pass23_build.py:179: AssertionError
+_________________ test_iso_stage_cleanup_refuses_linked_parent _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-90/test_iso_stage_cleanup_refuses0')
+
+    def test_iso_stage_cleanup_refuses_linked_parent(tmp_path):
+        project = tmp_path / "project"
+        scripts = project / "scripts"
+        scripts.mkdir(parents=True)
+        shutil.copyfile(ROOT / "scripts" / "build-iso.sh", scripts / "build-iso.sh")
+        shutil.copyfile(
+            ROOT / "scripts" / "stage_wrapper_sources.py",
+            scripts / "stage_wrapper_sources.py",
+        )
+        package = project / "src" / "beamo_wipe"
+        package.mkdir(parents=True)
+        (package / "__init__.py").write_text('__version__ = "0.2.12"\n')
+    
+        foreign = tmp_path / "foreign"
+        target = foreign / "beamo_wipe"
+        target.mkdir(parents=True)
+        sentinel = target / "keep.txt"
+        sentinel.write_text("outside live-build staging")
+        linked_parent = (
+            project / "packaging/live/config/includes.chroot/usr/lib/python3/dist-packages"
+        )
+        linked_parent.parent.mkdir(parents=True)
+        linked_parent.symlink_to(foreign, target_is_directory=True)
+    
+        fake_bin = tmp_path / "bin"
+        fake_bin.mkdir()
+        for name in ("docker", "sha256sum"):
+            command = fake_bin / name
+            command.write_text("#!/bin/sh\nexit 0\n")
+            command.chmod(0o755)
+        result = subprocess.run(
+            ["sh", str(scripts / "build-iso.sh")],
+            cwd=project,
+            env={**os.environ, "PATH": f"{fake_bin}{os.pathsep}{os.environ['PATH']}"},
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    
+        assert result.returncode != 0
+>       assert "wrapper staging failed" in result.stderr
+E       AssertionError: assert 'wrapper staging failed' in 'BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n'
+E        +  where 'BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n' = CompletedProcess(args=['sh', '/tmp/pytest-of-root/pytest-90/test_iso_stage_cleanup_refuses0/project/scripts/build-iso.sh'], returncode=2, stdout='', stderr='BEAMO_WIPE_VERSION 0.2.13 does not match wrapper 0.2.12\n').stderr
+
+tests/test_iso_stage_parent_pass19.py:54: AssertionError
+______ test_finalizer_uses_verified_manifest_bytes_after_path_replacement ______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-90/test_finalizer_uses_verified_m0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7a91b2ed3620>
+
+    def test_finalizer_uses_verified_manifest_bytes_after_path_replacement(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("BUILD_ID", "local")
+        dist = tmp_path / "dist"
+        dist.mkdir()
+        dest = dist / "beamo-wipe-0.2.12-amd64.manifest.json"
+        verified = {
+            "source": {"commit": "a" * 40},
+            "build": {"release_build_id": "local"},
+        }
+        verified_bytes = json.dumps(verified).encode()
+        dest.write_bytes(verified_bytes)
+    
+        def verify_and_replace(_path: Path, *, allow_dirty: bool = False) -> bytes:
+            assert _path == dest
+            dest.write_text('{"source":{},"build":{}}')
+            return verified_bytes
+    
+        monkeypatch.setattr(rm, "verify_build_manifest", verify_and_replace)
+        monkeypatch.setattr(rm, "git_commit", lambda: "a" * 40)
+        monkeypatch.setattr(ci_evidence, "load_receipts", lambda _path: (_ for _ in ()).throw(RuntimeError("reached receipts")))
+        with pytest.raises(RuntimeError, match="reached receipts"):
+>           ci_evidence.finalize(tmp_path)
+
+tests/test_manifest_verified_bytes_pass18_build.py:37: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/beamo_wipe/ci_evidence.py:407: in finalize
+    verified_manifest = rm.verify_build_manifest(dest, allow_dirty=allow_dirty)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_path = PosixPath('/tmp/pytest-of-root/pytest-90/test_finalizer_uses_verified_m0/dist/beamo-wipe-0.2.13-amd64.manifest.json')
+
+    def verify_and_replace(_path: Path, *, allow_dirty: bool = False) -> bytes:
+>       assert _path == dest
+E       AssertionError: assert PosixPath('/tmp/pytest-of-root/pytest-90/test_finalizer_uses_verified_m0/dist/beamo-wipe-0.2.13-amd64.manifest.json') == PosixPath('/tmp/pytest-of-root/pytest-90/test_finalizer_uses_verified_m0/dist/beamo-wipe-0.2.12-amd64.manifest.json')
+
+tests/test_manifest_verified_bytes_pass18_build.py:29: AssertionError
+___________ test_every_outcome_summary_matches_ui_wording[verified] ____________
+
+case = ('verified', <MethodId.EVERYDAY: 'everyday'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+
+    @pytest.mark.parametrize("case", CASES, ids=[c[0] for c in CASES])
+    def test_every_outcome_summary_matches_ui_wording(case):
+        _, ev, _ = case_evidence(case)
+        digest = "a" * 64
+        text = build_result_summary(ev, evidence_sha256=digest)
+        view = present_evidence(ev)
+        assert view == VIEWS[case[0]]
+        assert f"Result: {view.message}" in text
+        assert f"Limitations: {view.next_step}" in text
+        assert "Beamo Wipe result" in text.splitlines()[0]
+        assert f"Report checksum: {digest}" in text
+        assert "clock not verified" in text
+        if view.code == "verified":
+            assert "Verification: Read-back verification passed" in text
+        elif view.code == "unverified":
+            assert "Verification: Verification was not performed" in text
+        elif view.code == "verification_failed":
+            assert f"Verification: {view.message}" in text
+        else:
+            assert f"Verification: {UNAVAILABLE}" in text
+            assert "Read-back verification did not pass" not in text
+>       _assert_golden(f"{case[0]}.txt", text)
+
+tests/test_result_summary.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'verified.txt'
+text = 'Beamo Wipe result\nReport file: unavailable\nReport checksum: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...77f2ee80c67105\nClock: unavailable\nStarted (clock not verified): unavailable\nEnded (clock not verified): unavailable'
+
+    def _assert_golden(name: str, text: str) -> None:
+        path = GOLDENS / name
+        assert path.is_file(), f"missing golden {name}"
+>       assert path.read_text(encoding="utf-8") == text
+E       AssertionError: assert 'Beamo Wipe r...: unavailable' == 'Beamo Wipe r...: unavailable'
+E         
+E         Skipping 1119 identical leading characters in diff, use -v to show
+E         Skipping 248 identical trailing characters in diff, use -v to show
+E         - Wipe 0.2.13
+E         ?           ^
+E         + Wipe 0.2.12
+E         ?           ^
+E           Wrapper
+
+tests/test_result_summary.py:32: AssertionError
+__________ test_every_outcome_summary_matches_ui_wording[unverified] ___________
+
+case = ('unverified', <MethodId.QUICK_ZERO: 'quick_zero'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+
+    @pytest.mark.parametrize("case", CASES, ids=[c[0] for c in CASES])
+    def test_every_outcome_summary_matches_ui_wording(case):
+        _, ev, _ = case_evidence(case)
+        digest = "a" * 64
+        text = build_result_summary(ev, evidence_sha256=digest)
+        view = present_evidence(ev)
+        assert view == VIEWS[case[0]]
+        assert f"Result: {view.message}" in text
+        assert f"Limitations: {view.next_step}" in text
+        assert "Beamo Wipe result" in text.splitlines()[0]
+        assert f"Report checksum: {digest}" in text
+        assert "clock not verified" in text
+        if view.code == "verified":
+            assert "Verification: Read-back verification passed" in text
+        elif view.code == "unverified":
+            assert "Verification: Verification was not performed" in text
+        elif view.code == "verification_failed":
+            assert f"Verification: {view.message}" in text
+        else:
+            assert f"Verification: {UNAVAILABLE}" in text
+            assert "Read-back verification did not pass" not in text
+>       _assert_golden(f"{case[0]}.txt", text)
+
+tests/test_result_summary.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'unverified.txt'
+text = 'Beamo Wipe result\nReport file: unavailable\nReport checksum: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...77f2ee80c67105\nClock: unavailable\nStarted (clock not verified): unavailable\nEnded (clock not verified): unavailable'
+
+    def _assert_golden(name: str, text: str) -> None:
+        path = GOLDENS / name
+        assert path.is_file(), f"missing golden {name}"
+>       assert path.read_text(encoding="utf-8") == text
+E       AssertionError: assert 'Beamo Wipe r...: unavailable' == 'Beamo Wipe r...: unavailable'
+E         
+E         Skipping 1119 identical leading characters in diff, use -v to show
+E         Skipping 248 identical trailing characters in diff, use -v to show
+E         - Wipe 0.2.13
+E         ?           ^
+E         + Wipe 0.2.12
+E         ?           ^
+E           Wrapper
+
+tests/test_result_summary.py:32: AssertionError
+___________ test_every_outcome_summary_matches_ui_wording[occupied] ____________
+
+case = ('occupied', <MethodId.EVERYDAY: 'everyday'>, 0, '{path} is reported as IN USE', False, False)
+
+    @pytest.mark.parametrize("case", CASES, ids=[c[0] for c in CASES])
+    def test_every_outcome_summary_matches_ui_wording(case):
+        _, ev, _ = case_evidence(case)
+        digest = "a" * 64
+        text = build_result_summary(ev, evidence_sha256=digest)
+        view = present_evidence(ev)
+        assert view == VIEWS[case[0]]
+        assert f"Result: {view.message}" in text
+        assert f"Limitations: {view.next_step}" in text
+        assert "Beamo Wipe result" in text.splitlines()[0]
+        assert f"Report checksum: {digest}" in text
+        assert "clock not verified" in text
+        if view.code == "verified":
+            assert "Verification: Read-back verification passed" in text
+        elif view.code == "unverified":
+            assert "Verification: Verification was not performed" in text
+        elif view.code == "verification_failed":
+            assert f"Verification: {view.message}" in text
+        else:
+            assert f"Verification: {UNAVAILABLE}" in text
+            assert "Read-back verification did not pass" not in text
+>       _assert_golden(f"{case[0]}.txt", text)
+
+tests/test_result_summary.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'occupied.txt'
+text = 'Beamo Wipe result\nReport file: unavailable\nReport checksum: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...77f2ee80c67105\nClock: unavailable\nStarted (clock not verified): unavailable\nEnded (clock not verified): unavailable'
+
+    def _assert_golden(name: str, text: str) -> None:
+        path = GOLDENS / name
+        assert path.is_file(), f"missing golden {name}"
+>       assert path.read_text(encoding="utf-8") == text
+E       AssertionError: assert 'Beamo Wipe r...: unavailable' == 'Beamo Wipe r...: unavailable'
+E         
+E         Skipping 1216 identical leading characters in diff, use -v to show
+E         Skipping 248 identical trailing characters in diff, use -v to show
+E         - Wipe 0.2.13
+E         ?           ^
+E         + Wipe 0.2.12
+E         ?           ^
+E           Wrapper
+
+tests/test_result_summary.py:32: AssertionError
+__________ test_every_outcome_summary_matches_ui_wording[open_failed] __________
+
+case = ('open_failed', <MethodId.EVERYDAY: 'everyday'>, 0, "Unable to open device '{path}'.", False, False)
+
+    @pytest.mark.parametrize("case", CASES, ids=[c[0] for c in CASES])
+    def test_every_outcome_summary_matches_ui_wording(case):
+        _, ev, _ = case_evidence(case)
+        digest = "a" * 64
+        text = build_result_summary(ev, evidence_sha256=digest)
+        view = present_evidence(ev)
+        assert view == VIEWS[case[0]]
+        assert f"Result: {view.message}" in text
+        assert f"Limitations: {view.next_step}" in text
+        assert "Beamo Wipe result" in text.splitlines()[0]
+        assert f"Report checksum: {digest}" in text
+        assert "clock not verified" in text
+        if view.code == "verified":
+            assert "Verification: Read-back verification passed" in text
+        elif view.code == "unverified":
+            assert "Verification: Verification was not performed" in text
+        elif view.code == "verification_failed":
+            assert f"Verification: {view.message}" in text
+        else:
+            assert f"Verification: {UNAVAILABLE}" in text
+            assert "Read-back verification did not pass" not in text
+>       _assert_golden(f"{case[0]}.txt", text)
+
+tests/test_result_summary.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'open_failed.txt'
+text = 'Beamo Wipe result\nReport file: unavailable\nReport checksum: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...77f2ee80c67105\nClock: unavailable\nStarted (clock not verified): unavailable\nEnded (clock not verified): unavailable'
+
+    def _assert_golden(name: str, text: str) -> None:
+        path = GOLDENS / name
+        assert path.is_file(), f"missing golden {name}"
+>       assert path.read_text(encoding="utf-8") == text
+E       AssertionError: assert 'Beamo Wipe r...: unavailable' == 'Beamo Wipe r...: unavailable'
+E         
+E         Skipping 1235 identical leading characters in diff, use -v to show
+E         Skipping 248 identical trailing characters in diff, use -v to show
+E         - Wipe 0.2.13
+E         ?           ^
+E         + Wipe 0.2.12
+E         ?           ^
+E           Wrapper
+
+tests/test_result_summary.py:32: AssertionError
+_______ test_every_outcome_summary_matches_ui_wording[geometry_unusable] _______
+
+case = ('geometry_unusable', <MethodId.EVERYDAY: 'everyday'>, 0, "No sane device geometry for '{path}'.", False, False)
+
+    @pytest.mark.parametrize("case", CASES, ids=[c[0] for c in CASES])
+    def test_every_outcome_summary_matches_ui_wording(case):
+        _, ev, _ = case_evidence(case)
+        digest = "a" * 64
+        text = build_result_summary(ev, evidence_sha256=digest)
+        view = present_evidence(ev)
+        assert view == VIEWS[case[0]]
+        assert f"Result: {view.message}" in text
+        assert f"Limitations: {view.next_step}" in text
+        assert "Beamo Wipe result" in text.splitlines()[0]
+        assert f"Report checksum: {digest}" in text
+        assert "clock not verified" in text
+        if view.code == "verified":
+            assert "Verification: Read-back verification passed" in text
+        elif view.code == "unverified":
+            assert "Verification: Verification was not performed" in text
+        elif view.code == "verification_failed":
+            assert f"Verification: {view.message}" in text
+        else:
+            assert f"Verification: {UNAVAILABLE}" in text
+            assert "Read-back verification did not pass" not in text
+>       _assert_golden(f"{case[0]}.txt", text)
+
+tests/test_result_summary.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'geometry_unusable.txt'
+text = 'Beamo Wipe result\nReport file: unavailable\nReport checksum: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...77f2ee80c67105\nClock: unavailable\nStarted (clock not verified): unavailable\nEnded (clock not verified): unavailable'
+
+    def _assert_golden(name: str, text: str) -> None:
+        path = GOLDENS / name
+        assert path.is_file(), f"missing golden {name}"
+>       assert path.read_text(encoding="utf-8") == text
+E       AssertionError: assert 'Beamo Wipe r...: unavailable' == 'Beamo Wipe r...: unavailable'
+E         
+E         Skipping 1245 identical leading characters in diff, use -v to show
+E         Skipping 248 identical trailing characters in diff, use -v to show
+E         - Wipe 0.2.13
+E         ?           ^
+E         + Wipe 0.2.12
+E         ?           ^
+E           Wrapper
+
+tests/test_result_summary.py:32: AssertionError
+__________ test_every_outcome_summary_matches_ui_wording[interrupted] __________
+
+case = ('interrupted', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, False)
+
+    @pytest.mark.parametrize("case", CASES, ids=[c[0] for c in CASES])
+    def test_every_outcome_summary_matches_ui_wording(case):
+        _, ev, _ = case_evidence(case)
+        digest = "a" * 64
+        text = build_result_summary(ev, evidence_sha256=digest)
+        view = present_evidence(ev)
+        assert view == VIEWS[case[0]]
+        assert f"Result: {view.message}" in text
+        assert f"Limitations: {view.next_step}" in text
+        assert "Beamo Wipe result" in text.splitlines()[0]
+        assert f"Report checksum: {digest}" in text
+        assert "clock not verified" in text
+        if view.code == "verified":
+            assert "Verification: Read-back verification passed" in text
+        elif view.code == "unverified":
+            assert "Verification: Verification was not performed" in text
+        elif view.code == "verification_failed":
+            assert f"Verification: {view.message}" in text
+        else:
+            assert f"Verification: {UNAVAILABLE}" in text
+            assert "Read-back verification did not pass" not in text
+>       _assert_golden(f"{case[0]}.txt", text)
+
+tests/test_result_summary.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'interrupted.txt'
+text = 'Beamo Wipe result\nReport file: unavailable\nReport checksum: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...77f2ee80c67105\nClock: unavailable\nStarted (clock not verified): unavailable\nEnded (clock not verified): unavailable'
+
+    def _assert_golden(name: str, text: str) -> None:
+        path = GOLDENS / name
+        assert path.is_file(), f"missing golden {name}"
+>       assert path.read_text(encoding="utf-8") == text
+E       AssertionError: assert 'Beamo Wipe r...: unavailable' == 'Beamo Wipe r...: unavailable'
+E         
+E         Skipping 1355 identical leading characters in diff, use -v to show
+E         Skipping 248 identical trailing characters in diff, use -v to show
+E         - Wipe 0.2.13
+E         ?           ^
+E         + Wipe 0.2.12
+E         ?           ^
+E           Wrapper
+
+tests/test_result_summary.py:32: AssertionError
+___________ test_every_outcome_summary_matches_ui_wording[cancelled] ___________
+
+case = ('cancelled', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, True)
+
+    @pytest.mark.parametrize("case", CASES, ids=[c[0] for c in CASES])
+    def test_every_outcome_summary_matches_ui_wording(case):
+        _, ev, _ = case_evidence(case)
+        digest = "a" * 64
+        text = build_result_summary(ev, evidence_sha256=digest)
+        view = present_evidence(ev)
+        assert view == VIEWS[case[0]]
+        assert f"Result: {view.message}" in text
+        assert f"Limitations: {view.next_step}" in text
+        assert "Beamo Wipe result" in text.splitlines()[0]
+        assert f"Report checksum: {digest}" in text
+        assert "clock not verified" in text
+        if view.code == "verified":
+            assert "Verification: Read-back verification passed" in text
+        elif view.code == "unverified":
+            assert "Verification: Verification was not performed" in text
+        elif view.code == "verification_failed":
+            assert f"Verification: {view.message}" in text
+        else:
+            assert f"Verification: {UNAVAILABLE}" in text
+            assert "Read-back verification did not pass" not in text
+>       _assert_golden(f"{case[0]}.txt", text)
+
+tests/test_result_summary.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'cancelled.txt'
+text = 'Beamo Wipe result\nReport file: unavailable\nReport checksum: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...77f2ee80c67105\nClock: unavailable\nStarted (clock not verified): unavailable\nEnded (clock not verified): unavailable'
+
+    def _assert_golden(name: str, text: str) -> None:
+        path = GOLDENS / name
+        assert path.is_file(), f"missing golden {name}"
+>       assert path.read_text(encoding="utf-8") == text
+E       AssertionError: assert 'Beamo Wipe r...: unavailable' == 'Beamo Wipe r...: unavailable'
+E         
+E         Skipping 1333 identical leading characters in diff, use -v to show
+E         Skipping 248 identical trailing characters in diff, use -v to show
+E         - Wipe 0.2.13
+E         ?           ^
+E         + Wipe 0.2.12
+E         ?           ^
+E           Wrapper
+
+tests/test_result_summary.py:32: AssertionError
+______ test_every_outcome_summary_matches_ui_wording[completion_missing] _______
+
+case = ('completion_missing', <MethodId.EVERYDAY: 'everyday'>, 0, '', False, False)
+
+    @pytest.mark.parametrize("case", CASES, ids=[c[0] for c in CASES])
+    def test_every_outcome_summary_matches_ui_wording(case):
+        _, ev, _ = case_evidence(case)
+        digest = "a" * 64
+        text = build_result_summary(ev, evidence_sha256=digest)
+        view = present_evidence(ev)
+        assert view == VIEWS[case[0]]
+        assert f"Result: {view.message}" in text
+        assert f"Limitations: {view.next_step}" in text
+        assert "Beamo Wipe result" in text.splitlines()[0]
+        assert f"Report checksum: {digest}" in text
+        assert "clock not verified" in text
+        if view.code == "verified":
+            assert "Verification: Read-back verification passed" in text
+        elif view.code == "unverified":
+            assert "Verification: Verification was not performed" in text
+        elif view.code == "verification_failed":
+            assert f"Verification: {view.message}" in text
+        else:
+            assert f"Verification: {UNAVAILABLE}" in text
+            assert "Read-back verification did not pass" not in text
+>       _assert_golden(f"{case[0]}.txt", text)
+
+tests/test_result_summary.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'completion_missing.txt'
+text = 'Beamo Wipe result\nReport file: unavailable\nReport checksum: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...77f2ee80c67105\nClock: unavailable\nStarted (clock not verified): unavailable\nEnded (clock not verified): unavailable'
+
+    def _assert_golden(name: str, text: str) -> None:
+        path = GOLDENS / name
+        assert path.is_file(), f"missing golden {name}"
+>       assert path.read_text(encoding="utf-8") == text
+E       AssertionError: assert 'Beamo Wipe r...: unavailable' == 'Beamo Wipe r...: unavailable'
+E         
+E         Skipping 1289 identical leading characters in diff, use -v to show
+E         Skipping 248 identical trailing characters in diff, use -v to show
+E         - Wipe 0.2.13
+E         ?           ^
+E         + Wipe 0.2.12
+E         ?           ^
+E           Wrapper
+
+tests/test_result_summary.py:32: AssertionError
+______ test_every_outcome_summary_matches_ui_wording[verification_failed] ______
+
+case = ('verification_failed', <MethodId.EVERYDAY: 'everyday'>, 1, "Verification mismatch on '{path}' at offset 4096", False, False)
+
+    @pytest.mark.parametrize("case", CASES, ids=[c[0] for c in CASES])
+    def test_every_outcome_summary_matches_ui_wording(case):
+        _, ev, _ = case_evidence(case)
+        digest = "a" * 64
+        text = build_result_summary(ev, evidence_sha256=digest)
+        view = present_evidence(ev)
+        assert view == VIEWS[case[0]]
+        assert f"Result: {view.message}" in text
+        assert f"Limitations: {view.next_step}" in text
+        assert "Beamo Wipe result" in text.splitlines()[0]
+        assert f"Report checksum: {digest}" in text
+        assert "clock not verified" in text
+        if view.code == "verified":
+            assert "Verification: Read-back verification passed" in text
+        elif view.code == "unverified":
+            assert "Verification: Verification was not performed" in text
+        elif view.code == "verification_failed":
+            assert f"Verification: {view.message}" in text
+        else:
+            assert f"Verification: {UNAVAILABLE}" in text
+            assert "Read-back verification did not pass" not in text
+>       _assert_golden(f"{case[0]}.txt", text)
+
+tests/test_result_summary.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'verification_failed.txt'
+text = 'Beamo Wipe result\nReport file: unavailable\nReport checksum: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...77f2ee80c67105\nClock: unavailable\nStarted (clock not verified): unavailable\nEnded (clock not verified): unavailable'
+
+    def _assert_golden(name: str, text: str) -> None:
+        path = GOLDENS / name
+        assert path.is_file(), f"missing golden {name}"
+>       assert path.read_text(encoding="utf-8") == text
+E       AssertionError: assert 'Beamo Wipe r...: unavailable' == 'Beamo Wipe r...: unavailable'
+E         
+E         Skipping 1301 identical leading characters in diff, use -v to show
+E         Skipping 248 identical trailing characters in diff, use -v to show
+E         - Wipe 0.2.13
+E         ?           ^
+E         + Wipe 0.2.12
+E         ?           ^
+E           Wrapper
+
+tests/test_result_summary.py:32: AssertionError
+________ test_every_outcome_summary_matches_ui_wording[process_failed] _________
+
+case = ('process_failed', <MethodId.EVERYDAY: 'everyday'>, 2, '', False, False)
+
+    @pytest.mark.parametrize("case", CASES, ids=[c[0] for c in CASES])
+    def test_every_outcome_summary_matches_ui_wording(case):
+        _, ev, _ = case_evidence(case)
+        digest = "a" * 64
+        text = build_result_summary(ev, evidence_sha256=digest)
+        view = present_evidence(ev)
+        assert view == VIEWS[case[0]]
+        assert f"Result: {view.message}" in text
+        assert f"Limitations: {view.next_step}" in text
+        assert "Beamo Wipe result" in text.splitlines()[0]
+        assert f"Report checksum: {digest}" in text
+        assert "clock not verified" in text
+        if view.code == "verified":
+            assert "Verification: Read-back verification passed" in text
+        elif view.code == "unverified":
+            assert "Verification: Verification was not performed" in text
+        elif view.code == "verification_failed":
+            assert f"Verification: {view.message}" in text
+        else:
+            assert f"Verification: {UNAVAILABLE}" in text
+            assert "Read-back verification did not pass" not in text
+>       _assert_golden(f"{case[0]}.txt", text)
+
+tests/test_result_summary.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'process_failed.txt'
+text = 'Beamo Wipe result\nReport file: unavailable\nReport checksum: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...77f2ee80c67105\nClock: unavailable\nStarted (clock not verified): unavailable\nEnded (clock not verified): unavailable'
+
+    def _assert_golden(name: str, text: str) -> None:
+        path = GOLDENS / name
+        assert path.is_file(), f"missing golden {name}"
+>       assert path.read_text(encoding="utf-8") == text
+E       AssertionError: assert 'Beamo Wipe r...: unavailable' == 'Beamo Wipe r...: unavailable'
+E         
+E         Skipping 1254 identical leading characters in diff, use -v to show
+E         Skipping 248 identical trailing characters in diff, use -v to show
+E         - Wipe 0.2.13
+E         ?           ^
+E         + Wipe 0.2.12
+E         ?           ^
+E           Wrapper
+
+tests/test_result_summary.py:32: AssertionError
+_________ test_every_outcome_summary_matches_ui_wording[engine_failed] _________
+
+case = ('engine_failed', <MethodId.EVERYDAY: 'everyday'>, 0, '{path}: >>> FAILURE! <<<', False, False)
+
+    @pytest.mark.parametrize("case", CASES, ids=[c[0] for c in CASES])
+    def test_every_outcome_summary_matches_ui_wording(case):
+        _, ev, _ = case_evidence(case)
+        digest = "a" * 64
+        text = build_result_summary(ev, evidence_sha256=digest)
+        view = present_evidence(ev)
+        assert view == VIEWS[case[0]]
+        assert f"Result: {view.message}" in text
+        assert f"Limitations: {view.next_step}" in text
+        assert "Beamo Wipe result" in text.splitlines()[0]
+        assert f"Report checksum: {digest}" in text
+        assert "clock not verified" in text
+        if view.code == "verified":
+            assert "Verification: Read-back verification passed" in text
+        elif view.code == "unverified":
+            assert "Verification: Verification was not performed" in text
+        elif view.code == "verification_failed":
+            assert f"Verification: {view.message}" in text
+        else:
+            assert f"Verification: {UNAVAILABLE}" in text
+            assert "Read-back verification did not pass" not in text
+>       _assert_golden(f"{case[0]}.txt", text)
+
+tests/test_result_summary.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'engine_failed.txt'
+text = 'Beamo Wipe result\nReport file: unavailable\nReport checksum: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...77f2ee80c67105\nClock: unavailable\nStarted (clock not verified): unavailable\nEnded (clock not verified): unavailable'
+
+    def _assert_golden(name: str, text: str) -> None:
+        path = GOLDENS / name
+        assert path.is_file(), f"missing golden {name}"
+>       assert path.read_text(encoding="utf-8") == text
+E       AssertionError: assert 'Beamo Wipe r...: unavailable' == 'Beamo Wipe r...: unavailable'
+E         
+E         Skipping 1289 identical leading characters in diff, use -v to show
+E         Skipping 248 identical trailing characters in diff, use -v to show
+E         - Wipe 0.2.13
+E         ?           ^
+E         + Wipe 0.2.12
+E         ?           ^
+E           Wrapper
+
+tests/test_result_summary.py:32: AssertionError
+____________ test_long_unicode_is_stable_and_cannot_inject_headings ____________
+
+    def test_long_unicode_is_stable_and_cannot_inject_headings():
+        _, ev, _ = case_evidence(CASES[0])
+        ev = copy.deepcopy(ev)
+        ev["device"]["model"] = "삼성 " + ("很长" * 200)
+        ev["device"]["serial"] = "시리얼-ΑΒΓΔ-SERIAL"
+        if isinstance(ev.get("device_presentation"), dict):
+            ev["device_presentation"]["title"] = ev["device"]["model"]
+            ev["device_presentation"]["id_value"] = ev["device"]["serial"]
+        ev["warnings"] = [
+            "Result: injected\nLimitations: pwned",
+            "ok\u2028Result: line-sep",
+        ]
+        text = build_result_summary(ev, evidence_sha256="c" * 64)
+        assert "삼성" in text
+        assert "(truncated)" in text
+        assert "\nResult: injected" not in text
+        assert "\nResult: line-sep" not in text
+        assert "- Result: injected Limitations: pwned" in text
+        assert "- ok Result: line-sep" in text
+        assert text == build_result_summary(ev, evidence_sha256="c" * 64)
+>       _assert_golden("unicode.txt", text)
+
+tests/test_result_summary.py:170: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'unicode.txt'
+text = 'Beamo Wipe result\nReport file: unavailable\nReport checksum: ccccccccccccccccccccccccccccccccccccccccccccccccccccccc...77f2ee80c67105\nClock: unavailable\nStarted (clock not verified): unavailable\nEnded (clock not verified): unavailable'
+
+    def _assert_golden(name: str, text: str) -> None:
+        path = GOLDENS / name
+        assert path.is_file(), f"missing golden {name}"
+>       assert path.read_text(encoding="utf-8") == text
+E       AssertionError: assert 'Beamo Wipe r...: unavailable' == 'Beamo Wipe r...: unavailable'
+E         
+E         Skipping 986 identical leading characters in diff, use -v to show
+E         Skipping 248 identical trailing characters in diff, use -v to show
+E         - Wipe 0.2.13
+E         ?           ^
+E         + Wipe 0.2.12
+E         ?           ^
+E           Wrapper
+
+tests/test_result_summary.py:32: AssertionError
+______ test_redacted_share_withholds_identifiers_and_keeps_owner_original ______
+
+    def test_redacted_share_withholds_identifiers_and_keeps_owner_original():
+        _, ev, _ = case_evidence(CASES[0])
+        digest = hashlib.sha256(json.dumps(ev, sort_keys=True).encode()).hexdigest()
+        owner = build_result_summary(ev, evidence_sha256=digest, redacted=False)
+        share = build_result_summary(ev, evidence_sha256=digest, redacted=True)
+        serial = ev["device"]["serial"]
+        assert serial
+        assert serial in owner
+        assert serial not in share
+        assert WITHHELD in share
+        assert "Sharing copy" in share.splitlines()[0]
+        assert "Beamo Wipe result" in owner.splitlines()[0]
+        bundle = _bundle_files(
+            json.dumps(ev).encode(), b"", "unavailable", privacy_reduced=True
+        )
+        assert bundle["RESULT.txt"] == encode_summary(
+            build_result_summary(
+                json.loads(bundle["result.json"]),
+                evidence_sha256=hashlib.sha256(bundle["result.json"]).hexdigest(),
+            )
+        )
+        assert serial.encode() in bundle["RESULT.txt"]
+        assert serial.encode() not in bundle["SHARE.txt"]
+        assert serial.encode() not in bundle["SHARE.json"]
+        assert b"Serial number: withheld" in bundle["SHARE.txt"]
+        assert bundle["result.json"] == json.dumps(ev).encode()
+        complete = json.loads(bundle["COMPLETE"])
+        assert complete["result_summary"] == "RESULT.txt"
+        assert complete["share_copy"] == "SHARE.json"
+        assert complete["share_summary"] == "SHARE.txt"
+        assert complete["privacy_policy_version"] == 1
+        assert (
+            complete["files"]["RESULT.txt"]
+            == hashlib.sha256(bundle["RESULT.txt"]).hexdigest()
+        )
+        assert (
+            complete["files"]["SHARE.txt"]
+            == hashlib.sha256(bundle["SHARE.txt"]).hexdigest()
+        )
+        assert (
+            complete["files"]["SHARE.json"]
+            == hashlib.sha256(bundle["SHARE.json"]).hexdigest()
+        )
+        share_text = bundle["SHARE.txt"].decode("utf-8").replace("\r\n", "\n").rstrip("\n")
+        assert (
+            f"Report checksum: {hashlib.sha256(bundle['SHARE.json']).hexdigest()}"
+            in share_text
+        )
+>       _assert_golden("share.txt", share_text)
+
+tests/test_result_summary.py:230: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'share.txt'
+text = 'Privacy-reduced sharing copy. Not identity evidence. Do not use this copy where a serial, hardware ID, or device path...suitable where full identity evidence is required. Use the original report for serials, hardware IDs, or device paths.'
+
+    def _assert_golden(name: str, text: str) -> None:
+        path = GOLDENS / name
+        assert path.is_file(), f"missing golden {name}"
+>       assert path.read_text(encoding="utf-8") == text
+E       AssertionError: assert 'Privacy-redu...device paths.' == 'Privacy-redu...device paths.'
+E         
+E         Skipping 162 identical leading characters in diff, use -v to show
+E         Skipping 388 identical trailing characters in diff, use -v to show
+E         - checksum: 67cdf776176e0546b8aca2eb97f92600af08552364148ed3a609620a527c0723
+E         + checksum: c4e3b56246f19fda946a92762771aa58b1ed104cde0bb63ed17824c8ba2aa43d
+E           Disk: Samsung SSD 970 EVO
+E           Capacity: 256 GB...
+E         
+E         ...Full output truncated (19 lines hidden), use '-vv' to show
+
+tests/test_result_summary.py:32: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_iso_dist_boundary_pass10.py::test_iso_builder_rechecks_output_after_long_build_window
+FAILED tests/test_iso_prior_bundle_pass23_build.py::test_iso_preflight_refuses_unowned_regular_output
+FAILED tests/test_iso_prior_bundle_pass23_build.py::test_iso_preflight_accepts_verified_complete_prior_bundle
+FAILED tests/test_iso_prior_bundle_pass23_build.py::test_iso_preflight_accepts_valid_checksum_list_from_previous_version
+FAILED tests/test_iso_prior_bundle_pass23_build.py::test_iso_preflight_refuses_corrupt_previous_version_checksum_list
+FAILED tests/test_iso_prior_bundle_pass23_build.py::test_iso_preflight_refuses_checksum_list_from_newer_version
+FAILED tests/test_iso_prior_bundle_pass23_build.py::test_iso_preflight_refuses_old_manifest_with_invalid_internal_digest
+FAILED tests/test_iso_prior_bundle_pass23_build.py::test_iso_preflight_rejects_corrupt_complete_bundle
+FAILED tests/test_iso_stage_parent_pass19.py::test_iso_stage_cleanup_refuses_linked_parent
+FAILED tests/test_manifest_verified_bytes_pass18_build.py::test_finalizer_uses_verified_manifest_bytes_after_path_replacement
+FAILED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[verified]
+FAILED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[unverified]
+FAILED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[occupied]
+FAILED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[open_failed]
+FAILED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[geometry_unusable]
+FAILED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[interrupted]
+FAILED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[cancelled]
+FAILED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[completion_missing]
+FAILED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[verification_failed]
+FAILED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[process_failed]
+FAILED tests/test_result_summary.py::test_every_outcome_summary_matches_ui_wording[engine_failed]
+FAILED tests/test_result_summary.py::test_long_unicode_is_stable_and_cannot_inject_headings
+FAILED tests/test_result_summary.py::test_redacted_share_withholds_identifiers_and_keeps_owner_original
+23 failed, 10103 passed, 14 skipped in 1160.06s (0:19:20)

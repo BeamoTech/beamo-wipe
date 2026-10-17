@@ -1,0 +1,53 @@
+--- a/src/beamo_wipe/discover.py
++++ b/src/beamo_wipe/discover.py
+@@ -581,7 +581,11 @@
+     own_pk = ""
+     if node.get("pkname") is not None:
+         own_pk = _identity_text(node.get("pkname"), "pkname")
+-    if _node_type(node) in {"disk", "rom"} and not own_pk:
++    if own_pk and parent is not None:
++        tree_name = _identity_text(parent.get("name"), "name")
++        if own_pk != tree_name:
++            return "", True
++    if _node_type(node) in {"disk", "rom"} and not own_pk and not _is_stacked_holder(node):
+         if node.get("name") is None:
+             return "", False
+         return _identity_text(node.get("name"), "name"), False
+@@ -602,7 +606,15 @@
+         ancestor_pk = ""
+         if ancestor.get("pkname") is not None:
+             ancestor_pk = _identity_text(ancestor.get("pkname"), "pkname")
+-        if _node_type(ancestor) in {"disk", "rom"} and not ancestor_pk:
++        if ancestor_pk and tree_parent is not None:
++            tree_name = _identity_text(tree_parent.get("name"), "name")
++            if ancestor_pk != tree_name:
++                return "", True
++        if (
++            _node_type(ancestor) in {"disk", "rom"}
++            and not ancestor_pk
++            and not _is_stacked_holder(ancestor)
++        ):
+             return current, False
+         if ancestor_pk:
+             current = ancestor_pk
+@@ -635,7 +647,10 @@
+     """
+     groups: Dict[Tuple[str, str], List[Tuple[Dict[str, Any], Optional[Dict[str, Any]]]]] = {}
+     for node, parent in flat_nodes:
+-        if _node_type(node) in {"disk", "rom", "part", "loop", "ram"}:
++        kind = _node_type(node)
++        if kind in {"rom", "part", "loop", "ram"} or (
++            kind == "disk" and not _is_stacked_holder(node)
++        ):
+             continue
+         name = _identity_text(node.get("name"), "name")
+         path = node_path(node)
+@@ -1878,7 +1893,7 @@
+                 raise ValueError("lsblk mounted ancestry contradicts PKNAME")
+         if (
+             kind in _UNRESOLVED_HOLDER_TYPES
+-            or kind in _STACKED_HOLDER_TYPES
++            or _has_stacked_holder(candidate, parent, by_name)
+             or kind in {"crypt", "dm", "bcache"}
+             or kind.startswith("raid")
+         ) and (

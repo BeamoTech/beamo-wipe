@@ -1,0 +1,27 @@
+{
+  "changed_inputs": [
+    "tests/goldens/result_summary/cancelled.txt",
+    "tests/goldens/result_summary/completion_missing.txt",
+    "tests/goldens/result_summary/engine_failed.txt",
+    "tests/goldens/result_summary/geometry_unusable.txt",
+    "tests/goldens/result_summary/interrupted.txt",
+    "tests/goldens/result_summary/occupied.txt",
+    "tests/goldens/result_summary/open_failed.txt",
+    "tests/goldens/result_summary/process_failed.txt",
+    "tests/goldens/result_summary/share.txt",
+    "tests/goldens/result_summary/unicode.txt",
+    "tests/goldens/result_summary/unverified.txt",
+    "tests/goldens/result_summary/verification_failed.txt",
+    "tests/goldens/result_summary/verified.txt",
+    "tests/test_iso_dist_boundary_pass10.py",
+    "tests/test_iso_prior_bundle_pass23_build.py",
+    "tests/test_iso_stage_parent_pass19.py",
+    "tests/test_manifest_verified_bytes_pass18_build.py"
+  ],
+  "changed_runtime_files": [],
+  "original_assertion_predicates_preserved": 37,
+  "all23_original_failing_ids_present_and_pass_in_focused125": true,
+  "candidate2_runtime_same_as_candidate1": true,
+  "candidate2_source_freeze_sha256": "f6b944b3e7f4d8c286cbfae80ececbd6cdec9bef10ca546acfd6ae241c9bf605",
+  "full_candidate2": "IN PROGRESS"
+}

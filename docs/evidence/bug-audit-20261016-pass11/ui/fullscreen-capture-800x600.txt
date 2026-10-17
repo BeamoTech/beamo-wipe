@@ -1,0 +1,61 @@
+dbus-daemon[503238]: [session uid=0 pid=503238] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=503252 comm="/tmp/beamo-wipe-audit-python/bin/python3 /tmp/pass" label="unconfined")
+dbus-daemon[503238]: [session uid=0 pid=503238] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[503261]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=503252 comm="/tmp/beamo-wipe-audit-python/bin/python3 /tmp/pass" label="unconfined")
+dbus-daemon[503261]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{
+  "display": ":128",
+  "states": [
+    {
+      "surface": "wizard-fullscreen",
+      "image": "/tmp/pass11-ui/wizard-fullscreen-800x600-72dpi.png",
+      "image_sha256": "25d325dd2ed219823c244de8300a46f259b0f34711edac2de279de0f3a2e8d4f",
+      "root_size": [
+        800,
+        600
+      ],
+      "native_allocation": [
+        800,
+        600
+      ],
+      "native_origin": [
+        0,
+        0
+      ],
+      "native_xid": 2097155,
+      "native_fullscreen": true,
+      "gtk_child_focused": true,
+      "xserver_dpi": [
+        72.05673758865248,
+        71.88679245283019
+      ],
+      "capture": "Pillow full private-Xvfb root; unedited"
+    },
+    {
+      "surface": "startup-fullscreen",
+      "image": "/tmp/pass11-ui/startup-fullscreen-800x600-72dpi.png",
+      "image_sha256": "727d629a8cacf0421e61e3b0f7c7f07a4f2e5d5fd132013293e1cc0901b8771a",
+      "root_size": [
+        800,
+        600
+      ],
+      "native_allocation": [
+        800,
+        600
+      ],
+      "native_origin": [
+        0,
+        0
+      ],
+      "native_xid": 2097218,
+      "native_fullscreen": true,
+      "gtk_child_focused": true,
+      "xserver_dpi": [
+        72.05673758865248,
+        71.88679245283019
+      ],
+      "capture": "Pillow full private-Xvfb root; unedited"
+    }
+  ],
+  "owned_teardown": true
+}

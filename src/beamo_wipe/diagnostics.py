@@ -85,9 +85,10 @@ def _sanitize_detail(text: str) -> str:
     if not text:
         return ""
     # Replace all Unicode control/format characters. This includes bidi
-    # overrides and C1 terminal controls, not just newlines and NUL.
+    # overrides and C1 terminal controls, not just newlines and NUL. Unicode
+    # line/paragraph separators also split the supported JSONL reader.
     s = "".join(
-        " " if unicodedata.category(ch).startswith("C") else ch
+        " " if unicodedata.category(ch).startswith("C") or unicodedata.category(ch) in {"Zl", "Zp"} else ch
         for ch in str(text)
     )
     # Never log full nwipe log contents here; caller must truncate before passing

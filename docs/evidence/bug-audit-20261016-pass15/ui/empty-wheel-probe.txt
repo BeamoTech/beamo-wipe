@@ -1,0 +1,364 @@
+dbus-daemon[641866]: [session uid=0 pid=641866] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=641880 comm="/tmp/beamo-wipe-audit-python/bin/python3 /tmp/pass" label="unconfined")
+dbus-daemon[641866]: [session uid=0 pid=641866] Successfully activated service 'org.a11y.Bus'
+{
+  "source_sha256": "9abb3cf1800a04d8f094c030b2b7a2052d8da3b608389dc95bbfb07b0454a8ea",
+  "cases": 8,
+  "effects": [],
+  "rows": [
+    {
+      "scenario": "empty",
+      "sequence": "<Button-5>",
+      "delta": null,
+      "own_before": [
+        0.3006802721088435,
+        0.3414965986394558
+      ],
+      "own_after": [
+        0.3006802721088435,
+        0.3414965986394558
+      ],
+      "parent_before": [
+        0.6719492868462758,
+        0.9873217115689382
+      ],
+      "parent_after": [
+        0.6846275752773375,
+        1.0
+      ],
+      "reader_scrolled": false,
+      "parent_unchanged": false,
+      "focus_unchanged": true,
+      "focus_initially_visible": false,
+      "focus_top": 499,
+      "reader_height": 48,
+      "viewport_height": 199,
+      "hit_point": [
+        36,
+        254
+      ],
+      "hit_is_reader": true,
+      "root_rect": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "state_unchanged": true,
+      "wheel_binding": "if {\"[136298529987392_wheel %# %b %f %h %k %s %t %w %x %y %A %E %K %N %W %T %X %Y %D]\" == \"break\"} break\n",
+      "screen": "PICK_EMPTY",
+      "engine_started": false,
+      "capture": "empty-wheel-empty.png",
+      "callback_errors": []
+    },
+    {
+      "scenario": "empty",
+      "sequence": "<Button-4>",
+      "delta": null,
+      "own_before": [
+        0.3006802721088435,
+        0.3414965986394558
+      ],
+      "own_after": [
+        0.3006802721088435,
+        0.3414965986394558
+      ],
+      "parent_before": [
+        0.6719492868462758,
+        0.9873217115689382
+      ],
+      "parent_after": [
+        0.6402535657686212,
+        0.9556259904912837
+      ],
+      "reader_scrolled": false,
+      "parent_unchanged": false,
+      "focus_unchanged": true,
+      "focus_initially_visible": false,
+      "focus_top": 499,
+      "reader_height": 48,
+      "viewport_height": 199,
+      "hit_point": [
+        36,
+        254
+      ],
+      "hit_is_reader": true,
+      "root_rect": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "state_unchanged": true,
+      "wheel_binding": "if {\"[136298530073280_wheel %# %b %f %h %k %s %t %w %x %y %A %E %K %N %W %T %X %Y %D]\" == \"break\"} break\n",
+      "screen": "PICK_EMPTY",
+      "engine_started": false,
+      "callback_errors": []
+    },
+    {
+      "scenario": "empty",
+      "sequence": "<MouseWheel>",
+      "delta": -120,
+      "own_before": [
+        0.3006802721088435,
+        0.3414965986394558
+      ],
+      "own_after": [
+        0.3006802721088435,
+        0.3414965986394558
+      ],
+      "parent_before": [
+        0.6719492868462758,
+        0.9873217115689382
+      ],
+      "parent_after": [
+        0.6846275752773375,
+        1.0
+      ],
+      "reader_scrolled": false,
+      "parent_unchanged": false,
+      "focus_unchanged": true,
+      "focus_initially_visible": false,
+      "focus_top": 499,
+      "reader_height": 48,
+      "viewport_height": 199,
+      "hit_point": [
+        36,
+        254
+      ],
+      "hit_is_reader": true,
+      "root_rect": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "state_unchanged": true,
+      "wheel_binding": "if {\"[136298530056192_wheel %# %b %f %h %k %s %t %w %x %y %A %E %K %N %W %T %X %Y %D]\" == \"break\"} break\n",
+      "screen": "PICK_EMPTY",
+      "engine_started": false,
+      "callback_errors": []
+    },
+    {
+      "scenario": "empty",
+      "sequence": "<MouseWheel>",
+      "delta": 120,
+      "own_before": [
+        0.3006802721088435,
+        0.3414965986394558
+      ],
+      "own_after": [
+        0.3006802721088435,
+        0.3414965986394558
+      ],
+      "parent_before": [
+        0.6719492868462758,
+        0.9873217115689382
+      ],
+      "parent_after": [
+        0.6402535657686212,
+        0.9556259904912837
+      ],
+      "reader_scrolled": false,
+      "parent_unchanged": false,
+      "focus_unchanged": true,
+      "focus_initially_visible": false,
+      "focus_top": 499,
+      "reader_height": 48,
+      "viewport_height": 199,
+      "hit_point": [
+        36,
+        254
+      ],
+      "hit_is_reader": true,
+      "root_rect": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "state_unchanged": true,
+      "wheel_binding": "if {\"[136298529995264_wheel %# %b %f %h %k %s %t %w %x %y %A %E %K %N %W %T %X %Y %D]\" == \"break\"} break\n",
+      "screen": "PICK_EMPTY",
+      "engine_started": false,
+      "callback_errors": []
+    },
+    {
+      "scenario": "happy",
+      "sequence": "<Button-5>",
+      "delta": null,
+      "own_before": [
+        0.3006802721088435,
+        0.3414965986394558
+      ],
+      "own_after": [
+        0.3687074829931973,
+        0.4095238095238095
+      ],
+      "parent_before": [
+        0.6548672566371682,
+        1.0
+      ],
+      "parent_after": [
+        0.6548672566371682,
+        1.0
+      ],
+      "reader_scrolled": true,
+      "parent_unchanged": true,
+      "focus_unchanged": true,
+      "focus_initially_visible": false,
+      "focus_top": 659,
+      "reader_height": 48,
+      "viewport_height": 273,
+      "hit_point": [
+        36,
+        354
+      ],
+      "hit_is_reader": true,
+      "root_rect": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "state_unchanged": true,
+      "wheel_binding": "",
+      "screen": "PICK",
+      "engine_started": false,
+      "capture": "empty-wheel-happy.png",
+      "callback_errors": []
+    },
+    {
+      "scenario": "happy",
+      "sequence": "<Button-4>",
+      "delta": null,
+      "own_before": [
+        0.3006802721088435,
+        0.3414965986394558
+      ],
+      "own_after": [
+        0.23265306122448978,
+        0.27346938775510204
+      ],
+      "parent_before": [
+        0.6548672566371682,
+        1.0
+      ],
+      "parent_after": [
+        0.6548672566371682,
+        1.0
+      ],
+      "reader_scrolled": true,
+      "parent_unchanged": true,
+      "focus_unchanged": true,
+      "focus_initially_visible": false,
+      "focus_top": 659,
+      "reader_height": 48,
+      "viewport_height": 273,
+      "hit_point": [
+        36,
+        354
+      ],
+      "hit_is_reader": true,
+      "root_rect": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "state_unchanged": true,
+      "wheel_binding": "",
+      "screen": "PICK",
+      "engine_started": false,
+      "callback_errors": []
+    },
+    {
+      "scenario": "happy",
+      "sequence": "<MouseWheel>",
+      "delta": -120,
+      "own_before": [
+        0.3006802721088435,
+        0.3414965986394558
+      ],
+      "own_after": [
+        0.3551020408163265,
+        0.39591836734693875
+      ],
+      "parent_before": [
+        0.6548672566371682,
+        1.0
+      ],
+      "parent_after": [
+        0.6548672566371682,
+        1.0
+      ],
+      "reader_scrolled": true,
+      "parent_unchanged": true,
+      "focus_unchanged": true,
+      "focus_initially_visible": false,
+      "focus_top": 659,
+      "reader_height": 48,
+      "viewport_height": 273,
+      "hit_point": [
+        36,
+        354
+      ],
+      "hit_is_reader": true,
+      "root_rect": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "state_unchanged": true,
+      "wheel_binding": "",
+      "screen": "PICK",
+      "engine_started": false,
+      "callback_errors": []
+    },
+    {
+      "scenario": "happy",
+      "sequence": "<MouseWheel>",
+      "delta": 120,
+      "own_before": [
+        0.3006802721088435,
+        0.3414965986394558
+      ],
+      "own_after": [
+        0.24625850340136055,
+        0.2870748299319728
+      ],
+      "parent_before": [
+        0.6548672566371682,
+        1.0
+      ],
+      "parent_after": [
+        0.6548672566371682,
+        1.0
+      ],
+      "reader_scrolled": true,
+      "parent_unchanged": true,
+      "focus_unchanged": true,
+      "focus_initially_visible": false,
+      "focus_top": 659,
+      "reader_height": 48,
+      "viewport_height": 273,
+      "hit_point": [
+        36,
+        354
+      ],
+      "hit_is_reader": true,
+      "root_rect": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "state_unchanged": true,
+      "wheel_binding": "",
+      "screen": "PICK",
+      "engine_started": false,
+      "callback_errors": []
+    }
+  ],
+  "behavior_failures": 4
+}

@@ -1,0 +1,92 @@
+{
+  "status": "approved_source_conditional_on_parent_final_gates",
+  "review": "source-only; no runtime; exact starting archive and fixture diff read",
+  "hashes": {
+    "src/beamo_wipe/ui/tk_wizard.py": "9764924b29c3c491a6acde0ca0853135e1e9eccf71bd77cbeb7c90b35534b29f",
+    "src/beamo_wipe/ui/accessible_wizard.py": "2179d1be8dfa960266e611eb0429b1a33670c3ca25111a899355e39a8ca35fed",
+    "tests/test_tk_input_scroll_pass13.py": "ddc809323c072f864d2080f1cf76185d18be5551bb9dcd27b7269fd4a1b9fa82",
+    "tests/test_confirm_focus_callback_lifetime_pass16.py": "5b6203b5c439450cf91f1b4bf51bda54d5f0c613f32ce7dc62bf5f5b4c9bc831",
+    "tests/test_accessible_modal_key_hold_pass16.py": "e2d0d581082eb59137d3f41f45cb37bf630cd648d90ae5be845dc82a73b5af06",
+    "tests/test_accessible_key_repeat.py": "c15a8bc2d991a53c98af1e31b84b0d5fe7db97437c6f2ccb8b1e5df657037161",
+    "tests/test_accessible_last_chance_actions_pass12_ui.py": "363da29660c0a59c6f5ae3224489f4d6d0f97f6a7c2172870d1e7be7da6df4ed",
+    "tests/test_pick_scroll_restore.py": "c7b22e9446ca7cb10463661654fcd3e0382be07021c8bf54dbfd1c7385c4242e"
+  },
+  "starting_archive_sha256": "d9a636cdb4d1ab8a1c27455c96ad875361ad2071879e41470ac2267cf5e1f618",
+  "fixture_before_focus_anchor_sha256": "9538ac0d4e3a0e7a41ac0d658d02a54799648f97b4f85bda43b09e1f1e3e55b3",
+  "prior_status": "objection_pending_ast_fixture_dependency",
+  "ast_fixture_review": {
+    "test_accessible_key_repeat.py": {
+      "assertions_unchanged": true,
+      "count": 19,
+      "before_sha256": "bfb485c755b3f3f4b5ab0d90710b39acf39d5be7b1e2b53971fe69114166fb94",
+      "current_sha256": "c15a8bc2d991a53c98af1e31b84b0d5fe7db97437c6f2ccb8b1e5df657037161"
+    },
+    "test_accessible_last_chance_actions_pass12_ui.py": {
+      "assertions_unchanged": true,
+      "count": 9,
+      "before_sha256": "6f3f1c025c67c7d0876d29a54b9b48af48b6b4b7e862a77a3562074030236f84",
+      "current_sha256": "363da29660c0a59c6f5ae3224489f4d6d0f97f6a7c2172870d1e7be7da6df4ed"
+    }
+  },
+  "runtime_executed_by_reviewer": false,
+  "prior_hash_snapshots": [
+    {
+      "src/beamo_wipe/ui/tk_wizard.py": "bbe61c81fb93b9f5cf3a90887eb2f209c640235ec47c2f73b5fa4103b82adf9f",
+      "src/beamo_wipe/ui/accessible_wizard.py": "2179d1be8dfa960266e611eb0429b1a33670c3ca25111a899355e39a8ca35fed",
+      "tests/test_tk_input_scroll_pass13.py": "ddc809323c072f864d2080f1cf76185d18be5551bb9dcd27b7269fd4a1b9fa82",
+      "tests/test_confirm_focus_callback_lifetime_pass16.py": "e90f9fa058948711d58e20fa20eedb2cec406096f0298424e7e87a286f8e9a82",
+      "tests/test_accessible_modal_key_hold_pass16.py": "43ae904e9436724706b60fd6221c6d265abb4bdfa8cd8382cefa3b54631045c5",
+      "tests/test_accessible_key_repeat.py": "c15a8bc2d991a53c98af1e31b84b0d5fe7db97437c6f2ccb8b1e5df657037161",
+      "tests/test_accessible_last_chance_actions_pass12_ui.py": "363da29660c0a59c6f5ae3224489f4d6d0f97f6a7c2172870d1e7be7da6df4ed"
+    },
+    {
+      "src/beamo_wipe/ui/tk_wizard.py": "bbe61c81fb93b9f5cf3a90887eb2f209c640235ec47c2f73b5fa4103b82adf9f",
+      "src/beamo_wipe/ui/accessible_wizard.py": "2179d1be8dfa960266e611eb0429b1a33670c3ca25111a899355e39a8ca35fed",
+      "tests/test_tk_input_scroll_pass13.py": "ddc809323c072f864d2080f1cf76185d18be5551bb9dcd27b7269fd4a1b9fa82",
+      "tests/test_confirm_focus_callback_lifetime_pass16.py": "5b6203b5c439450cf91f1b4bf51bda54d5f0c613f32ce7dc62bf5f5b4c9bc831",
+      "tests/test_accessible_modal_key_hold_pass16.py": "e2d0d581082eb59137d3f41f45cb37bf630cd648d90ae5be845dc82a73b5af06",
+      "tests/test_accessible_key_repeat.py": "c15a8bc2d991a53c98af1e31b84b0d5fe7db97437c6f2ccb8b1e5df657037161",
+      "tests/test_accessible_last_chance_actions_pass12_ui.py": "363da29660c0a59c6f5ae3224489f4d6d0f97f6a7c2172870d1e7be7da6df4ed"
+    },
+    {
+      "src/beamo_wipe/ui/tk_wizard.py": "9764924b29c3c491a6acde0ca0853135e1e9eccf71bd77cbeb7c90b35534b29f",
+      "src/beamo_wipe/ui/accessible_wizard.py": "2179d1be8dfa960266e611eb0429b1a33670c3ca25111a899355e39a8ca35fed",
+      "tests/test_tk_input_scroll_pass13.py": "ddc809323c072f864d2080f1cf76185d18be5551bb9dcd27b7269fd4a1b9fa82",
+      "tests/test_confirm_focus_callback_lifetime_pass16.py": "5b6203b5c439450cf91f1b4bf51bda54d5f0c613f32ce7dc62bf5f5b4c9bc831",
+      "tests/test_accessible_modal_key_hold_pass16.py": "e2d0d581082eb59137d3f41f45cb37bf630cd648d90ae5be845dc82a73b5af06",
+      "tests/test_accessible_key_repeat.py": "c15a8bc2d991a53c98af1e31b84b0d5fe7db97437c6f2ccb8b1e5df657037161",
+      "tests/test_accessible_last_chance_actions_pass12_ui.py": "363da29660c0a59c6f5ae3224489f4d6d0f97f6a7c2172870d1e7be7da6df4ed"
+    }
+  ],
+  "new_fixture_readiness_review": {
+    "test_accessible_modal_key_hold_pass16.py": {
+      "before_sha256": "43ae904e9436724706b60fd6221c6d265abb4bdfa8cd8382cefa3b54631045c5",
+      "current_sha256": "e2d0d581082eb59137d3f41f45cb37bf630cd648d90ae5be845dc82a73b5af06",
+      "old_assertions": 29,
+      "current_assertions": 31,
+      "original_assertion_order_preserved": true
+    },
+    "test_confirm_focus_callback_lifetime_pass16.py": {
+      "before_sha256": "e90f9fa058948711d58e20fa20eedb2cec406096f0298424e7e87a286f8e9a82",
+      "current_sha256": "5b6203b5c439450cf91f1b4bf51bda54d5f0c613f32ce7dc62bf5f5b4c9bc831",
+      "old_assertions": 34,
+      "current_assertions": 34,
+      "original_assertion_order_preserved": true
+    }
+  },
+  "parent_reported_focused_ui": "119 passed, zero errors/skips; not executed by this reviewer",
+  "type_delta_review": {
+    "source_only": true,
+    "getattr_registry_semantics": "equivalent for actual Tk widgets; no type ignore",
+    "distinct_lookup_local": "preserves optional owner handling without reassigning traversal local",
+    "initial_failed_gate_receipt": "/tmp/pass16-primary/initial-type-gate-lint.txt",
+    "current_tk_sha256": "9764924b29c3c491a6acde0ca0853135e1e9eccf71bd77cbeb7c90b35534b29f"
+  },
+  "picker_leaf_fixture_review": {
+    "before_sha256": "a84f47e5c267588af9a324a164d7c94502c1dd18a9e016053c57b15dd59e253e",
+    "current_sha256": "c7b22e9446ca7cb10463661654fcd3e0382be07021c8bf54dbfd1c7385c4242e",
+    "assertion_count": 11,
+    "all_assertion_asts_unchanged": true,
+    "change": "Tcl-only Canvas leaf implements winfo_children returning an empty list"
+  }
+}

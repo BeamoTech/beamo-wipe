@@ -1,0 +1,105 @@
+Files:
+tests/test_audit_20260905_evidence.py
+tests/test_audit_20260908_reports.py
+tests/test_ci_evidence_pipeline.py
+tests/test_ci_qemu_evidence_path_pass11.py
+tests/test_desktop_manifest_pass10.py
+tests/test_desktop_manifest_preserve_pass17_build.py
+tests/test_diagnostic_boot_evidence_pass11.py
+tests/test_diagnostic_consistency_pass32_export.py
+tests/test_discovery_diagnostics_privacy_pass6.py
+tests/test_evidence.py
+tests/test_evidence_directory_pass15.py
+tests/test_evidence_nonfinite_clock_pass10.py
+tests/test_evidence_privacy_pass8.py
+tests/test_evidence_release_pass8.py
+tests/test_evidence_retry.py
+tests/test_evidence_tiers.py
+tests/test_evidence_tmpfs_pass17_disk.py
+tests/test_export_baseline_loss_pass13.py
+tests/test_export_cleanup_ownership.py
+tests/test_export_hardware_padding_regression.py
+tests/test_export_identifier_placeholders_pass7.py
+tests/test_export_large_integer_pass13.py
+tests/test_export_mount_cleanup_regression.py
+tests/test_export_mount_options_boundary.py
+tests/test_export_mount_root_boundary_pass11.py
+tests/test_export_optional_identity_pass18_media.py
+tests/test_export_receipt_location.py
+tests/test_export_required_identity_pass19.py
+tests/test_export_required_rdev_pass21.py
+tests/test_export_stages.py
+tests/test_export_wwn_alias_pass12.py
+tests/test_finish_evidence_shutdown_regression.py
+tests/test_gallery_run_again_report_pass26_ui.py
+tests/test_gate_receipt_skip_kind_counts_pass7.py
+tests/test_json_identity_receipts_pass9.py
+tests/test_large_log_evidence_assessment.py
+tests/test_log_tail_export_regression.py
+tests/test_manifest_evidence_input_pass17_build.py
+tests/test_manifest_git_status_pass12_build.py
+tests/test_manifest_prior_output_pass26_build.py
+tests/test_manifest_sum_output_pass14_build.py
+tests/test_manifest_verified_bytes_pass18_build.py
+tests/test_method_copy_evidence_pass37.py
+tests/test_method_count_evidence_pass36.py
+tests/test_pass10_recovery_evidence_swap.py
+tests/test_pass11_recovery_evidence_metadata.py
+tests/test_pass12_evidence_log_bound.py
+tests/test_pass25_export_success_log.py
+tests/test_pass25_report_readme_privacy.py
+tests/test_pass26_report_check_corrob.py
+tests/test_pass27_receipt_secret_key.py
+tests/test_pass30_file_uri_privacy.py
+tests/test_pass6_evidence_export_integrity.py
+tests/test_pass7_ci_receipt_duplicates.py
+tests/test_pass7_evidence_duplicates.py
+tests/test_pass7_evidence_metadata_types.py
+tests/test_pass7_export_request_duplicates.py
+tests/test_pass9_export_receipt_duplicates.py
+tests/test_privacy_sharing_copy.py
+tests/test_qemu_report_duplicates_pass11.py
+tests/test_qemu_report_release_bound.py
+tests/test_receipt_passphrase_keys_pass28.py
+tests/test_release_evidence_privacy_pass10.py
+tests/test_release_manifest.py
+tests/test_release_manifest_duplicate_pass7.py
+tests/test_release_manifest_malformed_pass4.py
+tests/test_release_manifest_tag_pass10.py
+tests/test_release_qemu_evidence_pass10.py
+tests/test_report_destination_unicode_pass29.py
+tests/test_report_failure_recovery.py
+tests/test_report_html.py
+tests/test_report_intent.py
+tests/test_report_intent_identity_regression.py
+tests/test_report_media_notice.py
+tests/test_report_mount_lock_ownership_pass28.py
+tests/test_report_shutdown.py
+tests/test_runner_diagnostics_privacy_pass6.py
+tests/test_runner_evidence_pass5_malformed_export.py
+tests/test_runner_evidence_pass5_status_collision.py
+tests/test_runner_log_privacy_pass8.py
+tests/test_screens_report_actions.py
+tests/test_second_usb_export.py
+tests/test_separate_report_status.py
+tests/test_support_export_pass8.py
+tests/test_usb_report_workflow.py
+tests/test_verification_evidence.py
+tests/test_wizard_lifecycle_pass5_evidence.py
+........................................................................ [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 19%]
+........................................................................ [ 25%]
+........................................................................ [ 32%]
+........................................................................ [ 38%]
+........................................................................ [ 45%]
+.......................sss..s.ssssssss.................................. [ 51%]
+........................................................................ [ 58%]
+........................................................................ [ 64%]
+........................................................................ [ 71%]
+........................................................................ [ 77%]
+........................................................................ [ 84%]
+........................................................................ [ 90%]
+........................................................................ [ 96%]
+..................................                                       [100%]
+1102 passed, 12 skipped in 140.69s (0:02:20)

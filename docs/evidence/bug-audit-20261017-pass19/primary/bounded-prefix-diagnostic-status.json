@@ -1,0 +1,26 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass19-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "tests",
+    "developer_tests",
+    "--deselect=tests/test_accessible_runtime.py::test_orca_announces_every_result",
+    "--maxfail=1",
+    "-p",
+    "docs.evidence.bug-audit-20261017-pass19.primary.outcome_observer",
+    "--junitxml=/tmp/pass19-primary/bounded-prefix-diagnostic.xml"
+  ],
+  "exit_code": 0,
+  "started_utc": "2026-10-17T16:35:56.848113+00:00",
+  "ended_utc": "2026-10-17T16:37:51.484676+00:00"
+}

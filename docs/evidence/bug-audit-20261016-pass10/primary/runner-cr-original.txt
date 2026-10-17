@@ -1,0 +1,49 @@
+[
+  {
+    "ending": "lf",
+    "large": false,
+    "size": 128,
+    "ok": true,
+    "reason": "completed"
+  },
+  {
+    "ending": "lf",
+    "large": true,
+    "size": 1048722,
+    "ok": true,
+    "reason": "completed"
+  },
+  {
+    "ending": "cr",
+    "large": false,
+    "size": 129,
+    "ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "ending": "cr",
+    "large": true,
+    "size": 1048723,
+    "ok": true,
+    "reason": "completed"
+  },
+  {
+    "ending": "double-cr",
+    "large": false,
+    "size": 130,
+    "ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "ending": "double-cr",
+    "large": true,
+    "size": 1048724,
+    "ok": true,
+    "reason": "completed"
+  }
+]
+Traceback (most recent call last):
+  File "/tmp/pass10-primary/runner-cr-proof.py", line 21, in <module>
+    assert all(not r['ok'] for r in records if r['ending']!='lf'),'Malformed completion provenance gained success when projected'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Malformed completion provenance gained success when projected

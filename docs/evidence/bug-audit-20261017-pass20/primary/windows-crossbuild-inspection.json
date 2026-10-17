@@ -1,0 +1,8 @@
+{
+  "format": "PE32+ AMD64",
+  "machine": "0x8664",
+  "optional_header": "0x20b",
+  "bytes": 9021440,
+  "sha256": "d05ac4db6463aa6d7f51188f3bcfcfb4891aeab549ab481843538114904a76d9",
+  "native_windows_acceptance": false
+}

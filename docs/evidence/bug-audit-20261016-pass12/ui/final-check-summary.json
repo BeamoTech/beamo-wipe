@@ -1,0 +1,30 @@
+{
+  "fixed-initial-adjacent": {
+    "cases": 350,
+    "passed": 348,
+    "failures": [
+      "tests.test_bug_audit_tk_gc_20260913::test_startup_exception_closes_its_window[start]",
+      "tests.test_bug_audit_tk_gc_20260913::test_startup_exception_closes_its_window[mainloop]"
+    ],
+    "errors": 0,
+    "skipped": 0
+  },
+  "new-regressions": {
+    "count": 99,
+    "passed": 99
+  },
+  "fixed-fixture": {
+    "cases": 5,
+    "passed": 5,
+    "failures": [],
+    "errors": 0,
+    "skipped": 0
+  },
+  "fixed-800": {
+    "cases": 88,
+    "passed": 88,
+    "failures": [],
+    "errors": 0,
+    "skipped": 0
+  }
+}

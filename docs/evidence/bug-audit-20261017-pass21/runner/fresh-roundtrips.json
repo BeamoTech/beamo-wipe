@@ -1,0 +1,632 @@
+[
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "final_sample",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "table_then_partial",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "zero_then_table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "zero_duplicate_then_table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "zero_then_malformed_foreign",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "model_failure",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "foreign_failure",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "positive_with_foreign_unknown",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "positive_with_target_unknown",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "final_sample",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "table_then_partial",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "zero_then_table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "zero_duplicate_then_table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "zero_then_malformed_foreign",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "model_failure",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "foreign_failure",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "positive_with_foreign_unknown",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "positive_with_target_unknown",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "table",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "final_sample",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "table_then_partial",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "zero_then_table",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "zero_duplicate_then_table",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "zero_then_malformed_foreign",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "model_failure",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "foreign_failure",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "positive_with_foreign_unknown",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "positive_with_target_unknown",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "final_sample",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "table_then_partial",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "zero_then_table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "zero_duplicate_then_table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "zero_then_malformed_foreign",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "model_failure",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "foreign_failure",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "positive_with_foreign_unknown",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "positive_with_target_unknown",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "final_sample",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "table_then_partial",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "zero_then_table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "zero_duplicate_then_table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "zero_then_malformed_foreign",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "model_failure",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "foreign_failure",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "positive_with_foreign_unknown",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "positive_with_target_unknown",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "table",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "final_sample",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "table_then_partial",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "zero_then_table",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "zero_duplicate_then_table",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "zero_then_malformed_foreign",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "model_failure",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "foreign_failure",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "positive_with_foreign_unknown",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "positive_with_target_unknown",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "final_sample",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "table_then_partial",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "zero_then_table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "zero_duplicate_then_table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "zero_then_malformed_foreign",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "model_failure",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "foreign_failure",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "positive_with_foreign_unknown",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "positive_with_target_unknown",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "final_sample",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "table_then_partial",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "zero_then_table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "zero_duplicate_then_table",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "zero_then_malformed_foreign",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "model_failure",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "foreign_failure",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "positive_with_foreign_unknown",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "positive_with_target_unknown",
+    "code": "verified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "table",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "final_sample",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "table_then_partial",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "zero_then_table",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "zero_duplicate_then_table",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "zero_then_malformed_foreign",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "model_failure",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "foreign_failure",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "positive_with_foreign_unknown",
+    "code": "unverified",
+    "tamper_refused": true
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "positive_with_target_unknown",
+    "code": "unverified",
+    "tamper_refused": true
+  }
+]

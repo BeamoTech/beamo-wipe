@@ -1,0 +1,17 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass18-python/bin/python3",
+    "/tmp/pass18-primary/diagnose-gtk-audio.py"
+  ],
+  "started_utc": "2026-10-17T07:05:10.730530+00:00",
+  "ended_utc": "2026-10-17T07:05:12.097052+00:00",
+  "exit_code": 0
+}

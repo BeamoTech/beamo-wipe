@@ -1,0 +1,2084 @@
+{
+  "cases": 36,
+  "passed": 36,
+  "violations": 0,
+  "native_attempts": [],
+  "results": [
+    {
+      "conflict": "read_only",
+      "display": "valid",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": true,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "read_only",
+      "display": "valid",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": true,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "read_only",
+      "display": "overlong_model",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            "ro": true,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "read_only",
+      "display": "overlong_model",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            "ro": true,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "read_only",
+      "display": "overlong_layout_label",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": true,
+            "mountpoints": [],
+            "label": "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "read_only",
+      "display": "overlong_layout_label",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": true,
+            "mountpoints": [],
+            "label": "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "serial",
+      "display": "valid",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "serial",
+      "display": "valid",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "serial",
+      "display": "overlong_model",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "serial",
+      "display": "overlong_model",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "serial",
+      "display": "overlong_layout_label",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": [],
+            "label": "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "serial",
+      "display": "overlong_layout_label",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": [],
+            "label": "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "wwn",
+      "display": "valid",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00002",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "wwn",
+      "display": "valid",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00002",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "wwn",
+      "display": "overlong_model",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00002",
+            "model": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "wwn",
+      "display": "overlong_model",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00002",
+            "model": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "wwn",
+      "display": "overlong_layout_label",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00002",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": [],
+            "label": "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "wwn",
+      "display": "overlong_layout_label",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00002",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": [],
+            "label": "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "size",
+      "display": "valid",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 256000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "size",
+      "display": "valid",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 256000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "size",
+      "display": "overlong_model",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 256000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "size",
+      "display": "overlong_model",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 256000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "size",
+      "display": "overlong_layout_label",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 256000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": [],
+            "label": "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "size",
+      "display": "overlong_layout_label",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 256000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": [],
+            "label": "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "bus",
+      "display": "valid",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "iscsi",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "bus",
+      "display": "valid",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "iscsi",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "bus",
+      "display": "overlong_model",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "iscsi",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "bus",
+      "display": "overlong_model",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "iscsi",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "bus",
+      "display": "overlong_layout_label",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "iscsi",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": [],
+            "label": "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "bus",
+      "display": "overlong_layout_label",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "iscsi",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": [],
+            "label": "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "mounted",
+      "display": "valid",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": [
+              "/media/fake-data"
+            ]
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "mounted",
+      "display": "valid",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": [
+              "/media/fake-data"
+            ]
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk has conflicting physical observations for one disk",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "mounted",
+      "display": "overlong_model",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            "ro": false,
+            "mountpoints": [
+              "/media/fake-data"
+            ]
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk model is too long",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "mounted",
+      "display": "overlong_model",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            "ro": false,
+            "mountpoints": [
+              "/media/fake-data"
+            ]
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk model is too long",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "mounted",
+      "display": "overlong_layout_label",
+      "order": [
+        0,
+        1
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": [
+              "/media/fake-data"
+            ],
+            "label": "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk label is too long",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    },
+    {
+      "conflict": "mounted",
+      "display": "overlong_layout_label",
+      "order": [
+        1,
+        0
+      ],
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": [
+              "/media/fake-data"
+            ],
+            "label": "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          },
+          {
+            "name": "sda",
+            "path": "/dev/sda",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "FAKE-TARGET",
+            "wwn": "50014ee20aa00001",
+            "model": "Good model",
+            "ro": false,
+            "mountpoints": []
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 16000000000,
+            "serial": "FAKE-BOOT",
+            "wwn": "50014ee20aa00009",
+            "ro": false,
+            "mountpoints": [
+              "/run/live/medium"
+            ]
+          }
+        ]
+      },
+      "boot_identified": false,
+      "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.",
+      "diagnostic": "ValueError: lsblk label is too long",
+      "selectable": [],
+      "target": null,
+      "target_identity_accepted": false,
+      "token": "",
+      "passed": true
+    }
+  ]
+}

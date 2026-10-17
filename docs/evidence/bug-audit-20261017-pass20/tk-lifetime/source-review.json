@@ -1,0 +1,27 @@
+{
+  "review": "bounded source-only; no product imports, runtime, pytest, Tk, threads, collectors, or child processes executed by author",
+  "prepared_cases": 24,
+  "probe_ast_parse": "PASS",
+  "runtime_status": "NOT RUN; root owns admission and serialized private-X runtime",
+  "product_file": "src/beamo_wipe/ui/tk_wizard.py",
+  "product_sha256_at_review": "23d280b0451d3e25d64387de62d4912a8867ffbdec934244efe6a7f7a7ee0615",
+  "files": {
+    "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py": "5aa6015029c0c5057197892391e1c3f620293e8c7baa62a90d7534220e4976d2",
+    "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/source-review.md": "efd63b075e4ca05bb5b4ce8881e3ac77bff89eac49ffc3e55e90f94b56c97713"
+  },
+  "boundaries": [
+    "normal",
+    "retained original exception/traceback",
+    "retained UI owner",
+    "mainloop quit",
+    "raw root destroy",
+    "partial constructor",
+    "redraw variable disposal",
+    "external peer variable ownership"
+  ],
+  "limitations": [
+    "Observational destructor monkeypatches invoke originals unchanged but affect allocation timing.",
+    "External native root/variable ownership is not claimed reclaimed.",
+    "Exact pass19 SIGABRT cause remains unproved."
+  ]
+}

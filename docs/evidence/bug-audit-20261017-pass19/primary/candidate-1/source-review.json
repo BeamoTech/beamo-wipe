@@ -1,0 +1,21 @@
+{
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "branch": "fix/safety-audit-20261015",
+  "frozen_inputs": 771,
+  "runtime_source_sha256": "225602f1aa6e063ae64b2dd68f2da0861dec382b77693f9612f48927fdc51fb7",
+  "changed": [
+    "src/beamo_wipe/discover.py",
+    "src/beamo_wipe/ui/tk_wizard.py",
+    "tests/test_accessible_runtime.py",
+    "tests/test_checkrow_trace_lifetime_pass18.py"
+  ],
+  "added": [
+    "tests/test_descendant_holder_filesystem_pass19.py",
+    "tests/test_duplicate_bcache_filesystem_pass19.py",
+    "tests/test_holder_ancestor_contradiction_pass19.py",
+    "tests/test_tk_owner_trace_lifetime_pass19.py",
+    "tests/test_unbound_bcache_filesystem_pass19.py"
+  ],
+  "new_untracked_test_modules": 42,
+  "index_empty": true
+}

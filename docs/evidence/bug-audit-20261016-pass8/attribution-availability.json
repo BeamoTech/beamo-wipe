@@ -1,0 +1,14 @@
+{
+  "/proc/sys/kernel/audit": {
+    "exists": false,
+    "readable": false
+  },
+  "/var/log/audit/audit.log": {
+    "exists": false,
+    "readable": false
+  },
+  "/sys/fs/cgroup/memory.events": {
+    "exists": false,
+    "readable": false
+  }
+}

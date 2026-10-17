@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-17",
+  "author": "Codex pass17_ui_boot peer",
+  "scope": "Source-only final cross-review, no peer runtime campaigns or product edits in this round",
+  "runtime": {
+    "src/beamo_wipe/discover.py": {
+      "starting_sha256": "0e77fcf0fa626e945c40fae8c8e5f544b735490f4acf8c718260abbabb20197f",
+      "reviewed_sha256": "7dbff4e97c5e4087681744ce02857c08c6f7173de355371aff838814e1b3a8ea"
+    },
+    "src/beamo_wipe/nwipe_runner.py": {
+      "starting_sha256": "cd49b65a607f152bd53675dafef80777d49b2fc02afd54f545605b3ccf958175",
+      "reviewed_sha256": "465d3495bd36b3be2507798ad3b57930645c165ba025a2afbe2ea0ca6c45e39d"
+    },
+    "src/beamo_wipe/ui/tk_wizard.py": {
+      "starting_sha256": "9764924b29c3c491a6acde0ca0853135e1e9eccf71bd77cbeb7c90b35534b29f",
+      "reviewed_sha256": "bb64632df587965f41afc70efe2201d3b776579038d680c3a2405319764f170d"
+    },
+    "src/beamo_wipe/ui/console_wizard.py": {
+      "starting_sha256": "794525a0185cd652d977b84cd1cd318c07c90dcf8dcaad20c730260ef4f1cc1c",
+      "reviewed_sha256": "1c3dc2f6839b7a4b1c7d43225b2175b7bc8b5f5d2b5af63aa17725c417c5ded5"
+    }
+  },
+  "tests": {
+    "tests/test_descendant_hardware_ambiguity_pass17.py": "55c79450a3dd7676876ae5896569653d5bb913f962e92cc3e0fd17ddfc25900f",
+    "tests/test_plain_erase_typeahead_pass17.py": "671fe42ce50ee56fa1be19331aa989c2191709d761afb857e5054ccffb77d012",
+    "tests/test_runner_mixed_log_origin_pass17.py": "6319d6c5daadeb269be9a9747a8966b40985eb05b845918e1ffdf733c1fcf097",
+    "tests/test_runner_model_lf_noerase_pass17.py": "076ddb3f20082deb045c747e28853c828ca15a42091211e833e4d71701d959cf",
+    "tests/test_startup_callback_retirement_pass17.py": "b008493fee9540ca0f659a54aaca491b4197f93566e5a4fff29d03d6369bc65c",
+    "tests/test_unresolved_physical_bridge_pass17.py": "fb211952b3cada7eefb49bd68926ac74ff995ba0d1b3ec7e0f40807a96a7b8f4",
+    "tests/test_unresolved_physical_duplicates_pass17.py": "754f8d89611a14ad047d7fbf2d7f69fd725717c03c4064f4bb90a5bd3786e58b"
+  },
+  "initial_ui_source_and_49_tests_preserved": true,
+  "runtime_acceptance": "Root owns focused/full verification; not claimed by this source review",
+  "conclusion": "No material safety weakening or source objection found. Minor stale Unexecuted docstrings flagged to root."
+}

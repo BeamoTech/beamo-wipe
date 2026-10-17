@@ -1,0 +1,9 @@
+{
+  "short_full_and_projection_hashes_matched": 150,
+  "large_fixture_bytes_authenticated": 17,
+  "actual_large_poll_records": 96,
+  "six_method_late_stop_combinations_each": 16,
+  "explicit_cap_indeterminate": true,
+  "source_reviewed": "unchanged nwipe_runner.py and differential script; whole final gate pending",
+  "scope": "ordinary fixture files and fake exited processes only"
+}

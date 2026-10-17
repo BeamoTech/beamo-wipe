@@ -1,0 +1,16 @@
+{
+  "starting_inputs": 735,
+  "final_inputs": 738,
+  "changed_existing_files": [
+    "src/beamo_wipe/nwipe_runner.py",
+    "src/beamo_wipe/ui/accessible_wizard.py"
+  ],
+  "added_files": [
+    "tests/test_accessible_focus_input_pass11.py",
+    "tests/test_accessible_fullscreen_geometry_pass11.py",
+    "tests/test_runner_projection_summary_context_pass11.py"
+  ],
+  "removed_files": [],
+  "all_final_hashes_match": true,
+  "earlier_test_modules_unchanged": true
+}

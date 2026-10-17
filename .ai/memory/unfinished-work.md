@@ -1,5 +1,1110 @@
 # Unfinished work
 
+## BW-RELEASE-20261017-ALL — IN PROGRESS
+
+- Date/author: 2026-10-17 / Codex. BeamoTech/beamo-wipe, worktree
+  `/root/dev/Beamo Wipe`, branch `fix/safety-audit-20261015`, starting HEAD
+  35107a8d1a701093eac876a58ab4efd50e291673; main cad8ed397818bca09634be57cd8a46e0195690c2.
+- Current user explicitly authorizes committing/pushing all project work to main
+  and publishing the latest complete release. This supersedes the prior audit's
+  no-push/no-publication scope; existing protected checks, publisher verification,
+  isolated-worker and unattended-host device restrictions remain intact.
+- Intended candidate: next patch0.2.13 (current latest public v0.2.12). Keep
+  nwipe0.42, Go1.26.8, existing rollback pins and approved claims unchanged.
+- BW-REL-SOURCE — IN PROGRESS: inventory all2698 current modified/untracked
+  audit paths (154706812bytes), preserve all historical receipts and failures,
+  inspect archives for disallowed media/secrets, prepare version/release notes,
+  rerun applicable local checks for final source, commit explicit paths with
+  safety: prefix. Version0.2.13 aligned in21existing files plus release notes;
+  wrapperversion is the only runtime delta from authenticated pass21. All59
+  retained regression modules unchanged. Version-focused40PASS. Content scan
+  passes2698files/104archives/15631members, zero secret-pattern matches or media
+  members; original64MiB helper-bound failure preserved, corrected scan streams
+  the111553533-byte original font trace instead of dropping it. Final875-input
+  source frozen; first8local phasesPASS; full main/Orca running since22:41UTC.
+  One failureglyph observed44% at22:49UTC; exactcase/finalcounts pending, no
+  cancellation or source edits. Preserve candidate1 snapshot/logs; diagnose
+  actual trace before fixes and rerun affected/full gates. No commit/push yet.
+  Inventory working
+  /tmp/beamo-release-20261017/starting-worktree-inventory.json.
+- BW-REL-LOCAL-GATES — PASS (candidate2): candidate1 completes10103PASS/23FAIL/
+  14artifactskips; separateOrca1PASS. All23 failures are version-dependent test
+  data:9ISO shell fixture mismatches,1current finalizer filename,13report goldens.
+  All candidate1 source875/logs/XML/failures preserved at
+  docs/evidence/release-0.2.13-20261017/candidate1/ and /tmp/beamo-release-20261017/local-gates/.
+  Focused original43 gives23FAIL20controls; corrected expanded125PASS, all23
+  exact failed IDs present/pass. Three shell fixtures explicitly own their
+  existing0.2.12 version; finalizer filename uses currentversion. Original Python
+  assertion predicates unchanged.13goldens change only application version and
+  derived SHARE checksum; replacing newversion recovers exact prior checksum.
+  No product guard or runtime code changed. Candidate2 re-freezes875 inputs;
+  runtimeSHA781dc5f3dab8c8a07f799b17fd25583fe19c47267d22bcfbebfc2156520e8ea9,
+  freezeSHAf6b944b3e7f4d8c286cbfae80ececbd6cdec9bef10ca546acfd6ae241c9bf605.
+  Fresh9 phasesPASS; main10126PASS14exactartifactskips in1160.83s andOrca1PASS
+  59.91s. Combined10127PASS0fail/error/duplicates; all59modules3924casespass.
+  Native64zero/emptystderr/noTimeout/unraisables;36directsource hashes.
+  Source875unchanged; no forbidden fallback. Next retain/readback local evidence,
+  commit explicit paths and push/open final qualification PR. No hosted job,
+  PR, tag or publication yet. Candidate evidence docs/evidence/release-0.2.13-20261017/.
+- BW-REL-STAGING — READY: all2837 initial intended paths have exact raw-byte
+  index/worktree equality. Staged whitespace check flags6441archival diagnostics
+  plus one redundant test EOF line. docs/evidence/.gitattributes preserves raw
+  records/whitespace without changing source/test checks. EOF-only cleanup has
+  identical AST/marshaled compiled code and focused casesPASS; no runtime bytes,
+  assertions, case counts or bounds change. Original full gate remains tied to
+  f6b944; final875 input map and correction proof under
+  docs/evidence/release-staging-0.2.13-20261017/. Fresh hosted CI must validate
+  exact committed source before merge/release. Next explicit-path stage/check,
+  commit and push qualification branch; all source/publication gates retained.
+- BW-REL-QUALIFY — PENDING: GitHub main protection requires strict CI gate and
+  applies to admins. Complete final hosted Blacksmith Linux/ISO/QEMU and native
+  Windows checks; use exact source receipts. No skipped/failed check is a pass.
+  Next action open the final-candidate PR after local gates; no bypass.
+- BW-REL-PUBLISH — PENDING: main push CI success, exact version tag on main,
+  manual release.yml version0.2.13, complete credential-free verification and
+  protected OIDC publisher, then independently verify public metadata/signatures
+  and asset identities. Production environment permits protected branches and
+  currently has no required-review protection rule. No release dispatched yet.
+- Historical incident attribution and physical/firmware acceptance stay explicitly
+  unproved; current release authorization does not permit physical-device work
+  or mislabel those limits. Preserve old audit histories as historical facts.
+- Blockers: none in GitHub access; auth account jallieson has repository admin/push.
+  Missing shared /root/dev/AGENTS.md/runtime-status tool recorded. No credentials
+  read or logged. Next action prepare and qualify concrete candidate as above.
+
+## BW-BUG-AUDIT-20261017-PASS21 — LOCAL VERIFIED / QUALIFICATION BLOCKED
+
+- Date/author: 2026-10-17 / Codex, started 20:50 UTC; final checkpoint21:33UTC.
+  Repo BeamoTech/beamo-wipe;
+  branch fix/safety-audit-20261015, HEAD35107a8d1a701093eac876a58ab4efd50e291673,
+  worktree `/root/dev/Beamo Wipe`. Starting779 inputs authenticate exactly to
+  pass20 final; runtime c3a9b4c2145e86203eb7669e5073b0fb7de0a932eb2920b5b881c58fba6af2aa.
+  Prior dirty work preserved; index empty. Local source only.
+- Requested: another comprehensive audit; prove suspected bugs before minimal
+  fixes, focused regressions, all applicable local gates and final evidence
+  review. Three bounded source-only reviewers cover discovery/safety,
+  runner/reports/boot and UI lifetimes. Root owns serialized fake-only runtime.
+- BW-P21-AUDIT — LOCAL VERIFIED: baseline, independent source reviews, proved
+  fixes and all applicable fresh fake-device checks pass on frozen source.
+  Overall qualification remains blocked as below; no commit/push/release.
+- Proven/fixed locally (first focused pass): missing/lexically noncanonical disk
+  NAME losing flat partition evidence; direct nonfinite float overflow taxonomy;
+  Unicode Zl/Zp diagnostic event loss; Tk Variable foreign/default interpreter;
+  refresh Event construction/set interruption claims; GTK cleanup after audio
+  failure; post-registration owned trace token adoption with peer preservation.
+  Four runtime files changed: discover.py,diagnostics.py,Tk/GTK controllers.
+  Original traces retain16 NAME,24 alias,9 directfloat,20diag,5variable,6refresh,
+  2GTKclose,3trace failures. First trace-v1 rowfixture used invalidBooleanvalue:
+  preserved INVALID controls; correctedv2 gives3FAIL1control. Strictfinalizer
+  observer v2/v3 replaces v1 finally-return flag; originalversions retained.
+  Independent source-only reviews complete; synchronized actual-thread refresh
+  proof and rejected-start retry pass on frozen source.
+- Final source frozen:788 inputs,775 starting inputs unchanged,4 runtime files
+  changed and9 new canonical modules/219 cases. RuntimeSHA 8e18e259414408eff434768ad24b38432bf913b12a864439f40b585a264496c1;
+  freezeSHA c4ecdfc8e8c814bd3d033bd478472cbd498a766c76e077006ba2bfb093093dac.
+  Exactfinal219 replay on58 authenticated original source inputs:89FAIL and
+  130controls,0errors/skips. Earlier213 canonicalPASS; corrected finalfocused
+  290PASS includes6 actualThread interleavings/retry and oldnative/refresh cases.
+  First finalfocused attempt exit4 selected nonexistent test_async_refresh.py:
+  NOT RUN, preserved; corrected actual selection above. No source changed.
+  Source/archive/diff readback PASS; independent13-input final review and788
+  current/archive plus779 starting input authentication PASS. Five UI modules
+  preserve68 non-admission assertions; copied discovery/runner modules preserve95.
+- BW-P21-GATES — LOCAL PASS: final fresh9 local phases PASS. Main10126PASS
+  14artifactskips in1147.50s; separateOrca1PASS58.60s. Combined10127PASS,
+  0fail/error/duplicates; exact14priorartifactskipIDs authenticated. All59 audit
+  modules3924cases executed/passed. Same788source/emptyindex; noobserver.
+  All64 canonicalnativechildren0exit,empty stderr,noTimeout/unraisables;
+  36emitdirectsource/hash and28inherit admitted canonical environment.
+  Fresh final10sessions220originalfinalizers allcreator/returned, pools empty,
+  oneGCcallback/maxdepth1;12×128Fonts pressure released/noerrors. All306logs,
+  90sidecarroundtrips,54advisories,144cancel/retrypaths,621fixtures,270Tk/GTKviews,
+  27criticalTkfocus and90reports/fivebundles70files authenticated. Rootviewed5PNGs;
+  fresh9 actualGTKTab cases revealownercheckbox in3steps, gatesunchanged.
+  Pass20 remains provenance, not pass21 runtime acceptance.
+- BW-P21-RETENTION — DONE: independent final evidence review PASS; root then
+  re-read all1463 review hashes and sealed167 retained files/17rawstreams.
+  Independent post-seal readback authenticates exactmanifestmembership, all788
+  current/finalarchived and779startingarchived inputs,171workingstage entries,
+  58duplicate source files archive-resolved,621fixtures/70reports/5captures.
+  Existingcheckpoint preserved;0overwrites, indexempty, gitdiffcheck PASS.
+  ManifestSHA 0f9917ef86d24baacdded465c6bf9e87d0f021a72d85acab9106fd28af1baf64.
+  Evidence docs/evidence/bug-audit-20261017-pass21/; sealed primary/receipts and
+  SHA256SUMS retained. Rootpostseal receipt [pass21 retention readback](pass21-retention-readback.json).
+  Working /tmp/pass21-primary remains; no local verification remains pending.
+- BW-P21-HISTORICAL — BLOCKED: pass19's two uncanceled native aborts remain
+  unattributed. Current fixed ownership/full-gate results do not identify the
+  original creator/cause. Pass18 GTK latency, pass16 loop incident, pass8 SIGTERM
+  attribution and pass9 original timing limits remain as recorded in pass20
+  and their immutable audit evidence. Remaining acceptance: evidenced incident
+  reconciliation. Next action inspect the original retained traces and obtain
+  missing platform incident records; current passing tests are not attribution.
+- BW-P21-PLATFORMS — NOT RUN/BLOCKED: Python3.11/live-bookworm, ISO/QEMU,
+  native Windows, firmware, physical reconnect/readback and hardware. Actual
+  current execution is Python3.12.3/private72DPI/fake devices only; fresh lookup
+  finds no python3.11. Remaining acceptance: prescribed actual final-source and
+  artifact receipts on each required platform. Next action use separately
+  authorized disposable isolated workers/platform sessions under docs/ci.md
+  and docs/remote-development.md, without host disks or physical unattended-PC
+  changes. Hosted CI is reserved for the final public candidate; this audit
+  does not authorize hosting, guests, network login or publication.
+- BW-P21-COMMIT — PENDING: commit/push only after required acceptance passes;
+  a discovery commit requires safety: prefix. Publication separately authorized.
+  No commit, push or deployed state is claimed. No approval question is needed
+  for saving the local verified work and blocked checks.
+- Handoff: [pass21 README](../../docs/evidence/bug-audit-20261017-pass21/README.md).
+  Repo/ref/worktree/date/author are common to all P21 items above. Final local
+  evidence and retention receipts live under its primary/, with independent
+  reviews in discovery/, ui/ and runner/. Historical/platform reconciliation
+  remains the next qualification action; local retention is authenticated.
+
+
+
+## BW-BUG-AUDIT-20261017-PASS20 — LOCAL VERIFIED / QUALIFICATION BLOCKED
+
+- Date/author:2026-10-17 / Codex; checkpoint19:49 UTC. All items below share
+  repo BeamoTech/beamo-wipe, branch fix/safety-audit-20261015, HEAD
+  35107a8d1a701093eac876a58ab4efd50e291673, worktree `/root/dev/Beamo Wipe`.
+  Local uncommitted source; prior dirty work preserved; index empty. No push,
+  hosted CI, guest, device, firmware, host-settings or publication action.
+- Fixed and locally verified: mounted generic dm/whitespace TYPE uncertainty;
+  audio constructor/start/acceptance interruption ownership; complete Tk graph,
+  partial-constructor/adoption/startup/run teardown, exact peer-preserving traces,
+  creator-thread native retirement, Image preinit state and closed callbacks.
+  Original destructors/tracebacks/assertions preserved; product GC modes and
+  thresholds unchanged (one owner-only GC-stop callback is added).
+- Source779 inputs:768 starting inputs unchanged,3 runtime files changed
+  (audio_jobs.py,discover.py,ui/tk_wizard.py),8 new canonical modules/149cases.
+  Start771 equals pass19 final. RuntimeSHA
+  c3a9b4c2145e86203eb7669e5073b0fb7de0a932eb2920b5b881c58fba6af2aa;
+  freezeSHA bc83136ee6bd52c8ef4c80206c9b80b958845f839546eb57d8d518263d59ca04.
+- Original exact149 canonical replay on authenticated58 starting src:88FAIL
+  (86AssertionError+2controlledRuntimeError),61controls,0errors/skips. Final
+  localized663PASS; native/busy/collection106PASS. Independent exact11-input
+  source review and all779 source/archive/diff readback PASS.
+- Final fresh9 local phases PASS: lint/types,preview,negative safety,Go1.26.8
+  version/race/vet/350000fuzz/actualWindowsPE32+crossbuild, main9907PASS and
+  separateOrca1PASS. Combined9908PASS14artifactskips,0fail/error/duplicates.
+  All50 retained audit modules3705cases ran/pass. Two generatedliveconfig and
+  12manufacturingISO skips match exact priorIDs; crossbuild is notnativeWindows.
+- All53 canonical nativechildren0exit/emptystderr/noTimeout/unraisables. Fresh
+  final10sessions220originalfinalizers allcreator/returned; pools empty,oneGC
+  callback,maxdepth1;12x128Fonts pressure allreleased,0errors. Source3.12.3only.
+- Fresh artifact campaigns PASS:306short/actual-large logs,90evidence roundtrips,
+  54advisory traces,144cancel/retrypaths,621fixtures including288cancelfiles;
+  270Tk/GTKviews/27criticalTkfocus,90reportvariants/fivebundles70files. Full
+  hash/manifest/archive readback PASS. Root viewedall5PNGs; GTKintrocheckbox
+  belowfold concern resolved9actualnativeTabcases:3steps/fullvisibility/unchanged
+  authorization ineachlanguage/textsize. No native application effects observed.
+- Failed history retained: C6 final lint OptionalCanvas failure; C7 main
+  9901PASS1FAIL14skips(_nav fakecontroller lacks_ui_dead); earlier private
+  wrong-source134abort INVALID acceptance, constructor/Fontidentity/collectibility
+  failures and corrected controls allpreserved. No failure relabeledpass.
+- Evidence helper failure retained/corrected: two exclusive-created silent logs
+  have sub-ms kernelmtime beforewallstart, reproduced50/50emptyfiles. Onlyknown
+  silent-phase freshness check nowuses previousphase end/currentend with exact
+  exclusivecreate/source receipts. Product/tests/gateresults unchanged. Existing
+  TODO lintwarning is unchanged placeholderregex falsepositive, source-traced.
+- BW-P20-RETENTION — DONE: independent finalreview PASS, all380 retainedfile
+  hashes and36 rawstreams independently reread after retention, all779 final
+  archived/current inputs match;621runnerfixtures/70reports/5captures retained.
+  Existingcheckpoint preserved;116 duplicate sourcefiles archive-indexed,6unique
+  metadata files preserved;0overwrites/indexempty. ManifestSHA b590d9222d8cde050747ff707bed82281015b7029be3d5f860206d73c52a74cc.
+  Record primary/retention-verification.json and SHA256SUMS under pass20 evidence.
+  Workingstage /tmp/pass20-primary retained. No local verification remains pending.
+- BW-P20-HISTORICAL — BLOCKED: pass19's two uncanceled aborts stillunattributed;
+  current ownership fixes/pass do not establish exact originalcreator/cause.
+  Pass18 GTKlatency/pass16loop/pass8SIGTERM/pass9originaltrace limits retained.
+  Remaining acceptance: evidenced attribution/reconciliation. Next action inspect
+  original immutable logs/platform incident evidence; exact missing records may
+  require external evidence. Prior audit directories/records preserve details.
+- BW-P20-PLATFORMS — NOT RUN/BLOCKED: Python3.11/livebookworm,ISO/QEMU,native
+  Windows,firmware,physical reconnect/readback/hardware. Remaining acceptance is
+  prescribed actualplatform/worker evidence for finalsource/artifacts. Nextaction
+  separately authorize disposable isolated workers/platform sessions under
+  docs/ci.md and docs/remote-development.md; neveruse unattendedhost devices.
+- BW-P20-COMMIT — PENDING: commit/push onlyafter everyrequired acceptance passes;
+  discoverycommit needs safety: prefix. Publication separatelyauthorized. No
+  current approval question is required to preserve and report these limits.
+- Evidence/handoff [pass20 README](../../docs/evidence/bug-audit-20261017-pass20/README.md),
+  exactsource/proof/gate/campaign/visual receipts in its primary/ and independent
+  reviews in runner-boot/ and tk-lifetime/. Next action is historical evidence reconciliation and prescribed isolated-platform
+  qualification; task remains blocked rather than marked complete.
+
+
+## BW-BUG-AUDIT-20261017-PASS19 — BLOCKED (proved fixes; final gate and native asset lifetime fail)
+
+- Date/author: 2026-10-17 / Codex; final checkpoint17:00 UTC. Request: another
+  comprehensive pass. Repo BeamoTech/beamo-wipe; worktree `/root/dev/Beamo Wipe`;
+  branch `fix/safety-audit-20261015`; HEAD
+  `35107a8d1a701093eac876a58ab4efd50e291673`. All pre-existing dirty work
+  preserved, index empty. Local source only; no commit/push/hosted CI/release.
+- Fixed locally: discovery retains unresolved bcache/descendant filesystem and
+  duplicate-holder evidence, checks contradictory transitive parents, preserves
+  established mounted-error category. Tk retires its two exact owned variable
+  traces. Proved fixture corrections release/settle private audio on first
+  failure and retire only independent peer trace after assertions. All301/24
+  original assertions and both60ms bounds preserved;1 settlement assert added.
+- Source:766 start inputs exactly equal pass18 final;771 final,4 existing
+  changed (discover.py, ui/tk_wizard.py, tests/test_accessible_runtime.py,
+  test_checkrow_trace_lifetime_pass18.py),5 new canonical modules/214 cases;
+  other762 start inputs unchanged. Runtime SHA256
+  `a69d8d2d8199b71a28f5f5280bad6d4bb13f46211d0f5e68a6f1d13d99c9460b`.
+  Exact9-input independent review, source/archive/diff readback PASS. Retained
+  audit modules42/3556 cases; this is not a claim all ran in aborted final gate.
+- Proof: exact final214 canonical cases+8 fixture probes replayed privately on
+  starting source produce118 AssertionError failures/104 controls,0 errors,
+  skips/deselections. Shared source never restored. Current focused329PASS;
+  fresh baseline3522PASS. Original staged proofs and rejected hypotheses kept.
+- Completed final phases: lint/types, preview, negative boot guard, Go1.26.8
+  version/race/vet/350000 fuzz and actual PE32+ AMD64 crossbuild PASS on exact
+  final771. Crossbuild does not satisfy native Windows acceptance.
+- FAILED full phase1 with timing observer: main fatal Python Aborted/GC on
+  audio worker, no main JUnit; Orca1PASS. Proved global PYTEST_PLUGINS breaks
+  private child pytest imports (samechild exit1/no JUnit vs exit0/JUnit).
+- FAILED canonical full phase2 without observer/plugin setting:7 visible early
+  failure glyphs then same fatal GC/audio path, no main JUnit; Orca1PASS. No
+  cancellation of either full phase. Exact native abort cause still UNEXPLAINED.
+  Observer import defect cannot explain the second run. Both histories retained.
+- Diagnostics: both shortened prefixes1061 actual JUnit PASS,8711 deliberately
+  deselected; earlier1062 was pre-Orca selection count and is corrected in
+  prefix-count-clarification.json. They release later items and are not a full
+  collection reproduction. Full collection --maxfail1 then gives477PASS/1FAIL:
+  test_audio_launch_ownership_pass14.py::test_start_error_after_spawn_never_leaves_a_competing_worker[False-False-True].
+  next_entered.wait1 fails; final join2 fails; immediate thread snapshot locates
+  live worker in tkinter/font.py:121 __del__ under Event.wait. Font creator in
+  original full run remains unassigned; six later glyph IDs unconfirmed.
+- BW-P19-TK-ASSET-LIFETIME — BLOCKED, proved/unfixed. Actual full constructor→
+  run_tk→actual mainloop→supported teardown proof8 gives2 AssertionFAIL/6controls,
+  0errors/skips/parenttimeouts. For normal and controlled exception routes,
+  no outer owner leaves wizard-created fonts for later worker finalization;
+  IDs match that child's constructor. Collector stuck2s, only owned child
+  exits91. Retained-owner/live-input/peer/repeated controls pass. This proves
+  ownership gap, not exact SIGABRT cause. No speculative Font neutralization,
+  global GC change, traceback clearing or native-asset product fix applied.
+- Exact next action for asset blocker: use retained owned normal/exception proof
+  and source ownership graph to implement complete deterministic UI-thread
+  release across normal exit, propagated failure and retained callbacks/worker
+  references; preserve peer traces, live UI, return/exception semantics. A
+  normal-only run_tk finally ui=None+gc is insufficient while exception frames
+  retain self. Prove correction on private source, then focused tests, fresh
+  independent review and all applicable full local gates on exact final bytes.
+  No additional user approval is needed for safe fake-device diagnosis; do not
+  start physical/guest/publication work without its separate authority.
+- Extra Font provenance observer changed GC pressure and passed relevant region
+  without reproduction. Root deliberately stopped it: SIGINT16:56:14 UTC was
+  ignored (observed mask); exact PID/start/owned ancestry revalidated, SIGTERM
+  16:57:22.335849 UTC, exit143, zero direct children. CANCELED/NOT ACCEPTANCE,
+  no final JUnit. Explicit intent/signal receipts retained. This is separate
+  from both uncanceled aborts and old pass8 unattributed SIGTERM.
+- BW-P19-FINAL-ARTIFACTS — HELD/NOT RUN: prepared runner306 short/large cases,
+  90 evidence roundtrips/54 advisory traces,144 cancellation paths,270 geometry
+  views and90 report checks. Zero fresh campaign fixtures/reports/screenshots;
+  no earlier campaign evidence reused. After canonical main+Orca pass, run
+  prepared serial scripts, authenticate every artifact and view all5 PNGs.
+- BW-P19-QUALIFICATION — PENDING: original fail/fix/source review recorded;
+  native asset correction, canonical plain gate, final campaigns/readback and
+  every applicable acceptance still required. No commit/push until gates pass;
+  eventual disk-selection commit must use safety: prefix. No release authority.
+- Retained historical blockers: pass18 original74.932779ms first GTK click;
+  pass16 loop incident review; pass8 SIGTERM attribution; pass9 original timing
+  trace. Fixture cleanup fixes do not explain those incidents. ISO/QEMU/native
+  Windows/physical reconnect/firmware/hardware NOT RUN/BLOCKED under current
+  environment; no physical media/host settings/guest changed.
+- Durable evidence: docs/evidence/bug-audit-20261017-pass19/README.md and
+  primary/{source-freeze,source-artifact-verification,native-asset-original-review}.json;
+  complete failed logs/JUnit/JSONL/binary in raw-evidence.tar.gz plus exact hash
+  index and SHA256SUMS. Working staging /tmp/pass19-primary and /tmp/pass19-ui
+  retained. Initial/mid checkpoints preserved. Final retention/readback receipt
+  records actual limits; pending checks are not passes.
+- Final17:02 UTC readback PASS: all197 retained manifest files,29 archived raw
+  streams and771 current source inputs authenticated; index empty. Manifest
+  SHA25624f5954b7858bfc58f341a2d56a37616a0e9d4a4d092805c9422cacc655f0fda.
+  Eight completed phases remain PASS; canonical phase remains FAILED. No owned
+  test process remains. Full log/asset proof/native/canceled/unrun distinctions
+  match final-retained-verification.json. Initial archive-lookup verifier
+  mistake (small logs remain plain) was corrected and recorded; no bytes lost.
+
+
+## BW-BUG-AUDIT-20261017-PASS18 — BLOCKED (three proved fixes; GTK latency gate failed)
+
+- Date/author: 2026-10-17 / Codex. Request: another comprehensive pass.
+- Repo/worktree: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`; branch
+  `fix/safety-audit-20261015`; HEAD `35107a8d1a701093eac876a58ab4efd50e291673`.
+- Local fixes: discovery retains pathless hardware alias bridges and candidate
+  uncertainty as exclusion evidence; curses requires an enabled action in the
+  displayed frame before Enter; destroyed Tk checkbox rows retire exactly their
+  owned variable trace. Shared fail-closed gates and all peer observers remain.
+- Source: 762 starting inputs exactly match pass17; 766 final inputs; exactly
+  three runtime files changed, four new modules / 332 cases. Other 759 starting
+  inputs and all prior dirty work preserved. No tracked test changed; index empty.
+  Runtime SHA256 `bebdb2425c6135dc79ad9dd37c89d4995173a8ffc8183edb4515cb1c726f89b7`.
+  Changed files: `src/beamo_wipe/discover.py`, `ui/console_wizard.py`,
+  `ui/tk_wizard.py`; exact module names/hashes in final freeze and peer receipt.
+- Failing proof: final canonical 332 test bytes replayed privately on exact
+  starting source yield 137 AssertionError failures / 195 controls, zero errors,
+  skips or deselections. Shared source never restored. Independent seven-input
+  peer review and complete source/archive/diff readback pass.
+- Completed local checks: baseline 3,190 passes; fixed/adjacent 1,062 passes.
+  Lint/types, preview, private boot-guard negative mutant, pinned Go 1.26.8
+  race/vet/350,000 fuzz executions and actual PE32+ AMD64 test cross-build pass.
+  Cross-build is not native Windows acceptance.
+- FAILED canonical gate: main 9,543 passes / 14 image-only skips / one failure;
+  separate Orca one pass. Combined 9,544 passes / 14 skips / one failure,
+  zero errors/duplicate IDs. All 37 retained audit modules / 3,342 cases pass.
+  `tests/test_accessible_runtime.py:1620` first sound-dialog click took
+  74.932779 ms against unchanged 60 ms bound. Full failed logs/JUnit/binary/
+  source freeze preserved before follow-up. No cancellation or blind retry.
+- Diagnostic: one bounded four-test observational replay passes unchanged
+  assertions; discovery on worker, pending poll returns promptly, barrier released
+  and worker settled. This does not explain the earlier 74.9 ms delay. Host load/
+  pressure sample cannot attribute it. No speculative product change.
+- BW-P18-GTK-LATENCY — BLOCKED: remaining acceptance is an evidenced cause and
+  correction (if warranted), affected original/fixed cases, refreshed source
+  review and all applicable passing gates. Exact next action: use retained
+  first-failure timestamps/trace with bounded native/Python observation to
+  reproduce and distinguish construction/render, worker launch, native display
+  waiting and scheduling. Do not raise timing limits or call a later pass an
+  explanation. No owner permission is needed for fake-device diagnosis; native
+  host/device/guest acceptance remains outside the authorized environment.
+- BW-P18-GTK-FIXTURE — FIXED LOCALLY in pass19 (qualification blocked): source confirms first timing assertion precedes
+  release-finally. Prove forced first-assertion failure cleanup, then include the
+  timed click in existing try/finally and confirm owned-worker settlement before
+  audio mocks retire. Preserve both 60 ms bounds and every closed-dialog check.
+  This is failure cleanup, not an established cause of click latency.
+- BW-P18-TK-FIXTURE — FIXED LOCALLY in pass19 (qualification blocked): independent peer observer in first new trace test
+  captures its variable and may retain the interpreter. Exact next action: prove
+  the harmless private Tk cycle, then retire only peer_token in finally after
+  existing assertions/evidence, including old-source failing paths. Preserve
+  product traces and callback error observers. This later fixture cannot explain
+  the earlier GTK failure. This was the original pass18 status; pass19 proved
+  and corrected both fixture cleanup gaps (exact proof/changed bytes above),
+  while broader final qualification remains blocked.
+- Held acceptance: fresh runner/cancellation/geometry/report campaigns NOT RUN
+  because local gate failed; zero new campaign fixtures/reports/screenshots.
+  Prepared scripts retained. Do not reuse pass17 campaign evidence for new bytes.
+  User's stop-on-blocker instruction prevents continuing acceptance as if passed.
+- Isolation: no-space interpreter plus eight immutable child-PATH guards;
+  12 admission probes pass; two actual allowed offline SDK fixture listings;
+  zero forbidden guarded fallbacks. Guards are not a universal OS sandbox.
+  Canonical main/Orca alone concurrent; diagnostic followed their completion.
+  Private 72-DPI X11; no real engine/physical target, loop acceptance, guest,
+  native Windows execution or hosted job this pass.
+- Historical blockers retained: pass16 native regular-file loop-probe incident
+  review; pass8 original unexplained SIGTERM/exit143 attribution; pass9 original
+  unavailable timing trace. This pass cannot explain the older events. ISO/QEMU,
+  native Windows, physical reconnect, firmware and real-hardware acceptance remain
+  NOT RUN/BLOCKED under unattended-host constraints and prescribed worker gates.
+- Remaining final action after diagnosis/correction: refresh freeze/proofs/peer
+  review for changed bytes, pass applicable canonical local gate, then execute
+  prepared fake campaigns serially and authenticate all new artifacts. Qualify
+  final public artifacts only on prescribed authorized workers/physical sessions.
+- Source local/uncommitted. Nothing pushed, merged, deployed or released.
+  No commit/push while requested acceptance remains blocked; eventual discovery/
+  authorization commit must use `safety:`. Publication separately authorized.
+- Durable result: `docs/evidence/bug-audit-20261017-pass18/README.md`, exact source,
+  proof, failed-gate, diagnostic, cross-review and retention receipts/SHA256SUMS.
+  Large raw logs/JUnit/binary compacted with byte index and checked readback.
+  Prior checkpoints in `primary/checkpoint-history.md`. Working staging retained
+  at `/tmp/pass18-primary` and `/tmp/pass18-ui`. No required work marked complete.
+
+
+## BW-BUG-AUDIT-20261017-PASS17 — BLOCKED (four areas fixed; final local verification passes; historical/platform acceptance pending)
+
+- Date/author: 2026-10-17 / Codex. Request: another comprehensive bug audit.
+- Repo/worktree: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`; branch
+  `fix/safety-audit-20261015`; HEAD `35107a8d1a701093eac876a58ab4efd50e291673`.
+- Local outcome: four proved areas fixed in `discover.py`, `nwipe_runner.py`,
+  `ui/console_wizard.py`, `ui/tk_wizard.py`. All inherited hardware candidates,
+  physical duplicate context and malformed-WWN uncertainty remain exclusion
+  evidence; meaningful parent IDs remain authoritative. Native no-erasure
+  records require complete timestamp/severity provenance; raw guards retain
+  negative contradictory context. Plain TTY discards pre-expiry typeahead and
+  refuses unusable/real piped consent. Startup cancels only its owned callbacks.
+- Source identity: 762 frozen inputs; runtime SHA256
+  `b4e76a50ff6e9d376b6a56f7d1b469192dd4284347923ac1aca02254664bf423`.
+  Exactly four runtime inputs changed from pass16; all other 750 starting inputs
+  and earlier work preserved. Eight new modules add 1,247 cases; 33 retained
+  modules contain 3,010 cases. No tracked fixture changed during this pass.
+  Exact final 12-file peer review matches all four runtime/eight new test inputs.
+- Proof: exact private starting-source replay of the final high-level modules
+  gives 496 AssertionError failures / 739 controls, zero errors/skips. Twelve
+  new helper-only controls deselected only on old source execute in the final
+  gate. Original source never restored in the shared checkout. All 754 starting
+  inputs, 33-module archive, incremental and cumulative patches read back exactly.
+- Final local gate: nine phases exit 0; 9,213 unique Python/Orca passes / 14 same
+  image-only skips, zero failure/error/duplicate IDs. All 3,010 retained audit
+  cases pass. Lint/types, preview, private boot-guard negative mutation, pinned
+  Go 1.26.8 race/vet/350,000 fuzz executions pass. Actual PE32+ AMD64 Windows test
+  cross-build verified (9,021,440 bytes, SHA256 d05ac4db6463aa6d7f51188f3bcfcfb4891aeab549ab481843538114904a76d9);
+  native Windows acceptance is NOT RUN. Skips remain two generated live-config
+  and 12 manufacturing/ISO cases, not acceptance passes.
+- Fresh final campaigns: 153 short comparisons and 153 actual >1MiB fake polls,
+  90 authenticated evidence/export-readiness/recovery/tamper roundtrips,
+  144 cancellation/retry cases, 270 Tk/GTK small-screen layouts and 90 report
+  cases pass. All 27 critical Tk inputs fully visible; five actual PNGs viewed.
+  All 621 runner fixtures (including 144 log/lock pairs) and 70 report files in
+  five COMPLETE-authenticated bundles hash/read back exactly. Zero guarded native
+  acquisitions or callback errors. Long body content intentionally scrolls.
+- Runtime isolation: no-space interpreter and eight immutable rejecting PATH
+  guards; 12 admission probes pass. Three actual SDK calls across baseline,
+  failed candidate and final gate only list owned local fixture files offline.
+  No forbidden PATH fallback. These guards are not a universal OS sandbox.
+  Substantive final campaigns ran serially after canonical main/Orca finished.
+  No real engine, physical target, loop acceptance, guest or hosted job this pass.
+- Failed history retained: first full candidate failed three existing runner
+  contradictions; 108 added cases proved the regression before correction.
+  Root caught lost physical-context and malformed-WWN alternatives before final
+  acceptance; separate failing proofs and corrected duplicate/console fixtures
+  retained. Two imported-fixture F811 annotations preserve identical ASTs and
+  assertions. One trailing documentation space stopped result authentication;
+  corrected without changing any gate input, then authentication passed. Earlier
+  statuses are preserved in `primary/checkpoint-history.md`, not counted as passes.
+- Final source remains local/uncommitted; index empty. Nothing pushed, merged,
+  deployed or released. Methods, claims, pins, argv and automation unchanged this
+  pass. Eventual discovery/authorization commit must use the `safety:` prefix.
+- Remaining acceptance/blockers: review pass16's native regular-file loop-probe
+  incident; obtain/reconcile pass8's original unexplained SIGTERM/exit143 platform
+  attribution and pass9's unavailable original failed timing trace. Later passes
+  cannot explain those historical events. ISO/QEMU, native Windows, physical
+  reconnect, firmware and real hardware acceptance remain NOT RUN/BLOCKED under
+  the unattended-host constraints. This record grants no worker/device/release
+  authorization. Do not claim those checks passed or commit/push before the
+  applicable requested acceptance gates pass.
+- Exact next action: review incident evidence and recover the missing platform
+  signal/timing records; retain unresolved items if originals are unavailable.
+  Qualify a final public candidate only on prescribed isolated workers and an
+  explicitly authorized physical session. Publication remains separately authorized.
+- Durable result/evidence: `docs/evidence/bug-audit-20261017-pass17/README.md`,
+  source/gate/campaign/visual/readback receipts and SHA256SUMS. Exact bulky raw
+  transcripts/JUnit/test binaries are compacted with byte indexes; starting inputs,
+  final regression modules, runner fixtures and report bundles have checked archives.
+  Working staging remains `/tmp/pass17-primary`, `/tmp/pass17-runner`, `/tmp/pass17-ui`.
+
+
+## BW-BUG-AUDIT-20261017-PASS16 — BLOCKED (four bugs fixed locally; gates pass; incident and historical acceptance review pending)
+
+- Date/author: 2026-10-17 / Codex. Request: another comprehensive audit pass.
+- Repo/worktree: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`; branch
+  `fix/safety-audit-20261015`; HEAD
+  `35107a8d1a701093eac876a58ab4efd50e291673`.
+- Outcome: four independently proved bug classes fixed in discover.py and
+  ui/tk_wizard.py / ui/accessible_wizard.py: filtered physical duplicates could
+  manufacture target uniqueness; optical cmdline fallback omitted physical
+  competition; modal held Escape became a fresh parent action; destroyed Tk
+  widgets left queued Tcl callback commands. Three new modules add 398 cases.
+  Preserve all 27 prior local fixes, 22 prior modules / 1,365 cases and earlier
+  evidence. Retained/new regressions: 1,763 cases in 25 untracked modules.
+- Four existing fixtures corrected without deleting any assertion: mapped-draw
+  readiness retains the 140 ms interval; two AST fixtures bind the actual shared
+  guard; Tcl-only picker models its leaf hierarchy. Original assertion counts
+  38 / 19 / 9 / 11 preserved, one readiness assertion added. New native fixtures
+  set geometry before mapping and distinguish real fresh key timestamps.
+- Source: 754 inputs frozen, 744 of 751 starting inputs unchanged. Only three
+  runtime files and four existing fixtures changed; three new test inputs.
+  Runtime SHA256 `008add544330133a4cf979d39327dae3ccfd341925cb897b8ca19c23f983d2ab`.
+  Exact source/fixture patches, starting archive, 25-module test archive and
+  original/final receipts retained. Three source peers approved exact assigned
+  final bytes; primary independently verified all 58 source/static hashes.
+- Proof: exact private starting-source replay of final 398 cases gives
+  203 AssertionError failures / 195 controls, zero errors/skips: discovery159,
+  modal18, explicit Tcl-bgerror26. Shared source never restored. Native Escape
+  and callback/default-bgerror traces independently support the defects.
+- Completed final local gate: nine phase exits 0, 7,966 unique passes / 14 same
+  image-only skips, no failure/error/xfail/duplicate IDs; every 398 new and 1,365
+  prior regression passes. Fresh main/Orca reports, pinned Go1.26.8 uncached
+  race/vet/350,000 fuzz executions, preview/negative and actual Windows PE32+
+  AMD64 cross-build verified. Native Windows acceptance remains NOT RUN.
+- Fresh final campaigns: 153 short and 153 actual >1MiB fake polls, 90 authenticated
+  evidence/export-readiness/recovery roundtrips, 144 cancellation/retry cases,
+  270 Tk/GTK layouts, 90 report cases all pass. Zero campaign native acquisitions
+  or callback errors. All 153 large logs / 90 evidence-sidecar pairs (333 files),
+  70 report files and five actual PNGs independently authenticated/viewed;
+  27 critical Tk inputs fully visible. Exact readback/retention verification passes.
+- Failed/corrected history is preserved in evidence and checkpoint-history.md:
+  initial baseline 1,676PASS/7focusFAIL; initial adjacency2,073PASS/8new-fixtureFAIL;
+  type gate2errors; private-display/observer setup corrections; full space-bearing
+  interpreter run23FAIL/7,942PASS/14skips plus1OrcaPASS. Same existing interpreter
+  through a no-space alias fixes Linux shebang execution; 23 exact failed cases
+  pass after that and the accurate Tcl leaf fixture. No assertion weakened.
+- Boundary incident: invalid fake executable shebangs fell through to real tools.
+  Public metadata reads and ordinary-file xorriso work occurred. Three native
+  regular-file loop probes returned0 and reported attachments/ownership-checked
+  cleanup. Empty fake bookkeeping was initially misread as zero real loops; that
+  statement is corrected. Original loop IDs were not retained. Read-only follow-up
+  found no matching fixture backings or remaining probe-prefix directories; no
+  detach performed. This crossed the allowed loop-test boundary. No wipe engine
+  or physical disk target was invoked. Review incident before acceptance.
+- Final test orchestration rejects remote/privileged fallback. The single allowed
+  actual SDK call only lists local files under a canonical private pytest tree
+  with fresh config; credentials/telemetry/update checks disabled. Installed SDK
+  source and independent peer confirm this; 12 intercepted guard cases and the
+  actual offline test pass. Final forbidden fallback attempts: zero. No hosted
+  CI, login, credential entry, external messages, commit, push, PR or release.
+- One overstrict guard run was intentionally canceled: exact owned pytestPID36787
+  ignored SIGINT03:21:42.296955UTC (inherited background disposition); root sent
+  SIGTERM03:22:25.187569UTC. Wrapperexit1, no fresh main JUnit; stale prior report
+  rejected. Tracked pytest/child exited. This is fully attributed and distinct
+  from historical pass8. No auxiliary runtime campaign overlapped final gate.
+- Remaining acceptance: review this incident/guard evidence; obtain attributable
+  platform execution/signal evidence for pass8's06:29UTC SIGTERM/exit143 and the
+  unavailable original pass9 failed timing trace. Later passes cannot explain
+  those historical events. Exact next action: obtain/reconcile those records,
+  review the incident, revalidate acceptance, then make a `safety:` commit/push
+  only when every required acceptance criterion passes. Source remains local,
+  uncommitted, index empty. No release authorization.
+- Separate final-public ISO/QEMU/native Windows/hardware/firmware/physical
+  reconnect qualification remains NOT RUN/BLOCKED. Follow existing qualification
+  records and current AGENTS; an isolated authorized worker is required.
+- Evidence/result: `docs/evidence/bug-audit-20261017-pass16/README.md`.
+  All intermediate checkpoints preserved in `primary/checkpoint-history.md`.
+
+
+## BW-BUG-AUDIT-20261016-PASS15 — BLOCKED (five new bugs fixed; local gates pass; historical acceptance evidence pending)
+
+- Date/author: 2026-10-16/17 / Codex. Request: another comprehensive pass.
+- Repository/worktree: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`.
+  Branch `fix/safety-audit-20261015`;
+  HEAD `35107a8d1a701093eac876a58ab4efd50e291673`.
+- Outcome: five proved bug classes fixed in seven runtime files: omitted
+  physical alias bridges, filtered same-path contradictions, empty-screen nested
+  wheel routing, normalized UTF8 snapshot cap, and exact positive hidden-storage
+  advisory records. Four new modules add 578 cases. All 22 prior fixes, 787 prior
+  cases and three fixture updates are preserved. Total retained/new regressions:
+  1,365 in 22 untracked modules. Safety-only context never supplies selectable
+  disks or token peers. No method/argv/token/countdown/owner/pin/claim/launcher/
+  build/publication changes. Future commit requires `safety:`.
+- Final source: 751 frozen inputs; 740 other starting inputs unchanged.
+  Runtime SHA256 `9f34e674c64184b4a7d36fb77498d8dee7ad71321bb979c1616b7cc1772be43a`.
+  Complete/incremental patches, exact 22-module archive, original 58-source
+  archive and receipts retained. Three source peers approved assigned final
+  bytes; final discovery path-API review supersedes earlier snapshots. Primary
+  independently inspected the union and complete accumulated diff.
+- Proof: private original replay of 578 cases gives 298 intended failures /
+  280 controls, zero errors/skips, all 58 starting hashes verified. Each failure
+  attributed: 60 missing SafetyError and 238 AssertionError. Fresh baseline
+  1,105 passed; adjacency 2,275 passed; malformed-path focused 473 passed.
+  Final alias 288, duplicate 36, wheel 8, UTF8 roundtrip 30, runner 432 short +
+  324 large, geometry 270 and report 90 cases passed. Zero native effects or
+  callback errors; 27 critical controls fully visible; five native PNGs viewed;
+  108 large and ten UTF8 fixtures authenticated.
+- Failed/corrected history retained: initial wheel guard hit picker (542/574),
+  moved to empty; early malformed-ID refusal (2264/2271), refined per-field
+  safety context plus four controls; first full main 7,566 passed / one failed /
+  14 skips caught a direct invalid-path exception. It now returns a fully empty
+  unidentified result. Focused 473 and all final campaigns/gates repeated on
+  the new freeze. Setup/import/selection and tail-vs-complete receipt mistakes
+  distinguished. No relaxed test/gate, stop/kill or unexplained termination.
+- Final applicable local gate: nine phases exit 0; 7,568 unique passes / 14 same
+  image-only skips; zero failures/errors/xfails/duplicate IDs. All 578 new and
+  787 prior regressions pass. Pinned Go 1.26.8 race/vet/350,000 fuzz executions
+  pass. Actual Windows PE cross-build inspected (native acceptance not run),
+  preview and 70 actual report bundle files authenticated. No auxiliary runtime
+  campaign overlapped full pytest. Retention verification passes for exact
+  source/tests/archives/index/diff; final artifact counts are in evidence README.
+- State: local/uncommitted/index empty; no commit/push/PR/hosted CI/release.
+  Effects use fake devices/processes, regular files, owned private X11/DBus.
+  Evidence: `docs/evidence/bug-audit-20261016-pass15/README.md`, with original
+  proofs, failed history, exact check commands and completed receipts.
+- Remaining acceptance criteria: attributable pass8 SIGTERM sender/cause and
+  pass9 failed timing evidence remain unavailable; later passing tests cannot
+  explain them. Exact next action: obtain platform execution/signal evidence
+  and attributable failed timing trace, revalidate acceptance, then make a
+  `safety:` commit/push only when all required gates are satisfied.
+  Separate final-public ISO/QEMU/native Windows/hardware/firmware/reconnect
+  qualification remains NOT RUN/BLOCKED. Follow its existing qualification
+  record and current AGENTS; publication needs separate explicit authorization.
+
+## BW-BUG-AUDIT-20261016-PASS14 — BLOCKED (three new bugs fixed; local gates pass; historical acceptance evidence pending)
+
+- Date/author: 2026-10-16 / Codex. Request: another comprehensive audit, continued.
+- Repository/worktree: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`.
+  Branch `fix/safety-audit-20261015`;
+  HEAD `35107a8d1a701093eac876a58ab4efd50e291673`.
+- Result: three proved defects fixed in audio_jobs.py, discover.py, safety.py
+  and ui/tk_wizard.py. Mixed serial/WWN chains retain boot/mounted protection
+  and final guard checks while preserving contrary anchor WWNs. A rejected
+  audio thread launch cannot consume a replacement queue. Focused body controls
+  are revealed after focus and final wrapping, preserving manual scroll,
+  stale redraws, footer behavior and consent. No method/argv/token/countdown/
+  owner/engine pin/claims/launcher/build/publication changes. Future commit
+  must use `safety:` after acceptance.
+- Preservation: all744 starting inputs matched;747 final inputs frozen.
+  Four runtime files and one existing wheel fixture are the only changed
+  starting paths;739 other starting inputs unchanged. Preserve19 prior fixes,
+  15 prior modules/580 cases, two prior tracked fixtures and all earlier work.
+  Three new modules/207 cases bring retained/new regressions to787 in18
+  untracked modules. Wheel fixture settles native focus, checks overflow
+  independent of offset, cleans setup errors and gives directional headroom;
+  all38 assertions retained, with only the offset-dependent assertion replaced.
+- Original proof: primary72-case fake public discovery has24 violations/48
+  controls; event-only audio trace proves overlapping actions after rejected
+  launch; original270-case native geometry has246PASS/24 clipped-focus FAIL.
+  Primary privately restored58 exact starting source/static files, verified
+  hashes and ran final207 tests:108 intended FAIL/99 controls,0 errors/skips.
+  Alias72/96, audio8/2, UI28/1. Every failure independently attributed:
+  24 expected missing SafetyError failures and84 AssertionErrors. Shared
+  source never reverted. Three bounded delegates hit provider quota after
+  source/proofs/preparation; primary independently validated and implemented.
+  No final independent peer patch approval is claimed.
+- Focused checks: baseline42 modules898PASS/0 skips; combined98 modules1645PASS;
+  affected UI100PASS including10 startup cases, all normal exit. These checks
+  precede annotation-only cleanup; final gate validates exact final bytes.
+  Fresh558 fake discovery cases PASS/zero native acquisition. Runner150 short
+  cases/450 method assessments,96 actual >1MiB fake polls including late Stop
+  and1 explicit evidence-cap refusal PASS/zero mismatches.17 large fixtures
+  authenticated. Final270 Tk/GTK geometry cases PASS/zero effects or callback
+  errors;27 focused input/owner/token controls fully visible;3 exact final
+  native PNGs independently viewed.
+- Failed/corrected history retained: first focus repair202/207; five final
+  wrapping failures fixed. Initial adjacency hung because an old fixture's
+  setup assertion leaked a Tk root before cleanup;350ms native two-root trace
+  proves thread-wide mainloop cause. Primary verified owned PID604704/cwd/JUnit,
+  disabled core dumps and intentionally sent SIGABRT at21:39:56.670888UTC;
+  exit134 is not a pass. This stop is fully attributed and distinct from pass8.
+  Diagnostic90 cases88PASS/2FAIL; intermediate100 cases99PASS/1 directional
+  setup FAIL; final100PASS. Two lint stops fixed an unused import and explicit
+  optional types, without ignores or relaxed gates. Initial runner expectation
+  exceeded intentional1MiB evidence cap; auxiliary control corrected, no runner
+  source change. Python after_cancel geometry cleanup introduced54 fit errors;
+  independent log review rejected provisional exit0. Tcl-only timer cancellation
+  preserves bindings until normal destruction; strict final270 rerun PASS with
+  zero callback errors, Traceback or bgerror. Original/provisional scripts,
+  logs, receipts and checkpoint history retained.
+- Final local gate: all9 phase exits0. Lint/types/security/shell, fake preview,
+  negative safety, Go1.26.8 version/uncached race/vet, Windows AMD64 test
+  cross-build,350000 fuzz executions and canonical separate private72DPI
+  Orca/main sessions. Main6989PASS/14 expected skips527.49s; Orca1PASS59.445s.
+  Combined6990 unique PASS,0 failure/error/xfail/duplicate IDs; all207 new and
+  580 retained regressions PASS. Unchanged sound timing case PASS. Exact14 skip
+  IDs/reasons match pass13:2 generated live-config and12 manufacturing-ISO
+  checks; these are not image/native acceptance. No auxiliary runtime campaign
+  overlapped full pytest. No applicable local check remains pending.
+- Final aggregate runtime SHA256:
+  `ebe614cd285be76d948e81c7f8a04be48240ba4a95a4baab9e3ba9e040197dbb`.
+  Complete source patch SHA256:
+  `f0aed7147f124a6b9195393de80d20aa170fbeb77b2ce97a3d83d2f3c7104cb0`.
+- Artifacts:90 final-source report cases across3 methods/3 languages/5 count
+  variants/2 log sizes PASS;70 bundle files/manifests authenticated, five actual
+  owner/share/result/HTML bundles inspected. Preview185540 bytes retained/hashed.
+  Windows PE32+AMD64 test binary8974848 bytes,
+  SHA256 `6f58501de27f93649fe59e6ff2a84b4a089639a9b9ecb12fa2951ec8297f5089`;
+  cross-compilation only, native acceptance false, binary outside git.
+  All final owned campaigns exited normally.
+- Durable evidence: `docs/evidence/bug-audit-20261016-pass14/README.md`.
+  Retention PASS:747 frozen inputs,18 exact untracked modules,210 exact original
+  artifacts,211 retained hashes including the initial verification receipt,
+  matching source/fixture patches, empty index and clean diff whitespace.
+  Exact originals compressed; native PNG/JSON/XML/Python bytes preserved.
+  Readable transcript copies normalize trailing whitespace only.
+- Remaining acceptance criteria/blockers: pass8 SIGTERM06:29UTC/exit143 sender
+  and cause, plus pass9 failed timing attribution, remain unavailable. Later
+  passing tests do not explain either. Exact next action: obtain platform
+  execution/signal audit and an attributable failed timing trace, then revalidate
+  acceptance before commit/push. Separate qualification record owns ISO/QEMU/
+  native Windows/physical/firmware/reconnect NOT RUN / BLOCKED for a future
+  public candidate; current AGENTS reserves hosted gates for that candidate.
+- State: LOCAL UNCOMMITTED; index empty. No staging/push/PR/merge/release,
+  hosted CI, native engine/inventory/device/USB, power/firmware, guest/loop/
+  passthrough, credential access or external messaging. Shared guide absent;
+  recorded owner continuation applies. Current task/AGENTS govern; notes
+  grant no additional authority.
+
+## BW-BUG-AUDIT-20261016-PASS13 — BLOCKED (three new bugs fixed; local gates pass; historical acceptance evidence pending)
+
+- Date/author:2026-10-16/Codex. Request:another comprehensive audit.
+- Repo/worktree/branch:BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`;
+  `fix/safety-audit-20261015`; HEAD`35107a8d1a701093eac876a58ab4efd50e291673`.
+- Result:three new proved defects fixed locally in discover.py and
+  ui/tk_wizard.py; two new modules165regressions. Preserve16prior fixes,
+  13prior modules415cases, two prior fixture updates and all earlier evidence.
+  All742starting inputs matched; final744inputs frozen and verified.
+- Fixes:EFI/UEFI name tokens prevent ordinary Benefits/Definitions from
+  manufacturing OS-removal guidance; nativeTk input claimed once after actual
+  rootMap then existing renderer restores intendedscreen focus; generalbody
+  prose wheel routed only to currentcanvas, preserving nested/native/custom
+  scrollers/footer/picker/focus/consent. Boot eligibility/exclusion, hardware
+  identity/token/owner/countdown, method/argv, enginepin/claims/publication
+  unchanged. Discovery edit requires future `safety:` commit after acceptance.
+- Proof:before-edit classification16trace8wrong/8controls; nativeUI9cases
+  4intendedFAIL/5controls. Primary privately restored all58exact starting
+  source/static files, hashverified, final165cases60intendedFAIL/105controls,
+  0errors/skips15.252s (classifier32/72,UI28/33). Shared source never reverted.
+  Independent exact-hash source/test reviews approve final classifier/Tkdelta.
+- Completed focused checks:primary733PASS/0skips; classifier104PASS plus
+  adjacency644PASS/0skips and156freshfake namespace/mount/RO/duplicate/identity
+  casesPASS/zero nativeacquisition. Runner686PASS/0skips across58modules;
+  216freshlarge-logcases/648terminalpolls full/projection outcomes/checksagree,
+  exactbytes unchanged. UI61PASS17.195s plus630adjacentPASS120.512s/0skips.
+  Two unedited72DPI actual800/1600fullroot captures independently viewed and
+  bytes/dimensions/geometry/focus/nativehit/yview/consent/teardown verified.
+  Counts overlap fullgate. No speculative nestedtopology/Unicode/recoveryfix.
+- Failed/setup history retained:originalnativecanvas gutter assumptionwrong
+  (label coverspoint), correctedhit-tested proof passes intendedcontrols.
+  FirstfixedUI53=42PASS/11FAIL:9focus failures exposed idle-before-map repair;
+  exactorderingtrace proved rootMaplater; correctedMap→idle→claim→renderer.
+  Two newfooterfixtures correctedparentonly, assertions unchanged;53then61PASS.
+  Auxiliary XMLreview optionaltype/message assumptions and bundleSUMMARYfilename
+  assumption corrected against actual traceback/schema; rawXML/source/artifacts
+  unchanged, explanations/versions retained. Tk filehash label clarified against
+  aggregate runtimehash; original note retained. No test/gate weakened.
+- Final localgate:all9phase exits0, lint/types/security/shell, fakepreview,
+  negative safety, Go1.26.8 version/uncached race/vet, WindowsAMD64 test
+  crossbuild,350000countedfuzz and fullpytest canonical separateOrca/main72DPI
+  sessions. Main6782PASS/14unchangedexpected image-onlyskips551.25s;
+  Orca1PASS60.06s. Combined6783uniquePASS,0fail/error/xfail/duplicateIDs;
+  new165+retained415allPASS; unchangedsoundtimingcasePASS. ExactskipIDs/reasons
+  matchpass12. No auxiliary runtimecampaign overlapped fullpytest.
+- Runtime source SHA256:
+  `e7efbba20755ff7496533504259adb4ef63eb8fafc43b52fa6fabe148cf1297d`.
+  Complete sourcepatch SHA256:
+  `efd6dcdc0280453fda89748a64575c6c354bfd92f895dfa0040df52352eace0a`.
+  Final-source90case reportmatrix3methods/3languages/5countvariants/2sizesPASS;
+  70generatedfiles/manifests authenticated, fiveactualJSON/result/HTML/share
+  bundles inspected. Fakepreview185540bytes hashed/retained. Windows actual
+  PE32+AMD64 testbinary8974848bytes, hash6f58501de27f93649fe59e6ff2a84b4a089639a9b9ecb12fa2951ec8297f5089;
+  crosscompileonly/nativefalse, binaryoutsidegit. Allownedjobs retired.
+- Durable evidence:`docs/evidence/bug-audit-20261016-pass13/README.md`.
+  RetentionPASS:744frozeninputs,15exact uncommittedtestmodules,137exactoriginal
+  artifacts,141retainedartifacthashes including initialverificationreceipt;
+  source/fixturepatchesmatch, emptyindex/diffcheck. No required applicablelocal
+  check remains pending; historicalacceptance staysblocked.
+- Remaining acceptance/blockers:originalpass8 SIGTERM sender/cause at06:29UTC
+  andpass9 failedtimingattribution remain unavailable; laterpasses cannot
+  establish either. Exactnextaction:obtain platform execution/signal audit and
+  attributable failedtimingtrace, then revalidate acceptance beforecommit/push.
+  Shared `/root/dev/AGENTS.md` absent; recordedownercontinuation applies.
+- State:LOCAL UNCOMMITTED; no staging/push/PR/merge/release/hostedCI oractual
+  engine/nativeinventory/device/USB/power/firmware/guest operation. Separate
+  BW-BUG-AUDIT-20261015-QUALIFICATION remainsNOTRUN forfuturepubliccandidate:
+  ISO/QEMU/nativeWindows/physical/firmware/reconnect acceptance. Source/evidence
+  notes grant no authority; current task/projectguide govern.
+
+## BW-BUG-AUDIT-20261016-PASS12 — BLOCKED (six new bugs fixed; local gates pass; historical acceptance evidence pending)
+
+- Date/author: 2026-10-16 / Codex. Request: another comprehensive audit.
+- Repo/worktree/branch: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`;
+  `fix/safety-audit-20261015`; HEAD `35107a8d1a701093eac876a58ab4efd50e291673`.
+- Result: six new proved bugs fixed locally in five application modules;
+  four new modules contain200 regression cases. Ten existing pass8/pass10/
+  pass11 fixes, nine prior modules/215cases and earlier evidence preserved.
+  Starting738 inputs matched; final742 inputs frozen and verified.
+- Proven fixes: prefixed Error Summary negative rows/delimiters cannot be
+  ignored in favor of success; refused remembered sound output uses actual
+  default and allows same-output retry; scrolled sound content keeps Stop/Close
+  visible; native Tk startup focus accepts Escape; configured startup geometry
+  centers windowed mode and keeps fullscreen origin0,0; graphical stall notices
+  persist until stage/terminal transition with one-shot console/serial behavior.
+  No discovery/selection/method/argv/authorization/claims/pin/publication change.
+- Original proof before edits: runner101cases67FAIL/34controls; native fake
+  output/input/rectangle and exact post-render fake-clock traces prove all5UI
+  defects. Root independently restored exact58starting source/static files
+  in a private import root and ran final200 cases:135intendedFAIL/65controls,
+  0errors/skips,24.66s (runner67/34,sound52/26,stall8/3,Tk8/2). Shared source
+  never reverted. Independent source/test reviews approve exact final hashes.
+- Focused completed checks: discovery461PASS/0skips plus1455freshfakecases;
+  runner372PASS/0skips; primary report/export/power/audio328PASS/0skips;
+  all99newUIcasesPASS, actual800 selection88PASS; exact final-source90case
+  report/bundle matrixPASS across3methods/3languages/5countvariants/2sizes,
+  with70representative generated files authenticated. Six unedited72DPI
+  800/1600 native captures independently viewed and checked for bytes,
+  dimensions, focus, origin and owned teardown. Counts overlap final gate.
+- Failed/setup history retained separately: first UI adjacency348PASS/2FAIL
+  because two Tk cleanup mocks returned MagicMock screen dimensions; only
+  1600/1000 integer inputs added, original injected exceptions/destroy assertions
+  unchanged; affected module5PASS. First fullgate main6611PASS/6FAIL/14skips
+  (592.36s), Orca1PASS (68.21s), all200newPASS and742hashesmatch. All6failures
+  were headless FakeGtk display/monitor/scroller APIs missing before intended
+  operations. Only fake APIs updated; independent review confirms all18 test/
+  helper ASTs identical, timing/thread/cancel assertions intact. Full affected
+  module19PASS/0skips. Exact firstgate logs/XML/freeze retained as initial-gate-*.
+  Auxiliary matrix expectation/count assumptions and superseded imprecise
+  capture labels remain retained; no assertions/thresholds/gates weakened.
+- Final local gate: all9phase exits0: lint/types/security/shell, preview,
+  negative safety, pinnedGo1.26.8 version/uncached race/vet, WindowsAMD64 test
+  crossbuild,350000 countedfuzz and fulltests. Main6617PASS/14unchangedexpected
+  image-only skips (512.33s); separateOrca1PASS (61.02s). Combined6618uniquePASS,
+  0failures/errors/xfails/duplicateIDs; new200+retained215cases allPASS; unchanged
+  sound timing casePASS. Exact skipIDs/reasons matchpass11. All742frozenhashes
+  match; source/fixture patches and13uncommitted test modules authenticated.
+- Runtime source SHA256:
+  `2033156897c47190995f47499a87c761e4d9c7bc7a1124d0bafd91722ab3ec31`.
+  Source patch SHA256:
+  `9eda22fbc8d0a297160a7086d5d59e2e85042988429daa83063573ca8f37c4a7`.
+  Generated fakepreview and report bundles retained/hashed. Windows test binary
+  is PE32+AMD64,8,974,848bytes, hash6f58501de27f93649fe59e6ff2a84b4a089639a9b9ecb12fa2951ec8297f5089;
+  crosscompile only, binary outsidegit. All owned jobs retired; index empty.
+- Durable evidence and retention verification:
+  `docs/evidence/bug-audit-20261016-pass12/README.md`.
+  Final retentionPASS:742frozeninputs,13testmodules,194exactoriginalartifacts,
+  198retainedartifacthashes, exactsource/fixturepatches, emptyindex/diffcheck.
+  No required local check remains pending; historical acceptance staysblocked.
+- Remaining acceptance/blockers: original pass8 SIGTERM sender/cause at06:29UTC
+  and pass9 failed timing attribution remain unavailable. Passing later checks
+  cannot establish those causes. Exact next action: obtain platform execution/
+  signal audit and attributable failed timing trace, then revalidate acceptance
+  before commit/push. Shared `/root/dev/AGENTS.md` remains absent; prior recorded
+  owner continuation applies to local work under current project AGENTS.md.
+- State: LOCAL UNCOMMITTED; no staging/push/PR/merge/release/hostedCI, actual
+  engine/native inventory/device/USB/power/firmware/guest operation. Separate
+  BW-BUG-AUDIT-20261015-QUALIFICATION remains NOT RUN for a future public
+  candidate: ISO/QEMU/nativeWindows/physical/firmware/reconnect acceptance.
+
+## BW-BUG-AUDIT-20261016-PASS11 — BLOCKED (four new bugs fixed; local gates pass; prior attribution pending)
+
+- Date/author: 2026-10-16 / Codex. Request: another comprehensive bug audit.
+- Repo/worktree/branch: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`;
+  `fix/safety-audit-20261015`; HEAD `35107a8d1a701093eac876a58ab4efd50e291673`.
+- Result: four new proved defects fixed in nwipe_runner.py and
+  ui/accessible_wizard.py; three new modules contain103 regression cases.
+  Existing six pass8/pass10 fixes and six regression modules preserved byte-
+  exactly except the two runtime files' approved additions. All735 starting
+  inputs matched pass10; final738 inputs frozen and verified.
+- Scope: three bounded discovery/safety, runner/recovery and UI/boot/build
+  reviewers; primary report/export/privacy/diagnostic/integration review.
+  Substantial test/GUI/CPU campaigns ran sequentially, with no auxiliary jobs
+  alongside the final canonical separate Orca/main sessions.
+- Proven fixes: modal key release now reaches existing held/repeat ledger;
+  native startup focus makes Escape work with pointer outside; explicit monitor
+  size/origin makes both GTK surfaces fullscreen on bare X11; normalized large-
+  log relevance keeps prefixed summary rows/delimiters without changing raw
+  records, terminal provenance, methods, argv, caps or progress order.
+- Original evidence: input14 cases6FAIL/8controls; geometry8 at1600x1000:
+  4FAIL/4controls, at800x600:3FAIL/5controls; runner81:25FAIL/56controls.
+  Primary independently restored only two modules in a private import root,
+  checked58 source/static hashes, and reproduced final103 cases35intendedFAIL/
+  68controls,0errors/skips in14.15s. Shared source never reverted. Earlier95-
+  case proof and exact checkpoint history retained separately.
+- Completed focused checks: primary173PASS; discovery461PASS/0skip plus588 fake
+  ownership/schema/boot/alias/duplicate cases; runner268PASS/0skip; final UI122
+  PASS/0skip plus geometry8PASS at800. Four unedited72DPI full-root screenshots
+  independently inspected; native dimensions/focus/hash/teardown verified.
+  Report/evidence72-case matrix passes across3methods/3languages/four summary
+  variants/both sizes, preserving full advisory payloads, outcome/verification,
+  exact tail hashes and unchanged log bytes. Counts overlap final gate.
+- Retained setup history: discovery initially lacked DISPLAY (458PASS/1setupFAIL/
+  2skips); identical selection corrected461PASS under private72DPI Xvfb/D-Bus.
+  UI fixture/import variants are retained and hash-disambiguated; no assertions,
+  thresholds or gates weakened. Source reviews approve exact final hashes.
+- Final local gate: main6417PASS/14expected image-only skips in530.31s;
+  privateOrca1PASS in60.086s. Combined6418uniquePASS,0failures/errors/xfails/
+  duplicate IDs; new103+retained112 cases allPASS; unchanged sound timing case
+  PASS. All8phase exits0: lint/types/security/shell/developer-format, preview,
+  negative safety, pinnedGo1.26.8 uncached race/vet/350000fuzz and full tests.
+  All738 frozen hashes match; direct XML counts/source-patch hash agree.
+- Runtime source SHA256:
+  `70382edd3f47fba150187014901200bb35c1f76f46a74b4fc35f4fd327a8fb01`.
+  Source patch and all9 uncommitted test-module archive contents match current
+  bytes. Index empty; all owned jobs retired. Durable retention verification
+  PASS:158 exact original artifacts,151 retained artifacts hashed; frozen files,
+  archive contents and diff whitespace match. Evidence:
+  `docs/evidence/bug-audit-20261016-pass11/README.md`.
+- Remaining acceptance/blockers: original pass8 SIGTERM sender/cause and pass9
+  timing attribution remain unavailable despite new passing checks. Exact next
+  action: obtain platform execution/signal audit for original06:29UTC termination
+  and an attributable failed timing trace before acceptance/commit/push. Passing
+  reruns do not establish those causes. Shared `/root/dev/AGENTS.md` remains
+  absent; recorded prior owner continue resolution applies to this local audit.
+- State: LOCAL UNCOMMITTED; no staging/push/PR/merge/release/hosted CI or actual
+  engine/native inventory/device/USB/power/firmware/guest operation. Separate
+  BW-BUG-AUDIT-20261015-QUALIFICATION remains NOT RUN for future public candidate.
+  Native Windows/ISO/QEMU/firmware/physical reconnect acceptance unperformed.
+
+## BW-BUG-AUDIT-20261016-PASS10 — BLOCKED (four additional bugs fixed; local gates pass; prior attribution pending)
+
+- Date/author:2026-10-16/Codex. Request:another comprehensive audit.
+- Repo/worktree/branch:BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`;
+  `fix/safety-audit-20261015`; HEAD`35107a8d1a701093eac876a58ab4efd50e291673`.
+- Starts with pass8 source/test changes and pass8/pass9 evidence uncommitted;
+  preserve all. Acceptance:prove bugs before minimal fixes/regressions,
+  independent review, isolated applicable local gates, exact artifact review.
+- Scope:fresh bounded source reviews across discovery/authorization,runner/
+  recovery and UI/boot/build;primary report/evidence integration and measured
+  GTK timing investigation. Run expensive suites sequentially to avoid
+  repeating prior uncontrolled performance-test contention.
+- Checkpoint:profile5PASS;actualGTK dialogconstructor4–6ms,worker submit<0.5ms
+  measured wall/threadCPU/switchcounts. Earlier timing causes remain unattributed.
+  Fresh discovery425PASS/0skip; known systemPython setupfailure retained.
+- Proven/fixed locally:console inventory overlay hides diagnostic navigation,
+  original22cases10FAIL/12controls,fixed107adjacentPASS; one visibility-state
+  reset only. Runner fullscan CRstripping upgrades malformed completion banner
+  tosuccess above1MiB,primary actualpoll small/large proof2falsepositives;
+  original45cases13FAIL/32controls,fixed412adjacentPASS. Scanner now removes
+  only terminalLF,preserving recordcontents and existing pass8 changes.
+- Third finding fixed:accepted-radio reference and toggle guard restore visible
+  choice on refused/exception/timeout/cancelled output changes,before reenabling
+  volume/mute; no extra audio request; accepted success updates together,close
+  clearsradio/ticket. ActualGTK original10cases8FAIL/2controls;fixed86adjacent
+  PASS/final11PASS includingduplicate labels. Primary+independentreview approve.
+- Combined exact-starting-source proof:52application module hashes matchpass9
+  startingdirtysource;final78regressions32intendedFAIL/46controls,0errors/skips.
+  Sharedsource never reverted. Primary initial fixedconsole trace had wrong
+  case-sensitive footerliteral; retained and corrected to actualcanonicalcopy.
+- Primary integration:98new+old uncommittedregressions PASS(6.24s);54actualfake
+  process→runner→evidence→presentation cases PASS across3methods/3languages,
+  LF/CRLF/doubleCR andbelow/above1MiB; exacttailhash+unchangedlogbytes checked.
+  Final soundprofile5PASS. Initialthree-fix734inputfreeze retained separately.
+- Initialthree-fix phases:lint/types/security/shell/format,preview,negative safety,
+  pinnedGo1.26.8 uncachedrace/vet/350000fuzz allPASS sequentially. Fullmain
+ 6300PASS/14expectedimage skips(556.35s),privateOrca1PASS(71.908s),allphaseexit0.
+  No auxiliary GUI/pytest/CPU campaigns ranalongside. JUnit6301uniquePASS,
+  noerrors/failures/duplicateIDs,all78newcasesPASS;all734frozeninputs match.
+  UnchangedGTKsoundtimingcasePASS. Runtimecode digest:
+  `2f285ec1640cd4f9912d28d4c355264be072776b9faa854a3123bfa579a27d81`.
+- Initialvisualcheckpoint:full-root72DPI fakeGTK capture showedonly
+  parentwizard,despite mappedSoundDialog/state assertions. Visualacceptance FAILED;
+  thisledtofourthprovenfixbelow. Genericbutton calls action thenrender,
+  which explicitly presents/focusesparent; livekiosk startsappwithoutWM.
+  Originalblacknative-window capture and correctedrootcapture retained under
+  `/tmp/pass10-ui/`. Fourthbug nowproved:11nativeX11cases9intendedFAIL/2controls
+  (parentcoversmodalandtakesfocus,closefocusroot,staleepochmodaluntiltick).
+  Accessible-only helpers routefocus tovalidmodal,closeobsoletebefore render,
+  restoreparentafterdestroy andguardappclose. Initial14+adjacent13=27PASS;
+  Additionaldraftclosechildfocus2FAIL/1control proved;restoringcurrentarrival
+  fixesit. Final87adjacentPASS including14newcases;independentsourcereview
+  approved. Primary14finalcases on58hash-verifiedinitialthree-fixinputs:
+  10intendedFAIL/4controls,0errors/skips. Actualroot72DPI repairedscreenshot
+  nowvisiblyshowsrestoredSpeakers,failuretext,retry+closecontrols;X11proves
+  modalabove+focused andchildstatusfocus. Ownedwindow/workerretired.
+  One newcapturehelper usedGdkMonitor synthetic96DPI; retainedfailedassertion,
+  correctedtoXserverphysicalscreenquery,72DPI verified;nosourceissue/retryblind.
+- Finalfour-fix735inputs frozen;runtimeSHA
+  `c0196a53381b5d3235b5f7cdd764d47b5ee074c2f684d18a26bb7c8183e8efcd`.
+  Fullfinalmain6314PASS/14expectedimage-onlyskips(518.00s),privateOrca1PASS
+  (66.067s),8localphaseexits0. JUnit6315uniquePASS/noerrors/failures/duplicates;
+  all92pass10+20pass8casesPASS;unchangedsoundtimingcasePASS. All735hashesmatch.
+  DirectindependentXMLcount/sourcepatchhash/indexchecksagree; exactsourcepatch
+  and6testmodulesarchivecomparedbyte-for-byte. Initialthree-fixreceipts
+  preservedwithinitial-threefix-prefix. NoauxiliaryGUI/testjobsalongside;
+  allownedjobsretired. Durableevidenceverified:149exactoriginalartifacts,
+  152retainedartifactshashed,735sourcehashes+6testmodulebytesmatch;
+  gitindexempty/diffcheckPASS. READMEcontainsresult,proofs,limitsandnextaction.
+- Blockers:historical pass8 SIGTERM attribution unavailable;pass9 timing
+  variability remains an observation requiring attribution despite measured normal
+  profile. Fourfixes local;finalintegrationgates PASS. Exactnextaction:obtain
+  platformexecutionaudit/signalprovenance for original06:29UTC SIGTERM and
+  attributable failedtimingtrace beforeacceptance/commit/push; no newpassing
+  runprovestheircauses. Separate BW-BUG-AUDIT-20261015-QUALIFICATION remains
+  NOTRUN;nohosted/ISO/native/physicalqualificationperformedorauthorizedhere.
+- State:local only;no commit/push/PR/merge/release. Evidence destination:
+  `docs/evidence/bug-audit-20261016-pass10/README.md`.
+
+## BW-BUG-AUDIT-20261016-PASS9 — BLOCKED (final local gates pass; unexplained execution results)
+
+- Date/author:2026-10-16/Codex. Request:another comprehensive bug audit.
+- Repo/worktree/branch:BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`;
+  `fix/safety-audit-20261015`; HEAD`35107a8d1a701093eac876a58ab4efd50e291673`.
+- Result:no new proven defect or source/test edits. Existing pass8 fixes/tests
+  preserved local uncommitted. Bounded discovery/safety, runner/recovery and
+  UI/boot/build reviewers plus primary export/privacy/diagnostic/receipt review.
+- Final gate:main6222PASS/14expected image-only skips(713.76s),privateOrca1PASS
+  (118.16s),6223uniquePASS/no failures/errors/duplicate IDs; mandatoryGTK guard
+  PASS. Lint/types/security/shell/format,preview,negative safety,Go1.26.8 race/
+  vet/350000fuzz PASS. Source/test558frozen hashes match; all4pass8 hashes match.
+  Runtime digest`be7d8d674e102743e61984ca60ba63c912c4b514d52dd755f243049f88562d5c`.
+- Fresh evidence(overlapping):discovery589uniquePASS+195fake mutation/token
+  cases;runner384PASS/41370exact projection comparisons;primary334PASS plus
+  expanded export1102PASS/12image skips;202752report API calls/no exceptions.
+  Independent original-source runner5FAIL/5controls;diagnostic3FAIL/7controls,
+  fixed diagnostic104PASS. UI/boot215PASS;nine actual fake72DPI Tk screenshots.
+- Failed auxiliary runs retained:shared AT-SPI missing-socket failure resolved
+  by private runtime; sound-dialog click<60ms assertion misses76.45ms(original)
+  and137.61ms(private623PASS/1FAIL/7isolated-X11 skips). Concurrent suites/Go
+  compilation observed, but CPU causality not established. Exact timing case
+  PASS in final full gate; after all jobs retired,private72DPI sound adjacency
+  5PASS/0skips in0.70s. No thresholds/assertions/source changed. These passes do
+  not explain earlier timings; no new product bug proved. Seven auxiliary
+  X11 skips execute in main gate. Initial missing DISPLAY failures retained;
+  corrected13operation-identity cases PASS. All failed/unrun evidence separated.
+- Remaining acceptance/blockers:explain original pass8 SIGTERM using platform
+  execution audit evidence(unavailable here),and auxiliary timing variation.
+  Exact next action for timing:measured GTK constructor/show_all/submit wall and
+  thread-CPU traces under controlled fake-only execution; no blind gate retry
+  or speculative code fix. Acceptance/commit/push remain pending until resolved.
+- Durable evidence:`docs/evidence/bug-audit-20261016-pass9/README.md`,raw archive,
+  JUnit-derived final-summary.json,source-freeze.json,reviewer reports/scripts/
+  transcripts/screenshots. Final diff/artifact review completed; no running jobs.
+- State:LOCAL UNCOMMITTED,index empty;no push/PR/merge/deployment/release.
+  No actual nwipe/native inventory/device/USB/host/guest action or hosted CI.
+  Two lb-config and12manufacturing skips remain unrun; separate ISO/QEMU/native
+  Windows/physical qualification item still applies. Shared guide absent; prior
+  owner continue instruction remains applicable. This audit is no bug-free proof.
+
+## BW-BUG-AUDIT-20261016-PASS8 — BLOCKED (local fixes verified; termination attribution pending)
+
+- Date/author: 2026-10-16 / Codex. Request: another fresh comprehensive pass.
+- Repo/worktree/branch: BeamoTech/beamo-wipe; `/root/dev/Beamo Wipe`;
+  `fix/safety-audit-20261015`; clean baseline
+  `35107a8d1a701093eac876a58ab4efd50e291673`.
+- Scope: three bounded discovery/safety, engine/evidence, UI/boot/build reviews;
+  primary independently audits persistence/privacy/report export/diagnostics/
+  receipt boundaries, reviews every finding and final integration.
+- Acceptance/next action: investigate and prove bugs before minimal edits and
+  regression tests; exercise fake-only normal/malformed/permission/duplicate/
+  concurrent/cancellation/retry/recovery paths; final applicable local gates,
+  complete diff/artifact review; commit/push only after applicable gates pass.
+- Proven primary finding: bounded diagnostic elapsed integer overflow and
+  injected JSON decoder nesting exhaustion escape documented SafetyError.
+  New10cases original3FAIL/7controls; fixed93adjacent PASS;476leaf mutations
+  (7valid/469safe refusals) no unhandled exception. Narrow diagnostic_report.py
+  catch normalizes OverflowError/RecursionError, without schema/outcome change.
+- Runner finding fixed locally: bounded projection appended earlier progress
+  after terminal Error Summary, changing explicit I/O advisory to unavailable.
+  Original10cases5FAIL/5controls, fixed10PASS. Independent259adjacent/600order/
+  6cap/4malformed cases PASS. Author650adjacent/45000completion+5000advisory
+  comparisons PASS. Both fixes independently approved, no further finding.
+- Parent exact-baseline proof20cases8FAIL/12controls, zero setup errors; fixed20
+  PASS. All4frozen hashes match. Diagnostic independent140+109adjacent tests,
+  entrypoint/boundary matrices PASS. Preference96regular-file observations PASS.
+- Completed gates: lint/types/security/shell/preview/negative and pinnedGo1.26.8
+  uncached race/vet/350000fuzz PASS. Replacement frozen-source main gate6222PASS/
+  14expected image-only skips in495.62s; separateOrca1PASS64.20s. JUnit confirms
+  6223unique passes/no failures/errors/duplicate IDs. Evidence directory:
+  docs/evidence/bug-audit-20261016-pass8/. No hosted/platform qualification.
+- Fresh checks so far: primary431baseline PASS; discovery542focused PASS plus
+  756mutation/retry/concurrency cases, token/argv and900auth matrix PASS; UI654
+  PASS and boot316PASS/2expected generated-config skips. Counts overlap.
+- Harness history: one initial diagnostic object fixture exceeded16KiB; corrected
+  before final original proof (not a product bug). Actual raw deepJSON refusals
+  pass on this Python; recursion fault reproduction explicitly injected. Initial
+  reviewer DISPLAY/strict fake-read harness issues retained and corrected.
+- Full-gate interruption: first final main pytest stopped after5567 printed
+  outcomes at06:29:29UTC with wrapper exit143, no main JUnit; privateOrcaPASS.
+  Exact owned pytest357214/privateDbus357189 gone. Last-active candidate is
+  test_tk_runtime::test_rebuilt_last_chance_rejects_old_erase_callback; code
+  uses mocked begin_erase, no termination call. Own-service journal has no
+  related lifecycle entries; cause/sender not established. This is NOT a pass.
+  Preserve /tmp/beamo-pass8-interrupted-tests.txt and interrupted-orca.xml.
+- Focused termination investigation:16neighbor cases,40actual repetitions and
+  all311Tk runtime cases PASS under strace, all own pytest processes retired;
+  no signal-send syscalls or delivered SIGTERM. Exact-source hashes unchanged.
+  These results do not establish the original sender/cause. Owner answered on
+  2026-10-16: "No, not knowingly" to stopping/canceling around06:29UTC. This
+  does not identify the sender. Source fixes stay local until the unexplained
+  result is resolved.
+- Final replacement gate exited0; wrapper signal trace records normal exit.
+  All four source/test hashes still match the frozen tested bytes. Final local
+  diff/artifact review performed; regression source and safe boundaries preserved.
+  Replacement success does not identify the first execution's SIGTERM sender.
+- Blocker/remaining acceptance: attribute original06:29:29UTC exit143 using
+  owner/platform cancellation or execution audit evidence; the user requires
+  unexplained results resolved before completion. Owner did not knowingly
+  cancel. No callable platform execution-audit tool is exposed; local kernel/
+  audit-log/cgroup memory-event files are absent. Attribution requires platform
+  execution audit evidence unavailable here. No further blind retry is needed.
+- Exact next action: obtain cancellation/termination attribution; then reconcile
+  evidence and recheck source hashes/current checkout. If no source/config change
+  and all acceptance criteria satisfied, commit the four explicit implementation/
+  test paths with safety: prefix; record actual SHA, commit evidence separately,
+  and push only after checking automatic triggers. Do not release.
+- State: both fixes/tests/evidence remain LOCAL UNCOMMITTED; index empty;
+  HEAD35107a8d1a701093eac876a58ab4efd50e291673. No PASS8 push/merge/release.
+  Durable evidence docs/evidence/bug-audit-20261016-pass8/README.md and
+  final-summary.json; exact raw transcripts archived with checksums there.
+  Separate ISO/native/physical candidate qualification remains NOT RUN.
+- Limits: no actual nwipe/native inventory/disk/USB/guest/host action, ISO/QEMU,
+  hosted CI/PR/publication. Separate candidate qualification remains unrun.
+
 ## BW-BUG-AUDIT-20261016-PASS7 — DONE (local acceptance and source push)
 
 - Date/author: 2026-10-16 / Codex. Request: another fresh comprehensive pass.

@@ -91,6 +91,14 @@ NWIPE_LOG_PREFIX_RE = re.compile(
     r"(?:(?:debug|info|notice|warning|error|fatal|sanity):\s*)?",
     re.I,
 )
+# Real v0.42 records include a timestamp and severity. A device model can
+# contain an LF plus a bare skip/open/geometry sentence, but not that sentence
+# and this full prefix inside its 40-byte field.
+NWIPE_RECORD_PREFIX_RE = re.compile(
+    r"^\s*\[\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\]\s+"
+    r"(?:debug|info|notice|warning|error|fatal|sanity):\s*",
+    re.I,
+)
 NWIPE_DIRECT_FAILURE_RE = re.compile(
     r"^(/dev/[A-Za-z0-9._+-]+):\s*>>> FAILURE! <<<"
 )
@@ -134,6 +142,9 @@ NWIPE_VERSION_TIMEOUT_S = 5
 # Drive Status is written before create_system_multi_disc_pdf()/smartctl.
 # 64KiB from EOF can be only that tail, hiding | Erased |.
 NWIPE_COMPLETION_LOG_BYTES = 1024 * 1024
+# Each raw byte can become at most one three-byte UTF-8 replacement character.
+# Evidence records the normalized snapshot length, not the raw capture length.
+NWIPE_LOG_SNAPSHOT_UTF8_BYTES = 3 * NWIPE_COMPLETION_LOG_BYTES
 NWIPE_PROGRESS_LOG_BYTES = 8000
 # Completion can be larger than the displayed/exported tail. Stream it and
 # retain only parser-relevant lines; an oversized individual line or too much
@@ -536,9 +547,20 @@ def _engine_log_body(line: str) -> str:
     return NWIPE_LOG_PREFIX_RE.sub("", line, count=1)
 
 
-def _target_has_record(log_text: str, device: str, pattern: re.Pattern[str]) -> bool:
+def _target_has_record(
+    log_text: str, device: str, pattern: re.Pattern[str], *, enforce_origin: bool = True
+) -> bool:
     target = os.path.realpath(device)
-    for line in (log_text or "").split("\n"):
+    lines = (log_text or "").split("\n")
+    timestamped = enforce_origin and any(
+        NWIPE_RECORD_PREFIX_RE.match(line) for line in lines
+    )
+    for line in lines:
+        # Preserve entirely bare legacy parser inputs. In an actual engine
+        # log, only another timestamped record can establish no erasure; an
+        # unprefixed continuation may still belong to device-controlled data.
+        if timestamped and not NWIPE_RECORD_PREFIX_RE.match(line):
+            continue
         match = pattern.match(_engine_log_body(line))
         if match is not None and any(
             part is not None and os.path.realpath(part) == target
@@ -677,15 +699,18 @@ def _target_error_summary_conflict(log_text: str, device: str) -> str:
     shared = _status_column_is_shared(log_text, device)
     in_table = False
     for line in (log_text or "").split("\n"):
+        # Negative error evidence uses the same record body as its header.
+        # Keep raw records untouched for exact positive Drive Status proof.
+        body = _engine_log_body(line)
         if _is_error_summary_header(line):
             in_table = True
             continue
-        if in_table and line.lstrip().startswith("***"):
+        if in_table and body.lstrip().startswith("***"):
             in_table = False
             continue
-        if not any(_status_column_has_name(line, n) for n in names):
+        if not any(_status_column_has_name(body, n) for n in names):
             continue
-        row = NWIPE_ERROR_ROW_RE.match(line)
+        row = NWIPE_ERROR_ROW_RE.match(body)
         if not in_table:
             # The bounded completion tail can start inside Error Summary and
             # lose its header. A target row with nonzero counts still
@@ -967,9 +992,15 @@ def evaluate_nwipe_outcome(
     busy = target_skipped_busy(log_text, device)
     open_failed = _target_open_failed(log_text, device)
     geometry_failed = _target_geometry_failed(log_text, device)
-    if (busy or open_failed or geometry_failed) and _target_has_erase_activity(
-        log_text, device
-    ):
+    # An unattributed skip sentence cannot prove nothing was erased, but it
+    # remains negative context when actual activity contradicts that sentence.
+    skip_reported = busy or open_failed or geometry_failed or any(
+        _target_has_record(log_text, device, pattern, enforce_origin=False)
+        for pattern in (
+            NWIPE_BUSY_TARGET_RE, NWIPE_OPEN_TARGET_RE, NWIPE_GEOMETRY_TARGET_RE
+        )
+    )
+    if skip_reported and _target_has_erase_activity(log_text, device):
         return (
             False,
             "nwipe's erase activity contradicted its skip report",
@@ -1502,9 +1533,12 @@ class NwipeRunner:
                 retained: list[str] = []
                 retained_bytes = 0
                 last_progress = ""
+                last_progress_position = 0
+                last_progress_retained = False
                 progress_totals: set[tuple[int, int]] = set()
                 shared_path = ""
                 in_error_summary = False
+                native_record_seen = False
                 remaining = st.st_size
                 while remaining:
                     raw = fh.readline(
@@ -1517,7 +1551,19 @@ class NwipeRunner:
                         return None
                     if not raw.endswith(b"\n"):
                         return None
-                    line = raw.decode("utf-8", errors="replace").rstrip("\r\n")
+                    # Remove the record delimiter only. Normalizing CR would
+                    # turn a malformed status banner into exact engine proof
+                    # that the regular, unprojected log parser rejects.
+                    line = raw[:-1].decode("utf-8", errors="replace")
+                    # Summary parsers recognize prefixed rows and separators.
+                    # Classify that same body, but retain the original record.
+                    body = _engine_log_body(line)
+                    native_context = (
+                        not native_record_seen
+                        and NWIPE_RECORD_PREFIX_RE.match(line) is not None
+                    )
+                    if native_context:
+                        native_record_seen = True
                     for match in _LOG_DEVICE_RE.finditer(line):
                         other = os.path.basename(os.path.realpath(match.group(0)))
                         if (other != target_name
@@ -1528,6 +1574,7 @@ class NwipeRunner:
                     new_totals = False
                     if progress is not None:
                         last_progress = line
+                        last_progress_position = len(retained)
                         match = progress[0]
                         if _progress_has_method_counters(match):
                             totals = (int(match.group(4)), int(match.group(6)))
@@ -1536,10 +1583,14 @@ class NwipeRunner:
                                 new_totals = True
                     if _is_error_summary_header(line):
                         in_error_summary = True
-                    elif in_error_summary and line.lstrip().startswith("***"):
+                    elif in_error_summary and body.lstrip().startswith("***"):
                         in_error_summary = False
                     relevant = (
-                        new_totals
+                        # Keep the first real record in its original position
+                        # and byte budget. Otherwise projection could promote
+                        # a model continuation to a trusted bare legacy log.
+                        native_context
+                        or new_totals
                         or in_error_summary
                         or _is_error_summary_header(line)
                         or "Erasure Summary" in line
@@ -1548,24 +1599,29 @@ class NwipeRunner:
                         or "hpa_dco" in line
                         or "hdparm" in line
                         or "SG_IO bad/missing sense data" in line
-                        or line.lstrip().startswith("***")
+                        or body.lstrip().startswith("***")
                         or "Verification mismatch on" in line
                         or any(regex.search(line) for regex in (
                             NWIPE_BUSY_RE, NWIPE_ABORT_RE, NWIPE_OPEN_FAIL_RE,
                             NWIPE_FAILURE_RE, NWIPE_POSSIBLE_ERASURE_STATUS_RE,
                             NWIPE_GEOMETRY_RE,
                         ))
-                        or any(_status_column_has_name(line, name) for name in names)
+                        or any(_status_column_has_name(body, name) for name in names)
                     )
                     if relevant:
                         retained_bytes += len(raw)
                         if retained_bytes > NWIPE_COMPLETION_EVIDENCE_BYTES:
                             return None
                         retained.append(line)
+                    if progress is not None:
+                        last_progress_retained = relevant
                 if _log_signature(os.fstat(fh.fileno())) != expected_identity:
                     return None
-                if last_progress:
-                    retained.append(last_progress)
+                if last_progress and not last_progress_retained:
+                    # Keep the sample in its original table context. Appending
+                    # earlier progress after an incomplete Error Summary turns
+                    # an explicit error row into a malformed/unavailable check.
+                    retained.insert(last_progress_position, last_progress)
                 if shared_path:
                     retained.append(f"observed {shared_path}")
                 return "\n".join(retained) + "\n"

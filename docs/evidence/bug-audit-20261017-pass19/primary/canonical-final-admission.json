@@ -1,0 +1,142 @@
+{
+  "started_utc": "2026-10-17T16:41:19.013212+00:00",
+  "frozen_inputs": 771,
+  "source_freeze_sha256": "3ed58390c17884a357e12d00e63c358b504e7733fb0caf9f552983abf63a8b3a",
+  "reused_phases": [
+    {
+      "phase": "lint",
+      "command": [
+        "./scripts/ci-hosted.sh",
+        "lint"
+      ],
+      "exit_code": 0,
+      "crossbuild_env": {},
+      "pytest_plugins": null,
+      "observer_sha256": null,
+      "started_utc": "2026-10-17T16:27:58.936913+00:00",
+      "ended_utc": "2026-10-17T16:28:04.018211+00:00"
+    },
+    {
+      "phase": "preview",
+      "command": [
+        "./scripts/ci-hosted.sh",
+        "preview"
+      ],
+      "exit_code": 0,
+      "crossbuild_env": {},
+      "pytest_plugins": null,
+      "observer_sha256": null,
+      "started_utc": "2026-10-17T16:28:04.018472+00:00",
+      "ended_utc": "2026-10-17T16:28:05.456915+00:00"
+    },
+    {
+      "phase": "negative",
+      "command": [
+        "./scripts/ci-hosted.sh",
+        "negative"
+      ],
+      "exit_code": 0,
+      "crossbuild_env": {},
+      "pytest_plugins": null,
+      "observer_sha256": null,
+      "started_utc": "2026-10-17T16:28:05.457296+00:00",
+      "ended_utc": "2026-10-17T16:28:06.589469+00:00"
+    },
+    {
+      "phase": "go-version",
+      "command": [
+        "go",
+        "version"
+      ],
+      "exit_code": 0,
+      "crossbuild_env": {},
+      "pytest_plugins": null,
+      "observer_sha256": null,
+      "started_utc": "2026-10-17T16:28:06.589925+00:00",
+      "ended_utc": "2026-10-17T16:28:06.647023+00:00"
+    },
+    {
+      "phase": "go-race",
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "-race",
+        "./..."
+      ],
+      "exit_code": 0,
+      "crossbuild_env": {},
+      "pytest_plugins": null,
+      "observer_sha256": null,
+      "started_utc": "2026-10-17T16:28:06.647346+00:00",
+      "ended_utc": "2026-10-17T16:28:10.046915+00:00"
+    },
+    {
+      "phase": "go-vet",
+      "command": [
+        "go",
+        "vet",
+        "./..."
+      ],
+      "exit_code": 0,
+      "crossbuild_env": {},
+      "pytest_plugins": null,
+      "observer_sha256": null,
+      "started_utc": "2026-10-17T16:28:10.047299+00:00",
+      "ended_utc": "2026-10-17T16:28:10.395475+00:00"
+    },
+    {
+      "phase": "go-windows-crossbuild",
+      "command": [
+        "go",
+        "test",
+        "-c",
+        "-o",
+        "/tmp/pass19-primary/desktop-windows.test.exe"
+      ],
+      "exit_code": 0,
+      "crossbuild_env": {
+        "GOOS": "windows",
+        "GOARCH": "amd64"
+      },
+      "pytest_plugins": null,
+      "observer_sha256": null,
+      "started_utc": "2026-10-17T16:28:10.395865+00:00",
+      "ended_utc": "2026-10-17T16:28:11.436476+00:00"
+    },
+    {
+      "phase": "go-fuzz",
+      "command": [
+        "go",
+        "test",
+        "-run=^$",
+        "-fuzz=FuzzBootOption",
+        "-fuzztime=350000x",
+        "-parallel=2"
+      ],
+      "exit_code": 0,
+      "crossbuild_env": {},
+      "pytest_plugins": null,
+      "observer_sha256": null,
+      "started_utc": "2026-10-17T16:28:11.436816+00:00",
+      "ended_utc": "2026-10-17T16:28:24.089442+00:00"
+    }
+  ],
+  "preserved_failure": "failed-gate-1",
+  "corrected_harness": "No PYTEST_PLUGINS or PYTEST_ADDOPTS; canonical command unchanged",
+  "plugin_inheritance_proof": [
+    {
+      "plugin_in_environment": true,
+      "exit_code": 1,
+      "child_report": false,
+      "import_error": true
+    },
+    {
+      "plugin_in_environment": false,
+      "exit_code": 0,
+      "child_report": true,
+      "import_error": false
+    }
+  ],
+  "abort_cause": "UNEXPLAINED; not attributed to the proved child-import failure"
+}

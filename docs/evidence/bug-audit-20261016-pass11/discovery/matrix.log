@@ -1,0 +1,7 @@
+{
+  "cases": 588,
+  "targets_present": 67,
+  "safe_refusals": 521,
+  "native_attempts": [],
+  "cases_sha256": "8fe2338e160d27c50cae25ada3f4e4ba49f51e0d0a42e5373c5366cc54e24933"
+}

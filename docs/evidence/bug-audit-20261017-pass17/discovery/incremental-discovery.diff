@@ -1,0 +1,94 @@
+--- pass17-start/src/beamo_wipe/discover.py
++++ proposed/src/beamo_wipe/discover.py
+@@ -23,7 +23,7 @@
+     DiskKind,
+     DiscoveryResult,
+ )
+-from beamo_wipe.safety import protected_hardware_aliases
++from beamo_wipe.safety import canonical_wwn, meaningful_serial, protected_hardware_aliases
+ 
+ IDENTITY_UNAVAILABLE = "Device identity unavailable"
+ IDENTITY_UNCONFIRMED = "identity could not be confirmed"
+@@ -952,13 +952,49 @@
+         return ""
+ 
+ 
++def _hardware_identity_key(value: str, field: str) -> str:
++    return canonical_wwn(value) if field == "wwn" else meaningful_serial(value).casefold()
++
++
++def _node_hardware_identity(node: Dict[str, Any], field: str) -> str:
++    reported = _hardware_identity(node.get(field), field)
++    if _hardware_identity_key(reported, field):
++        return reported
++    inherited = _first_descendant_field(node, field)
++    if _hardware_identity_key(inherited, field):
++        return inherited
++    # Preserve raw placeholder observations when no meaningful ID is available.
++    return reported or inherited
++
++
+ def _first_descendant_field(node: Dict[str, Any], key: str) -> str:
++    if key in {"serial", "wwn"}:
++        first_raw = ""
++        first_meaningful = ""
++        comparison = ""
++
++        def visit(parent: Dict[str, Any]) -> None:
++            nonlocal first_raw, first_meaningful, comparison
++            for child in parent.get("children") or []:
++                if not isinstance(child, dict):
++                    continue
++                got = _hardware_identity(child.get(key), key)
++                if got and not first_raw:
++                    first_raw = got
++                identity = _hardware_identity_key(got, key)
++                if identity:
++                    if comparison and identity != comparison:
++                        raise ValueError(f"lsblk descendant {key} identity conflicts")
++                    if not first_meaningful:
++                        first_meaningful, comparison = got, identity
++                visit(child)
++
++        visit(node)
++        return first_meaningful or first_raw
+     for child in node.get("children") or []:
+         if not isinstance(child, dict):
+             continue
+-        if key in {"serial", "wwn"}:
+-            got = _hardware_identity(child.get(key), key)
+-        elif key == "vendor":
++        if key == "vendor":
+             got = _bounded_identity_metadata(child.get(key), key)
+         else:
+             got = _clean(child.get(key))
+@@ -1296,8 +1332,7 @@
+         path=path,
+         name=name,
+         model=raw_model or label or UNKNOWN_MODEL,
+-        serial=_hardware_identity(node.get("serial"), "serial")
+-        or _first_descendant_field(node, "serial"),
++        serial=_node_hardware_identity(node, "serial"),
+         size_bytes=_as_int(node.get("size")),
+         size_gb_label=size_gb_label(_as_int(node.get("size"))),
+         kind=classify_kind(name, node.get("tran"), node.get("rota")),
+@@ -1307,8 +1342,7 @@
+         # lsblk RO missing (older fakes) means writable: exclude only an
+         # explicit read-only flag, never on unknown.
+         read_only=_as_bool(node.get("ro")) is True,
+-        wwn=_hardware_identity(node.get("wwn"), "wwn")
+-        or _first_descendant_field(node, "wwn"),
++        wwn=_node_hardware_identity(node, "wwn"),
+         vendor=_bounded_identity_metadata(node.get("vendor"), "vendor")
+         or _first_descendant_field(node, "vendor"),
+         mountpoints=mountpoints,
+@@ -1328,8 +1362,7 @@
+     """Retain safety facts without depending on display or layout metadata."""
+     def hardware(field: str) -> Tuple[str, bool]:
+         try:
+-            return (_hardware_identity(node.get(field), field)
+-                    or _first_descendant_field(node, field)), False
++            return _node_hardware_identity(node, field), False
+         except ValueError:
+             # This projection never supplies target identity. Keep a valid
+             # other ID without repairing the unusable field; duplicate rows

@@ -1,0 +1,22 @@
+{
+  "suites": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "372",
+      "time": "11.582",
+      "timestamp": "2026-10-16T20:11:23.988454+00:00",
+      "hostname": "srv1606478"
+    }
+  ],
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "tests": 372,
+  "sha256": {
+    "src/beamo_wipe/nwipe_runner.py": "7672c9c0646aa9679b87d9b729c3f9228f0cf1b7f9bb4b1c162a7e37e16dbf9b",
+    "tests/test_runner_prefixed_error_context_pass12.py": "a115e79460175e0697c3f95ea1713aa4f64bdd5ae090b8f4126671a2ef1f7d9e"
+  }
+}

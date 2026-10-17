@@ -1,0 +1,7 @@
+constructor mapped 0 focus None last . primary .!frame3.!frame.!_button
+firstidle mapped 0 focus None last . primary .!frame3.!frame.!_button
+nestedidle mapped 0 focus None last . primary .!frame3.!frame.!_button
+map-root mapped 1 focus None last . primary .!frame3.!frame.!_button
+claim-before mapped 1 focus None last . primary .!frame3.!frame.!_button
+claim-after mapped 1 focus . last . primary .!frame3.!frame2.!_button
+120ms mapped 1 focus .!frame3.!frame2.!_button last .!frame3.!frame2.!_button primary .!frame3.!frame2.!_button

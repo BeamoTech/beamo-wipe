@@ -1,0 +1,57 @@
+{
+  "screenshots": [
+    {
+      "image": "tk-body-native-800x600.png",
+      "sha256": "135b0fe40a835fc72b8ce7e156e16fac3fc9d7fce0963131c17800f289bd2ba6",
+      "full_root": [
+        800,
+        600
+      ],
+      "window_rect": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "primary_independently_viewed": true,
+      "native_hit_target": {
+        "widget": ".!frame3.!frame3.!canvas.!frame.!frame.!label",
+        "text": "Is this your computer?",
+        "point": [
+          26,
+          101
+        ]
+      },
+      "focus": ".!frame3.!frame3.!canvas.!frame.!frame.!frame.!frame.!_box4",
+      "visual_review": "Unedited whole X11 root; scrolled prose visible, preview banner and footer controls visible; Choose a disk stays disabled. 1600 display has an800x600 centered window, not a1600px window. Scrolled title aboveviewport is expected.",
+      "owned_teardown": true
+    },
+    {
+      "image": "tk-body-native-1600x1000.png",
+      "sha256": "503b94cf3a2ee398b8c4aee772b1bf5e781c6882a500c939c15861aa8cb78dc4",
+      "full_root": [
+        1600,
+        1000
+      ],
+      "window_rect": [
+        400,
+        200,
+        800,
+        600
+      ],
+      "primary_independently_viewed": true,
+      "native_hit_target": {
+        "widget": ".!frame3.!frame3.!canvas.!frame.!frame.!label",
+        "text": "Is this your computer?",
+        "point": [
+          426,
+          301
+        ]
+      },
+      "focus": ".!frame3.!frame3.!canvas.!frame.!frame.!frame.!frame.!_box4",
+      "visual_review": "Unedited whole X11 root; scrolled prose visible, preview banner and footer controls visible; Choose a disk stays disabled. 1600 display has an800x600 centered window, not a1600px window. Scrolled title aboveviewport is expected.",
+      "owned_teardown": true
+    }
+  ],
+  "source_sha256": "9d098c65fd501cceabbfa7277037bc3c4225b685e33d3a8b12eed19e3bc05910"
+}

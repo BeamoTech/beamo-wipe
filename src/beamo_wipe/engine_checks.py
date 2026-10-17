@@ -41,7 +41,7 @@ _HIDDEN_DETECTED = re.compile(
 _HIDDEN_INDETERMINATE = re.compile(
     r"HIDDEN SECTORS INDETERMINATE!\s+on\s+(/dev/[A-Za-z0-9._+-]+)"
 )
-_HIDDEN_NONE = re.compile(r"No hidden sectors on\s+(/dev/[A-Za-z0-9._+-]+)")
+_HIDDEN_NONE = re.compile(r"No hidden sectors on[ \t]+(/dev/[A-Za-z0-9._+-]+)[ \t]*\Z")
 _HPA_LINE_UNKNOWN = re.compile(
     r"\[UNKNOWN\] We can't find the HPA line, has hdparm ouput unknown/changed\?\s+"
     r"(/dev/[A-Za-z0-9._+-]+)"

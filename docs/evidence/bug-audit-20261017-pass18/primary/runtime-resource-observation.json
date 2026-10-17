@@ -1,0 +1,11 @@
+{
+  "utc": "2026-10-17T06:54:41.303933+00:00",
+  "cpu_count": 2,
+  "load_average": [
+    4.0634765625,
+    4.1982421875,
+    2.52294921875
+  ],
+  "cpu.stat": "usage_usec 6744896417\nuser_usec 5208172378\nsystem_usec 1536724039\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0\n",
+  "cpu.pressure": "some avg10=16.87 avg60=53.83 avg300=54.59 total=1196029143\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n"
+}

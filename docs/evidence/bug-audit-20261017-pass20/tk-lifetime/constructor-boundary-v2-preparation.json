@@ -1,0 +1,18 @@
+{
+  "status": "PREPARED / NOT RUN by author; AST parse only",
+  "v1": "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v1-frozen.py",
+  "v1_sha256": "0b2e1175c9cacc4bc6fbd6a34b63399c1edf2261e5a5b142b3529a967a949b4c",
+  "v2": "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v2.py",
+  "v2_sha256": "f37d25cc7cdab71c61ed9bc603109f975d301520ce35954b4c99fa7bcc2506f7",
+  "cases": 13,
+  "new_cases": [
+    "tk-init-before (no-native original-exception control)",
+    "font-after-init",
+    "variable-after-init",
+    "local-variable-after-init",
+    "image-after-init"
+  ],
+  "new_contract": "Retain original actual initialization exception and its wrappers; product-owned fields detached; later worker exception release must not run original native destructors there; creator-thread sweep settles native wrappers. No-native before-init case must preserve original exception without Recursive Tk.__getattr__.",
+  "provenance": "Same mandatory BEAMO_TK_PROBE_SOURCE + BEAMO_TK_PROBE_SHA256 authentication in both parent and child.",
+  "native_fault_exception": "ValueError subclass avoids documented RuntimeError/TclError logo fallback so the owned-constructor failure propagates unchanged."
+}

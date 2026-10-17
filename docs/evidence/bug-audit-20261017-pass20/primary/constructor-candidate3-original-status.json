@@ -1,0 +1,23 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass20-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "-o",
+    "pythonpath=/tmp/pass20-primary/private-graph/src",
+    "/tmp/pass20-primary/constructor-boundary-candidate1.py",
+    "--junitxml=/tmp/pass20-primary/constructor-candidate3-original.xml"
+  ],
+  "exit_code": 1,
+  "started_utc": "2026-10-17T18:34:01.575008+00:00",
+  "ended_utc": "2026-10-17T18:34:04.744787+00:00"
+}

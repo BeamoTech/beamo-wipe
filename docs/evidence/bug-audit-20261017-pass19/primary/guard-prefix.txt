@@ -1,0 +1,48 @@
+dbus-daemon[141379]: [session uid=0 pid=141379] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=141393 comm="/tmp/beamo-pass19-python/bin/python3 -m pytest -q" label="unconfined")
+dbus-daemon[141379]: [session uid=0 pid=141379] Successfully activated service 'org.a11y.Bus'
+....................................dbus-daemon[141402]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=141393 comm="/tmp/beamo-pass19-python/bin/python3 -m pytest -q" label="unconfined")
+dbus-daemon[141402]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+.................................... [ 18%]
+........................F
+=================================== FAILURES ===================================
+___________ test_isolated_x11_physical_space_release_after_report[0] ___________
+
+ui = <function ui.<locals>.build at 0x78f4f85d3c40>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-47/test_isolated_x11_physical_spa0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x78f4e885bf80>
+run = 0
+
+    @pytest.mark.parametrize("run", range(5))
+    def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypatch, run):
+        """Use server-delivered release after Save destroys the initiating control."""
+        import ctypes
+        import ctypes.util
+        import os
+        import sys
+    
+        if sys.platform != "linux" or os.environ.get("BEAMO_ISOLATED_X11_TEST") != "1":
+            pytest.skip("physical key injection requires an isolated test X server")
+>       x11 = ctypes.CDLL(ctypes.util.find_library("X11"))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_tk_runtime.py:960: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.12/ctypes/util.py:343: in find_library
+    return _findSoname_ldconfig(name) or \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/ctypes/util.py:303: in _findSoname_ldconfig
+    with subprocess.Popen(['/sbin/ldconfig', '-p'],
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_args = (['/sbin/ldconfig', '-p'],)
+_kwargs = {'env': {'LANG': 'C', 'LC_ALL': 'C'}, 'stderr': -3, 'stdin': -3, 'stdout': -1}
+
+    def forbidden(*_args, **_kwargs):
+>       raise AssertionError("Native application effect reached fixture probe")
+E       AssertionError: Native application effect reached fixture probe
+
+/tmp/pass19-primary/fixture_release_probe.py:17: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_tk_runtime.py::test_isolated_x11_physical_space_release_after_report[0]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!

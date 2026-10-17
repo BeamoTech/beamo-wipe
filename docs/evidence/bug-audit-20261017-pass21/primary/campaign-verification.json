@@ -1,0 +1,31 @@
+{
+  "source_freeze_sha256": "c4ecdfc8e8c814bd3d033bd478472cbd498a766c76e077006ba2bfb093093dac",
+  "gate_verification_sha256": "bf9656064ab751237a0099ae9cb47c97c0a489747ce2993969d18262ef8d2b99",
+  "peer_review_sha256": "394b309f0bdbf701e7db1bd5b15a31ec8ff69c3fdd5f0efeb72c8d751ac214cd",
+  "campaign_status_sha256": "4eec4a85d59353ee090b42762193f1cde636bc1dbf6dce8456eb95a8555df989",
+  "completed_utc": "2026-10-17T21:26:49.702974+00:00",
+  "serial_phases": 4,
+  "exact_peer_files": 13,
+  "frozen_inputs": 788,
+  "runner_short": 153,
+  "runner_actual_large": 153,
+  "runner_fixture_files_hashed": 621,
+  "authenticated_evidence_sidecar_pairs": 90,
+  "runner_cancellation_cases": 144,
+  "retained_cancellation_files": 288,
+  "geometry_cases": 270,
+  "critical_tk_fully_visible": 27,
+  "captures_for_primary_view": [
+    "fixed-geometry-gtk-en-large-LAST_CHANCE.png",
+    "fixed-geometry-gtk-en-extra-OWNER.png",
+    "fixed-geometry-tk-en-standard-OWNER.png",
+    "fixed-geometry-tk-en-large-CONFIRM.png",
+    "fixed-geometry-tk-en-extra-KEYBOARD.png"
+  ],
+  "report_cases": 90,
+  "retained_report_files": 70,
+  "retained_bundles": 5,
+  "native_effects": 0,
+  "callback_errors": 0,
+  "archive_readback": true
+}

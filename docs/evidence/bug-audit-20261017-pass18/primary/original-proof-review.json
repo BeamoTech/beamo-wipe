@@ -1,0 +1,18 @@
+{
+  "cases": 280,
+  "failures": 105,
+  "passes": 175,
+  "errors": 0,
+  "skips": 0,
+  "modules": {
+    "tests.test_pathless_physical_bridge_pass18": {
+      "fail": 96,
+      "pass": 112
+    },
+    "tests.test_curses_rendered_erase_gate_pass18": {
+      "fail": 9,
+      "pass": 63
+    }
+  },
+  "source_unchanged": 762
+}

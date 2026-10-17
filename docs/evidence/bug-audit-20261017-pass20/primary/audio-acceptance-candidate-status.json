@@ -1,0 +1,21 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass20-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_acceptance_boundary_candidate.py",
+    "--junitxml=/tmp/pass20-primary/audio-acceptance-candidate.xml"
+  ],
+  "exit_code": 1,
+  "started_utc": "2026-10-17T18:20:54.784202+00:00",
+  "ended_utc": "2026-10-17T18:20:55.308840+00:00"
+}

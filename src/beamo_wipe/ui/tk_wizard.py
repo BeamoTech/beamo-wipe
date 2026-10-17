@@ -12,6 +12,7 @@ keep the live USB self-contained and readable without network dependencies.
 from __future__ import annotations
 
 import math
+import gc
 import re
 import sys
 import threading
@@ -713,6 +714,13 @@ class _Button(tk.Canvas):
         self.bind("<FocusOut>", self._focus_out)
         self._draw()
 
+    def destroy(self) -> None:
+        try:
+            super().destroy()
+        finally:
+            self._enabled = False
+            self._command = lambda: None
+
     def _state_colors(self) -> tuple:
         bg, fg, hover, press, outline, _ring = self._VARIANTS[self._variant]
         if not self._enabled:
@@ -955,6 +963,7 @@ class _CheckRow(tk.Frame):
         font: tkfont.Font,
         wraplength: int = 0,
     ) -> None:
+        self._native_owner = threading.current_thread()
         bg = parent.cget("bg")
         super().__init__(
             parent,
@@ -983,7 +992,8 @@ class _CheckRow(tk.Frame):
         self.bind("<Configure>", self._flow_label, add="+")
         self._sync()
         self._paint()
-        variable.trace_add("write", self._on_variable)
+        self._variable_trace: Optional[str] = _new_owned_trace(self, "_variable_trace", variable, self._on_variable)
+        self.bind("<Destroy>", self._retire_variable_trace, add="+")
         self.bind("<Enter>", self._enter)
         self.bind("<Leave>", self._leave)
         self.bind("<ButtonPress-1>", self._press)
@@ -1010,6 +1020,36 @@ class _CheckRow(tk.Frame):
     def _on_variable(self, *_args) -> None:
         self._sync()
         self._paint()
+
+    def _retire_native_refs(self) -> None:
+        owner = getattr(self, "_native_owner", threading.current_thread())
+        variable = getattr(self, "_variable", None)
+        font = getattr(self, "_font", None)
+        _pin_retired_assets((variable, font), owner)
+        _pin_retired_interpreter(self, owner)
+        token = getattr(self, "_variable_trace", None)
+        self._variable_trace = None
+        try:
+            if token is not None and variable is not None:
+                variable.trace_remove("write", token)
+        except tk.TclError:
+            pass
+        finally:
+            self._command = lambda: None
+            for name in ("_variable", "_font", "_label", "_icon"):
+                setattr(self, name, None)
+
+    def _retire_variable_trace(self, event) -> None:
+        if event.widget is self:
+            self._retire_native_refs()
+
+    def destroy(self) -> None:
+        try:
+            super().destroy()
+        finally:
+            # Also covers constructor failures before the Destroy binding.
+            self._retire_native_refs()
+            _drain_retired_native()
 
     def _row_bg(self) -> str:
         if self._pressed:
@@ -1090,153 +1130,322 @@ class _CheckRow(tk.Frame):
         self._icon = icon
 
 
+# Retained frames and peer observers can outlive a closed window. Keep their
+# native resources until the creating thread can release the final reference.
+_TK_ROOT_CLASS = tk.Tk
+_TK_ASSET_CLASSES = (tkfont.Font, tk.Variable, tk.Image)
+_RETIRED_INTERPRETERS: dict[int, tuple[threading.Thread, object]] = {}
+_RETIRED_NATIVE_ASSETS: dict[int, tuple[threading.Thread, object]] = {}
+
+
+
+def _new_owned_trace(owner, field: str, variable, callback) -> str:
+    if not isinstance(variable, _TK_ASSET_CLASSES[1]):
+        return variable.trace_add("write", callback)
+    # trace_add can register its Tcl command before an interruption prevents
+    # its return. Adopt our exact command before that boundary; peer commands
+    # registered during the call keep their independent ownership.
+    missing = object()
+    previous = vars(variable).get("_register", missing)
+    original_register = getattr(variable, "_register")
+    adopted = False
+
+    def register(func):
+        nonlocal adopted
+        token = original_register(func)
+        if func is callback and not adopted:
+            setattr(owner, field, token)
+            adopted = True
+        return token
+
+    setattr(variable, "_register", register)
+    try:
+        return variable.trace_add("write", callback)
+    finally:
+        if vars(variable).get("_register") is register:
+            if previous is missing:
+                delattr(variable, "_register")
+            else:
+                setattr(variable, "_register", previous)
+
+
+def _pin_retired_interpreter(root: tk.Misc, owner: threading.Thread | None = None) -> None:
+    if not isinstance(root, tk.Misc):
+        return  # Callable lightweight roots do not own a native Tk interpreter.
+    # Tk.__getattr__ delegates through self.tk, which does not exist yet when
+    # the real initializer fails before its first statement.
+    interpreter = root.__dict__.get("tk")
+    if interpreter is not None:
+        _RETIRED_INTERPRETERS.setdefault(id(interpreter), (owner or threading.current_thread(), interpreter))
+
+
+def _pin_retired_assets(assets, owner: threading.Thread) -> None:
+    for asset in assets:
+        if isinstance(asset, _TK_ASSET_CLASSES):
+            _RETIRED_NATIVE_ASSETS.setdefault(id(asset), (owner, asset))
+
+
+def _drain_retired_assets() -> None:
+    owner = threading.current_thread()
+    for identity, record in list(_RETIRED_NATIVE_ASSETS.items()):
+        # Dict/snapshot/loop references own the same record tuple. The tuple
+        # owns one asset reference; getrefcount adds only its argument.
+        if record[0] is owner and sys.getrefcount(record[1]) == 2:
+            if _RETIRED_NATIVE_ASSETS.get(identity) is record:
+                del _RETIRED_NATIVE_ASSETS[identity]
+
+
+def _drain_retired_interpreters() -> None:
+    owner = threading.current_thread()
+    for identity, record in list(_RETIRED_INTERPRETERS.items()):
+        if record[0] is owner and sys.getrefcount(record[1]) == 2:
+            if _RETIRED_INTERPRETERS.get(identity) is record:
+                del _RETIRED_INTERPRETERS[identity]
+
+
+def _drain_retired_native() -> None:
+    # The asset helper must return first: its loop/snapshot tuple references
+    # can otherwise keep the last asset's raw interpreter alive for this pass.
+    _drain_retired_assets()
+    _drain_retired_interpreters()
+
+
+def _drain_retired_native_after_gc(phase: str, _info: dict) -> None:
+    if phase == "stop" and (_RETIRED_NATIVE_ASSETS or _RETIRED_INTERPRETERS):
+        # Collection can run on any thread. Each drain releases only this
+        # thread's sole-owned records; it never starts another collection.
+        _drain_retired_native()
+
+
+gc.callbacks.append(_drain_retired_native_after_gc)
+
+
+def _collect_retired_interpreters() -> None:
+    gc.collect()
+    _drain_retired_native()
+
+
+def _note_tk_cleanup_failure(original: BaseException, cleanup: BaseException) -> None:
+    # Keep the original failure/traceback; report the distinct cleanup failure.
+    add_note = getattr(original, "add_note", None)
+    if callable(add_note):
+        add_note(f"Tk cleanup also failed: {type(cleanup).__name__}")
+    try:
+        from beamo_wipe.diagnostics import log_diag
+        log_diag("ui", "tk_cleanup_failed", type(cleanup).__name__)
+    except Exception:
+        pass
+
+
+def _retire_tk_owner(owner, original: BaseException | None = None) -> None:
+    try:
+        owner._teardown()
+    except BaseException as cleanup:
+        if original is None:
+            raise
+        _note_tk_cleanup_failure(original, cleanup)
+
+
+def _new_owned_root(owner: threading.Thread):
+    factory = tk.Tk
+    if not isinstance(factory, type) or not issubclass(factory, _TK_ROOT_CLASS):
+        return factory()  # Callable lightweight test factories retain their contract.
+    root = factory.__new__(factory)
+    if not isinstance(root, factory):
+        return root
+    try:
+        factory.__init__(root)
+    except BaseException as original:
+        _pin_retired_interpreter(root, owner)
+        if root.__dict__.get("tk") is not None:
+            try:
+                root.destroy()
+            except tk.TclError:
+                pass
+            except BaseException as cleanup:
+                _note_tk_cleanup_failure(original, cleanup)
+        raise
+    return root
+
+
+def _new_owned_native(native_root, factory, *args, **kwargs):
+    if not isinstance(factory, type) or not issubclass(factory, _TK_ASSET_CLASSES):
+        return factory(*args, **kwargs)
+    resource = factory.__new__(factory)
+    if not isinstance(resource, factory):
+        return resource
+    owner = threading.current_thread()
+    # Own successful local resources too: a later widget initializer can fail
+    # before the caller adopts them into its teardown graph.
+    _pin_retired_assets((resource,), owner)
+    _pin_retired_interpreter(native_root, owner)
+    if isinstance(resource, _TK_ASSET_CLASSES[2]) and "name" not in resource.__dict__:
+        # Image.__init__ normally establishes this before allocating a handle.
+        # Preserve the original destructor when initialization fails earlier.
+        resource.name = None
+    factory.__init__(resource, *args, **kwargs)
+    return resource
+
+
 class TkWizard:
+    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_bar', '_match_label', '_match_icon', '_match_pill', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
+    _NATIVE_ASSETS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_confirm_var', '_typing_var', '_owner_var')
     def __init__(self, wizard: Wizard, fullscreen: bool = False) -> None:
-        self.w = wizard
-        self.root = tk.Tk()
-        self.root._tk_wizard = self  # type: ignore[attr-defined]
-        # Set the geometry scale; fonts below use explicit pixel sizes. The layout geometry below is fixed pixels (content
-        # column, minimum window, countdown ring), so point-sized fonts must
-        # not float with the X server's reported DPI — on a 100+ DPI panel
-        # every screen would render ~1.4x larger than designed and clip.
-        # The kiosk window owns the whole display; deterministic type beats
-        # DPI fidelity. (macOS Tk already renders at scaling 1.0.)
-        self.root.tk.call("tk", "scaling", 1.0)
-        title = C.APP_NAME
-        if wizard.preview:
-            title = f"{C.APP_NAME} — PREVIEW (nothing is erased)"
-        self.root.title(title)
-        # Familiar arrow over ordinary content. The bare startx kiosk has
-        # no window manager or cursor theme, so an unset root inherits the
-        # X-server X cursor. Children inherit this; explicit hand2/xterm
-        # cursors on actions and text are unaffected.
-        self.root.configure(bg=BG, cursor="arrow")
-        self.root.minsize(*MIN_SIZE)
-        if fullscreen:
-            # The live startx kiosk has no window manager to honor the EWMH
-            # fullscreen hint. Pin geometry too, or content-driven sizing
-            # can feed back into responsive redraws and starve key releases.
-            self.root.geometry(
-                f"{self.root.winfo_screenwidth()}x{self.root.winfo_screenheight()}+0+0"
-            )
-            self.root.attributes("-fullscreen", True)
-        else:
-            width, height = opening_size(
-                self.root.winfo_screenwidth(), self.root.winfo_screenheight()
-            )
-            self.root.geometry(f"{width}x{height}")
-        family = _family(self.root)
-        mono = _mono_family(self.root)
-        # Negative Tk font sizes are pixels. Tk 9 on macOS can adjust its
-        # point scale after mapping a window; pixel sizes keep text and our
-        # geometry in agreement. Type scale follows window size (compact on
-        # 800x600, slightly larger on 1600x1000+), never the X server DPI.
-        self.lay = layout_for(*DEFAULT_SIZE, getattr(wizard, "text_size", "standard"))
-        self.font_hero = tkfont.Font(root=self.root, family=family, size=-52, weight="bold")
-        self.font_h = tkfont.Font(root=self.root, family=family, size=-30, weight="bold")
-        self.font_lead = tkfont.Font(root=self.root, family=family, size=-18)
-        self.font_b = tkfont.Font(root=self.root, family=family, size=-16)
-        self.font_bold = tkfont.Font(root=self.root, family=family, size=-16, weight="bold")
-        self.font_size_big = tkfont.Font(root=self.root, family=family, size=-20, weight="bold")
-        self.font_s = tkfont.Font(root=self.root, family=family, size=-14)
-        self.font_s_bold = tkfont.Font(root=self.root, family=family, size=-14, weight="bold")
-        self.font_tiny = tkfont.Font(root=self.root, family=family, size=-12, weight="bold")
-        self.font_meta = tkfont.Font(root=self.root, family=family, size=-12)
-        self.font_btn = tkfont.Font(root=self.root, family=family, size=-16, weight="bold")
-        self.font_mono = tkfont.Font(root=self.root, family=mono, size=-14)
-        self.font_mono_bold = tkfont.Font(root=self.root, family=mono, size=-14, weight="bold")
-        self.font_mono_sm = tkfont.Font(root=self.root, family=mono, size=-13)
-        self.font_entry = tkfont.Font(root=self.root, family=mono, size=-26, weight="bold")
-        self.font_stat = tkfont.Font(root=self.root, family=family, size=-56, weight="bold")
-        self.font_brand = tkfont.Font(root=self.root, family=family, size=-16, weight="bold")
-        self._apply_fonts()
-        # The brand mark ships as PNGs (Tk cannot draw the SVG source).
-        # Bound to this app's root explicitly: tests run several roots per
-        # process, and an unbound PhotoImage dies with the first root.
-        self._logo_header = self._load_image("logo-header.png")
-        self._logo_splash = self._load_image("logo-splash.png")
-        self._support_qr: Optional[tk.PhotoImage] = None
-        self._support_lead: Optional[tk.Label] = None
-        self._support_copy_bound = False
-        self._confirm_var = tk.StringVar()
-        self._typing_var = tk.StringVar()
-        self._owner_var = tk.IntVar(value=0)
-        self._body: Optional[tk.Frame] = None
-        self._footer: Optional[tk.Frame] = None
-        self._header: Optional[tk.Canvas] = None
-        self._strip: Optional[tk.Canvas] = None
-        self._hint: Optional[tk.Widget] = None
-        self._primary: Optional[_Button] = None
-        # The splash hides the header/strip so the white field runs clean;
-        # every other screen shows them. Tracked so re-packing stays ordered.
-        self._chrome_shown = True
-        self._countdown_ring: Optional[tk.Canvas] = None
-        self._countdown_num: Optional[tk.Label] = None
-        self._countdown_label: Optional[tk.Label] = None
-        self._progress_label: Optional[tk.Label] = None
-        self._progress_pct: Optional[tk.Label] = None
-        self._progress_bar: Optional[tk.Canvas] = None
-        self._indet = 0.0
-        self._match_label: Optional[tk.Label] = None
-        self._match_icon: Optional[tk.Canvas] = None
-        self._match_pill: Optional[_Box] = None
-        self._shown: Optional[Screen] = None
-        self._shown_report_revision = -1
-        self._shown_sound_revision = -1
-        self._after_id: Optional[str] = None
-        # Pick-list scroll state: the list is rebuilt on every redraw, so the
-        # scroll offset is saved before teardown and restored (or the selected
-        # card scrolled into view after keyboard navigation) after rebuild.
-        self._pick_canvas: Optional[tk.Canvas] = None
-        self._pick_cards: dict = {}
-        self._pick_scroll = 0.0  # pixel offset into the list, not a fraction
-        self._pick_ensure_visible = False
-        self._pick_restore_pending = False
-        self._pick_applied: Optional[float] = None
-        self._pick_applied_geometry: Optional[tuple[float, float]] = None
-        self._pick_after_ids: list[str] = []
-        self._pick_gen = 0
-        self._refresh_lock = threading.Lock()
-        self._refresh_results: dict = {}
-        self._refresh_threads: dict = {}
-        self._ui_dead = False
-        self._return_held = False
-        self._return_release_after: Optional[str] = None
-        self._return_release_time: Optional[int] = None
-        self._space_held = False
-        self._space_release_after: Optional[str] = None
-        self._space_release_time: Optional[int] = None
-        self._space_action_active = False
-        self._report_space_release_pending = False
-        self._f5_held = False
-        self._f5_release_time: Optional[int] = None
-        self._escape_held = False
-        self._escape_release_time: Optional[int] = None
-        self._fatal_ui = False
-        self._accessible_requested = False
-        # Optional extra detail (device path, bus) on existing screens.
-        # One flag for the session; not a new wizard step.
-        self._show_more = False
-        self._body_inner: Optional[tk.Frame] = None
-        self._body_canvas: Optional[tk.Canvas] = None
-        self._ring_px = self.lay.ring
-        self._layout_drawing = False
-        self._build_chrome()
-        self.root.bind("<Configure>", self._on_root_configure)
-        self._confirm_var.trace_add("write", self._confirm_var_written)
-        self._typing_var.trace_add("write", self._typing_var_written)
-        self.root.bind("<Escape>", self._on_escape)
-        self.root.bind("<KeyRelease-Escape>", self._on_escape_release)
-        self.root.bind("<KP_Enter>", self._on_return)
-        self.root.bind("<Return>", self._on_return)
-        self.root.bind("<KeyRelease-Return>", self._on_return_release)
-        self.root.bind("<KeyRelease-KP_Enter>", self._on_return_release)
-        self.root.bind("<KeyRelease-space>", self._on_space_release)
-        self.root.bind("<KeyRelease-F5>", self._on_f5_release)
-        self.root.bind("<Key>", self._on_key)
-        self.root.protocol("WM_DELETE_WINDOW", self._close)
-        self._draw()
-        self._after_id = self.root.after(100, self._tick)
+        _collect_retired_interpreters()
+        self._native_owner = threading.current_thread()
+        self._native_retired = False
+        try:
+            self.w = wizard
+            self.root = _new_owned_root(self._native_owner)
+            self.root._tk_wizard = self  # type: ignore[attr-defined]
+            # Set the geometry scale; fonts below use explicit pixel sizes. The layout geometry below is fixed pixels (content
+            # column, minimum window, countdown ring), so point-sized fonts must
+            # not float with the X server's reported DPI — on a 100+ DPI panel
+            # every screen would render ~1.4x larger than designed and clip.
+            # The kiosk window owns the whole display; deterministic type beats
+            # DPI fidelity. (macOS Tk already renders at scaling 1.0.)
+            self.root.tk.call("tk", "scaling", 1.0)
+            title = C.APP_NAME
+            if wizard.preview:
+                title = f"{C.APP_NAME} — PREVIEW (nothing is erased)"
+            self.root.title(title)
+            # Familiar arrow over ordinary content. The bare startx kiosk has
+            # no window manager or cursor theme, so an unset root inherits the
+            # X-server X cursor. Children inherit this; explicit hand2/xterm
+            # cursors on actions and text are unaffected.
+            self.root.configure(bg=BG, cursor="arrow")
+            self.root.minsize(*MIN_SIZE)
+            if fullscreen:
+                # The live startx kiosk has no window manager to honor the EWMH
+                # fullscreen hint. Pin geometry too, or content-driven sizing
+                # can feed back into responsive redraws and starve key releases.
+                self.root.geometry(
+                    f"{self.root.winfo_screenwidth()}x{self.root.winfo_screenheight()}+0+0"
+                )
+                self.root.attributes("-fullscreen", True)
+            else:
+                width, height = opening_size(
+                    self.root.winfo_screenwidth(), self.root.winfo_screenheight()
+                )
+                self.root.geometry(f"{width}x{height}")
+            family = _family(self.root)
+            mono = _mono_family(self.root)
+            # Negative Tk font sizes are pixels. Tk 9 on macOS can adjust its
+            # point scale after mapping a window; pixel sizes keep text and our
+            # geometry in agreement. Type scale follows window size (compact on
+            # 800x600, slightly larger on 1600x1000+), never the X server DPI.
+            self.lay = layout_for(*DEFAULT_SIZE, getattr(wizard, "text_size", "standard"))
+            self.font_hero = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-52, weight="bold")
+            self.font_h = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-30, weight="bold")
+            self.font_lead = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-18)
+            self.font_b = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-16)
+            self.font_bold = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-16, weight="bold")
+            self.font_size_big = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-20, weight="bold")
+            self.font_s = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-14)
+            self.font_s_bold = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-14, weight="bold")
+            self.font_tiny = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-12, weight="bold")
+            self.font_meta = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-12)
+            self.font_btn = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-16, weight="bold")
+            self.font_mono = _new_owned_native(self.root, tkfont.Font, root=self.root, family=mono, size=-14)
+            self.font_mono_bold = _new_owned_native(self.root, tkfont.Font, root=self.root, family=mono, size=-14, weight="bold")
+            self.font_mono_sm = _new_owned_native(self.root, tkfont.Font, root=self.root, family=mono, size=-13)
+            self.font_entry = _new_owned_native(self.root, tkfont.Font, root=self.root, family=mono, size=-26, weight="bold")
+            self.font_stat = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-56, weight="bold")
+            self.font_brand = _new_owned_native(self.root, tkfont.Font, root=self.root, family=family, size=-16, weight="bold")
+            self._apply_fonts()
+            # The brand mark ships as PNGs (Tk cannot draw the SVG source).
+            # Bound to this app's root explicitly: tests run several roots per
+            # process, and an unbound PhotoImage dies with the first root.
+            self._logo_header = self._load_image("logo-header.png")
+            self._logo_splash = self._load_image("logo-splash.png")
+            self._support_qr: Optional[tk.PhotoImage] = None
+            self._support_lead: Optional[tk.Label] = None
+            self._support_copy_bound = False
+            self._confirm_var = _new_owned_native(self.root, tk.StringVar, master=self.root)
+            self._typing_var = _new_owned_native(self.root, tk.StringVar, master=self.root)
+            self._owner_var = _new_owned_native(self.root, tk.IntVar, master=self.root, value=0)
+            self._body: Optional[tk.Frame] = None
+            self._footer: Optional[tk.Frame] = None
+            self._header: Optional[tk.Canvas] = None
+            self._strip: Optional[tk.Canvas] = None
+            self._hint: Optional[tk.Widget] = None
+            self._primary: Optional[_Button] = None
+            # The splash hides the header/strip so the white field runs clean;
+            # every other screen shows them. Tracked so re-packing stays ordered.
+            self._chrome_shown = True
+            self._countdown_ring: Optional[tk.Canvas] = None
+            self._countdown_num: Optional[tk.Label] = None
+            self._countdown_label: Optional[tk.Label] = None
+            self._progress_label: Optional[tk.Label] = None
+            self._progress_pct: Optional[tk.Label] = None
+            self._progress_bar: Optional[tk.Canvas] = None
+            self._indet = 0.0
+            self._match_label: Optional[tk.Label] = None
+            self._match_icon: Optional[tk.Canvas] = None
+            self._match_pill: Optional[_Box] = None
+            self._shown: Optional[Screen] = None
+            self._shown_report_revision = -1
+            self._shown_sound_revision = -1
+            self._after_id: Optional[str] = None
+            # Pick-list scroll state: the list is rebuilt on every redraw, so the
+            # scroll offset is saved before teardown and restored (or the selected
+            # card scrolled into view after keyboard navigation) after rebuild.
+            self._pick_canvas: Optional[tk.Canvas] = None
+            self._pick_cards: dict = {}
+            self._pick_scroll = 0.0  # pixel offset into the list, not a fraction
+            self._pick_ensure_visible = False
+            self._pick_restore_pending = False
+            self._pick_applied: Optional[float] = None
+            self._pick_applied_geometry: Optional[tuple[float, float]] = None
+            self._pick_after_ids: list[str] = []
+            self._pick_gen = 0
+            self._refresh_lock = threading.Lock()
+            self._refresh_results: dict = {}
+            self._refresh_threads: dict = {}
+            self._ui_dead = False
+            self._return_held = False
+            self._return_release_after: Optional[str] = None
+            self._return_release_time: Optional[int] = None
+            self._space_held = False
+            self._space_release_after: Optional[str] = None
+            self._space_release_time: Optional[int] = None
+            self._space_action_active = False
+            self._report_space_release_pending = False
+            self._f5_held = False
+            self._f5_release_time: Optional[int] = None
+            self._escape_held = False
+            self._escape_release_time: Optional[int] = None
+            self._fatal_ui = False
+            self._accessible_requested = False
+            # Optional extra detail (device path, bus) on existing screens.
+            # One flag for the session; not a new wizard step.
+            self._show_more = False
+            self._body_inner: Optional[tk.Frame] = None
+            self._body_canvas: Optional[tk.Canvas] = None
+            self._ring_px = self.lay.ring
+            self._layout_drawing = False
+            self._build_chrome()
+            self.root.bind("<Configure>", self._on_root_configure)
+            self._confirm_var_trace: Optional[str] = _new_owned_trace(self, "_confirm_var_trace", self._confirm_var, self._confirm_var_written)
+            self._typing_var_trace: Optional[str] = _new_owned_trace(self, "_typing_var_trace", self._typing_var, self._typing_var_written)
+            self.root.bind("<Escape>", self._on_escape)
+            self.root.bind("<KeyRelease-Escape>", self._on_escape_release)
+            self.root.bind("<KP_Enter>", self._on_return)
+            self.root.bind("<Return>", self._on_return)
+            self.root.bind("<KeyRelease-Return>", self._on_return_release)
+            self.root.bind("<KeyRelease-KP_Enter>", self._on_return_release)
+            self.root.bind("<KeyRelease-space>", self._on_space_release)
+            self.root.bind("<KeyRelease-F5>", self._on_f5_release)
+            self.root.bind("<Key>", self._on_key)
+            for sequence in ("<MouseWheel>", "<Button-4>", "<Button-5>"):
+                self.root.bind(sequence, self._on_body_wheel)
+            self.root.bind("<FocusIn>", self._on_body_focus)
+            self.root.protocol("WM_DELETE_WINDOW", self._close)
+            self._draw()
+            self._after_id = self.root.after(100, self._tick)
+        except BaseException as original:
+            _retire_tk_owner(self, original)
+            raise
 
     # -- chrome -------------------------------------------------------------
 
@@ -1342,7 +1551,7 @@ class TkWizard:
 
     def _load_image(self, name: str) -> Optional[tk.PhotoImage]:
         try:
-            return tk.PhotoImage(master=self.root, file=str(_ASSETS / name))
+            return _new_owned_native(self.root, tk.PhotoImage, master=self.root, file=str(_ASSETS / name))
         except (tk.TclError, RuntimeError):
             # Missing/unreadable file, or no root window yet: the drawn
             # fallback emblem stands in for the brand mark.
@@ -1478,30 +1687,112 @@ class TkWizard:
         self._body.grid_rowconfigure(0, weight=1)
         inner = tk.Frame(canvas, bg=BG)
         window = canvas.create_window((0, 0), window=inner, anchor="nw")
+        inner_size = (0, 0)
 
         def on_inner(_event=None) -> None:
+            nonlocal inner_size
             canvas.configure(scrollregion=canvas.bbox("all") or (0, 0, 0, 0))
+            size = (inner.winfo_width(), inner.winfo_height())
+            if size != inner_size:
+                inner_size = size
+                # Wrapping can finish after focus arrived. React to content
+                # size changes, not position changes caused by manual scroll.
+                self._schedule_body_focus_reveal(self.root.focus_get())
 
         def on_canvas(event) -> None:
             canvas.itemconfigure(window, width=max(1, event.width))
+            self._schedule_body_focus_reveal(self.root.focus_get())
 
         inner.bind("<Configure>", on_inner)
         canvas.bind("<Configure>", on_canvas)
 
-        def wheel(event) -> str:
-            steps = int(-event.delta / 120) if event.delta else 0
-            if steps:
-                canvas.yview_scroll(steps, "units")
-            return "break"
-
-        canvas.bind("<MouseWheel>", wheel)
-        inner.bind("<MouseWheel>", wheel)
-        canvas.bind("<Button-4>", lambda _e: canvas.yview_scroll(-1, "units"))
-        canvas.bind("<Button-5>", lambda _e: canvas.yview_scroll(1, "units"))
         self._body_canvas = canvas
         self._body_inner = inner
 
+    def _on_body_wheel(self, event) -> Optional[str]:
+        canvas = self._body_canvas
+        if canvas is None:
+            return None
+        widget = event.widget
+        while widget is not None and widget is not canvas:
+            # Native readers and nested scroll surfaces own their wheel.
+            # Their class bindings do not always return "break" before the
+            # toplevel bindtag, so ancestry alone would scroll both views.
+            if (widget.winfo_class() in {"Text", "Listbox", "Treeview", "Scrollbar", "TScrollbar"}
+                    or isinstance(widget, _Scrollbar)
+                    or (isinstance(widget, tk.Canvas)
+                        and widget.cget("scrollregion"))):
+                return None
+            widget = widget.master
+        if widget is not canvas:
+            return None
+        if getattr(event, "num", None) == 5:
+            steps = 1
+        elif getattr(event, "num", None) == 4:
+            steps = -1
+        else:
+            steps = int(-event.delta / 120) if event.delta else 0
+        if not steps:
+            return None
+        canvas.yview_scroll(steps, "units")
+        return "break"
+
+    def _on_body_focus(self, event) -> None:
+        self._schedule_body_focus_reveal(event.widget)
+
+    def _schedule_body_focus_reveal(self, widget: tk.Misc | None) -> None:
+        canvas = self._body_canvas
+        if canvas is None or widget is None:
+            return
+        parent: tk.Misc | None = widget
+        while parent is not None and parent is not canvas:
+            parent = parent.master
+        if parent is not canvas:
+            return
+
+        def reveal() -> None:
+            try:
+                if self._body_canvas is not canvas or self.root.focus_get() is not widget:
+                    return
+                bounds = canvas.bbox("all")
+                if not bounds:
+                    return
+                top = widget.winfo_rooty() - canvas.winfo_rooty()
+                height = widget.winfo_height()
+                viewport = canvas.winfo_height()
+                offset = top if top < 0 else max(0, top + height - viewport)
+                if offset:
+                    canvas.yview_moveto((canvas.canvasy(0) + offset) / max(1, bounds[3]))
+            except tk.TclError:
+                # A redraw can destroy the focused widget before its idle job.
+                return
+
+        canvas.after_idle(reveal)
+
+    def _cancel_widget_callbacks(self, widget: tk.Misc, *, include_self: bool = True) -> None:
+        """Retire pending Python callbacks owned by widgets being destroyed."""
+        if not isinstance(widget, tk.Misc):
+            return  # Lightweight non-Tk controllers do not own Tcl callbacks.
+        try:
+            pending = [widget] if include_self else list(widget.winfo_children())
+            owners: dict[str, tk.Misc] = {}
+            while pending:
+                owner = pending.pop()
+                owners.update((command, owner) for command in (getattr(owner, "_tclCommands", None) or ()))
+                pending.extend(owner.winfo_children())
+            for callback in widget.tk.call("after", "info"):
+                script, _kind = widget.tk.call("after", "info", callback)
+                callback_owner = owners.get(str(script))
+                if callback_owner is not None:
+                    # after_cancel also removes the Tcl command from its
+                    # owning widget's registry. Preserve other owners' jobs.
+                    callback_owner.after_cancel(callback)
+        except tk.TclError:
+            # Teardown may run again after this interpreter was destroyed.
+            pass
+
     def _clear(self, frame: tk.Frame) -> None:
+        self._cancel_widget_callbacks(frame, include_self=False)
         for child in frame.winfo_children():
             child.destroy()
 
@@ -1510,7 +1801,7 @@ class TkWizard:
         generation = getattr(self, "_draw_generation", 0)
 
         def wrapped() -> None:
-            if self.w.screen != expected_screen or generation != getattr(self, "_draw_generation", 0):
+            if getattr(self, "_ui_dead", False) or self.w.screen != expected_screen or generation != getattr(self, "_draw_generation", 0):
                 return
             fn()
             if self.w.wants_shutdown or self.w.wants_new_session:
@@ -1528,29 +1819,81 @@ class TkWizard:
             self.w.arm_done_keyboard()
 
     def _teardown(self) -> None:
-        # In-flight scans finish into the void: polls stop here and any late
-        # worker result finds no owner. Workers are daemons; join them only.
+        if getattr(self, "_native_retired", False) or getattr(self, "_retiring", False):
+            return
+        self._retiring = True
         self._ui_dead = True
-        getattr(self.w, "cancel_audio", lambda: None)()
-        self._cancel_pick_restore()
-        for attr in ("_return_release_after", "_space_release_after"):
-            callback = getattr(self, attr)
-            if callback is not None:
+        owner_thread = getattr(self, "_native_owner", threading.current_thread())
+        root = getattr(self, "root", None)
+        if isinstance(root, tk.Misc):
+            _pin_retired_interpreter(root, owner_thread)
+        pins = [getattr(self, name, None) for name in self._NATIVE_ASSETS]
+        _pin_retired_assets(pins, owner_thread)
+        cleanup_error = None
+        try:
+            pending = [root] if isinstance(root, tk.Misc) else []
+            widget = None
+            while pending:
+                widget = pending.pop()
+                if isinstance(widget, _CheckRow):
+                    pins.extend((getattr(widget, "_variable", None), getattr(widget, "_font", None)))
                 try:
-                    self.root.after_cancel(callback)
+                    pending.extend(widget.winfo_children())
                 except tk.TclError:
                     pass
-                setattr(self, attr, None)
-        if self._after_id is not None:
+            widget = None
+            _pin_retired_assets(pins, owner_thread)
+            for variable_name, token_name in (
+                ("_confirm_var", "_confirm_var_trace"), ("_typing_var", "_typing_var_trace"),
+            ):
+                token = getattr(self, token_name, None)
+                variable = getattr(self, variable_name, None)
+                if token is not None:
+                    setattr(self, token_name, None)
+                    if variable is not None:
+                        try:
+                            variable.trace_remove("write", token)
+                        except tk.TclError:
+                            pass
+            variable = None
             try:
-                self.root.after_cancel(self._after_id)
-            except tk.TclError:
-                pass
-            self._after_id = None
-        try:
-            self.root.destroy()
-        except tk.TclError:
-            pass
+                getattr(self.w, "cancel_audio", lambda: None)()
+            except BaseException as error:
+                cleanup_error = error
+            self._cancel_pick_restore()
+            for attr in ("_return_release_after", "_space_release_after", "_after_id"):
+                callback = getattr(self, attr, None)
+                if callback is not None and root is not None:
+                    try:
+                        root.after_cancel(callback)
+                    except tk.TclError:
+                        pass
+                    setattr(self, attr, None)
+            if root is not None:
+                self._cancel_widget_callbacks(root)
+                try:
+                    root.destroy()
+                except tk.TclError:
+                    pass
+                if getattr(root, "_tk_wizard", None) is self:
+                    del root._tk_wizard
+            for name in self._NATIVE_FIELDS:
+                if hasattr(self, name):
+                    setattr(self, name, {} if name in ("_pick_cards", "_keyboard_layout_cards", "_keyboard_language_cards") else None)
+            lock = getattr(self, "_refresh_lock", None)
+            if lock is not None:
+                with lock:
+                    self._refresh_results.clear()
+                    self._refresh_threads.clear()
+            self._native_retired = True
+            gc.collect()
+        finally:
+            pins.clear()
+            root = None
+            self._retiring = False
+            _collect_retired_interpreters()
+        if cleanup_error is not None:
+            raise cleanup_error
 
     def _tick(self) -> None:
         try:
@@ -1686,6 +2029,7 @@ class TkWizard:
             dispatch[screen]()
         self._draw_header()
         self._draw_strip()
+        _drain_retired_native()
         self._shown = screen
         self._shown_sound_revision = getattr(self.w, "sound_revision", 0)
         if working_revision is not None:
@@ -2821,7 +3165,7 @@ class TkWizard:
         section = tk.Frame(parent, bg=BG)
         section.pack(fill=tk.X, pady=(0, 10))
         content = tk.Frame(section, bg=BG)
-        opened = tk.BooleanVar(value=False)
+        opened = _new_owned_native(self.root, tk.BooleanVar, master=self.root, value=False)
         def toggle():
             if opened.get():
                 content.pack(fill=tk.X)
@@ -2919,10 +3263,11 @@ class TkWizard:
     def _cancel_pick_restore(self) -> None:
         # Destroying a widget deletes its Tcl commands, but leaves after events
         # queued. Cancel them while the canvas still owns those commands.
-        if self._pick_canvas is not None:
-            for callback in self._pick_after_ids:
+        canvas = getattr(self, "_pick_canvas", None)
+        if canvas is not None:
+            for callback in getattr(self, "_pick_after_ids", ()):
                 try:
-                    self._pick_canvas.after_cancel(callback)
+                    canvas.after_cancel(callback)
                 except tk.TclError:
                     pass
         self._pick_after_ids = []
@@ -3104,8 +3449,8 @@ class TkWizard:
                     for _ in range(scale)
                 )
                 rows.extend(["{" + line + "}"] * scale)
-            image = tk.PhotoImage(
-                master=self.root, width=len(matrix) * scale, height=len(matrix) * scale
+            image = _new_owned_native(
+                self.root, tk.PhotoImage, master=self.root, width=len(matrix) * scale, height=len(matrix) * scale
             )
             image.put(" ".join(rows))
         except Exception:
@@ -3229,6 +3574,12 @@ class TkWizard:
             return "break"
 
         def bind_wheel(widget):
+            # Nested readers and custom scrollbars own their wheel handlers.
+            if (widget.winfo_class() in {"Text", "Listbox", "Treeview", "Scrollbar", "TScrollbar"}
+                    or isinstance(widget, _Scrollbar)
+                    or (isinstance(widget, tk.Canvas) and widget is not canvas
+                        and widget.cget("scrollregion"))):
+                return
             for sequence in ("<MouseWheel>", "<Button-4>", "<Button-5>"):
                 widget.bind(sequence, _wheel)
             for child in widget.winfo_children():
@@ -3595,7 +3946,7 @@ class TkWizard:
         text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         text.insert("1.0", C.REPORT_HELP_TEXT + ("\n\n" + self.w.report_recovery_warning if self.w.report_recovery_warning else ""))
         text.configure(state=tk.DISABLED)
-        choice = tk.BooleanVar(master=self.root, value=self.w.report_wanted)
+        choice = _new_owned_native(self.root, tk.BooleanVar, master=self.root, value=self.w.report_wanted)
         wrap = max(200, self.lay.wrap - 40)
 
         def set_preference():
@@ -3612,7 +3963,7 @@ class TkWizard:
             col, text=C.REPORT_WANTED, variable=choice,
             command=set_preference, font=self.font_s, wraplength=wrap,
         ).pack(anchor="w", fill=tk.X, pady=8)
-        share = tk.BooleanVar(master=self.root, value=self.w.report_share_redacted)
+        share = _new_owned_native(self.root, tk.BooleanVar, master=self.root, value=self.w.report_share_redacted)
 
         def set_share():
             self.w.set_report_share_redacted(share.get())
@@ -4287,15 +4638,20 @@ class TkWizard:
             self._draw()
         except BaseException as exc:
             return finish_failed_start(exc)
-        launch_decided = threading.Event()
+        launch_decided = None
         launch_allowed = [False]
 
         def run_if_launched() -> None:
+            if launch_decided is None:
+                return
             launch_decided.wait()
-            if launch_allowed[0]:
+            with self._refresh_lock:
+                accepted = launch_allowed[0]
+            if accepted:
                 self._refresh_worker(seq)
 
         try:
+            launch_decided = threading.Event()
             worker = threading.Thread(
                 target=run_if_launched,
                 daemon=True, name=f"beamo-refresh-{seq}",
@@ -4303,19 +4659,21 @@ class TkWizard:
             with self._refresh_lock:
                 self._refresh_threads[seq] = worker
             worker.start()
-            # Arm the only result poll before allowing discovery to run. If
-            # Tk cannot schedule it, abandon the claim and wake the worker
-            # with launch_allowed still false.
             self.root.after(50, lambda: self._poll_refresh(seq, on_done))
+            with self._refresh_lock:
+                # A set() interrupted after waking the worker has not accepted
+                # it yet. The same lock keeps that worker behind this decision.
+                launch_decided.set()
+                launch_allowed[0] = True
         except BaseException as exc:
-            # Even if Thread.start spawned the OS thread before raising, the
-            # worker cannot enter discovery until this caller authorizes it.
-            launch_decided.set()
             with self._refresh_lock:
                 self._refresh_threads.pop(seq, None)
+            if launch_decided is not None:
+                try:
+                    launch_decided.set()
+                except BaseException as cleanup:
+                    _note_tk_cleanup_failure(exc, cleanup)
             return finish_failed_start(exc)
-        launch_allowed[0] = True
-        launch_decided.set()
         return seq
 
     def _refresh_worker(self, seq: int) -> None:
@@ -4492,7 +4850,30 @@ class TkWizard:
             self._draw()
 
     def run(self) -> int:
-        self.root.mainloop()
+        # Bare X11 has no window manager to claim input when the pointer is
+        # outside a windowed preview. Initial child focus requests made before
+        # mapping were ignored, so claim the mapped window once and let the
+        # renderer restore its intended child. Later redraws never force input.
+        def claim_input() -> None:
+            self.root.focus_force()
+            self._draw()
+
+        def mapped(event) -> None:
+            if event.widget is self.root:
+                self.root.unbind("<Map>", mapping)
+                self.root.after_idle(claim_input)
+
+        try:
+            if self.root.winfo_ismapped():
+                self.root.after_idle(claim_input)
+            else:
+                mapping = self.root.bind("<Map>", mapped, add="+")
+            self.root.mainloop()
+        except BaseException as original:
+            _retire_tk_owner(self, original)
+            raise
+        else:
+            _retire_tk_owner(self)
         return 3 if self._fatal_ui else (4 if self._accessible_requested else 0)
 
     def _click_accessible(self) -> None:
@@ -4503,8 +4884,21 @@ class TkWizard:
 
 
 def run_tk(wizard: Wizard, fullscreen: bool = False) -> int:
-    ui = TkWizard(wizard, fullscreen=fullscreen)
-    return ui.run()
+    ui = None
+    original = None
+    try:
+        ui = TkWizard(wizard, fullscreen=fullscreen)
+        return ui.run()
+    except BaseException as error:
+        original = error
+        raise
+    finally:
+        try:
+            if ui is not None:
+                _retire_tk_owner(ui, original)
+        finally:
+            ui = None
+            _collect_retired_interpreters()
 
 
 def _ensure_tk_display() -> None:
@@ -4536,40 +4930,73 @@ def _ensure_tk_display() -> None:
         raise StartupDisplayUnavailable("no graphical display for startup stages")
 
 
+def _close_owned_startup_root(root, owner: threading.Thread,
+                              original: BaseException | None = None) -> None:
+    _pin_retired_interpreter(root, owner)
+    try:
+        root.destroy()
+    except tk.TclError:
+        pass
+    except BaseException as cleanup:
+        if original is None:
+            raise
+        _note_tk_cleanup_failure(original, cleanup)
+
+
 def run_tk_startup(build, *, fullscreen: bool = False,
                    stall_after_s: float | None = None) -> tuple:
-    """Show startup stages while ``build()`` runs on a worker thread.
+    """Show staged startup on Tk while one worker builds the wizard.
 
-    ``build`` receives a worker-safe ``report(stage_key)`` callback and
-    returns the built wizard; anything it raises becomes the failure
-    outcome. Returns ("wizard", wizard), ("failed", exc), or
-    ("abandoned", None) when the owner closes the splash (Escape or window
-    close), mirroring the wizard's close-means-stop contract. Raises
-    RuntimeError (never aborts) when no display is reachable.
+    Returns ("wizard", wizard), ("failed", exc), or ("abandoned", None).
+    Native display construction errors retain StartupDisplayUnavailable and
+    their original TclError cause. Every owned window closes on setup failure,
+    normal return, or propagated interruption.
     """
     from beamo_wipe.startup_stages import STALL_AFTER_S, StartupRun
 
+    _collect_retired_interpreters()
     _ensure_tk_display()
     run = StartupRun(
         build,
         stall_after_s=STALL_AFTER_S if stall_after_s is None else stall_after_s,
     )
+    owner = threading.current_thread()
     try:
-        root = tk.Tk()
+        root = _new_owned_root(owner)
     except tk.TclError as exc:
         raise StartupDisplayUnavailable(f"no graphical display for startup stages: {exc}") from exc
+    _pin_retired_interpreter(root, owner)
+    original = None
+    try:
+        return _run_tk_startup_window(root, run, fullscreen=fullscreen)
+    except BaseException as error:
+        original = error
+        raise
+    finally:
+        try:
+            _close_owned_startup_root(root, owner, original)
+        finally:
+            root = None
+            _collect_retired_interpreters()
+
+
+def _run_tk_startup_window(root, run, *, fullscreen: bool) -> tuple:
     root.title("Beamo Wipe")
     if fullscreen:
         root.geometry(f"{root.winfo_screenwidth()}x{root.winfo_screenheight()}+0+0")
         root.attributes("-fullscreen", True)
     else:
-        root.geometry("640x440")
-    try:
-        root.eval("tk::PlaceWindow . center")
-    except tk.TclError:
-        pass
+        # PlaceWindow centers the empty widget's requested 200px size,
+        # which can move the configured startup window off a small screen.
+        width = min(640, root.winfo_screenwidth())
+        height = min(440, root.winfo_screenheight())
+        x = (root.winfo_screenwidth() - width) // 2
+        y = (root.winfo_screenheight() - height) // 2
+        root.geometry(f"{width}x{height}+{x}+{y}")
     root.configure(bg=BG)
     outcome: list = []
+    poll_after: Optional[str] = None
+    focus_after: Optional[str] = None
 
     body = tk.Frame(root, bg=BG)
     body.pack(fill=tk.BOTH, expand=True, padx=48, pady=36)
@@ -4599,7 +5026,7 @@ def run_tk_startup(build, *, fullscreen: bool = False,
             status.configure(text=_STATUS_WORDS[row["state"]])
             title.configure(text=row["title"])
             hint.configure(text=row["hint"])
-        note = run.stalled_note()
+        note = run.stalled_note(persistent=True)
         stall.configure(text=note or "")
 
     def close() -> None:
@@ -4611,6 +5038,8 @@ def run_tk_startup(build, *, fullscreen: bool = False,
             pass
 
     def poll_once() -> None:
+        nonlocal poll_after
+        poll_after = None
         if outcome:
             return
         try:
@@ -4621,7 +5050,7 @@ def run_tk_startup(build, *, fullscreen: bool = False,
         if result is None:
             try:
                 if poll is not None:
-                    root.after(100, poll)
+                    poll_after = root.after(100, poll)
             except tk.TclError:
                 pass
             return
@@ -4640,20 +5069,39 @@ def run_tk_startup(build, *, fullscreen: bool = False,
     poll: Optional[Callable[[], None]] = poll_once
     root.protocol("WM_DELETE_WINDOW", close)
     root.bind("<Escape>", lambda _event: close())
+    original = None
     try:
         render()
         run.start()
-        root.after(100, poll_once)
+        poll_after = root.after(100, poll_once)
+        # Bare X11 has no window manager to give this mapped startup input.
+        focus_after = root.after_idle(root.focus_force)
         root.mainloop()
+    except BaseException as error:
+        original = error
+        raise
     finally:
         # The recursive callback otherwise retains itself and the destroyed
         # Tcl interpreter in a cycle. Worker-thread GC can then finalize Tcl
         # on the wrong thread and abort the process after startup completes.
         poll = None
-        try:
-            root.destroy()
-        except tk.TclError:
-            pass
+        # Window destruction deletes Python's Tcl commands but does not
+        # remove pending after scripts. Retire our exact timers even when
+        # an external close already destroyed the startup widgets.
+        cleanup_error = None
+        for callback in (poll_after, focus_after):
+            if callback is not None:
+                try:
+                    root.after_cancel(callback)
+                except tk.TclError:
+                    pass
+                except BaseException as cleanup:
+                    if original is not None:
+                        _note_tk_cleanup_failure(original, cleanup)
+                    elif cleanup_error is None:
+                        cleanup_error = cleanup
+        if cleanup_error is not None:
+            raise cleanup_error
     if outcome:
         return outcome[0]
     return ("abandoned", None)

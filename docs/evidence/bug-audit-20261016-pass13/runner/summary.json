@@ -1,0 +1,12 @@
+{
+  "tests": 686,
+  "passed": 686,
+  "failures_or_errors": [],
+  "skips": [],
+  "source_changed_during_review": [],
+  "runtime": {
+    "exit_code": 0,
+    "modules": 58,
+    "elapsed_seconds": 67.65259816699836
+  }
+}

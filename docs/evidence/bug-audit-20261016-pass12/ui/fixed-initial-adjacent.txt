@@ -1,0 +1,145 @@
+dbus-daemon[526461]: [session uid=0 pid=526461] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=526462 comm="/tmp/beamo-wipe-audit-python/bin/python -m pytest" label="unconfined")
+dbus-daemon[526461]: [session uid=0 pid=526461] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[526491]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=526462 comm="/tmp/beamo-wipe-audit-python/bin/python -m pytest" label="unconfined")
+dbus-daemon[526491]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+........................................................................ [ 20%]
+...............................................FF....................... [ 41%]
+........................................................................ [ 61%]
+........................................................................ [ 82%]
+..............................................................           [100%]
+=================================== FAILURES ===================================
+_______________ test_startup_exception_closes_its_window[start] ________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7d50c96a1be0>
+failed_step = 'start'
+
+    @pytest.mark.parametrize("failed_step", ["start", "mainloop"])
+    def test_startup_exception_closes_its_window(monkeypatch, failed_step):
+        pytest.importorskip("tkinter")
+        from unittest.mock import MagicMock
+        from beamo_wipe.startup_stages import StartupRun
+        from beamo_wipe.ui import tk_wizard as ui
+
+        root = MagicMock()
+        monkeypatch.setattr(ui, "_ensure_tk_display", lambda: None)
+        monkeypatch.setattr(ui.tk, "Tk", lambda: root)
+        monkeypatch.setattr(ui.tk, "Frame", MagicMock())
+        monkeypatch.setattr(ui.tk, "Label", MagicMock())
+        monkeypatch.setattr(StartupRun, "start", MagicMock())
+        failure = RuntimeError("fake startup interface failure")
+        if failed_step == "start":
+            StartupRun.start.side_effect = failure
+        else:
+            root.mainloop.side_effect = failure
+        with pytest.raises(RuntimeError, match="fake startup interface failure"):
+>           ui.run_tk_startup(lambda report: "fake-wizard")
+
+tests/test_bug_audit_tk_gc_20260913.py:106:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+build = <function test_startup_exception_closes_its_window.<locals>.<lambda> at 0x7d50c92a9da0>
+
+    def run_tk_startup(build, *, fullscreen: bool = False,
+                       stall_after_s: float | None = None) -> tuple:
+        """Show startup stages while ``build()`` runs on a worker thread.
+
+        ``build`` receives a worker-safe ``report(stage_key)`` callback and
+        returns the built wizard; anything it raises becomes the failure
+        outcome. Returns ("wizard", wizard), ("failed", exc), or
+        ("abandoned", None) when the owner closes the splash (Escape or window
+        close), mirroring the wizard's close-means-stop contract. Raises
+        RuntimeError (never aborts) when no display is reachable.
+        """
+        from beamo_wipe.startup_stages import STALL_AFTER_S, StartupRun
+
+        _ensure_tk_display()
+        run = StartupRun(
+            build,
+            stall_after_s=STALL_AFTER_S if stall_after_s is None else stall_after_s,
+        )
+        try:
+            root = tk.Tk()
+        except tk.TclError as exc:
+            raise StartupDisplayUnavailable(f"no graphical display for startup stages: {exc}") from exc
+        root.title("Beamo Wipe")
+        if fullscreen:
+            root.geometry(f"{root.winfo_screenwidth()}x{root.winfo_screenheight()}+0+0")
+            root.attributes("-fullscreen", True)
+        else:
+            # PlaceWindow centers the empty widget's requested 200px size,
+            # which can move the configured startup window off a small screen.
+>           width = min(640, root.winfo_screenwidth())
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: '<' not supported between instances of 'MagicMock' and 'int'
+
+src/beamo_wipe/ui/tk_wizard.py:4568: TypeError
+______________ test_startup_exception_closes_its_window[mainloop] ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7d50c94cc350>
+failed_step = 'mainloop'
+
+    @pytest.mark.parametrize("failed_step", ["start", "mainloop"])
+    def test_startup_exception_closes_its_window(monkeypatch, failed_step):
+        pytest.importorskip("tkinter")
+        from unittest.mock import MagicMock
+        from beamo_wipe.startup_stages import StartupRun
+        from beamo_wipe.ui import tk_wizard as ui
+
+        root = MagicMock()
+        monkeypatch.setattr(ui, "_ensure_tk_display", lambda: None)
+        monkeypatch.setattr(ui.tk, "Tk", lambda: root)
+        monkeypatch.setattr(ui.tk, "Frame", MagicMock())
+        monkeypatch.setattr(ui.tk, "Label", MagicMock())
+        monkeypatch.setattr(StartupRun, "start", MagicMock())
+        failure = RuntimeError("fake startup interface failure")
+        if failed_step == "start":
+            StartupRun.start.side_effect = failure
+        else:
+            root.mainloop.side_effect = failure
+        with pytest.raises(RuntimeError, match="fake startup interface failure"):
+>           ui.run_tk_startup(lambda report: "fake-wizard")
+
+tests/test_bug_audit_tk_gc_20260913.py:106:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+build = <function test_startup_exception_closes_its_window.<locals>.<lambda> at 0x7d50c9251bc0>
+
+    def run_tk_startup(build, *, fullscreen: bool = False,
+                       stall_after_s: float | None = None) -> tuple:
+        """Show startup stages while ``build()`` runs on a worker thread.
+
+        ``build`` receives a worker-safe ``report(stage_key)`` callback and
+        returns the built wizard; anything it raises becomes the failure
+        outcome. Returns ("wizard", wizard), ("failed", exc), or
+        ("abandoned", None) when the owner closes the splash (Escape or window
+        close), mirroring the wizard's close-means-stop contract. Raises
+        RuntimeError (never aborts) when no display is reachable.
+        """
+        from beamo_wipe.startup_stages import STALL_AFTER_S, StartupRun
+
+        _ensure_tk_display()
+        run = StartupRun(
+            build,
+            stall_after_s=STALL_AFTER_S if stall_after_s is None else stall_after_s,
+        )
+        try:
+            root = tk.Tk()
+        except tk.TclError as exc:
+            raise StartupDisplayUnavailable(f"no graphical display for startup stages: {exc}") from exc
+        root.title("Beamo Wipe")
+        if fullscreen:
+            root.geometry(f"{root.winfo_screenwidth()}x{root.winfo_screenheight()}+0+0")
+            root.attributes("-fullscreen", True)
+        else:
+            # PlaceWindow centers the empty widget's requested 200px size,
+            # which can move the configured startup window off a small screen.
+>           width = min(640, root.winfo_screenwidth())
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: '<' not supported between instances of 'MagicMock' and 'int'
+
+src/beamo_wipe/ui/tk_wizard.py:4568: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_bug_audit_tk_gc_20260913.py::test_startup_exception_closes_its_window[start]
+FAILED tests/test_bug_audit_tk_gc_20260913.py::test_startup_exception_closes_its_window[mainloop]
+2 failed, 348 passed, 1 deselected in 50.66s

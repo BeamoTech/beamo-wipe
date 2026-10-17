@@ -1,0 +1,11 @@
+{
+  "unchanged_target_source": {
+    "src/beamo_wipe/discover.py": "a2fa08ce083d8b99403473ab8646a6b19f01157d1c2fd9df73e8469c92836bc4",
+    "src/beamo_wipe/ui/tk_wizard.py": "bb64632df587965f41afc70efe2201d3b776579038d680c3a2405319764f170d"
+  },
+  "tests": {
+    "docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py": "1407a8632fd71737e65744d7bc599a52930a3541b1d9922d0e48a99ff3edae31",
+    "tests/test_checkrow_trace_lifetime_pass18.py": "66082de1ee8593474ca08d330d65832692ffffe8d734115a10e940f969d94702"
+  },
+  "prior_collection_error": "Evidence-local probe could not import tests helper because orchestration replaced PYTHONPATH; corrected explicit src+tests; failed collection retained."
+}

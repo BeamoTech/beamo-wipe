@@ -1,0 +1,7368 @@
+{
+  "cases": 72,
+  "violations": 24,
+  "controls": 48,
+  "native_attempts": [],
+  "source_sha256": {
+    "src/beamo_wipe/discover.py": "b45a4a32953ac47d0b1b69fc98a1c8f1f2295704e15de677f5b88f3ee33d58e2",
+    "src/beamo_wipe/safety.py": "6b69c10e9aafcd8c11ca03563dd04ac90e3aa89fc2be3106aafe4144fb558360"
+  },
+  "observations": [
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "root-missing-wwn",
+      "order": [
+        0,
+        1,
+        2
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "root-missing-wwn",
+      "order": [
+        0,
+        2,
+        1
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "root-missing-wwn",
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "root-missing-wwn",
+      "order": [
+        1,
+        2,
+        0
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "root-missing-wwn",
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "root-missing-wwn",
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "leaf-missing-wwn",
+      "order": [
+        0,
+        1,
+        2
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": {
+        "refused": "These disks look too similar to tell apart safely. Shut down. Disconnect the drives you do not want to erase. Start from this USB again. Do not guess."
+      },
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "leaf-missing-wwn",
+      "order": [
+        0,
+        2,
+        1
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": {
+        "refused": "These disks look too similar to tell apart safely. Shut down. Disconnect the drives you do not want to erase. Start from this USB again. Do not guess."
+      },
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "leaf-missing-wwn",
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": {
+        "refused": "These disks look too similar to tell apart safely. Shut down. Disconnect the drives you do not want to erase. Start from this USB again. Do not guess."
+      },
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "leaf-missing-wwn",
+      "order": [
+        1,
+        2,
+        0
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": {
+        "refused": "These disks look too similar to tell apart safely. Shut down. Disconnect the drives you do not want to erase. Start from this USB again. Do not guess."
+      },
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "leaf-missing-wwn",
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": {
+        "refused": "These disks look too similar to tell apart safely. Shut down. Disconnect the drives you do not want to erase. Start from this USB again. Do not guess."
+      },
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "leaf-missing-wwn",
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": {
+        "refused": "These disks look too similar to tell apart safely. Shut down. Disconnect the drives you do not want to erase. Start from this USB again. Do not guess."
+      },
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "distinct-wwn-control",
+      "order": [
+        0,
+        1,
+        2
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "distinct-wwn-control",
+      "order": [
+        0,
+        2,
+        1
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "distinct-wwn-control",
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "distinct-wwn-control",
+      "order": [
+        1,
+        2,
+        0
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "distinct-wwn-control",
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "distinct-wwn-control",
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "placeholder-control",
+      "order": [
+        0,
+        1,
+        2
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "UNKNOWN",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "UNKNOWN",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "placeholder-control",
+      "order": [
+        0,
+        2,
+        1
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "UNKNOWN",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "UNKNOWN",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "placeholder-control",
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "UNKNOWN",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "UNKNOWN",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "placeholder-control",
+      "order": [
+        1,
+        2,
+        0
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "UNKNOWN",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "UNKNOWN",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "placeholder-control",
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "UNKNOWN",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "UNKNOWN",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "placeholder-control",
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "UNKNOWN",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "UNKNOWN",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "BRIDGE-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "no-chain-control",
+      "order": [
+        0,
+        1,
+        2
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "BRIDGE-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "BRIDGE-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "no-chain-control",
+      "order": [
+        0,
+        2,
+        1
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "BRIDGE-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "BRIDGE-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "no-chain-control",
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "BRIDGE-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "BRIDGE-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "no-chain-control",
+      "order": [
+        1,
+        2,
+        0
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "BRIDGE-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "BRIDGE-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "no-chain-control",
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "BRIDGE-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "BRIDGE-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "no-chain-control",
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "BRIDGE-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "contradictory-wwn-through-missing-control",
+      "order": [
+        0,
+        1,
+        2
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "ther",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "contradictory-wwn-through-missing-control",
+      "order": [
+        0,
+        2,
+        1
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "ther",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "contradictory-wwn-through-missing-control",
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "ther",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "contradictory-wwn-through-missing-control",
+      "order": [
+        1,
+        2,
+        0
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "ther",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "contradictory-wwn-through-missing-control",
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "ther",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "boot",
+      "chain": "contradictory-wwn-through-missing-control",
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "ther",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdb",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "root-missing-wwn",
+      "order": [
+        0,
+        1,
+        2
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "root-missing-wwn",
+      "order": [
+        0,
+        2,
+        1
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "root-missing-wwn",
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "root-missing-wwn",
+      "order": [
+        1,
+        2,
+        0
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "root-missing-wwn",
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "root-missing-wwn",
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "leaf-missing-wwn",
+      "order": [
+        0,
+        1,
+        2
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "leaf-missing-wwn",
+      "order": [
+        0,
+        2,
+        1
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "leaf-missing-wwn",
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "leaf-missing-wwn",
+      "order": [
+        1,
+        2,
+        0
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "leaf-missing-wwn",
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "50014ee20aa00001",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "0x50014ee20aa00001",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "leaf-missing-wwn",
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": false,
+      "actual_leaf_selectable": true,
+      "violation": true,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "OTHER-SERIAL",
+          "wwn": "50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "0x50014ee20aa00001",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "distinct-wwn-control",
+      "order": [
+        0,
+        1,
+        2
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "distinct-wwn-control",
+      "order": [
+        0,
+        2,
+        1
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "distinct-wwn-control",
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "distinct-wwn-control",
+      "order": [
+        1,
+        2,
+        0
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "distinct-wwn-control",
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "distinct-wwn-control",
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "placeholder-control",
+      "order": [
+        0,
+        1,
+        2
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "UNKNOWN",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "UNKNOWN",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "placeholder-control",
+      "order": [
+        0,
+        2,
+        1
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "UNKNOWN",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "UNKNOWN",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "placeholder-control",
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "UNKNOWN",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "UNKNOWN",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "placeholder-control",
+      "order": [
+        1,
+        2,
+        0
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "UNKNOWN",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "UNKNOWN",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "placeholder-control",
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "UNKNOWN",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "UNKNOWN",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "UNKNOWN",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "placeholder-control",
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "UNKNOWN",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "UNKNOWN",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "BRIDGE-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "no-chain-control",
+      "order": [
+        0,
+        1,
+        2
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "BRIDGE-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "BRIDGE-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "no-chain-control",
+      "order": [
+        0,
+        2,
+        1
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "BRIDGE-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "BRIDGE-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "no-chain-control",
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "BRIDGE-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "BRIDGE-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "no-chain-control",
+      "order": [
+        1,
+        2,
+        0
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdc",
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "BRIDGE-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "BRIDGE-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "no-chain-control",
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "BRIDGE-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "OTHER-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "BRIDGE-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "no-chain-control",
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "root_bridge_alias": false,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "OTHER-SERIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd",
+        "/dev/sdc"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "OTHER-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "BRIDGE-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "contradictory-wwn-through-missing-control",
+      "order": [
+        0,
+        1,
+        2
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "contradictory-wwn-through-missing-control",
+      "order": [
+        0,
+        2,
+        1
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "contradictory-wwn-through-missing-control",
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "contradictory-wwn-through-missing-control",
+      "order": [
+        1,
+        2,
+        0
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdd",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "contradictory-wwn-through-missing-control",
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    },
+    {
+      "payload": {
+        "blockdevices": [
+          {
+            "name": "sdd",
+            "path": "/dev/sdd",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-other",
+            "model": "Fixture sdd",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdc",
+            "path": "/dev/sdc",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "",
+            "model": "Fixture sdc",
+            "mountpoints": [],
+            "ro": false
+          },
+          {
+            "name": "sdb",
+            "path": "/dev/sdb",
+            "type": "disk",
+            "tran": "sata",
+            "size": 128000000000,
+            "serial": "ROOT-SERIAL",
+            "wwn": "wwn-root",
+            "model": "Fixture sdb",
+            "mountpoints": [
+              "/media/data"
+            ],
+            "ro": false
+          },
+          {
+            "name": "sdz",
+            "path": "/dev/sdz",
+            "type": "disk",
+            "tran": "usb",
+            "size": 128000000000,
+            "serial": "BOOT-UNRELATED",
+            "wwn": "wwn-boot",
+            "model": "Fixture sdz",
+            "mountpoints": [
+              "/run/live/medium"
+            ],
+            "ro": false
+          }
+        ]
+      },
+      "kind": "mounted",
+      "chain": "contradictory-wwn-through-missing-control",
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "root_bridge_alias": true,
+      "bridge_leaf_alias": true,
+      "root_leaf_alias": false,
+      "expected_leaf_selectable": true,
+      "actual_leaf_selectable": true,
+      "violation": false,
+      "confirm_token": "RIAL",
+      "boot_exclusion_gate": "accepts",
+      "leaf_identity_gate": "accepts",
+      "boot_path": "/dev/sdz",
+      "targets": [
+        "/dev/sdd"
+      ],
+      "disks": [
+        {
+          "path": "/dev/sdd",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-other",
+          "is_boot": false,
+          "mounts": []
+        },
+        {
+          "path": "/dev/sdc",
+          "serial": "ROOT-SERIAL",
+          "wwn": "",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdb",
+          "serial": "ROOT-SERIAL",
+          "wwn": "wwn-root",
+          "is_boot": false,
+          "mounts": [
+            "/media/data"
+          ]
+        },
+        {
+          "path": "/dev/sdz",
+          "serial": "BOOT-UNRELATED",
+          "wwn": "wwn-boot",
+          "is_boot": true,
+          "mounts": [
+            "/run/live/medium"
+          ]
+        }
+      ]
+    }
+  ]
+}

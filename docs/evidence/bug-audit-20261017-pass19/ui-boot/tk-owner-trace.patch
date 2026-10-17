@@ -1,0 +1,36 @@
+--- a/src/beamo_wipe/ui/tk_wizard.py
++++ b/src/beamo_wipe/ui/tk_wizard.py
+@@ -1237,8 +1237,8 @@
+         self._layout_drawing = False
+         self._build_chrome()
+         self.root.bind("<Configure>", self._on_root_configure)
+-        self._confirm_var.trace_add("write", self._confirm_var_written)
+-        self._typing_var.trace_add("write", self._typing_var_written)
++        self._confirm_var_trace: Optional[str] = self._confirm_var.trace_add("write", self._confirm_var_written)
++        self._typing_var_trace: Optional[str] = self._typing_var.trace_add("write", self._typing_var_written)
+         self.root.bind("<Escape>", self._on_escape)
+         self.root.bind("<KeyRelease-Escape>", self._on_escape_release)
+         self.root.bind("<KP_Enter>", self._on_return)
+@@ -1630,6 +1630,22 @@
+         # In-flight scans finish into the void: polls stop here and any late
+         # worker result finds no owner. Workers are daemons; join them only.
+         self._ui_dead = True
++        for variable_name, token_name in (
++            ("_confirm_var", "_confirm_var_trace"),
++            ("_typing_var", "_typing_var_trace"),
++        ):
++            token = getattr(self, token_name, None)
++            if token is None:
++                continue
++            setattr(self, token_name, None)
++            variable = getattr(self, variable_name, None)
++            if variable is not None:
++                try:
++                    # Variables outlive the window. Retire only this owner's
++                    # callback, preserving every independent observer.
++                    variable.trace_remove("write", token)
++                except tk.TclError:
++                    pass  # Interpreter teardown may have removed the trace.
+         getattr(self.w, "cancel_audio", lambda: None)()
+         self._cancel_pick_restore()
+         for attr in ("_return_release_after", "_space_release_after"):

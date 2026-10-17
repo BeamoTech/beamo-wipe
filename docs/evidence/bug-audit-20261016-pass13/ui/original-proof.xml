@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="8" time="2.474" timestamp="2026-10-16T20:51:22.616398+00:00" hostname="srv1606478"><testcase classname="test_main_focus" name="test_main_first_native_escape[inside-False]" time="0.406" /><testcase classname="test_main_focus" name="test_main_first_native_escape[inside-True]" time="0.367" /><testcase classname="test_main_focus" name="test_main_first_native_escape[outside-False]" time="0.363"><failure message="AssertionError: {'after': 'SPLASH', 'after_focus': 'None', 'before': 'SPLASH', 'focus': 'None', ...}&#10;assert &lt;Screen.SPLASH: 'splash'&gt; is &lt;Screen.KEYBOARD: 'keyboard'&gt;&#10; +  where &lt;Screen.SPLASH: 'splash'&gt; = &lt;beamo_wipe.wizard.Wizard object at 0x740e9b867470&gt;.screen&#10; +  and   &lt;Screen.KEYBOARD: 'keyboard'&gt; = Screen.KEYBOARD">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+fullscreen = False, pointer = 'outside'
+
+    @pytest.mark.parametrize('fullscreen', [False, True])
+    @pytest.mark.parametrize('pointer', ['inside', 'outside'])
+    def test_main_first_native_escape(native, fullscreen, pointer):
+        native.root_focus()
+        native.pointer(1599, 999)
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        def send():
+            x,y,w,h = app.root.winfo_rootx(), app.root.winfo_rooty(), app.root.winfo_width(), app.root.winfo_height()
+            native.pointer(x + 20, y + 20) if pointer == 'inside' else native.pointer(1599,999)
+            seen.update(geometry=[x,y,w,h], focus=str(app.root.focus_get()), before=wizard.screen.name)
+            native.key(Gdk.KEY_Escape, True)
+            native.key(Gdk.KEY_Escape, False)
+        def inspect():
+            seen.update(after=wizard.screen.name, after_focus=str(app.root.focus_get()))
+            app._teardown()
+        app.root.after(120, send)
+        app.root.after(320, inspect)
+        app.run()
+&gt;       assert wizard.screen is Screen.KEYBOARD, seen
+E       AssertionError: {'after': 'SPLASH', 'after_focus': 'None', 'before': 'SPLASH', 'focus': 'None', ...}
+E       assert &lt;Screen.SPLASH: 'splash'&gt; is &lt;Screen.KEYBOARD: 'keyboard'&gt;
+E        +  where &lt;Screen.SPLASH: 'splash'&gt; = &lt;beamo_wipe.wizard.Wizard object at 0x740e9b867470&gt;.screen
+E        +  and   &lt;Screen.KEYBOARD: 'keyboard'&gt; = Screen.KEYBOARD
+
+/tmp/pass13-ui/test_main_focus.py:38: AssertionError</failure></testcase><testcase classname="test_main_focus" name="test_main_first_native_escape[outside-True]" time="0.374" /><testcase classname="test_body_wheel" name="test_body_scroll_over_visible_prose[label-&lt;Button-5&gt;]" time="0.231"><failure message="AssertionError: {'after': (0.0, 0.640194489465154), 'before': (0.0, 0.640194489465154), 'sequence': '&lt;Button-5&gt;', 'target': '.!frame3.!frame2.!canvas.!frame.!frame.!label', ...}&#10;assert 0.0 &gt; 0.0">sequence = '&lt;Button-5&gt;', target_kind = 'label'
+
+    @pytest.mark.parametrize('sequence', ['&lt;Button-5&gt;', '&lt;MouseWheel&gt;'])
+    @pytest.mark.parametrize('target_kind', ['label', 'canvas'])
+    def test_body_scroll_over_visible_prose(sequence, target_kind):
+        wizard = make_demo_wizard()
+        wizard.skip_intro()
+        app = TkWizard(wizard)
+        app.root.geometry('800x600+0+0')
+        def descendants(widget):
+            for child in widget.winfo_children():
+                yield child
+                yield from descendants(child)
+        try:
+            app.root.update()
+            canvas = app._body_canvas
+            assert canvas is not None
+            assert canvas.yview()[1] &lt; 1
+            labels = [w for w in descendants(app._body_inner) if isinstance(w,tk.Label) and w.winfo_ismapped() and w.winfo_rooty() &gt;= canvas.winfo_rooty() and w.winfo_rooty() + 12 &lt; canvas.winfo_rooty()+canvas.winfo_height()]
+            assert labels
+            target = labels[0] if target_kind == 'label' else canvas
+            before = canvas.yview()
+            target.event_generate(sequence, **({'delta': -120} if sequence == '&lt;MouseWheel&gt;' else {}))
+            app.root.update()
+            after = canvas.yview()
+&gt;           assert after[0] &gt; before[0], {'target':str(target),'text':target.cget('text') if target_kind == 'label' else '', 'sequence':sequence,'before':before,'after':after}
+E           AssertionError: {'after': (0.0, 0.640194489465154), 'before': (0.0, 0.640194489465154), 'sequence': '&lt;Button-5&gt;', 'target': '.!frame3.!frame2.!canvas.!frame.!frame.!label', ...}
+E           assert 0.0 &gt; 0.0
+
+/tmp/pass13-ui/test_body_wheel.py:33: AssertionError</failure></testcase><testcase classname="test_body_wheel" name="test_body_scroll_over_visible_prose[label-&lt;MouseWheel&gt;]" time="0.171"><failure message="AssertionError: {'after': (0.0, 0.640194489465154), 'before': (0.0, 0.640194489465154), 'sequence': '&lt;MouseWheel&gt;', 'target': '.!frame3.!frame2.!canvas.!frame.!frame.!label', ...}&#10;assert 0.0 &gt; 0.0">sequence = '&lt;MouseWheel&gt;', target_kind = 'label'
+
+    @pytest.mark.parametrize('sequence', ['&lt;Button-5&gt;', '&lt;MouseWheel&gt;'])
+    @pytest.mark.parametrize('target_kind', ['label', 'canvas'])
+    def test_body_scroll_over_visible_prose(sequence, target_kind):
+        wizard = make_demo_wizard()
+        wizard.skip_intro()
+        app = TkWizard(wizard)
+        app.root.geometry('800x600+0+0')
+        def descendants(widget):
+            for child in widget.winfo_children():
+                yield child
+                yield from descendants(child)
+        try:
+            app.root.update()
+            canvas = app._body_canvas
+            assert canvas is not None
+            assert canvas.yview()[1] &lt; 1
+            labels = [w for w in descendants(app._body_inner) if isinstance(w,tk.Label) and w.winfo_ismapped() and w.winfo_rooty() &gt;= canvas.winfo_rooty() and w.winfo_rooty() + 12 &lt; canvas.winfo_rooty()+canvas.winfo_height()]
+            assert labels
+            target = labels[0] if target_kind == 'label' else canvas
+            before = canvas.yview()
+            target.event_generate(sequence, **({'delta': -120} if sequence == '&lt;MouseWheel&gt;' else {}))
+            app.root.update()
+            after = canvas.yview()
+&gt;           assert after[0] &gt; before[0], {'target':str(target),'text':target.cget('text') if target_kind == 'label' else '', 'sequence':sequence,'before':before,'after':after}
+E           AssertionError: {'after': (0.0, 0.640194489465154), 'before': (0.0, 0.640194489465154), 'sequence': '&lt;MouseWheel&gt;', 'target': '.!frame3.!frame2.!canvas.!frame.!frame.!label', ...}
+E           assert 0.0 &gt; 0.0
+
+/tmp/pass13-ui/test_body_wheel.py:33: AssertionError</failure></testcase><testcase classname="test_body_wheel" name="test_body_scroll_over_visible_prose[canvas-&lt;Button-5&gt;]" time="0.168" /><testcase classname="test_body_wheel" name="test_body_scroll_over_visible_prose[canvas-&lt;MouseWheel&gt;]" time="0.176" /></testsuite></testsuites>

@@ -1,0 +1,491 @@
+{
+  "cases": 54,
+  "rows": [
+    {
+      "language": "en",
+      "method": "everyday",
+      "ending": "'\\n'",
+      "large": false,
+      "result": "completed",
+      "view": "verified",
+      "outcome": "verified"
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "ending": "'\\n'",
+      "large": true,
+      "result": "completed",
+      "view": "verified",
+      "outcome": "verified"
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "ending": "'\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "ending": "'\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "ending": "'\\r\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "ending": "'\\r\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "ending": "'\\n'",
+      "large": false,
+      "result": "completed",
+      "view": "verified",
+      "outcome": "verified"
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "ending": "'\\n'",
+      "large": true,
+      "result": "completed",
+      "view": "verified",
+      "outcome": "verified"
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "ending": "'\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "ending": "'\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "ending": "'\\r\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "ending": "'\\r\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "ending": "'\\n'",
+      "large": false,
+      "result": "completed",
+      "view": "unverified",
+      "outcome": "completed"
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "ending": "'\\n'",
+      "large": true,
+      "result": "completed",
+      "view": "unverified",
+      "outcome": "completed"
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "ending": "'\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "ending": "'\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "ending": "'\\r\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "ending": "'\\r\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "ending": "'\\n'",
+      "large": false,
+      "result": "completed",
+      "view": "verified",
+      "outcome": "verified"
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "ending": "'\\n'",
+      "large": true,
+      "result": "completed",
+      "view": "verified",
+      "outcome": "verified"
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "ending": "'\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "ending": "'\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "ending": "'\\r\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "ending": "'\\r\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "ending": "'\\n'",
+      "large": false,
+      "result": "completed",
+      "view": "verified",
+      "outcome": "verified"
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "ending": "'\\n'",
+      "large": true,
+      "result": "completed",
+      "view": "verified",
+      "outcome": "verified"
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "ending": "'\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "ending": "'\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "ending": "'\\r\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "ending": "'\\r\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "ending": "'\\n'",
+      "large": false,
+      "result": "completed",
+      "view": "unverified",
+      "outcome": "completed"
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "ending": "'\\n'",
+      "large": true,
+      "result": "completed",
+      "view": "unverified",
+      "outcome": "completed"
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "ending": "'\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "ending": "'\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "ending": "'\\r\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "ending": "'\\r\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "ending": "'\\n'",
+      "large": false,
+      "result": "completed",
+      "view": "verified",
+      "outcome": "verified"
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "ending": "'\\n'",
+      "large": true,
+      "result": "completed",
+      "view": "verified",
+      "outcome": "verified"
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "ending": "'\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "ending": "'\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "ending": "'\\r\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "ending": "'\\r\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "ending": "'\\n'",
+      "large": false,
+      "result": "completed",
+      "view": "verified",
+      "outcome": "verified"
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "ending": "'\\n'",
+      "large": true,
+      "result": "completed",
+      "view": "verified",
+      "outcome": "verified"
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "ending": "'\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "ending": "'\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "ending": "'\\r\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "ending": "'\\r\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "ending": "'\\n'",
+      "large": false,
+      "result": "completed",
+      "view": "unverified",
+      "outcome": "completed"
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "ending": "'\\n'",
+      "large": true,
+      "result": "completed",
+      "view": "unverified",
+      "outcome": "completed"
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "ending": "'\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "ending": "'\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "ending": "'\\r\\r\\n'",
+      "large": false,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "ending": "'\\r\\r\\n'",
+      "large": true,
+      "result": "completion_missing",
+      "view": "completion_missing",
+      "outcome": "failed"
+    }
+  ]
+}

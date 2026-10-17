@@ -1,0 +1,13 @@
+[
+  {
+    "phase": "lint",
+    "command": [
+      "./scripts/ci-hosted.sh",
+      "lint"
+    ],
+    "exit_code": 1,
+    "crossbuild_env": {},
+    "started_utc": "2026-10-17T06:09:02.323509+00:00",
+    "ended_utc": "2026-10-17T06:09:05.243881+00:00"
+  }
+]

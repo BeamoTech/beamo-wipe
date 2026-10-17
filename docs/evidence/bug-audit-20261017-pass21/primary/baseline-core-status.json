@@ -1,0 +1,28 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass21-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "-o",
+    "pythonpath=src",
+    "tests/test_discover.py",
+    "tests/test_safety.py",
+    "tests/test_nwipe_runner.py",
+    "tests/test_evidence.py",
+    "tests/test_session_recovery.py",
+    "tests/test_startup_stages.py",
+    "--junitxml=/tmp/pass21-primary/baseline-core.xml"
+  ],
+  "exit_code": 0,
+  "started_utc": "2026-10-17T20:52:25.014724+00:00",
+  "ended_utc": "2026-10-17T20:52:34.529459+00:00"
+}

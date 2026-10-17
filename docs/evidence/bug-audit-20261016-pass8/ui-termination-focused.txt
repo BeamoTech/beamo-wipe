@@ -1,0 +1,273 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.3, pluggy-1.7.0 -- /tmp/beamo-wipe-audit-python/bin/python3
+rootdir: /root/dev/Beamo Wipe
+configfile: pyproject.toml
+collecting ... collected 311 items / 295 deselected / 16 selected
+
+tests/test_tk_runtime.py::test_evidence_failure_warning_and_retry_layout[working-size0]
+SETUP    S tmp_path_factory
+        SETUP    F monkeypatch
+        SETUP    F _isolate_beamo_env (fixtures used: monkeypatch)
+        SETUP    F _never_a_live_wipe_session (fixtures used: monkeypatch)
+        SETUP    F _reset_ui_language
+        SETUP    F ui
+        SETUP    F tmp_path (fixtures used: tmp_path_factory)
+        SETUP    F size[(1280, 820)]
+        SETUP    F phase['working']
+        tests/test_tk_runtime.py::test_evidence_failure_warning_and_retry_layout[working-size0] (fixtures used: _isolate_beamo_env, _never_a_live_wipe_session, _reset_ui_language, monkeypatch, phase, request, size, tmp_path, tmp_path_factory, ui)PASSED
+        TEARDOWN F phase['working']
+        TEARDOWN F size[(1280, 820)]
+        TEARDOWN F tmp_path
+        TEARDOWN F ui
+        TEARDOWN F _reset_ui_language
+        TEARDOWN F _never_a_live_wipe_session
+        TEARDOWN F _isolate_beamo_env
+        TEARDOWN F monkeypatch
+tests/test_tk_runtime.py::test_evidence_failure_warning_and_retry_layout[working-size1]
+        SETUP    F monkeypatch
+        SETUP    F _isolate_beamo_env (fixtures used: monkeypatch)
+        SETUP    F _never_a_live_wipe_session (fixtures used: monkeypatch)
+        SETUP    F _reset_ui_language
+        SETUP    F ui
+        SETUP    F tmp_path (fixtures used: tmp_path_factory)
+        SETUP    F size[(1024, 740)]
+        SETUP    F phase['working']
+        tests/test_tk_runtime.py::test_evidence_failure_warning_and_retry_layout[working-size1] (fixtures used: _isolate_beamo_env, _never_a_live_wipe_session, _reset_ui_language, monkeypatch, phase, request, size, tmp_path, tmp_path_factory, ui)PASSED
+        TEARDOWN F phase['working']
+        TEARDOWN F size[(1024, 740)]
+        TEARDOWN F tmp_path
+        TEARDOWN F ui
+        TEARDOWN F _reset_ui_language
+        TEARDOWN F _never_a_live_wipe_session
+        TEARDOWN F _isolate_beamo_env
+        TEARDOWN F monkeypatch
+tests/test_tk_runtime.py::test_evidence_failure_warning_and_retry_layout[done-size0]
+        SETUP    F monkeypatch
+        SETUP    F _isolate_beamo_env (fixtures used: monkeypatch)
+        SETUP    F _never_a_live_wipe_session (fixtures used: monkeypatch)
+        SETUP    F _reset_ui_language
+        SETUP    F ui
+        SETUP    F tmp_path (fixtures used: tmp_path_factory)
+        SETUP    F size[(1280, 820)]
+        SETUP    F phase['done']
+        tests/test_tk_runtime.py::test_evidence_failure_warning_and_retry_layout[done-size0] (fixtures used: _isolate_beamo_env, _never_a_live_wipe_session, _reset_ui_language, monkeypatch, phase, request, size, tmp_path, tmp_path_factory, ui)PASSED
+        TEARDOWN F phase['done']
+        TEARDOWN F size[(1280, 820)]
+        TEARDOWN F tmp_path
+        TEARDOWN F ui
+        TEARDOWN F _reset_ui_language
+        TEARDOWN F _never_a_live_wipe_session
+        TEARDOWN F _isolate_beamo_env
+        TEARDOWN F monkeypatch
+tests/test_tk_runtime.py::test_evidence_failure_warning_and_retry_layout[done-size1]
+        SETUP    F monkeypatch
+        SETUP    F _isolate_beamo_env (fixtures used: monkeypatch)
+        SETUP    F _never_a_live_wipe_session (fixtures used: monkeypatch)
+        SETUP    F _reset_ui_language
+        SETUP    F ui
+        SETUP    F tmp_path (fixtures used: tmp_path_factory)
+        SETUP    F size[(1024, 740)]
+        SETUP    F phase['done']
+        tests/test_tk_runtime.py::test_evidence_failure_warning_and_retry_layout[done-size1] (fixtures used: _isolate_beamo_env, _never_a_live_wipe_session, _reset_ui_language, monkeypatch, phase, request, size, tmp_path, tmp_path_factory, ui)PASSED
+        TEARDOWN F phase['done']
+        TEARDOWN F size[(1024, 740)]
+        TEARDOWN F tmp_path
+        TEARDOWN F ui
+        TEARDOWN F _reset_ui_language
+        TEARDOWN F _never_a_live_wipe_session
+        TEARDOWN F _isolate_beamo_env
+        TEARDOWN F monkeypatch
+tests/test_tk_runtime.py::test_evidence_failure_warning_and_retry_layout[exhausted-size0]
+        SETUP    F monkeypatch
+        SETUP    F _isolate_beamo_env (fixtures used: monkeypatch)
+        SETUP    F _never_a_live_wipe_session (fixtures used: monkeypatch)
+        SETUP    F _reset_ui_language
+        SETUP    F ui
+        SETUP    F tmp_path (fixtures used: tmp_path_factory)
+        SETUP    F size[(1280, 820)]
+        SETUP    F phase['exhausted']
+        tests/test_tk_runtime.py::test_evidence_failure_warning_and_retry_layout[exhausted-size0] (fixtures used: _isolate_beamo_env, _never_a_live_wipe_session, _reset_ui_language, monkeypatch, phase, request, size, tmp_path, tmp_path_factory, ui)PASSED
+        TEARDOWN F phase['exhausted']
+        TEARDOWN F size[(1280, 820)]
+        TEARDOWN F tmp_path
+        TEARDOWN F ui
+        TEARDOWN F _reset_ui_language
+        TEARDOWN F _never_a_live_wipe_session
+        TEARDOWN F _isolate_beamo_env
+        TEARDOWN F monkeypatch
+tests/test_tk_runtime.py::test_evidence_failure_warning_and_retry_layout[exhausted-size1]
+        SETUP    F monkeypatch
+        SETUP    F _isolate_beamo_env (fixtures used: monkeypatch)
+        SETUP    F _never_a_live_wipe_session (fixtures used: monkeypatch)
+        SETUP    F _reset_ui_language
+        SETUP    F ui
+        SETUP    F tmp_path (fixtures used: tmp_path_factory)
+        SETUP    F size[(1024, 740)]
+        SETUP    F phase['exhausted']
+        tests/test_tk_runtime.py::test_evidence_failure_warning_and_retry_layout[exhausted-size1] (fixtures used: _isolate_beamo_env, _never_a_live_wipe_session, _reset_ui_language, monkeypatch, phase, request, size, tmp_path, tmp_path_factory, ui)PASSED
+        TEARDOWN F phase['exhausted']
+        TEARDOWN F size[(1024, 740)]
+        TEARDOWN F tmp_path
+        TEARDOWN F ui
+        TEARDOWN F _reset_ui_language
+        TEARDOWN F _never_a_live_wipe_session
+        TEARDOWN F _isolate_beamo_env
+        TEARDOWN F monkeypatch
+tests/test_tk_runtime.py::test_busy_transition_renders_and_pumps_events[size0-checking]
+        SETUP    F monkeypatch
+        SETUP    F _isolate_beamo_env (fixtures used: monkeypatch)
+        SETUP    F _never_a_live_wipe_session (fixtures used: monkeypatch)
+        SETUP    F _reset_ui_language
+        SETUP    F ui
+        SETUP    F tmp_path (fixtures used: tmp_path_factory)
+        SETUP    F phase['checking']
+        SETUP    F size[(1280, 820)]
+        tests/test_tk_runtime.py::test_busy_transition_renders_and_pumps_events[size0-checking] (fixtures used: _isolate_beamo_env, _never_a_live_wipe_session, _reset_ui_language, monkeypatch, phase, request, size, tmp_path, tmp_path_factory, ui)PASSED
+        TEARDOWN F size[(1280, 820)]
+        TEARDOWN F phase['checking']
+        TEARDOWN F tmp_path
+        TEARDOWN F ui
+        TEARDOWN F _reset_ui_language
+        TEARDOWN F _never_a_live_wipe_session
+        TEARDOWN F _isolate_beamo_env
+        TEARDOWN F monkeypatch
+tests/test_tk_runtime.py::test_busy_transition_renders_and_pumps_events[size0-stopping]
+        SETUP    F monkeypatch
+        SETUP    F _isolate_beamo_env (fixtures used: monkeypatch)
+        SETUP    F _never_a_live_wipe_session (fixtures used: monkeypatch)
+        SETUP    F _reset_ui_language
+        SETUP    F ui
+        SETUP    F tmp_path (fixtures used: tmp_path_factory)
+        SETUP    F phase['stopping']
+        SETUP    F size[(1280, 820)]
+        tests/test_tk_runtime.py::test_busy_transition_renders_and_pumps_events[size0-stopping] (fixtures used: _isolate_beamo_env, _never_a_live_wipe_session, _reset_ui_language, monkeypatch, phase, request, size, tmp_path, tmp_path_factory, ui)PASSED
+        TEARDOWN F size[(1280, 820)]
+        TEARDOWN F phase['stopping']
+        TEARDOWN F tmp_path
+        TEARDOWN F ui
+        TEARDOWN F _reset_ui_language
+        TEARDOWN F _never_a_live_wipe_session
+        TEARDOWN F _isolate_beamo_env
+        TEARDOWN F monkeypatch
+tests/test_tk_runtime.py::test_busy_transition_renders_and_pumps_events[size1-checking]
+        SETUP    F monkeypatch
+        SETUP    F _isolate_beamo_env (fixtures used: monkeypatch)
+        SETUP    F _never_a_live_wipe_session (fixtures used: monkeypatch)
+        SETUP    F _reset_ui_language
+        SETUP    F ui
+        SETUP    F tmp_path (fixtures used: tmp_path_factory)
+        SETUP    F phase['checking']
+        SETUP    F size[(1024, 740)]
+        tests/test_tk_runtime.py::test_busy_transition_renders_and_pumps_events[size1-checking] (fixtures used: _isolate_beamo_env, _never_a_live_wipe_session, _reset_ui_language, monkeypatch, phase, request, size, tmp_path, tmp_path_factory, ui)PASSED
+        TEARDOWN F size[(1024, 740)]
+        TEARDOWN F phase['checking']
+        TEARDOWN F tmp_path
+        TEARDOWN F ui
+        TEARDOWN F _reset_ui_language
+        TEARDOWN F _never_a_live_wipe_session
+        TEARDOWN F _isolate_beamo_env
+        TEARDOWN F monkeypatch
+tests/test_tk_runtime.py::test_busy_transition_renders_and_pumps_events[size1-stopping]
+        SETUP    F monkeypatch
+        SETUP    F _isolate_beamo_env (fixtures used: monkeypatch)
+        SETUP    F _never_a_live_wipe_session (fixtures used: monkeypatch)
+        SETUP    F _reset_ui_language
+        SETUP    F ui
+        SETUP    F tmp_path (fixtures used: tmp_path_factory)
+        SETUP    F phase['stopping']
+        SETUP    F size[(1024, 740)]
+        tests/test_tk_runtime.py::test_busy_transition_renders_and_pumps_events[size1-stopping] (fixtures used: _isolate_beamo_env, _never_a_live_wipe_session, _reset_ui_language, monkeypatch, phase, request, size, tmp_path, tmp_path_factory, ui)PASSED
+        TEARDOWN F size[(1024, 740)]
+        TEARDOWN F phase['stopping']
+        TEARDOWN F tmp_path
+        TEARDOWN F ui
+        TEARDOWN F _reset_ui_language
+        TEARDOWN F _never_a_live_wipe_session
+        TEARDOWN F _isolate_beamo_env
+        TEARDOWN F monkeypatch
+tests/test_tk_runtime.py::test_rebuilt_last_chance_rejects_old_erase_callback
+        SETUP    F monkeypatch
+        SETUP    F _isolate_beamo_env (fixtures used: monkeypatch)
+        SETUP    F _never_a_live_wipe_session (fixtures used: monkeypatch)
+        SETUP    F _reset_ui_language
+        SETUP    F ui
+        tests/test_tk_runtime.py::test_rebuilt_last_chance_rejects_old_erase_callback (fixtures used: _isolate_beamo_env, _never_a_live_wipe_session, _reset_ui_language, monkeypatch, ui)PASSED
+        TEARDOWN F ui
+        TEARDOWN F _reset_ui_language
+        TEARDOWN F _never_a_live_wipe_session
+        TEARDOWN F _isolate_beamo_env
+        TEARDOWN F monkeypatch
+tests/test_tk_runtime.py::test_working_timer_keeps_cancel_control_until_revision_changes
+        SETUP    F monkeypatch
+        SETUP    F _isolate_beamo_env (fixtures used: monkeypatch)
+        SETUP    F _never_a_live_wipe_session (fixtures used: monkeypatch)
+        SETUP    F _reset_ui_language
+        SETUP    F ui
+        SETUP    F tmp_path (fixtures used: tmp_path_factory)
+        tests/test_tk_runtime.py::test_working_timer_keeps_cancel_control_until_revision_changes (fixtures used: _isolate_beamo_env, _never_a_live_wipe_session, _reset_ui_language, monkeypatch, request, tmp_path, tmp_path_factory, ui)PASSED
+        TEARDOWN F tmp_path
+        TEARDOWN F ui
+        TEARDOWN F _reset_ui_language
+        TEARDOWN F _never_a_live_wipe_session
+        TEARDOWN F _isolate_beamo_env
+        TEARDOWN F monkeypatch
+tests/test_tk_runtime.py::test_timing_text_readable_and_working_controls_stable[size0]
+        SETUP    F monkeypatch
+        SETUP    F _isolate_beamo_env (fixtures used: monkeypatch)
+        SETUP    F _never_a_live_wipe_session (fixtures used: monkeypatch)
+        SETUP    F _reset_ui_language
+        SETUP    F ui
+        SETUP    F size[(1280, 820)]
+        tests/test_tk_runtime.py::test_timing_text_readable_and_working_controls_stable[size0] (fixtures used: _isolate_beamo_env, _never_a_live_wipe_session, _reset_ui_language, monkeypatch, size, ui)PASSED
+        TEARDOWN F size[(1280, 820)]
+        TEARDOWN F ui
+        TEARDOWN F _reset_ui_language
+        TEARDOWN F _never_a_live_wipe_session
+        TEARDOWN F _isolate_beamo_env
+        TEARDOWN F monkeypatch
+tests/test_tk_runtime.py::test_timing_text_readable_and_working_controls_stable[size1]
+        SETUP    F monkeypatch
+        SETUP    F _isolate_beamo_env (fixtures used: monkeypatch)
+        SETUP    F _never_a_live_wipe_session (fixtures used: monkeypatch)
+        SETUP    F _reset_ui_language
+        SETUP    F ui
+        SETUP    F size[(1024, 740)]
+        tests/test_tk_runtime.py::test_timing_text_readable_and_working_controls_stable[size1] (fixtures used: _isolate_beamo_env, _never_a_live_wipe_session, _reset_ui_language, monkeypatch, size, ui)PASSED
+        TEARDOWN F size[(1024, 740)]
+        TEARDOWN F ui
+        TEARDOWN F _reset_ui_language
+        TEARDOWN F _never_a_live_wipe_session
+        TEARDOWN F _isolate_beamo_env
+        TEARDOWN F monkeypatch
+tests/test_tk_runtime.py::test_stale_progress_is_marked_old_and_does_not_animate[size0]
+        SETUP    F monkeypatch
+        SETUP    F _isolate_beamo_env (fixtures used: monkeypatch)
+        SETUP    F _never_a_live_wipe_session (fixtures used: monkeypatch)
+        SETUP    F _reset_ui_language
+        SETUP    F ui
+        SETUP    F size[(1280, 820)]
+        tests/test_tk_runtime.py::test_stale_progress_is_marked_old_and_does_not_animate[size0] (fixtures used: _isolate_beamo_env, _never_a_live_wipe_session, _reset_ui_language, monkeypatch, size, ui)PASSED
+        TEARDOWN F size[(1280, 820)]
+        TEARDOWN F ui
+        TEARDOWN F _reset_ui_language
+        TEARDOWN F _never_a_live_wipe_session
+        TEARDOWN F _isolate_beamo_env
+        TEARDOWN F monkeypatch
+tests/test_tk_runtime.py::test_stale_progress_is_marked_old_and_does_not_animate[size1]
+        SETUP    F monkeypatch
+        SETUP    F _isolate_beamo_env (fixtures used: monkeypatch)
+        SETUP    F _never_a_live_wipe_session (fixtures used: monkeypatch)
+        SETUP    F _reset_ui_language
+        SETUP    F ui
+        SETUP    F size[(1024, 740)]
+        tests/test_tk_runtime.py::test_stale_progress_is_marked_old_and_does_not_animate[size1] (fixtures used: _isolate_beamo_env, _never_a_live_wipe_session, _reset_ui_language, monkeypatch, size, ui)PASSED
+        TEARDOWN F size[(1024, 740)]
+        TEARDOWN F ui
+        TEARDOWN F _reset_ui_language
+        TEARDOWN F _never_a_live_wipe_session
+        TEARDOWN F _isolate_beamo_env
+        TEARDOWN F monkeypatch
+TEARDOWN S tmp_path_factory
+
+------- generated xml file: /tmp/beamo-pass8-ui-termination-focused.xml --------
+====================== 16 passed, 295 deselected in 8.79s ======================

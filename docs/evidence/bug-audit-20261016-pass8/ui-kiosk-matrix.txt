@@ -1,0 +1,4 @@
+{
+  "fully_stubbed_kiosk_exit_power_token_cases": 240,
+  "unexpected_host_actions": 0
+}

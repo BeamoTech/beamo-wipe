@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="10" skipped="0" tests="22" time="0.691" timestamp="2026-10-16T16:23:29.596556+00:00" hostname="srv1606478"><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_diagnostic_shortcut_replaces_inventory_overlay[d-b]" time="0.033"><failure message="AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Protected boot media Beamo USB — protected, cannot be erased Be...his disk (cannot be erased separately): Partition · 16 GB · BEAMO_WIPE Read only. Up/Down, PgUp/PgDn: read. Esc: back.'&#10; +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72b125b04aa0&gt;
+overlay = 'b', diagnostic = 'd'
+
+    @pytest.mark.parametrize("overlay", ["b", "B", "o", "O"])
+    @pytest.mark.parametrize("diagnostic", ["d", "D"])
+    def test_diagnostic_shortcut_replaces_inventory_overlay(monkeypatch, overlay, diagnostic):
+        wizard, terminal = _run(monkeypatch, [ord(overlay), ord(diagnostic)])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        screen, text = terminal.frames[-1]
+        assert screen == Screen.DIAGNOSTIC
+&gt;       assert D.NOTICE in text
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Protected boot media Beamo USB — protected, cannot be erased Be...his disk (cannot be erased separately): Partition · 16 GB · BEAMO_WIPE Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:65: AssertionError</failure></testcase><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_diagnostic_shortcut_replaces_inventory_overlay[d-B]" time="0.017"><failure message="AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Protected boot media Beamo USB — protected, cannot be erased Be...his disk (cannot be erased separately): Partition · 16 GB · BEAMO_WIPE Read only. Up/Down, PgUp/PgDn: read. Esc: back.'&#10; +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72b125b7a450&gt;
+overlay = 'B', diagnostic = 'd'
+
+    @pytest.mark.parametrize("overlay", ["b", "B", "o", "O"])
+    @pytest.mark.parametrize("diagnostic", ["d", "D"])
+    def test_diagnostic_shortcut_replaces_inventory_overlay(monkeypatch, overlay, diagnostic):
+        wizard, terminal = _run(monkeypatch, [ord(overlay), ord(diagnostic)])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        screen, text = terminal.frames[-1]
+        assert screen == Screen.DIAGNOSTIC
+&gt;       assert D.NOTICE in text
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Protected boot media Beamo USB — protected, cannot be erased Be...his disk (cannot be erased separately): Partition · 16 GB · BEAMO_WIPE Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:65: AssertionError</failure></testcase><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_diagnostic_shortcut_replaces_inventory_overlay[d-o]" time="0.015"><failure message="AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Other detected devices Information only. These devices cannot b...| Serial number: Serial not reported Cannot erase: unsupported device. Read only. Up/Down, PgUp/PgDn: read. Esc: back.'&#10; +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72b125336960&gt;
+overlay = 'o', diagnostic = 'd'
+
+    @pytest.mark.parametrize("overlay", ["b", "B", "o", "O"])
+    @pytest.mark.parametrize("diagnostic", ["d", "D"])
+    def test_diagnostic_shortcut_replaces_inventory_overlay(monkeypatch, overlay, diagnostic):
+        wizard, terminal = _run(monkeypatch, [ord(overlay), ord(diagnostic)])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        screen, text = terminal.frames[-1]
+        assert screen == Screen.DIAGNOSTIC
+&gt;       assert D.NOTICE in text
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Other detected devices Information only. These devices cannot b...| Serial number: Serial not reported Cannot erase: unsupported device. Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:65: AssertionError</failure></testcase><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_diagnostic_shortcut_replaces_inventory_overlay[d-O]" time="0.024"><failure message="AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Other detected devices Information only. These devices cannot b...| Serial number: Serial not reported Cannot erase: unsupported device. Read only. Up/Down, PgUp/PgDn: read. Esc: back.'&#10; +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72b12539bbf0&gt;
+overlay = 'O', diagnostic = 'd'
+
+    @pytest.mark.parametrize("overlay", ["b", "B", "o", "O"])
+    @pytest.mark.parametrize("diagnostic", ["d", "D"])
+    def test_diagnostic_shortcut_replaces_inventory_overlay(monkeypatch, overlay, diagnostic):
+        wizard, terminal = _run(monkeypatch, [ord(overlay), ord(diagnostic)])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        screen, text = terminal.frames[-1]
+        assert screen == Screen.DIAGNOSTIC
+&gt;       assert D.NOTICE in text
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Other detected devices Information only. These devices cannot b...| Serial number: Serial not reported Cannot erase: unsupported device. Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:65: AssertionError</failure></testcase><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_diagnostic_shortcut_replaces_inventory_overlay[D-b]" time="0.016"><failure message="AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Protected boot media Beamo USB — protected, cannot be erased Be...his disk (cannot be erased separately): Partition · 16 GB · BEAMO_WIPE Read only. Up/Down, PgUp/PgDn: read. Esc: back.'&#10; +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72b12539b860&gt;
+overlay = 'b', diagnostic = 'D'
+
+    @pytest.mark.parametrize("overlay", ["b", "B", "o", "O"])
+    @pytest.mark.parametrize("diagnostic", ["d", "D"])
+    def test_diagnostic_shortcut_replaces_inventory_overlay(monkeypatch, overlay, diagnostic):
+        wizard, terminal = _run(monkeypatch, [ord(overlay), ord(diagnostic)])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        screen, text = terminal.frames[-1]
+        assert screen == Screen.DIAGNOSTIC
+&gt;       assert D.NOTICE in text
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Protected boot media Beamo USB — protected, cannot be erased Be...his disk (cannot be erased separately): Partition · 16 GB · BEAMO_WIPE Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:65: AssertionError</failure></testcase><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_diagnostic_shortcut_replaces_inventory_overlay[D-B]" time="0.015"><failure message="AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Protected boot media Beamo USB — protected, cannot be erased Be...his disk (cannot be erased separately): Partition · 16 GB · BEAMO_WIPE Read only. Up/Down, PgUp/PgDn: read. Esc: back.'&#10; +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72b12539a030&gt;
+overlay = 'B', diagnostic = 'D'
+
+    @pytest.mark.parametrize("overlay", ["b", "B", "o", "O"])
+    @pytest.mark.parametrize("diagnostic", ["d", "D"])
+    def test_diagnostic_shortcut_replaces_inventory_overlay(monkeypatch, overlay, diagnostic):
+        wizard, terminal = _run(monkeypatch, [ord(overlay), ord(diagnostic)])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        screen, text = terminal.frames[-1]
+        assert screen == Screen.DIAGNOSTIC
+&gt;       assert D.NOTICE in text
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Protected boot media Beamo USB — protected, cannot be erased Be...his disk (cannot be erased separately): Partition · 16 GB · BEAMO_WIPE Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:65: AssertionError</failure></testcase><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_diagnostic_shortcut_replaces_inventory_overlay[D-o]" time="0.016"><failure message="AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Other detected devices Information only. These devices cannot b...| Serial number: Serial not reported Cannot erase: unsupported device. Read only. Up/Down, PgUp/PgDn: read. Esc: back.'&#10; +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72b12530f170&gt;
+overlay = 'o', diagnostic = 'D'
+
+    @pytest.mark.parametrize("overlay", ["b", "B", "o", "O"])
+    @pytest.mark.parametrize("diagnostic", ["d", "D"])
+    def test_diagnostic_shortcut_replaces_inventory_overlay(monkeypatch, overlay, diagnostic):
+        wizard, terminal = _run(monkeypatch, [ord(overlay), ord(diagnostic)])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        screen, text = terminal.frames[-1]
+        assert screen == Screen.DIAGNOSTIC
+&gt;       assert D.NOTICE in text
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Other detected devices Information only. These devices cannot b...| Serial number: Serial not reported Cannot erase: unsupported device. Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:65: AssertionError</failure></testcase><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_diagnostic_shortcut_replaces_inventory_overlay[D-O]" time="0.015"><failure message="AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Other detected devices Information only. These devices cannot b...| Serial number: Serial not reported Cannot erase: unsupported device. Read only. Up/Down, PgUp/PgDn: read. Esc: back.'&#10; +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72b1253984d0&gt;
+overlay = 'O', diagnostic = 'D'
+
+    @pytest.mark.parametrize("overlay", ["b", "B", "o", "O"])
+    @pytest.mark.parametrize("diagnostic", ["d", "D"])
+    def test_diagnostic_shortcut_replaces_inventory_overlay(monkeypatch, overlay, diagnostic):
+        wizard, terminal = _run(monkeypatch, [ord(overlay), ord(diagnostic)])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        screen, text = terminal.frames[-1]
+        assert screen == Screen.DIAGNOSTIC
+&gt;       assert D.NOTICE in text
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Other detected devices Information only. These devices cannot b...| Serial number: Serial not reported Cannot erase: unsupported device. Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:65: AssertionError</failure></testcase><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_diagnostic_prepare_prompt_follows_visible_diagnostic[b]" time="0.016"><failure message="AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Protected boot media Beamo USB — protected, cannot be erased Be...his disk (cannot be erased separately): Partition · 16 GB · BEAMO_WIPE Read only. Up/Down, PgUp/PgDn: read. Esc: back.'&#10; +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72b12530d2e0&gt;
+overlay = 'b'
+
+    @pytest.mark.parametrize("overlay", ["b", "o"])
+    def test_diagnostic_prepare_prompt_follows_visible_diagnostic(monkeypatch, overlay):
+        prompts = []
+    
+        def confirm(terminal, wizard):
+            prompts.append((wizard.screen, " ".join(terminal.rows.values())))
+    
+        monkeypatch.setattr(console, "_confirm_diagnostic_action", confirm)
+        wizard, _terminal = _run(monkeypatch, [ord(overlay), ord("d"), ord("r")])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        assert len(prompts) == 1
+        assert prompts[0][0] == Screen.DIAGNOSTIC
+&gt;       assert D.NOTICE in prompts[0][1]
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Protected boot media Beamo USB — protected, cannot be erased Be...his disk (cannot be erased separately): Partition · 16 GB · BEAMO_WIPE Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:82: AssertionError</failure></testcase><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_diagnostic_prepare_prompt_follows_visible_diagnostic[o]" time="0.014"><failure message="AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Other detected devices Information only. These devices cannot b...| Serial number: Serial not reported Cannot erase: unsupported device. Read only. Up/Down, PgUp/PgDn: read. Esc: back.'&#10; +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72b1253b7020&gt;
+overlay = 'o'
+
+    @pytest.mark.parametrize("overlay", ["b", "o"])
+    def test_diagnostic_prepare_prompt_follows_visible_diagnostic(monkeypatch, overlay):
+        prompts = []
+    
+        def confirm(terminal, wizard):
+            prompts.append((wizard.screen, " ".join(terminal.rows.values())))
+    
+        monkeypatch.setattr(console, "_confirm_diagnostic_action", confirm)
+        wizard, _terminal = _run(monkeypatch, [ord(overlay), ord("d"), ord("r")])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        assert len(prompts) == 1
+        assert prompts[0][0] == Screen.DIAGNOSTIC
+&gt;       assert D.NOTICE in prompts[0][1]
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Other detected devices Information only. These devices cannot b...| Serial number: Serial not reported Cannot erase: unsupported device. Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:82: AssertionError</failure></testcase><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_unavailable_inventory_shortcuts_do_not_navigate[r-b]" time="0.018" /><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_unavailable_inventory_shortcuts_do_not_navigate[r-o]" time="0.016" /><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_unavailable_inventory_shortcuts_do_not_navigate[R-b]" time="0.018" /><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_unavailable_inventory_shortcuts_do_not_navigate[R-o]" time="0.021" /><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_unavailable_inventory_shortcuts_do_not_navigate[q-b]" time="0.014" /><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_unavailable_inventory_shortcuts_do_not_navigate[q-o]" time="0.015" /><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_unavailable_inventory_shortcuts_do_not_navigate[Q-b]" time="0.015" /><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_unavailable_inventory_shortcuts_do_not_navigate[Q-o]" time="0.014" /><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_escape_closes_only_inventory_overlay[b]" time="0.026" /><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_escape_closes_only_inventory_overlay[o]" time="0.053" /><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_refresh_shortcut_replaces_inventory_overlay[b]" time="0.045" /><testcase classname="tests.test_console_inventory_diagnostic_pass10" name="test_refresh_shortcut_replaces_inventory_overlay[o]" time="0.050" /></testsuite></testsuites>

@@ -1,0 +1,18 @@
+{
+  "original-sound-selection": {
+    "total": 10,
+    "unique": 10,
+    "failures": 8,
+    "errors": 0,
+    "skips": 0,
+    "duplicates": 0
+  },
+  "fixed-sound-adjacent": {
+    "total": 86,
+    "unique": 86,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "duplicates": 0
+  }
+}

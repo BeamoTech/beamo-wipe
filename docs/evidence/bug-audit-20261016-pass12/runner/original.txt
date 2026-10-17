@@ -1,0 +1,1635 @@
+...FFFFFF...FFFFFF...FFFFFF...FFFFFF..................FFFFFFFFFFFFFFFFFF [ 71%]
+FFFFFFFFFFFFFFFFFFFFFF....FFF                                            [100%]
+=================================== FAILURES ===================================
+_ test_prefixed_target_error_row_blocks_terminal_success[1 | 0 | 0-engine_failed-fail-info: -everyday] _
+
+method = <MethodId.EVERYDAY: 'everyday'>, prefix = 'info: '
+counts = '1 | 0 | 0', reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[1 | 0 | 0-engine_failed-fail-info: -extra] _
+
+method = <MethodId.EXTRA: 'extra'>, prefix = 'info: ', counts = '1 | 0 | 0'
+reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[1 | 0 | 0-engine_failed-fail-info: -quick_zero] _
+
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, prefix = 'info: '
+counts = '1 | 0 | 0', reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[1 | 0 | 0-engine_failed-fail-[2026/10/16 12:00:00] info: -everyday] _
+
+method = <MethodId.EVERYDAY: 'everyday'>
+prefix = '[2026/10/16 12:00:00] info: ', counts = '1 | 0 | 0'
+reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[1 | 0 | 0-engine_failed-fail-[2026/10/16 12:00:00] info: -extra] _
+
+method = <MethodId.EXTRA: 'extra'>, prefix = '[2026/10/16 12:00:00] info: '
+counts = '1 | 0 | 0', reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[1 | 0 | 0-engine_failed-fail-[2026/10/16 12:00:00] info: -quick_zero] _
+
+method = <MethodId.QUICK_ZERO: 'quick_zero'>
+prefix = '[2026/10/16 12:00:00] info: ', counts = '1 | 0 | 0'
+reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[0 | 1 | 0-engine_failed-fail-info: -everyday] _
+
+method = <MethodId.EVERYDAY: 'everyday'>, prefix = 'info: '
+counts = '0 | 1 | 0', reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[0 | 1 | 0-engine_failed-fail-info: -extra] _
+
+method = <MethodId.EXTRA: 'extra'>, prefix = 'info: ', counts = '0 | 1 | 0'
+reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[0 | 1 | 0-engine_failed-fail-info: -quick_zero] _
+
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, prefix = 'info: '
+counts = '0 | 1 | 0', reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[0 | 1 | 0-engine_failed-fail-[2026/10/16 12:00:00] info: -everyday] _
+
+method = <MethodId.EVERYDAY: 'everyday'>
+prefix = '[2026/10/16 12:00:00] info: ', counts = '0 | 1 | 0'
+reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[0 | 1 | 0-engine_failed-fail-[2026/10/16 12:00:00] info: -extra] _
+
+method = <MethodId.EXTRA: 'extra'>, prefix = '[2026/10/16 12:00:00] info: '
+counts = '0 | 1 | 0', reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[0 | 1 | 0-engine_failed-fail-[2026/10/16 12:00:00] info: -quick_zero] _
+
+method = <MethodId.QUICK_ZERO: 'quick_zero'>
+prefix = '[2026/10/16 12:00:00] info: ', counts = '0 | 1 | 0'
+reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[0 | 0 | 1-engine_failed-fail-info: -everyday] _
+
+method = <MethodId.EVERYDAY: 'everyday'>, prefix = 'info: '
+counts = '0 | 0 | 1', reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[0 | 0 | 1-engine_failed-fail-info: -extra] _
+
+method = <MethodId.EXTRA: 'extra'>, prefix = 'info: ', counts = '0 | 0 | 1'
+reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[0 | 0 | 1-engine_failed-fail-info: -quick_zero] _
+
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, prefix = 'info: '
+counts = '0 | 0 | 1', reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[0 | 0 | 1-engine_failed-fail-[2026/10/16 12:00:00] info: -everyday] _
+
+method = <MethodId.EVERYDAY: 'everyday'>
+prefix = '[2026/10/16 12:00:00] info: ', counts = '0 | 0 | 1'
+reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[0 | 0 | 1-engine_failed-fail-[2026/10/16 12:00:00] info: -extra] _
+
+method = <MethodId.EXTRA: 'extra'>, prefix = '[2026/10/16 12:00:00] info: '
+counts = '0 | 0 | 1', reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[0 | 0 | 1-engine_failed-fail-[2026/10/16 12:00:00] info: -quick_zero] _
+
+method = <MethodId.QUICK_ZERO: 'quick_zero'>
+prefix = '[2026/10/16 12:00:00] info: ', counts = '0 | 0 | 1'
+reason = 'engine_failed', io_status = 'fail'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[unknown | 0 | 0-indeterminate-unavailable-info: -everyday] _
+
+method = <MethodId.EVERYDAY: 'everyday'>, prefix = 'info: '
+counts = 'unknown | 0 | 0', reason = 'indeterminate', io_status = 'unavailable'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[unknown | 0 | 0-indeterminate-unavailable-info: -extra] _
+
+method = <MethodId.EXTRA: 'extra'>, prefix = 'info: '
+counts = 'unknown | 0 | 0', reason = 'indeterminate', io_status = 'unavailable'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[unknown | 0 | 0-indeterminate-unavailable-info: -quick_zero] _
+
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, prefix = 'info: '
+counts = 'unknown | 0 | 0', reason = 'indeterminate', io_status = 'unavailable'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[unknown | 0 | 0-indeterminate-unavailable-[2026/10/16 12:00:00] info: -everyday] _
+
+method = <MethodId.EVERYDAY: 'everyday'>
+prefix = '[2026/10/16 12:00:00] info: ', counts = 'unknown | 0 | 0'
+reason = 'indeterminate', io_status = 'unavailable'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[unknown | 0 | 0-indeterminate-unavailable-[2026/10/16 12:00:00] info: -extra] _
+
+method = <MethodId.EXTRA: 'extra'>, prefix = '[2026/10/16 12:00:00] info: '
+counts = 'unknown | 0 | 0', reason = 'indeterminate', io_status = 'unavailable'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_prefixed_target_error_row_blocks_terminal_success[unknown | 0 | 0-indeterminate-unavailable-[2026/10/16 12:00:00] info: -quick_zero] _
+
+method = <MethodId.QUICK_ZERO: 'quick_zero'>
+prefix = '[2026/10/16 12:00:00] info: ', counts = 'unknown | 0 | 0'
+reason = 'indeterminate', io_status = 'unavailable'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES)
+    @pytest.mark.parametrize(
+        ("counts", "reason", "io_status"),
+        [
+            ("1 | 0 | 0", "engine_failed", "fail"),
+            ("0 | 1 | 0", "engine_failed", "fail"),
+            ("0 | 0 | 1", "engine_failed", "fail"),
+            ("unknown | 0 | 0", "indeterminate", "unavailable"),
+        ],
+    )
+    def test_prefixed_target_error_row_blocks_terminal_success(
+        method, prefix, counts, reason, io_status
+    ):
+        text = _error_log(prefix, counts) + _STATUS
+        assert check_payloads(text, "/dev/sda")[1]["status"] == io_status
+        outcome = module.completion_for_method(0, text, "/dev/sda", method)
+>       assert not outcome[0]
+E       assert not True
+
+tests/test_runner_prefixed_error_context_pass12.py:77: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-False-info: -everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop0')
+method = <MethodId.EVERYDAY: 'everyday'>, prefix = 'info: ', large = False
+late_stop = False
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop0/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-False-info: -extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop1')
+method = <MethodId.EXTRA: 'extra'>, prefix = 'info: ', large = False
+late_stop = False
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop1/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-False-info: -quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop2')
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, prefix = 'info: ', large = False
+late_stop = False
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop2/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-False-[2026/10/16 12:00:00] info: -everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop3')
+method = <MethodId.EVERYDAY: 'everyday'>
+prefix = '[2026/10/16 12:00:00] info: ', large = False, late_stop = False
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop3/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-False-[2026/10/16 12:00:00] info: -extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop4')
+method = <MethodId.EXTRA: 'extra'>, prefix = '[2026/10/16 12:00:00] info: '
+large = False, late_stop = False
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop4/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-False-[2026/10/16 12:00:00] info: -quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop5')
+method = <MethodId.QUICK_ZERO: 'quick_zero'>
+prefix = '[2026/10/16 12:00:00] info: ', large = False, late_stop = False
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop5/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-True-info: -everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop6')
+method = <MethodId.EVERYDAY: 'everyday'>, prefix = 'info: ', large = True
+late_stop = False
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop6/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-True-info: -extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop7')
+method = <MethodId.EXTRA: 'extra'>, prefix = 'info: ', large = True
+late_stop = False
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop7/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-True-info: -quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop8')
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, prefix = 'info: ', large = True
+late_stop = False
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop8/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-True-[2026/10/16 12:00:00] info: -everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop9')
+method = <MethodId.EVERYDAY: 'everyday'>
+prefix = '[2026/10/16 12:00:00] info: ', large = True, late_stop = False
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop9/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-True-[2026/10/16 12:00:00] info: -extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop10')
+method = <MethodId.EXTRA: 'extra'>, prefix = '[2026/10/16 12:00:00] info: '
+large = True, late_stop = False
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop10/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-True-[2026/10/16 12:00:00] info: -quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop11')
+method = <MethodId.QUICK_ZERO: 'quick_zero'>
+prefix = '[2026/10/16 12:00:00] info: ', large = True, late_stop = False
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop11/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-False-info: -everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop12')
+method = <MethodId.EVERYDAY: 'everyday'>, prefix = 'info: ', large = False
+late_stop = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop12/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-False-info: -extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop13')
+method = <MethodId.EXTRA: 'extra'>, prefix = 'info: ', large = False
+late_stop = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop13/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-False-info: -quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop14')
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, prefix = 'info: ', large = False
+late_stop = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop14/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-False-[2026/10/16 12:00:00] info: -everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop15')
+method = <MethodId.EVERYDAY: 'everyday'>
+prefix = '[2026/10/16 12:00:00] info: ', large = False, late_stop = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop15/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-False-[2026/10/16 12:00:00] info: -extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop16')
+method = <MethodId.EXTRA: 'extra'>, prefix = '[2026/10/16 12:00:00] info: '
+large = False, late_stop = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop16/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-False-[2026/10/16 12:00:00] info: -quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop17')
+method = <MethodId.QUICK_ZERO: 'quick_zero'>
+prefix = '[2026/10/16 12:00:00] info: ', large = False, late_stop = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop17/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-True-info: -everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop18')
+method = <MethodId.EVERYDAY: 'everyday'>, prefix = 'info: ', large = True
+late_stop = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop18/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-True-info: -extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop19')
+method = <MethodId.EXTRA: 'extra'>, prefix = 'info: ', large = True
+late_stop = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop19/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-True-info: -quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop20')
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, prefix = 'info: ', large = True
+late_stop = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop20/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-True-[2026/10/16 12:00:00] info: -everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop21')
+method = <MethodId.EVERYDAY: 'everyday'>
+prefix = '[2026/10/16 12:00:00] info: ', large = True, late_stop = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop21/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-True-[2026/10/16 12:00:00] info: -extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop22')
+method = <MethodId.EXTRA: 'extra'>, prefix = '[2026/10/16 12:00:00] info: '
+large = True, late_stop = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop22/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-True-[2026/10/16 12:00:00] info: -quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop23')
+method = <MethodId.QUICK_ZERO: 'quick_zero'>
+prefix = '[2026/10/16 12:00:00] info: ', large = True, late_stop = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("late_stop", [False, True])
+    def test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary(
+        tmp_path, method, prefix, large, late_stop
+    ):
+        text = (
+            _error_log(prefix, "1 | 0 | 0")
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        result, assessment = _assess(tmp_path, text, method, late_stop=late_stop)
+>       assert not result.ok
+E       AssertionError: assert not True
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-323/test_actual_poll_and_late_stop23/fake-prefixed-errors.log', reason='completed').ok
+
+tests/test_runner_prefixed_error_context_pass12.py:102: AssertionError
+_ test_headerless_prefixed_error_is_uncertain_instead_of_success[info: -everyday] _
+
+method = <MethodId.EVERYDAY: 'everyday'>, prefix = 'info: '
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    def test_headerless_prefixed_error_is_uncertain_instead_of_success(method, prefix):
+        text = prefix + "! sda | 1 | 0 | 0\n" + _CLOSE + _STATUS
+>       assert module.completion_for_method(0, text, "/dev/sda", method)[2] == "indeterminate"
+E       AssertionError: assert 'completed' == 'indeterminate'
+E
+E         - indeterminate
+E         + completed
+
+tests/test_runner_prefixed_error_context_pass12.py:111: AssertionError
+_ test_headerless_prefixed_error_is_uncertain_instead_of_success[info: -extra] _
+
+method = <MethodId.EXTRA: 'extra'>, prefix = 'info: '
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    def test_headerless_prefixed_error_is_uncertain_instead_of_success(method, prefix):
+        text = prefix + "! sda | 1 | 0 | 0\n" + _CLOSE + _STATUS
+>       assert module.completion_for_method(0, text, "/dev/sda", method)[2] == "indeterminate"
+E       AssertionError: assert 'completed' == 'indeterminate'
+E
+E         - indeterminate
+E         + completed
+
+tests/test_runner_prefixed_error_context_pass12.py:111: AssertionError
+_ test_headerless_prefixed_error_is_uncertain_instead_of_success[info: -quick_zero] _
+
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, prefix = 'info: '
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    def test_headerless_prefixed_error_is_uncertain_instead_of_success(method, prefix):
+        text = prefix + "! sda | 1 | 0 | 0\n" + _CLOSE + _STATUS
+>       assert module.completion_for_method(0, text, "/dev/sda", method)[2] == "indeterminate"
+E       AssertionError: assert 'completed' == 'indeterminate'
+E
+E         - indeterminate
+E         + completed
+
+tests/test_runner_prefixed_error_context_pass12.py:111: AssertionError
+_ test_headerless_prefixed_error_is_uncertain_instead_of_success[[2026/10/16 12:00:00] info: -everyday] _
+
+method = <MethodId.EVERYDAY: 'everyday'>
+prefix = '[2026/10/16 12:00:00] info: '
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    def test_headerless_prefixed_error_is_uncertain_instead_of_success(method, prefix):
+        text = prefix + "! sda | 1 | 0 | 0\n" + _CLOSE + _STATUS
+>       assert module.completion_for_method(0, text, "/dev/sda", method)[2] == "indeterminate"
+E       AssertionError: assert 'completed' == 'indeterminate'
+E
+E         - indeterminate
+E         + completed
+
+tests/test_runner_prefixed_error_context_pass12.py:111: AssertionError
+_ test_headerless_prefixed_error_is_uncertain_instead_of_success[[2026/10/16 12:00:00] info: -extra] _
+
+method = <MethodId.EXTRA: 'extra'>, prefix = '[2026/10/16 12:00:00] info: '
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    def test_headerless_prefixed_error_is_uncertain_instead_of_success(method, prefix):
+        text = prefix + "! sda | 1 | 0 | 0\n" + _CLOSE + _STATUS
+>       assert module.completion_for_method(0, text, "/dev/sda", method)[2] == "indeterminate"
+E       AssertionError: assert 'completed' == 'indeterminate'
+E
+E         - indeterminate
+E         + completed
+
+tests/test_runner_prefixed_error_context_pass12.py:111: AssertionError
+_ test_headerless_prefixed_error_is_uncertain_instead_of_success[[2026/10/16 12:00:00] info: -quick_zero] _
+
+method = <MethodId.QUICK_ZERO: 'quick_zero'>
+prefix = '[2026/10/16 12:00:00] info: '
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    def test_headerless_prefixed_error_is_uncertain_instead_of_success(method, prefix):
+        text = prefix + "! sda | 1 | 0 | 0\n" + _CLOSE + _STATUS
+>       assert module.completion_for_method(0, text, "/dev/sda", method)[2] == "indeterminate"
+E       AssertionError: assert 'completed' == 'indeterminate'
+E
+E         - indeterminate
+E         + completed
+
+tests/test_runner_prefixed_error_context_pass12.py:111: AssertionError
+_ test_prefixed_error_activity_prevents_no_erase_claim[/dev/sda is IN USE but --force is not set, not wiping it\n-info: ] _
+
+prefix = 'info: '
+guard = '/dev/sda is IN USE but --force is not set, not wiping it\n'
+
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize(
+        "guard",
+        [
+            "/dev/sda is IN USE but --force is not set, not wiping it\n",
+            "Unable to open device '/dev/sda'.\n",
+            "No sane device geometry for '/dev/sda'.\n",
+        ],
+    )
+    def test_prefixed_error_activity_prevents_no_erase_claim(prefix, guard):
+        text = guard + _error_log(prefix, "1 | 0 | 0")
+>       assert module.evaluate_nwipe_outcome(0, text, "/dev/sda")[2] == "indeterminate"
+E       AssertionError: assert 'occupied' == 'indeterminate'
+E
+E         - indeterminate
+E         + occupied
+
+tests/test_runner_prefixed_error_context_pass12.py:125: AssertionError
+_ test_prefixed_error_activity_prevents_no_erase_claim[/dev/sda is IN USE but --force is not set, not wiping it\n-[2026/10/16 12:00:00] info: ] _
+
+prefix = '[2026/10/16 12:00:00] info: '
+guard = '/dev/sda is IN USE but --force is not set, not wiping it\n'
+
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize(
+        "guard",
+        [
+            "/dev/sda is IN USE but --force is not set, not wiping it\n",
+            "Unable to open device '/dev/sda'.\n",
+            "No sane device geometry for '/dev/sda'.\n",
+        ],
+    )
+    def test_prefixed_error_activity_prevents_no_erase_claim(prefix, guard):
+        text = guard + _error_log(prefix, "1 | 0 | 0")
+>       assert module.evaluate_nwipe_outcome(0, text, "/dev/sda")[2] == "indeterminate"
+E       AssertionError: assert 'occupied' == 'indeterminate'
+E
+E         - indeterminate
+E         + occupied
+
+tests/test_runner_prefixed_error_context_pass12.py:125: AssertionError
+_ test_prefixed_error_activity_prevents_no_erase_claim[Unable to open device '/dev/sda'.\n-info: ] _
+
+prefix = 'info: ', guard = "Unable to open device '/dev/sda'.\n"
+
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize(
+        "guard",
+        [
+            "/dev/sda is IN USE but --force is not set, not wiping it\n",
+            "Unable to open device '/dev/sda'.\n",
+            "No sane device geometry for '/dev/sda'.\n",
+        ],
+    )
+    def test_prefixed_error_activity_prevents_no_erase_claim(prefix, guard):
+        text = guard + _error_log(prefix, "1 | 0 | 0")
+>       assert module.evaluate_nwipe_outcome(0, text, "/dev/sda")[2] == "indeterminate"
+E       AssertionError: assert 'open_failed' == 'indeterminate'
+E
+E         - indeterminate
+E         + open_failed
+
+tests/test_runner_prefixed_error_context_pass12.py:125: AssertionError
+_ test_prefixed_error_activity_prevents_no_erase_claim[Unable to open device '/dev/sda'.\n-[2026/10/16 12:00:00] info: ] _
+
+prefix = '[2026/10/16 12:00:00] info: '
+guard = "Unable to open device '/dev/sda'.\n"
+
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize(
+        "guard",
+        [
+            "/dev/sda is IN USE but --force is not set, not wiping it\n",
+            "Unable to open device '/dev/sda'.\n",
+            "No sane device geometry for '/dev/sda'.\n",
+        ],
+    )
+    def test_prefixed_error_activity_prevents_no_erase_claim(prefix, guard):
+        text = guard + _error_log(prefix, "1 | 0 | 0")
+>       assert module.evaluate_nwipe_outcome(0, text, "/dev/sda")[2] == "indeterminate"
+E       AssertionError: assert 'open_failed' == 'indeterminate'
+E
+E         - indeterminate
+E         + open_failed
+
+tests/test_runner_prefixed_error_context_pass12.py:125: AssertionError
+_ test_prefixed_error_activity_prevents_no_erase_claim[No sane device geometry for '/dev/sda'.\n-info: ] _
+
+prefix = 'info: ', guard = "No sane device geometry for '/dev/sda'.\n"
+
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize(
+        "guard",
+        [
+            "/dev/sda is IN USE but --force is not set, not wiping it\n",
+            "Unable to open device '/dev/sda'.\n",
+            "No sane device geometry for '/dev/sda'.\n",
+        ],
+    )
+    def test_prefixed_error_activity_prevents_no_erase_claim(prefix, guard):
+        text = guard + _error_log(prefix, "1 | 0 | 0")
+>       assert module.evaluate_nwipe_outcome(0, text, "/dev/sda")[2] == "indeterminate"
+E       AssertionError: assert 'geometry_unusable' == 'indeterminate'
+E
+E         - indeterminate
+E         + geometry_unusable
+
+tests/test_runner_prefixed_error_context_pass12.py:125: AssertionError
+_ test_prefixed_error_activity_prevents_no_erase_claim[No sane device geometry for '/dev/sda'.\n-[2026/10/16 12:00:00] info: ] _
+
+prefix = '[2026/10/16 12:00:00] info: '
+guard = "No sane device geometry for '/dev/sda'.\n"
+
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    @pytest.mark.parametrize(
+        "guard",
+        [
+            "/dev/sda is IN USE but --force is not set, not wiping it\n",
+            "Unable to open device '/dev/sda'.\n",
+            "No sane device geometry for '/dev/sda'.\n",
+        ],
+    )
+    def test_prefixed_error_activity_prevents_no_erase_claim(prefix, guard):
+        text = guard + _error_log(prefix, "1 | 0 | 0")
+>       assert module.evaluate_nwipe_outcome(0, text, "/dev/sda")[2] == "indeterminate"
+E       AssertionError: assert 'geometry_unusable' == 'indeterminate'
+E
+E         - indeterminate
+E         + geometry_unusable
+
+tests/test_runner_prefixed_error_context_pass12.py:125: AssertionError
+___________ test_shared_status_error_row_stays_unassignable[info: ] ____________
+
+prefix = 'info: '
+
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    def test_shared_status_error_row_stays_unassignable(prefix):
+        target = "/dev/sdabcdef"
+        text = (
+            "/dev/sdxsdabcdef: selected\n"
+            + _ERROR_HEADER + prefix + "! sdabcdef | 1 | 0 | 0\n" + _CLOSE
+            + target + ": 100.00%, round 1 of 1, pass 1 of 1, "
+            "eta 00:00:00, [verifying]\n"
+        )
+>       assert module.completion_for_method(0, text, target, MethodId.EVERYDAY)[2] == "indeterminate"
+E       AssertionError: assert 'completed' == 'indeterminate'
+E
+E         - indeterminate
+E         + completed
+
+tests/test_runner_prefixed_error_context_pass12.py:137: AssertionError
+_ test_shared_status_error_row_stays_unassignable[[2026/10/16 12:00:00] info: ] _
+
+prefix = '[2026/10/16 12:00:00] info: '
+
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    def test_shared_status_error_row_stays_unassignable(prefix):
+        target = "/dev/sdabcdef"
+        text = (
+            "/dev/sdxsdabcdef: selected\n"
+            + _ERROR_HEADER + prefix + "! sdabcdef | 1 | 0 | 0\n" + _CLOSE
+            + target + ": 100.00%, round 1 of 1, pass 1 of 1, "
+            "eta 00:00:00, [verifying]\n"
+        )
+>       assert module.completion_for_method(0, text, target, MethodId.EVERYDAY)[2] == "indeterminate"
+E       AssertionError: assert 'completed' == 'indeterminate'
+E
+E         - indeterminate
+E         + completed
+
+tests/test_runner_prefixed_error_context_pass12.py:137: AssertionError
+__________ test_prefixed_closing_delimiter_ends_error_context[info: ] __________
+
+prefix = 'info: '
+
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    def test_prefixed_closing_delimiter_ends_error_context(prefix):
+        text = (
+            _ERROR_HEADER + "! sda | 0 | 0 | 0\n"
+            + prefix + _CLOSE + "! sda | unknown | 0 | 0\n" + _STATUS
+        )
+>       assert module.evaluate_nwipe_outcome(0, text, "/dev/sda")[0]
+E       assert False
+
+tests/test_runner_prefixed_error_context_pass12.py:146: AssertionError
+_ test_prefixed_closing_delimiter_ends_error_context[[2026/10/16 12:00:00] info: ] _
+
+prefix = '[2026/10/16 12:00:00] info: '
+
+    @pytest.mark.parametrize("prefix", _PREFIXES[1:])
+    def test_prefixed_closing_delimiter_ends_error_context(prefix):
+        text = (
+            _ERROR_HEADER + "! sda | 0 | 0 | 0\n"
+            + prefix + _CLOSE + "! sda | unknown | 0 | 0\n" + _STATUS
+        )
+>       assert module.evaluate_nwipe_outcome(0, text, "/dev/sda")[0]
+E       assert False
+
+tests/test_runner_prefixed_error_context_pass12.py:146: AssertionError
+__________ test_prefixed_error_survives_exact_large_log_boundary[-1] ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_prefixed_error_survives_e0')
+delta = -1
+
+    @pytest.mark.parametrize("delta", [-1, 0, 1])
+    def test_prefixed_error_survives_exact_large_log_boundary(tmp_path, delta):
+        evidence = _error_log(_STAMP, "1 | 0 | 0")
+        text = evidence + _padding(
+            module.NWIPE_COMPLETION_LOG_BYTES + delta - len(evidence) - len(_STATUS)
+        ) + _STATUS
+        assert len(text) == module.NWIPE_COMPLETION_LOG_BYTES + delta
+        result, _assessment = _assess(tmp_path, text, MethodId.EVERYDAY)
+>       assert result.reason == "engine_failed"
+E       AssertionError: assert 'completed' == 'engine_failed'
+E
+E         - engine_failed
+E         + completed
+
+tests/test_runner_prefixed_error_context_pass12.py:175: AssertionError
+___________ test_prefixed_error_survives_exact_large_log_boundary[0] ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_prefixed_error_survives_e1')
+delta = 0
+
+    @pytest.mark.parametrize("delta", [-1, 0, 1])
+    def test_prefixed_error_survives_exact_large_log_boundary(tmp_path, delta):
+        evidence = _error_log(_STAMP, "1 | 0 | 0")
+        text = evidence + _padding(
+            module.NWIPE_COMPLETION_LOG_BYTES + delta - len(evidence) - len(_STATUS)
+        ) + _STATUS
+        assert len(text) == module.NWIPE_COMPLETION_LOG_BYTES + delta
+        result, _assessment = _assess(tmp_path, text, MethodId.EVERYDAY)
+>       assert result.reason == "engine_failed"
+E       AssertionError: assert 'completed' == 'engine_failed'
+E
+E         - engine_failed
+E         + completed
+
+tests/test_runner_prefixed_error_context_pass12.py:175: AssertionError
+___________ test_prefixed_error_survives_exact_large_log_boundary[1] ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-323/test_prefixed_error_survives_e2')
+delta = 1
+
+    @pytest.mark.parametrize("delta", [-1, 0, 1])
+    def test_prefixed_error_survives_exact_large_log_boundary(tmp_path, delta):
+        evidence = _error_log(_STAMP, "1 | 0 | 0")
+        text = evidence + _padding(
+            module.NWIPE_COMPLETION_LOG_BYTES + delta - len(evidence) - len(_STATUS)
+        ) + _STATUS
+        assert len(text) == module.NWIPE_COMPLETION_LOG_BYTES + delta
+        result, _assessment = _assess(tmp_path, text, MethodId.EVERYDAY)
+>       assert result.reason == "engine_failed"
+E       AssertionError: assert 'completed' == 'engine_failed'
+E
+E         - engine_failed
+E         + completed
+
+tests/test_runner_prefixed_error_context_pass12.py:175: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[1 | 0 | 0-engine_failed-fail-info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[1 | 0 | 0-engine_failed-fail-info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[1 | 0 | 0-engine_failed-fail-info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[1 | 0 | 0-engine_failed-fail-[2026/10/16 12:00:00] info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[1 | 0 | 0-engine_failed-fail-[2026/10/16 12:00:00] info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[1 | 0 | 0-engine_failed-fail-[2026/10/16 12:00:00] info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[0 | 1 | 0-engine_failed-fail-info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[0 | 1 | 0-engine_failed-fail-info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[0 | 1 | 0-engine_failed-fail-info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[0 | 1 | 0-engine_failed-fail-[2026/10/16 12:00:00] info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[0 | 1 | 0-engine_failed-fail-[2026/10/16 12:00:00] info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[0 | 1 | 0-engine_failed-fail-[2026/10/16 12:00:00] info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[0 | 0 | 1-engine_failed-fail-info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[0 | 0 | 1-engine_failed-fail-info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[0 | 0 | 1-engine_failed-fail-info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[0 | 0 | 1-engine_failed-fail-[2026/10/16 12:00:00] info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[0 | 0 | 1-engine_failed-fail-[2026/10/16 12:00:00] info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[0 | 0 | 1-engine_failed-fail-[2026/10/16 12:00:00] info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[unknown | 0 | 0-indeterminate-unavailable-info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[unknown | 0 | 0-indeterminate-unavailable-info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[unknown | 0 | 0-indeterminate-unavailable-info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[unknown | 0 | 0-indeterminate-unavailable-[2026/10/16 12:00:00] info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[unknown | 0 | 0-indeterminate-unavailable-[2026/10/16 12:00:00] info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_target_error_row_blocks_terminal_success[unknown | 0 | 0-indeterminate-unavailable-[2026/10/16 12:00:00] info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-False-info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-False-info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-False-info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-False-[2026/10/16 12:00:00] info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-False-[2026/10/16 12:00:00] info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-False-[2026/10/16 12:00:00] info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-True-info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-True-info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-True-info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-True-[2026/10/16 12:00:00] info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-True-[2026/10/16 12:00:00] info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[False-True-[2026/10/16 12:00:00] info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-False-info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-False-info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-False-info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-False-[2026/10/16 12:00:00] info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-False-[2026/10/16 12:00:00] info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-False-[2026/10/16 12:00:00] info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-True-info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-True-info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-True-info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-True-[2026/10/16 12:00:00] info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-True-[2026/10/16 12:00:00] info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_actual_poll_and_late_stop_keep_prefixed_errors_at_scan_boundary[True-True-[2026/10/16 12:00:00] info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_headerless_prefixed_error_is_uncertain_instead_of_success[info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_headerless_prefixed_error_is_uncertain_instead_of_success[info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_headerless_prefixed_error_is_uncertain_instead_of_success[info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_headerless_prefixed_error_is_uncertain_instead_of_success[[2026/10/16 12:00:00] info: -everyday]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_headerless_prefixed_error_is_uncertain_instead_of_success[[2026/10/16 12:00:00] info: -extra]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_headerless_prefixed_error_is_uncertain_instead_of_success[[2026/10/16 12:00:00] info: -quick_zero]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_error_activity_prevents_no_erase_claim[/dev/sda is IN USE but --force is not set, not wiping it\n-info: ]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_error_activity_prevents_no_erase_claim[/dev/sda is IN USE but --force is not set, not wiping it\n-[2026/10/16 12:00:00] info: ]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_error_activity_prevents_no_erase_claim[Unable to open device '/dev/sda'.\n-info: ]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_error_activity_prevents_no_erase_claim[Unable to open device '/dev/sda'.\n-[2026/10/16 12:00:00] info: ]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_error_activity_prevents_no_erase_claim[No sane device geometry for '/dev/sda'.\n-info: ]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_error_activity_prevents_no_erase_claim[No sane device geometry for '/dev/sda'.\n-[2026/10/16 12:00:00] info: ]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_shared_status_error_row_stays_unassignable[info: ]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_shared_status_error_row_stays_unassignable[[2026/10/16 12:00:00] info: ]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_closing_delimiter_ends_error_context[info: ]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_closing_delimiter_ends_error_context[[2026/10/16 12:00:00] info: ]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_error_survives_exact_large_log_boundary[-1]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_error_survives_exact_large_log_boundary[0]
+FAILED tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_error_survives_exact_large_log_boundary[1]

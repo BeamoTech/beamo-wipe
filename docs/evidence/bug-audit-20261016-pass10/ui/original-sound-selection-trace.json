@@ -1,0 +1,15 @@
+{
+  "visible_selected_sink": "headphones",
+  "chosen_sink": "speakers",
+  "events": [
+    {
+      "announce": "controlled failure"
+    },
+    {
+      "nudge_sink": "speakers"
+    },
+    {
+      "announce": "controlled failure"
+    }
+  ]
+}

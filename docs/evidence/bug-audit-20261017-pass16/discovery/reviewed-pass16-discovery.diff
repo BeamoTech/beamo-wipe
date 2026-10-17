@@ -1,0 +1,49 @@
+--- pass16-start/src/beamo_wipe/discover.py
++++ current/src/beamo_wipe/discover.py
+@@ -1641,13 +1641,17 @@
+         # ambiguous, including when both paths report a small SATA disk.
+         hit = cmdline_hits[0]
+         hit_aliases = _path_aliases(hit)
++        physical_nodes = [
++            node for node, _parent in flatten_blockdevices(blockdevices)
++            if _node_type(node) in {"disk", "rom"}
++        ]
+         hit_node = None
+-        for node in disk_nodes(blockdevices):
++        for node in physical_nodes:
+             if hit_aliases & _path_aliases(node_path(node)):
+                 hit_node = node
+                 break
+         if hit_node is not None:
+-            for node in disk_nodes(blockdevices):
++            for node in physical_nodes:
+                 if hit_aliases & _path_aliases(node_path(node)):
+                     continue
+                 if _could_be_live_medium(node):
+@@ -1886,6 +1890,7 @@
+     # before display filtering, without turning them into picker candidates.
+     physical_observations = []
+     physical_by_path: Dict[str, Tuple[Disk, Optional[bool], Tuple[bool, bool]]] = {}
++    repeated_physical_paths: set[str] = set()
+     for node, _parent in flat_nodes:
+         if _node_type(node) not in {"disk", "rom"}:
+             continue
+@@ -1908,6 +1913,8 @@
+         previous_physical = physical_by_path.get(canonical)
+         if previous_physical is not None and previous_physical != signature:
+             raise ValueError("lsblk has conflicting physical observations for one disk")
++        if previous_physical is not None:
++            repeated_physical_paths.add(canonical)
+         physical_by_path[canonical] = signature
+         physical_observations.append(observation)
+     disks: List[Disk] = []
+@@ -2010,6 +2017,9 @@
+     # Retain even identical rows: final identity validation requires exactly
+     # one observation and must continue refusing an ambiguous target.
+     selectable = tuple(d for d in disks if is_wipeable_disk(d))
++    for path in repeated_physical_paths:
++        if sum(os.path.realpath(d.path) == path for d in selectable) == 1:
++            raise ValueError("lsblk physical observations cannot establish a unique target")
+     # Health reporting: empty selectable while boot is identified is fail-closed
+     # but opaque. Distinguish "no disks on bus" from "all nodes hidden".
+     if boot is not None and not selectable and blockdevices:

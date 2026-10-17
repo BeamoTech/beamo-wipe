@@ -1,0 +1,3 @@
+# Evidence is archived data: preserve exact bytes, including captured whitespace.
+# Product source and regression-test whitespace checks remain unchanged.
+** -text -whitespace

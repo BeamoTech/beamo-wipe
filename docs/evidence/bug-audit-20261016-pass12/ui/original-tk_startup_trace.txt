@@ -1,0 +1,75 @@
+{
+  "display": ":120",
+  "results": [
+    {
+      "fullscreen": false,
+      "pointer_inside": false,
+      "outcome": "abandoned",
+      "phases": [
+        {
+          "phase": "before-key",
+          "native_focus": 1,
+          "window_xid": 4194307,
+          "gtk_focus": "None",
+          "mapped": true
+        },
+        {
+          "phase": "native-escape-had-no-effect"
+        }
+      ],
+      "native_escape_effective": false
+    },
+    {
+      "fullscreen": false,
+      "pointer_inside": true,
+      "outcome": "abandoned",
+      "phases": [
+        {
+          "phase": "before-key",
+          "native_focus": 1,
+          "window_xid": 4194439,
+          "gtk_focus": "None",
+          "mapped": true
+        },
+        {
+          "phase": "native-escape-had-no-effect"
+        }
+      ],
+      "native_escape_effective": false
+    },
+    {
+      "fullscreen": true,
+      "pointer_inside": false,
+      "outcome": "abandoned",
+      "phases": [
+        {
+          "phase": "before-key",
+          "native_focus": 1,
+          "window_xid": 4194563,
+          "gtk_focus": ".",
+          "mapped": true
+        }
+      ],
+      "native_escape_effective": true
+    },
+    {
+      "fullscreen": true,
+      "pointer_inside": true,
+      "outcome": "abandoned",
+      "phases": [
+        {
+          "phase": "before-key",
+          "native_focus": 1,
+          "window_xid": 4194649,
+          "gtk_focus": "None",
+          "mapped": true
+        },
+        {
+          "phase": "native-escape-had-no-effect"
+        }
+      ],
+      "native_escape_effective": false
+    }
+  ],
+  "owned_teardown": true
+}

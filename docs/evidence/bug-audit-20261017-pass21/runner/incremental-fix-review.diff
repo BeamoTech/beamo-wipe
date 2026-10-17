@@ -1,0 +1,252 @@
+--- starting/src/beamo_wipe/diagnostics.py
++++ current/src/beamo_wipe/diagnostics.py
+@@ -87,7 +87,7 @@
+     # Replace all Unicode control/format characters. This includes bidi
+     # overrides and C1 terminal controls, not just newlines and NUL.
+     s = "".join(
+-        " " if unicodedata.category(ch).startswith("C") else ch
++        " " if unicodedata.category(ch).startswith("C") or unicodedata.category(ch) in {"Zl", "Zp"} else ch
+         for ch in str(text)
+     )
+     # Never log full nwipe log contents here; caller must truncate before passing
+--- starting/src/beamo_wipe/discover.py
++++ current/src/beamo_wipe/discover.py
+@@ -185,7 +185,10 @@
+     if isinstance(value, int):
+         return value
+     if isinstance(value, float):
+-        return int(value)
++        try:
++            return int(value)
++        except OverflowError as exc:
++            raise ValueError("lsblk size is not finite") from exc
+     text = str(value).strip()
+     if not text:
+         return 0
+@@ -1371,6 +1374,10 @@
+         # Callers skip the node (per-node, so one bad node cannot hide the
+         # whole bus) with a diagnostic for maintainer triage.
+         raise ValueError("lsblk node has no usable device path")
++    if _node_type(node) == "disk" and (not name or "/" in name):
++        # Flat PKNAME ancestry uses the kernel name, not a path alias. Do not
++        # mint a target whose partition evidence cannot bind to that name.
++        raise ValueError("lsblk disk has no canonical kernel name")
+     label = _volume_label(node)
+     raw_model = _bounded_identity_metadata(node.get("model"), "model")
+     mountpoints = tuple(mp for mp in _node_mountpoints(node) if mp)
+--- starting/src/beamo_wipe/ui/accessible_wizard.py
++++ current/src/beamo_wipe/ui/accessible_wizard.py
+@@ -915,28 +915,36 @@
+         seq = self.w.begin_refresh()
+         if seq is None:
+             return False
+-        launch_decided = threading.Event()
++        launch_decided = None
+         launch_allowed = [False]
+ 
+         def run_if_launched() -> None:
++            if launch_decided is None:
++                return
+             launch_decided.wait()
+-            if launch_allowed[0]:
++            with self._refresh_lock:
++                accepted = launch_allowed[0]
++            if accepted:
+                 self._refresh_worker(seq)
+ 
+         try:
++            launch_decided = threading.Event()
+             threading.Thread(
+                 target=run_if_launched,
+                 name=f"beamo-accessible-refresh-{seq}",
+                 daemon=True,
+             ).start()
++            with self._refresh_lock:
++                launch_decided.set()
++                launch_allowed[0] = True
+         except BaseException as exc:
+-            # Thread.start may be interrupted after the OS thread exists.
+-            # It must never scan after this claimed refresh was abandoned.
+-            launch_decided.set()
++            if launch_decided is not None:
++                try:
++                    launch_decided.set()
++                except BaseException as cleanup:
++                    exc.add_note(f"Refresh wake also failed: {type(cleanup).__name__}")
+             self.w.finish_refresh(seq, exc)
+             return True
+-        launch_allowed[0] = True
+-        launch_decided.set()
+         return True
+ 
+     def _refresh_worker(self, seq: int) -> None:
+@@ -1076,16 +1084,27 @@
+         if self.closed:
+             return
+         self.closed = True
+-        getattr(self.w, "cancel_audio", lambda: None)()
++        errors = []
++
++        def cleanup(action):
++            try:
++                action()
++            except BaseException as error:
++                errors.append(error)
++
++        cleanup(getattr(self.w, "cancel_audio", lambda: None))
+         dialog = getattr(self, "_sound_dialog", None)
+         if dialog is not None:
+-            dialog.close()
++            cleanup(dialog.close)
+         if self.timer:
+-            GLib.source_remove(self.timer)
+-            self.timer = 0
+-        self.window.destroy()
+-        if Gtk.main_level():
+-            Gtk.main_quit()
++            timer, self.timer = self.timer, 0
++            cleanup(lambda: GLib.source_remove(timer))
++        cleanup(self.window.destroy)
++        cleanup(lambda: Gtk.main_quit() if Gtk.main_level() else None)
++        if errors:
++            for error in errors[1:]:
++                errors[0].add_note(f"GTK cleanup also failed: {type(error).__name__}")
++            raise errors[0]
+ 
+     def _runtime_failure(self, _kind, error, _traceback):
+         self.failed = True
+--- starting/src/beamo_wipe/ui/tk_wizard.py
++++ current/src/beamo_wipe/ui/tk_wizard.py
+@@ -992,7 +992,7 @@
+         self.bind("<Configure>", self._flow_label, add="+")
+         self._sync()
+         self._paint()
+-        self._variable_trace: Optional[str] = variable.trace_add("write", self._on_variable)
++        self._variable_trace: Optional[str] = _new_owned_trace(self, "_variable_trace", variable, self._on_variable)
+         self.bind("<Destroy>", self._retire_variable_trace, add="+")
+         self.bind("<Enter>", self._enter)
+         self.bind("<Leave>", self._leave)
+@@ -1136,6 +1136,37 @@
+ _TK_ASSET_CLASSES = (tkfont.Font, tk.Variable, tk.Image)
+ _RETIRED_INTERPRETERS: dict[int, tuple[threading.Thread, object]] = {}
+ _RETIRED_NATIVE_ASSETS: dict[int, tuple[threading.Thread, object]] = {}
++
++
++
++def _new_owned_trace(owner, field: str, variable, callback) -> str:
++    if not isinstance(variable, _TK_ASSET_CLASSES[1]):
++        return variable.trace_add("write", callback)
++    # trace_add can register its Tcl command before an interruption prevents
++    # its return. Adopt our exact command before that boundary; peer commands
++    # registered during the call keep their independent ownership.
++    missing = object()
++    previous = vars(variable).get("_register", missing)
++    original_register = getattr(variable, "_register")
++    adopted = False
++
++    def register(func):
++        nonlocal adopted
++        token = original_register(func)
++        if func is callback and not adopted:
++            setattr(owner, field, token)
++            adopted = True
++        return token
++
++    setattr(variable, "_register", register)
++    try:
++        return variable.trace_add("write", callback)
++    finally:
++        if vars(variable).get("_register") is register:
++            if previous is missing:
++                delattr(variable, "_register")
++            else:
++                setattr(variable, "_register", previous)
+ 
+ 
+ def _pin_retired_interpreter(root: tk.Misc, owner: threading.Thread | None = None) -> None:
+@@ -1330,9 +1361,9 @@
+             self._support_qr: Optional[tk.PhotoImage] = None
+             self._support_lead: Optional[tk.Label] = None
+             self._support_copy_bound = False
+-            self._confirm_var = _new_owned_native(self.root, tk.StringVar)
+-            self._typing_var = _new_owned_native(self.root, tk.StringVar)
+-            self._owner_var = _new_owned_native(self.root, tk.IntVar, value=0)
++            self._confirm_var = _new_owned_native(self.root, tk.StringVar, master=self.root)
++            self._typing_var = _new_owned_native(self.root, tk.StringVar, master=self.root)
++            self._owner_var = _new_owned_native(self.root, tk.IntVar, master=self.root, value=0)
+             self._body: Optional[tk.Frame] = None
+             self._footer: Optional[tk.Frame] = None
+             self._header: Optional[tk.Canvas] = None
+@@ -1395,8 +1426,8 @@
+             self._layout_drawing = False
+             self._build_chrome()
+             self.root.bind("<Configure>", self._on_root_configure)
+-            self._confirm_var_trace: Optional[str] = self._confirm_var.trace_add("write", self._confirm_var_written)
+-            self._typing_var_trace: Optional[str] = self._typing_var.trace_add("write", self._typing_var_written)
++            self._confirm_var_trace: Optional[str] = _new_owned_trace(self, "_confirm_var_trace", self._confirm_var, self._confirm_var_written)
++            self._typing_var_trace: Optional[str] = _new_owned_trace(self, "_typing_var_trace", self._typing_var, self._typing_var_written)
+             self.root.bind("<Escape>", self._on_escape)
+             self.root.bind("<KeyRelease-Escape>", self._on_escape_release)
+             self.root.bind("<KP_Enter>", self._on_return)
+@@ -3134,7 +3165,7 @@
+         section = tk.Frame(parent, bg=BG)
+         section.pack(fill=tk.X, pady=(0, 10))
+         content = tk.Frame(section, bg=BG)
+-        opened = _new_owned_native(self.root, tk.BooleanVar, value=False)
++        opened = _new_owned_native(self.root, tk.BooleanVar, master=self.root, value=False)
+         def toggle():
+             if opened.get():
+                 content.pack(fill=tk.X)
+@@ -4607,15 +4638,20 @@
+             self._draw()
+         except BaseException as exc:
+             return finish_failed_start(exc)
+-        launch_decided = threading.Event()
++        launch_decided = None
+         launch_allowed = [False]
+ 
+         def run_if_launched() -> None:
++            if launch_decided is None:
++                return
+             launch_decided.wait()
+-            if launch_allowed[0]:
++            with self._refresh_lock:
++                accepted = launch_allowed[0]
++            if accepted:
+                 self._refresh_worker(seq)
+ 
+         try:
++            launch_decided = threading.Event()
+             worker = threading.Thread(
+                 target=run_if_launched,
+                 daemon=True, name=f"beamo-refresh-{seq}",
+@@ -4623,19 +4659,21 @@
+             with self._refresh_lock:
+                 self._refresh_threads[seq] = worker
+             worker.start()
+-            # Arm the only result poll before allowing discovery to run. If
+-            # Tk cannot schedule it, abandon the claim and wake the worker
+-            # with launch_allowed still false.
+             self.root.after(50, lambda: self._poll_refresh(seq, on_done))
++            with self._refresh_lock:
++                # A set() interrupted after waking the worker has not accepted
++                # it yet. The same lock keeps that worker behind this decision.
++                launch_decided.set()
++                launch_allowed[0] = True
+         except BaseException as exc:
+-            # Even if Thread.start spawned the OS thread before raising, the
+-            # worker cannot enter discovery until this caller authorizes it.
+-            launch_decided.set()
+             with self._refresh_lock:
+                 self._refresh_threads.pop(seq, None)
++            if launch_decided is not None:
++                try:
++                    launch_decided.set()
++                except BaseException as cleanup:
++                    _note_tk_cleanup_failure(exc, cleanup)
+             return finish_failed_start(exc)
+-        launch_allowed[0] = True
+-        launch_decided.set()
+         return seq
+ 
+     def _refresh_worker(self, seq: int) -> None:

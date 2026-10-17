@@ -1,0 +1,3521 @@
+[
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "7ff1ae21414ce1b9fe5dd4ba4dc8b31f787689d99452ee3d4663aed31783c27f"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "final_sample",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "95fa5932b3e2be13129704b2a3afb9ffeab67658d6886e9344eab6e6437a5e5b"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "final_then_partial",
+    "full": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "projection": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "f0b0ab29d9738ecf67a9804feb955e648aaf97720210107fd66348cf352c74fb"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "table_then_partial",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "bad97e04ac31c32305667aa48f2a149103dbc3cc98e9c2a59e7d51f1060cb38f"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "wrong_then_table",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "9f7844864d8620a7e81617b6689fc09056cdc72c4dd865b1fdfcc644c9ec7785"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "table_then_wrong",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "526b90472105d717c5115ef5eb4a2edef80fa5243ef5a8efcb485053dc83e9a7"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "nonzero_then_table",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "5b9a0a82c4613dd755065df9270c637fe282f9933de418b15138ddf1f21632b0"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "table_then_nonzero",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "3a5de819c1a42433f97d8683bf7f133dcb8e0b61561ee707d1202a199aa735b8"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "zero_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "3e483353255444a1e786fc9299455b02c89ff8de1813169ba323542888c05e12"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "zero_duplicate_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "ae715c7552c1fac79f8d9235bd1e1cf3e9071a58b6ec5bd4ee3b9f5610827bd9"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "zero_then_malformed_foreign",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "74e7a0088c201afb738bbc6074408039bfbc368bf634d4b9d4688f9275d7ec02"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "headerless_nonzero",
+    "full": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "5b42eb7304f9fa1db30134b4dc21f97cc6471ac183a036df235854509a3a837a"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "busy_contradiction",
+    "full": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "2386b38a78e97aee267c1a79794bffb54ce72d4518262e4fb4b22a593383ec5a"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "model_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "49607eabbf77ee01bc67f49a0fa9b1f9fb2587dc9ab736b151c36834664a7cff"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "foreign_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "a99fbbb40df0292cd7336841f36ac0c3d9ed2cedd185af591b5aee2b80206511"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "positive_with_foreign_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "pass",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "c4ac99614dc7741b903fbc21963a34796969978d49d54c6798f5305af0e60958"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "everyday",
+    "variant": "positive_with_target_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "82fa5b75a35b79957a14b286ce971ca6d2bb58c2d9ac76f3b37befb2169e5bf2"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "7ff1ae21414ce1b9fe5dd4ba4dc8b31f787689d99452ee3d4663aed31783c27f"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "final_sample",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "878570418c5f2275c98b1dfb503fa8a553da2b9535ea2e77b93fce017c1b5171"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "final_then_partial",
+    "full": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "projection": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "757542e20861e7949afb62b681183cd8f8e8254542a2dc0f5c464d858bec982b"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "table_then_partial",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "73f2dbd03c58401556bef8d8bc3cfa6b8e0b2832e14015eadf10415f4741c3b0"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "wrong_then_table",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "cde993cb6fa80814a87864903148962f0b1b8a43acf219c0649c5fa8023b6603"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "table_then_wrong",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "0e55fe772ce3a7a52112b1022464fa7cf3886510aa0cdb9d21767caceefb704a"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "nonzero_then_table",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "5b9a0a82c4613dd755065df9270c637fe282f9933de418b15138ddf1f21632b0"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "table_then_nonzero",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "3a5de819c1a42433f97d8683bf7f133dcb8e0b61561ee707d1202a199aa735b8"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "zero_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "3e483353255444a1e786fc9299455b02c89ff8de1813169ba323542888c05e12"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "zero_duplicate_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "ae715c7552c1fac79f8d9235bd1e1cf3e9071a58b6ec5bd4ee3b9f5610827bd9"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "zero_then_malformed_foreign",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "74e7a0088c201afb738bbc6074408039bfbc368bf634d4b9d4688f9275d7ec02"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "headerless_nonzero",
+    "full": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "5b42eb7304f9fa1db30134b4dc21f97cc6471ac183a036df235854509a3a837a"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "busy_contradiction",
+    "full": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "2386b38a78e97aee267c1a79794bffb54ce72d4518262e4fb4b22a593383ec5a"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "model_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "49607eabbf77ee01bc67f49a0fa9b1f9fb2587dc9ab736b151c36834664a7cff"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "foreign_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "a99fbbb40df0292cd7336841f36ac0c3d9ed2cedd185af591b5aee2b80206511"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "positive_with_foreign_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "pass",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "c4ac99614dc7741b903fbc21963a34796969978d49d54c6798f5305af0e60958"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "extra",
+    "variant": "positive_with_target_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "82fa5b75a35b79957a14b286ce971ca6d2bb58c2d9ac76f3b37befb2169e5bf2"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "7ff1ae21414ce1b9fe5dd4ba4dc8b31f787689d99452ee3d4663aed31783c27f"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "final_sample",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "3f872cbf235474e7bed9a3ee1a74f6cc03f2ef317c18d1932ca7d1a5fa9d224c"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "final_then_partial",
+    "full": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "projection": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "a885abe7c7cdcf6fa3043bf76171edfb85bdf64619d33aa27400e0f1a9d0c00d"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "table_then_partial",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "0d8b5e607b3dfa97f1151f29622a7960c6f35731dfc823876299c5e7c1bde2b2"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "wrong_then_table",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "bf24f6f322d7381925db4a1e7fcb28a71e72a3e20ff78e762c8f5a19b0094a9f"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "table_then_wrong",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "4b1bd8a652d84f00d8686dbc1d5978818dc92f4bc29996e7f4efa41dc5e22267"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "nonzero_then_table",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "5b9a0a82c4613dd755065df9270c637fe282f9933de418b15138ddf1f21632b0"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "table_then_nonzero",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "3a5de819c1a42433f97d8683bf7f133dcb8e0b61561ee707d1202a199aa735b8"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "zero_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "3e483353255444a1e786fc9299455b02c89ff8de1813169ba323542888c05e12"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "zero_duplicate_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "ae715c7552c1fac79f8d9235bd1e1cf3e9071a58b6ec5bd4ee3b9f5610827bd9"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "zero_then_malformed_foreign",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "74e7a0088c201afb738bbc6074408039bfbc368bf634d4b9d4688f9275d7ec02"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "headerless_nonzero",
+    "full": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "5b42eb7304f9fa1db30134b4dc21f97cc6471ac183a036df235854509a3a837a"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "busy_contradiction",
+    "full": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "2386b38a78e97aee267c1a79794bffb54ce72d4518262e4fb4b22a593383ec5a"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "model_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "49607eabbf77ee01bc67f49a0fa9b1f9fb2587dc9ab736b151c36834664a7cff"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "foreign_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "a99fbbb40df0292cd7336841f36ac0c3d9ed2cedd185af591b5aee2b80206511"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "positive_with_foreign_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "pass",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "c4ac99614dc7741b903fbc21963a34796969978d49d54c6798f5305af0e60958"
+  },
+  {
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "variant": "positive_with_target_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "82fa5b75a35b79957a14b286ce971ca6d2bb58c2d9ac76f3b37befb2169e5bf2"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "c7e194204a6c4ab63a01b67f27c21c1e26221ee6fb9cf60fa3996f8ded0a4d66"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "final_sample",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "e0fa4d4e9dee05da327e66d906f0c9c5e21f3eab0aa6850159d706a8a1c0c238"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "final_then_partial",
+    "full": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "projection": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "040c174a942c8d542519fa3d01fbd3af75ea72fc4c04582d0c28bc37fab7e187"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "table_then_partial",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "2d0762e614cdf7ca52f7d2d1e9cbd859bb2e7179d44dad70ec48c0c1656dd5c8"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "wrong_then_table",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "b8ccc297eae5ebd3e91b7a9226b9d65a41f8c76086ffd6893ba2f9587290eec1"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "table_then_wrong",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "be3fbe8e2a23b93708cfb8649f8c8b7f30e3857835fb715a2325a9d1dc80b9e8"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "nonzero_then_table",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "6a38bff0ef677aa24104896671576581350276c98ae29bdaa761a548cfda18a2"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "table_then_nonzero",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "cab8f2829304bfc94853a696db997ef82b96b585ef5e62231beea7bf4b74238a"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "zero_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "a6961a356e1a465272e6507ab9dfb7c2baa68706c2780405d7d093f699c10bf2"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "zero_duplicate_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "cc37e8a3f7e2ea0276add307bd6074260534c5366dae6798c3b7791ed5312e93"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "zero_then_malformed_foreign",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "1764c227d92d73923fa80a80e16b631f4b797321fd7423d270a39b48e997fb0a"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "headerless_nonzero",
+    "full": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "3965cbb2694936e5afe0b29dd14b614f39dd93a6b57cb7f6ec387441604fb50a"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "busy_contradiction",
+    "full": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "fb6a163ef8eca2ebe6b63d2c298c0a72f5a4c3072fd3aa607dac2eff6b4e8abb"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "model_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "b67789da221664d525e5049342ec196bad9fe0f80fc2eacff6808e69faccc644"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "foreign_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "8fcdbf58b86fb1cb52cce3292b17c245e9ebce06cbdd4ff242a65c9893ce7aef"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "positive_with_foreign_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "pass",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "dbb0f1692e7ade481c174b1f2210a1e43aa05a0d4078f6b516c2381779f25e12"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "variant": "positive_with_target_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "a849a6491261affe00ccc7c209cba180d2938cc1ea207c04e614fcd27e523f54"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "c7e194204a6c4ab63a01b67f27c21c1e26221ee6fb9cf60fa3996f8ded0a4d66"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "final_sample",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "271933871e839d1da8454a45387e561678c27af2927c97e35ea5bbffdc90858d"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "final_then_partial",
+    "full": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "projection": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "8125a5cb27e0ad11303a1e48208dfb98d336dd1cdcc0675da9ab049530311330"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "table_then_partial",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "55dbb62fe37269595de2b3b7b1375c0b1f1f9d6cb8b23e1021634d39f988ef14"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "wrong_then_table",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "7f016cd789c2a69223851638a6ca11f92204c7e058899559b1bb536ca8d42e6d"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "table_then_wrong",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "7742edf667016b9fb9644a15d028347ffef2bc73cc9ccf65217d7cfddc13d8cf"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "nonzero_then_table",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "6a38bff0ef677aa24104896671576581350276c98ae29bdaa761a548cfda18a2"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "table_then_nonzero",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "cab8f2829304bfc94853a696db997ef82b96b585ef5e62231beea7bf4b74238a"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "zero_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "a6961a356e1a465272e6507ab9dfb7c2baa68706c2780405d7d093f699c10bf2"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "zero_duplicate_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "cc37e8a3f7e2ea0276add307bd6074260534c5366dae6798c3b7791ed5312e93"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "zero_then_malformed_foreign",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "1764c227d92d73923fa80a80e16b631f4b797321fd7423d270a39b48e997fb0a"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "headerless_nonzero",
+    "full": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "3965cbb2694936e5afe0b29dd14b614f39dd93a6b57cb7f6ec387441604fb50a"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "busy_contradiction",
+    "full": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "fb6a163ef8eca2ebe6b63d2c298c0a72f5a4c3072fd3aa607dac2eff6b4e8abb"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "model_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "b67789da221664d525e5049342ec196bad9fe0f80fc2eacff6808e69faccc644"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "foreign_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "8fcdbf58b86fb1cb52cce3292b17c245e9ebce06cbdd4ff242a65c9893ce7aef"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "positive_with_foreign_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "pass",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "dbb0f1692e7ade481c174b1f2210a1e43aa05a0d4078f6b516c2381779f25e12"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "variant": "positive_with_target_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "a849a6491261affe00ccc7c209cba180d2938cc1ea207c04e614fcd27e523f54"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "c7e194204a6c4ab63a01b67f27c21c1e26221ee6fb9cf60fa3996f8ded0a4d66"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "final_sample",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "2973a104dc5dee6bece45bbe29e1032c5d3c5d508bb7f62d4dc6a23daa4d8ab3"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "final_then_partial",
+    "full": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "projection": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "b8fec68825e1409b21125d013c49e5a379ef85253a43d902d79215f00e8e7273"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "table_then_partial",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "0f7238cb963f87e7dd0b8e4b5968c72595ac79ead499837b1306c0b4e87b6516"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "wrong_then_table",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "7fb4394b9d2f898d1ae37970a21625e092122a2bf942e47bd898973f5a3ab9a2"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "table_then_wrong",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "2e79b3f879081ac3d189208ebc91810eaee6feef31eecf800f2103977593d9e5"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "nonzero_then_table",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "6a38bff0ef677aa24104896671576581350276c98ae29bdaa761a548cfda18a2"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "table_then_nonzero",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "cab8f2829304bfc94853a696db997ef82b96b585ef5e62231beea7bf4b74238a"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "zero_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "a6961a356e1a465272e6507ab9dfb7c2baa68706c2780405d7d093f699c10bf2"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "zero_duplicate_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "cc37e8a3f7e2ea0276add307bd6074260534c5366dae6798c3b7791ed5312e93"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "zero_then_malformed_foreign",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "1764c227d92d73923fa80a80e16b631f4b797321fd7423d270a39b48e997fb0a"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "headerless_nonzero",
+    "full": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "3965cbb2694936e5afe0b29dd14b614f39dd93a6b57cb7f6ec387441604fb50a"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "busy_contradiction",
+    "full": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "fb6a163ef8eca2ebe6b63d2c298c0a72f5a4c3072fd3aa607dac2eff6b4e8abb"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "model_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "b67789da221664d525e5049342ec196bad9fe0f80fc2eacff6808e69faccc644"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "foreign_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "8fcdbf58b86fb1cb52cce3292b17c245e9ebce06cbdd4ff242a65c9893ce7aef"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "positive_with_foreign_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "pass",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "dbb0f1692e7ade481c174b1f2210a1e43aa05a0d4078f6b516c2381779f25e12"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "variant": "positive_with_target_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "a849a6491261affe00ccc7c209cba180d2938cc1ea207c04e614fcd27e523f54"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "d3b8a1ff4ec526e1befb01b90b24c32c43e8cd4c1b4c7558c57c2946c7bf9e4d"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "final_sample",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "7ad949fa1e497faef01b5b122636068574cbe540e5022968e2a4dfd70261c483"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "final_then_partial",
+    "full": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "projection": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "56f184fd4824c37692b67edfe6c5b05e3307ab5df9936f9e495d3fb2803d953c"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "table_then_partial",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "a286c939368764df9a93c7e43d2779b1bf1997542d20e714b69bed25113c0033"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "wrong_then_table",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "bd55ea8025e53b641af2e9c4dcb1ff470af49f8a5902c5abfb061a2088bdd875"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "table_then_wrong",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "4e54e9e1b409601c16af821a9a9caafa3d3d7fc09a9e01a70e032671c4a2d4ed"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "nonzero_then_table",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "361abefe8303f7f0bac727b56dce1012291713763a1497a6cbd2dc022df3714f"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "table_then_nonzero",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "b8ff4f06196dee8830a03b1c1e0c7e77a0feba688e64990fb226a77cc2bff3cf"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "zero_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "54db9cc80c314c7d3765a3140134f54bab0e6c75a8ed8090b3ab36834c9fa54a"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "zero_duplicate_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "efa617f3a954faa2790bcc70c15e4e49623dbca79a2bc548ca1420ea90ee2d93"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "zero_then_malformed_foreign",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "cae17fbda76a0203b9477934cae9db40fcfdc99451f74ec686fc3f54219696fb"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "headerless_nonzero",
+    "full": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "c947145f77e1b575e27d359da43a6eaa6a939abffaaaddf32a6256e776133f98"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "busy_contradiction",
+    "full": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "0b1880863440cc13b06297c359311d1d8512179c10b2dbb6a7ac4765156ca08f"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "model_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "11d5a5ff87720f3e5707a73782640d77e8eed5c430d2969e68ab104f9c90855e"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "foreign_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "e7490fb621c06c712de14297cea88e692fcc1cb47970e00e7f8ff8ae50e97bac"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "positive_with_foreign_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "pass",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "55794c0ee0798f54f75780488b6b7704b891acb9523590ec6d504a3fd77cc7c8"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "variant": "positive_with_target_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "bdcf06299f4919d083412a4112ecade6fe876c875b2cea59399540136bcc97a6"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "d3b8a1ff4ec526e1befb01b90b24c32c43e8cd4c1b4c7558c57c2946c7bf9e4d"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "final_sample",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "c0746977524b251c443814dedac444be825251f9df9e1e9ec3f4d570a5bb0e85"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "final_then_partial",
+    "full": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "projection": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "e5b605ebbee04dc103dd39630570f4309c03fd510c449e8be8ac0d171aa4b67f"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "table_then_partial",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "ea407e472aac9a107b5a2de22f26e0b5e7977c895e3f3a6b7f3e4d73c6911569"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "wrong_then_table",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "076bfe09e3ead7929d215ff6878b1d697b79cfc7c83be382a14511a5045511be"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "table_then_wrong",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "f4852822955f7b318ca1585ec658fb1d24d369b7938dc39958b59c7b6b0c19d5"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "nonzero_then_table",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "361abefe8303f7f0bac727b56dce1012291713763a1497a6cbd2dc022df3714f"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "table_then_nonzero",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "b8ff4f06196dee8830a03b1c1e0c7e77a0feba688e64990fb226a77cc2bff3cf"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "zero_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "54db9cc80c314c7d3765a3140134f54bab0e6c75a8ed8090b3ab36834c9fa54a"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "zero_duplicate_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "efa617f3a954faa2790bcc70c15e4e49623dbca79a2bc548ca1420ea90ee2d93"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "zero_then_malformed_foreign",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "cae17fbda76a0203b9477934cae9db40fcfdc99451f74ec686fc3f54219696fb"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "headerless_nonzero",
+    "full": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "c947145f77e1b575e27d359da43a6eaa6a939abffaaaddf32a6256e776133f98"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "busy_contradiction",
+    "full": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "0b1880863440cc13b06297c359311d1d8512179c10b2dbb6a7ac4765156ca08f"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "model_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "11d5a5ff87720f3e5707a73782640d77e8eed5c430d2969e68ab104f9c90855e"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "foreign_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "e7490fb621c06c712de14297cea88e692fcc1cb47970e00e7f8ff8ae50e97bac"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "positive_with_foreign_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "pass",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "55794c0ee0798f54f75780488b6b7704b891acb9523590ec6d504a3fd77cc7c8"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "variant": "positive_with_target_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "bdcf06299f4919d083412a4112ecade6fe876c875b2cea59399540136bcc97a6"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "d3b8a1ff4ec526e1befb01b90b24c32c43e8cd4c1b4c7558c57c2946c7bf9e4d"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "final_sample",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "f1e97263b6825f5cbd911d778216b0a9bf3f7c08d253fb2738f907216883ade6"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "final_then_partial",
+    "full": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "projection": [
+      false,
+      "nwipe exited without wiping",
+      "completion_missing"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "a0e3be639752928b4eeddd40165890e65b2b180f4e93ebbdce73cffa5e99892e"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "table_then_partial",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "59b7678416e973febd4c4ca337a619c2db2e90e84704de1b0fa7d3eac4fe0add"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "wrong_then_table",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "7786f5d11532ce329aff27e1eb6c0469097f0dc50b459a05db3272f142022f5a"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "table_then_wrong",
+    "full": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe progress contradicted the confirmed method",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "bba5edfffe4865358b67ff249a2c0d9f505368651a51d608d463355e63ff0035"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "nonzero_then_table",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "361abefe8303f7f0bac727b56dce1012291713763a1497a6cbd2dc022df3714f"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "table_then_nonzero",
+    "full": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "projection": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "checks": [
+      "unavailable",
+      "fail",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "b8ff4f06196dee8830a03b1c1e0c7e77a0feba688e64990fb226a77cc2bff3cf"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "zero_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "54db9cc80c314c7d3765a3140134f54bab0e6c75a8ed8090b3ab36834c9fa54a"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "zero_duplicate_then_table",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "pass",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "efa617f3a954faa2790bcc70c15e4e49623dbca79a2bc548ca1420ea90ee2d93"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "zero_then_malformed_foreign",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "cae17fbda76a0203b9477934cae9db40fcfdc99451f74ec686fc3f54219696fb"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "headerless_nonzero",
+    "full": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "c947145f77e1b575e27d359da43a6eaa6a939abffaaaddf32a6256e776133f98"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "busy_contradiction",
+    "full": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "projection": [
+      false,
+      "nwipe's erase activity contradicted its skip report",
+      "indeterminate"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "0b1880863440cc13b06297c359311d1d8512179c10b2dbb6a7ac4765156ca08f"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "model_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "11d5a5ff87720f3e5707a73782640d77e8eed5c430d2969e68ab104f9c90855e"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "foreign_failure",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "e7490fb621c06c712de14297cea88e692fcc1cb47970e00e7f8ff8ae50e97bac"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "positive_with_foreign_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "pass",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "55794c0ee0798f54f75780488b6b7704b891acb9523590ec6d504a3fd77cc7c8"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "variant": "positive_with_target_unknown",
+    "full": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "projection": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "checks": [
+      "unavailable",
+      "unavailable",
+      "warning"
+    ],
+    "same": true,
+    "semantic": true,
+    "input_sha256": "bdcf06299f4919d083412a4112ecade6fe876c875b2cea59399540136bcc97a6"
+  }
+]

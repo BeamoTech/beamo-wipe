@@ -1,0 +1,1 @@
+Initial primary confirm callback proof used _review helper at LAST_CHANCE, found no Entry and stopped before observing a product callback. Owned root cleaned. Added the actual two back transitions to CONFIRM and explicit screen assertion; no source/test change. Original script/log retained.

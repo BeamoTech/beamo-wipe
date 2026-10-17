@@ -1,0 +1,27 @@
+--- /tmp/pass11-ui/accessible_wizard-before-geometry.py
++++ src/beamo_wipe/ui/accessible_wizard.py
+@@ -75,6 +75,11 @@
+             height = min(height, workarea.height)
+         self.window.set_default_size(width, height)
+         if fullscreen:
++            # Bare X11 marks fullscreen without a window manager to resize it.
++            if monitor is not None:
++                geometry = monitor.get_geometry()
++                self.window.set_default_size(geometry.width, geometry.height)
++                self.window.move(geometry.x, geometry.y)
+             self.window.fullscreen()
+         self.window.connect("delete-event", self._close)
+         self.window.connect("key-press-event", self._key_press)
+@@ -1227,6 +1232,12 @@
+     window.set_name("beamo-accessible")
+     window.set_default_size(640, 420)
+     if fullscreen:
++        display = window.get_display()
++        monitor = display.get_primary_monitor() or display.get_monitor(0)
++        if monitor is not None:
++            geometry = monitor.get_geometry()
++            window.set_default_size(geometry.width, geometry.height)
++            window.move(geometry.x, geometry.y)
+         window.fullscreen()
+     box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+     box.set_border_width(24)

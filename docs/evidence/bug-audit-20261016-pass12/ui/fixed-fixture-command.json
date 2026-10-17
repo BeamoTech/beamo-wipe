@@ -1,0 +1,15 @@
+[
+  "xvfb-run",
+  "-a",
+  "-n",
+  "120",
+  "-s",
+  "-screen 0 1600x1000x24 -dpi 72",
+  "dbus-run-session",
+  "--",
+  "/tmp/beamo-wipe-audit-python/bin/python",
+  "-m",
+  "pytest",
+  "tests/test_bug_audit_tk_gc_20260913.py",
+  "--junitxml=/tmp/pass12-ui/fixed-fixture.xml"
+]

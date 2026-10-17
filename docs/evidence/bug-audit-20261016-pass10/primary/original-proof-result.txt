@@ -1,0 +1,8 @@
+{
+  "starting_application_files_hash_verified": 52,
+  "test_cases": 78,
+  "failures": 32,
+  "errors": 0,
+  "skipped": 0,
+  "pytest_exit": 1
+}

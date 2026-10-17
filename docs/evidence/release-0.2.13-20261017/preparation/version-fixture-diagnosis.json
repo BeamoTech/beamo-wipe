@@ -1,0 +1,28 @@
+{
+  "utc": "2026-10-17T23:03:37.659076+00:00",
+  "candidate1_full": {
+    "passed": 10103,
+    "failed": 23,
+    "skipped": 14,
+    "separate_orca_passed": 1
+  },
+  "focused": {
+    "version-fixtures-original": {
+      "cases": 43,
+      "passed": 20,
+      "failed": 23,
+      "errors": 0,
+      "skipped": 0
+    },
+    "version-fixtures-fixed": {
+      "cases": 125,
+      "passed": 125,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "diagnosis": "Ten shell/finalizer fixture failures use old version/default names; thirteen golden failures differ only in application version and its SHARE.json checksum. No product guard changed.",
+  "correction": "Explicit fixture version bindings, dynamic finalizer fixture filename,13strictly limited golden metadata edits. Original Python assertion ASTs retained.",
+  "status": "FOCUSED PASS; candidate2 full gates not yet run"
+}

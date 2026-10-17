@@ -1,0 +1,26 @@
+{
+  "reports": {
+    "final.xml": {
+      "total": 6328,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 14,
+      "duration_seconds": 517.884,
+      "passed": 6314
+    },
+    "final.xml.orca.xml": {
+      "total": 1,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "duration_seconds": 66.067,
+      "passed": 1
+    }
+  },
+  "review": "Full source diff, final modal regressions, repaired PNG and exact archives reviewed; no further source change.",
+  "frozen_inputs_match": 735,
+  "unique_case_ids": 6329,
+  "source_patch_sha256": "c6460cfdfff97b3801a3f9ad48af6909e0aa505f8822c979b01d536c8463cfb3",
+  "runtime_source_sha256": "c0196a53381b5d3235b5f7cdd764d47b5ee074c2f684d18a26bb7c8183e8efcd",
+  "git_index_empty": true
+}

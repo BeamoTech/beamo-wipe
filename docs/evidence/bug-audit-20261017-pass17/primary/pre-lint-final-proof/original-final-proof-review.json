@@ -1,0 +1,41 @@
+{
+  "cases": 1235,
+  "counts": {
+    "fail": 496,
+    "pass": 739
+  },
+  "by_module": {
+    "tests.test_descendant_hardware_ambiguity_pass17": {
+      "fail": 176,
+      "pass": 186
+    },
+    "tests.test_plain_erase_typeahead_pass17": {
+      "fail": 12,
+      "pass": 9
+    },
+    "tests.test_runner_mixed_log_origin_pass17": {
+      "pass": 108
+    },
+    "tests.test_runner_model_lf_noerase_pass17": {
+      "fail": 250,
+      "pass": 198
+    },
+    "tests.test_startup_callback_retirement_pass17": {
+      "fail": 10,
+      "pass": 6
+    },
+    "tests.test_unresolved_physical_bridge_pass17": {
+      "fail": 32,
+      "pass": 168
+    },
+    "tests.test_unresolved_physical_duplicates_pass17": {
+      "pass": 32
+    },
+    "tests.test_unresolved_wwn_uncertainty_pass17": {
+      "fail": 16,
+      "pass": 32
+    }
+  },
+  "deselected_helper_cases": 12,
+  "notes": "All final high-level regression bytes replayed on exact archived starting source; zero errors/skips, shared source never restored. Duplicate32 controls all passed on start source, confirming initial candidate introduced their regression, now corrected."
+}

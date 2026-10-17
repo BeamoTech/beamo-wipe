@@ -1,0 +1,133 @@
+......F.......FFFF.                                                      [100%]
+=================================== FAILURES ===================================
+__ test_partial_native_and_row_constructor_releases_ownership[tk-init-before] __
+
+request = <FixtureRequest for <Function test_partial_native_and_row_constructor_releases_ownership[tk-init-before]>>
+case = 'tk-init-before'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_partial_native_and_row_constructor_releases_ownership(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, case=case, provenance=provenance,
+                       returncode=result.returncode, stdout=result.stdout, stderr=result.stderr,
+                       timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, case=case, provenance=provenance, timed_out=True,
+                       stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("constructor_native_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'case': 'tk-init-before', 'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug...ea8458aa40f8327f', 'source': '/tmp/pass20-primary/private-graph/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v3.py:569: AssertionError
+_ test_partial_native_and_row_constructor_releases_ownership[startup-load-before] _
+
+request = <FixtureRequest for <Function test_partial_native_and_row_constructor_releases_ownership[startup-load-before]>>
+case = 'startup-load-before'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_partial_native_and_row_constructor_releases_ownership(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, case=case, provenance=provenance,
+                       returncode=result.returncode, stdout=result.stdout, stderr=result.stderr,
+                       timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, case=case, provenance=provenance, timed_out=True,
+                       stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("constructor_native_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'case': 'startup-load-before', 'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidenc...ea8458aa40f8327f', 'source': '/tmp/pass20-primary/private-graph/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v3.py:569: AssertionError
+_ test_partial_native_and_row_constructor_releases_ownership[startup-load-after] _
+
+request = <FixtureRequest for <Function test_partial_native_and_row_constructor_releases_ownership[startup-load-after]>>
+case = 'startup-load-after'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_partial_native_and_row_constructor_releases_ownership(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, case=case, provenance=provenance,
+                       returncode=result.returncode, stdout=result.stdout, stderr=result.stderr,
+                       timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, case=case, provenance=provenance, timed_out=True,
+                       stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("constructor_native_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'case': 'startup-load-after', 'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence...ea8458aa40f8327f', 'source': '/tmp/pass20-primary/private-graph/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v3.py:569: AssertionError
+__ test_partial_native_and_row_constructor_releases_ownership[startup-frame] ___
+
+request = <FixtureRequest for <Function test_partial_native_and_row_constructor_releases_ownership[startup-frame]>>
+case = 'startup-frame'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_partial_native_and_row_constructor_releases_ownership(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, case=case, provenance=provenance,
+                       returncode=result.returncode, stdout=result.stdout, stderr=result.stderr,
+                       timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, case=case, provenance=provenance, timed_out=True,
+                       stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("constructor_native_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'case': 'startup-frame', 'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-...ea8458aa40f8327f', 'source': '/tmp/pass20-primary/private-graph/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v3.py:569: AssertionError
+__ test_partial_native_and_row_constructor_releases_ownership[startup-label] ___
+
+request = <FixtureRequest for <Function test_partial_native_and_row_constructor_releases_ownership[startup-label]>>
+case = 'startup-label'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_partial_native_and_row_constructor_releases_ownership(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, case=case, provenance=provenance,
+                       returncode=result.returncode, stdout=result.stdout, stderr=result.stderr,
+                       timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, case=case, provenance=provenance, timed_out=True,
+                       stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("constructor_native_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'case': 'startup-label', 'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-...ea8458aa40f8327f', 'source': '/tmp/pass20-primary/private-graph/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v3.py:569: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v3.py::test_partial_native_and_row_constructor_releases_ownership[tk-init-before]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v3.py::test_partial_native_and_row_constructor_releases_ownership[startup-load-before]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v3.py::test_partial_native_and_row_constructor_releases_ownership[startup-load-after]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v3.py::test_partial_native_and_row_constructor_releases_ownership[startup-frame]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v3.py::test_partial_native_and_row_constructor_releases_ownership[startup-label]

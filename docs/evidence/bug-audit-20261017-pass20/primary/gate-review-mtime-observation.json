@@ -1,0 +1,74 @@
+[
+  {
+    "phase": "lint",
+    "bytes": 1250,
+    "mtime_ns": 1792264834715650799,
+    "start_ns": 1792264830359416064,
+    "end_ns": 1792264834744358912,
+    "mtime_minus_start_seconds": 4.356234788894653
+  },
+  {
+    "phase": "preview",
+    "bytes": 545,
+    "mtime_ns": 1792264837092651452,
+    "start_ns": 1792264834771697920,
+    "end_ns": 1792264837120381184,
+    "mtime_minus_start_seconds": 2.320953369140625
+  },
+  {
+    "phase": "negative",
+    "bytes": 1586,
+    "mtime_ns": 1792264838361651802,
+    "start_ns": 1792264837147505152,
+    "end_ns": 1792264838392285952,
+    "mtime_minus_start_seconds": 1.2141468524932861
+  },
+  {
+    "phase": "go-version",
+    "bytes": 32,
+    "mtime_ns": 1792264838426651820,
+    "start_ns": 1792264838422132992,
+    "end_ns": 1792264838453569024,
+    "mtime_minus_start_seconds": 0.004518747329711914
+  },
+  {
+    "phase": "go-race",
+    "bytes": 31,
+    "mtime_ns": 1792264840875652496,
+    "start_ns": 1792264838480421120,
+    "end_ns": 1792264840917726976,
+    "mtime_minus_start_seconds": 2.3952314853668213
+  },
+  {
+    "phase": "go-vet",
+    "bytes": 0,
+    "mtime_ns": 1792264840944652515,
+    "start_ns": 1792264840945440000,
+    "end_ns": 1792264841260155904,
+    "mtime_minus_start_seconds": -0.0007874965667724609
+  },
+  {
+    "phase": "go-windows-crossbuild",
+    "bytes": 0,
+    "mtime_ns": 1792264841284652609,
+    "start_ns": 1792264841285083904,
+    "end_ns": 1792264842078080000,
+    "mtime_minus_start_seconds": -0.00043129920959472656
+  },
+  {
+    "phase": "go-fuzz",
+    "bytes": 586,
+    "mtime_ns": 1792264855145656476,
+    "start_ns": 1792264842104301824,
+    "end_ns": 1792264855188067072,
+    "mtime_minus_start_seconds": 13.041354656219482
+  },
+  {
+    "phase": "final",
+    "bytes": 12608,
+    "mtime_ns": 1792266022604858880,
+    "start_ns": 1792264855212692992,
+    "end_ns": 1792266022630848768,
+    "mtime_minus_start_seconds": 1167.3921658992767
+  }
+]

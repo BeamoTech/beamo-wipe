@@ -1,0 +1,33 @@
+{
+  "exact_starting_source_files": 58,
+  "shared_source_reverted": false,
+  "modules": {
+    "test_contents_efi_token_pass13": {
+      "cases": 104,
+      "failed": 32,
+      "passed": 72,
+      "errors": 0,
+      "skipped": 0,
+      "failure_functions": {
+        "test_efi_letters_inside_ordinary_names_remain_data": 32
+      }
+    },
+    "test_tk_input_scroll_pass13": {
+      "cases": 61,
+      "failed": 28,
+      "passed": 33,
+      "errors": 0,
+      "skipped": 0,
+      "failure_functions": {
+        "test_first_native_key_works_with_pointer_outside_window": 8,
+        "test_initial_focus_is_claimed_once_and_held_return_keeps_gate": 1,
+        "test_first_run_restores_each_screen_focus_without_changing_state": 6,
+        "test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent": 10,
+        "test_wheel_uses_current_body_after_redraw_and_leaves_picker_controls_intact": 1,
+        "test_native_wheel_over_hit_tested_prose_works": 2
+      }
+    }
+  },
+  "junit_sha256": "341ae6fefc9841f8d0eb4cb7e5f6ceb550bc50dc568334a35ab46de12e5c20e4",
+  "disposition": "Intended original product assertion failures with adjacent passing controls; not a passing product gate."
+}

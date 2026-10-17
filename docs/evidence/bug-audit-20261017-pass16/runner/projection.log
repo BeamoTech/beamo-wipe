@@ -1,0 +1,5 @@
+[2026/10/17 12:00:00] info: No hidden sectors on /dev/mmcblk100
+[2026/10/17 12:00:00] info: HIDDEN SECTORS INDETERMINATE! on /dev/mmcblk100
+********************************* Drive Status *********************************
+mcblk100 | Erased | 1MB/s | 00:00:01 | FAKE/DISK
+********************************************************************************

@@ -1,0 +1,251 @@
+......................................................FF......FFFFFF.... [ 14%]
+........................................................................ [ 29%]
+........................................................................ [ 44%]
+........................................................................ [ 59%]
+........................................................................ [ 74%]
+........................................................................ [ 88%]
+......................................................                   [100%]
+=================================== FAILURES ===================================
+_______ test_destroyed_app_and_local_variables_can_be_collected[confirm] _______
+
+request = <FixtureRequest for <Function test_destroyed_app_and_local_variables_can_be_collected[confirm]>>
+kind = 'confirm'
+
+    @pytest.mark.parametrize("kind", ["confirm", "typing"])
+    def test_destroyed_app_and_local_variables_can_be_collected(request, kind):
+        def build_and_destroy():
+            app, errors = _app(kind)
+            variables = (app._confirm_var, app._typing_var)
+            refs = (weakref.ref(app), weakref.ref(app.root), *(weakref.ref(variable) for variable in variables))
+            tokens = [_tokens(variable) for variable in variables]
+            app._teardown()
+            return refs, tokens, errors
+    
+        refs, tokens, errors = build_and_destroy()
+        try:
+            gc.collect()
+            alive = [reference() is not None for reference in refs]
+            request.node.user_properties.append(("owner_trace_collection", json.dumps({
+                "kind": kind, "app_root_confirm_typing_alive": alive,
+                "owned_tokens": [sorted(value) for value in tokens], "errors": errors,
+            })))
+>           assert alive == [False, False, False, False]
+E           assert [False, True, True, True] == [False, False, False, False]
+E             
+E             At index 1 diff: True != False
+E             Use -v to get more diff
+
+tests/test_tk_owner_trace_lifetime_pass19.py:163: AssertionError
+_______ test_destroyed_app_and_local_variables_can_be_collected[typing] ________
+
+request = <FixtureRequest for <Function test_destroyed_app_and_local_variables_can_be_collected[typing]>>
+kind = 'typing'
+
+    @pytest.mark.parametrize("kind", ["confirm", "typing"])
+    def test_destroyed_app_and_local_variables_can_be_collected(request, kind):
+        def build_and_destroy():
+            app, errors = _app(kind)
+            variables = (app._confirm_var, app._typing_var)
+            refs = (weakref.ref(app), weakref.ref(app.root), *(weakref.ref(variable) for variable in variables))
+            tokens = [_tokens(variable) for variable in variables]
+            app._teardown()
+            return refs, tokens, errors
+    
+        refs, tokens, errors = build_and_destroy()
+        try:
+            gc.collect()
+            alive = [reference() is not None for reference in refs]
+            request.node.user_properties.append(("owner_trace_collection", json.dumps({
+                "kind": kind, "app_root_confirm_typing_alive": alive,
+                "owned_tokens": [sorted(value) for value in tokens], "errors": errors,
+            })))
+>           assert alive == [False, False, False, False]
+E           assert [False, True, True, True] == [False, False, False, False]
+E             
+E             At index 1 diff: True != False
+E             Use -v to get more diff
+
+tests/test_tk_owner_trace_lifetime_pass19.py:163: AssertionError
+______ test_destroyed_local_row_and_variable_are_collectable[row-boolean] ______
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font143'>, [])
+request = <FixtureRequest for <Function test_destroyed_local_row_and_variable_are_collectable[row-boolean]>>
+kind = 'boolean', lifecycle = 'row'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_destroyed_local_row_and_variable_are_collectable(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        row = _CheckRow(parent, text="Compare disks", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        row_ref, variable_ref = weakref.ref(row), weakref.ref(variable)
+        _retire_row(root, parent, row, lifecycle)
+        del row, variable
+        gc.collect()
+        request.node.user_properties.append(("local_trace_release", json.dumps({
+            "kind": kind, "lifecycle": lifecycle,
+            "row_alive": row_ref() is not None, "variable_alive": variable_ref() is not None,
+        })))
+        assert row_ref() is None
+>       assert variable_ref() is None
+E       AssertionError: assert <tkinter.BooleanVar object at 0x75b80f0b6f90> is None
+E        +  where <tkinter.BooleanVar object at 0x75b80f0b6f90> = <weakref at 0x75b80f5afbf0; to 'BooleanVar' at 0x75b80f0b6f90>()
+
+tests/test_checkrow_trace_lifetime_pass18.py:146: AssertionError
+______ test_destroyed_local_row_and_variable_are_collectable[row-integer] ______
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font144'>, [])
+request = <FixtureRequest for <Function test_destroyed_local_row_and_variable_are_collectable[row-integer]>>
+kind = 'integer', lifecycle = 'row'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_destroyed_local_row_and_variable_are_collectable(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        row = _CheckRow(parent, text="Compare disks", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        row_ref, variable_ref = weakref.ref(row), weakref.ref(variable)
+        _retire_row(root, parent, row, lifecycle)
+        del row, variable
+        gc.collect()
+        request.node.user_properties.append(("local_trace_release", json.dumps({
+            "kind": kind, "lifecycle": lifecycle,
+            "row_alive": row_ref() is not None, "variable_alive": variable_ref() is not None,
+        })))
+        assert row_ref() is None
+>       assert variable_ref() is None
+E       AssertionError: assert <tkinter.IntVar object at 0x75b80f166660> is None
+E        +  where <tkinter.IntVar object at 0x75b80f166660> = <weakref at 0x75b80e82a160; to 'IntVar' at 0x75b80f166660>()
+
+tests/test_checkrow_trace_lifetime_pass18.py:146: AssertionError
+____ test_destroyed_local_row_and_variable_are_collectable[parent-boolean] _____
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font145'>, [])
+request = <FixtureRequest for <Function test_destroyed_local_row_and_variable_are_collectable[parent-boolean]>>
+kind = 'boolean', lifecycle = 'parent'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_destroyed_local_row_and_variable_are_collectable(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        row = _CheckRow(parent, text="Compare disks", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        row_ref, variable_ref = weakref.ref(row), weakref.ref(variable)
+        _retire_row(root, parent, row, lifecycle)
+        del row, variable
+        gc.collect()
+        request.node.user_properties.append(("local_trace_release", json.dumps({
+            "kind": kind, "lifecycle": lifecycle,
+            "row_alive": row_ref() is not None, "variable_alive": variable_ref() is not None,
+        })))
+        assert row_ref() is None
+>       assert variable_ref() is None
+E       AssertionError: assert <tkinter.BooleanVar object at 0x75b80f13d190> is None
+E        +  where <tkinter.BooleanVar object at 0x75b80f13d190> = <weakref at 0x75b80e82a110; to 'BooleanVar' at 0x75b80f13d190>()
+
+tests/test_checkrow_trace_lifetime_pass18.py:146: AssertionError
+____ test_destroyed_local_row_and_variable_are_collectable[parent-integer] _____
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font146'>, [])
+request = <FixtureRequest for <Function test_destroyed_local_row_and_variable_are_collectable[parent-integer]>>
+kind = 'integer', lifecycle = 'parent'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_destroyed_local_row_and_variable_are_collectable(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        row = _CheckRow(parent, text="Compare disks", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        row_ref, variable_ref = weakref.ref(row), weakref.ref(variable)
+        _retire_row(root, parent, row, lifecycle)
+        del row, variable
+        gc.collect()
+        request.node.user_properties.append(("local_trace_release", json.dumps({
+            "kind": kind, "lifecycle": lifecycle,
+            "row_alive": row_ref() is not None, "variable_alive": variable_ref() is not None,
+        })))
+        assert row_ref() is None
+>       assert variable_ref() is None
+E       AssertionError: assert <tkinter.IntVar object at 0x75b80f13d1c0> is None
+E        +  where <tkinter.IntVar object at 0x75b80f13d1c0> = <weakref at 0x75b80e828a90; to 'IntVar' at 0x75b80f13d1c0>()
+
+tests/test_checkrow_trace_lifetime_pass18.py:146: AssertionError
+_ test_destroyed_local_row_and_variable_are_collectable[redraw-clear-boolean] __
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font147'>, [])
+request = <FixtureRequest for <Function test_destroyed_local_row_and_variable_are_collectable[redraw-clear-boolean]>>
+kind = 'boolean', lifecycle = 'redraw-clear'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_destroyed_local_row_and_variable_are_collectable(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        row = _CheckRow(parent, text="Compare disks", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        row_ref, variable_ref = weakref.ref(row), weakref.ref(variable)
+        _retire_row(root, parent, row, lifecycle)
+        del row, variable
+        gc.collect()
+        request.node.user_properties.append(("local_trace_release", json.dumps({
+            "kind": kind, "lifecycle": lifecycle,
+            "row_alive": row_ref() is not None, "variable_alive": variable_ref() is not None,
+        })))
+        assert row_ref() is None
+>       assert variable_ref() is None
+E       AssertionError: assert <tkinter.BooleanVar object at 0x75b80f0b6090> is None
+E        +  where <tkinter.BooleanVar object at 0x75b80f0b6090> = <weakref at 0x75b80e82a980; to 'BooleanVar' at 0x75b80f0b6090>()
+
+tests/test_checkrow_trace_lifetime_pass18.py:146: AssertionError
+_ test_destroyed_local_row_and_variable_are_collectable[redraw-clear-integer] __
+
+native_root = (<tkinter.Tk object .>, <tkinter.font.Font object 'font148'>, [])
+request = <FixtureRequest for <Function test_destroyed_local_row_and_variable_are_collectable[redraw-clear-integer]>>
+kind = 'integer', lifecycle = 'redraw-clear'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_destroyed_local_row_and_variable_are_collectable(native_root, request, kind, lifecycle):
+        root, font, errors = native_root
+        parent = tk.Frame(root, bg="white")
+        parent.pack()
+        variable = _variable(root, kind)
+        row = _CheckRow(parent, text="Compare disks", variable=variable, command=lambda: None, font=font)
+        row.pack()
+        row_ref, variable_ref = weakref.ref(row), weakref.ref(variable)
+        _retire_row(root, parent, row, lifecycle)
+        del row, variable
+        gc.collect()
+        request.node.user_properties.append(("local_trace_release", json.dumps({
+            "kind": kind, "lifecycle": lifecycle,
+            "row_alive": row_ref() is not None, "variable_alive": variable_ref() is not None,
+        })))
+        assert row_ref() is None
+>       assert variable_ref() is None
+E       AssertionError: assert <tkinter.IntVar object at 0x75b80f166390> is None
+E        +  where <tkinter.IntVar object at 0x75b80f166390> = <weakref at 0x75b80e829a30; to 'IntVar' at 0x75b80f166390>()
+
+tests/test_checkrow_trace_lifetime_pass18.py:146: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_tk_owner_trace_lifetime_pass19.py::test_destroyed_app_and_local_variables_can_be_collected[confirm]
+FAILED tests/test_tk_owner_trace_lifetime_pass19.py::test_destroyed_app_and_local_variables_can_be_collected[typing]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[row-boolean]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[row-integer]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[parent-boolean]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[parent-integer]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[redraw-clear-boolean]
+FAILED tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[redraw-clear-integer]

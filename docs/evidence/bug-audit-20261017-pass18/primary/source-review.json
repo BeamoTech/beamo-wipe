@@ -1,0 +1,19 @@
+{
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "branch": "fix/safety-audit-20261015",
+  "frozen_inputs": 766,
+  "runtime_source_sha256": "bebdb2425c6135dc79ad9dd37c89d4995173a8ffc8183edb4515cb1c726f89b7",
+  "changed": [
+    "src/beamo_wipe/discover.py",
+    "src/beamo_wipe/ui/console_wizard.py",
+    "src/beamo_wipe/ui/tk_wizard.py"
+  ],
+  "added": [
+    "tests/test_checkrow_trace_lifetime_pass18.py",
+    "tests/test_curses_rendered_erase_gate_pass18.py",
+    "tests/test_pathless_physical_bridge_pass18.py",
+    "tests/test_pathless_unresolved_identity_pass18.py"
+  ],
+  "new_untracked_test_modules": 37,
+  "index_empty": true
+}

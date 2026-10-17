@@ -1,0 +1,444 @@
+{
+  "pytest_exit": 0,
+  "records": [
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 14.203786,
+      "thread_cpu_ms": 8.141838,
+      "voluntary_switches": 27,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 5.36255,
+      "thread_cpu_ms": 4.393895,
+      "voluntary_switches": 19,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "AudioWorker.submit",
+      "thread": "MainThread",
+      "wall_ms": 0.483064,
+      "thread_cpu_ms": 0.367674,
+      "voluntary_switches": 2,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "SoundDialog._submit",
+      "thread": "MainThread",
+      "wall_ms": 0.526954,
+      "thread_cpu_ms": 0.407564,
+      "voluntary_switches": 2,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "SoundDialog.__init__",
+      "thread": "MainThread",
+      "wall_ms": 8.01431,
+      "thread_cpu_ms": 6.876957,
+      "voluntary_switches": 22,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "SoundDialog._discover",
+      "thread": "beamo-audio",
+      "wall_ms": 0.008061,
+      "thread_cpu_ms": 0.010501,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 0.450843,
+      "thread_cpu_ms": 0.455223,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 4.507843,
+      "thread_cpu_ms": 4.346625,
+      "voluntary_switches": 0,
+      "involuntary_switches": 2
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 0.05215,
+      "thread_cpu_ms": 0.054,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "AudioWorker.submit",
+      "thread": "MainThread",
+      "wall_ms": 0.03314,
+      "thread_cpu_ms": 0.03694,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "SoundDialog._submit",
+      "thread": "MainThread",
+      "wall_ms": 0.104031,
+      "thread_cpu_ms": 0.103701,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "AudioWorker.submit",
+      "thread": "MainThread",
+      "wall_ms": 0.02002,
+      "thread_cpu_ms": 0.02364,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "SoundDialog._submit",
+      "thread": "MainThread",
+      "wall_ms": 0.062191,
+      "thread_cpu_ms": 0.062471,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "AudioWorker.submit",
+      "thread": "MainThread",
+      "wall_ms": 0.02847,
+      "thread_cpu_ms": 0.034121,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "SoundDialog._submit",
+      "thread": "MainThread",
+      "wall_ms": 0.10918,
+      "thread_cpu_ms": 0.1088,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "AudioWorker.submit",
+      "thread": "MainThread",
+      "wall_ms": 0.02352,
+      "thread_cpu_ms": 0.02828,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "call": "SoundDialog._submit",
+      "thread": "MainThread",
+      "wall_ms": 0.072211,
+      "thread_cpu_ms": 0.07219,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "outcome": "passed",
+      "duration_s": 0.13132952300657053
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_reports_no_audio_and_orca_failure",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 5.148539,
+      "thread_cpu_ms": 4.868259,
+      "voluntary_switches": 13,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_reports_no_audio_and_orca_failure",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 4.049751,
+      "thread_cpu_ms": 3.61064,
+      "voluntary_switches": 18,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_reports_no_audio_and_orca_failure",
+      "call": "AudioWorker.submit",
+      "thread": "MainThread",
+      "wall_ms": 0.03824,
+      "thread_cpu_ms": 0.040671,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_reports_no_audio_and_orca_failure",
+      "call": "SoundDialog._submit",
+      "thread": "MainThread",
+      "wall_ms": 0.06923,
+      "thread_cpu_ms": 0.07069,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_reports_no_audio_and_orca_failure",
+      "call": "SoundDialog.__init__",
+      "thread": "MainThread",
+      "wall_ms": 5.804614,
+      "thread_cpu_ms": 5.263973,
+      "voluntary_switches": 19,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_reports_no_audio_and_orca_failure",
+      "call": "SoundDialog._discover",
+      "thread": "beamo-audio",
+      "wall_ms": 0.010231,
+      "thread_cpu_ms": 0.01898,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_reports_no_audio_and_orca_failure",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 0.686054,
+      "thread_cpu_ms": 0.693555,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_reports_no_audio_and_orca_failure",
+      "outcome": "passed",
+      "duration_s": 0.0423603439994622
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_toggles_and_hears_outcome_sounds",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 5.761553,
+      "thread_cpu_ms": 5.552615,
+      "voluntary_switches": 10,
+      "involuntary_switches": 1
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_toggles_and_hears_outcome_sounds",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 4.691824,
+      "thread_cpu_ms": 4.129301,
+      "voluntary_switches": 15,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_toggles_and_hears_outcome_sounds",
+      "call": "AudioWorker.submit",
+      "thread": "MainThread",
+      "wall_ms": 0.03518,
+      "thread_cpu_ms": 0.03763,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_toggles_and_hears_outcome_sounds",
+      "call": "SoundDialog._submit",
+      "thread": "MainThread",
+      "wall_ms": 0.0627,
+      "thread_cpu_ms": 0.06417,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_toggles_and_hears_outcome_sounds",
+      "call": "SoundDialog.__init__",
+      "thread": "MainThread",
+      "wall_ms": 6.448688,
+      "thread_cpu_ms": 5.813125,
+      "voluntary_switches": 16,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_toggles_and_hears_outcome_sounds",
+      "call": "SoundDialog._discover",
+      "thread": "beamo-audio",
+      "wall_ms": 0.00627,
+      "thread_cpu_ms": 0.009821,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_toggles_and_hears_outcome_sounds",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 0.505784,
+      "thread_cpu_ms": 0.512354,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_toggles_and_hears_outcome_sounds",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 1.963964,
+      "thread_cpu_ms": 1.971965,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_toggles_and_hears_outcome_sounds",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 0.05308,
+      "thread_cpu_ms": 0.05498,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_toggles_and_hears_outcome_sounds",
+      "call": "AudioWorker.submit",
+      "thread": "MainThread",
+      "wall_ms": 0.03163,
+      "thread_cpu_ms": 0.03571,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_toggles_and_hears_outcome_sounds",
+      "call": "SoundDialog._submit",
+      "thread": "MainThread",
+      "wall_ms": 0.08678,
+      "thread_cpu_ms": 0.08701,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_sound_check_dialog_toggles_and_hears_outcome_sounds",
+      "outcome": "passed",
+      "duration_s": 0.055834824990597554
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 5.46541,
+      "thread_cpu_ms": 5.211565,
+      "voluntary_switches": 10,
+      "involuntary_switches": 1
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 2.871872,
+      "thread_cpu_ms": 2.645775,
+      "voluntary_switches": 16,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog",
+      "call": "AudioWorker.submit",
+      "thread": "MainThread",
+      "wall_ms": 0.044741,
+      "thread_cpu_ms": 0.04664,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog",
+      "call": "SoundDialog._submit",
+      "thread": "MainThread",
+      "wall_ms": 0.068521,
+      "thread_cpu_ms": 0.069481,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog",
+      "call": "SoundDialog.__init__",
+      "thread": "MainThread",
+      "wall_ms": 4.954136,
+      "thread_cpu_ms": 4.674131,
+      "voluntary_switches": 17,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 0.604124,
+      "thread_cpu_ms": 0.609845,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog",
+      "call": "SoundDialog._discover",
+      "thread": "beamo-audio",
+      "wall_ms": 11.461434,
+      "thread_cpu_ms": 0.049601,
+      "voluntary_switches": 1,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog",
+      "outcome": "passed",
+      "duration_s": 0.06432570698962081
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_accessible_done_auto_plays_once_without_changing_announcement",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 34.251954,
+      "thread_cpu_ms": 33.76009,
+      "voluntary_switches": 10,
+      "involuntary_switches": 1
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_accessible_done_auto_plays_once_without_changing_announcement",
+      "call": "AudioWorker.submit",
+      "thread": "MainThread",
+      "wall_ms": 0.045851,
+      "thread_cpu_ms": 0.049471,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_accessible_done_auto_plays_once_without_changing_announcement",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 1.372349,
+      "thread_cpu_ms": 1.38167,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_accessible_done_auto_plays_once_without_changing_announcement",
+      "call": "Gtk.Widget.show_all",
+      "thread": "MainThread",
+      "wall_ms": 1.554181,
+      "thread_cpu_ms": 1.566753,
+      "voluntary_switches": 0,
+      "involuntary_switches": 0
+    },
+    {
+      "test": "tests/test_accessible_runtime.py::test_accessible_done_auto_plays_once_without_changing_announcement",
+      "outcome": "passed",
+      "duration_s": 0.19727653301379178
+    }
+  ]
+}

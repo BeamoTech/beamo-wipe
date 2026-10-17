@@ -1,0 +1,1594 @@
+{
+  "duplicates": [
+    {
+      "boot_identified": false,
+      "error": true,
+      "field": "vendor",
+      "omission": "valid",
+      "selectable": [],
+      "valid_first": true
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "field": "vendor",
+      "omission": "valid",
+      "selectable": [],
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "vendor",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-model",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "vendor",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-model",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "vendor",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-vendor",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "vendor",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-vendor",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "vendor",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-label",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "vendor",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-label",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "field": "model",
+      "omission": "valid",
+      "selectable": [],
+      "valid_first": true
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "field": "model",
+      "omission": "valid",
+      "selectable": [],
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "model",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-model",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "model",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-model",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "model",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-vendor",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "model",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-vendor",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "model",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-label",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "model",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-label",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "field": "uuid",
+      "omission": "valid",
+      "selectable": [],
+      "valid_first": true
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "field": "uuid",
+      "omission": "valid",
+      "selectable": [],
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "uuid",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-model",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "uuid",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-model",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "uuid",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-vendor",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "uuid",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-vendor",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "uuid",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-label",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "uuid",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-label",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "field": "partuuid",
+      "omission": "valid",
+      "selectable": [],
+      "valid_first": true
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "field": "partuuid",
+      "omission": "valid",
+      "selectable": [],
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "partuuid",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-model",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "partuuid",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-model",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "partuuid",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-vendor",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "partuuid",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-vendor",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "partuuid",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-label",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "partuuid",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-label",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "field": "label",
+      "omission": "valid",
+      "selectable": [],
+      "valid_first": true
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "field": "label",
+      "omission": "valid",
+      "selectable": [],
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "label",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-model",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "label",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-model",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "label",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-vendor",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "label",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-vendor",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "label",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-label",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "label",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-label",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "field": "partlabel",
+      "omission": "valid",
+      "selectable": [],
+      "valid_first": true
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "field": "partlabel",
+      "omission": "valid",
+      "selectable": [],
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "partlabel",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-model",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "partlabel",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-model",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "partlabel",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-vendor",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "partlabel",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-vendor",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "partlabel",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-label",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "partlabel",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-label",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "field": "fstype",
+      "omission": "valid",
+      "selectable": [],
+      "valid_first": true
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "field": "fstype",
+      "omission": "valid",
+      "selectable": [],
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "fstype",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-model",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "fstype",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-model",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "fstype",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-vendor",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "fstype",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-vendor",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "fstype",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-label",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "fstype",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-label",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "field": "parttype",
+      "omission": "valid",
+      "selectable": [],
+      "valid_first": true
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "field": "parttype",
+      "omission": "valid",
+      "selectable": [],
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "parttype",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-model",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "parttype",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-model",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "parttype",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-vendor",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "parttype",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-vendor",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "parttype",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-label",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": true
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "field": "parttype",
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        "c505a2c8c81658c3b5881b1bbac30e8be45efa1d9c29d4abde45feb30dd7376a"
+      ],
+      "omission": "overlong-label",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "token": "128",
+      "valid_first": false
+    }
+  ],
+  "hashes": {
+    "src/beamo_wipe/discover.py": "b08767b2e921779f53e62de67ac4c3fbaa281ea6ab90f9f6c682e3be96f9991e",
+    "src/beamo_wipe/models.py": "9fb0bcb97d35b1ee0f041f8ccb728fe8a2b9f173242a904bf2af6f7b5f42b95c",
+    "src/beamo_wipe/safety.py": "ba07089fa9ed77e3616af67147201a16b15b8c8582ca0ca9724e58ef980ecd9b"
+  },
+  "native_attempts": [],
+  "numeric": [
+    {
+      "boot_identified": false,
+      "error": true,
+      "escaped": null,
+      "native_metadata_gate": false,
+      "route": "injected-public",
+      "selectable": [],
+      "spelling": "1e999"
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "escaped": null,
+      "native_metadata_gate": true,
+      "route": "production-metadata-stub",
+      "selectable": [],
+      "spelling": "1e999"
+    },
+    {
+      "escaped": "OverflowError",
+      "exception": "cannot convert float infinity to integer",
+      "native_metadata_gate": false,
+      "route": "direct-parser",
+      "spelling": "1e999"
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "escaped": null,
+      "native_metadata_gate": false,
+      "route": "injected-public",
+      "selectable": [],
+      "spelling": "-1e999"
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "escaped": null,
+      "native_metadata_gate": true,
+      "route": "production-metadata-stub",
+      "selectable": [],
+      "spelling": "-1e999"
+    },
+    {
+      "escaped": "OverflowError",
+      "exception": "cannot convert float infinity to integer",
+      "native_metadata_gate": false,
+      "route": "direct-parser",
+      "spelling": "-1e999"
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "escaped": null,
+      "native_metadata_gate": false,
+      "route": "injected-public",
+      "selectable": [],
+      "spelling": "Infinity"
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "escaped": null,
+      "native_metadata_gate": true,
+      "route": "production-metadata-stub",
+      "selectable": [],
+      "spelling": "Infinity"
+    },
+    {
+      "escaped": "OverflowError",
+      "exception": "cannot convert float infinity to integer",
+      "native_metadata_gate": false,
+      "route": "direct-parser",
+      "spelling": "Infinity"
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "escaped": null,
+      "native_metadata_gate": false,
+      "route": "injected-public",
+      "selectable": [],
+      "spelling": "-Infinity"
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "escaped": null,
+      "native_metadata_gate": true,
+      "route": "production-metadata-stub",
+      "selectable": [],
+      "spelling": "-Infinity"
+    },
+    {
+      "escaped": "OverflowError",
+      "exception": "cannot convert float infinity to integer",
+      "native_metadata_gate": false,
+      "route": "direct-parser",
+      "spelling": "-Infinity"
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "escaped": null,
+      "native_metadata_gate": false,
+      "route": "injected-public",
+      "selectable": [],
+      "spelling": "NaN"
+    },
+    {
+      "boot_identified": false,
+      "error": true,
+      "escaped": null,
+      "native_metadata_gate": true,
+      "route": "production-metadata-stub",
+      "selectable": [],
+      "spelling": "NaN"
+    },
+    {
+      "escaped": "ValueError",
+      "exception": "cannot convert float NaN to integer",
+      "native_metadata_gate": false,
+      "route": "direct-parser",
+      "spelling": "NaN"
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        ""
+      ],
+      "native_metadata_gate": false,
+      "route": "injected-public",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "spelling": "128000000000",
+      "token": "128"
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        ""
+      ],
+      "native_metadata_gate": true,
+      "route": "production-metadata-stub",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "spelling": "128000000000",
+      "token": "128"
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        ""
+      ],
+      "native_metadata_gate": false,
+      "route": "direct-parser",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "spelling": "128000000000",
+      "token": "128"
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "native_metadata_gate": false,
+      "route": "injected-public",
+      "selectable": [],
+      "spelling": "0"
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "native_metadata_gate": true,
+      "route": "production-metadata-stub",
+      "selectable": [],
+      "spelling": "0"
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "native_metadata_gate": false,
+      "route": "direct-parser",
+      "selectable": [],
+      "spelling": "0"
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "native_metadata_gate": false,
+      "route": "injected-public",
+      "selectable": [],
+      "spelling": "-1"
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "native_metadata_gate": true,
+      "route": "production-metadata-stub",
+      "selectable": [],
+      "spelling": "-1"
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "native_metadata_gate": false,
+      "route": "direct-parser",
+      "selectable": [],
+      "spelling": "-1"
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        ""
+      ],
+      "native_metadata_gate": false,
+      "route": "injected-public",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "spelling": "128000000000.0",
+      "token": "128"
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        ""
+      ],
+      "native_metadata_gate": true,
+      "route": "production-metadata-stub",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "spelling": "128000000000.0",
+      "token": "128"
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "identity": [
+        "/dev/sda",
+        "FAKE-sda",
+        128000000000,
+        "Fake disk",
+        "50014ee20sda",
+        "Fake vendor",
+        "SATA",
+        "SSD",
+        ""
+      ],
+      "native_metadata_gate": false,
+      "route": "direct-parser",
+      "selectable": [
+        "/dev/sda"
+      ],
+      "spelling": "128000000000.0",
+      "token": "128"
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "native_metadata_gate": false,
+      "route": "injected-public",
+      "selectable": [],
+      "spelling": "\"1e999\""
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "native_metadata_gate": true,
+      "route": "production-metadata-stub",
+      "selectable": [],
+      "spelling": "\"1e999\""
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "native_metadata_gate": false,
+      "route": "direct-parser",
+      "selectable": [],
+      "spelling": "\"1e999\""
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "native_metadata_gate": false,
+      "route": "injected-public",
+      "selectable": [],
+      "spelling": "\"Infinity\""
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "native_metadata_gate": true,
+      "route": "production-metadata-stub",
+      "selectable": [],
+      "spelling": "\"Infinity\""
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "native_metadata_gate": false,
+      "route": "direct-parser",
+      "selectable": [],
+      "spelling": "\"Infinity\""
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "native_metadata_gate": false,
+      "route": "injected-public",
+      "selectable": [],
+      "spelling": "null"
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "native_metadata_gate": true,
+      "route": "production-metadata-stub",
+      "selectable": [],
+      "spelling": "null"
+    },
+    {
+      "boot_identified": true,
+      "error": false,
+      "escaped": null,
+      "native_metadata_gate": false,
+      "route": "direct-parser",
+      "selectable": [],
+      "spelling": "null"
+    }
+  ]
+}

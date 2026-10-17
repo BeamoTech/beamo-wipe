@@ -1,0 +1,39 @@
+[
+  {
+    "child": "sdc",
+    "mounts": [],
+    "boot": true,
+    "targets": [
+      "/dev/sda",
+      "/dev/sdc"
+    ],
+    "error": null
+  },
+  {
+    "child": "sdc",
+    "mounts": [
+      "/mnt/data"
+    ],
+    "boot": true,
+    "targets": [],
+    "error": null
+  },
+  {
+    "child": "bcache0",
+    "mounts": [],
+    "boot": true,
+    "targets": [
+      "/dev/sda"
+    ],
+    "error": null
+  },
+  {
+    "child": "bcache0",
+    "mounts": [
+      "/mnt/data"
+    ],
+    "boot": false,
+    "targets": [],
+    "error": "We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support."
+  }
+]

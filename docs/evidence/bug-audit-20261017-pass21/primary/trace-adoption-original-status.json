@@ -1,0 +1,23 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass21-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "-o",
+    "pythonpath=src",
+    "docs/evidence/bug-audit-20261017-pass21/ui/tk-trace-adoption-proof.py",
+    "--junitxml=/tmp/pass21-primary/trace-adoption-original.xml"
+  ],
+  "exit_code": 1,
+  "started_utc": "2026-10-17T20:56:16.330220+00:00",
+  "ended_utc": "2026-10-17T20:56:21.968566+00:00"
+}

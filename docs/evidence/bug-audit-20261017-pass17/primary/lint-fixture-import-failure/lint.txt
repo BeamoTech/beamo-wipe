@@ -1,0 +1,29 @@
+[ci-hosted] blocking syntax, shell and security lint
+All checks passed!
+6 files already formatted
+All checks passed!
+All checks passed!
+[ci-hosted] blocking full lint and type checks
+tests/test_unresolved_physical_duplicates_pass17.py:26:5: F811 Redefinition of unused `scan_fake` from line 7
+   |
+24 | @pytest.mark.parametrize("parent", (False, True))
+25 | def test_duplicate_invalid_observations_keep_candidate_context(
+26 |     scan_fake, field, kind, different, reverse, parent,
+   |     ^^^^^^^^^ F811
+27 | ):
+28 |     values = ["SIDE-A", "SIDE-B"] if kind == "conflict" else ["SIDE-A", "bad\nidentity"]
+   |
+   = help: Remove definition: `scan_fake`
+
+tests/test_unresolved_wwn_uncertainty_pass17.py:11:59: F811 Redefinition of unused `scan_fake` from line 4
+   |
+ 9 | @pytest.mark.parametrize('nested', (False, True))
+10 | @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+11 | def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+   |                                                           ^^^^^^^^^ F811
+12 |     boot = _disk('sdz', tran='usb', size=16_000_000_000,
+13 |                  serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+   |
+   = help: Remove definition: `scan_fake`
+
+Found 2 errors.

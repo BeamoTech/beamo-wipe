@@ -1,0 +1,15 @@
+ M .ai/memory/unfinished-work.md
+ M src/beamo_wipe/diagnostic_report.py
+ M src/beamo_wipe/nwipe_runner.py
+ M src/beamo_wipe/ui/accessible_wizard.py
+ M src/beamo_wipe/ui/console_wizard.py
+ M src/beamo_wipe/ui/sound_dialog.py
+?? docs/evidence/bug-audit-20261016-pass10/
+?? docs/evidence/bug-audit-20261016-pass8/
+?? docs/evidence/bug-audit-20261016-pass9/
+?? tests/test_accessible_sound_modal_pass10.py
+?? tests/test_console_inventory_diagnostic_pass10.py
+?? tests/test_diagnostic_malformed_bounds_pass8.py
+?? tests/test_runner_projection_progress_order_pass8.py
+?? tests/test_runner_projection_record_endings_pass10.py
+?? tests/test_sound_output_selection_pass10.py

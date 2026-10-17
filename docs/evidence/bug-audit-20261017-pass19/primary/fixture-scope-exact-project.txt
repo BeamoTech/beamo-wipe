@@ -1,0 +1,12 @@
+dbus-daemon[141571]: [session uid=0 pid=141571] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=141590 comm="/tmp/beamo-pass19-python/bin/python3 /tmp/pass19-p" label="unconfined")
+dbus-daemon[141571]: [session uid=0 pid=141571] Successfully activated service 'org.a11y.Bus'
+docs/evidence/bug-audit-20261017-pass19/primary/fixture_release_probe.py: 8
+tests/test_accessible_runtime.py: 4
+tests/test_bug_audit_tk_gc_20260913.py: 5
+tests/test_checkrow_trace_lifetime_pass18.py: 20
+tests/test_confirm_focus_callback_lifetime_pass16.py: 26
+tests/test_startup_callback_retirement_pass17.py: 16
+tests/test_tk_owner_trace_lifetime_pass19.py: 8
+tests/test_tk_runtime.py: 311
+
+[{"target": "tests/test_tk_runtime.py::test_isolated_x11_physical_return_release_after_start", "autouse": false, "applicable_fixture_baseids": []}]

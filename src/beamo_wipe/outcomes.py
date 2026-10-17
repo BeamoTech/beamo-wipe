@@ -265,6 +265,7 @@ def present_evidence(evidence: object) -> ResultView:
 
         from beamo_wipe.evidence import SUPPORTED_SCHEMA_VERSIONS
         from beamo_wipe.privacy import is_sharing_copy
+        from beamo_wipe.nwipe_runner import NWIPE_LOG_SNAPSHOT_UTF8_BYTES
 
         if (
             type(evidence.get("schema_version")) is not int
@@ -376,7 +377,7 @@ def present_evidence(evidence: object) -> ResultView:
             if not sharing_copy and (
                 not re.fullmatch(r"[0-9a-f]{64}", evidence["log_checksum_sha256"])
                 or type(evidence["log_snapshot_size_bytes"]) is not int
-                or not 0 < evidence["log_snapshot_size_bytes"] <= 1024 * 1024
+                or not 0 < evidence["log_snapshot_size_bytes"] <= NWIPE_LOG_SNAPSHOT_UTF8_BYTES
             ):
                 return unknown
             if outcome == "verified" and spec.verify == "last" and verification["verified"]:

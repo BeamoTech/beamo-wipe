@@ -1,0 +1,37 @@
+{
+  "screenshot": "/tmp/pass10-ui/sound-output-refusal-restored-72dpi.png",
+  "sha256": "88977b72c8f75578b4fede3f4e6fc49bcf86f213dc412294d81a17cfaaf1377f",
+  "dimensions": [
+    560,
+    536
+  ],
+  "x11_dpi": [
+    72.05673758865248,
+    71.95467422096317
+  ],
+  "status": "That change did not work. Try again.",
+  "accepted_sink": "speakers-fake",
+  "radio_active": [
+    true,
+    false
+  ],
+  "radio_sensitive": [
+    true,
+    true
+  ],
+  "radio_labels": [
+    "Speakers",
+    "Headphones"
+  ],
+  "persisted_output": "",
+  "calls": [
+    {
+      "operation": "set_output",
+      "sink": "headphones-fake"
+    }
+  ],
+  "real_gtk_timer": true,
+  "fake_boundaries_only": true,
+  "owned_window_closed": true,
+  "owned_worker_retired": true
+}

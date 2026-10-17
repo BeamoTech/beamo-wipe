@@ -1,0 +1,18 @@
+{
+  "cases": 222,
+  "assertion_failures": 118,
+  "passing_controls": 104,
+  "errors": 0,
+  "skips": 0,
+  "deselections": 0,
+  "failures_by_module": {
+    "tests.test_descendant_holder_filesystem_pass19": 36,
+    "tests.test_duplicate_bcache_filesystem_pass19": 20,
+    "tests.test_holder_ancestor_contradiction_pass19": 24,
+    "tests.test_tk_owner_trace_lifetime_pass19": 6,
+    "tests.test_unbound_bcache_filesystem_pass19": 24,
+    "docs.evidence.bug-audit-20261017-pass19.primary.fixture_release_probe": 8
+  },
+  "private_starting_source": true,
+  "shared_inputs_unchanged": 771
+}

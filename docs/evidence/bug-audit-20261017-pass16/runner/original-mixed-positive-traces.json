@@ -1,0 +1,326 @@
+[
+  {
+    "target": "/dev/sda",
+    "suffix": " uncertain",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": " uncertain",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": " uncertain",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": " (indeterminate)",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": " (indeterminate)",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": " (indeterminate)",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": " -- HIDDEN SECTORS INDETERMINATE!",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": " -- HIDDEN SECTORS INDETERMINATE!",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": " -- HIDDEN SECTORS INDETERMINATE!",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": "\u0000",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": "\u0000",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": "\u0000",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": "\u2028foreign",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": "\u2028foreign",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": "\u2028foreign",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": "/part mentions /dev/sda",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": "/part mentions /dev/sda",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/sda",
+    "suffix": "/part mentions /dev/sda",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": " uncertain",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": " uncertain",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": " uncertain",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": " (indeterminate)",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": " (indeterminate)",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": " (indeterminate)",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": " -- HIDDEN SECTORS INDETERMINATE!",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": " -- HIDDEN SECTORS INDETERMINATE!",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": " -- HIDDEN SECTORS INDETERMINATE!",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": "\u0000",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": "\u0000",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": "\u0000",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": "\u2028foreign",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": "\u2028foreign",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": "\u2028foreign",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": "/part mentions /dev/sda",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": "/part mentions /dev/sda",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/nvme0n100",
+    "suffix": "/part mentions /dev/sda",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": " uncertain",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": " uncertain",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": " uncertain",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": " (indeterminate)",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": " (indeterminate)",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": " (indeterminate)",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": " -- HIDDEN SECTORS INDETERMINATE!",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": " -- HIDDEN SECTORS INDETERMINATE!",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": " -- HIDDEN SECTORS INDETERMINATE!",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": "\u0000",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": "\u0000",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": "\u0000",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": "\u2028foreign",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": "\u2028foreign",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": "\u2028foreign",
+    "order": "foreign",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": "/part mentions /dev/sda",
+    "order": "before",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": "/part mentions /dev/sda",
+    "order": "after",
+    "status": "pass"
+  },
+  {
+    "target": "/dev/mmcblk100",
+    "suffix": "/part mentions /dev/sda",
+    "order": "foreign",
+    "status": "pass"
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "cases": 30,
+  "assertion_failures": 24,
+  "passing_controls": 6,
+  "errors": 0,
+  "skips": 0,
+  "discovery_source_unchanged": "b66f3f50692dbeaa7cfad3ed87ed1edea4530756e45b3bbd057fff0ee0278a29",
+  "corrected_fixture_only": true
+}

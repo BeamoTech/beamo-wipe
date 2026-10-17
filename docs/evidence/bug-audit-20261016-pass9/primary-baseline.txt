@@ -1,0 +1,29 @@
+Files:
+tests/test_build_identity.py
+tests/test_ci_evidence_pipeline.py
+tests/test_diagnostic_baseline_order_pass16_disk.py
+tests/test_diagnostic_boot_evidence_pass11.py
+tests/test_diagnostic_consistency_pass32_export.py
+tests/test_diagnostic_malformed_bounds_pass8.py
+tests/test_diagnostics_directory_binding_regression.py
+tests/test_discovery_diagnostics_privacy_pass6.py
+tests/test_evidence_privacy_pass8.py
+tests/test_pass25_report_readme_privacy.py
+tests/test_pass30_file_uri_privacy.py
+tests/test_privacy_sharing_copy.py
+tests/test_qemu_diagnostic_markers.py
+tests/test_release_evidence_privacy_pass10.py
+tests/test_report_intent.py
+tests/test_report_intent_identity_regression.py
+tests/test_result_summary.py
+tests/test_runner_diagnostics_privacy_pass6.py
+tests/test_runner_log_privacy_pass8.py
+tests/test_startup_diagnostics.py
+tests/test_support_export_pass8.py
+tests/test_verification_evidence.py
+........................................................................ [ 21%]
+........................................................................ [ 43%]
+........................................................................ [ 64%]
+........................................................................ [ 86%]
+..............................................                           [100%]
+334 passed in 25.02s

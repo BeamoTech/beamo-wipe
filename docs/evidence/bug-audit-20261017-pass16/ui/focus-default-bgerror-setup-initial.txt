@@ -1,0 +1,7 @@
+dbus-daemon[18572]: [session uid=0 pid=18572] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=18586 comm="/root/dev/Beamo Wipe/.venv-linux/bin/python3 /tmp/" label="unconfined")
+dbus-daemon[18572]: [session uid=0 pid=18572] Successfully activated service 'org.a11y.Bus'
+Traceback (most recent call last):
+  File "/tmp/pass16-ui/focus-default-bgerror-diagnostic.py", line 148, in <module>
+    default_bgerror = app.root.tk.splitlist(app.root.tk.call('interp', 'bgerror'))[0]
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_tkinter.TclError: wrong # args: should be "interp bgerror path ?cmdPrefix?"

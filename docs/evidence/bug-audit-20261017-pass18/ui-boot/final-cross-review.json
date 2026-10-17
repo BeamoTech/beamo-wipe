@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-17",
+  "author": "Codex pass18_runner peer",
+  "scope": "Independent final source-only cross-review of all three pass18 runtime changes and four new regression modules; no peer runtime or product/test edits",
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "branch": "fix/safety-audit-20261015",
+  "runtime_source_sha256": "bebdb2425c6135dc79ad9dd37c89d4995173a8ffc8183edb4515cb1c726f89b7",
+  "starting_archive": "/tmp/pass18-primary/starting-inputs.tar.gz",
+  "runtime": {
+    "src/beamo_wipe/discover.py": {
+      "starting_sha256": "a2fa08ce083d8b99403473ab8646a6b19f01157d1c2fd9df73e8469c92836bc4",
+      "reviewed_sha256": "b66f3f50692dbeaa7cfad3ed87ed1edea4530756e45b3bbd057fff0ee0278a29"
+    },
+    "src/beamo_wipe/ui/console_wizard.py": {
+      "starting_sha256": "1c3dc2f6839b7a4b1c7d43225b2175b7bc8b5f5d2b5af63aa17725c417c5ded5",
+      "reviewed_sha256": "d9f78e2470823629b31c9e7b755a76efc61b03a06f03153834b27c47661e2fd8"
+    },
+    "src/beamo_wipe/ui/tk_wizard.py": {
+      "starting_sha256": "bb64632df587965f41afc70efe2201d3b776579038d680c3a2405319764f170d",
+      "reviewed_sha256": "612792b7c1328741cd8a194abd90cb297629b0f281cbf30538ca9bb9ae45f50d"
+    }
+  },
+  "tests": {
+    "tests/test_checkrow_trace_lifetime_pass18.py": "66082de1ee8593474ca08d330d65832692ffffe8d734115a10e940f969d94702",
+    "tests/test_curses_rendered_erase_gate_pass18.py": "79e26621c7fd6dc4d20180be6b8fa619748e1852813dac190e57f76cf606a590",
+    "tests/test_pathless_physical_bridge_pass18.py": "04eec1aa841a1b30d65acd3bcdac5d61b0ef794940e03e78010acd7fe8ee1ef7",
+    "tests/test_pathless_unresolved_identity_pass18.py": "1407a8632fd71737e65744d7bc599a52930a3541b1d9922d0e48a99ff3edae31"
+  },
+  "changes_authenticated": "Read complete incremental diffs against tar-extracted starting bytes; independently hashed each starting runtime stream and final seven inputs; final hashes exactly match root source-freeze.json",
+  "conclusion": "No source objection to exact reviewed bytes. Pathless hardware facts remain safety-only and never form selectable identity; empty paths cannot equate unresolved rows. Curses Enter requires a ready painted frame plus existing live gate and hold bookkeeping. Tk destruction removes only its own variable trace.",
+  "runtime_acceptance": "Root owns failing proofs, focused tests, final local gates and artifact campaigns; no peer runtime pass is claimed",
+  "remaining_limits": "This source review does not resolve historical incident/trace blockers or ISO/QEMU/native Windows/physical acceptance, and does not authorize commit/push/release. Upstream record-origin audit remains separately documented under runner/."
+}

@@ -1,0 +1,1171 @@
+{
+  "cases": 156,
+  "native_attempts": [],
+  "observations_sha256": "daeced50d90a19e1b682661ecac3bd9538bb690fa68bb63f02e90de5a5e438e5",
+  "observations": [
+    {
+      "case": "hda/tree/normal",
+      "accepted": true,
+      "targets": [
+        "/dev/hda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "hda/tree/root_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "hda/tree/part_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "hda/tree/readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "hda/tree/zero",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "hda/tree/duplicate_equal",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "hda/tree/duplicate_readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "hda/tree/duplicate_mounted",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "hda/tree/peer_boot_wwn",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "hda/tree/serial_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/hda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "hda/tree/layout_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/hda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "hda/tree/bad_pkname",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "hda/tree/bad_partpath",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "hda/flat/normal",
+      "accepted": true,
+      "targets": [
+        "/dev/hda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "hda/flat/root_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "hda/flat/part_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "hda/flat/readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "hda/flat/zero",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "hda/flat/duplicate_equal",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "hda/flat/duplicate_readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "hda/flat/duplicate_mounted",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "hda/flat/peer_boot_wwn",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "hda/flat/serial_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/hda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "hda/flat/layout_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/hda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "hda/flat/bad_pkname",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "hda/flat/bad_partpath",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "dasda/tree/normal",
+      "accepted": true,
+      "targets": [
+        "/dev/dasda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "dasda/tree/root_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "dasda/tree/part_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "dasda/tree/readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "dasda/tree/zero",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "dasda/tree/duplicate_equal",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "dasda/tree/duplicate_readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "dasda/tree/duplicate_mounted",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "dasda/tree/peer_boot_wwn",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "dasda/tree/serial_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/dasda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "dasda/tree/layout_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/dasda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "dasda/tree/bad_pkname",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "dasda/tree/bad_partpath",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "dasda/flat/normal",
+      "accepted": true,
+      "targets": [
+        "/dev/dasda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "dasda/flat/root_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "dasda/flat/part_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "dasda/flat/readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "dasda/flat/zero",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "dasda/flat/duplicate_equal",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "dasda/flat/duplicate_readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "dasda/flat/duplicate_mounted",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "dasda/flat/peer_boot_wwn",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "dasda/flat/serial_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/dasda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "dasda/flat/layout_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/dasda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "dasda/flat/bad_pkname",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "dasda/flat/bad_partpath",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "xvda/tree/normal",
+      "accepted": true,
+      "targets": [
+        "/dev/xvda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "xvda/tree/root_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "xvda/tree/part_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "xvda/tree/readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "xvda/tree/zero",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "xvda/tree/duplicate_equal",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "xvda/tree/duplicate_readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "xvda/tree/duplicate_mounted",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "xvda/tree/peer_boot_wwn",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "xvda/tree/serial_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/xvda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "xvda/tree/layout_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/xvda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "xvda/tree/bad_pkname",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "xvda/tree/bad_partpath",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "xvda/flat/normal",
+      "accepted": true,
+      "targets": [
+        "/dev/xvda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "xvda/flat/root_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "xvda/flat/part_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "xvda/flat/readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "xvda/flat/zero",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "xvda/flat/duplicate_equal",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "xvda/flat/duplicate_readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "xvda/flat/duplicate_mounted",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "xvda/flat/peer_boot_wwn",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "xvda/flat/serial_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/xvda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "xvda/flat/layout_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/xvda"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "xvda/flat/bad_pkname",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "xvda/flat/bad_partpath",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "mmcblk0/tree/normal",
+      "accepted": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "mmcblk0/tree/root_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "mmcblk0/tree/part_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "mmcblk0/tree/readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "mmcblk0/tree/zero",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "mmcblk0/tree/duplicate_equal",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "mmcblk0/tree/duplicate_readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "mmcblk0/tree/duplicate_mounted",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "mmcblk0/tree/peer_boot_wwn",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "mmcblk0/tree/serial_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/mmcblk0"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "mmcblk0/tree/layout_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/mmcblk0"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "mmcblk0/tree/bad_pkname",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "mmcblk0/tree/bad_partpath",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "mmcblk0/flat/normal",
+      "accepted": true,
+      "targets": [
+        "/dev/mmcblk0"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "mmcblk0/flat/root_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "mmcblk0/flat/part_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "mmcblk0/flat/readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "mmcblk0/flat/zero",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "mmcblk0/flat/duplicate_equal",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "mmcblk0/flat/duplicate_readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "mmcblk0/flat/duplicate_mounted",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "mmcblk0/flat/peer_boot_wwn",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "mmcblk0/flat/serial_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/mmcblk0"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "mmcblk0/flat/layout_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/mmcblk0"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "mmcblk0/flat/bad_pkname",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "mmcblk0/flat/bad_partpath",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "nvme0n11/tree/normal",
+      "accepted": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "nvme0n11/tree/root_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "nvme0n11/tree/part_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "nvme0n11/tree/readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "nvme0n11/tree/zero",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "nvme0n11/tree/duplicate_equal",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "nvme0n11/tree/duplicate_readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "nvme0n11/tree/duplicate_mounted",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "nvme0n11/tree/peer_boot_wwn",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "nvme0n11/tree/serial_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/nvme0n11"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "nvme0n11/tree/layout_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/nvme0n11"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "nvme0n11/tree/bad_pkname",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "nvme0n11/tree/bad_partpath",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "nvme0n11/flat/normal",
+      "accepted": true,
+      "targets": [
+        "/dev/nvme0n11"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "nvme0n11/flat/root_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "nvme0n11/flat/part_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "nvme0n11/flat/readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "nvme0n11/flat/zero",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "nvme0n11/flat/duplicate_equal",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "nvme0n11/flat/duplicate_readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "nvme0n11/flat/duplicate_mounted",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "nvme0n11/flat/peer_boot_wwn",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "nvme0n11/flat/serial_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/nvme0n11"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "nvme0n11/flat/layout_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/nvme0n11"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "nvme0n11/flat/bad_pkname",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "nvme0n11/flat/bad_partpath",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "vdz/tree/normal",
+      "accepted": true,
+      "targets": [
+        "/dev/vdz"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "vdz/tree/root_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "vdz/tree/part_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "vdz/tree/readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "vdz/tree/zero",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "vdz/tree/duplicate_equal",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "vdz/tree/duplicate_readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "vdz/tree/duplicate_mounted",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "vdz/tree/peer_boot_wwn",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "vdz/tree/serial_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/vdz"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "vdz/tree/layout_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/vdz"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "vdz/tree/bad_pkname",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "vdz/tree/bad_partpath",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "vdz/flat/normal",
+      "accepted": true,
+      "targets": [
+        "/dev/vdz"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "vdz/flat/root_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "vdz/flat/part_mount",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "vdz/flat/readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "vdz/flat/zero",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "vdz/flat/duplicate_equal",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "vdz/flat/duplicate_readonly",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "vdz/flat/duplicate_mounted",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "vdz/flat/peer_boot_wwn",
+      "accepted": false,
+      "targets": [],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "vdz/flat/serial_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/vdz"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "vdz/flat/layout_swap",
+      "accepted": false,
+      "targets": [
+        "/dev/vdz"
+      ],
+      "boot": true,
+      "refused": false
+    },
+    {
+      "case": "vdz/flat/bad_pkname",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    },
+    {
+      "case": "vdz/flat/bad_partpath",
+      "accepted": false,
+      "targets": [],
+      "boot": false,
+      "refused": true
+    }
+  ]
+}

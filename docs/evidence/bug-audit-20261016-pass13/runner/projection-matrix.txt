@@ -1,0 +1,1 @@
+{"cases": 216, "methods_per_case": 3, "terminal_polls": 648, "log_threshold_bytes": 1048576, "defects": []}

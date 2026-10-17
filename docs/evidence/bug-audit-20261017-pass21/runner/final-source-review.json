@@ -1,0 +1,193 @@
+{
+  "additional_real_thread_module": {
+    "cases": 6,
+    "path": "tests/test_refresh_commit_concurrency_pass21.py",
+    "reviewed_sha256": "e90382eb12867eb0105071ac3b77369c76d3a400e146209b2894b587fa321652",
+    "source_review": "Owned actual Event/Thread only; fake acquisition guards; first boundary before fixture release; always release/join owned workers; normal/failure retry preserves reset authorization; no peer threads targeted."
+  },
+  "archives": {
+    "final-source-inputs.tar.gz": {
+      "authenticated_inputs": 788,
+      "sha256": "44298537be1635bf6bc6d222bc8d743a697841588e030853358d489aed0c7078"
+    },
+    "starting-inputs.tar.gz": {
+      "authenticated_inputs": 779,
+      "sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d"
+    }
+  },
+  "branch": "fix/safety-audit-20261015",
+  "freeze_sha256": "c4ecdfc8e8c814bd3d033bd478472cbd498a766c76e077006ba2bfb093093dac",
+  "frozen_inputs": 788,
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "incremental_diff_sha256": "6ccbcbe15f799f2e4e83cd892660b26e18d2e678551f5d27c747c8f30ff9a955",
+  "limits": [
+    "No delegate application imports/test/display/native actions.",
+    "No full gate or artifact acceptance inferred from focused runs.",
+    "No original incident attribution or unavailable Python3.11/platform/hardware acceptance established."
+  ],
+  "proof_to_canonical_ast": [
+    {
+      "boundary_assertions": 12,
+      "boundary_assertions_ast_identical": true,
+      "canonical": "tests/test_disk_name_layout_pass21.py",
+      "canonical_sha256": "b87679dffda0fbfc59eb00de4066c0595f89d063e43f19995af140e7ab3b8d41",
+      "modified_definitions": [],
+      "only_admission_or_child_provenance_changes": true,
+      "proof": "docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py",
+      "proof_sha256": "6a8ba18b26bf539197f3a87c06c4cdf47e4d6cde3ef3090ebe3c8cb1f826dd1c"
+    },
+    {
+      "boundary_assertions": 8,
+      "boundary_assertions_ast_identical": true,
+      "canonical": "tests/test_disk_name_alias_layout_pass21.py",
+      "canonical_sha256": "640dfba29e39eed7e10f06ec4a80d442a0d36bf31980196777feb7191d648d9e",
+      "modified_definitions": [],
+      "only_admission_or_child_provenance_changes": true,
+      "proof": "docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py",
+      "proof_sha256": "aff66a05804c06116ceeffc986312e61163088b45b95bd9ca64d097cfac9b81f"
+    },
+    {
+      "boundary_assertions": 10,
+      "boundary_assertions_ast_identical": true,
+      "canonical": "tests/test_discovery_nonfinite_size_pass21.py",
+      "canonical_sha256": "80b8865d8f3ca684f9f9f6d295c534a774ac60c9b324a7fd219573b9c5ffd108",
+      "modified_definitions": [],
+      "only_admission_or_child_provenance_changes": true,
+      "proof": "docs/evidence/bug-audit-20261017-pass21/discovery/nonfinite-size-probe.py",
+      "proof_sha256": "1ba4604055fa2964ddf31f4ac5dcda43d9db3c2ce10792efb026a58823e0e4fb"
+    },
+    {
+      "boundary_assertions": 14,
+      "boundary_assertions_ast_identical": true,
+      "canonical": "tests/test_diagnostics_line_separators_pass21.py",
+      "canonical_sha256": "f61854fb328c9b90a932caffea64501dc578996a453854ec5a41fd6245193a1d",
+      "modified_definitions": [],
+      "only_admission_or_child_provenance_changes": true,
+      "proof": "docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py",
+      "proof_sha256": "7ac355a282ea210431914c5dd9798520ee86604bd343a89dfcbe0c497013f578"
+    },
+    {
+      "boundary_assertions": 19,
+      "boundary_assertions_ast_identical": true,
+      "canonical": "tests/test_tk_variable_interpreter_pass21.py",
+      "canonical_sha256": "a1adfa3427496bdb425dd780cef667d4ed5ae3eb10b76230848a84a3086f0e7d",
+      "modified_definitions": [
+        "_admit",
+        "test_native_variables_use_the_owned_root"
+      ],
+      "only_admission_or_child_provenance_changes": true,
+      "proof": "docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof-v3.py",
+      "proof_sha256": "1f6549dd409148e6fab69fe75c145f78a45bde5461fd356f4e6ff51eba4962a9"
+    },
+    {
+      "boundary_assertions": 11,
+      "boundary_assertions_ast_identical": true,
+      "canonical": "tests/test_refresh_acceptance_interruptions_pass21.py",
+      "canonical_sha256": "44b5083fff5432658f4a943354789c891e43d94fd66ea3986caa1858c8906b24",
+      "modified_definitions": [
+        "_admit",
+        "_accessible"
+      ],
+      "only_admission_or_child_provenance_changes": true,
+      "proof": "docs/evidence/bug-audit-20261017-pass21/ui/refresh-acceptance-proof.py",
+      "proof_sha256": "cc5dcc5f778f6f28ebfc721aac2f6e98acf60984cf73bc8c0bcf243cdf8b390e"
+    },
+    {
+      "boundary_assertions": 4,
+      "boundary_assertions_ast_identical": true,
+      "canonical": "tests/test_accessible_close_cleanup_pass21.py",
+      "canonical_sha256": "17d33a6646acf8471570be2696aafe00cc5b12a754492ccc37d2f4ab55af59a8",
+      "modified_definitions": [
+        "_module"
+      ],
+      "only_admission_or_child_provenance_changes": true,
+      "proof": "docs/evidence/bug-audit-20261017-pass21/ui/gtk-close-cleanup-proof.py",
+      "proof_sha256": "c7ac00e1b72ddcac510a63e3eebf3609a487e2e20d20711ab7ae30cd2c8b1214"
+    },
+    {
+      "boundary_assertions": 17,
+      "boundary_assertions_ast_identical": true,
+      "canonical": "tests/test_tk_trace_adoption_pass21.py",
+      "canonical_sha256": "c042b2cb2a99996fc4796e2a07ea3e661adeac01daccef33a11494ddd2385d44",
+      "modified_definitions": [
+        "_admit",
+        "test_interrupted_owned_trace_is_retired"
+      ],
+      "only_admission_or_child_provenance_changes": true,
+      "proof": "docs/evidence/bug-audit-20261017-pass21/ui/tk-trace-adoption-proof-v2.py",
+      "proof_sha256": "430ec2e4f9993a62bc5cf9a4b93debe3c1852b89fd220965621458e14f99dcb8"
+    }
+  ],
+  "repo": "BeamoTech/beamo-wipe",
+  "reviewed_utc": "2026-10-17T21:06:21.527517+00:00",
+  "reviewer": "Codex /root/pass21_runner_reports",
+  "root_owned_receipt_readback": {
+    "current_focused": {
+      "canonical_cases_passed": 219,
+      "errors": 0,
+      "failures": 0,
+      "junit_sha256": "c4ab05cec42bc579b42f9f557d4a6b58e9980342c03ead5440f9814db6e38575",
+      "passed": 290,
+      "skipped": 0,
+      "status_sha256": "3ccefec6d69eb7e015560766cbc3c6508d93cd8cf9800353e9b1dfcbf909cc81"
+    },
+    "initial_invalid_selection": "final-focused exit4 nonexistent test_async_refresh; NOT RUN and preserved separately",
+    "original": {
+      "authenticated_original_source_files": 58,
+      "cases": 219,
+      "cases_by_module": {
+        "tests/test_accessible_close_cleanup_pass21.py": 3,
+        "tests/test_diagnostics_line_separators_pass21.py": 29,
+        "tests/test_discovery_nonfinite_size_pass21.py": 72,
+        "tests/test_disk_name_alias_layout_pass21.py": 30,
+        "tests/test_disk_name_layout_pass21.py": 60,
+        "tests/test_refresh_acceptance_interruptions_pass21.py": 8,
+        "tests/test_refresh_commit_concurrency_pass21.py": 6,
+        "tests/test_tk_trace_adoption_pass21.py": 4,
+        "tests/test_tk_variable_interpreter_pass21.py": 7
+      },
+      "controls": 130,
+      "errors": 0,
+      "failures": 89,
+      "junit_sha256": "67d8c18bad77cc4c6e8b99cddb1d3dd8a70b04fb720ab612555b2c2561c233a4",
+      "skipped": 0,
+      "status_sha256": "2abf55b23f5ac9ccdf74bd0dfed3b4a91148b3f9a68ba92ab563ed60cd3c19af"
+    }
+  },
+  "runtime": {
+    "src/beamo_wipe/diagnostics.py": {
+      "reviewed_sha256": "04c69fdf61a9461353067f12f575f3d5175be0b939736bbd160ad6d4e3f38bba",
+      "starting_sha256": "274af6f2c094f2a2320cf26025f6fde4de463e47324aba8298ea1e96da8f9963"
+    },
+    "src/beamo_wipe/discover.py": {
+      "reviewed_sha256": "504315316ded12cf11502614d067139be25908418851895053339fde7bc38067",
+      "starting_sha256": "9f5a5a36ddf9dad77c7195920ed6290ed745d4684d63beeac103882fb6198f65"
+    },
+    "src/beamo_wipe/ui/accessible_wizard.py": {
+      "reviewed_sha256": "dd2484ff669d1d08f4fa7927200517de07b420708094cd3249af5406fd0aac97",
+      "starting_sha256": "2179d1be8dfa960266e611eb0429b1a33670c3ca25111a899355e39a8ca35fed"
+    },
+    "src/beamo_wipe/ui/tk_wizard.py": {
+      "reviewed_sha256": "5b1fc0e16f95176ae706a9677d082d2daae7eb3d70a43ce244ce77363e35f9f5",
+      "starting_sha256": "3f702e1ac6c3564372f9b633a2dcf0ea3e9d46553e29ceaf4cfa781e181e8ea7"
+    }
+  },
+  "runtime_inputs_in_hash": 58,
+  "runtime_source_sha256": "8e18e259414408eff434768ad24b38432bf913b12a864439f40b585a264496c1",
+  "source_only": true,
+  "starting_test_assertions_unchanged": true,
+  "tests": {
+    "tests/test_accessible_close_cleanup_pass21.py": "17d33a6646acf8471570be2696aafe00cc5b12a754492ccc37d2f4ab55af59a8",
+    "tests/test_diagnostics_line_separators_pass21.py": "f61854fb328c9b90a932caffea64501dc578996a453854ec5a41fd6245193a1d",
+    "tests/test_discovery_nonfinite_size_pass21.py": "80b8865d8f3ca684f9f9f6d295c534a774ac60c9b324a7fd219573b9c5ffd108",
+    "tests/test_disk_name_alias_layout_pass21.py": "640dfba29e39eed7e10f06ec4a80d442a0d36bf31980196777feb7191d648d9e",
+    "tests/test_disk_name_layout_pass21.py": "b87679dffda0fbfc59eb00de4066c0595f89d063e43f19995af140e7ab3b8d41",
+    "tests/test_refresh_acceptance_interruptions_pass21.py": "44b5083fff5432658f4a943354789c891e43d94fd66ea3986caa1858c8906b24",
+    "tests/test_refresh_commit_concurrency_pass21.py": "e90382eb12867eb0105071ac3b77369c76d3a400e146209b2894b587fa321652",
+    "tests/test_tk_trace_adoption_pass21.py": "c042b2cb2a99996fc4796e2a07ea3e661adeac01daccef33a11494ddd2385d44",
+    "tests/test_tk_variable_interpreter_pass21.py": "a1adfa3427496bdb425dd780cef667d4ed5ae3eb10b76230848a84a3086f0e7d"
+  },
+  "unchanged_starting_inputs": 775,
+  "verdict": "PASS exact final13-input source/test review; full gate/campaign/retention acceptance pending",
+  "worktree": "/root/dev/Beamo Wipe"
+}

@@ -1,0 +1,30 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass20-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_mounted_holder_type_pass20.py",
+    "tests/test_holder_ancestor_mount_pass20.py",
+    "tests/test_audio_launch_interruptions_pass20.py",
+    "tests/test_audio_launch_ownership_pass14.py",
+    "tests/test_discovery_observation_fallback_pass16.py",
+    "tests/test_unbound_bcache_filesystem_pass19.py",
+    "tests/test_descendant_holder_filesystem_pass19.py",
+    "tests/test_duplicate_bcache_filesystem_pass19.py",
+    "tests/test_holder_ancestor_contradiction_pass19.py",
+    "tests/test_audio_launch_acceptance_pass20.py",
+    "--junitxml=/tmp/pass20-primary/localized-final-focused.xml"
+  ],
+  "exit_code": 0,
+  "started_utc": "2026-10-17T18:34:56.897315+00:00",
+  "ended_utc": "2026-10-17T18:35:00.543171+00:00"
+}

@@ -1,0 +1,1895 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="108" skipped="0" tests="207" time="8.144" timestamp="2026-10-16T21:44:04.163391+00:00" hostname="srv1606478"><testcase classname="tests.test_audio_launch_ownership_pass14" name="test_start_error_after_spawn_never_leaves_a_competing_worker[False-False-False]" time="0.058"><failure message="AssertionError: Two audio actions ran together after rejected launch&#10;assert not True">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a50bc0b0&gt;
+rejected_protected = False, active_protected = False, next_protected = False
+
+    @pytest.mark.parametrize('rejected_protected', [False, True])
+    @pytest.mark.parametrize('active_protected', [False, True])
+    @pytest.mark.parametrize('next_protected', [False, True])
+    def test_start_error_after_spawn_never_leaves_a_competing_worker(monkeypatch, rejected_protected, active_protected, next_protected):
+        real_thread = threading.Thread
+        old_gate, active_entered, next_entered, release = [threading.Event() for _ in range(4)]
+        threads, rejected_actions = [], []
+    
+        class StartedThenRaised(real_thread):
+            def __init__(self, *args, **kwargs):
+                first = not threads
+                target = kwargs['target']
+                if first:
+                    def delayed():
+                        assert old_gate.wait(2)
+                        target()
+                    kwargs['target'] = delayed
+                super().__init__(*args, **kwargs)
+                self.first = first
+                threads.append(self)
+    
+            def start(self):
+                super().start()
+                if self.first:
+                    raise RuntimeError('controlled start error after owned spawn')
+    
+        worker = audio_jobs.AudioWorker()
+        monkeypatch.setattr(audio_jobs.threading, 'Thread', StartedThenRaised)
+        try:
+            rejected = worker.submit(lambda: rejected_actions.append(True), protected=rejected_protected)
+            ready, value = rejected.poll()
+            assert ready and isinstance(value, RuntimeError)
+    
+            def active():
+                active_entered.set()
+                assert release.wait(2)
+                return 'active'
+    
+            def following():
+                next_entered.set()
+                return 'following'
+    
+            worker.submit(active, protected=active_protected)
+            assert active_entered.wait(1)
+            old_gate.set()
+            worker.submit(following, protected=next_protected)
+            overlapped = next_entered.wait(0.1)
+            assert not rejected_actions
+&gt;           assert not overlapped, 'Two audio actions ran together after rejected launch'
+E           AssertionError: Two audio actions ran together after rejected launch
+E           assert not True
+
+tests/test_audio_launch_ownership_pass14.py:57: AssertionError</failure></testcase><testcase classname="tests.test_audio_launch_ownership_pass14" name="test_start_error_after_spawn_never_leaves_a_competing_worker[False-False-True]" time="0.002"><failure message="AssertionError: Two audio actions ran together after rejected launch&#10;assert not True">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c2f4d0&gt;
+rejected_protected = True, active_protected = False, next_protected = False
+
+    @pytest.mark.parametrize('rejected_protected', [False, True])
+    @pytest.mark.parametrize('active_protected', [False, True])
+    @pytest.mark.parametrize('next_protected', [False, True])
+    def test_start_error_after_spawn_never_leaves_a_competing_worker(monkeypatch, rejected_protected, active_protected, next_protected):
+        real_thread = threading.Thread
+        old_gate, active_entered, next_entered, release = [threading.Event() for _ in range(4)]
+        threads, rejected_actions = [], []
+    
+        class StartedThenRaised(real_thread):
+            def __init__(self, *args, **kwargs):
+                first = not threads
+                target = kwargs['target']
+                if first:
+                    def delayed():
+                        assert old_gate.wait(2)
+                        target()
+                    kwargs['target'] = delayed
+                super().__init__(*args, **kwargs)
+                self.first = first
+                threads.append(self)
+    
+            def start(self):
+                super().start()
+                if self.first:
+                    raise RuntimeError('controlled start error after owned spawn')
+    
+        worker = audio_jobs.AudioWorker()
+        monkeypatch.setattr(audio_jobs.threading, 'Thread', StartedThenRaised)
+        try:
+            rejected = worker.submit(lambda: rejected_actions.append(True), protected=rejected_protected)
+            ready, value = rejected.poll()
+            assert ready and isinstance(value, RuntimeError)
+    
+            def active():
+                active_entered.set()
+                assert release.wait(2)
+                return 'active'
+    
+            def following():
+                next_entered.set()
+                return 'following'
+    
+            worker.submit(active, protected=active_protected)
+            assert active_entered.wait(1)
+            old_gate.set()
+            worker.submit(following, protected=next_protected)
+            overlapped = next_entered.wait(0.1)
+            assert not rejected_actions
+&gt;           assert not overlapped, 'Two audio actions ran together after rejected launch'
+E           AssertionError: Two audio actions ran together after rejected launch
+E           assert not True
+
+tests/test_audio_launch_ownership_pass14.py:57: AssertionError</failure></testcase><testcase classname="tests.test_audio_launch_ownership_pass14" name="test_start_error_after_spawn_never_leaves_a_competing_worker[False-True-False]" time="0.001"><failure message="AssertionError: Two audio actions ran together after rejected launch&#10;assert not True">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ef9b20&gt;
+rejected_protected = False, active_protected = True, next_protected = False
+
+    @pytest.mark.parametrize('rejected_protected', [False, True])
+    @pytest.mark.parametrize('active_protected', [False, True])
+    @pytest.mark.parametrize('next_protected', [False, True])
+    def test_start_error_after_spawn_never_leaves_a_competing_worker(monkeypatch, rejected_protected, active_protected, next_protected):
+        real_thread = threading.Thread
+        old_gate, active_entered, next_entered, release = [threading.Event() for _ in range(4)]
+        threads, rejected_actions = [], []
+    
+        class StartedThenRaised(real_thread):
+            def __init__(self, *args, **kwargs):
+                first = not threads
+                target = kwargs['target']
+                if first:
+                    def delayed():
+                        assert old_gate.wait(2)
+                        target()
+                    kwargs['target'] = delayed
+                super().__init__(*args, **kwargs)
+                self.first = first
+                threads.append(self)
+    
+            def start(self):
+                super().start()
+                if self.first:
+                    raise RuntimeError('controlled start error after owned spawn')
+    
+        worker = audio_jobs.AudioWorker()
+        monkeypatch.setattr(audio_jobs.threading, 'Thread', StartedThenRaised)
+        try:
+            rejected = worker.submit(lambda: rejected_actions.append(True), protected=rejected_protected)
+            ready, value = rejected.poll()
+            assert ready and isinstance(value, RuntimeError)
+    
+            def active():
+                active_entered.set()
+                assert release.wait(2)
+                return 'active'
+    
+            def following():
+                next_entered.set()
+                return 'following'
+    
+            worker.submit(active, protected=active_protected)
+            assert active_entered.wait(1)
+            old_gate.set()
+            worker.submit(following, protected=next_protected)
+            overlapped = next_entered.wait(0.1)
+            assert not rejected_actions
+&gt;           assert not overlapped, 'Two audio actions ran together after rejected launch'
+E           AssertionError: Two audio actions ran together after rejected launch
+E           assert not True
+
+tests/test_audio_launch_ownership_pass14.py:57: AssertionError</failure></testcase><testcase classname="tests.test_audio_launch_ownership_pass14" name="test_start_error_after_spawn_never_leaves_a_competing_worker[False-True-True]" time="0.001"><failure message="AssertionError: Two audio actions ran together after rejected launch&#10;assert not True">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ef9820&gt;
+rejected_protected = True, active_protected = True, next_protected = False
+
+    @pytest.mark.parametrize('rejected_protected', [False, True])
+    @pytest.mark.parametrize('active_protected', [False, True])
+    @pytest.mark.parametrize('next_protected', [False, True])
+    def test_start_error_after_spawn_never_leaves_a_competing_worker(monkeypatch, rejected_protected, active_protected, next_protected):
+        real_thread = threading.Thread
+        old_gate, active_entered, next_entered, release = [threading.Event() for _ in range(4)]
+        threads, rejected_actions = [], []
+    
+        class StartedThenRaised(real_thread):
+            def __init__(self, *args, **kwargs):
+                first = not threads
+                target = kwargs['target']
+                if first:
+                    def delayed():
+                        assert old_gate.wait(2)
+                        target()
+                    kwargs['target'] = delayed
+                super().__init__(*args, **kwargs)
+                self.first = first
+                threads.append(self)
+    
+            def start(self):
+                super().start()
+                if self.first:
+                    raise RuntimeError('controlled start error after owned spawn')
+    
+        worker = audio_jobs.AudioWorker()
+        monkeypatch.setattr(audio_jobs.threading, 'Thread', StartedThenRaised)
+        try:
+            rejected = worker.submit(lambda: rejected_actions.append(True), protected=rejected_protected)
+            ready, value = rejected.poll()
+            assert ready and isinstance(value, RuntimeError)
+    
+            def active():
+                active_entered.set()
+                assert release.wait(2)
+                return 'active'
+    
+            def following():
+                next_entered.set()
+                return 'following'
+    
+            worker.submit(active, protected=active_protected)
+            assert active_entered.wait(1)
+            old_gate.set()
+            worker.submit(following, protected=next_protected)
+            overlapped = next_entered.wait(0.1)
+            assert not rejected_actions
+&gt;           assert not overlapped, 'Two audio actions ran together after rejected launch'
+E           AssertionError: Two audio actions ran together after rejected launch
+E           assert not True
+
+tests/test_audio_launch_ownership_pass14.py:57: AssertionError</failure></testcase><testcase classname="tests.test_audio_launch_ownership_pass14" name="test_start_error_after_spawn_never_leaves_a_competing_worker[True-False-False]" time="0.002"><failure message="AssertionError: Two audio actions ran together after rejected launch&#10;assert not True">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ecd340&gt;
+rejected_protected = False, active_protected = False, next_protected = True
+
+    @pytest.mark.parametrize('rejected_protected', [False, True])
+    @pytest.mark.parametrize('active_protected', [False, True])
+    @pytest.mark.parametrize('next_protected', [False, True])
+    def test_start_error_after_spawn_never_leaves_a_competing_worker(monkeypatch, rejected_protected, active_protected, next_protected):
+        real_thread = threading.Thread
+        old_gate, active_entered, next_entered, release = [threading.Event() for _ in range(4)]
+        threads, rejected_actions = [], []
+    
+        class StartedThenRaised(real_thread):
+            def __init__(self, *args, **kwargs):
+                first = not threads
+                target = kwargs['target']
+                if first:
+                    def delayed():
+                        assert old_gate.wait(2)
+                        target()
+                    kwargs['target'] = delayed
+                super().__init__(*args, **kwargs)
+                self.first = first
+                threads.append(self)
+    
+            def start(self):
+                super().start()
+                if self.first:
+                    raise RuntimeError('controlled start error after owned spawn')
+    
+        worker = audio_jobs.AudioWorker()
+        monkeypatch.setattr(audio_jobs.threading, 'Thread', StartedThenRaised)
+        try:
+            rejected = worker.submit(lambda: rejected_actions.append(True), protected=rejected_protected)
+            ready, value = rejected.poll()
+            assert ready and isinstance(value, RuntimeError)
+    
+            def active():
+                active_entered.set()
+                assert release.wait(2)
+                return 'active'
+    
+            def following():
+                next_entered.set()
+                return 'following'
+    
+            worker.submit(active, protected=active_protected)
+            assert active_entered.wait(1)
+            old_gate.set()
+            worker.submit(following, protected=next_protected)
+            overlapped = next_entered.wait(0.1)
+            assert not rejected_actions
+&gt;           assert not overlapped, 'Two audio actions ran together after rejected launch'
+E           AssertionError: Two audio actions ran together after rejected launch
+E           assert not True
+
+tests/test_audio_launch_ownership_pass14.py:57: AssertionError</failure></testcase><testcase classname="tests.test_audio_launch_ownership_pass14" name="test_start_error_after_spawn_never_leaves_a_competing_worker[True-False-True]" time="0.001"><failure message="AssertionError: Two audio actions ran together after rejected launch&#10;assert not True">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ecec00&gt;
+rejected_protected = True, active_protected = False, next_protected = True
+
+    @pytest.mark.parametrize('rejected_protected', [False, True])
+    @pytest.mark.parametrize('active_protected', [False, True])
+    @pytest.mark.parametrize('next_protected', [False, True])
+    def test_start_error_after_spawn_never_leaves_a_competing_worker(monkeypatch, rejected_protected, active_protected, next_protected):
+        real_thread = threading.Thread
+        old_gate, active_entered, next_entered, release = [threading.Event() for _ in range(4)]
+        threads, rejected_actions = [], []
+    
+        class StartedThenRaised(real_thread):
+            def __init__(self, *args, **kwargs):
+                first = not threads
+                target = kwargs['target']
+                if first:
+                    def delayed():
+                        assert old_gate.wait(2)
+                        target()
+                    kwargs['target'] = delayed
+                super().__init__(*args, **kwargs)
+                self.first = first
+                threads.append(self)
+    
+            def start(self):
+                super().start()
+                if self.first:
+                    raise RuntimeError('controlled start error after owned spawn')
+    
+        worker = audio_jobs.AudioWorker()
+        monkeypatch.setattr(audio_jobs.threading, 'Thread', StartedThenRaised)
+        try:
+            rejected = worker.submit(lambda: rejected_actions.append(True), protected=rejected_protected)
+            ready, value = rejected.poll()
+            assert ready and isinstance(value, RuntimeError)
+    
+            def active():
+                active_entered.set()
+                assert release.wait(2)
+                return 'active'
+    
+            def following():
+                next_entered.set()
+                return 'following'
+    
+            worker.submit(active, protected=active_protected)
+            assert active_entered.wait(1)
+            old_gate.set()
+            worker.submit(following, protected=next_protected)
+            overlapped = next_entered.wait(0.1)
+            assert not rejected_actions
+&gt;           assert not overlapped, 'Two audio actions ran together after rejected launch'
+E           AssertionError: Two audio actions ran together after rejected launch
+E           assert not True
+
+tests/test_audio_launch_ownership_pass14.py:57: AssertionError</failure></testcase><testcase classname="tests.test_audio_launch_ownership_pass14" name="test_start_error_after_spawn_never_leaves_a_competing_worker[True-True-False]" time="0.001"><failure message="AssertionError: Two audio actions ran together after rejected launch&#10;assert not True">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ece0f0&gt;
+rejected_protected = False, active_protected = True, next_protected = True
+
+    @pytest.mark.parametrize('rejected_protected', [False, True])
+    @pytest.mark.parametrize('active_protected', [False, True])
+    @pytest.mark.parametrize('next_protected', [False, True])
+    def test_start_error_after_spawn_never_leaves_a_competing_worker(monkeypatch, rejected_protected, active_protected, next_protected):
+        real_thread = threading.Thread
+        old_gate, active_entered, next_entered, release = [threading.Event() for _ in range(4)]
+        threads, rejected_actions = [], []
+    
+        class StartedThenRaised(real_thread):
+            def __init__(self, *args, **kwargs):
+                first = not threads
+                target = kwargs['target']
+                if first:
+                    def delayed():
+                        assert old_gate.wait(2)
+                        target()
+                    kwargs['target'] = delayed
+                super().__init__(*args, **kwargs)
+                self.first = first
+                threads.append(self)
+    
+            def start(self):
+                super().start()
+                if self.first:
+                    raise RuntimeError('controlled start error after owned spawn')
+    
+        worker = audio_jobs.AudioWorker()
+        monkeypatch.setattr(audio_jobs.threading, 'Thread', StartedThenRaised)
+        try:
+            rejected = worker.submit(lambda: rejected_actions.append(True), protected=rejected_protected)
+            ready, value = rejected.poll()
+            assert ready and isinstance(value, RuntimeError)
+    
+            def active():
+                active_entered.set()
+                assert release.wait(2)
+                return 'active'
+    
+            def following():
+                next_entered.set()
+                return 'following'
+    
+            worker.submit(active, protected=active_protected)
+            assert active_entered.wait(1)
+            old_gate.set()
+            worker.submit(following, protected=next_protected)
+            overlapped = next_entered.wait(0.1)
+            assert not rejected_actions
+&gt;           assert not overlapped, 'Two audio actions ran together after rejected launch'
+E           AssertionError: Two audio actions ran together after rejected launch
+E           assert not True
+
+tests/test_audio_launch_ownership_pass14.py:57: AssertionError</failure></testcase><testcase classname="tests.test_audio_launch_ownership_pass14" name="test_start_error_after_spawn_never_leaves_a_competing_worker[True-True-True]" time="0.001"><failure message="AssertionError: Two audio actions ran together after rejected launch&#10;assert not True">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4eccfb0&gt;
+rejected_protected = True, active_protected = True, next_protected = True
+
+    @pytest.mark.parametrize('rejected_protected', [False, True])
+    @pytest.mark.parametrize('active_protected', [False, True])
+    @pytest.mark.parametrize('next_protected', [False, True])
+    def test_start_error_after_spawn_never_leaves_a_competing_worker(monkeypatch, rejected_protected, active_protected, next_protected):
+        real_thread = threading.Thread
+        old_gate, active_entered, next_entered, release = [threading.Event() for _ in range(4)]
+        threads, rejected_actions = [], []
+    
+        class StartedThenRaised(real_thread):
+            def __init__(self, *args, **kwargs):
+                first = not threads
+                target = kwargs['target']
+                if first:
+                    def delayed():
+                        assert old_gate.wait(2)
+                        target()
+                    kwargs['target'] = delayed
+                super().__init__(*args, **kwargs)
+                self.first = first
+                threads.append(self)
+    
+            def start(self):
+                super().start()
+                if self.first:
+                    raise RuntimeError('controlled start error after owned spawn')
+    
+        worker = audio_jobs.AudioWorker()
+        monkeypatch.setattr(audio_jobs.threading, 'Thread', StartedThenRaised)
+        try:
+            rejected = worker.submit(lambda: rejected_actions.append(True), protected=rejected_protected)
+            ready, value = rejected.poll()
+            assert ready and isinstance(value, RuntimeError)
+    
+            def active():
+                active_entered.set()
+                assert release.wait(2)
+                return 'active'
+    
+            def following():
+                next_entered.set()
+                return 'following'
+    
+            worker.submit(active, protected=active_protected)
+            assert active_entered.wait(1)
+            old_gate.set()
+            worker.submit(following, protected=next_protected)
+            overlapped = next_entered.wait(0.1)
+            assert not rejected_actions
+&gt;           assert not overlapped, 'Two audio actions ran together after rejected launch'
+E           AssertionError: Two audio actions ran together after rejected launch
+E           assert not True
+
+tests/test_audio_launch_ownership_pass14.py:57: AssertionError</failure></testcase><testcase classname="tests.test_audio_launch_ownership_pass14" name="test_launch_refused_before_spawn_can_retry[False]" time="0.001" /><testcase classname="tests.test_audio_launch_ownership_pass14" name="test_launch_refused_before_spawn_can_retry[True]" time="0.001" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-boot-whole-order0]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4e2f350&gt;
+chain = 'root_missing', kind = 'boot', layout = 'whole', order = (0, 1, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-boot-whole-order1]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4e2ebd0&gt;
+chain = 'root_missing', kind = 'boot', layout = 'whole', order = (0, 2, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-boot-whole-order2]" time="0.002"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4d25340&gt;
+chain = 'root_missing', kind = 'boot', layout = 'whole', order = (1, 0, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-boot-whole-order3]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4d244a0&gt;
+chain = 'root_missing', kind = 'boot', layout = 'whole', order = (1, 2, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-boot-whole-order4]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ecee40&gt;
+chain = 'root_missing', kind = 'boot', layout = 'whole', order = (2, 0, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-boot-whole-order5]" time="0.002"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ecff50&gt;
+chain = 'root_missing', kind = 'boot', layout = 'whole', order = (2, 1, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-boot-partition-order0]" time="0.005"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ece720&gt;
+chain = 'root_missing', kind = 'boot', layout = 'partition', order = (0, 1, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-boot-partition-order1]" time="0.005"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ef8080&gt;
+chain = 'root_missing', kind = 'boot', layout = 'partition', order = (0, 2, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-boot-partition-order2]" time="0.004"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4eceab0&gt;
+chain = 'root_missing', kind = 'boot', layout = 'partition', order = (1, 0, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-boot-partition-order3]" time="0.005"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ecede0&gt;
+chain = 'root_missing', kind = 'boot', layout = 'partition', order = (1, 2, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-boot-partition-order4]" time="0.006"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ef8440&gt;
+chain = 'root_missing', kind = 'boot', layout = 'partition', order = (2, 0, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-boot-partition-order5]" time="0.005"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4e2d0a0&gt;
+chain = 'root_missing', kind = 'boot', layout = 'partition', order = (2, 1, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-mounted-whole-order0]" time="0.004"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4e2c5f0&gt;
+chain = 'root_missing', kind = 'mounted', layout = 'whole', order = (0, 1, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-mounted-whole-order1]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4e2f620&gt;
+chain = 'root_missing', kind = 'mounted', layout = 'whole', order = (0, 2, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-mounted-whole-order2]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4e2d700&gt;
+chain = 'root_missing', kind = 'mounted', layout = 'whole', order = (1, 0, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-mounted-whole-order3]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4e2ddc0&gt;
+chain = 'root_missing', kind = 'mounted', layout = 'whole', order = (1, 2, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-mounted-whole-order4]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4e2e840&gt;
+chain = 'root_missing', kind = 'mounted', layout = 'whole', order = (2, 0, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-mounted-whole-order5]" time="0.004"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4efb2c0&gt;
+chain = 'root_missing', kind = 'mounted', layout = 'whole', order = (2, 1, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...alse, wwn='50014ee20aa00001', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-mounted-partition-order0]" time="0.005"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ef8d10&gt;
+chain = 'root_missing', kind = 'mounted', layout = 'partition'
+order = (0, 1, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-mounted-partition-order1]" time="0.007"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ecf8c0&gt;
+chain = 'root_missing', kind = 'mounted', layout = 'partition'
+order = (0, 2, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-mounted-partition-order2]" time="0.006"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ecf440&gt;
+chain = 'root_missing', kind = 'mounted', layout = 'partition'
+order = (1, 0, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-mounted-partition-order3]" time="0.006"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a5168f50&gt;
+chain = 'root_missing', kind = 'mounted', layout = 'partition'
+order = (1, 2, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-mounted-partition-order4]" time="0.005"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ecd4c0&gt;
+chain = 'root_missing', kind = 'mounted', layout = 'partition'
+order = (2, 0, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[root_missing-mounted-partition-order5]" time="0.008"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a516a720&gt;
+chain = 'root_missing', kind = 'mounted', layout = 'partition'
+order = (2, 1, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-C', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-boot-whole-order0]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4f34b00&gt;
+chain = 'leaf_missing', kind = 'boot', layout = 'whole', order = (0, 1, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-boot-whole-order1]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4f34bf0&gt;
+chain = 'leaf_missing', kind = 'boot', layout = 'whole', order = (0, 2, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-boot-whole-order2]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4f36120&gt;
+chain = 'leaf_missing', kind = 'boot', layout = 'whole', order = (1, 0, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-boot-whole-order3]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4f34680&gt;
+chain = 'leaf_missing', kind = 'boot', layout = 'whole', order = (1, 2, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-boot-whole-order4]" time="0.002"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4f37260&gt;
+chain = 'leaf_missing', kind = 'boot', layout = 'whole', order = (2, 0, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-boot-whole-order5]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a5169d60&gt;
+chain = 'leaf_missing', kind = 'boot', layout = 'whole', order = (2, 1, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-boot-partition-order0]" time="0.005"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ecefc0&gt;
+chain = 'leaf_missing', kind = 'boot', layout = 'partition', order = (0, 1, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-boot-partition-order1]" time="0.006"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a516b410&gt;
+chain = 'leaf_missing', kind = 'boot', layout = 'partition', order = (0, 2, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-boot-partition-order2]" time="0.006"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4e2c770&gt;
+chain = 'leaf_missing', kind = 'boot', layout = 'partition', order = (1, 0, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-boot-partition-order3]" time="0.005"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ef8920&gt;
+chain = 'leaf_missing', kind = 'boot', layout = 'partition', order = (1, 2, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-boot-partition-order4]" time="0.005"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ef9940&gt;
+chain = 'leaf_missing', kind = 'boot', layout = 'partition', order = (2, 0, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-boot-partition-order5]" time="0.005"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4f56cc0&gt;
+chain = 'leaf_missing', kind = 'boot', layout = 'partition', order = (2, 1, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-mounted-whole-order0]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4f56b70&gt;
+chain = 'leaf_missing', kind = 'mounted', layout = 'whole', order = (0, 1, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-mounted-whole-order1]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4f56f60&gt;
+chain = 'leaf_missing', kind = 'mounted', layout = 'whole', order = (0, 2, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-mounted-whole-order2]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4f561b0&gt;
+chain = 'leaf_missing', kind = 'mounted', layout = 'whole', order = (1, 0, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-mounted-whole-order3]" time="0.004"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4dc6e70&gt;
+chain = 'leaf_missing', kind = 'mounted', layout = 'whole', order = (1, 2, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-mounted-whole-order4]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4f54c50&gt;
+chain = 'leaf_missing', kind = 'mounted', layout = 'whole', order = (2, 0, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-mounted-whole-order5]" time="0.003"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ecd310&gt;
+chain = 'leaf_missing', kind = 'mounted', layout = 'whole', order = (2, 1, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...lse, read_only=False, wwn='', vendor='', mountpoints=(), raw_model='', contents='unknown', hotplug=False, layout_id='').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-mounted-partition-order0]" time="0.005"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4efa2a0&gt;
+chain = 'leaf_missing', kind = 'mounted', layout = 'partition'
+order = (0, 1, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-mounted-partition-order1]" time="0.006"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ecf2c0&gt;
+chain = 'leaf_missing', kind = 'mounted', layout = 'partition'
+order = (0, 2, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-mounted-partition-order2]" time="0.006"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4e2ff80&gt;
+chain = 'leaf_missing', kind = 'mounted', layout = 'partition'
+order = (1, 0, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-mounted-partition-order3]" time="0.005"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4e2ce60&gt;
+chain = 'leaf_missing', kind = 'mounted', layout = 'partition'
+order = (1, 2, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-mounted-partition-order4]" time="0.005"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4fcfbc0&gt;
+chain = 'leaf_missing', kind = 'mounted', layout = 'partition'
+order = (2, 0, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[leaf_missing-mounted-partition-order5]" time="0.006"><failure message="AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True&#10; +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4fce810&gt;
+chain = 'leaf_missing', kind = 'mounted', layout = 'partition'
+order = (2, 1, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('kind', ['boot', 'mounted'])
+    @pytest.mark.parametrize('chain', list(CHAINS))
+    def test_composed_protection_preserves_stronger_contrary_wwns(monkeypatch, chain, kind, layout, order):
+        result = _scan(monkeypatch, kind, chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        protected = chain in {'root_missing', 'leaf_missing'}
+&gt;       assert (leaf.path in {d.path for d in result.selectable}) is not protected
+E       AssertionError: assert ('/dev/sdd' in {'/dev/sdd'}) is not True
+E        +  where '/dev/sdd' = Disk(path='/dev/sdd', name='sdd', model='Unknown model', serial='FAKE-B', size_bytes=128000000000, size_gb_label='128'...model='', contents='data', hotplug=False, layout_id='11e7895398de4ebf634228933660501ff8d03e89e4bdc4385706f8b58e2d59c8').path
+
+tests/test_protected_alias_chains_pass14.py:62: AssertionError</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-boot-whole-order0]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-boot-whole-order1]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-boot-whole-order2]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-boot-whole-order3]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-boot-whole-order4]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-boot-whole-order5]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-boot-partition-order0]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-boot-partition-order1]" time="0.007" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-boot-partition-order2]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-boot-partition-order3]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-boot-partition-order4]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-boot-partition-order5]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-mounted-whole-order0]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-mounted-whole-order1]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-mounted-whole-order2]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-mounted-whole-order3]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-mounted-whole-order4]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-mounted-whole-order5]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-mounted-partition-order0]" time="0.005" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-mounted-partition-order1]" time="0.005" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-mounted-partition-order2]" time="0.005" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-mounted-partition-order3]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-mounted-partition-order4]" time="0.007" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[distinct-mounted-partition-order5]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-boot-whole-order0]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-boot-whole-order1]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-boot-whole-order2]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-boot-whole-order3]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-boot-whole-order4]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-boot-whole-order5]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-boot-partition-order0]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-boot-partition-order1]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-boot-partition-order2]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-boot-partition-order3]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-boot-partition-order4]" time="0.005" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-boot-partition-order5]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-mounted-whole-order0]" time="0.005" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-mounted-whole-order1]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-mounted-whole-order2]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-mounted-whole-order3]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-mounted-whole-order4]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-mounted-whole-order5]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-mounted-partition-order0]" time="0.007" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-mounted-partition-order1]" time="0.008" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-mounted-partition-order2]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-mounted-partition-order3]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-mounted-partition-order4]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[contrary_through_missing-mounted-partition-order5]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-boot-whole-order0]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-boot-whole-order1]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-boot-whole-order2]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-boot-whole-order3]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-boot-whole-order4]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-boot-whole-order5]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-boot-partition-order0]" time="0.005" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-boot-partition-order1]" time="0.005" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-boot-partition-order2]" time="0.005" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-boot-partition-order3]" time="0.005" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-boot-partition-order4]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-boot-partition-order5]" time="0.005" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-mounted-whole-order0]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-mounted-whole-order1]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-mounted-whole-order2]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-mounted-whole-order3]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-mounted-whole-order4]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-mounted-whole-order5]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-mounted-partition-order0]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-mounted-partition-order1]" time="0.005" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-mounted-partition-order2]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-mounted-partition-order3]" time="0.005" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-mounted-partition-order4]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[placeholder-mounted-partition-order5]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-boot-whole-order0]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-boot-whole-order1]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-boot-whole-order2]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-boot-whole-order3]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-boot-whole-order4]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-boot-whole-order5]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-boot-partition-order0]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-boot-partition-order1]" time="0.005" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-boot-partition-order2]" time="0.005" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-boot-partition-order3]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-boot-partition-order4]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-boot-partition-order5]" time="0.005" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-mounted-whole-order0]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-mounted-whole-order1]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-mounted-whole-order2]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-mounted-whole-order3]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-mounted-whole-order4]" time="0.004" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-mounted-whole-order5]" time="0.003" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-mounted-partition-order0]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-mounted-partition-order1]" time="0.007" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-mounted-partition-order2]" time="0.007" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-mounted-partition-order3]" time="0.007" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-mounted-partition-order4]" time="0.007" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_composed_protection_preserves_stronger_contrary_wwns[unrelated-mounted-partition-order5]" time="0.006" /><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[root_missing-whole-order0]" time="0.003"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ecefc0&gt;
+chain = 'root_missing', layout = 'whole', order = (0, 1, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[root_missing-whole-order1]" time="0.003"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a50bf8c0&gt;
+chain = 'root_missing', layout = 'whole', order = (0, 2, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[root_missing-whole-order2]" time="0.003"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4fcdd30&gt;
+chain = 'root_missing', layout = 'whole', order = (1, 0, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[root_missing-whole-order3]" time="0.003"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c87e90&gt;
+chain = 'root_missing', layout = 'whole', order = (1, 2, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[root_missing-whole-order4]" time="0.003"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c84920&gt;
+chain = 'root_missing', layout = 'whole', order = (2, 0, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[root_missing-whole-order5]" time="0.003"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c84c80&gt;
+chain = 'root_missing', layout = 'whole', order = (2, 1, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[root_missing-partition-order0]" time="0.005"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4ecc290&gt;
+chain = 'root_missing', layout = 'partition', order = (0, 1, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[root_missing-partition-order1]" time="0.004"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4fce1e0&gt;
+chain = 'root_missing', layout = 'partition', order = (0, 2, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[root_missing-partition-order2]" time="0.006"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c86300&gt;
+chain = 'root_missing', layout = 'partition', order = (1, 0, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[root_missing-partition-order3]" time="0.006"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c86d20&gt;
+chain = 'root_missing', layout = 'partition', order = (1, 2, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[root_missing-partition-order4]" time="0.005"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c8b140&gt;
+chain = 'root_missing', layout = 'partition', order = (2, 0, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[root_missing-partition-order5]" time="0.004"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c8b620&gt;
+chain = 'root_missing', layout = 'partition', order = (2, 1, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[leaf_missing-whole-order0]" time="0.002"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c88dd0&gt;
+chain = 'leaf_missing', layout = 'whole', order = (0, 1, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[leaf_missing-whole-order1]" time="0.003"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c8b9b0&gt;
+chain = 'leaf_missing', layout = 'whole', order = (0, 2, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[leaf_missing-whole-order2]" time="0.002"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c8d880&gt;
+chain = 'leaf_missing', layout = 'whole', order = (1, 0, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[leaf_missing-whole-order3]" time="0.002"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c8c4a0&gt;
+chain = 'leaf_missing', layout = 'whole', order = (1, 2, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[leaf_missing-whole-order4]" time="0.002"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c8f740&gt;
+chain = 'leaf_missing', layout = 'whole', order = (2, 0, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[leaf_missing-whole-order5]" time="0.002"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4d104d0&gt;
+chain = 'leaf_missing', layout = 'whole', order = (2, 1, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[leaf_missing-partition-order0]" time="0.005"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c8d700&gt;
+chain = 'leaf_missing', layout = 'partition', order = (0, 1, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[leaf_missing-partition-order1]" time="0.004"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c8cb60&gt;
+chain = 'leaf_missing', layout = 'partition', order = (0, 2, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[leaf_missing-partition-order2]" time="0.004"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c8d2b0&gt;
+chain = 'leaf_missing', layout = 'partition', order = (1, 0, 2)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[leaf_missing-partition-order3]" time="0.004"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c8dd30&gt;
+chain = 'leaf_missing', layout = 'partition', order = (1, 2, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[leaf_missing-partition-order4]" time="0.004"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c8df40&gt;
+chain = 'leaf_missing', layout = 'partition', order = (2, 0, 1)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_protected_alias_chains_pass14" name="test_final_boot_guard_rechecks_complete_alias_context[leaf_missing-partition-order5]" time="0.005"><failure message="Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7476a4c88d40&gt;
+chain = 'leaf_missing', layout = 'partition', order = (2, 1, 0)
+
+    @pytest.mark.parametrize('order', list(itertools.permutations(range(3))))
+    @pytest.mark.parametrize('layout', ['whole', 'partition'])
+    @pytest.mark.parametrize('chain', ['root_missing', 'leaf_missing'])
+    def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, layout, order):
+        result = _scan(monkeypatch, 'boot', chain, layout, order)
+        leaf = next(d for d in result.disks if d.path == '/dev/sdd')
+        unsafe = replace(leaf, is_boot=False, mountpoints=())
+        observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
+        injected = replace(result, disks=observations, selectable=(unsafe,))
+&gt;       with pytest.raises(SafetyError, match='Boot USB appeared'):
+E       Failed: DID NOT RAISE &lt;class 'beamo_wipe.safety.SafetyError'&gt;
+
+tests/test_protected_alias_chains_pass14.py:85: Failed</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[standard-en-keyboard]" time="0.221"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4fcddc0&gt;)">screen = &lt;Screen.KEYBOARD: 'keyboard'&gt;, language = 'en', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4fcddc0&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[standard-en-owner]" time="0.198"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a50be7e0&gt;)">screen = &lt;Screen.OWNER: 'owner'&gt;, language = 'en', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a50be7e0&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[standard-en-confirm]" time="0.209" /><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[standard-fr-keyboard]" time="0.157"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4d138c0&gt;)">screen = &lt;Screen.KEYBOARD: 'keyboard'&gt;, language = 'fr', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4d138c0&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[standard-fr-owner]" time="0.213"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4d16180&gt;)">screen = &lt;Screen.OWNER: 'owner'&gt;, language = 'fr', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4d16180&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[standard-fr-confirm]" time="0.196"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4c277d0&gt;)">screen = &lt;Screen.CONFIRM: 'confirm'&gt;, language = 'fr', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4c277d0&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[standard-de-keyboard]" time="0.183"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a516a3c0&gt;)">screen = &lt;Screen.KEYBOARD: 'keyboard'&gt;, language = 'de', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a516a3c0&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[standard-de-owner]" time="0.248"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a50bd610&gt;)">screen = &lt;Screen.OWNER: 'owner'&gt;, language = 'de', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a50bd610&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[standard-de-confirm]" time="0.232"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4c870e0&gt;)">screen = &lt;Screen.CONFIRM: 'confirm'&gt;, language = 'de', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4c870e0&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[large-en-keyboard]" time="0.191"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4c8a960&gt;)">screen = &lt;Screen.KEYBOARD: 'keyboard'&gt;, language = 'en', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4c8a960&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[large-en-owner]" time="0.202"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4c82d20&gt;)">screen = &lt;Screen.OWNER: 'owner'&gt;, language = 'en', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4c82d20&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[large-en-confirm]" time="0.262"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4c838f0&gt;)">screen = &lt;Screen.CONFIRM: 'confirm'&gt;, language = 'en', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4c838f0&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[large-fr-keyboard]" time="0.235"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4d1fe30&gt;)">screen = &lt;Screen.KEYBOARD: 'keyboard'&gt;, language = 'fr', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4d1fe30&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[large-fr-owner]" time="0.232"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a56bb200&gt;)">screen = &lt;Screen.OWNER: 'owner'&gt;, language = 'fr', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a56bb200&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[large-fr-confirm]" time="0.195"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4fcfb30&gt;)">screen = &lt;Screen.CONFIRM: 'confirm'&gt;, language = 'fr', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4fcfb30&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[large-de-keyboard]" time="0.169"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4b395e0&gt;)">screen = &lt;Screen.KEYBOARD: 'keyboard'&gt;, language = 'de', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4b395e0&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[large-de-owner]" time="0.274"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4b313d0&gt;)">screen = &lt;Screen.OWNER: 'owner'&gt;, language = 'de', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4b313d0&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[large-de-confirm]" time="0.211"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4c84200&gt;)">screen = &lt;Screen.CONFIRM: 'confirm'&gt;, language = 'de', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4c84200&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[extra-en-keyboard]" time="0.256"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4cf7d10&gt;)">screen = &lt;Screen.KEYBOARD: 'keyboard'&gt;, language = 'en', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4cf7d10&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[extra-en-owner]" time="0.250"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4d171a0&gt;)">screen = &lt;Screen.OWNER: 'owner'&gt;, language = 'en', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4d171a0&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[extra-en-confirm]" time="0.230"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4a1f170&gt;)">screen = &lt;Screen.CONFIRM: 'confirm'&gt;, language = 'en', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4a1f170&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[extra-fr-keyboard]" time="0.160"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4a17920&gt;)">screen = &lt;Screen.KEYBOARD: 'keyboard'&gt;, language = 'fr', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4a17920&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[extra-fr-owner]" time="0.217"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4b379b0&gt;)">screen = &lt;Screen.OWNER: 'owner'&gt;, language = 'fr', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4b379b0&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[extra-fr-confirm]" time="0.217"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4d27ef0&gt;)">screen = &lt;Screen.CONFIRM: 'confirm'&gt;, language = 'fr', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4d27ef0&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[extra-de-keyboard]" time="0.192"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a49e37a0&gt;)">screen = &lt;Screen.KEYBOARD: 'keyboard'&gt;, language = 'de', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a49e37a0&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[extra-de-owner]" time="0.235"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4a16c90&gt;)">screen = &lt;Screen.OWNER: 'owner'&gt;, language = 'de', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4a16c90&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_initial_typing_and_consent_focus_is_visible[extra-de-confirm]" time="0.221"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a3bcf6b0&gt;)">screen = &lt;Screen.CONFIRM: 'confirm'&gt;, language = 'de', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a3bcf6b0&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_manual_scroll_is_preserved_until_focus_changes" time="0.217"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4d13230&gt;)">def test_manual_scroll_is_preserved_until_focus_changes():
+        app = _app(Screen.OWNER)
+        try:
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a4d13230&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:83: AssertionError</failure></testcase><testcase classname="tests.test_tk_focus_reveal_pass14" name="test_stale_focus_callback_cannot_scroll_replacement_screen" time="0.299"><failure message="assert False&#10; +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a3bd6840&gt;)">def test_stale_focus_callback_cannot_scroll_replacement_screen():
+        app = _app(Screen.OWNER)
+        errors = []
+        app.root.report_callback_exception = lambda *args: errors.append(args)
+        try:
+            focus = app.root.focus_get()
+            app._primary.focus_set()
+            app.root.update()
+            focus.focus_set()
+            app.w.back()
+            app._draw()
+            app.root.update()
+            assert app.w.screen is Screen.KEYBOARD
+&gt;           assert _visible(app)
+E           assert False
+E            +  where False = _visible(&lt;beamo_wipe.ui.tk_wizard.TkWizard object at 0x7476a3bd6840&gt;)
+
+tests/test_tk_focus_reveal_pass14.py:121: AssertionError</failure></testcase></testsuite></testsuites>

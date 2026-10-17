@@ -1,0 +1,81 @@
+{
+  "rows": [
+    {
+      "size": "standard",
+      "old_entry_destroyed": true,
+      "scheduled_entry_commands": [
+        {
+          "id": "after#0",
+          "command": "128163595488896<lambda>",
+          "kind": "idle"
+        }
+      ],
+      "deleted_commands": [
+        {
+          "id": "after#0",
+          "command": "128163595488896<lambda>",
+          "kind": "idle"
+        }
+      ],
+      "tcl_errors": [
+        "invalid command name \"128163595488896<lambda>\"",
+        "invalid command name \"128163595350784<lambda>\""
+      ],
+      "callback_errors": [],
+      "state_unchanged": true,
+      "engine_started": false
+    },
+    {
+      "size": "large",
+      "old_entry_destroyed": true,
+      "scheduled_entry_commands": [
+        {
+          "id": "after#16",
+          "command": "128163595353024<lambda>",
+          "kind": "idle"
+        }
+      ],
+      "deleted_commands": [
+        {
+          "id": "after#16",
+          "command": "128163595353024<lambda>",
+          "kind": "idle"
+        }
+      ],
+      "tcl_errors": [
+        "invalid command name \"128163595353024<lambda>\"",
+        "invalid command name \"128163619149056<lambda>\""
+      ],
+      "callback_errors": [],
+      "state_unchanged": true,
+      "engine_started": false
+    },
+    {
+      "size": "extra",
+      "old_entry_destroyed": true,
+      "scheduled_entry_commands": [
+        {
+          "id": "after#33",
+          "command": "128163595559680<lambda>",
+          "kind": "idle"
+        }
+      ],
+      "deleted_commands": [
+        {
+          "id": "after#33",
+          "command": "128163595559680<lambda>",
+          "kind": "idle"
+        }
+      ],
+      "tcl_errors": [
+        "invalid command name \"128163595559680<lambda>\"",
+        "invalid command name \"128163595268736<lambda>\""
+      ],
+      "callback_errors": [],
+      "state_unchanged": true,
+      "engine_started": false
+    }
+  ],
+  "effects": [],
+  "source_sha256": "06cfd5488624c78c98d2b2cabf33256ae81403587065d8a72814ef77f8eb13bd"
+}

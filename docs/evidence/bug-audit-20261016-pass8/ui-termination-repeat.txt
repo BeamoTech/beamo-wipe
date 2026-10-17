@@ -1,0 +1,10 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.3, pluggy-1.7.0 -- /tmp/beamo-wipe-audit-python/bin/python3
+rootdir: /root/dev/Beamo Wipe
+configfile: pyproject.toml
+collecting ... collected 40 items
+
+tests/test_tk_runtime.py::test_rebuilt_last_chance_rejects_old_erase_callback PASSED [100%]
+
+-------- generated xml file: /tmp/beamo-pass8-ui-termination-repeat.xml --------
+============================== 1 passed in 0.87s ===============================

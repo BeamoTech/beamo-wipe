@@ -1,0 +1,10 @@
+{
+  "/tmp/beamo-release-20261017-guard/aws": "f84bfa6c29f323e1127d614db36365369abfa8f58c3872b75dc228d7f514a9df",
+  "/tmp/beamo-release-20261017-guard/curl": "f84bfa6c29f323e1127d614db36365369abfa8f58c3872b75dc228d7f514a9df",
+  "/tmp/beamo-release-20261017-guard/docker": "f84bfa6c29f323e1127d614db36365369abfa8f58c3872b75dc228d7f514a9df",
+  "/tmp/beamo-release-20261017-guard/gcloud": "ede6ff7277a18070d023a7b0d0f96cc216516ae5a5514eead27a03510015a1f5",
+  "/tmp/beamo-release-20261017-guard/gh": "f84bfa6c29f323e1127d614db36365369abfa8f58c3872b75dc228d7f514a9df",
+  "/tmp/beamo-release-20261017-guard/losetup": "f84bfa6c29f323e1127d614db36365369abfa8f58c3872b75dc228d7f514a9df",
+  "/tmp/beamo-release-20261017-guard/qemu-system-x86_64": "f84bfa6c29f323e1127d614db36365369abfa8f58c3872b75dc228d7f514a9df",
+  "/tmp/beamo-release-20261017-guard/sudo": "f84bfa6c29f323e1127d614db36365369abfa8f58c3872b75dc228d7f514a9df"
+}

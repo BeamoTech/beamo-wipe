@@ -1,0 +1,1 @@
+UI handoff originally labeled the tk_wizard.py file hash as runtime source SHA256. Primary clarified the label to Tk module source SHA256; the original README is retained separately. The aggregate final runtime digest is e7efbba20755ff7496533504259adb4ef63eb8fafc43b52fa6fabe148cf1297d. No source/test/image/receipt bytes changed.

@@ -1,0 +1,19 @@
+{
+  "firstfix_sha256": "523c1443360dd89e6c4e436695c56df878f2bfef24086cecb6a98c110ddfb406",
+  "current_sha256": "158fae213e088c7dfcd0296eee78f4c68b8e3a732914cb2f05f3b1a8e1b24224",
+  "tests": {
+    "test_unbound_bcache_filesystem_pass19.py": "0d85a54e13de50b18b3402896f2bb426e0adad6e3bfd96b2c86cef21cdf4e127",
+    "test_descendant_holder_filesystem_pass19.py": "91d29c2893a48dd878faf06089053714b092a5a424e58f9b23e5a5d1bdb09a10",
+    "test_duplicate_bcache_filesystem_pass19.py": "fe520ce1c5adfde6cdac781c2edc9b4d85ddf1298cf70871944f624acbd16c7e"
+  },
+  "new_probe_sha256": "64d68bef146c0298cae17398b5e31286a8aa63ab00aceb4fee4c18bf29762736",
+  "root_reported_firstfix_proof": {
+    "descendant_failed_assertions": 30,
+    "descendant_passed_controls": 44,
+    "duplicate_failed_assertions": 20,
+    "duplicate_passed_controls": 10,
+    "errors": 0,
+    "skips": 0
+  },
+  "child_runtime_executed": false
+}

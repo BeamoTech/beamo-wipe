@@ -1,0 +1,320 @@
+dbus-daemon[133784]: [session uid=0 pid=133784] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=133799 comm="/tmp/beamo-pass19-python/bin/python3 -m pytest -q" label="unconfined")
+dbus-daemon[133784]: [session uid=0 pid=133784] Successfully activated service 'org.a11y.Bus'
+....................................dbus-daemon[133814]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=133799 comm="/tmp/beamo-pass19-python/bin/python3 -m pytest -q" label="unconfined")
+dbus-daemon[133814]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+.................................... [ 18%]
+........................FFFFF........................................... [ 36%]
+..................................................................F..... [ 54%]
+........................................................................ [ 72%]
+...............................................................FFF...... [ 90%]
+......................................                                   [100%]
+=================================== FAILURES ===================================
+___________ test_isolated_x11_physical_space_release_after_report[0] ___________
+
+ui = <function ui.<locals>.build at 0x72b6e93180e0>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-45/test_isolated_x11_physical_spa0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x72b6e91959a0>
+run = 0
+
+    @pytest.mark.parametrize("run", range(5))
+    def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypatch, run):
+        """Use server-delivered release after Save destroys the initiating control."""
+        import ctypes
+        import ctypes.util
+        import os
+        import sys
+    
+        if sys.platform != "linux" or os.environ.get("BEAMO_ISOLATED_X11_TEST") != "1":
+            pytest.skip("physical key injection requires an isolated test X server")
+>       x11 = ctypes.CDLL(ctypes.util.find_library("X11"))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_tk_runtime.py:960: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.12/ctypes/util.py:343: in find_library
+    return _findSoname_ldconfig(name) or \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/ctypes/util.py:303: in _findSoname_ldconfig
+    with subprocess.Popen(['/sbin/ldconfig', '-p'],
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_args = (['/sbin/ldconfig', '-p'],)
+_kwargs = {'env': {'LANG': 'C', 'LC_ALL': 'C'}, 'stderr': -3, 'stdin': -3, 'stdout': -1}
+
+    def forbidden(*_args, **_kwargs):
+>       raise AssertionError("Native application effect reached fixture probe")
+E       AssertionError: Native application effect reached fixture probe
+
+/tmp/pass19-primary/fixture_release_probe.py:17: AssertionError
+___________ test_isolated_x11_physical_space_release_after_report[1] ___________
+
+ui = <function ui.<locals>.build at 0x72b6e8c6d6c0>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-45/test_isolated_x11_physical_spa1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x72b6e9293470>
+run = 1
+
+    @pytest.mark.parametrize("run", range(5))
+    def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypatch, run):
+        """Use server-delivered release after Save destroys the initiating control."""
+        import ctypes
+        import ctypes.util
+        import os
+        import sys
+    
+        if sys.platform != "linux" or os.environ.get("BEAMO_ISOLATED_X11_TEST") != "1":
+            pytest.skip("physical key injection requires an isolated test X server")
+>       x11 = ctypes.CDLL(ctypes.util.find_library("X11"))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_tk_runtime.py:960: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.12/ctypes/util.py:343: in find_library
+    return _findSoname_ldconfig(name) or \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/ctypes/util.py:303: in _findSoname_ldconfig
+    with subprocess.Popen(['/sbin/ldconfig', '-p'],
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_args = (['/sbin/ldconfig', '-p'],)
+_kwargs = {'env': {'LANG': 'C', 'LC_ALL': 'C'}, 'stderr': -3, 'stdin': -3, 'stdout': -1}
+
+    def forbidden(*_args, **_kwargs):
+>       raise AssertionError("Native application effect reached fixture probe")
+E       AssertionError: Native application effect reached fixture probe
+
+/tmp/pass19-primary/fixture_release_probe.py:17: AssertionError
+___________ test_isolated_x11_physical_space_release_after_report[2] ___________
+
+ui = <function ui.<locals>.build at 0x72b6e9319760>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-45/test_isolated_x11_physical_spa2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x72b6e9195010>
+run = 2
+
+    @pytest.mark.parametrize("run", range(5))
+    def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypatch, run):
+        """Use server-delivered release after Save destroys the initiating control."""
+        import ctypes
+        import ctypes.util
+        import os
+        import sys
+    
+        if sys.platform != "linux" or os.environ.get("BEAMO_ISOLATED_X11_TEST") != "1":
+            pytest.skip("physical key injection requires an isolated test X server")
+>       x11 = ctypes.CDLL(ctypes.util.find_library("X11"))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_tk_runtime.py:960: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.12/ctypes/util.py:343: in find_library
+    return _findSoname_ldconfig(name) or \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/ctypes/util.py:303: in _findSoname_ldconfig
+    with subprocess.Popen(['/sbin/ldconfig', '-p'],
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_args = (['/sbin/ldconfig', '-p'],)
+_kwargs = {'env': {'LANG': 'C', 'LC_ALL': 'C'}, 'stderr': -3, 'stdin': -3, 'stdout': -1}
+
+    def forbidden(*_args, **_kwargs):
+>       raise AssertionError("Native application effect reached fixture probe")
+E       AssertionError: Native application effect reached fixture probe
+
+/tmp/pass19-primary/fixture_release_probe.py:17: AssertionError
+___________ test_isolated_x11_physical_space_release_after_report[3] ___________
+
+ui = <function ui.<locals>.build at 0x72b6e9312200>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-45/test_isolated_x11_physical_spa3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x72b6e89b4d10>
+run = 3
+
+    @pytest.mark.parametrize("run", range(5))
+    def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypatch, run):
+        """Use server-delivered release after Save destroys the initiating control."""
+        import ctypes
+        import ctypes.util
+        import os
+        import sys
+    
+        if sys.platform != "linux" or os.environ.get("BEAMO_ISOLATED_X11_TEST") != "1":
+            pytest.skip("physical key injection requires an isolated test X server")
+>       x11 = ctypes.CDLL(ctypes.util.find_library("X11"))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_tk_runtime.py:960: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.12/ctypes/util.py:343: in find_library
+    return _findSoname_ldconfig(name) or \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/ctypes/util.py:303: in _findSoname_ldconfig
+    with subprocess.Popen(['/sbin/ldconfig', '-p'],
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_args = (['/sbin/ldconfig', '-p'],)
+_kwargs = {'env': {'LANG': 'C', 'LC_ALL': 'C'}, 'stderr': -3, 'stdin': -3, 'stdout': -1}
+
+    def forbidden(*_args, **_kwargs):
+>       raise AssertionError("Native application effect reached fixture probe")
+E       AssertionError: Native application effect reached fixture probe
+
+/tmp/pass19-primary/fixture_release_probe.py:17: AssertionError
+___________ test_isolated_x11_physical_space_release_after_report[4] ___________
+
+ui = <function ui.<locals>.build at 0x72b6e8c6d8a0>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-45/test_isolated_x11_physical_spa4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x72b6e9338b30>
+run = 4
+
+    @pytest.mark.parametrize("run", range(5))
+    def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypatch, run):
+        """Use server-delivered release after Save destroys the initiating control."""
+        import ctypes
+        import ctypes.util
+        import os
+        import sys
+    
+        if sys.platform != "linux" or os.environ.get("BEAMO_ISOLATED_X11_TEST") != "1":
+            pytest.skip("physical key injection requires an isolated test X server")
+>       x11 = ctypes.CDLL(ctypes.util.find_library("X11"))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_tk_runtime.py:960: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.12/ctypes/util.py:343: in find_library
+    return _findSoname_ldconfig(name) or \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/ctypes/util.py:303: in _findSoname_ldconfig
+    with subprocess.Popen(['/sbin/ldconfig', '-p'],
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_args = (['/sbin/ldconfig', '-p'],)
+_kwargs = {'env': {'LANG': 'C', 'LC_ALL': 'C'}, 'stderr': -3, 'stdin': -3, 'stdout': -1}
+
+    def forbidden(*_args, **_kwargs):
+>       raise AssertionError("Native application effect reached fixture probe")
+E       AssertionError: Native application effect reached fixture probe
+
+/tmp/pass19-primary/fixture_release_probe.py:17: AssertionError
+____________ test_isolated_x11_physical_return_release_after_start _____________
+
+ui = <function ui.<locals>.build at 0x72b6e8d696c0>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-45/test_isolated_x11_physical_ret0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x72b6e87f7590>
+
+    def test_isolated_x11_physical_return_release_after_start(ui, tmp_path, monkeypatch):
+        """Exercise server-delivered key events only on an explicitly isolated Xvfb."""
+        import ctypes
+        import ctypes.util
+        import os
+        import sys
+    
+        if sys.platform != "linux" or os.environ.get("BEAMO_ISOLATED_X11_TEST") != "1":
+            pytest.skip("physical key injection requires an isolated test X server")
+>       x11 = ctypes.CDLL(ctypes.util.find_library("X11"))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_tk_runtime.py:1873: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.12/ctypes/util.py:343: in find_library
+    return _findSoname_ldconfig(name) or \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/ctypes/util.py:303: in _findSoname_ldconfig
+    with subprocess.Popen(['/sbin/ldconfig', '-p'],
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_args = (['/sbin/ldconfig', '-p'],)
+_kwargs = {'env': {'LANG': 'C', 'LC_ALL': 'C'}, 'stderr': -3, 'stdin': -3, 'stdout': -1}
+
+    def forbidden(*_args, **_kwargs):
+>       raise AssertionError("Native application effect reached fixture probe")
+E       AssertionError: Native application effect reached fixture probe
+
+/tmp/pass19-primary/fixture_release_probe.py:17: AssertionError
+_______ test_startup_releases_tcl_before_later_worker_collection[wizard] _______
+
+first_outcome = 'wizard'
+
+    @pytest.mark.parametrize("first_outcome", ["wizard", "failed", "abandoned"])
+    def test_startup_releases_tcl_before_later_worker_collection(first_outcome):
+        pytest.importorskip("tkinter")
+        from beamo_wipe.ui.tk_wizard import _ensure_tk_display
+    
+        try:
+>           _ensure_tk_display()
+
+tests/test_bug_audit_tk_gc_20260913.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/beamo_wipe/ui/tk_wizard.py:4662: in _ensure_tk_display
+    probe = _subprocess.run(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_args = (['/tmp/beamo-pass19-python/bin/python3', '-c', 'import tkinter as _t; _t.Tk().destroy()'],)
+_kwargs = {'check': False, 'env': {'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/tmp/dbus-CvLP2T7Wje,guid=e99987d548b01dd910fd2e2f6ad39e9e', 'DISPLAY': ':160', 'HOME': '/root', 'LANG': 'C.UTF-8', ...}, 'shell': False, 'stderr': -3, ...}
+
+    def forbidden(*_args, **_kwargs):
+>       raise AssertionError("Native application effect reached fixture probe")
+E       AssertionError: Native application effect reached fixture probe
+
+/tmp/pass19-primary/fixture_release_probe.py:17: AssertionError
+_______ test_startup_releases_tcl_before_later_worker_collection[failed] _______
+
+first_outcome = 'failed'
+
+    @pytest.mark.parametrize("first_outcome", ["wizard", "failed", "abandoned"])
+    def test_startup_releases_tcl_before_later_worker_collection(first_outcome):
+        pytest.importorskip("tkinter")
+        from beamo_wipe.ui.tk_wizard import _ensure_tk_display
+    
+        try:
+>           _ensure_tk_display()
+
+tests/test_bug_audit_tk_gc_20260913.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/beamo_wipe/ui/tk_wizard.py:4662: in _ensure_tk_display
+    probe = _subprocess.run(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_args = (['/tmp/beamo-pass19-python/bin/python3', '-c', 'import tkinter as _t; _t.Tk().destroy()'],)
+_kwargs = {'check': False, 'env': {'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/tmp/dbus-CvLP2T7Wje,guid=e99987d548b01dd910fd2e2f6ad39e9e', 'DISPLAY': ':160', 'HOME': '/root', 'LANG': 'C.UTF-8', ...}, 'shell': False, 'stderr': -3, ...}
+
+    def forbidden(*_args, **_kwargs):
+>       raise AssertionError("Native application effect reached fixture probe")
+E       AssertionError: Native application effect reached fixture probe
+
+/tmp/pass19-primary/fixture_release_probe.py:17: AssertionError
+_____ test_startup_releases_tcl_before_later_worker_collection[abandoned] ______
+
+first_outcome = 'abandoned'
+
+    @pytest.mark.parametrize("first_outcome", ["wizard", "failed", "abandoned"])
+    def test_startup_releases_tcl_before_later_worker_collection(first_outcome):
+        pytest.importorskip("tkinter")
+        from beamo_wipe.ui.tk_wizard import _ensure_tk_display
+    
+        try:
+>           _ensure_tk_display()
+
+tests/test_bug_audit_tk_gc_20260913.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/beamo_wipe/ui/tk_wizard.py:4662: in _ensure_tk_display
+    probe = _subprocess.run(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_args = (['/tmp/beamo-pass19-python/bin/python3', '-c', 'import tkinter as _t; _t.Tk().destroy()'],)
+_kwargs = {'check': False, 'env': {'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/tmp/dbus-CvLP2T7Wje,guid=e99987d548b01dd910fd2e2f6ad39e9e', 'DISPLAY': ':160', 'HOME': '/root', 'LANG': 'C.UTF-8', ...}, 'shell': False, 'stderr': -3, ...}
+
+    def forbidden(*_args, **_kwargs):
+>       raise AssertionError("Native application effect reached fixture probe")
+E       AssertionError: Native application effect reached fixture probe
+
+/tmp/pass19-primary/fixture_release_probe.py:17: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_tk_runtime.py::test_isolated_x11_physical_space_release_after_report[0]
+FAILED tests/test_tk_runtime.py::test_isolated_x11_physical_space_release_after_report[1]
+FAILED tests/test_tk_runtime.py::test_isolated_x11_physical_space_release_after_report[2]
+FAILED tests/test_tk_runtime.py::test_isolated_x11_physical_space_release_after_report[3]
+FAILED tests/test_tk_runtime.py::test_isolated_x11_physical_space_release_after_report[4]
+FAILED tests/test_tk_runtime.py::test_isolated_x11_physical_return_release_after_start
+FAILED tests/test_bug_audit_tk_gc_20260913.py::test_startup_releases_tcl_before_later_worker_collection[wizard]
+FAILED tests/test_bug_audit_tk_gc_20260913.py::test_startup_releases_tcl_before_later_worker_collection[failed]
+FAILED tests/test_bug_audit_tk_gc_20260913.py::test_startup_releases_tcl_before_later_worker_collection[abandoned]

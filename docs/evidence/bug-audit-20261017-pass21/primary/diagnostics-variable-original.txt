@@ -1,0 +1,677 @@
+FFFFFFFFFFFFFFFFFFFF..........FFFF                                       [100%]
+=================================== FAILURES ===================================
+__________ test_unicode_separator_diagnostic_round_trips[area-\u2028] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_diagnos0')
+field = 'area', separator = '\u2028'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize(
+        "field",
+        ["area", "code", "detail", "device", "logfile", "request_id", "extra_key", "extra_value"],
+    )
+    def test_unicode_separator_diagnostic_round_trips(tmp_path, field, separator):
+        tmp_path.chmod(0o700)
+        value = f"before{separator}after"
+        fields = {"area": "audit", "code": "boundary", "detail": "ordinary"}
+        if field in {"extra_key", "extra_value"}:
+            fields["extra"] = {value: "ordinary"} if field == "extra_key" else {"key": value}
+        else:
+            fields[field] = value
+        assert diagnostics.log_diag(**fields, log_dir=tmp_path) is True
+        raw = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        # The writer returned success and emitted valid JSON; the exact same
+        # committed event must remain available through the supported reader.
+        event = json.loads(raw)
+>       assert diagnostics.read_diagnostics(tmp_path) == [event]
+E       AssertionError: assert [] == [{'area': 'be... 212091, ...}]
+E         
+E         Right contains one more item: {'area': 'before\u2028after', 'code': 'boundary', 'detail': 'ordinary', 'pid': 212091, ...}
+E         Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:36: AssertionError
+__________ test_unicode_separator_diagnostic_round_trips[area-\u2029] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_diagnos1')
+field = 'area', separator = '\u2029'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize(
+        "field",
+        ["area", "code", "detail", "device", "logfile", "request_id", "extra_key", "extra_value"],
+    )
+    def test_unicode_separator_diagnostic_round_trips(tmp_path, field, separator):
+        tmp_path.chmod(0o700)
+        value = f"before{separator}after"
+        fields = {"area": "audit", "code": "boundary", "detail": "ordinary"}
+        if field in {"extra_key", "extra_value"}:
+            fields["extra"] = {value: "ordinary"} if field == "extra_key" else {"key": value}
+        else:
+            fields[field] = value
+        assert diagnostics.log_diag(**fields, log_dir=tmp_path) is True
+        raw = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        # The writer returned success and emitted valid JSON; the exact same
+        # committed event must remain available through the supported reader.
+        event = json.loads(raw)
+>       assert diagnostics.read_diagnostics(tmp_path) == [event]
+E       AssertionError: assert [] == [{'area': 'be... 212091, ...}]
+E         
+E         Right contains one more item: {'area': 'before\u2029after', 'code': 'boundary', 'detail': 'ordinary', 'pid': 212091, ...}
+E         Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:36: AssertionError
+__________ test_unicode_separator_diagnostic_round_trips[code-\u2028] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_diagnos2')
+field = 'code', separator = '\u2028'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize(
+        "field",
+        ["area", "code", "detail", "device", "logfile", "request_id", "extra_key", "extra_value"],
+    )
+    def test_unicode_separator_diagnostic_round_trips(tmp_path, field, separator):
+        tmp_path.chmod(0o700)
+        value = f"before{separator}after"
+        fields = {"area": "audit", "code": "boundary", "detail": "ordinary"}
+        if field in {"extra_key", "extra_value"}:
+            fields["extra"] = {value: "ordinary"} if field == "extra_key" else {"key": value}
+        else:
+            fields[field] = value
+        assert diagnostics.log_diag(**fields, log_dir=tmp_path) is True
+        raw = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        # The writer returned success and emitted valid JSON; the exact same
+        # committed event must remain available through the supported reader.
+        event = json.loads(raw)
+>       assert diagnostics.read_diagnostics(tmp_path) == [event]
+E       AssertionError: assert [] == [{'area': 'au... 212091, ...}]
+E         
+E         Right contains one more item: {'area': 'audit', 'code': 'before\u2028after', 'detail': 'ordinary', 'pid': 212091, ...}
+E         Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:36: AssertionError
+__________ test_unicode_separator_diagnostic_round_trips[code-\u2029] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_diagnos3')
+field = 'code', separator = '\u2029'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize(
+        "field",
+        ["area", "code", "detail", "device", "logfile", "request_id", "extra_key", "extra_value"],
+    )
+    def test_unicode_separator_diagnostic_round_trips(tmp_path, field, separator):
+        tmp_path.chmod(0o700)
+        value = f"before{separator}after"
+        fields = {"area": "audit", "code": "boundary", "detail": "ordinary"}
+        if field in {"extra_key", "extra_value"}:
+            fields["extra"] = {value: "ordinary"} if field == "extra_key" else {"key": value}
+        else:
+            fields[field] = value
+        assert diagnostics.log_diag(**fields, log_dir=tmp_path) is True
+        raw = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        # The writer returned success and emitted valid JSON; the exact same
+        # committed event must remain available through the supported reader.
+        event = json.loads(raw)
+>       assert diagnostics.read_diagnostics(tmp_path) == [event]
+E       AssertionError: assert [] == [{'area': 'au... 212091, ...}]
+E         
+E         Right contains one more item: {'area': 'audit', 'code': 'before\u2029after', 'detail': 'ordinary', 'pid': 212091, ...}
+E         Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:36: AssertionError
+_________ test_unicode_separator_diagnostic_round_trips[detail-\u2028] _________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_diagnos4')
+field = 'detail', separator = '\u2028'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize(
+        "field",
+        ["area", "code", "detail", "device", "logfile", "request_id", "extra_key", "extra_value"],
+    )
+    def test_unicode_separator_diagnostic_round_trips(tmp_path, field, separator):
+        tmp_path.chmod(0o700)
+        value = f"before{separator}after"
+        fields = {"area": "audit", "code": "boundary", "detail": "ordinary"}
+        if field in {"extra_key", "extra_value"}:
+            fields["extra"] = {value: "ordinary"} if field == "extra_key" else {"key": value}
+        else:
+            fields[field] = value
+        assert diagnostics.log_diag(**fields, log_dir=tmp_path) is True
+        raw = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        # The writer returned success and emitted valid JSON; the exact same
+        # committed event must remain available through the supported reader.
+        event = json.loads(raw)
+>       assert diagnostics.read_diagnostics(tmp_path) == [event]
+E       AssertionError: assert [] == [{'area': 'au... 212091, ...}]
+E         
+E         Right contains one more item: {'area': 'audit', 'code': 'boundary', 'detail': 'before\u2028after', 'pid': 212091, ...}
+E         Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:36: AssertionError
+_________ test_unicode_separator_diagnostic_round_trips[detail-\u2029] _________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_diagnos5')
+field = 'detail', separator = '\u2029'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize(
+        "field",
+        ["area", "code", "detail", "device", "logfile", "request_id", "extra_key", "extra_value"],
+    )
+    def test_unicode_separator_diagnostic_round_trips(tmp_path, field, separator):
+        tmp_path.chmod(0o700)
+        value = f"before{separator}after"
+        fields = {"area": "audit", "code": "boundary", "detail": "ordinary"}
+        if field in {"extra_key", "extra_value"}:
+            fields["extra"] = {value: "ordinary"} if field == "extra_key" else {"key": value}
+        else:
+            fields[field] = value
+        assert diagnostics.log_diag(**fields, log_dir=tmp_path) is True
+        raw = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        # The writer returned success and emitted valid JSON; the exact same
+        # committed event must remain available through the supported reader.
+        event = json.loads(raw)
+>       assert diagnostics.read_diagnostics(tmp_path) == [event]
+E       AssertionError: assert [] == [{'area': 'au... 212091, ...}]
+E         
+E         Right contains one more item: {'area': 'audit', 'code': 'boundary', 'detail': 'before\u2029after', 'pid': 212091, ...}
+E         Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:36: AssertionError
+_________ test_unicode_separator_diagnostic_round_trips[device-\u2028] _________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_diagnos6')
+field = 'device', separator = '\u2028'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize(
+        "field",
+        ["area", "code", "detail", "device", "logfile", "request_id", "extra_key", "extra_value"],
+    )
+    def test_unicode_separator_diagnostic_round_trips(tmp_path, field, separator):
+        tmp_path.chmod(0o700)
+        value = f"before{separator}after"
+        fields = {"area": "audit", "code": "boundary", "detail": "ordinary"}
+        if field in {"extra_key", "extra_value"}:
+            fields["extra"] = {value: "ordinary"} if field == "extra_key" else {"key": value}
+        else:
+            fields[field] = value
+        assert diagnostics.log_diag(**fields, log_dir=tmp_path) is True
+        raw = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        # The writer returned success and emitted valid JSON; the exact same
+        # committed event must remain available through the supported reader.
+        event = json.loads(raw)
+>       assert diagnostics.read_diagnostics(tmp_path) == [event]
+E       AssertionError: assert [] == [{'area': 'au...8after', ...}]
+E         
+E         Right contains one more item: {'area': 'audit', 'code': 'boundary', 'detail': 'ordinary', 'device': 'before\u2028after', ...}
+E         Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:36: AssertionError
+_________ test_unicode_separator_diagnostic_round_trips[device-\u2029] _________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_diagnos7')
+field = 'device', separator = '\u2029'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize(
+        "field",
+        ["area", "code", "detail", "device", "logfile", "request_id", "extra_key", "extra_value"],
+    )
+    def test_unicode_separator_diagnostic_round_trips(tmp_path, field, separator):
+        tmp_path.chmod(0o700)
+        value = f"before{separator}after"
+        fields = {"area": "audit", "code": "boundary", "detail": "ordinary"}
+        if field in {"extra_key", "extra_value"}:
+            fields["extra"] = {value: "ordinary"} if field == "extra_key" else {"key": value}
+        else:
+            fields[field] = value
+        assert diagnostics.log_diag(**fields, log_dir=tmp_path) is True
+        raw = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        # The writer returned success and emitted valid JSON; the exact same
+        # committed event must remain available through the supported reader.
+        event = json.loads(raw)
+>       assert diagnostics.read_diagnostics(tmp_path) == [event]
+E       AssertionError: assert [] == [{'area': 'au...9after', ...}]
+E         
+E         Right contains one more item: {'area': 'audit', 'code': 'boundary', 'detail': 'ordinary', 'device': 'before\u2029after', ...}
+E         Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:36: AssertionError
+________ test_unicode_separator_diagnostic_round_trips[logfile-\u2028] _________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_diagnos8')
+field = 'logfile', separator = '\u2028'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize(
+        "field",
+        ["area", "code", "detail", "device", "logfile", "request_id", "extra_key", "extra_value"],
+    )
+    def test_unicode_separator_diagnostic_round_trips(tmp_path, field, separator):
+        tmp_path.chmod(0o700)
+        value = f"before{separator}after"
+        fields = {"area": "audit", "code": "boundary", "detail": "ordinary"}
+        if field in {"extra_key", "extra_value"}:
+            fields["extra"] = {value: "ordinary"} if field == "extra_key" else {"key": value}
+        else:
+            fields[field] = value
+        assert diagnostics.log_diag(**fields, log_dir=tmp_path) is True
+        raw = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        # The writer returned success and emitted valid JSON; the exact same
+        # committed event must remain available through the supported reader.
+        event = json.loads(raw)
+>       assert diagnostics.read_diagnostics(tmp_path) == [event]
+E       AssertionError: assert [] == [{'area': 'au...8after', ...}]
+E         
+E         Right contains one more item: {'area': 'audit', 'code': 'boundary', 'detail': 'ordinary', 'logfile': 'before\u2028after', ...}
+E         Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:36: AssertionError
+________ test_unicode_separator_diagnostic_round_trips[logfile-\u2029] _________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_diagnos9')
+field = 'logfile', separator = '\u2029'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize(
+        "field",
+        ["area", "code", "detail", "device", "logfile", "request_id", "extra_key", "extra_value"],
+    )
+    def test_unicode_separator_diagnostic_round_trips(tmp_path, field, separator):
+        tmp_path.chmod(0o700)
+        value = f"before{separator}after"
+        fields = {"area": "audit", "code": "boundary", "detail": "ordinary"}
+        if field in {"extra_key", "extra_value"}:
+            fields["extra"] = {value: "ordinary"} if field == "extra_key" else {"key": value}
+        else:
+            fields[field] = value
+        assert diagnostics.log_diag(**fields, log_dir=tmp_path) is True
+        raw = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        # The writer returned success and emitted valid JSON; the exact same
+        # committed event must remain available through the supported reader.
+        event = json.loads(raw)
+>       assert diagnostics.read_diagnostics(tmp_path) == [event]
+E       AssertionError: assert [] == [{'area': 'au...9after', ...}]
+E         
+E         Right contains one more item: {'area': 'audit', 'code': 'boundary', 'detail': 'ordinary', 'logfile': 'before\u2029after', ...}
+E         Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:36: AssertionError
+_______ test_unicode_separator_diagnostic_round_trips[request_id-\u2028] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_diagnos10')
+field = 'request_id', separator = '\u2028'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize(
+        "field",
+        ["area", "code", "detail", "device", "logfile", "request_id", "extra_key", "extra_value"],
+    )
+    def test_unicode_separator_diagnostic_round_trips(tmp_path, field, separator):
+        tmp_path.chmod(0o700)
+        value = f"before{separator}after"
+        fields = {"area": "audit", "code": "boundary", "detail": "ordinary"}
+        if field in {"extra_key", "extra_value"}:
+            fields["extra"] = {value: "ordinary"} if field == "extra_key" else {"key": value}
+        else:
+            fields[field] = value
+        assert diagnostics.log_diag(**fields, log_dir=tmp_path) is True
+        raw = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        # The writer returned success and emitted valid JSON; the exact same
+        # committed event must remain available through the supported reader.
+        event = json.loads(raw)
+>       assert diagnostics.read_diagnostics(tmp_path) == [event]
+E       AssertionError: assert [] == [{'area': 'au... 212091, ...}]
+E         
+E         Right contains one more item: {'area': 'audit', 'code': 'boundary', 'detail': 'ordinary', 'pid': 212091, ...}
+E         Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:36: AssertionError
+_______ test_unicode_separator_diagnostic_round_trips[request_id-\u2029] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_diagnos11')
+field = 'request_id', separator = '\u2029'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize(
+        "field",
+        ["area", "code", "detail", "device", "logfile", "request_id", "extra_key", "extra_value"],
+    )
+    def test_unicode_separator_diagnostic_round_trips(tmp_path, field, separator):
+        tmp_path.chmod(0o700)
+        value = f"before{separator}after"
+        fields = {"area": "audit", "code": "boundary", "detail": "ordinary"}
+        if field in {"extra_key", "extra_value"}:
+            fields["extra"] = {value: "ordinary"} if field == "extra_key" else {"key": value}
+        else:
+            fields[field] = value
+        assert diagnostics.log_diag(**fields, log_dir=tmp_path) is True
+        raw = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        # The writer returned success and emitted valid JSON; the exact same
+        # committed event must remain available through the supported reader.
+        event = json.loads(raw)
+>       assert diagnostics.read_diagnostics(tmp_path) == [event]
+E       AssertionError: assert [] == [{'area': 'au... 212091, ...}]
+E         
+E         Right contains one more item: {'area': 'audit', 'code': 'boundary', 'detail': 'ordinary', 'pid': 212091, ...}
+E         Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:36: AssertionError
+_______ test_unicode_separator_diagnostic_round_trips[extra_key-\u2028] ________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_diagnos12')
+field = 'extra_key', separator = '\u2028'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize(
+        "field",
+        ["area", "code", "detail", "device", "logfile", "request_id", "extra_key", "extra_value"],
+    )
+    def test_unicode_separator_diagnostic_round_trips(tmp_path, field, separator):
+        tmp_path.chmod(0o700)
+        value = f"before{separator}after"
+        fields = {"area": "audit", "code": "boundary", "detail": "ordinary"}
+        if field in {"extra_key", "extra_value"}:
+            fields["extra"] = {value: "ordinary"} if field == "extra_key" else {"key": value}
+        else:
+            fields[field] = value
+        assert diagnostics.log_diag(**fields, log_dir=tmp_path) is True
+        raw = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        # The writer returned success and emitted valid JSON; the exact same
+        # committed event must remain available through the supported reader.
+        event = json.loads(raw)
+>       assert diagnostics.read_diagnostics(tmp_path) == [event]
+E       AssertionError: assert [] == [{'area': 'au...inary'}, ...}]
+E         
+E         Right contains one more item: {'area': 'audit', 'code': 'boundary', 'detail': 'ordinary', 'extra': {'before\u2028after': 'ordinary'}, ...}
+E         Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:36: AssertionError
+_______ test_unicode_separator_diagnostic_round_trips[extra_key-\u2029] ________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_diagnos13')
+field = 'extra_key', separator = '\u2029'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize(
+        "field",
+        ["area", "code", "detail", "device", "logfile", "request_id", "extra_key", "extra_value"],
+    )
+    def test_unicode_separator_diagnostic_round_trips(tmp_path, field, separator):
+        tmp_path.chmod(0o700)
+        value = f"before{separator}after"
+        fields = {"area": "audit", "code": "boundary", "detail": "ordinary"}
+        if field in {"extra_key", "extra_value"}:
+            fields["extra"] = {value: "ordinary"} if field == "extra_key" else {"key": value}
+        else:
+            fields[field] = value
+        assert diagnostics.log_diag(**fields, log_dir=tmp_path) is True
+        raw = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        # The writer returned success and emitted valid JSON; the exact same
+        # committed event must remain available through the supported reader.
+        event = json.loads(raw)
+>       assert diagnostics.read_diagnostics(tmp_path) == [event]
+E       AssertionError: assert [] == [{'area': 'au...inary'}, ...}]
+E         
+E         Right contains one more item: {'area': 'audit', 'code': 'boundary', 'detail': 'ordinary', 'extra': {'before\u2029after': 'ordinary'}, ...}
+E         Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:36: AssertionError
+______ test_unicode_separator_diagnostic_round_trips[extra_value-\u2028] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_diagnos14')
+field = 'extra_value', separator = '\u2028'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize(
+        "field",
+        ["area", "code", "detail", "device", "logfile", "request_id", "extra_key", "extra_value"],
+    )
+    def test_unicode_separator_diagnostic_round_trips(tmp_path, field, separator):
+        tmp_path.chmod(0o700)
+        value = f"before{separator}after"
+        fields = {"area": "audit", "code": "boundary", "detail": "ordinary"}
+        if field in {"extra_key", "extra_value"}:
+            fields["extra"] = {value: "ordinary"} if field == "extra_key" else {"key": value}
+        else:
+            fields[field] = value
+        assert diagnostics.log_diag(**fields, log_dir=tmp_path) is True
+        raw = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        # The writer returned success and emitted valid JSON; the exact same
+        # committed event must remain available through the supported reader.
+        event = json.loads(raw)
+>       assert diagnostics.read_diagnostics(tmp_path) == [event]
+E       AssertionError: assert [] == [{'area': 'au...after'}, ...}]
+E         
+E         Right contains one more item: {'area': 'audit', 'code': 'boundary', 'detail': 'ordinary', 'extra': {'key': 'before\u2028after'}, ...}
+E         Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:36: AssertionError
+______ test_unicode_separator_diagnostic_round_trips[extra_value-\u2029] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_diagnos15')
+field = 'extra_value', separator = '\u2029'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize(
+        "field",
+        ["area", "code", "detail", "device", "logfile", "request_id", "extra_key", "extra_value"],
+    )
+    def test_unicode_separator_diagnostic_round_trips(tmp_path, field, separator):
+        tmp_path.chmod(0o700)
+        value = f"before{separator}after"
+        fields = {"area": "audit", "code": "boundary", "detail": "ordinary"}
+        if field in {"extra_key", "extra_value"}:
+            fields["extra"] = {value: "ordinary"} if field == "extra_key" else {"key": value}
+        else:
+            fields[field] = value
+        assert diagnostics.log_diag(**fields, log_dir=tmp_path) is True
+        raw = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        # The writer returned success and emitted valid JSON; the exact same
+        # committed event must remain available through the supported reader.
+        event = json.loads(raw)
+>       assert diagnostics.read_diagnostics(tmp_path) == [event]
+E       AssertionError: assert [] == [{'area': 'au...after'}, ...}]
+E         
+E         Right contains one more item: {'area': 'audit', 'code': 'boundary', 'detail': 'ordinary', 'extra': {'key': 'before\u2029after'}, ...}
+E         Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:36: AssertionError
+_________________ test_unicode_separator_is_flattened[\u2028] __________________
+
+separator = '\u2028'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    def test_unicode_separator_is_flattened(separator):
+        value = f"before{separator}after"
+        sanitized = diagnostics._sanitize_detail(value)
+>       assert sanitized == "before after"
+E       AssertionError: assert 'before\u2028after' == 'before after'
+E         
+E         - before after
+E         + before
+E         
+E         + after
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:43: AssertionError
+_________________ test_unicode_separator_is_flattened[\u2029] __________________
+
+separator = '\u2029'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    def test_unicode_separator_is_flattened(separator):
+        value = f"before{separator}after"
+        sanitized = diagnostics._sanitize_detail(value)
+>       assert sanitized == "before after"
+E       AssertionError: assert 'before\u2029after' == 'before after'
+E         
+E         - before after
+E         + before
+E         
+E         + after
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:43: AssertionError
+________ test_unicode_separator_fallback_is_one_visible_message[\u2028] ________
+
+separator = '\u2028'
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_fallbac0')
+capsys = <_pytest.capture.CaptureFixture object at 0x72c6f6fcd220>
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    def test_unicode_separator_fallback_is_one_visible_message(separator, tmp_path, capsys):
+        value = f"before{separator}after"
+        # A missing explicit private directory takes the write-failed fallback.
+        # It must still be one visible diagnostic message.
+        assert diagnostics.log_diag("audit", "boundary", value, log_dir=tmp_path / "missing") is False
+        stderr = capsys.readouterr().err
+>       assert len(stderr.splitlines()) == 1
+E       AssertionError: assert 2 == 1
+E        +  where 2 = len(['beamo-wipe [audit] boundary (diag_write_failed:FileNotFoundError): before', 'after'])
+E        +    where ['beamo-wipe [audit] boundary (diag_write_failed:FileNotFoundError): before', 'after'] = <built-in method splitlines of str object at 0x72c6f77debf0>()
+E        +      where <built-in method splitlines of str object at 0x72c6f77debf0> = 'beamo-wipe [audit] boundary (diag_write_failed:FileNotFoundError): before\u2028after\n'.splitlines
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:54: AssertionError
+________ test_unicode_separator_fallback_is_one_visible_message[\u2029] ________
+
+separator = '\u2029'
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-78/test_unicode_separator_fallbac1')
+capsys = <_pytest.capture.CaptureFixture object at 0x72c6f6fce2a0>
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    def test_unicode_separator_fallback_is_one_visible_message(separator, tmp_path, capsys):
+        value = f"before{separator}after"
+        # A missing explicit private directory takes the write-failed fallback.
+        # It must still be one visible diagnostic message.
+        assert diagnostics.log_diag("audit", "boundary", value, log_dir=tmp_path / "missing") is False
+        stderr = capsys.readouterr().err
+>       assert len(stderr.splitlines()) == 1
+E       AssertionError: assert 2 == 1
+E        +  where 2 = len(['beamo-wipe [audit] boundary (diag_write_failed:FileNotFoundError): before', 'after'])
+E        +    where ['beamo-wipe [audit] boundary (diag_write_failed:FileNotFoundError): before', 'after'] = <built-in method splitlines of str object at 0x72c6f77dd290>()
+E        +      where <built-in method splitlines of str object at 0x72c6f77dd290> = 'beamo-wipe [audit] boundary (diag_write_failed:FileNotFoundError): before\u2029after\n'.splitlines
+
+docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py:54: AssertionError
+__________ test_native_variables_use_the_owned_root[peer-persistent] ___________
+
+request = <FixtureRequest for <Function test_native_variables_use_the_owned_root[peer-persistent]>>
+case = 'peer-persistent'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_native_variables_use_the_owned_root(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            record = dict(case=case, command=command, provenance=provenance, returncode=result.returncode,
+                          stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            record = dict(case=case, command=command, provenance=provenance, timed_out=True,
+                          stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("variable_root_child", json.dumps(record)))
+        assert not record["timed_out"], record
+>       assert record["returncode"] == 0, record
+E       AssertionError: {'case': 'peer-persistent', 'command': ['/tmp/beamo-pass21-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bu...d46553e29ceaf4cfa781e181e8ea7', 'source': '/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof.py:191: AssertionError
+__________ test_native_variables_use_the_owned_root[peer-comparison] ___________
+
+request = <FixtureRequest for <Function test_native_variables_use_the_owned_root[peer-comparison]>>
+case = 'peer-comparison'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_native_variables_use_the_owned_root(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            record = dict(case=case, command=command, provenance=provenance, returncode=result.returncode,
+                          stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            record = dict(case=case, command=command, provenance=provenance, timed_out=True,
+                          stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("variable_root_child", json.dumps(record)))
+        assert not record["timed_out"], record
+>       assert record["returncode"] == 0, record
+E       AssertionError: {'case': 'peer-comparison', 'command': ['/tmp/beamo-pass21-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bu...d46553e29ceaf4cfa781e181e8ea7', 'source': '/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof.py:191: AssertionError
+_______ test_native_variables_use_the_owned_root[no-default-persistent] ________
+
+request = <FixtureRequest for <Function test_native_variables_use_the_owned_root[no-default-persistent]>>
+case = 'no-default-persistent'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_native_variables_use_the_owned_root(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            record = dict(case=case, command=command, provenance=provenance, returncode=result.returncode,
+                          stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            record = dict(case=case, command=command, provenance=provenance, timed_out=True,
+                          stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("variable_root_child", json.dumps(record)))
+        assert not record["timed_out"], record
+>       assert record["returncode"] == 0, record
+E       AssertionError: {'case': 'no-default-persistent', 'command': ['/tmp/beamo-pass21-python/bin/python3', '/root/dev/Beamo Wipe/docs/evide...d46553e29ceaf4cfa781e181e8ea7', 'source': '/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof.py:191: AssertionError
+_______ test_native_variables_use_the_owned_root[no-default-comparison] ________
+
+request = <FixtureRequest for <Function test_native_variables_use_the_owned_root[no-default-comparison]>>
+case = 'no-default-comparison'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_native_variables_use_the_owned_root(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            record = dict(case=case, command=command, provenance=provenance, returncode=result.returncode,
+                          stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            record = dict(case=case, command=command, provenance=provenance, timed_out=True,
+                          stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("variable_root_child", json.dumps(record)))
+        assert not record["timed_out"], record
+>       assert record["returncode"] == 0, record
+E       AssertionError: {'case': 'no-default-comparison', 'command': ['/tmp/beamo-pass21-python/bin/python3', '/root/dev/Beamo Wipe/docs/evide...d46553e29ceaf4cfa781e181e8ea7', 'source': '/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof.py:191: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_diagnostic_round_trips[area-\u2028]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_diagnostic_round_trips[area-\u2029]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_diagnostic_round_trips[code-\u2028]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_diagnostic_round_trips[code-\u2029]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_diagnostic_round_trips[detail-\u2028]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_diagnostic_round_trips[detail-\u2029]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_diagnostic_round_trips[device-\u2028]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_diagnostic_round_trips[device-\u2029]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_diagnostic_round_trips[logfile-\u2028]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_diagnostic_round_trips[logfile-\u2029]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_diagnostic_round_trips[request_id-\u2028]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_diagnostic_round_trips[request_id-\u2029]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_diagnostic_round_trips[extra_key-\u2028]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_diagnostic_round_trips[extra_key-\u2029]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_diagnostic_round_trips[extra_value-\u2028]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_diagnostic_round_trips[extra_value-\u2029]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_is_flattened[\u2028]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_is_flattened[\u2029]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_fallback_is_one_visible_message[\u2028]
+FAILED docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py::test_unicode_separator_fallback_is_one_visible_message[\u2029]
+FAILED docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof.py::test_native_variables_use_the_owned_root[peer-persistent]
+FAILED docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof.py::test_native_variables_use_the_owned_root[peer-comparison]
+FAILED docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof.py::test_native_variables_use_the_owned_root[no-default-persistent]
+FAILED docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof.py::test_native_variables_use_the_owned_root[no-default-comparison]

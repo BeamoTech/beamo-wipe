@@ -1,0 +1,9 @@
+{
+  "cases": 1235,
+  "counts": {
+    "fail": 496,
+    "pass": 739
+  },
+  "deselected_helper_cases": 12,
+  "notes": "Final high-level regression bytes including comment-only fixture annotations replayed on exact private starting source.0errors/skips. Source never restored in shared checkout. Earlier preannotation proof retained."
+}

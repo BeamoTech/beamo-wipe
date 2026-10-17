@@ -176,8 +176,16 @@ class StartupRun:
             self.stages.begin(stage)
         return self.stages.snapshot()
 
-    def stalled_note(self) -> str | None:
-        if self.stages.stalled():
+    def stalled_note(self, *, persistent: bool = False) -> str | None:
+        """One announcement, or current stall text for graphical refreshes."""
+        first_notice = self.stages.stalled()
+        still_stalled = (
+            persistent
+            and self.stages._stalled_reported
+            and not self.stages.done
+            and not self.stages.failed
+        )
+        if first_notice or still_stalled:
             return C.STARTUP_STILL_WORKING
         return None
 

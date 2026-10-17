@@ -1,0 +1,26 @@
+{
+  "frozen_input_files": 744,
+  "changed_after_freeze": [],
+  "runtime_source_sha256": "e7efbba20755ff7496533504259adb4ef63eb8fafc43b52fa6fabe148cf1297d",
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "branch": "fix/safety-audit-20261015",
+  "source_diff_sha256": "efd6dcdc0280453fda89748a64575c6c354bfd92f895dfa0040df52352eace0a",
+  "pass13_source_diff_sha256": "ccc97592bed3aea2ccd466fc8137c2a3da527e4e0c20d975feba70de6a693c08",
+  "new_untracked_test_modules": [
+    "tests/test_accessible_focus_input_pass11.py",
+    "tests/test_accessible_fullscreen_geometry_pass11.py",
+    "tests/test_accessible_sound_modal_pass10.py",
+    "tests/test_console_inventory_diagnostic_pass10.py",
+    "tests/test_contents_efi_token_pass13.py",
+    "tests/test_diagnostic_malformed_bounds_pass8.py",
+    "tests/test_runner_prefixed_error_context_pass12.py",
+    "tests/test_runner_projection_progress_order_pass8.py",
+    "tests/test_runner_projection_record_endings_pass10.py",
+    "tests/test_runner_projection_summary_context_pass11.py",
+    "tests/test_sound_dialog_state_pass12.py",
+    "tests/test_sound_output_selection_pass10.py",
+    "tests/test_startup_notice_state_pass12.py",
+    "tests/test_tk_input_scroll_pass13.py",
+    "tests/test_tk_startup_focus_geometry_pass12.py"
+  ]
+}

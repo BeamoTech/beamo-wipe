@@ -1,0 +1,65 @@
+{
+  "cases": [
+    {
+      "case": "fresh",
+      "outcome": "permitted-intercepted-local-exec",
+      "intercepted_execs": 1
+    },
+    {
+      "case": "no-config",
+      "outcome": "rejected",
+      "intercepted_execs": 0
+    },
+    {
+      "case": "outside",
+      "outcome": "rejected",
+      "intercepted_execs": 0
+    },
+    {
+      "case": "dotdot",
+      "outcome": "rejected",
+      "intercepted_execs": 0
+    },
+    {
+      "case": "upload-link",
+      "outcome": "rejected",
+      "intercepted_execs": 0
+    },
+    {
+      "case": "config-link",
+      "outcome": "rejected",
+      "intercepted_execs": 0
+    },
+    {
+      "case": "existing-config",
+      "outcome": "rejected",
+      "intercepted_execs": 0
+    },
+    {
+      "case": "public-parent",
+      "outcome": "rejected",
+      "intercepted_execs": 0
+    },
+    {
+      "case": "remote-build",
+      "outcome": "rejected",
+      "intercepted_execs": 0
+    },
+    {
+      "case": "auth",
+      "outcome": "rejected",
+      "intercepted_execs": 0
+    },
+    {
+      "case": "extra-arg",
+      "outcome": "rejected",
+      "intercepted_execs": 0
+    },
+    {
+      "case": "wrong-meta",
+      "outcome": "rejected",
+      "intercepted_execs": 0
+    }
+  ],
+  "actual_cli_execs": 0
+}

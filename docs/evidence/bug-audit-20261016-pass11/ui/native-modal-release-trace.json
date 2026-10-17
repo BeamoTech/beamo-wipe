@@ -1,0 +1,83 @@
+{
+  "display": ":100",
+  "events": [
+    {
+      "target": "modal",
+      "key": 65293,
+      "time": 85406754
+    }
+  ],
+  "snapshots": [
+    {
+      "phase": "parent-ready",
+      "held": [],
+      "release_times": {},
+      "modal_open": false,
+      "screen": "OWNER"
+    },
+    {
+      "phase": "return-pressed-opened-dialog",
+      "held": [
+        65293
+      ],
+      "release_times": {},
+      "modal_open": true,
+      "screen": "OWNER"
+    },
+    {
+      "phase": "release-routed-to-modal",
+      "held": [
+        65293
+      ],
+      "release_times": {},
+      "modal_open": true,
+      "screen": "OWNER"
+    },
+    {
+      "phase": "modal-closed",
+      "held": [
+        65293
+      ],
+      "release_times": {},
+      "modal_open": false,
+      "screen": "OWNER"
+    },
+    {
+      "phase": "next-fresh-return-pressed",
+      "held": [
+        65293
+      ],
+      "release_times": {},
+      "modal_open": false,
+      "screen": "OWNER"
+    },
+    {
+      "phase": "next-fresh-return-released",
+      "held": [],
+      "release_times": {
+        "65293": 85407161
+      },
+      "modal_open": false,
+      "screen": "OWNER"
+    },
+    {
+      "phase": "third-return-pressed-control",
+      "held": [
+        65293
+      ],
+      "release_times": {},
+      "modal_open": false,
+      "screen": "OWNER"
+    },
+    {
+      "phase": "third-return-released-control",
+      "held": [],
+      "release_times": {
+        "65293": 85407464
+      },
+      "modal_open": true,
+      "screen": "OWNER"
+    }
+  ],
+  "owned_teardown": true
+}

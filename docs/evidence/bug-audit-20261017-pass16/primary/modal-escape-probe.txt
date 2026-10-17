@@ -1,0 +1,253 @@
+dbus-daemon[18445]: [session uid=0 pid=18445] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=18459 comm="/root/dev/Beamo Wipe/.venv-linux/bin/python3 /tmp/" label="unconfined")
+dbus-daemon[18445]: [session uid=0 pid=18445] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[18468]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=18459 comm="/root/dev/Beamo Wipe/.venv-linux/bin/python3 /tmp/" label="unconfined")
+dbus-daemon[18468]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{
+  "hashes": {
+    "src/beamo_wipe/ui/accessible_wizard.py": "bb96f185dd93c55066706379b59c7c4221e1f69d6121a0d4e7e99065d033ce38",
+    "src/beamo_wipe/ui/sound_dialog.py": "9165731d320e6f19de3e6632a7b0c43a4c688a72dbd6558b39ba46c0052aed9e",
+    "src/beamo_wipe/wizard.py": "be375a0861ec569a652e15f9f572bfa689f40048d736c5bedef641453d464bbb",
+    "src/beamo_wipe/ui/tk_wizard.py": "06cfd5488624c78c98d2b2cabf33256ae81403587065d8a72814ef77f8eb13bd",
+    "src/beamo_wipe/ui/console_wizard.py": "794525a0185cd652d977b84cd1cd318c07c90dcf8dcaad20c730260ef4f1cc1c"
+  },
+  "rows": [
+    {
+      "screen": "OWNER",
+      "mode": "hold-repeat",
+      "first": {
+        "screen": "OWNER",
+        "modal_closed": true,
+        "stop": false,
+        "held": []
+      },
+      "second": {
+        "screen": "KEYBOARD",
+        "stop": false,
+        "held": [
+          65307
+        ]
+      },
+      "trace": [
+        {
+          "target": "modal-press",
+          "kind": "key-press",
+          "key": 65307,
+          "time": 2657428
+        },
+        {
+          "target": "parent-release",
+          "kind": "key-release",
+          "key": 65307,
+          "time": 2658353
+        }
+      ],
+      "authorization_unchanged": true,
+      "engine_started": false,
+      "engine_cancelled": false,
+      "wants_shutdown": false,
+      "wants_new_session": false
+    },
+    {
+      "screen": "OWNER",
+      "mode": "fresh-press",
+      "first": {
+        "screen": "OWNER",
+        "modal_closed": true,
+        "stop": false,
+        "held": []
+      },
+      "second": {
+        "screen": "KEYBOARD",
+        "stop": false,
+        "held": [
+          65307
+        ]
+      },
+      "trace": [
+        {
+          "target": "modal-press",
+          "kind": "key-press",
+          "key": 65307,
+          "time": 2658764
+        },
+        {
+          "target": "parent-release",
+          "kind": "key-release",
+          "key": 65307,
+          "time": 2658836
+        },
+        {
+          "target": "parent-release",
+          "kind": "key-release",
+          "key": 65307,
+          "time": 2658981
+        }
+      ],
+      "authorization_unchanged": true,
+      "engine_started": false,
+      "engine_cancelled": false,
+      "wants_shutdown": false,
+      "wants_new_session": false
+    },
+    {
+      "screen": "METHOD",
+      "mode": "hold-repeat",
+      "first": {
+        "screen": "METHOD",
+        "modal_closed": true,
+        "stop": false,
+        "held": []
+      },
+      "second": {
+        "screen": "CONFIRM",
+        "stop": false,
+        "held": [
+          65307
+        ]
+      },
+      "trace": [
+        {
+          "target": "modal-press",
+          "kind": "key-press",
+          "key": 65307,
+          "time": 2659369
+        },
+        {
+          "target": "parent-release",
+          "kind": "key-release",
+          "key": 65307,
+          "time": 2660292
+        }
+      ],
+      "authorization_unchanged": true,
+      "engine_started": false,
+      "engine_cancelled": false,
+      "wants_shutdown": false,
+      "wants_new_session": false
+    },
+    {
+      "screen": "METHOD",
+      "mode": "fresh-press",
+      "first": {
+        "screen": "METHOD",
+        "modal_closed": true,
+        "stop": false,
+        "held": []
+      },
+      "second": {
+        "screen": "CONFIRM",
+        "stop": false,
+        "held": [
+          65307
+        ]
+      },
+      "trace": [
+        {
+          "target": "modal-press",
+          "kind": "key-press",
+          "key": 65307,
+          "time": 2660673
+        },
+        {
+          "target": "parent-release",
+          "kind": "key-release",
+          "key": 65307,
+          "time": 2660743
+        },
+        {
+          "target": "parent-release",
+          "kind": "key-release",
+          "key": 65307,
+          "time": 2660886
+        }
+      ],
+      "authorization_unchanged": true,
+      "engine_started": false,
+      "engine_cancelled": false,
+      "wants_shutdown": false,
+      "wants_new_session": false
+    },
+    {
+      "screen": "LAST_CHANCE",
+      "mode": "hold-repeat",
+      "first": {
+        "screen": "LAST_CHANCE",
+        "modal_closed": true,
+        "stop": false,
+        "held": []
+      },
+      "second": {
+        "screen": "METHOD",
+        "stop": false,
+        "held": [
+          65307
+        ]
+      },
+      "trace": [
+        {
+          "target": "modal-press",
+          "kind": "key-press",
+          "key": 65307,
+          "time": 2661270
+        },
+        {
+          "target": "parent-release",
+          "kind": "key-release",
+          "key": 65307,
+          "time": 2662191
+        }
+      ],
+      "authorization_unchanged": true,
+      "engine_started": false,
+      "engine_cancelled": false,
+      "wants_shutdown": false,
+      "wants_new_session": false
+    },
+    {
+      "screen": "LAST_CHANCE",
+      "mode": "fresh-press",
+      "first": {
+        "screen": "LAST_CHANCE",
+        "modal_closed": true,
+        "stop": false,
+        "held": []
+      },
+      "second": {
+        "screen": "METHOD",
+        "stop": false,
+        "held": [
+          65307
+        ]
+      },
+      "trace": [
+        {
+          "target": "modal-press",
+          "kind": "key-press",
+          "key": 65307,
+          "time": 2662583
+        },
+        {
+          "target": "parent-release",
+          "kind": "key-release",
+          "key": 65307,
+          "time": 2662657
+        },
+        {
+          "target": "parent-release",
+          "kind": "key-release",
+          "key": 65307,
+          "time": 2662805
+        }
+      ],
+      "authorization_unchanged": true,
+      "engine_started": false,
+      "engine_cancelled": false,
+      "wants_shutdown": false,
+      "wants_new_session": false
+    }
+  ],
+  "effects": [],
+  "callback_errors": [],
+  "private_display": ":180"
+}

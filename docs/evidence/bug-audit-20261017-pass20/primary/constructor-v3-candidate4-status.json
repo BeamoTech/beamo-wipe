@@ -1,0 +1,23 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass20-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "-o",
+    "pythonpath=/tmp/pass20-primary/private-graph/src",
+    "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v3.py",
+    "--junitxml=/tmp/pass20-primary/constructor-v3-candidate4.xml"
+  ],
+  "exit_code": 1,
+  "started_utc": "2026-10-17T18:43:08.017753+00:00",
+  "ended_utc": "2026-10-17T18:43:14.905423+00:00"
+}

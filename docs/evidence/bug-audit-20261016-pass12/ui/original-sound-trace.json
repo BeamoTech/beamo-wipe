@@ -1,0 +1,236 @@
+{
+  "display": ":120",
+  "results": [
+    {
+      "kind": "geometry",
+      "working": false,
+      "outputs": 1,
+      "monitor": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "dialog_size": [
+        560,
+        506
+      ],
+      "buttons": {
+        "Close": [
+          579,
+          516,
+          85,
+          34
+        ]
+      },
+      "buttons_within_monitor": true
+    },
+    {
+      "kind": "geometry",
+      "working": false,
+      "outputs": 2,
+      "monitor": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "dialog_size": [
+        560,
+        536
+      ],
+      "buttons": {
+        "Close": [
+          579,
+          546,
+          85,
+          34
+        ]
+      },
+      "buttons_within_monitor": true
+    },
+    {
+      "kind": "geometry",
+      "working": false,
+      "outputs": 8,
+      "monitor": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "dialog_size": [
+        560,
+        716
+      ],
+      "buttons": {
+        "Close": [
+          579,
+          726,
+          85,
+          34
+        ]
+      },
+      "buttons_within_monitor": false
+    },
+    {
+      "kind": "geometry",
+      "working": false,
+      "outputs": 16,
+      "monitor": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "dialog_size": [
+        560,
+        956
+      ],
+      "buttons": {
+        "Close": [
+          579,
+          966,
+          85,
+          34
+        ]
+      },
+      "buttons_within_monitor": false
+    },
+    {
+      "kind": "geometry",
+      "working": true,
+      "outputs": 1,
+      "monitor": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "dialog_size": [
+        560,
+        554
+      ],
+      "buttons": {
+        "Stop erase": [
+          136,
+          411,
+          528,
+          34
+        ],
+        "Close": [
+          579,
+          540,
+          85,
+          34
+        ]
+      },
+      "buttons_within_monitor": true
+    },
+    {
+      "kind": "geometry",
+      "working": true,
+      "outputs": 2,
+      "monitor": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "dialog_size": [
+        560,
+        584
+      ],
+      "buttons": {
+        "Stop erase": [
+          136,
+          441,
+          528,
+          34
+        ],
+        "Close": [
+          579,
+          570,
+          85,
+          34
+        ]
+      },
+      "buttons_within_monitor": false
+    },
+    {
+      "kind": "geometry",
+      "working": true,
+      "outputs": 8,
+      "monitor": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "dialog_size": [
+        560,
+        764
+      ],
+      "buttons": {
+        "Stop erase": [
+          136,
+          621,
+          528,
+          34
+        ],
+        "Close": [
+          579,
+          750,
+          85,
+          34
+        ]
+      },
+      "buttons_within_monitor": false
+    },
+    {
+      "kind": "geometry",
+      "working": true,
+      "outputs": 16,
+      "monitor": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "dialog_size": [
+        560,
+        1004
+      ],
+      "buttons": {
+        "Stop erase": [
+          136,
+          861,
+          528,
+          34
+        ],
+        "Close": [
+          579,
+          990,
+          85,
+          34
+        ]
+      },
+      "buttons_within_monitor": false
+    },
+    {
+      "kind": "remembered-restore-refusal",
+      "default_sink": "speakers",
+      "chosen_sink": "headphones",
+      "radios": [
+        false,
+        true
+      ],
+      "calls_after_same_choice_retry": [
+        "headphones"
+      ],
+      "status": "Controlled remembered restore refused",
+      "stored_preference": "headphones"
+    }
+  ],
+  "owned_teardown": true
+}

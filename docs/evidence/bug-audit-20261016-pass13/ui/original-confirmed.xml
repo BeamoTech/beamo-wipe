@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="9" time="2.714" timestamp="2026-10-16T20:52:00.905597+00:00" hostname="srv1606478"><testcase classname="test_main_focus" name="test_main_first_native_escape[inside-False]" time="0.404" /><testcase classname="test_main_focus" name="test_main_first_native_escape[inside-True]" time="0.375" /><testcase classname="test_main_focus" name="test_main_first_native_escape[outside-False]" time="0.437"><failure message="AssertionError: {'after': 'SPLASH', 'after_focus': 'None', 'before': 'SPLASH', 'focus': 'None', ...}&#10;assert &lt;Screen.SPLASH: 'splash'&gt; is &lt;Screen.KEYBOARD: 'keyboard'&gt;&#10; +  where &lt;Screen.SPLASH: 'splash'&gt; = &lt;beamo_wipe.wizard.Wizard object at 0x7e490b9aa1e0&gt;.screen&#10; +  and   &lt;Screen.KEYBOARD: 'keyboard'&gt; = Screen.KEYBOARD">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+fullscreen = False, pointer = 'outside'
+
+    @pytest.mark.parametrize('fullscreen', [False, True])
+    @pytest.mark.parametrize('pointer', ['inside', 'outside'])
+    def test_main_first_native_escape(native, fullscreen, pointer):
+        native.root_focus()
+        native.pointer(1599, 999)
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        def send():
+            x,y,w,h = app.root.winfo_rootx(), app.root.winfo_rooty(), app.root.winfo_width(), app.root.winfo_height()
+            native.pointer(x + 20, y + 20) if pointer == 'inside' else native.pointer(1599,999)
+            seen.update(geometry=[x,y,w,h], focus=str(app.root.focus_get()), before=wizard.screen.name)
+            native.key(Gdk.KEY_Escape, True)
+            native.key(Gdk.KEY_Escape, False)
+        def inspect():
+            seen.update(after=wizard.screen.name, after_focus=str(app.root.focus_get()))
+            app._teardown()
+        app.root.after(120, send)
+        app.root.after(320, inspect)
+        app.run()
+        print(json.dumps(dict(seen,fullscreen=fullscreen,pointer=pointer)))
+&gt;       assert wizard.screen is Screen.KEYBOARD, seen
+E       AssertionError: {'after': 'SPLASH', 'after_focus': 'None', 'before': 'SPLASH', 'focus': 'None', ...}
+E       assert &lt;Screen.SPLASH: 'splash'&gt; is &lt;Screen.KEYBOARD: 'keyboard'&gt;
+E        +  where &lt;Screen.SPLASH: 'splash'&gt; = &lt;beamo_wipe.wizard.Wizard object at 0x7e490b9aa1e0&gt;.screen
+E        +  and   &lt;Screen.KEYBOARD: 'keyboard'&gt; = Screen.KEYBOARD
+
+/tmp/pass13-ui/test_main_focus.py:40: AssertionError</failure></testcase><testcase classname="test_main_focus" name="test_main_first_native_escape[outside-True]" time="0.399" /><testcase classname="test_body_wheel" name="test_body_scroll_over_visible_prose[&lt;Button-5&gt;-label]" time="0.171"><failure message="AssertionError: {'after': (0.0, 0.640194489465154), 'before': (0.0, 0.640194489465154), 'sequence': '&lt;Button-5&gt;', 'target': '.!frame3.!frame2.!canvas.!frame.!frame.!label', ...}&#10;assert 0.0 &gt; 0.0">sequence = '&lt;Button-5&gt;', target_kind = 'label'
+
+    @pytest.mark.parametrize(('sequence','target_kind'), [('&lt;Button-5&gt;','label'),('&lt;MouseWheel&gt;','label'),('native-wheel','label'),('&lt;Button-5&gt;','canvas'),('&lt;MouseWheel&gt;','canvas')])
+    def test_body_scroll_over_visible_prose(sequence, target_kind):
+        wizard = make_demo_wizard()
+        wizard.skip_intro()
+        app = TkWizard(wizard)
+        app.root.geometry('800x600+0+0')
+        def descendants(widget):
+            for child in widget.winfo_children():
+                yield child
+                yield from descendants(child)
+        try:
+            app.root.update()
+            canvas = app._body_canvas
+            assert canvas is not None
+            assert canvas.yview()[1] &lt; 1
+            labels = [w for w in descendants(app._body_inner) if isinstance(w,tk.Label) and w.winfo_ismapped() and w.winfo_rooty() &gt;= canvas.winfo_rooty() and w.winfo_rooty() + 12 &lt; canvas.winfo_rooty()+canvas.winfo_height()]
+            assert labels
+            target = labels[0] if target_kind == 'label' else canvas
+            before = canvas.yview()
+            if sequence == 'native-wheel':
+                x11 = ctypes.CDLL('libX11.so.6')
+                xtst = ctypes.CDLL('libXtst.so.6')
+                x11.XOpenDisplay.argtypes = [ctypes.c_char_p]
+                x11.XOpenDisplay.restype = ctypes.c_void_p
+                x11.XCloseDisplay.argtypes = [ctypes.c_void_p]
+                x11.XSync.argtypes = [ctypes.c_void_p,ctypes.c_int]
+                xtst.XTestFakeMotionEvent.argtypes = [ctypes.c_void_p,ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_ulong]
+                xtst.XTestFakeButtonEvent.argtypes = [ctypes.c_void_p,ctypes.c_uint,ctypes.c_int,ctypes.c_ulong]
+                d = x11.XOpenDisplay(os.environ['DISPLAY'].encode())
+                assert d
+                try:
+                    if target_kind == 'canvas':
+                        # The narrow scrollbar-free canvas gutter is uncovered.
+                        point = (canvas.winfo_rootx()+canvas.winfo_width()-1,canvas.winfo_rooty()+10)
+                    else:
+                        point = (target.winfo_rootx()+10,target.winfo_rooty()+10)
+                    xtst.XTestFakeMotionEvent(d,-1,*point,0)
+                    x11.XSync(d,False)
+                    actual = app.root.winfo_containing(*point)
+                    assert actual is target, (str(actual),str(target),point)
+                    assert xtst.XTestFakeButtonEvent(d,5,1,0)
+                    assert xtst.XTestFakeButtonEvent(d,5,0,0)
+                    x11.XSync(d,False)
+                finally:
+                    x11.XCloseDisplay(d)
+            else:
+                target.event_generate(sequence, **({'delta': -120} if sequence == '&lt;MouseWheel&gt;' else {}))
+            app.root.update()
+            after = canvas.yview()
+            canvas.event_generate('&lt;Button-5&gt;')
+            app.root.update()
+            control = canvas.yview()
+            assert control[0] &gt; before[0]
+            print(json.dumps({'sequence':sequence,'target_kind':target_kind,'target':str(target),'before':before,'after':after}))
+&gt;           assert after[0] &gt; before[0], {'target':str(target),'text':target.cget('text') if target_kind == 'label' else '', 'sequence':sequence,'before':before,'after':after}
+E           AssertionError: {'after': (0.0, 0.640194489465154), 'before': (0.0, 0.640194489465154), 'sequence': '&lt;Button-5&gt;', 'target': '.!frame3.!frame2.!canvas.!frame.!frame.!label', ...}
+E           assert 0.0 &gt; 0.0
+
+/tmp/pass13-ui/test_body_wheel.py:66: AssertionError</failure></testcase><testcase classname="test_body_wheel" name="test_body_scroll_over_visible_prose[&lt;MouseWheel&gt;-label]" time="0.146"><failure message="AssertionError: {'after': (0.0, 0.640194489465154), 'before': (0.0, 0.640194489465154), 'sequence': '&lt;MouseWheel&gt;', 'target': '.!frame3.!frame2.!canvas.!frame.!frame.!label', ...}&#10;assert 0.0 &gt; 0.0">sequence = '&lt;MouseWheel&gt;', target_kind = 'label'
+
+    @pytest.mark.parametrize(('sequence','target_kind'), [('&lt;Button-5&gt;','label'),('&lt;MouseWheel&gt;','label'),('native-wheel','label'),('&lt;Button-5&gt;','canvas'),('&lt;MouseWheel&gt;','canvas')])
+    def test_body_scroll_over_visible_prose(sequence, target_kind):
+        wizard = make_demo_wizard()
+        wizard.skip_intro()
+        app = TkWizard(wizard)
+        app.root.geometry('800x600+0+0')
+        def descendants(widget):
+            for child in widget.winfo_children():
+                yield child
+                yield from descendants(child)
+        try:
+            app.root.update()
+            canvas = app._body_canvas
+            assert canvas is not None
+            assert canvas.yview()[1] &lt; 1
+            labels = [w for w in descendants(app._body_inner) if isinstance(w,tk.Label) and w.winfo_ismapped() and w.winfo_rooty() &gt;= canvas.winfo_rooty() and w.winfo_rooty() + 12 &lt; canvas.winfo_rooty()+canvas.winfo_height()]
+            assert labels
+            target = labels[0] if target_kind == 'label' else canvas
+            before = canvas.yview()
+            if sequence == 'native-wheel':
+                x11 = ctypes.CDLL('libX11.so.6')
+                xtst = ctypes.CDLL('libXtst.so.6')
+                x11.XOpenDisplay.argtypes = [ctypes.c_char_p]
+                x11.XOpenDisplay.restype = ctypes.c_void_p
+                x11.XCloseDisplay.argtypes = [ctypes.c_void_p]
+                x11.XSync.argtypes = [ctypes.c_void_p,ctypes.c_int]
+                xtst.XTestFakeMotionEvent.argtypes = [ctypes.c_void_p,ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_ulong]
+                xtst.XTestFakeButtonEvent.argtypes = [ctypes.c_void_p,ctypes.c_uint,ctypes.c_int,ctypes.c_ulong]
+                d = x11.XOpenDisplay(os.environ['DISPLAY'].encode())
+                assert d
+                try:
+                    if target_kind == 'canvas':
+                        # The narrow scrollbar-free canvas gutter is uncovered.
+                        point = (canvas.winfo_rootx()+canvas.winfo_width()-1,canvas.winfo_rooty()+10)
+                    else:
+                        point = (target.winfo_rootx()+10,target.winfo_rooty()+10)
+                    xtst.XTestFakeMotionEvent(d,-1,*point,0)
+                    x11.XSync(d,False)
+                    actual = app.root.winfo_containing(*point)
+                    assert actual is target, (str(actual),str(target),point)
+                    assert xtst.XTestFakeButtonEvent(d,5,1,0)
+                    assert xtst.XTestFakeButtonEvent(d,5,0,0)
+                    x11.XSync(d,False)
+                finally:
+                    x11.XCloseDisplay(d)
+            else:
+                target.event_generate(sequence, **({'delta': -120} if sequence == '&lt;MouseWheel&gt;' else {}))
+            app.root.update()
+            after = canvas.yview()
+            canvas.event_generate('&lt;Button-5&gt;')
+            app.root.update()
+            control = canvas.yview()
+            assert control[0] &gt; before[0]
+            print(json.dumps({'sequence':sequence,'target_kind':target_kind,'target':str(target),'before':before,'after':after}))
+&gt;           assert after[0] &gt; before[0], {'target':str(target),'text':target.cget('text') if target_kind == 'label' else '', 'sequence':sequence,'before':before,'after':after}
+E           AssertionError: {'after': (0.0, 0.640194489465154), 'before': (0.0, 0.640194489465154), 'sequence': '&lt;MouseWheel&gt;', 'target': '.!frame3.!frame2.!canvas.!frame.!frame.!label', ...}
+E           assert 0.0 &gt; 0.0
+
+/tmp/pass13-ui/test_body_wheel.py:66: AssertionError</failure></testcase><testcase classname="test_body_wheel" name="test_body_scroll_over_visible_prose[native-wheel-label]" time="0.153"><failure message="AssertionError: {'after': (0.0, 0.640194489465154), 'before': (0.0, 0.640194489465154), 'sequence': 'native-wheel', 'target': '.!frame3.!frame2.!canvas.!frame.!frame.!label', ...}&#10;assert 0.0 &gt; 0.0">sequence = 'native-wheel', target_kind = 'label'
+
+    @pytest.mark.parametrize(('sequence','target_kind'), [('&lt;Button-5&gt;','label'),('&lt;MouseWheel&gt;','label'),('native-wheel','label'),('&lt;Button-5&gt;','canvas'),('&lt;MouseWheel&gt;','canvas')])
+    def test_body_scroll_over_visible_prose(sequence, target_kind):
+        wizard = make_demo_wizard()
+        wizard.skip_intro()
+        app = TkWizard(wizard)
+        app.root.geometry('800x600+0+0')
+        def descendants(widget):
+            for child in widget.winfo_children():
+                yield child
+                yield from descendants(child)
+        try:
+            app.root.update()
+            canvas = app._body_canvas
+            assert canvas is not None
+            assert canvas.yview()[1] &lt; 1
+            labels = [w for w in descendants(app._body_inner) if isinstance(w,tk.Label) and w.winfo_ismapped() and w.winfo_rooty() &gt;= canvas.winfo_rooty() and w.winfo_rooty() + 12 &lt; canvas.winfo_rooty()+canvas.winfo_height()]
+            assert labels
+            target = labels[0] if target_kind == 'label' else canvas
+            before = canvas.yview()
+            if sequence == 'native-wheel':
+                x11 = ctypes.CDLL('libX11.so.6')
+                xtst = ctypes.CDLL('libXtst.so.6')
+                x11.XOpenDisplay.argtypes = [ctypes.c_char_p]
+                x11.XOpenDisplay.restype = ctypes.c_void_p
+                x11.XCloseDisplay.argtypes = [ctypes.c_void_p]
+                x11.XSync.argtypes = [ctypes.c_void_p,ctypes.c_int]
+                xtst.XTestFakeMotionEvent.argtypes = [ctypes.c_void_p,ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_ulong]
+                xtst.XTestFakeButtonEvent.argtypes = [ctypes.c_void_p,ctypes.c_uint,ctypes.c_int,ctypes.c_ulong]
+                d = x11.XOpenDisplay(os.environ['DISPLAY'].encode())
+                assert d
+                try:
+                    if target_kind == 'canvas':
+                        # The narrow scrollbar-free canvas gutter is uncovered.
+                        point = (canvas.winfo_rootx()+canvas.winfo_width()-1,canvas.winfo_rooty()+10)
+                    else:
+                        point = (target.winfo_rootx()+10,target.winfo_rooty()+10)
+                    xtst.XTestFakeMotionEvent(d,-1,*point,0)
+                    x11.XSync(d,False)
+                    actual = app.root.winfo_containing(*point)
+                    assert actual is target, (str(actual),str(target),point)
+                    assert xtst.XTestFakeButtonEvent(d,5,1,0)
+                    assert xtst.XTestFakeButtonEvent(d,5,0,0)
+                    x11.XSync(d,False)
+                finally:
+                    x11.XCloseDisplay(d)
+            else:
+                target.event_generate(sequence, **({'delta': -120} if sequence == '&lt;MouseWheel&gt;' else {}))
+            app.root.update()
+            after = canvas.yview()
+            canvas.event_generate('&lt;Button-5&gt;')
+            app.root.update()
+            control = canvas.yview()
+            assert control[0] &gt; before[0]
+            print(json.dumps({'sequence':sequence,'target_kind':target_kind,'target':str(target),'before':before,'after':after}))
+&gt;           assert after[0] &gt; before[0], {'target':str(target),'text':target.cget('text') if target_kind == 'label' else '', 'sequence':sequence,'before':before,'after':after}
+E           AssertionError: {'after': (0.0, 0.640194489465154), 'before': (0.0, 0.640194489465154), 'sequence': 'native-wheel', 'target': '.!frame3.!frame2.!canvas.!frame.!frame.!label', ...}
+E           assert 0.0 &gt; 0.0
+
+/tmp/pass13-ui/test_body_wheel.py:66: AssertionError</failure></testcase><testcase classname="test_body_wheel" name="test_body_scroll_over_visible_prose[&lt;Button-5&gt;-canvas]" time="0.171" /><testcase classname="test_body_wheel" name="test_body_scroll_over_visible_prose[&lt;MouseWheel&gt;-canvas]" time="0.179" /></testsuite></testsuites>

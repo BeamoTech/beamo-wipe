@@ -1,0 +1,124 @@
+dbus-daemon[142526]: [session uid=0 pid=142526] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=142540 comm="/tmp/beamo-pass19-python/bin/python3 -m pytest -q" label="unconfined")
+dbus-daemon[142526]: [session uid=0 pid=142526] Successfully activated service 'org.a11y.Bus'
+........................................................................ [ 22%]
+........................................................................ [ 44%]
+........................................................................ [ 66%]
+....................................F................................... [ 88%]
+.....................................dbus-daemon[142555]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=142540 comm="/tmp/beamo-pass19-python/bin/python3 -m pytest -q" label="unconfined")
+dbus-daemon[142555]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+.                                   [100%]
+=================================== FAILURES ===================================
+_____ test_flat_mounted_mapper_checks_unmounted_intermediate_mapper_parent _____
+
+    def test_flat_mounted_mapper_checks_unmounted_intermediate_mapper_parent() -> None:
+        payload = _two_mapper_payload(intermediate_parent="sdb1")
+        with pytest.raises(ValueError, match="mounted ancestry"):
+>           parse_lsblk_json(payload, boot_path="/dev/sdc")
+
+tests/test_mounted_mapper_ancestry_regression.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload = {'blockdevices': [{'children': [{'children': [{...}], 'mountpoints': [None], 'name': 'sda1', 'path': '/dev/sda1', ...}...'/dev/sdc', 'ro': 0, ...}, {'fstype': 'ext4', 'mountpoints': ['/mnt/data'], 'name': 'dm-1', 'path': '/dev/dm-1', ...}]}
+
+    def parse_lsblk_json(
+        payload: Dict[str, Any],
+        *,
+        boot_path: Optional[str],
+        require_boot: bool = True,
+    ) -> DiscoveryResult:
+        blockdevices = payload.get("blockdevices") or []
+        if blockdevices and not isinstance(blockdevices, (list, tuple)):
+            raise ValueError("lsblk JSON blockdevices must be a list")
+        if require_boot and _disk_identity_contradicts(blockdevices):
+            return DiscoveryResult(error=_copy.IDENTIFY_ERROR, boot_identified=False)
+        if require_boot and not boot_path:
+            return DiscoveryResult(error=_copy.IDENTIFY_ERROR, boot_identified=False)
+    
+        flat_mounts: Dict[str, List[str]] = {}
+        flat_nodes = list(flatten_blockdevices(blockdevices))
+        by_name: Dict[str, List[Tuple[Dict[str, Any], Optional[Dict[str, Any]]]]] = {}
+        for candidate, parent in flat_nodes:
+            name = _identity_text(candidate.get("name"), "name")
+            if name:
+                by_name.setdefault(name, []).append((candidate, parent))
+        known_disk_names = {
+            _identity_text(node.get("name"), "name")
+            for node in disk_nodes(blockdevices)
+        }
+        for candidate, parent in flat_nodes:
+            kind = _node_type(candidate)
+            mounts = _node_mountpoints(candidate)
+            if _partition_parent_contradicts(candidate, parent):
+                # A false flat PKNAME or tree parent can assign a mounted volume
+                # to the wrong disk. Even when unmounted, it can move filesystem
+                # identity and OS-content evidence onto another wipe candidate.
+                if mounts:
+                    raise ValueError("lsblk mounted ancestry contradicts partition identity")
+                raise ValueError("lsblk partition ancestry contradicts identity")
+            if kind == "part" and parent is None and not _identity_text(
+                candidate.get("pkname"), "pkname"
+            ):
+                # A root-level partition with no PKNAME has no proven owner. If
+                # its kernel name or path matches a listed disk, silently dropping
+                # its filesystem/OS evidence would make that disk look blank or
+                # change the confirmed layout hash. An orphan with no possible
+                # listed parent remains an excluded standalone inventory row.
+                name = _identity_text(candidate.get("name"), "name")
+                path_name = os.path.basename(node_path(candidate))
+                if any(
+                    _name_is_partition_of(name, disk_name)
+                    or _name_is_partition_of(path_name, disk_name)
+                    for disk_name in known_disk_names
+                ):
+                    raise ValueError("lsblk partition ancestry is unresolved")
+            if mounts and parent is not None and candidate.get("pkname") is not None:
+                named_parent = _identity_text(candidate.get("pkname"), "pkname")
+                tree_parent_name = _identity_text(parent.get("name"), "name")
+                if named_parent and named_parent != tree_parent_name:
+                    # Mapper and holder names do not encode their physical parent.
+                    # A mounted child with disagreeing PKNAME/tree ancestry could
+                    # otherwise mark only the wrong disk as mounted.
+                    raise ValueError("lsblk mounted ancestry contradicts PKNAME")
+            if (
+                kind in _UNRESOLVED_HOLDER_TYPES
+                or _has_stacked_holder(candidate, parent, by_name)
+                or kind in {"crypt", "dm", "bcache"}
+                or kind.startswith("raid")
+            ) and (
+                _filesystem_layout_row(candidate, partition=False)
+                or any(
+                    _clean(candidate.get(key))
+                    for key in ("partlabel", "parttypename", "parttype")
+                )
+            ):
+                if parent is not None and candidate.get("pkname") is not None:
+                    named_parent = _identity_text(candidate.get("pkname"), "pkname")
+                    tree_parent_name = _identity_text(parent.get("name"), "name")
+                    if named_parent and named_parent != tree_parent_name:
+                        # An unmounted opened volume still contributes OS content
+                        # and layout identity; its parent cannot be assigned by
+                        # contradictory PKNAME and tree observations.
+                        raise ValueError("lsblk filesystem ancestry contradicts PKNAME")
+                owner, _ambiguous = _resolve_owner_disk(candidate, parent, by_name)
+                if not owner:
+                    # An opened filesystem with no physical ancestry can belong
+                    # to any candidate disk. Omitting it would hide contents and
+                    # weaken the layout identity presented for confirmation.
+>                   raise ValueError("lsblk filesystem ancestry is unresolved")
+E                   ValueError: lsblk filesystem ancestry is unresolved
+
+src/beamo_wipe/discover.py:1919: ValueError
+
+During handling of the above exception, another exception occurred:
+
+    def test_flat_mounted_mapper_checks_unmounted_intermediate_mapper_parent() -> None:
+        payload = _two_mapper_payload(intermediate_parent="sdb1")
+>       with pytest.raises(ValueError, match="mounted ancestry"):
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'mounted ancestry'
+E         Actual message: 'lsblk filesystem ancestry is unresolved'
+
+tests/test_mounted_mapper_ancestry_regression.py:176: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_mounted_mapper_ancestry_regression.py::test_flat_mounted_mapper_checks_unmounted_intermediate_mapper_parent

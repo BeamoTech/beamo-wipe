@@ -1,0 +1,10 @@
+{
+  "total": 104,
+  "failures": 32,
+  "errors": 0,
+  "skipped": 0,
+  "exit_code": 1,
+  "passes": 72,
+  "original_discover_sha256": "6528038ba87a46e2d58957cccdbf1a7b963d77b9961b724883f7809e93e9c7a4",
+  "test_sha256": "7e0e2fcc2504df6efa84a57453c8183e0f2c8c607e8b863a4c70f4f036338539"
+}

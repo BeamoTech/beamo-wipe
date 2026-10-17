@@ -44,7 +44,7 @@ def test_iso_stage_cleanup_refuses_linked_parent(tmp_path):
     result = subprocess.run(
         ["sh", str(scripts / "build-iso.sh")],
         cwd=project,
-        env={**os.environ, "PATH": f"{fake_bin}{os.pathsep}{os.environ['PATH']}"},
+        env={**os.environ, "BEAMO_WIPE_VERSION": "0.2.12", "PATH": f"{fake_bin}{os.pathsep}{os.environ['PATH']}"},
         capture_output=True,
         text=True,
         timeout=10,

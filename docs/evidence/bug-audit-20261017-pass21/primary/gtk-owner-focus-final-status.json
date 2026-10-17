@@ -1,0 +1,17 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 800x600x24 -dpi 72",
+    "/tmp/beamo-pass21-python/bin/python3",
+    "/tmp/pass21-primary/gtk-owner-focus-final.py"
+  ],
+  "exit_code": 0,
+  "started_utc": "2026-10-17T21:27:18.380403+00:00",
+  "ended_utc": "2026-10-17T21:27:23.283213+00:00"
+}

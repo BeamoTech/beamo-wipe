@@ -1,0 +1,26 @@
+{
+  "author": "Codex /root/pass20_runner_boot",
+  "execution": "Root must inspect/execute after admission; none executed by preparer",
+  "expected": {
+    "artifact_skip_ids": 14,
+    "frozen_inputs": 779,
+    "gate_phases": 9,
+    "independent_review_inputs": 11,
+    "new_audit_cases": 3705,
+    "new_audit_modules": 50
+  },
+  "prepared_at_utc": "2026-10-17T19:26:15.302941+00:00",
+  "pure_omission_probe": {
+    "all_unmatched_preserved_normally": true,
+    "covered_application_files": 116,
+    "unmatched_private_egg_info_files": 6
+  },
+  "retention": "Never overwrite existing bytes; archive-index duplicates; preserve unmatched source, checkpoints, failed runs, candidates, logs and archives.",
+  "schema": 1,
+  "scripts": {
+    "/tmp/pass20-primary/retain-evidence.py": "8ee9426715321645febed3c418dc8cb492ef2005ba303c54208094c9529d93cf",
+    "/tmp/pass20-primary/review-gates.py": "cb264987c0492c602c97d6576cba32e2868291304e2b58cd7314ae41923167f4",
+    "/tmp/pass20-primary/verify-campaigns.py": "74d18ba66edd475b3cd07a519c3f185d8712044a4f7bf98a37e84420142e8c27"
+  },
+  "status": "PREPARED / NOT RUN; AST syntax parsing only"
+}

@@ -1,0 +1,146 @@
+[
+  {
+    "prefix": "",
+    "target": "sda",
+    "count": "1",
+    "outcome": [
+      false,
+      "nwipe reported disk errors",
+      "engine_failed"
+    ],
+    "io_status": "fail",
+    "text": "******************************** Error Summary *********************************\n! sda | 1 | 0 | 0\n***\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "prefix": "",
+    "target": "sda",
+    "count": "0",
+    "outcome": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "io_status": "pass",
+    "text": "******************************** Error Summary *********************************\n! sda | 0 | 0 | 0\n***\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "prefix": "",
+    "target": "sdb",
+    "count": "1",
+    "outcome": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "io_status": "unavailable",
+    "text": "******************************** Error Summary *********************************\n! sdb | 1 | 0 | 0\n***\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "prefix": "",
+    "target": "sda",
+    "count": "unknown",
+    "outcome": [
+      false,
+      "nwipe completion could not be confirmed",
+      "indeterminate"
+    ],
+    "io_status": "unavailable",
+    "text": "******************************** Error Summary *********************************\n! sda | unknown | 0 | 0\n***\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "prefix": "info: ",
+    "target": "sda",
+    "count": "1",
+    "outcome": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "io_status": "fail",
+    "text": "******************************** Error Summary *********************************\ninfo: ! sda | 1 | 0 | 0\n***\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "prefix": "info: ",
+    "target": "sda",
+    "count": "0",
+    "outcome": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "io_status": "pass",
+    "text": "******************************** Error Summary *********************************\ninfo: ! sda | 0 | 0 | 0\n***\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "prefix": "info: ",
+    "target": "sdb",
+    "count": "1",
+    "outcome": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "io_status": "unavailable",
+    "text": "******************************** Error Summary *********************************\ninfo: ! sdb | 1 | 0 | 0\n***\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "prefix": "info: ",
+    "target": "sda",
+    "count": "unknown",
+    "outcome": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "io_status": "unavailable",
+    "text": "******************************** Error Summary *********************************\ninfo: ! sda | unknown | 0 | 0\n***\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "prefix": "[2026/10/16 12:00:00] info: ",
+    "target": "sda",
+    "count": "1",
+    "outcome": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "io_status": "fail",
+    "text": "******************************** Error Summary *********************************\n[2026/10/16 12:00:00] info: ! sda | 1 | 0 | 0\n***\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "prefix": "[2026/10/16 12:00:00] info: ",
+    "target": "sda",
+    "count": "0",
+    "outcome": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "io_status": "pass",
+    "text": "******************************** Error Summary *********************************\n[2026/10/16 12:00:00] info: ! sda | 0 | 0 | 0\n***\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "prefix": "[2026/10/16 12:00:00] info: ",
+    "target": "sdb",
+    "count": "1",
+    "outcome": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "io_status": "unavailable",
+    "text": "******************************** Error Summary *********************************\n[2026/10/16 12:00:00] info: ! sdb | 1 | 0 | 0\n***\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "prefix": "[2026/10/16 12:00:00] info: ",
+    "target": "sda",
+    "count": "unknown",
+    "outcome": [
+      true,
+      "finished",
+      "completed"
+    ],
+    "io_status": "unavailable",
+    "text": "******************************** Error Summary *********************************\n[2026/10/16 12:00:00] info: ! sda | unknown | 0 | 0\n***\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  }
+]

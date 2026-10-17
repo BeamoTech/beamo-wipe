@@ -1,0 +1,905 @@
+{
+  "cases": 90,
+  "rows": [
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "write-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "write-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "read-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "read-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "verify-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "verify-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "unknown-count",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "unknown-count",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "clean",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "clean",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "write-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "write-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "read-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "read-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "verify-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "verify-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "unknown-count",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "unknown-count",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "clean",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "clean",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "write-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "write-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "read-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "read-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "verify-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "verify-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "unknown-count",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "unknown-count",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "clean",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "clean",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "write-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "write-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "read-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "read-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "verify-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "verify-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "unknown-count",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "unknown-count",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "clean",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "clean",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "write-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "write-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "read-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "read-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "verify-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "verify-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "unknown-count",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "unknown-count",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "clean",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "clean",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "write-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "write-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "read-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "read-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "verify-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "verify-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "unknown-count",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "unknown-count",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "clean",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "clean",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "write-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "write-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "read-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "read-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "verify-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "verify-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "unknown-count",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "unknown-count",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "clean",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "clean",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "write-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "write-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "read-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "read-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "verify-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "verify-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "unknown-count",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "unknown-count",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "clean",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "clean",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "write-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "write-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "read-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "read-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "verify-error",
+      "large": false,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "verify-error",
+      "large": true,
+      "io_media": "fail",
+      "reason": "engine_failed",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "unknown-count",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "unknown-count",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "indeterminate",
+      "outcome": "failed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "clean",
+      "large": false,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "clean",
+      "large": true,
+      "io_media": "unavailable",
+      "reason": "completed",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    }
+  ]
+}

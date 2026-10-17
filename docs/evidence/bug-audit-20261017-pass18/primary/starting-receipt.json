@@ -1,0 +1,11 @@
+{
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "branch": "fix/safety-audit-20261015",
+  "frozen_inputs": 762,
+  "delta_from_pass17": {},
+  "shared_guide": "absent; previously acknowledged",
+  "new_alias": "/tmp/beamo-pass18-python",
+  "fallback_guard": "/tmp/beamo-pass18-fallback-guard",
+  "environment_status_tool": "not exposed in current tool catalog",
+  "hosted_or_privileged_actions": false
+}

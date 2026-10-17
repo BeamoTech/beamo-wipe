@@ -1,0 +1,15 @@
+[
+  {
+    "phase": "lint",
+    "command": [
+      "./scripts/ci-hosted.sh",
+      "lint"
+    ],
+    "exit_code": 1,
+    "started_utc": "2026-10-17T18:56:44.814673+00:00",
+    "ended_utc": "2026-10-17T18:56:49.734476+00:00",
+    "source_freeze_sha256": "60dceee4b4b95b10327681c5d5c90dc84d7e273963fdeb6d9757948500fa135c",
+    "crossbuild_env": {},
+    "pytest_plugins": null
+  }
+]

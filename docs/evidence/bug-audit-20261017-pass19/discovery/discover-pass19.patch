@@ -1,0 +1,33 @@
+--- a/src/beamo_wipe/discover.py
++++ b/src/beamo_wipe/discover.py
+@@ -581,7 +581,7 @@
+     own_pk = ""
+     if node.get("pkname") is not None:
+         own_pk = _identity_text(node.get("pkname"), "pkname")
+-    if _node_type(node) in {"disk", "rom"} and not own_pk:
++    if _node_type(node) in {"disk", "rom"} and not own_pk and not _is_stacked_holder(node):
+         if node.get("name") is None:
+             return "", False
+         return _identity_text(node.get("name"), "name"), False
+@@ -602,7 +602,11 @@
+         ancestor_pk = ""
+         if ancestor.get("pkname") is not None:
+             ancestor_pk = _identity_text(ancestor.get("pkname"), "pkname")
+-        if _node_type(ancestor) in {"disk", "rom"} and not ancestor_pk:
++        if (
++            _node_type(ancestor) in {"disk", "rom"}
++            and not ancestor_pk
++            and not _is_stacked_holder(ancestor)
++        ):
+             return current, False
+         if ancestor_pk:
+             current = ancestor_pk
+@@ -1878,7 +1882,7 @@
+                 raise ValueError("lsblk mounted ancestry contradicts PKNAME")
+         if (
+             kind in _UNRESOLVED_HOLDER_TYPES
+-            or kind in _STACKED_HOLDER_TYPES
++            or _is_stacked_holder(candidate)
+             or kind in {"crypt", "dm", "bcache"}
+             or kind.startswith("raid")
+         ) and (

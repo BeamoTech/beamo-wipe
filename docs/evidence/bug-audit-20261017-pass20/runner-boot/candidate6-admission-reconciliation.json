@@ -1,0 +1,213 @@
+{
+  "branch": "fix/safety-audit-20261015",
+  "candidate6_sha256": "d639822ca03fccc2f9be78c476fc4b594118ac2b9195d2a2979b3c8f9a6e7cf8",
+  "completed_probes": {
+    "candidate6-gc-pressure": {
+      "all_alive_zero": true,
+      "attempts": 12,
+      "errors": [],
+      "exit_code": 0,
+      "offsets": [
+        1,
+        2,
+        3,
+        4,
+        8,
+        12,
+        16,
+        24,
+        32,
+        48,
+        64,
+        96
+      ],
+      "thresholds": [
+        128,
+        129,
+        130,
+        131,
+        135,
+        139,
+        143,
+        151,
+        159,
+        175,
+        191,
+        223
+      ],
+      "total_fonts": 1536
+    },
+    "candidate6-gc-pressure-observed": {
+      "all_alive_zero": true,
+      "attempts": 12,
+      "errors": [],
+      "exit_code": 0,
+      "offsets": [
+        1,
+        2,
+        3,
+        4,
+        8,
+        12,
+        16,
+        24,
+        32,
+        48,
+        64,
+        96
+      ],
+      "thresholds": [
+        126,
+        128,
+        128,
+        129,
+        133,
+        137,
+        141,
+        149,
+        157,
+        173,
+        189,
+        221
+      ],
+      "total_fonts": 1536
+    },
+    "candidate6-repeated-ownership": {
+      "all_owner_thread": true,
+      "all_returned": true,
+      "effects": [],
+      "exit_code": 0,
+      "finalizers": 220,
+      "gc_events": 160,
+      "max_gc_depth": 1,
+      "pools_empty": true,
+      "provenance": {
+        "sha256": "d639822ca03fccc2f9be78c476fc4b594118ac2b9195d2a2979b3c8f9a6e7cf8",
+        "source": "/tmp/pass20-primary/private-graph/src/beamo_wipe/ui/tk_wizard.py"
+      },
+      "registered_callbacks": 1,
+      "resources": 220,
+      "sessions": 10
+    }
+  },
+  "document_sha256": "a919234d8d28f74de5b7d933ba288018a219ef9e9268f0f24bfced066c603de6",
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "inputs": {
+    "/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py": "b436a56dbf5a61d9471f51f24767a0adf535925e3720938fb5ca1b27427ff296",
+    "/tmp/beamo-pass20-python/pyvenv.cfg": "f51f0047549375ed5638dacde20cf02efa2de1fba0e0257c54210bc3258cf30f",
+    "/tmp/pass20-primary/candidate6-gc-pressure-observed-status.json": "1de3f16fec6f20c594e1e253e1b7d1b1dc67f088f19d30c706faa51efe067301",
+    "/tmp/pass20-primary/candidate6-gc-pressure-observed.txt": "3de596f513c43ad5154a680725420963ce35465ac01b32b5304d0b8c99dd7ea5",
+    "/tmp/pass20-primary/candidate6-gc-pressure-status.json": "6c29c7a64f27f2614dac1fd0c7581288ab2fa7995a08bd6c96363dc5f10d9436",
+    "/tmp/pass20-primary/candidate6-gc-pressure.txt": "5410ff3998dc6499e4c3f576d12dda03fdd7265561ebb7e82585503a21449ba6",
+    "/tmp/pass20-primary/candidate6-repeated-ownership-status.json": "406e25a2d9d2ac4e6ec02bbf0000a456580c24708b8b7b597fa6e8e68bd7250b",
+    "/tmp/pass20-primary/candidate6-repeated-ownership.txt": "b8d34a1896428339cdeb65174a6e18f89e1c6d273f185777f8141ca39b5ffa89",
+    "/tmp/pass20-primary/interpreter-path-probe.json": "a8a5b512507fef166cc27bc36add6aed3781fdfbcaeadbfa4ba83176eb30efc9",
+    "/tmp/pass20-primary/private-candidate6-agent.py": "d639822ca03fccc2f9be78c476fc4b594118ac2b9195d2a2979b3c8f9a6e7cf8",
+    "/tmp/pass20-primary/private-candidate6-final-focused-review.json": "e2f24c5c99f5e0aa38fbd40fb61c22737b3fb18feed1b4923e049fa5c3ff8aca",
+    "/tmp/pass20-primary/private-candidate6-final-focused-status.json": "c20da7b1028b573180f6dedde093e727694a6960d9a23c4215eb9466807a9256",
+    "/tmp/pass20-primary/private-candidate6-final-focused.txt": "85f9d0bf09442b8c5679ec01915077ca69234c26c8beb4f1251baf6f2279301c",
+    "/tmp/pass20-primary/private-candidate6-final-focused.xml": "f9a0e4bd42b6c57b1cb0d6f15dcedc0f07c663d5404c46474c4cef0cd1d3029a",
+    "/tmp/pass20-primary/private-candidate7-typed.py": "b436a56dbf5a61d9471f51f24767a0adf535925e3720938fb5ca1b27427ff296",
+    "/tmp/pass20-primary/private-graph/src/beamo_wipe/ui/tk_wizard.py": "d639822ca03fccc2f9be78c476fc4b594118ac2b9195d2a2979b3c8f9a6e7cf8",
+    "/tmp/pass20-primary/tk-drain-gc-pressure-observed.py": "a649ba96e07a15f42e60c5b79886ebaa1f2c9eaa90547b18eb6564269f44c73d",
+    "/tmp/pass20-primary/tk-drain-gc-pressure.py": "06c9dc49a1b5f292a234003d440c3f9a260d9a922a871ec5ce64ab620481fab4",
+    "/tmp/pass20-primary/tk-pool-repeated.py": "5144ed0b5eb27a410478859a8713673d9f7600916b9335d0651ea0de7b2ef4dc"
+  },
+  "mode": "source-only compilation/disassembly, JSON/XML artifact parsing; no product imports/runtime/tests/source edits",
+  "pending": [
+    "Root aggregate owned-child exit/stderr/unraisable/finalization review.",
+    "Candidate7 exact-source full local gate; candidate6 type gate failed, not a pass.",
+    "Whole-suite/Orca/artifact/native/physical acceptance."
+  ],
+  "python311": "NOT RUN",
+  "question": {
+    "id": "P20-C6-SNAPSHOT-REENTRY",
+    "observed_call": {
+      "instruction": 166,
+      "line": 1162,
+      "target": "sys.getrefcount(record[1])"
+    },
+    "observed_reentry": [
+      {
+        "attempt": 0,
+        "function": "_drain_retired_assets",
+        "instruction": 166,
+        "line": 1162,
+        "phase": "start",
+        "thread": 128901347795072
+      },
+      {
+        "attempt": 0,
+        "function": "_drain_retired_assets",
+        "instruction": 166,
+        "line": 1162,
+        "phase": "stop",
+        "thread": 128901347795072
+      }
+    ],
+    "recommendation": "No speculative guard edit",
+    "snapshot_call": {
+      "instruction": 90,
+      "line": 1159
+    },
+    "status": "unproved / not reproduced; rejected as new bug",
+    "universal_impossibility_claimed": false
+  },
+  "repo": "BeamoTech/beamo-wipe",
+  "reviewed_at_utc": "2026-10-17T18:59:32.634670+00:00",
+  "reviewer": "Codex /root/pass20_runner_boot",
+  "runtime_evidence": {
+    "base_prefix": "/usr",
+    "executable": "/tmp/beamo-pass20-python/bin/python3",
+    "prefix": "/tmp/beamo-pass20-python",
+    "pytest": "9.0.3",
+    "pytest_file": "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pytest/__init__.py",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "PASS20_SHEBANG_OK\n",
+    "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "schema": 1,
+  "shared_source_drift": {
+    "candidate6_focused_and_pressure_not_transferred": true,
+    "candidate7_sha256": "b436a56dbf5a61d9471f51f24767a0adf535925e3720938fb5ca1b27427ff296",
+    "current_sha256": "b436a56dbf5a61d9471f51f24767a0adf535925e3720938fb5ca1b27427ff296"
+  },
+  "source6_focused": {
+    "adjacent_cases": 438,
+    "cases": 486,
+    "command": [
+      "dbus-run-session",
+      "--",
+      "xvfb-run",
+      "-a",
+      "-n",
+      "160",
+      "-s",
+      "-screen 0 1600x1000x24 -dpi 72",
+      "/tmp/beamo-pass20-python/bin/python3",
+      "-m",
+      "pytest",
+      "-q",
+      "-o",
+      "pythonpath=/tmp/pass20-primary/private-graph/src",
+      "tests/test_tk_native_constructor_pass20.py",
+      "tests/test_tk_native_boundary_pass20.py",
+      "tests/test_tk_native_collector_pass20.py",
+      "tests/test_tk_owner_trace_lifetime_pass19.py",
+      "tests/test_checkrow_trace_lifetime_pass18.py",
+      "tests/test_bug_audit_tk_gc_20260913.py",
+      "tests/test_tk_runtime.py",
+      "tests/test_adaptive_layout.py",
+      "--junitxml=/tmp/pass20-primary/private-candidate6-final-focused.xml"
+    ],
+    "errors": 0,
+    "exit_code": 0,
+    "failures": 0,
+    "new_native_cases": 48,
+    "passed": 486,
+    "same_case_ids_as_candidate5_after_constructor_module_move": true,
+    "skipped": 0
+  },
+  "source_only_disassembly_runtime": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+}

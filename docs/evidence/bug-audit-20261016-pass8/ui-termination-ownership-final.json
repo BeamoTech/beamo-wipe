@@ -1,0 +1,22 @@
+{
+  "focused": {
+    "pytest_pid": 366621,
+    "retired": true,
+    "process_table_output": "    PID    PPID    PGID     SID COMMAND\n"
+  },
+  "module": {
+    "pytest_pid": 366778,
+    "retired": true,
+    "process_table_output": "    PID    PPID    PGID     SID COMMAND\n"
+  },
+  "repeat": {
+    "pytest_pid": 367087,
+    "retired": true,
+    "process_table_output": "    PID    PPID    PGID     SID COMMAND\n"
+  },
+  "repeated-files": {
+    "pytest_pid": 367174,
+    "retired": true,
+    "process_table_output": "    PID    PPID    PGID     SID COMMAND\n"
+  }
+}

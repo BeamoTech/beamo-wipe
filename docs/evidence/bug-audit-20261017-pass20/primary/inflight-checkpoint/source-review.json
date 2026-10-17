@@ -1,0 +1,23 @@
+{
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "branch": "fix/safety-audit-20261015",
+  "frozen_inputs": 778,
+  "runtime_source_sha256": "4817bf533ff21292aa21d8c6a267af2424ca4f03b5fd0f061b97c92819940d0d",
+  "changed": [
+    "src/beamo_wipe/audio_jobs.py",
+    "src/beamo_wipe/discover.py",
+    "src/beamo_wipe/ui/tk_wizard.py"
+  ],
+  "added": [
+    "tests/test_audio_launch_acceptance_pass20.py",
+    "tests/test_audio_launch_interruptions_pass20.py",
+    "tests/test_holder_ancestor_mount_pass20.py",
+    "tests/test_mounted_holder_type_pass20.py",
+    "tests/test_tk_native_boundary_pass20.py",
+    "tests/test_tk_native_collector_pass20.py",
+    "tests/test_tk_native_constructor_pass20.py"
+  ],
+  "unchanged_start_inputs": 768,
+  "new_untracked_test_modules": 49,
+  "index_empty": true
+}

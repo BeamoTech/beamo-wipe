@@ -1,0 +1,16 @@
+{
+  "status": "NOT RUN",
+  "reason": "Canonical local gate failed; user requires stopping on blockers",
+  "failed_gate": "tests.test_accessible_runtime::test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog",
+  "prepared_only": [
+    "runner/fresh-boundaries.py",
+    "runner/cancel-boundaries.py",
+    "ui/run-geometry.py",
+    "primary/report-checks-matrix.py"
+  ],
+  "runner_fixture_files_observed": 0,
+  "report_artifact_files_observed": 0,
+  "new_screenshots_observed": 0,
+  "prior_pass17_campaigns_not_reused": true,
+  "at_utc": "2026-10-17T07:07:08.622985+00:00"
+}

@@ -1,0 +1,15 @@
+dbus-daemon[342782]: [session uid=0 pid=342782] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=342814 comm="python3 -m pytest -q -p no:cacheprovider tests/tes" label="unconfined")
+dbus-daemon[342782]: [session uid=0 pid=342782] Successfully activated service 'org.a11y.Bus'
+.........................................dbus-daemon[342852]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=342814 comm="python3 -m pytest -q -p no:cacheprovider tests/tes" label="unconfined")
+dbus-daemon[342852]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+............................... [ 11%]
+........................................................................ [ 22%]
+........................................................................ [ 33%]
+........................................................................ [ 44%]
+........................................................................ [ 55%]
+........................................................................ [ 66%]
+........................................................................ [ 77%]
+........................................................................ [ 88%]
+........................................................................ [ 99%]
+......                                                                   [100%]

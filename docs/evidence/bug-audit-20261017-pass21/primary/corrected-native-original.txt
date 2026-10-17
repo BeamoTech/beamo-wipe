@@ -1,0 +1,203 @@
+FFF..FFFF.F                                                              [100%]
+=================================== FAILURES ===================================
+______________ test_interrupted_owned_trace_is_retired[row-after] ______________
+
+request = <FixtureRequest for <Function test_interrupted_owned_trace_is_retired[row-after]>>
+case = 'row-after'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_interrupted_owned_trace_is_retired(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            record = dict(case=case, command=command, provenance=provenance, returncode=result.returncode,
+                          stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            record = dict(case=case, command=command, provenance=provenance, timed_out=True,
+                          stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("trace_adoption_child", json.dumps(record)))
+        assert not record["timed_out"], record
+>       assert record["returncode"] == 0, record
+E       AssertionError: {'case': 'row-after', 'command': ['/tmp/beamo-pass21-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audi...d46553e29ceaf4cfa781e181e8ea7', 'source': '/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass21/ui/tk-trace-adoption-proof-v2.py:198: AssertionError
+____________ test_interrupted_owned_trace_is_retired[typing-after] _____________
+
+request = <FixtureRequest for <Function test_interrupted_owned_trace_is_retired[typing-after]>>
+case = 'typing-after'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_interrupted_owned_trace_is_retired(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            record = dict(case=case, command=command, provenance=provenance, returncode=result.returncode,
+                          stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            record = dict(case=case, command=command, provenance=provenance, timed_out=True,
+                          stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("trace_adoption_child", json.dumps(record)))
+        assert not record["timed_out"], record
+>       assert record["returncode"] == 0, record
+E       AssertionError: {'case': 'typing-after', 'command': ['/tmp/beamo-pass21-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-a...d46553e29ceaf4cfa781e181e8ea7', 'source': '/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass21/ui/tk-trace-adoption-proof-v2.py:198: AssertionError
+____________ test_interrupted_owned_trace_is_retired[confirm-after] ____________
+
+request = <FixtureRequest for <Function test_interrupted_owned_trace_is_retired[confirm-after]>>
+case = 'confirm-after'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_interrupted_owned_trace_is_retired(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            record = dict(case=case, command=command, provenance=provenance, returncode=result.returncode,
+                          stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            record = dict(case=case, command=command, provenance=provenance, timed_out=True,
+                          stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("trace_adoption_child", json.dumps(record)))
+        assert not record["timed_out"], record
+>       assert record["returncode"] == 0, record
+E       AssertionError: {'case': 'confirm-after', 'command': ['/tmp/beamo-pass21-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-...d46553e29ceaf4cfa781e181e8ea7', 'source': '/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass21/ui/tk-trace-adoption-proof-v2.py:198: AssertionError
+__________ test_native_variables_use_the_owned_root[peer-persistent] ___________
+
+request = <FixtureRequest for <Function test_native_variables_use_the_owned_root[peer-persistent]>>
+case = 'peer-persistent'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_native_variables_use_the_owned_root(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            record = dict(case=case, command=command, provenance=provenance, returncode=result.returncode,
+                          stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            record = dict(case=case, command=command, provenance=provenance, timed_out=True,
+                          stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("variable_root_child", json.dumps(record)))
+        assert not record["timed_out"], record
+>       assert record["returncode"] == 0, record
+E       AssertionError: {'case': 'peer-persistent', 'command': ['/tmp/beamo-pass21-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bu...d46553e29ceaf4cfa781e181e8ea7', 'source': '/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof-v3.py:209: AssertionError
+__________ test_native_variables_use_the_owned_root[peer-comparison] ___________
+
+request = <FixtureRequest for <Function test_native_variables_use_the_owned_root[peer-comparison]>>
+case = 'peer-comparison'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_native_variables_use_the_owned_root(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            record = dict(case=case, command=command, provenance=provenance, returncode=result.returncode,
+                          stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            record = dict(case=case, command=command, provenance=provenance, timed_out=True,
+                          stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("variable_root_child", json.dumps(record)))
+        assert not record["timed_out"], record
+>       assert record["returncode"] == 0, record
+E       AssertionError: {'case': 'peer-comparison', 'command': ['/tmp/beamo-pass21-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bu...d46553e29ceaf4cfa781e181e8ea7', 'source': '/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof-v3.py:209: AssertionError
+_______ test_native_variables_use_the_owned_root[no-default-persistent] ________
+
+request = <FixtureRequest for <Function test_native_variables_use_the_owned_root[no-default-persistent]>>
+case = 'no-default-persistent'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_native_variables_use_the_owned_root(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            record = dict(case=case, command=command, provenance=provenance, returncode=result.returncode,
+                          stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            record = dict(case=case, command=command, provenance=provenance, timed_out=True,
+                          stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("variable_root_child", json.dumps(record)))
+        assert not record["timed_out"], record
+>       assert record["returncode"] == 0, record
+E       AssertionError: {'case': 'no-default-persistent', 'command': ['/tmp/beamo-pass21-python/bin/python3', '/root/dev/Beamo Wipe/docs/evide...d46553e29ceaf4cfa781e181e8ea7', 'source': '/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof-v3.py:209: AssertionError
+_______ test_native_variables_use_the_owned_root[no-default-comparison] ________
+
+request = <FixtureRequest for <Function test_native_variables_use_the_owned_root[no-default-comparison]>>
+case = 'no-default-comparison'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_native_variables_use_the_owned_root(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            record = dict(case=case, command=command, provenance=provenance, returncode=result.returncode,
+                          stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            record = dict(case=case, command=command, provenance=provenance, timed_out=True,
+                          stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("variable_root_child", json.dumps(record)))
+        assert not record["timed_out"], record
+>       assert record["returncode"] == 0, record
+E       AssertionError: {'case': 'no-default-comparison', 'command': ['/tmp/beamo-pass21-python/bin/python3', '/root/dev/Beamo Wipe/docs/evide...d46553e29ceaf4cfa781e181e8ea7', 'source': '/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof-v3.py:209: AssertionError
+____________ test_native_variables_use_the_owned_root[peer-confirm] ____________
+
+request = <FixtureRequest for <Function test_native_variables_use_the_owned_root[peer-confirm]>>
+case = 'peer-confirm'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_native_variables_use_the_owned_root(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            record = dict(case=case, command=command, provenance=provenance, returncode=result.returncode,
+                          stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            record = dict(case=case, command=command, provenance=provenance, timed_out=True,
+                          stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("variable_root_child", json.dumps(record)))
+        assert not record["timed_out"], record
+>       assert record["returncode"] == 0, record
+E       AssertionError: {'case': 'peer-confirm', 'command': ['/tmp/beamo-pass21-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-a...d46553e29ceaf4cfa781e181e8ea7', 'source': '/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof-v3.py:209: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass21/ui/tk-trace-adoption-proof-v2.py::test_interrupted_owned_trace_is_retired[row-after]
+FAILED docs/evidence/bug-audit-20261017-pass21/ui/tk-trace-adoption-proof-v2.py::test_interrupted_owned_trace_is_retired[typing-after]
+FAILED docs/evidence/bug-audit-20261017-pass21/ui/tk-trace-adoption-proof-v2.py::test_interrupted_owned_trace_is_retired[confirm-after]
+FAILED docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof-v3.py::test_native_variables_use_the_owned_root[peer-persistent]
+FAILED docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof-v3.py::test_native_variables_use_the_owned_root[peer-comparison]
+FAILED docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof-v3.py::test_native_variables_use_the_owned_root[no-default-persistent]
+FAILED docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof-v3.py::test_native_variables_use_the_owned_root[no-default-comparison]
+FAILED docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof-v3.py::test_native_variables_use_the_owned_root[peer-confirm]

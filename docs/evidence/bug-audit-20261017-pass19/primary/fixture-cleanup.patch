@@ -1,0 +1,96 @@
+--- starting/tests/test_accessible_runtime.py
++++ final/tests/test_accessible_runtime.py
+@@ -1604,6 +1604,8 @@
+ def test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog(ui, monkeypatch):
+     from threading import Event
+     from beamo_wipe import sound
++    from beamo_wipe.audio_jobs import AudioWorker
++    from beamo_wipe.ui import sound_dialog
+ 
+     entered = Event()
+     release = Event()
+@@ -1615,10 +1617,13 @@
+         return state
+     monkeypatch.setattr(sound, "list_outputs", slow_outputs)
+     app = ui()
+-    started = time.perf_counter()
+-    app.actions[C.SOUND_CHECK_BUTTON].clicked()
+-    assert time.perf_counter() - started < 0.06
++    # Own this controlled job so failure cleanup settles it before mocks retire.
++    audio_worker = AudioWorker()
++    monkeypatch.setattr(sound_dialog, "worker", audio_worker)
+     try:
++        started = time.perf_counter()
++        app.actions[C.SOUND_CHECK_BUTTON].clicked()
++        assert time.perf_counter() - started < 0.06
+         assert entered.wait(timeout=1)
+         started = time.perf_counter()
+         app.tick()
+@@ -1630,6 +1635,8 @@
+         assert app._sound_dialog.ticket is None
+     finally:
+         release.set()
++        audio_worker.close()
++        assert audio_worker._thread is None or not audio_worker._thread.is_alive()
+     time.sleep(0.02)
+     app.tick()
+     assert _sound_dialog() == []
+--- starting/tests/test_checkrow_trace_lifetime_pass18.py
++++ final/tests/test_checkrow_trace_lifetime_pass18.py
+@@ -96,29 +96,33 @@
+     variable = _variable(root, kind)
+     peer_trace_calls = []
+     peer_token = variable.trace_add("write", lambda *_args: peer_trace_calls.append(variable.get()))
+-    row = _CheckRow(parent, text="Report preference", variable=variable, command=lambda: None, font=font)
+-    row.pack()
+-    before = [str(token) for _modes, token in variable.trace_info()]
+-    row_tokens = set(before) - {peer_token}
+-    assert len(row_tokens) == 1
+-    root_jobs = []
+-    root.after_idle(lambda: root_jobs.append("live root"))
+-    _retire_row(root, parent, row, lifecycle)
+-    variable.set(1)
+-    root.update()
+-    after = [str(token) for _modes, token in variable.trace_info()]
+-    native_errors = list(root.tk.call("set", "pass18_trace_bgerrors"))
+-    request.node.user_properties.append(("trace_retirement", json.dumps({
+-        "kind": kind, "lifecycle": lifecycle, "before": before, "after": after,
+-        "python_errors": errors, "tcl_errors": native_errors, "root_jobs": root_jobs,
+-        "peer_calls": peer_trace_calls,
+-    })))
+-    assert not errors
+-    assert not native_errors
+-    assert not row_tokens.intersection(after)
+-    assert after == [peer_token]
+-    assert peer_trace_calls == [variable.get()]
+-    assert root_jobs == ["live root"]
++    try:
++        row = _CheckRow(parent, text="Report preference", variable=variable, command=lambda: None, font=font)
++        row.pack()
++        before = [str(token) for _modes, token in variable.trace_info()]
++        row_tokens = set(before) - {peer_token}
++        assert len(row_tokens) == 1
++        root_jobs = []
++        root.after_idle(lambda: root_jobs.append("live root"))
++        _retire_row(root, parent, row, lifecycle)
++        variable.set(1)
++        root.update()
++        after = [str(token) for _modes, token in variable.trace_info()]
++        native_errors = list(root.tk.call("set", "pass18_trace_bgerrors"))
++        request.node.user_properties.append(("trace_retirement", json.dumps({
++            "kind": kind, "lifecycle": lifecycle, "before": before, "after": after,
++            "python_errors": errors, "tcl_errors": native_errors, "root_jobs": root_jobs,
++            "peer_calls": peer_trace_calls,
++        })))
++        assert not errors
++        assert not native_errors
++        assert not row_tokens.intersection(after)
++        assert after == [peer_token]
++        assert peer_trace_calls == [variable.get()]
++        assert root_jobs == ["live root"]
++    finally:
++        if any(str(token) == peer_token for _modes, token in variable.trace_info()):
++            variable.trace_remove("write", peer_token)
+ 
+ 
+ @pytest.mark.parametrize("kind", ["boolean", "integer"])

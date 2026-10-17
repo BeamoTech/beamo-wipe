@@ -1,0 +1,232 @@
+{
+  "observer_only": true,
+  "original_assertions_unchanged": true,
+  "native_call_interception": false,
+  "source_unchanged": true,
+  "frozen_inputs": 771,
+  "rows": [
+    {
+      "label": "AccessibleWizard._focus_active_window",
+      "thread": 136388426748032,
+      "started_wall": 55294.979913754,
+      "elapsed_wall": 0.00046465500054182485,
+      "elapsed_thread_cpu": 0.0003774920000000348,
+      "error": null
+    },
+    {
+      "label": "AccessibleWizard.render",
+      "thread": 136388426748032,
+      "started_wall": 55294.9598621,
+      "elapsed_wall": 0.021332647003873717,
+      "elapsed_thread_cpu": 0.015030549000000004,
+      "error": null
+    },
+    {
+      "label": "GTK.drain",
+      "thread": 136388426748032,
+      "started_wall": 55294.981469571,
+      "elapsed_wall": 0.013994429995364044,
+      "elapsed_thread_cpu": 0.004346277999999981,
+      "error": null
+    },
+    {
+      "label": "Thread.start",
+      "thread": 136388426748032,
+      "started_wall": 55295.004326265,
+      "elapsed_wall": 0.0002025319990934804,
+      "elapsed_thread_cpu": 0.0001172809999999691,
+      "error": null
+    },
+    {
+      "label": "AudioWorker.submit",
+      "thread": 136388426748032,
+      "started_wall": 55295.004271474,
+      "elapsed_wall": 0.0002708530009840615,
+      "elapsed_thread_cpu": 0.0001852519999999691,
+      "error": null
+    },
+    {
+      "label": "SoundDialog._submit",
+      "thread": 136388426748032,
+      "started_wall": 55295.004247514,
+      "elapsed_wall": 0.0003014230023836717,
+      "elapsed_thread_cpu": 0.00021485200000004312,
+      "error": null
+    },
+    {
+      "label": "SoundDialog.__init__",
+      "thread": 136388426748032,
+      "started_wall": 55294.995694373,
+      "elapsed_wall": 0.008876984000380617,
+      "elapsed_thread_cpu": 0.007929425000000045,
+      "error": null
+    },
+    {
+      "label": "entered.set",
+      "thread": 136388117288640,
+      "at": 55295.004633668
+    },
+    {
+      "label": "AccessibleWizard._focus_active_window",
+      "thread": 136388426748032,
+      "started_wall": 55295.004592797,
+      "elapsed_wall": 0.0001834030044847168,
+      "elapsed_thread_cpu": 9.56509999999744e-05,
+      "error": null
+    },
+    {
+      "label": "AccessibleWizard.open_sound_check",
+      "thread": 136388426748032,
+      "started_wall": 55294.995682113,
+      "elapsed_wall": 0.009096876994590275,
+      "elapsed_thread_cpu": 0.008060206000000014,
+      "error": null
+    },
+    {
+      "label": "AccessibleWizard._focus_active_window",
+      "thread": 136388426748032,
+      "started_wall": 55295.00751225,
+      "elapsed_wall": 9.147100354311988e-05,
+      "elapsed_thread_cpu": 5.187100000003664e-05,
+      "error": null
+    },
+    {
+      "label": "AccessibleWizard.render",
+      "thread": 136388426748032,
+      "started_wall": 55295.004782181,
+      "elapsed_wall": 0.003514037001878023,
+      "elapsed_thread_cpu": 0.0034630230000000095,
+      "error": null
+    },
+    {
+      "label": "entered.wait",
+      "thread": 136388426748032,
+      "started_wall": 55295.008332798,
+      "elapsed_wall": 5.130998033564538e-06,
+      "elapsed_thread_cpu": 5.050000000061949e-06,
+      "error": null
+    },
+    {
+      "label": "SoundDialog.poll",
+      "thread": 136388426748032,
+      "started_wall": 55295.008356539,
+      "elapsed_wall": 5.889996828045696e-06,
+      "elapsed_thread_cpu": 5.9090000000816545e-06,
+      "error": null
+    },
+    {
+      "label": "AccessibleWizard.tick",
+      "thread": 136388426748032,
+      "started_wall": 55295.008341169,
+      "elapsed_wall": 3.812999784713611e-05,
+      "elapsed_thread_cpu": 3.8140000000019825e-05,
+      "error": null
+    },
+    {
+      "label": "GTK.drain",
+      "thread": 136388426748032,
+      "started_wall": 55295.008381309,
+      "elapsed_wall": 0.008733333001146093,
+      "elapsed_thread_cpu": 0.005498906999999997,
+      "error": null
+    },
+    {
+      "label": "SoundDialog._destroyed",
+      "thread": 136388426748032,
+      "started_wall": 55295.017516026,
+      "elapsed_wall": 1.5740006347186863e-05,
+      "elapsed_thread_cpu": 1.4860000000060936e-05,
+      "error": null
+    },
+    {
+      "label": "AccessibleWizard._focus_active_window",
+      "thread": 136388426748032,
+      "started_wall": 55295.017536086,
+      "elapsed_wall": 0.00027926400071009994,
+      "elapsed_thread_cpu": 8.756100000006928e-05,
+      "error": null
+    },
+    {
+      "label": "GTK.drain",
+      "thread": 136388426748032,
+      "started_wall": 55295.018347415,
+      "elapsed_wall": 0.00023574199440190569,
+      "elapsed_thread_cpu": 0.00019446099999997912,
+      "error": null
+    },
+    {
+      "label": "release.set",
+      "thread": 136388426748032,
+      "at": 55295.018591497
+    },
+    {
+      "label": "release.wait",
+      "thread": 136388117288640,
+      "started_wall": 55295.004652558,
+      "elapsed_wall": 0.013995380002597813,
+      "elapsed_thread_cpu": 3.1610000000000004e-05,
+      "error": null
+    },
+    {
+      "label": "SoundDialog._discover",
+      "thread": 136388117288640,
+      "started_wall": 55295.004625908,
+      "elapsed_wall": 0.014033020001079421,
+      "elapsed_thread_cpu": 6.8391e-05,
+      "error": null
+    },
+    {
+      "label": "AudioWorker.close",
+      "thread": 136388426748032,
+      "started_wall": 55295.018612257,
+      "elapsed_wall": 0.0001122230023611337,
+      "elapsed_thread_cpu": 5.485999999998992e-05,
+      "error": null
+    },
+    {
+      "label": "SoundDialog.poll",
+      "thread": 136388426748032,
+      "started_wall": 55295.038942605,
+      "elapsed_wall": 4.251000063959509e-06,
+      "elapsed_thread_cpu": 4.149999999980558e-06,
+      "error": null
+    },
+    {
+      "label": "AccessibleWizard.tick",
+      "thread": 136388426748032,
+      "started_wall": 55295.038854404,
+      "elapsed_wall": 0.00023604299349244684,
+      "elapsed_thread_cpu": 0.00023364299999995009,
+      "error": null
+    },
+    {
+      "label": "observer.finally",
+      "barrier_states": [
+        true,
+        true
+      ]
+    }
+  ],
+  "reports": [
+    {
+      "when": "setup",
+      "outcome": "passed",
+      "duration": 0.0011416829947847873,
+      "failure": null
+    },
+    {
+      "when": "call",
+      "outcome": "passed",
+      "duration": 0.10702473200217355,
+      "failure": null
+    },
+    {
+      "when": "teardown",
+      "outcome": "passed",
+      "duration": 0.00962122300552437,
+      "failure": null
+    }
+  ],
+  "orca_child": false,
+  "suite_exit_code": 0
+}

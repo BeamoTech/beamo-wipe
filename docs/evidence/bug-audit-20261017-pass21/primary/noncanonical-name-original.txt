@@ -1,0 +1,471 @@
+...FFFFFFFFFFFF...FFFFFFFFFFFF                                           [100%]
+=================================== FAILURES ===================================
+_ test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[./sda-direct] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b2200>
+route = 'direct', name = './sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence(
+        lexical_fake_machine, route, name,
+    ):
+        target = _target(lexical_fake_machine, route, name)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:72: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[./sda-injected] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b2b60>
+route = 'injected', name = './sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence(
+        lexical_fake_machine, route, name,
+    ):
+        target = _target(lexical_fake_machine, route, name)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:72: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[./sda-production-metadata-stub] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b0680>
+route = 'production-metadata-stub', name = './sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence(
+        lexical_fake_machine, route, name,
+    ):
+        target = _target(lexical_fake_machine, route, name)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:72: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[x/../sda-direct] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b1f80>
+route = 'direct', name = 'x/../sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence(
+        lexical_fake_machine, route, name,
+    ):
+        target = _target(lexical_fake_machine, route, name)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:72: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[x/../sda-injected] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b1da0>
+route = 'injected', name = 'x/../sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence(
+        lexical_fake_machine, route, name,
+    ):
+        target = _target(lexical_fake_machine, route, name)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:72: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[x/../sda-production-metadata-stub] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b2b60>
+route = 'production-metadata-stub', name = 'x/../sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence(
+        lexical_fake_machine, route, name,
+    ):
+        target = _target(lexical_fake_machine, route, name)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:72: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda/-direct] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b2520>
+route = 'direct', name = 'sda/'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence(
+        lexical_fake_machine, route, name,
+    ):
+        target = _target(lexical_fake_machine, route, name)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:72: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda/-injected] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b3060>
+route = 'injected', name = 'sda/'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence(
+        lexical_fake_machine, route, name,
+    ):
+        target = _target(lexical_fake_machine, route, name)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:72: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda/-production-metadata-stub] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b3380>
+route = 'production-metadata-stub', name = 'sda/'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence(
+        lexical_fake_machine, route, name,
+    ):
+        target = _target(lexical_fake_machine, route, name)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:72: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[/sda-direct] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b3740>
+route = 'direct', name = '/sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence(
+        lexical_fake_machine, route, name,
+    ):
+        target = _target(lexical_fake_machine, route, name)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:72: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[/sda-injected] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b2200>
+route = 'injected', name = '/sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence(
+        lexical_fake_machine, route, name,
+    ):
+        target = _target(lexical_fake_machine, route, name)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:72: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[/sda-production-metadata-stub] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b3c40>
+route = 'production-metadata-stub', name = '/sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence(
+        lexical_fake_machine, route, name,
+    ):
+        target = _target(lexical_fake_machine, route, name)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:72: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[./sda-direct] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b2700>
+route = 'direct', name = './sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout(
+        lexical_fake_machine, route, name,
+    ):
+        before = _target(lexical_fake_machine, route, name)
+        after = _target(lexical_fake_machine, route, name, uuid="fake-after")
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='./sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128'...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='./sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128'...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='./sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128'...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='./sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128'...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:83: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[./sda-injected] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b27a0>
+route = 'injected', name = './sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout(
+        lexical_fake_machine, route, name,
+    ):
+        before = _target(lexical_fake_machine, route, name)
+        after = _target(lexical_fake_machine, route, name, uuid="fake-after")
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='./sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128'...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='./sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128'...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='./sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128'...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='./sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128'...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:83: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[./sda-production-metadata-stub] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b3c40>
+route = 'production-metadata-stub', name = './sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout(
+        lexical_fake_machine, route, name,
+    ):
+        before = _target(lexical_fake_machine, route, name)
+        after = _target(lexical_fake_machine, route, name, uuid="fake-after")
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='./sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128'...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='./sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128'...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='./sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128'...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='./sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128'...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:83: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[x/../sda-direct] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b34c0>
+route = 'direct', name = 'x/../sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout(
+        lexical_fake_machine, route, name,
+    ):
+        before = _target(lexical_fake_machine, route, name)
+        after = _target(lexical_fake_machine, route, name, uuid="fake-after")
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='x/../sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='1...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='x/../sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='1...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='x/../sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='1...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='x/../sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='1...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:83: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[x/../sda-injected] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b3740>
+route = 'injected', name = 'x/../sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout(
+        lexical_fake_machine, route, name,
+    ):
+        before = _target(lexical_fake_machine, route, name)
+        after = _target(lexical_fake_machine, route, name, uuid="fake-after")
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='x/../sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='1...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='x/../sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='1...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='x/../sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='1...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='x/../sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='1...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:83: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[x/../sda-production-metadata-stub] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c6b05e0>
+route = 'production-metadata-stub', name = 'x/../sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout(
+        lexical_fake_machine, route, name,
+    ):
+        before = _target(lexical_fake_machine, route, name)
+        after = _target(lexical_fake_machine, route, name, uuid="fake-after")
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='x/../sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='1...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='x/../sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='1...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='x/../sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='1...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='x/../sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='1...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:83: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda/-direct] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c724040>
+route = 'direct', name = 'sda/'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout(
+        lexical_fake_machine, route, name,
+    ):
+        before = _target(lexical_fake_machine, route, name)
+        after = _target(lexical_fake_machine, route, name, uuid="fake-after")
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='sda/', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='sda/', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='sda/', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='sda/', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:83: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda/-injected] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c7254e0>
+route = 'injected', name = 'sda/'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout(
+        lexical_fake_machine, route, name,
+    ):
+        before = _target(lexical_fake_machine, route, name)
+        after = _target(lexical_fake_machine, route, name, uuid="fake-after")
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='sda/', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='sda/', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='sda/', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='sda/', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:83: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda/-production-metadata-stub] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c725760>
+route = 'production-metadata-stub', name = 'sda/'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout(
+        lexical_fake_machine, route, name,
+    ):
+        before = _target(lexical_fake_machine, route, name)
+        after = _target(lexical_fake_machine, route, name, uuid="fake-after")
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='sda/', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='sda/', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='sda/', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='sda/', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:83: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[/sda-direct] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c724360>
+route = 'direct', name = '/sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout(
+        lexical_fake_machine, route, name,
+    ):
+        before = _target(lexical_fake_machine, route, name)
+        after = _target(lexical_fake_machine, route, name, uuid="fake-after")
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='/sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='/sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='/sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='/sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:83: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[/sda-injected] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c725c60>
+route = 'injected', name = '/sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout(
+        lexical_fake_machine, route, name,
+    ):
+        before = _target(lexical_fake_machine, route, name)
+        after = _target(lexical_fake_machine, route, name, uuid="fake-after")
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='/sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='/sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='/sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='/sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:83: AssertionError
+_ test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[/sda-production-metadata-stub] _
+
+lexical_fake_machine = <function fake_machine.<locals>.scan at 0x71ec0c725ee0>
+route = 'production-metadata-stub', name = '/sda'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name", NAMES)
+    def test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout(
+        lexical_fake_machine, route, name,
+    ):
+        before = _target(lexical_fake_machine, route, name)
+        after = _target(lexical_fake_machine, route, name, uuid="fake-after")
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='/sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='/sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='/sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='/sda', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128',...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py:83: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[./sda-direct]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[./sda-injected]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[./sda-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[x/../sda-direct]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[x/../sda-injected]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[x/../sda-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda/-direct]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda/-injected]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[sda/-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[/sda-direct]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[/sda-injected]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_drop_flat_evidence[/sda-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[./sda-direct]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[./sda-injected]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[./sda-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[x/../sda-direct]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[x/../sda-injected]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[x/../sda-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda/-direct]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda/-injected]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[sda/-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[/sda-direct]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[/sda-injected]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py::test_lexically_equivalent_noncanonical_name_cannot_merge_changed_layout[/sda-production-metadata-stub]

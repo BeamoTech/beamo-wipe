@@ -1,0 +1,10 @@
+Working directory: /root/dev/Beamo Wipe
+
+Original regression proof (before product edit), exit1, 101 tests /67 failures /34 controls /0errors /0skips:
+PYTHONPATH=src /tmp/beamo-wipe-audit-python/bin/python3 -m pytest -q tests/test_runner_prefixed_error_context_pass12.py --junitxml=/tmp/pass12-runner/original.xml > /tmp/pass12-runner/original.txt 2>&1
+
+Fixed regressions and adjacent selection, exit0, 372 tests /0failures /0errors /0skips:
+PYTHONPATH=src /tmp/beamo-wipe-audit-python/bin/python3 -m pytest -q $(cat /tmp/pass12-runner/fixed-selection.txt) --junitxml=/tmp/pass12-runner/fixed-adjacent.xml > /tmp/pass12-runner/fixed-adjacent.txt 2>&1
+
+Fixed source/test Ruff, exit0:
+/tmp/beamo-wipe-audit-python/bin/ruff check src/beamo_wipe/nwipe_runner.py tests/test_runner_prefixed_error_context_pass12.py > /tmp/pass12-runner/ruff.txt 2>&1

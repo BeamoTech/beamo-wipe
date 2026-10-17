@@ -1,0 +1,3060 @@
+{
+  "exit_code": 1,
+  "rows": [
+    {
+      "nodeid": "::test_audio_fixture_releases_its_controlled_worker_on_first_failure[slow-click]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "monkeypatch",
+        "failure"
+      ]
+    },
+    {
+      "nodeid": "::test_audio_fixture_releases_its_controlled_worker_on_first_failure[slow-click]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "::test_audio_fixture_releases_its_controlled_worker_on_first_failure[slow-click]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "::test_audio_fixture_releases_its_controlled_worker_on_first_failure[slow-click]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "::test_audio_fixture_releases_its_controlled_worker_on_first_failure[click-exception]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "monkeypatch",
+        "failure"
+      ]
+    },
+    {
+      "nodeid": "::test_audio_fixture_releases_its_controlled_worker_on_first_failure[click-exception]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "::test_audio_fixture_releases_its_controlled_worker_on_first_failure[click-exception]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "::test_audio_fixture_releases_its_controlled_worker_on_first_failure[click-exception]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[row-boolean]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "monkeypatch",
+        "kind",
+        "lifecycle"
+      ]
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[row-boolean]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[row-boolean]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[row-boolean]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[row-integer]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "monkeypatch",
+        "kind",
+        "lifecycle"
+      ]
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[row-integer]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[row-integer]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[row-integer]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[parent-boolean]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "monkeypatch",
+        "kind",
+        "lifecycle"
+      ]
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[parent-boolean]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[parent-boolean]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[parent-boolean]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[parent-integer]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "monkeypatch",
+        "kind",
+        "lifecycle"
+      ]
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[parent-integer]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[parent-integer]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[parent-integer]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[redraw-clear-boolean]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "monkeypatch",
+        "kind",
+        "lifecycle"
+      ]
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[redraw-clear-boolean]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[redraw-clear-boolean]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[redraw-clear-boolean]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[redraw-clear-integer]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "monkeypatch",
+        "kind",
+        "lifecycle"
+      ]
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[redraw-clear-integer]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[redraw-clear-integer]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "::test_native_trace_fixture_releases_its_independent_peer[redraw-clear-integer]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_teardown_retires_owned_traces_preserves_peer_and_state[False-confirm]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "native_effects_forbidden",
+        "request",
+        "kind",
+        "repeated",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_teardown_retires_owned_traces_preserves_peer_and_state[False-confirm]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_teardown_retires_owned_traces_preserves_peer_and_state[False-confirm]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_teardown_retires_owned_traces_preserves_peer_and_state[False-confirm]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_teardown_retires_owned_traces_preserves_peer_and_state[False-typing]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "native_effects_forbidden",
+        "request",
+        "kind",
+        "repeated",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_teardown_retires_owned_traces_preserves_peer_and_state[False-typing]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_teardown_retires_owned_traces_preserves_peer_and_state[False-typing]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_teardown_retires_owned_traces_preserves_peer_and_state[False-typing]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_teardown_retires_owned_traces_preserves_peer_and_state[True-confirm]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "native_effects_forbidden",
+        "request",
+        "kind",
+        "repeated",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_teardown_retires_owned_traces_preserves_peer_and_state[True-confirm]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_teardown_retires_owned_traces_preserves_peer_and_state[True-confirm]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_teardown_retires_owned_traces_preserves_peer_and_state[True-confirm]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_teardown_retires_owned_traces_preserves_peer_and_state[True-typing]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "native_effects_forbidden",
+        "request",
+        "kind",
+        "repeated",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_teardown_retires_owned_traces_preserves_peer_and_state[True-typing]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_teardown_retires_owned_traces_preserves_peer_and_state[True-typing]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_teardown_retires_owned_traces_preserves_peer_and_state[True-typing]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_live_owner_traces_still_apply_exact_input[confirm]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "native_effects_forbidden",
+        "kind",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_live_owner_traces_still_apply_exact_input[confirm]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_live_owner_traces_still_apply_exact_input[confirm]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_live_owner_traces_still_apply_exact_input[confirm]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_live_owner_traces_still_apply_exact_input[typing]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "native_effects_forbidden",
+        "kind",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_live_owner_traces_still_apply_exact_input[typing]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_live_owner_traces_still_apply_exact_input[typing]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_live_owner_traces_still_apply_exact_input[typing]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_destroyed_app_and_local_variables_can_be_collected[confirm]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "native_effects_forbidden",
+        "request",
+        "kind",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_destroyed_app_and_local_variables_can_be_collected[confirm]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_destroyed_app_and_local_variables_can_be_collected[confirm]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_destroyed_app_and_local_variables_can_be_collected[confirm]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_destroyed_app_and_local_variables_can_be_collected[typing]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "native_effects_forbidden",
+        "request",
+        "kind",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_destroyed_app_and_local_variables_can_be_collected[typing]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_destroyed_app_and_local_variables_can_be_collected[typing]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py"
+    },
+    {
+      "nodeid": "tests/test_tk_owner_trace_lifetime_pass19.py::test_destroyed_app_and_local_variables_can_be_collected[typing]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[row-boolean]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "request",
+        "kind",
+        "lifecycle",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[row-boolean]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[row-boolean]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[row-boolean]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[row-integer]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "request",
+        "kind",
+        "lifecycle",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[row-integer]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[row-integer]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[row-integer]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[parent-boolean]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "request",
+        "kind",
+        "lifecycle",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[parent-boolean]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[parent-boolean]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[parent-boolean]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[parent-integer]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "request",
+        "kind",
+        "lifecycle",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[parent-integer]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[parent-integer]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[parent-integer]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[redraw-clear-boolean]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "request",
+        "kind",
+        "lifecycle",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[redraw-clear-boolean]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[redraw-clear-boolean]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[redraw-clear-boolean]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[redraw-clear-integer]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "request",
+        "kind",
+        "lifecycle",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[redraw-clear-integer]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[redraw-clear-integer]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_retained_variable_does_not_call_a_destroyed_row[redraw-clear-integer]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[row-boolean]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "request",
+        "kind",
+        "lifecycle",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[row-boolean]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[row-boolean]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[row-boolean]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[row-integer]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "request",
+        "kind",
+        "lifecycle",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[row-integer]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[row-integer]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[row-integer]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[parent-boolean]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "request",
+        "kind",
+        "lifecycle",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[parent-boolean]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[parent-boolean]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[parent-boolean]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[parent-integer]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "request",
+        "kind",
+        "lifecycle",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[parent-integer]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[parent-integer]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[parent-integer]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[redraw-clear-boolean]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "request",
+        "kind",
+        "lifecycle",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[redraw-clear-boolean]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[redraw-clear-boolean]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[redraw-clear-boolean]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[redraw-clear-integer]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "request",
+        "kind",
+        "lifecycle",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[redraw-clear-integer]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[redraw-clear-integer]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_destroyed_local_row_and_variable_are_collectable[redraw-clear-integer]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[False-0-boolean]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "kind",
+        "initial",
+        "retire_first",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[False-0-boolean]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[False-0-boolean]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[False-0-boolean]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[False-0-integer]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "kind",
+        "initial",
+        "retire_first",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[False-0-integer]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[False-0-integer]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[False-0-integer]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[False-1-boolean]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "kind",
+        "initial",
+        "retire_first",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[False-1-boolean]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[False-1-boolean]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[False-1-boolean]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[False-1-integer]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "kind",
+        "initial",
+        "retire_first",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[False-1-integer]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[False-1-integer]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[False-1-integer]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-0-boolean]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "kind",
+        "initial",
+        "retire_first",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-0-boolean]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-0-boolean]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-0-boolean]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-0-integer]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "kind",
+        "initial",
+        "retire_first",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-0-integer]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-0-integer]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-0-integer]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-1-boolean]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "kind",
+        "initial",
+        "retire_first",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-1-boolean]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-1-boolean]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-1-boolean]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-1-integer]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "fake_effects",
+        "native_root",
+        "kind",
+        "initial",
+        "retire_first",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-1-integer]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-1-integer]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py"
+    },
+    {
+      "nodeid": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-1-integer]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "when": "before-setup",
+      "fixtures": [
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_accessible_runtime.py::test_sound_check_dialog_plays_test_and_switches_output",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_accessible_runtime.py::test_sound_check_dialog_reports_no_audio_and_orca_failure",
+      "when": "before-setup",
+      "fixtures": [
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_accessible_runtime.py::test_sound_check_dialog_reports_no_audio_and_orca_failure",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_accessible_runtime.py::test_sound_check_dialog_reports_no_audio_and_orca_failure",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_accessible_runtime.py::test_sound_check_dialog_reports_no_audio_and_orca_failure",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_accessible_runtime.py::test_sound_check_dialog_toggles_and_hears_outcome_sounds",
+      "when": "before-setup",
+      "fixtures": [
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_accessible_runtime.py::test_sound_check_dialog_toggles_and_hears_outcome_sounds",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_accessible_runtime.py::test_sound_check_dialog_toggles_and_hears_outcome_sounds",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_accessible_runtime.py::test_sound_check_dialog_toggles_and_hears_outcome_sounds",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_accessible_runtime.py::test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog",
+      "when": "before-setup",
+      "fixtures": [
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_accessible_runtime.py::test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_accessible_runtime.py::test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_accessible_runtime.py::test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_fullscreen_kiosk_has_fixed_display_geometry_without_window_manager",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_fullscreen_kiosk_has_fixed_display_geometry_without_window_manager",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_fullscreen_kiosk_has_fixed_display_geometry_without_window_manager",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_fullscreen_kiosk_has_fixed_display_geometry_without_window_manager",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[keyboard-size0]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[keyboard-size0]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[keyboard-size0]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[keyboard-size0]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[keyboard-size1]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[keyboard-size1]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[keyboard-size1]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[keyboard-size1]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[keyboard-size2]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[keyboard-size2]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[keyboard-size2]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[keyboard-size2]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[keyboard-size3]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[keyboard-size3]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[keyboard-size3]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[keyboard-size3]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[owner-size0]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[owner-size0]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[owner-size0]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[owner-size0]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[owner-size1]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[owner-size1]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[owner-size1]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[owner-size1]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[owner-size2]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[owner-size2]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[owner-size2]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[owner-size2]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[owner-size3]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[owner-size3]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[owner-size3]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[owner-size3]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[pick-size0]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[pick-size0]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[pick-size0]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[pick-size0]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[pick-size1]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[pick-size1]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[pick-size1]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[pick-size1]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[pick-size2]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[pick-size2]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[pick-size2]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[pick-size2]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[pick-size3]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[pick-size3]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[pick-size3]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[pick-size3]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[confirm-size0]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[confirm-size0]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[confirm-size0]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[confirm-size0]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[confirm-size1]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[confirm-size1]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[confirm-size1]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[confirm-size1]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[confirm-size2]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[confirm-size2]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[confirm-size2]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[confirm-size2]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[confirm-size3]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[confirm-size3]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[confirm-size3]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[confirm-size3]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[method-size0]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[method-size0]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[method-size0]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[method-size0]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[method-size1]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[method-size1]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[method-size1]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[method-size1]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[method-size2]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[method-size2]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[method-size2]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[method-size2]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[method-size3]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[method-size3]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[method-size3]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[method-size3]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[advanced-size0]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[advanced-size0]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[advanced-size0]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[advanced-size0]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[advanced-size1]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[advanced-size1]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[advanced-size1]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[advanced-size1]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[advanced-size2]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[advanced-size2]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[advanced-size2]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[advanced-size2]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[advanced-size3]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[advanced-size3]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[advanced-size3]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[advanced-size3]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[last_chance-size0]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[last_chance-size0]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[last_chance-size0]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[last_chance-size0]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[last_chance-size1]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[last_chance-size1]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[last_chance-size1]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[last_chance-size1]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[last_chance-size2]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[last_chance-size2]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[last_chance-size2]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[last_chance-size2]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[last_chance-size3]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "screen",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[last_chance-size3]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[last_chance-size3]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_screen_fits_without_clipping[last_chance-size3]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_refresh_returns_while_scan_runs",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_refresh_returns_while_scan_runs",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_refresh_returns_while_scan_runs",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_refresh_returns_while_scan_runs",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_refresh_failure_blocks_closed",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_refresh_failure_blocks_closed",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_refresh_failure_blocks_closed",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_refresh_failure_blocks_closed",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_duplicate_refresh_runs_single_scan",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_duplicate_refresh_runs_single_scan",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_duplicate_refresh_runs_single_scan",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_duplicate_refresh_runs_single_scan",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_close_during_scan_drops_silently",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_close_during_scan_drops_silently",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_close_during_scan_drops_silently",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_close_during_scan_drops_silently",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_accessible_refresh_opens_reader",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_accessible_refresh_opens_reader",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_accessible_refresh_opens_reader",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_accessible_refresh_opens_reader",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[pick-size0]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "size",
+        "screen",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[pick-size0]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[pick-size0]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[pick-size0]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[pick-size1]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "size",
+        "screen",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[pick-size1]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[pick-size1]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[pick-size1]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[confirm-size0]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "size",
+        "screen",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[confirm-size0]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[confirm-size0]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[confirm-size0]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[confirm-size1]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "size",
+        "screen",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[confirm-size1]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[confirm-size1]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[confirm-size1]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[last_chance-size0]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "size",
+        "screen",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[last_chance-size0]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[last_chance-size0]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[last_chance-size0]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[last_chance-size1]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "size",
+        "screen",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[last_chance-size1]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[last_chance-size1]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_long_identity_never_clips[last_chance-size1]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_status_screens_fit[size0]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_status_screens_fit[size0]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_status_screens_fit[size0]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_status_screens_fit[size0]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_status_screens_fit[size1]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_status_screens_fit[size1]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_status_screens_fit[size1]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_status_screens_fit[size1]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_blocked_and_empty_use_recovery_section_labels",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_blocked_and_empty_use_recovery_section_labels",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_blocked_and_empty_use_recovery_section_labels",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_blocked_and_empty_use_recovery_section_labels",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_done_screen_fits[size0]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_done_screen_fits[size0]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_done_screen_fits[size0]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_done_screen_fits[size0]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_done_screen_fits[size1]",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "size",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_done_screen_fits[size1]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_done_screen_fits[size1]",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_done_screen_fits[size1]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_keyboard_only_flow_reaches_working",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_keyboard_only_flow_reaches_working",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_keyboard_only_flow_reaches_working",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_keyboard_only_flow_reaches_working",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_enter_does_not_erase_when_countdown_completes",
+      "when": "before-setup",
+      "fixtures": [
+        "tmp_path_factory",
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "tmp_path",
+        "monkeypatch",
+        "request"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_enter_does_not_erase_when_countdown_completes",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_enter_does_not_erase_when_countdown_completes",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_enter_does_not_erase_when_countdown_completes",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_x11_release_press_autorepeat_pair_is_one_held_enter",
+      "when": "before-setup",
+      "fixtures": [
+        "tmp_path_factory",
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "tmp_path",
+        "monkeypatch",
+        "request"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_x11_release_press_autorepeat_pair_is_one_held_enter",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_x11_release_press_autorepeat_pair_is_one_held_enter",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_x11_release_press_autorepeat_pair_is_one_held_enter",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_enter_does_not_skip_method_after_confirm",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_enter_does_not_skip_method_after_confirm",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_enter_does_not_skip_method_after_confirm",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_enter_does_not_skip_method_after_confirm",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_enter_does_not_shutdown_pick_empty",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_enter_does_not_shutdown_pick_empty",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_enter_does_not_shutdown_pick_empty",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_enter_does_not_shutdown_pick_empty",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_enter_does_not_shutdown_failed_done",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_enter_does_not_shutdown_failed_done",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_enter_does_not_shutdown_failed_done",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_enter_does_not_shutdown_failed_done",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_space_does_not_shutdown_pick_empty",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_space_does_not_shutdown_pick_empty",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_space_does_not_shutdown_pick_empty",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_space_does_not_shutdown_pick_empty",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_space_does_not_shutdown_failed_done",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_space_does_not_shutdown_failed_done",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_space_does_not_shutdown_failed_done",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_held_space_does_not_shutdown_failed_done",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_x11_space_release_press_pair_does_not_shutdown_done",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_x11_space_release_press_pair_does_not_shutdown_done",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_x11_space_release_press_pair_does_not_shutdown_done",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_x11_space_release_press_pair_does_not_shutdown_done",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_space_report_export_retargets_focus_before_worker_starts",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_space_report_export_retargets_focus_before_worker_starts",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_space_report_export_retargets_focus_before_worker_starts",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_space_report_export_retargets_focus_before_worker_starts",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_space_release_finishes_while_idle_queue_is_busy",
+      "when": "before-setup",
+      "fixtures": [
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "monkeypatch"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_space_release_finishes_while_idle_queue_is_busy",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_space_release_finishes_while_idle_queue_is_busy",
+      "when": "call",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_space_release_finishes_while_idle_queue_is_busy",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_isolated_x11_physical_space_release_after_report[0]",
+      "when": "before-setup",
+      "fixtures": [
+        "tmp_path_factory",
+        "reject_native_effects",
+        "_isolate_beamo_env",
+        "_never_a_live_wipe_session",
+        "_reset_ui_language",
+        "ui",
+        "tmp_path",
+        "monkeypatch",
+        "run",
+        "request"
+      ]
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_isolated_x11_physical_space_release_after_report[0]",
+      "when": "setup",
+      "outcome": "passed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_isolated_x11_physical_space_release_after_report[0]",
+      "when": "call",
+      "outcome": "failed",
+      "popen_source": "/tmp/pass19-primary/fixture_release_probe.py"
+    },
+    {
+      "nodeid": "tests/test_tk_runtime.py::test_isolated_x11_physical_space_release_after_report[0]",
+      "when": "teardown",
+      "outcome": "passed",
+      "popen_source": "native class"
+    }
+  ]
+}

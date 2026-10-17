@@ -1,0 +1,16 @@
+{
+  "src/beamo_wipe/ui/console_wizard.py": {
+    "reviewed_sha256": "d9f78e2470823629b31c9e7b755a76efc61b03a06f03153834b27c47661e2fd8",
+    "starting_sha256": "1c3dc2f6839b7a4b1c7d43225b2175b7bc8b5f5d2b5af63aa17725c417c5ded5"
+  },
+  "src/beamo_wipe/ui/tk_wizard.py": {
+    "reviewed_sha256": "612792b7c1328741cd8a194abd90cb297629b0f281cbf30538ca9bb9ae45f50d",
+    "starting_sha256": "bb64632df587965f41afc70efe2201d3b776579038d680c3a2405319764f170d"
+  },
+  "tests/test_checkrow_trace_lifetime_pass18.py": {
+    "reviewed_sha256": "66082de1ee8593474ca08d330d65832692ffffe8d734115a10e940f969d94702"
+  },
+  "tests/test_curses_rendered_erase_gate_pass18.py": {
+    "reviewed_sha256": "79e26621c7fd6dc4d20180be6b8fa619748e1852813dac190e57f76cf606a590"
+  }
+}

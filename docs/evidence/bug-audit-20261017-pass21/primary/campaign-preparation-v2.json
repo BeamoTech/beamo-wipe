@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-17T21:15:44.032033+00:00",
+  "supersedes_preparation_sha256": "6e91b5696444a3476a5b697ad34d427c52581292ff0b00ab4a8af56c605493fd",
+  "change": "Two campaign module docstrings corrected from Pass20 to Pass21; runtime statements unchanged, prior preparation retained. Canonical 788 source inputs unchanged.",
+  "scripts": {
+    "docs/evidence/bug-audit-20261017-pass21/runner/fresh-boundaries.py": "4e25fed73116926daa27a61fcb63c1ed9725111308c47beec054a79a21897950",
+    "docs/evidence/bug-audit-20261017-pass21/runner/cancel-boundaries.py": "107fa8f7ad7c4f1728e9ff5d51d1759689481574d538c36d01d44eca88502c33"
+  },
+  "execution": "NOT RUN; final main gate remains active"
+}

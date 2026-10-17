@@ -1,0 +1,187 @@
+--- starting/tests/test_tk_input_scroll_pass13.py
++++ final/tests/test_tk_input_scroll_pass13.py
+@@ -193,15 +193,29 @@
+         finally:
+             app._teardown()
+ 
+-    app.root.after(140, inspect)
++    original_draw = app._draw
++    mapped_draws = []
++
++    def observe_draw():
++        original_draw()
++        if app.root.winfo_ismapped() and not mapped_draws:
++            mapped_draws.append(True)
++            app.root.after(140, inspect)
++
++    # Observe the mapped startup renderer before measuring its child focus.
++    # Constructor/pre-map time cannot establish native child-focus readiness.
++    app._draw = observe_draw
++    app.root.after(2000, app._teardown)
+     try:
+         assert app.run() == 0
++        assert mapped_draws
+         assert not errors
+         assert seen and all(seen)
+         assert (wizard.screen, wizard.owner_ok, wizard.selected, wizard.confirm_input,
+                 wizard.method, wizard._erase_until, wizard._authorized_operation) == before
+         assert wizard._wipe_request is None
+     finally:
++        app._draw = original_draw
+         app._teardown()
+ 
+ 
+--- starting/tests/test_accessible_key_repeat.py
++++ final/tests/test_accessible_key_repeat.py
+@@ -21,7 +21,7 @@
+         node
+         for node in wizard.body
+         if isinstance(node, ast.FunctionDef)
+-        and node.name in {"_key_press", "_key_release"}
++        and node.name in {"_key_press", "_key_release", "_remember_key_press"}
+     ]
+     gdk = SimpleNamespace(
+         KEY_Return=1,
+@@ -34,17 +34,17 @@
+     )
+     copy = SimpleNamespace(BTN_ERASE="Erase now", BTN_BACK="Back")
+     namespace = {"Gdk": gdk, "C": copy, "Screen": Screen}
+-    # Run only the two checked-in handlers so this test works without GTK on macOS.
++    # Run only the checked-in handlers and their shared guard so this test works without GTK on macOS.
+     exec(  # noqa: S102
+         compile(ast.Module(body=methods, type_ignores=[]), str(source), "exec"),
+         namespace,
+     )
+-    return namespace["_key_press"], namespace["_key_release"], gdk, copy
++    return namespace["_key_press"], namespace["_key_release"], namespace["_remember_key_press"], gdk, copy
+ 
+ 
+ @pytest.mark.parametrize("enter_key", ["KEY_Return", "KEY_KP_Enter"])
+ def test_gtk_x11_repeat_cannot_erase_when_countdown_expires(enter_key):
+-    key_press, key_release, gdk, copy = _key_handlers()
++    key_press, key_release, remember_key_press, gdk, copy = _key_handlers()
+     clicks = []
+     button = SimpleNamespace(
+         get_sensitive=lambda: button.enabled,
+@@ -59,6 +59,7 @@
+         window=window,
+         actions={copy.BTN_ERASE: button},
+     )
++    app._remember_key_press = MethodType(remember_key_press, app)
+     app._key_press = MethodType(key_press, app)
+     app._key_release = MethodType(key_release, app)
+ 
+@@ -75,7 +76,7 @@
+ 
+ 
+ def test_gtk_x11_repeat_cannot_skip_refresh_confirmation():
+-    key_press, key_release, gdk, _ = _key_handlers()
++    key_press, key_release, remember_key_press, gdk, _ = _key_handlers()
+     scans = []
+     wizard = SimpleNamespace(screen=Screen.OWNER, can_refresh=True)
+     wizard.open_refresh_confirm = lambda: setattr(
+@@ -88,6 +89,7 @@
+         render=lambda: None,
+         _begin_refresh_scan=lambda: scans.append(1),
+     )
++    app._remember_key_press = MethodType(remember_key_press, app)
+     app._key_press = MethodType(key_press, app)
+     app._key_release = MethodType(key_release, app)
+     event = SimpleNamespace(keyval=gdk.KEY_F5, time=1000)
+@@ -104,7 +106,7 @@
+ 
+ 
+ def test_gtk_held_escape_keeps_stop_confirmation_open():
+-    key_press, key_release, gdk, _ = _key_handlers()
++    key_press, key_release, remember_key_press, gdk, _ = _key_handlers()
+     wizard = SimpleNamespace(screen=Screen.WORKING, stop_confirmation=None)
+     wizard.request_stop = lambda: setattr(wizard, "stop_confirmation", object())
+     wizard.keep_erasing = lambda: setattr(wizard, "stop_confirmation", None)
+@@ -114,6 +116,7 @@
+         _release_times={},
+         render=lambda: None,
+     )
++    app._remember_key_press = MethodType(remember_key_press, app)
+     app._key_press = MethodType(key_press, app)
+     app._key_release = MethodType(key_release, app)
+ 
+--- starting/tests/test_accessible_last_chance_actions_pass12_ui.py
++++ final/tests/test_accessible_last_chance_actions_pass12_ui.py
+@@ -20,7 +20,7 @@
+     methods = [
+         node for node in wizard.body
+         if isinstance(node, ast.FunctionDef)
+-        and node.name in {"_key_press", "_key_release"}
++        and node.name in {"_key_press", "_key_release", "_remember_key_press"}
+     ]
+     gdk = SimpleNamespace(
+         KEY_Return=1, KEY_KP_Enter=2, KEY_space=3, KEY_F5=4,
+@@ -31,12 +31,12 @@
+         compile(ast.Module(body=methods, type_ignores=[]), str(source), "exec"),
+         namespace,
+     )
+-    return namespace["_key_press"], namespace["_key_release"], gdk
++    return namespace["_key_press"], namespace["_key_release"], namespace["_remember_key_press"], gdk
+ 
+ 
+ @pytest.mark.parametrize("utility", [C.KEYBOARD_UTILITY, C.BTN_REFRESH_UTILITY, C.DIAGNOSTIC_TITLE])
+ def test_enter_activates_focused_last_chance_utility_once(utility):
+-    key_press, key_release, gdk = _key_handlers()
++    key_press, key_release, remember_key_press, gdk = _key_handlers()
+     clicks = []
+     button = SimpleNamespace(
+         get_sensitive=lambda: True,
+@@ -48,6 +48,7 @@
+         held=set(), _release_times={}, window=window,
+         actions={C.BTN_ERASE: None, C.BTN_BACK: None, utility: button},
+     )
++    app._remember_key_press = MethodType(remember_key_press, app)
+     app._key_press = MethodType(key_press, app)
+     app._key_release = MethodType(key_release, app)
+ 
+@@ -61,7 +62,7 @@
+ 
+ 
+ def test_last_chance_enter_on_warning_cannot_start_erase():
+-    key_press, _key_release, gdk = _key_handlers()
++    key_press, _key_release, remember_key_press, gdk = _key_handlers()
+     clicks = []
+     erase = SimpleNamespace(get_sensitive=lambda: True, clicked=lambda: clicks.append("erase"))
+     warning = object()
+@@ -71,6 +72,7 @@
+         held=set(), _release_times={}, window=window,
+         actions={C.BTN_ERASE: erase},
+     )
++    app._remember_key_press = MethodType(remember_key_press, app)
+     app._key_press = MethodType(key_press, app)
+ 
+     assert app._key_press(window, SimpleNamespace(keyval=gdk.KEY_Return, time=1000))
+@@ -79,7 +81,7 @@
+ 
+ @pytest.mark.parametrize("focused", [None, "stale", "disabled"])
+ def test_last_chance_enter_needs_a_current_enabled_control(focused):
+-    key_press, _key_release, gdk = _key_handlers()
++    key_press, _key_release, remember_key_press, gdk = _key_handlers()
+     clicks = []
+     disabled = SimpleNamespace(
+         get_sensitive=lambda: False,
+@@ -96,6 +98,7 @@
+         held=set(), _release_times={}, window=window,
+         actions={C.BTN_ERASE: None, C.BTN_BACK: disabled},
+     )
++    app._remember_key_press = MethodType(remember_key_press, app)
+     app._key_press = MethodType(key_press, app)
+ 
+     assert app._key_press(window, SimpleNamespace(keyval=gdk.KEY_Return, time=1000))
+--- starting/tests/test_pick_scroll_restore.py
++++ final/tests/test_pick_scroll_restore.py
+@@ -23,6 +23,9 @@
+         self.height = 400
+         self.content = 1000
+         self.top = 0.0
++
++    def winfo_children(self):
++        return []  # Tcl-only leaf fixture; it has no Tk widget hierarchy.
+ 
+     def bbox(self, _tag):
+         return (0, 0, 500, self.content)

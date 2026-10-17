@@ -1,0 +1,16 @@
+{
+  "source_sha256": "3a994c9daf370f958e96a14577e66b9877af6282c42f566f958cdeb17ab3f8b6",
+  "rejected_ticket_ready": true,
+  "rejected_ticket_type": "RuntimeError",
+  "spawned_worker_threads": 2,
+  "first_started_action_active": true,
+  "second_action_also_started": true,
+  "prior_ticket_cancelled": true,
+  "all_actions_fake": true,
+  "owned_threads_retired": true
+}
+Traceback (most recent call last):
+  File "/tmp/pass14-primary/audio-start-probe.py", line 69, in <module>
+    assert not trace['second_action_also_started'], 'bounded audio worker ran two fake actions concurrently after launch error'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: bounded audio worker ran two fake actions concurrently after launch error

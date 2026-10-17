@@ -1,0 +1,159 @@
+{
+  "status": "SOURCE REVIEW PASS; no candidate imports/runtime/tests/threads by author",
+  "source_sha256": "3f702e1ac6c3564372f9b633a2dcf0ea3e9d46553e29ceaf4cfa781e181e8ea7",
+  "runtime_source_sha256_from_authenticated_root_manifest": "c3a9b4c2145e86203eb7669e5073b0fb7de0a932eb2920b5b881c58fba6af2aa",
+  "all_frozen_current_inputs_authenticated": 779,
+  "all_frozen_archive_streams_authenticated": 779,
+  "reviewed_canonical_modules": [
+    {
+      "path": "tests/test_audio_launch_acceptance_pass20.py",
+      "sha256": "1660507881ea7adef425de04b19b11429d3df0c2a8e5a6ac636ccc5b62744a42",
+      "cases": 6,
+      "test_functions": [
+        {
+          "name": "test_failed_acceptance_rejects_handed_off_target",
+          "cases": 6
+        }
+      ]
+    },
+    {
+      "path": "tests/test_audio_launch_interruptions_pass20.py",
+      "sha256": "bb03ad8879937649b6a22a55508f9a9f7c17b0189e7e8d657f56f8a6870b2cb7",
+      "cases": 18,
+      "test_functions": [
+        {
+          "name": "test_rejected_launch_releases_ticket_and_allows_retry",
+          "cases": 18
+        }
+      ]
+    },
+    {
+      "path": "tests/test_holder_ancestor_mount_pass20.py",
+      "sha256": "19d12021905905b140a1f97820a9b0c7a02c1f9214f034f84dc82d81451adea1",
+      "cases": 44,
+      "test_functions": [
+        {
+          "name": "test_opened_mount_preserves_ancestor_member_uncertainty",
+          "cases": 20
+        },
+        {
+          "name": "test_blank_unmounted_holder_chain_keeps_existing_behavior",
+          "cases": 20
+        },
+        {
+          "name": "test_nested_single_parent_crypt_keeps_unrelated_disk",
+          "cases": 4
+        }
+      ]
+    },
+    {
+      "path": "tests/test_mounted_holder_type_pass20.py",
+      "sha256": "76f5b04192faf732d3dc50b07d95932f4ed5585334a318a08f8741da3e79be05",
+      "cases": 28,
+      "test_functions": [
+        {
+          "name": "test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it",
+          "cases": 16
+        },
+        {
+          "name": "test_known_crypt_mount_keeps_unrelated_disk_selectable",
+          "cases": 4
+        },
+        {
+          "name": "test_known_lvm_mount_already_refuses_unproven_membership",
+          "cases": 4
+        },
+        {
+          "name": "test_blank_unmounted_generic_mapping_has_no_mount_or_filesystem_claim",
+          "cases": 4
+        }
+      ]
+    },
+    {
+      "path": "tests/test_tk_native_boundary_pass20.py",
+      "sha256": "354136282d634b78307d053378fc27f65bb3d4f211c95be7725248c37e58fbe5",
+      "cases": 24,
+      "test_functions": [
+        {
+          "name": "test_supported_boundary_releases_owned_native_wrappers",
+          "cases": 24
+        }
+      ]
+    },
+    {
+      "path": "tests/test_tk_native_collector_pass20.py",
+      "sha256": "7c9b05b8f63edff831529fde0ffe9c57caeb29f3343109aec3c72eb8f1db33ad",
+      "cases": 4,
+      "test_functions": [
+        {
+          "name": "test_full_supported_run_releases_assets_before_later_worker_collection",
+          "cases": 4
+        }
+      ]
+    },
+    {
+      "path": "tests/test_tk_native_constructor_pass20.py",
+      "sha256": "a4cc48c8fd52731b5aa1a620199d264239db5d3e8597fb44e11ac9468d39f352",
+      "cases": 22,
+      "test_functions": [
+        {
+          "name": "test_partial_native_and_row_constructor_releases_ownership",
+          "cases": 22
+        }
+      ]
+    },
+    {
+      "path": "tests/test_tk_native_image_pass20.py",
+      "sha256": "c172d81b5a408a8b63aaa1c2f9d3025fed14489cd7611e7e361c0704c1a22515",
+      "cases": 3,
+      "test_functions": [
+        {
+          "name": "test_owned_image_initializer_preserves_safe_original_finalization",
+          "cases": 3
+        }
+      ]
+    }
+  ],
+  "total_new_canonical_cases": 149,
+  "AST_proof_comparisons": [
+    {
+      "canonical": "tests/test_tk_native_constructor_pass20.py",
+      "proof": "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v5.py",
+      "changed_bodies": [
+        "_admit",
+        "test_partial_native_and_row_constructor_releases_ownership"
+      ],
+      "interpretation": "Admission has repository fallback and fixed parent-derived child provenance; all behavioral child/assertion/destructor bodies unchanged."
+    },
+    {
+      "canonical": "tests/test_tk_native_image_pass20.py",
+      "proof": "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/image-preinit-boundary-probe.py",
+      "changed_bodies": [
+        "_admit",
+        "test_owned_image_initializer_preserves_safe_original_finalization"
+      ],
+      "interpretation": "Admission has repository fallback and fixed parent-derived child provenance; all behavioral child/assertion/destructor bodies unchanged."
+    },
+    {
+      "canonical": "tests/test_tk_native_boundary_pass20.py",
+      "proof": "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py",
+      "changed_bodies": [],
+      "interpretation": "All function/class ASTs identical."
+    }
+  ],
+  "candidate7_sha256": "b436a56dbf5a61d9471f51f24767a0adf535925e3720938fb5ca1b27427ff296",
+  "candidate7_to8_diff": "--- candidate7\n+++ candidate8\n@@ -1243,13 +1243,16 @@\n     resource = factory.__new__(factory)\n     if not isinstance(resource, factory):\n         return resource\n-    try:\n-        factory.__init__(resource, *args, **kwargs)\n-    except BaseException:\n-        owner = threading.current_thread()\n-        _pin_retired_assets((resource,), owner)\n-        _pin_retired_interpreter(native_root, owner)\n-        raise\n+    owner = threading.current_thread()\n+    # Own successful local resources too: a later widget initializer can fail\n+    # before the caller adopts them into its teardown graph.\n+    _pin_retired_assets((resource,), owner)\n+    _pin_retired_interpreter(native_root, owner)\n+    if isinstance(resource, _TK_ASSET_CLASSES[2]) and \"name\" not in resource.__dict__:\n+        # Image.__init__ normally establishes this before allocating a handle.\n+        # Preserve the original destructor when initialization fails earlier.\n+        resource.name = None\n+    factory.__init__(resource, *args, **kwargs)\n     return resource\n \n \n@@ -1767,7 +1770,7 @@\n         generation = getattr(self, \"_draw_generation\", 0)\n \n         def wrapped() -> None:\n-            if self._ui_dead or self.w.screen != expected_screen or generation != getattr(self, \"_draw_generation\", 0):\n+            if getattr(self, \"_ui_dead\", False) or self.w.screen != expected_screen or generation != getattr(self, \"_draw_generation\", 0):\n                 return\n             fn()\n             if self.w.wants_shutdown or self.w.wants_new_session:\n",
+  "findings": [
+    "Immediate pre-initializer resource/raw-root identity registration closes local-variable adoption gap; live helper/initializer references prevent premature sole-owner drain.",
+    "Image-only name=None sentinel is set only when absent before initializer; it establishes original no-native Python state and never clears an existing image handle or changes destructor.",
+    "getattr(self,_ui_dead,False) preserves lightweight stale-callback compatibility while dead full owners still reject callbacks; screen/generation checks remain.",
+    "Canonical constructor/image behavioral bodies and original destructor assertions are identical to frozen evidence probes; child provenance is pinned from parent.",
+    "Existing GC settings, owner-only pools, peer trace retirement, original exception identity and startup error chaining remain unchanged by the C8 diff."
+  ],
+  "consequences_and_limits": [
+    "Successful owned resources now remain pinned until outside owners release them and their creator thread drains; this is intentional deferred lifetime, not immediate collection.",
+    "Callable fake factories and real __new__ returning another type preserve original branch behavior.",
+    "Original149 replay is root-owned/in progress at this review; no new runtime acceptance claimed.",
+    "Exact historical native abort attribution, real platform/device acceptance and unchanged final canonical gate remain root qualification responsibilities."
+  ]
+}

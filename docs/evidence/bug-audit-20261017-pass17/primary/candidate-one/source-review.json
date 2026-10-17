@@ -1,0 +1,20 @@
+{
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "branch": "fix/safety-audit-20261015",
+  "frozen_inputs": 758,
+  "runtime_source_sha256": "1124345bbf564a4613012c659133ae49fc918278b9e72d86380d7a981f42f931",
+  "changed": [
+    "src/beamo_wipe/discover.py",
+    "src/beamo_wipe/nwipe_runner.py",
+    "src/beamo_wipe/ui/console_wizard.py",
+    "src/beamo_wipe/ui/tk_wizard.py"
+  ],
+  "added": [
+    "tests/test_descendant_hardware_ambiguity_pass17.py",
+    "tests/test_plain_erase_typeahead_pass17.py",
+    "tests/test_runner_model_lf_noerase_pass17.py",
+    "tests/test_startup_callback_retirement_pass17.py"
+  ],
+  "new_untracked_test_modules": 29,
+  "index_empty": true
+}

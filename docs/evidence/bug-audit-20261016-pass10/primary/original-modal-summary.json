@@ -1,0 +1,20 @@
+{
+  "initial_threefix_source_files_hash_verified": 58,
+  "cases": 14,
+  "failures": 10,
+  "errors": 0,
+  "skipped": 0,
+  "exit": 1,
+  "failed_ids": [
+    "test_sound_button_keeps_dialog_above_parent_with_keyboard_focus",
+    "test_existing_sound_dialog_reopen_keeps_the_same_modal_visible",
+    "test_parent_rerender_preserves_sound_modal_stacking_and_focus[owner]",
+    "test_parent_rerender_preserves_sound_modal_stacking_and_focus[working]",
+    "test_parent_rerender_preserves_sound_modal_stacking_and_focus[last_chance]",
+    "test_sound_close_returns_keyboard_focus_to_the_parent[response]",
+    "test_sound_close_returns_keyboard_focus_to_the_parent[close]",
+    "test_direct_render_closes_sound_modal_from_an_obsolete_screen_epoch[False]",
+    "test_direct_render_closes_sound_modal_from_an_obsolete_screen_epoch[True]",
+    "test_sound_revision_tick_keeps_modal_child_focus"
+  ]
+}

@@ -1,0 +1,19 @@
+[ci-hosted] blocking syntax, shell and security lint
+All checks passed!
+6 files already formatted
+All checks passed!
+All checks passed!
+[ci-hosted] blocking full lint and type checks
+tests/test_tk_focus_reveal_pass14.py:3:19: F401 [*] `tkinter` imported but unused
+  |
+1 | """Focused consent and typing controls must be visible in the scrolling body."""
+2 | import os
+3 | import tkinter as tk
+  |                   ^^ F401
+4 |
+5 | import pytest
+  |
+  = help: Remove unused import: `tkinter`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

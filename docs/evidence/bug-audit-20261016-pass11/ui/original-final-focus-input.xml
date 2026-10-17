@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="14" time="9.174" timestamp="2026-10-16T18:17:10.540875+00:00" hostname="srv1606478"><testcase classname="tests.test_accessible_focus_input_pass11" name="test_native_release_during_sound_dialog_reaches_parent_guard[65293]" time="0.499"><failure message="AssertionError: {'held': {65293}, 'native': {'focused': 2097267, 'modal': 2097267, 'modal_above': True, 'modal_focused': True, ...}}&#10;assert 65293 not in {65293}&#10; +  where {65293} = &lt;beamo_wipe.ui.accessible_wizard.AccessibleWizard object at 0x7ab62228ffe0&gt;.held">ui = &lt;function ui.&lt;locals&gt;.build at 0x7ab6222bc9a0&gt;
+native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+keyval = 65293
+
+    @pytest.mark.parametrize("keyval", [Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    def test_native_release_during_sound_dialog_reaches_parent_guard(ui, native, keyval):  # noqa: F811
+        app = ui(_owner())
+        controller = _open_with_key(app, native, keyval)
+        drain()
+&gt;       assert keyval not in app.held, {"held": app.held, "native": _state(app, controller.dialog)}
+E       AssertionError: {'held': {65293}, 'native': {'focused': 2097267, 'modal': 2097267, 'modal_above': True, 'modal_focused': True, ...}}
+E       assert 65293 not in {65293}
+E        +  where {65293} = &lt;beamo_wipe.ui.accessible_wizard.AccessibleWizard object at 0x7ab62228ffe0&gt;.held
+
+tests/test_accessible_focus_input_pass11.py:136: AssertionError</failure></testcase><testcase classname="tests.test_accessible_focus_input_pass11" name="test_native_release_during_sound_dialog_reaches_parent_guard[65421]" time="0.464"><failure message="AssertionError: {'held': {65421}, 'native': {'focused': 2097927, 'modal': 2097927, 'modal_above': True, 'modal_focused': True, ...}}&#10;assert 65421 not in {65421}&#10; +  where {65421} = &lt;beamo_wipe.ui.accessible_wizard.AccessibleWizard object at 0x7ab622305760&gt;.held">ui = &lt;function ui.&lt;locals&gt;.build at 0x7ab62234cf40&gt;
+native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+keyval = 65421
+
+    @pytest.mark.parametrize("keyval", [Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    def test_native_release_during_sound_dialog_reaches_parent_guard(ui, native, keyval):  # noqa: F811
+        app = ui(_owner())
+        controller = _open_with_key(app, native, keyval)
+        drain()
+&gt;       assert keyval not in app.held, {"held": app.held, "native": _state(app, controller.dialog)}
+E       AssertionError: {'held': {65421}, 'native': {'focused': 2097927, 'modal': 2097927, 'modal_above': True, 'modal_focused': True, ...}}
+E       assert 65421 not in {65421}
+E        +  where {65421} = &lt;beamo_wipe.ui.accessible_wizard.AccessibleWizard object at 0x7ab622305760&gt;.held
+
+tests/test_accessible_focus_input_pass11.py:136: AssertionError</failure></testcase><testcase classname="tests.test_accessible_focus_input_pass11" name="test_native_release_during_sound_dialog_reaches_parent_guard[32]" time="0.177" /><testcase classname="tests.test_accessible_focus_input_pass11" name="test_first_fresh_native_activation_after_sound_close_is_not_lost[65293]" time="2.422"><failure message="AssertionError: Owned GTK input did not settle&#10;assert False&#10; +  where False = &lt;function test_first_fresh_native_activation_after_sound_close_is_not_lost.&lt;locals&gt;.&lt;lambda&gt; at 0x7ab62234d760&gt;()">ui = &lt;function ui.&lt;locals&gt;.build at 0x7ab6222bccc0&gt;
+native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+keyval = 65293
+
+    @pytest.mark.parametrize("keyval", [Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    def test_first_fresh_native_activation_after_sound_close_is_not_lost(ui, native, keyval):  # noqa: F811
+        app = ui(_owner())
+        controller = _open_with_key(app, native, keyval)
+        controller.close()
+        drain()
+        app.actions[C.SOUND_CHECK_BUTTON].grab_focus()
+        native.key(keyval, True)
+        native.key(keyval, False)
+&gt;       _wait(lambda: _opened(app))
+
+tests/test_accessible_focus_input_pass11.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+predicate = &lt;function test_first_fresh_native_activation_after_sound_close_is_not_lost.&lt;locals&gt;.&lt;lambda&gt; at 0x7ab62234d760&gt;
+
+    def _wait(predicate):
+        deadline = time.monotonic() + 2
+        while time.monotonic() &lt; deadline:
+            drain()
+            if predicate():
+                return
+            time.sleep(0.005)
+&gt;       assert predicate(), "Owned GTK input did not settle"
+E       AssertionError: Owned GTK input did not settle
+E       assert False
+E        +  where False = &lt;function test_first_fresh_native_activation_after_sound_close_is_not_lost.&lt;locals&gt;.&lt;lambda&gt; at 0x7ab62234d760&gt;()
+
+tests/test_accessible_focus_input_pass11.py:105: AssertionError</failure></testcase><testcase classname="tests.test_accessible_focus_input_pass11" name="test_first_fresh_native_activation_after_sound_close_is_not_lost[65421]" time="2.469"><failure message="AssertionError: Owned GTK input did not settle&#10;assert False&#10; +  where False = &lt;function test_first_fresh_native_activation_after_sound_close_is_not_lost.&lt;locals&gt;.&lt;lambda&gt; at 0x7ab62234ed40&gt;()">ui = &lt;function ui.&lt;locals&gt;.build at 0x7ab62234e0c0&gt;
+native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+keyval = 65421
+
+    @pytest.mark.parametrize("keyval", [Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    def test_first_fresh_native_activation_after_sound_close_is_not_lost(ui, native, keyval):  # noqa: F811
+        app = ui(_owner())
+        controller = _open_with_key(app, native, keyval)
+        controller.close()
+        drain()
+        app.actions[C.SOUND_CHECK_BUTTON].grab_focus()
+        native.key(keyval, True)
+        native.key(keyval, False)
+&gt;       _wait(lambda: _opened(app))
+
+tests/test_accessible_focus_input_pass11.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+predicate = &lt;function test_first_fresh_native_activation_after_sound_close_is_not_lost.&lt;locals&gt;.&lt;lambda&gt; at 0x7ab62234ed40&gt;
+
+    def _wait(predicate):
+        deadline = time.monotonic() + 2
+        while time.monotonic() &lt; deadline:
+            drain()
+            if predicate():
+                return
+            time.sleep(0.005)
+&gt;       assert predicate(), "Owned GTK input did not settle"
+E       AssertionError: Owned GTK input did not settle
+E       assert False
+E        +  where False = &lt;function test_first_fresh_native_activation_after_sound_close_is_not_lost.&lt;locals&gt;.&lt;lambda&gt; at 0x7ab62234ed40&gt;()
+
+tests/test_accessible_focus_input_pass11.py:105: AssertionError</failure></testcase><testcase classname="tests.test_accessible_focus_input_pass11" name="test_first_fresh_native_activation_after_sound_close_is_not_lost[32]" time="0.327" /><testcase classname="tests.test_accessible_focus_input_pass11" name="test_modal_open_redraw_close_without_keyup_preserves_hold[65293]" time="0.628" /><testcase classname="tests.test_accessible_focus_input_pass11" name="test_modal_open_redraw_close_without_keyup_preserves_hold[65421]" time="0.596" /><testcase classname="tests.test_accessible_focus_input_pass11" name="test_modal_keyup_keeps_same_timestamp_review_repeat_guard[65293]" time="0.143" /><testcase classname="tests.test_accessible_focus_input_pass11" name="test_modal_keyup_keeps_same_timestamp_review_repeat_guard[65421]" time="0.133" /><testcase classname="tests.test_accessible_focus_input_pass11" name="test_first_accessible_startup_accepts_native_escape[False-False]" time="0.360"><failure message="AssertionError: {'fullscreen': False, 'pointer_inside': False, 'startup_xid': 2104073}&#10;assert not [True]">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7ab622305910&gt;
+fullscreen = False, pointer_inside = False
+
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer_inside", [False, True])
+    def test_first_accessible_startup_accepts_native_escape(
+        native, monkeypatch, fullscreen, pointer_inside
+    ):
+        native.root_focus()
+        native.pointer(100, 100) if pointer_inside else native.pointer(1550, 950)
+        monkeypatch.setattr(accessible_wizard, "_ensure_gtk_display", lambda: None)
+        release = threading.Event()
+        finished = threading.Event()
+        seen = {}
+        fallback_fired = []
+    
+        def build(_report):
+            try:
+                assert release.wait(timeout=2)
+                return object()
+            finally:
+                finished.set()
+    
+        def send_escape():
+            windows = [window for window in Gtk.Window.list_toplevels() if window.get_mapped() and window.get_title() == C.STARTING_TITLE]
+            assert len(windows) == 1
+            window = windows[0]
+            seen["window"] = window
+            seen["xid"] = window.get_window().get_xid()
+            seen["gtk_focus"] = window.get_focus() is not None
+            native.key(Gdk.KEY_Escape, True)
+            native.key(Gdk.KEY_Escape, False)
+            return False
+    
+        def rescue():
+            fallback_fired.append(True)
+            windows = [window for window in Gtk.Window.list_toplevels() if window.get_mapped() and window.get_title() == C.STARTING_TITLE]
+            for window in windows:
+                window.emit("delete-event", None)
+            return False
+    
+        GLib.timeout_add(100, send_escape)
+        fallback = GLib.timeout_add(350, rescue)
+        try:
+            outcome = accessible_wizard.run_accessible_startup(build, fullscreen=fullscreen)
+            assert outcome == ("abandoned", None)
+            assert seen["gtk_focus"]
+&gt;           assert not fallback_fired, {"fullscreen": fullscreen, "pointer_inside": pointer_inside, "startup_xid": seen["xid"]}
+E           AssertionError: {'fullscreen': False, 'pointer_inside': False, 'startup_xid': 2104073}
+E           assert not [True]
+
+tests/test_accessible_focus_input_pass11.py:239: AssertionError</failure></testcase><testcase classname="tests.test_accessible_focus_input_pass11" name="test_first_accessible_startup_accepts_native_escape[False-True]" time="0.361"><failure message="AssertionError: {'fullscreen': True, 'pointer_inside': False, 'startup_xid': 2104085}&#10;assert not [True]">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7ab622306b40&gt;
+fullscreen = True, pointer_inside = False
+
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer_inside", [False, True])
+    def test_first_accessible_startup_accepts_native_escape(
+        native, monkeypatch, fullscreen, pointer_inside
+    ):
+        native.root_focus()
+        native.pointer(100, 100) if pointer_inside else native.pointer(1550, 950)
+        monkeypatch.setattr(accessible_wizard, "_ensure_gtk_display", lambda: None)
+        release = threading.Event()
+        finished = threading.Event()
+        seen = {}
+        fallback_fired = []
+    
+        def build(_report):
+            try:
+                assert release.wait(timeout=2)
+                return object()
+            finally:
+                finished.set()
+    
+        def send_escape():
+            windows = [window for window in Gtk.Window.list_toplevels() if window.get_mapped() and window.get_title() == C.STARTING_TITLE]
+            assert len(windows) == 1
+            window = windows[0]
+            seen["window"] = window
+            seen["xid"] = window.get_window().get_xid()
+            seen["gtk_focus"] = window.get_focus() is not None
+            native.key(Gdk.KEY_Escape, True)
+            native.key(Gdk.KEY_Escape, False)
+            return False
+    
+        def rescue():
+            fallback_fired.append(True)
+            windows = [window for window in Gtk.Window.list_toplevels() if window.get_mapped() and window.get_title() == C.STARTING_TITLE]
+            for window in windows:
+                window.emit("delete-event", None)
+            return False
+    
+        GLib.timeout_add(100, send_escape)
+        fallback = GLib.timeout_add(350, rescue)
+        try:
+            outcome = accessible_wizard.run_accessible_startup(build, fullscreen=fullscreen)
+            assert outcome == ("abandoned", None)
+            assert seen["gtk_focus"]
+&gt;           assert not fallback_fired, {"fullscreen": fullscreen, "pointer_inside": pointer_inside, "startup_xid": seen["xid"]}
+E           AssertionError: {'fullscreen': True, 'pointer_inside': False, 'startup_xid': 2104085}
+E           assert not [True]
+
+tests/test_accessible_focus_input_pass11.py:239: AssertionError</failure></testcase><testcase classname="tests.test_accessible_focus_input_pass11" name="test_first_accessible_startup_accepts_native_escape[True-False]" time="0.113" /><testcase classname="tests.test_accessible_focus_input_pass11" name="test_first_accessible_startup_accepts_native_escape[True-True]" time="0.116" /></testsuite></testsuites>
