@@ -1,0 +1,13 @@
+[
+  {
+    "command": "python3 /tmp/pass15-runner/hidden-record-probe.py",
+    "exit_code": 0,
+    "campaign_status": "normal exit; parser trace, not passing regression result",
+    "cases": 54
+  },
+  {
+    "command": "python3 /tmp/pass15-runner/projection-state-matrix.py",
+    "exit_code": 0,
+    "campaign_status": "pass; fresh differential and fake terminal/Stop cases"
+  }
+]

@@ -1,0 +1,2 @@
+{"command": ["meta", "list-files-for-upload", "/tmp/pytest-of-root/pytest-90/test_cloud_upload_excludes_loc0/upload"], "test": "tests/test_ci_hosted.py::test_cloud_upload_excludes_local_captures_and_env_files (call)"}
+{"command": ["meta", "list-files-for-upload", "/tmp/pytest-of-root/pytest-93/test_cloud_upload_excludes_loc0/upload"], "test": "tests/test_ci_hosted.py::test_cloud_upload_excludes_local_captures_and_env_files (call)"}

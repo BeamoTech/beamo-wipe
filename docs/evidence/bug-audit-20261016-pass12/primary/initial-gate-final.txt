@@ -1,0 +1,464 @@
+[ci-hosted] orca on a dedicated Xvfb 1600x1000 @ 72 DPI
+[ci-hosted] pytest under a separate Xvfb 1600x1000 @ 72 DPI
+dbus-daemon[530432]: [session uid=0 pid=530432] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=530460 comm="python3 -m pytest -p no:cacheprovider tests/test_a" label="unconfined")
+dbus-daemon[530432]: [session uid=0 pid=530432] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[530470]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=530460 comm="python3 -m pytest -p no:cacheprovider tests/test_a" label="unconfined")
+dbus-daemon[530470]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+dbus-daemon[530433]: [session uid=0 pid=530433] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=530461 comm="python3 -m pytest --deselect=tests/test_accessible" label="unconfined")
+dbus-daemon[530433]: [session uid=0 pid=530433] Successfully activated service 'org.a11y.Bus'
+........................................................................ [  1%]
+....dbus-daemon[530486]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=530461 comm="python3 -m pytest --deselect=tests/test_accessible" label="unconfined")
+dbus-daemon[530486]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+.................................................................... [  2%]
+........................................................................ [  3%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+.......                                                                        [100%]
+1 passed in 68.21s (0:01:08)
+...........................FFFFFF................................. [  7%]
+........................................................................ [  8%]
+........................................................................ [  9%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 17%]
+........................................................................ [ 18%]
+........................................................................ [ 19%]
+........................................................................ [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 24%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................................ [ 32%]
+........................................................................ [ 33%]
+........................................................................ [ 34%]
+........................................................................ [ 35%]
+........................................................................ [ 36%]
+........................................................................ [ 38%]
+........................................................................ [ 39%]
+........................................................................ [ 40%]
+........................................................................ [ 41%]
+........................................................................ [ 42%]
+.....s..s............................................................... [ 43%]
+........................................................................ [ 44%]
+........................................................................ [ 45%]
+........................................................................ [ 46%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+........................................................................ [ 49%]
+........................................................................ [ 51%]
+........................................................................ [ 52%]
+........................................................................ [ 53%]
+........................................................................ [ 54%]
+........................................................................ [ 55%]
+........................................................................ [ 56%]
+........................................................................ [ 57%]
+sss..s.ssssssss......................................................... [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 60%]
+........................................................................ [ 61%]
+........................................................................ [ 62%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 78%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+........................................................................ [ 81%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 84%]
+........................................................................ [ 85%]
+........................................................................ [ 86%]
+........................................................................ [ 87%]
+........................................................................ [ 89%]
+........................................................................ [ 90%]
+........................................................................ [ 91%]
+........................................................................ [ 92%]
+........................................................................ [ 93%]
+........................................................................ [ 94%]
+........................................................................ [ 95%]
+........................................................................ [ 96%]
+........................................................................ [ 97%]
+........................................................................ [ 98%]
+........................................................................ [ 99%]
+.......                                                                  [100%]
+=================================== FAILURES ===================================
+________ test_gtk_dialog_discovery_and_playback_are_polled_on_ui_thread ________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x72db80528d70>
+audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x72db80529310>
+
+    def test_gtk_dialog_discovery_and_playback_are_polled_on_ui_thread(monkeypatch, audio_worker):
+        wizard = make_demo_wizard()
+        wizard.screen = Screen.WORKING
+        discovered = threading.Event()
+        release_discovery = threading.Event()
+        played = threading.Event()
+        release_playback = threading.Event()
+        output = sound.SoundOutput("speaker", "Speakers", "speaker", True)
+        state = sound.SoundState(True, "", (output,), 50, False)
+        def slow_outputs():
+            discovered.set()
+            release_discovery.wait(timeout=2)
+            return state
+        def slow_speech():
+            played.set()
+            release_playback.wait(timeout=2)
+            return sound.SoundResult(True, C.SOUND_TEST_PLAYED)
+        monkeypatch.setattr(sound, "list_outputs", slow_outputs)
+        monkeypatch.setattr(sound, "orca_running", lambda: True)
+        monkeypatch.setattr(sound, "set_output", lambda sink: sound.SoundResult(True, ""))
+        monkeypatch.setattr(sound, "play_speech_test", slow_speech)
+        started = time.perf_counter()
+>       dialog = SoundDialog(FakeGtk, FakeWidget(), wizard)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_audio_responsiveness.py:351:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <beamo_wipe.ui.sound_dialog.SoundDialog object at 0x72db80543cb0>
+gtk = <class 'test_audio_responsiveness.FakeGtk'>
+window = <test_audio_responsiveness.FakeWidget object at 0x72db80540d70>
+wizard = <beamo_wipe.wizard.Wizard object at 0x72db8055e7e0>, on_stop = None
+
+    def __init__(self, gtk, window, wizard, on_stop=None):
+        self.Gtk = gtk
+        self.w = wizard
+        self.screen = wizard.screen
+        self.screen_epoch = wizard._screen_epoch
+        self.on_stop = on_stop
+        self.ticket = None
+        self.done = None
+        self.dialog = gtk.Dialog(title=C.SOUND_CHECK_TITLE)
+        self.dialog.set_transient_for(window)
+        self.dialog.set_modal(True)
+        self.dialog.set_destroy_with_parent(True)
+        width, height = 560, 480
+        display = window.get_display()
+        monitor = (display.get_monitor_at_window(window.get_window())
+>                  if window.get_window() is not None else display.get_primary_monitor())
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'NoneType' object has no attribute 'get_primary_monitor'
+
+src/beamo_wipe/ui/sound_dialog.py:25: AttributeError
+__________________ test_gtk_dialog_close_drops_late_discovery __________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x72db8055e810>
+audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x72db8055d190>
+
+    def test_gtk_dialog_close_drops_late_discovery(monkeypatch, audio_worker):
+        wizard = make_demo_wizard()
+        wizard.screen = Screen.WORKING
+        entered = threading.Event()
+        release = threading.Event()
+        def slow_outputs():
+            entered.set()
+            release.wait(timeout=2)
+            return sound.SoundState(False, C.SOUND_NO_OUTPUT, ())
+        monkeypatch.setattr(sound, "list_outputs", slow_outputs)
+        monkeypatch.setattr(sound, "orca_running", lambda: None)
+>       dialog = SoundDialog(FakeGtk, FakeWidget(), wizard)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_audio_responsiveness.py:384:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <beamo_wipe.ui.sound_dialog.SoundDialog object at 0x72db803a11c0>
+gtk = <class 'test_audio_responsiveness.FakeGtk'>
+window = <test_audio_responsiveness.FakeWidget object at 0x72db803a1700>
+wizard = <beamo_wipe.wizard.Wizard object at 0x72db8055d100>, on_stop = None
+
+    def __init__(self, gtk, window, wizard, on_stop=None):
+        self.Gtk = gtk
+        self.w = wizard
+        self.screen = wizard.screen
+        self.screen_epoch = wizard._screen_epoch
+        self.on_stop = on_stop
+        self.ticket = None
+        self.done = None
+        self.dialog = gtk.Dialog(title=C.SOUND_CHECK_TITLE)
+        self.dialog.set_transient_for(window)
+        self.dialog.set_modal(True)
+        self.dialog.set_destroy_with_parent(True)
+        width, height = 560, 480
+        display = window.get_display()
+        monitor = (display.get_monitor_at_window(window.get_window())
+>                  if window.get_window() is not None else display.get_primary_monitor())
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'NoneType' object has no attribute 'get_primary_monitor'
+
+src/beamo_wipe/ui/sound_dialog.py:25: AttributeError
+_________________ test_gtk_dialog_same_screen_revisit_is_stale _________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x72db8055fdd0>
+audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x72db8055e300>
+
+    def test_gtk_dialog_same_screen_revisit_is_stale(monkeypatch, audio_worker):
+        wizard = make_demo_wizard()
+        wizard.screen = Screen.WORKING
+        entered = threading.Event()
+        release = threading.Event()
+        def slow_outputs():
+            entered.set()
+            release.wait(timeout=2)
+            return sound.SoundState(False, C.SOUND_NO_OUTPUT, ())
+        monkeypatch.setattr(sound, "list_outputs", slow_outputs)
+        monkeypatch.setattr(sound, "orca_running", lambda: None)
+>       dialog = SoundDialog(FakeGtk, FakeWidget(), wizard)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_audio_responsiveness.py:405:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <beamo_wipe.ui.sound_dialog.SoundDialog object at 0x72db803a22a0>
+gtk = <class 'test_audio_responsiveness.FakeGtk'>
+window = <test_audio_responsiveness.FakeWidget object at 0x72db803a28a0>
+wizard = <beamo_wipe.wizard.Wizard object at 0x72db82abe2d0>, on_stop = None
+
+    def __init__(self, gtk, window, wizard, on_stop=None):
+        self.Gtk = gtk
+        self.w = wizard
+        self.screen = wizard.screen
+        self.screen_epoch = wizard._screen_epoch
+        self.on_stop = on_stop
+        self.ticket = None
+        self.done = None
+        self.dialog = gtk.Dialog(title=C.SOUND_CHECK_TITLE)
+        self.dialog.set_transient_for(window)
+        self.dialog.set_modal(True)
+        self.dialog.set_destroy_with_parent(True)
+        width, height = 560, 480
+        display = window.get_display()
+        monitor = (display.get_monitor_at_window(window.get_window())
+>                  if window.get_window() is not None else display.get_primary_monitor())
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'NoneType' object has no attribute 'get_primary_monitor'
+
+src/beamo_wipe/ui/sound_dialog.py:25: AttributeError
+_______ test_gtk_sound_dialog_stop_stays_available_during_hung_discovery _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x72db8055c290>
+audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x72db8055fb60>
+
+    def test_gtk_sound_dialog_stop_stays_available_during_hung_discovery(monkeypatch, audio_worker):
+        wizard = make_demo_wizard()
+        wizard.screen = Screen.WORKING
+        wizard._wipe_request = WipeRequest("/dev/fake", DEFAULT_METHOD, "/dev/boot-fake", "/tmp/fake-dialog-stop.log")
+        entered = threading.Event()
+        release = threading.Event()
+        def slow_outputs():
+            entered.set()
+            release.wait(timeout=2)
+            return sound.SoundState(False, C.SOUND_NO_OUTPUT, ())
+        monkeypatch.setattr(sound, "list_outputs", slow_outputs)
+        monkeypatch.setattr(sound, "orca_running", lambda: None)
+        rendered = []
+>       dialog = SoundDialog(FakeGtk, FakeWidget(), wizard, on_stop=lambda: rendered.append(True))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_audio_responsiveness.py:427:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <beamo_wipe.ui.sound_dialog.SoundDialog object at 0x72db803a3b30>
+gtk = <class 'test_audio_responsiveness.FakeGtk'>
+window = <test_audio_responsiveness.FakeWidget object at 0x72db803a3650>
+wizard = <beamo_wipe.wizard.Wizard object at 0x72db803a3410>
+on_stop = <function test_gtk_sound_dialog_stop_stays_available_during_hung_discovery.<locals>.<lambda> at 0x72db8038f920>
+
+    def __init__(self, gtk, window, wizard, on_stop=None):
+        self.Gtk = gtk
+        self.w = wizard
+        self.screen = wizard.screen
+        self.screen_epoch = wizard._screen_epoch
+        self.on_stop = on_stop
+        self.ticket = None
+        self.done = None
+        self.dialog = gtk.Dialog(title=C.SOUND_CHECK_TITLE)
+        self.dialog.set_transient_for(window)
+        self.dialog.set_modal(True)
+        self.dialog.set_destroy_with_parent(True)
+        width, height = 560, 480
+        display = window.get_display()
+        monitor = (display.get_monitor_at_window(window.get_window())
+>                  if window.get_window() is not None else display.get_primary_monitor())
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'NoneType' object has no attribute 'get_primary_monitor'
+
+src/beamo_wipe/ui/sound_dialog.py:25: AttributeError
+___________ test_sound_dialog_cannot_cancel_automatic_outcome[False] ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x72db803a2840>
+audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x72db803a3d70>
+queued = False
+
+    @pytest.mark.parametrize("queued", [False, True])
+    def test_sound_dialog_cannot_cancel_automatic_outcome(monkeypatch, audio_worker, queued):
+        """Protect a queued or running notification without blocking GTK discovery."""
+        blocker_entered = threading.Event()
+        unblock = threading.Event()
+        playing = threading.Event()
+        finish_sound = threading.Event()
+        calls = []
+
+        def blocker():
+            blocker_entered.set()
+            unblock.wait(timeout=3)
+
+        def play(kind):
+            calls.append(kind)
+            playing.set()
+            finish_sound.wait(timeout=3)
+            return sound.SoundResult(True, "")
+
+        monkeypatch.setattr(sound, "play_test", play)
+        monkeypatch.setattr(sound, "list_outputs", lambda: sound.SoundState(False, C.SOUND_NO_OUTPUT, ()))
+        monkeypatch.setattr(sound, "orca_running", lambda: None)
+        wizard = make_demo_wizard()
+        wizard.preview = False
+        wizard.screen = Screen.DONE
+        wizard.wipe_result = WipeResult(True, 0, "Erase completed", "/tmp/fake-audio-result.log")
+        wizard.set_sounds_enabled(True)
+        dialog = None
+        try:
+            if queued:
+                audio_worker.submit(blocker)
+                until(blocker_entered.is_set)
+            ticket = wizard.request_auto_outcome_sound()
+            assert ticket is not None
+            if not queued:
+                until(playing.is_set)
+>           dialog = SoundDialog(FakeGtk, FakeWidget(), wizard)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_audio_responsiveness.py:474:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <beamo_wipe.ui.sound_dialog.SoundDialog object at 0x72db803a0aa0>
+gtk = <class 'test_audio_responsiveness.FakeGtk'>
+window = <test_audio_responsiveness.FakeWidget object at 0x72db803a03e0>
+wizard = <beamo_wipe.wizard.Wizard object at 0x72db803a18e0>, on_stop = None
+
+    def __init__(self, gtk, window, wizard, on_stop=None):
+        self.Gtk = gtk
+        self.w = wizard
+        self.screen = wizard.screen
+        self.screen_epoch = wizard._screen_epoch
+        self.on_stop = on_stop
+        self.ticket = None
+        self.done = None
+        self.dialog = gtk.Dialog(title=C.SOUND_CHECK_TITLE)
+        self.dialog.set_transient_for(window)
+        self.dialog.set_modal(True)
+        self.dialog.set_destroy_with_parent(True)
+        width, height = 560, 480
+        display = window.get_display()
+        monitor = (display.get_monitor_at_window(window.get_window())
+>                  if window.get_window() is not None else display.get_primary_monitor())
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'NoneType' object has no attribute 'get_primary_monitor'
+
+src/beamo_wipe/ui/sound_dialog.py:25: AttributeError
+___________ test_sound_dialog_cannot_cancel_automatic_outcome[True] ____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x72db7bfb3590>
+audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x72db7bfb2e10>
+queued = True
+
+    @pytest.mark.parametrize("queued", [False, True])
+    def test_sound_dialog_cannot_cancel_automatic_outcome(monkeypatch, audio_worker, queued):
+        """Protect a queued or running notification without blocking GTK discovery."""
+        blocker_entered = threading.Event()
+        unblock = threading.Event()
+        playing = threading.Event()
+        finish_sound = threading.Event()
+        calls = []
+
+        def blocker():
+            blocker_entered.set()
+            unblock.wait(timeout=3)
+
+        def play(kind):
+            calls.append(kind)
+            playing.set()
+            finish_sound.wait(timeout=3)
+            return sound.SoundResult(True, "")
+
+        monkeypatch.setattr(sound, "play_test", play)
+        monkeypatch.setattr(sound, "list_outputs", lambda: sound.SoundState(False, C.SOUND_NO_OUTPUT, ()))
+        monkeypatch.setattr(sound, "orca_running", lambda: None)
+        wizard = make_demo_wizard()
+        wizard.preview = False
+        wizard.screen = Screen.DONE
+        wizard.wipe_result = WipeResult(True, 0, "Erase completed", "/tmp/fake-audio-result.log")
+        wizard.set_sounds_enabled(True)
+        dialog = None
+        try:
+            if queued:
+                audio_worker.submit(blocker)
+                until(blocker_entered.is_set)
+            ticket = wizard.request_auto_outcome_sound()
+            assert ticket is not None
+            if not queued:
+                until(playing.is_set)
+>           dialog = SoundDialog(FakeGtk, FakeWidget(), wizard)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_audio_responsiveness.py:474:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <beamo_wipe.ui.sound_dialog.SoundDialog object at 0x72db805f3590>
+gtk = <class 'test_audio_responsiveness.FakeGtk'>
+window = <test_audio_responsiveness.FakeWidget object at 0x72db805f0050>
+wizard = <beamo_wipe.wizard.Wizard object at 0x72db7bf16ae0>, on_stop = None
+
+    def __init__(self, gtk, window, wizard, on_stop=None):
+        self.Gtk = gtk
+        self.w = wizard
+        self.screen = wizard.screen
+        self.screen_epoch = wizard._screen_epoch
+        self.on_stop = on_stop
+        self.ticket = None
+        self.done = None
+        self.dialog = gtk.Dialog(title=C.SOUND_CHECK_TITLE)
+        self.dialog.set_transient_for(window)
+        self.dialog.set_modal(True)
+        self.dialog.set_destroy_with_parent(True)
+        width, height = 560, 480
+        display = window.get_display()
+        monitor = (display.get_monitor_at_window(window.get_window())
+>                  if window.get_window() is not None else display.get_primary_monitor())
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'NoneType' object has no attribute 'get_primary_monitor'
+
+src/beamo_wipe/ui/sound_dialog.py:25: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_audio_responsiveness.py::test_gtk_dialog_discovery_and_playback_are_polled_on_ui_thread
+FAILED tests/test_audio_responsiveness.py::test_gtk_dialog_close_drops_late_discovery
+FAILED tests/test_audio_responsiveness.py::test_gtk_dialog_same_screen_revisit_is_stale
+FAILED tests/test_audio_responsiveness.py::test_gtk_sound_dialog_stop_stays_available_during_hung_discovery
+FAILED tests/test_audio_responsiveness.py::test_sound_dialog_cannot_cancel_automatic_outcome[False]
+FAILED tests/test_audio_responsiveness.py::test_sound_dialog_cannot_cancel_automatic_outcome[True]
+6 failed, 6611 passed, 14 skipped in 592.36s (0:09:52)

@@ -1,0 +1,12 @@
+[ci-hosted] preview verification (fake disks, no browser)
+/home/runner/_work/beamo-wipe/beamo-wipe/web-preview/index.html
+...                                                                      [100%]
+
+============================================================
+Beamo Wipe
+Beamo Wipe
+PREVIEW on this computer — fake disks — nothing is erased
+============================================================
+You already started from this USB. Next you will pick a disk to erase.
+Press Enter… /home/runner/_work/beamo-wipe/beamo-wipe/helper/index.html
+[ci-hosted] PASS phase=preview

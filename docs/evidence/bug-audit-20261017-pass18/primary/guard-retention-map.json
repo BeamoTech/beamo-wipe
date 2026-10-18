@@ -1,0 +1,10 @@
+{
+  "/tmp/beamo-pass18-fallback-guard/aws": "guards/aws",
+  "/tmp/beamo-pass18-fallback-guard/curl": "guards/curl",
+  "/tmp/beamo-pass18-fallback-guard/docker": "guards/docker",
+  "/tmp/beamo-pass18-fallback-guard/gcloud": "guards/gcloud",
+  "/tmp/beamo-pass18-fallback-guard/gh": "guards/gh",
+  "/tmp/beamo-pass18-fallback-guard/losetup": "guards/losetup",
+  "/tmp/beamo-pass18-fallback-guard/qemu-system-x86_64": "guards/qemu-system-x86_64",
+  "/tmp/beamo-pass18-fallback-guard/sudo": "guards/sudo"
+}

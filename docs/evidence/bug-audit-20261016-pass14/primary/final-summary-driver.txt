@@ -1,0 +1,30 @@
+{
+  "baseline_head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "runtime_source_sha256": "ebe614cd285be76d948e81c7f8a04be48240ba4a95a4baab9e3ba9e040197dbb",
+  "combined_passed": 6990,
+  "combined_skipped": 14,
+  "combined_xfailed": 0,
+  "duplicate_ids": [],
+  "new_regression_cases_passed": 207,
+  "retained_prior_regressions_passed": 580,
+  "unchanged_sound_timing_case": "passed",
+  "frozen_input_files_matched": 747,
+  "local_phase_exit_codes": {
+    "lint": 0,
+    "preview": 0,
+    "negative": 0,
+    "go-version": 0,
+    "go-race": 0,
+    "go-vet": 0,
+    "go-windows-crossbuild": 0,
+    "go-fuzz": 0,
+    "final": 0
+  },
+  "windows_crossbuild": {
+    "size_bytes": 8974848,
+    "sha256": "6f58501de27f93649fe59e6ff2a84b4a089639a9b9ecb12fa2951ec8297f5089",
+    "format": "PE32+ AMD64",
+    "native_acceptance": false
+  },
+  "all_prior_starting_inputs_preserved_except_authorized_sources": true
+}

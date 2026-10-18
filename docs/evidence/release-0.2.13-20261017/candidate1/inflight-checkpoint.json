@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-17T22:51:41.498921+00:00",
+  "status": "IN FLIGHT; full run has failure glyphs, exact final failures pending. Immutable source and original partial trace saved.",
+  "source_inputs": 875,
+  "source_archive_sha256": "96578610286bd755488b026b99d1ddc17daf56ece4f219f705e1c99a01fae502",
+  "source_freeze_sha256": "2dfdc8035f39f4ab4a2d538fd6536cfe19de2fa8e320cc3e13b813bafbbe7a9e",
+  "cancelled": false,
+  "source_modified_during_gate": false,
+  "commit_push_publication_started": false
+}

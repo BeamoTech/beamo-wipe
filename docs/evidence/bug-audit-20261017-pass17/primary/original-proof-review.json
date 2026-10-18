@@ -1,0 +1,27 @@
+{
+  "counts": {
+    "tests.test_descendant_hardware_ambiguity_pass17": {
+      "fail": 176,
+      "pass": 186
+    },
+    "tests.test_runner_model_lf_noerase_pass17": {
+      "fail": 216,
+      "pass": 180
+    },
+    "tests.test_startup_callback_retirement_pass17": {
+      "fail": 10,
+      "pass": 6
+    }
+  },
+  "samples": {
+    "tests.test_descendant_hardware_ambiguity_pass17": "AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}",
+    "tests.test_runner_model_lf_noerase_pass17": "AssertionError: occupied\nassert False\n +  where False = may_have_erased('occupied')",
+    "tests.test_startup_callback_retirement_pass17": "AssertionError: [('invalid command name \"138590275263744focus_force\"', 'invalid command name \"138590275263744focus_force\"\n      while e...valid command name \"138590275267392poll_once\"\n      while executing\n  \"138590275267392poll_once\"\n      (\"after\" script)')]\nassert not [('invalid command name \"138590275263744focus_force\"', 'invalid command name \""
+  },
+  "starting_inputs_unchanged": 754,
+  "proof_modules": {
+    "tests/test_descendant_hardware_ambiguity_pass17.py": "55c79450a3dd7676876ae5896569653d5bb913f962e92cc3e0fd17ddfc25900f",
+    "tests/test_startup_callback_retirement_pass17.py": "b008493fee9540ca0f659a54aaca491b4197f93566e5a4fff29d03d6369bc65c",
+    "tests/test_runner_model_lf_noerase_pass17.py": "076ddb3f20082deb045c747e28853c828ca15a42091211e833e4d71701d959cf"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "passed": 19,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "fixture_only_change": true,
+  "no_assertions_or_timeouts_changed": true,
+  "test_module_sha256": "0ed6f1872296ba3c30d060b3d025cf591e8e8151b3a3d371e34072fe13702504"
+}

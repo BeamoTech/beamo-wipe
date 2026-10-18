@@ -1,0 +1,6 @@
+{
+  "ordering_table_progress_combinations": 600,
+  "malformed_refusals": 4,
+  "cap_boundaries": 6,
+  "source_sha256": "4bd60d299c6529b0c861f5339019e5ef6f91df3c760438ed85380245be6fdfa2"
+}

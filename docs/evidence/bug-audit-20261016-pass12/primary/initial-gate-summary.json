@@ -1,0 +1,17 @@
+{
+  "frozen_inputs_matched": 742,
+  "main_passed": 6611,
+  "main_failed": 6,
+  "main_skipped": 14,
+  "orca_passed": 1,
+  "new_regression_cases_passed": 200,
+  "failed_ids": [
+    "tests.test_audio_responsiveness::test_gtk_dialog_discovery_and_playback_are_polled_on_ui_thread",
+    "tests.test_audio_responsiveness::test_gtk_dialog_close_drops_late_discovery",
+    "tests.test_audio_responsiveness::test_gtk_dialog_same_screen_revisit_is_stale",
+    "tests.test_audio_responsiveness::test_gtk_sound_dialog_stop_stays_available_during_hung_discovery",
+    "tests.test_audio_responsiveness::test_sound_dialog_cannot_cancel_automatic_outcome[False]",
+    "tests.test_audio_responsiveness::test_sound_dialog_cannot_cancel_automatic_outcome[True]"
+  ],
+  "cause": "Headless FakeGtk lacks current display/monitor and scrolling APIs. No test assertion/timeout/product guard will be weakened."
+}

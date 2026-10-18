@@ -1,0 +1,61 @@
+{
+  "changed_files": {
+    "tests/goldens/result_summary/cancelled.txt": {
+      "before_sha256": "8590a3014dd80479d2a2c01d1309aff7e1f5f351c9594c1d10cd5e91dbe83244",
+      "after_sha256": "7bc84a82fd8177295fa35aa8adb37932c6eb13c0812f930c18acedfef695308a"
+    },
+    "tests/goldens/result_summary/completion_missing.txt": {
+      "before_sha256": "69b2d4e77dfed3ac6be8f3861ef99841dd2f770538d97b65df5a475f2802ded5",
+      "after_sha256": "4d7ce63d9a4d8f08cf070ab5a49a1249024029a5360eea7d4f9c4ef3b746936a"
+    },
+    "tests/goldens/result_summary/engine_failed.txt": {
+      "before_sha256": "94ada3dbc18ab4e270265b1f7daf1c502af1ac4859e14fe136de5694f0e1e7f7",
+      "after_sha256": "5510ba9293a2e4d93b92efb2f4e5f90a4fcdf918c08cdecadbb29693d9c07bf1"
+    },
+    "tests/goldens/result_summary/geometry_unusable.txt": {
+      "before_sha256": "a4f0d47564b3b60a8c42aa339f6deabcdabf4d7e71934088f27b638eb8013883",
+      "after_sha256": "85490e63a5ebd1d22d054fc2d452497d3c4f022cf9be5ed83d1417b4164418be"
+    },
+    "tests/goldens/result_summary/interrupted.txt": {
+      "before_sha256": "7f29c3fccb3ef59c07de18c6f2f4ed0573f82d7b0b7077fe0d7dddff6d934a83",
+      "after_sha256": "e835092da068d1eadfb5b18c80ec1dd82cc86160b0f9c1c6e32d1d7b019e76c9"
+    },
+    "tests/goldens/result_summary/occupied.txt": {
+      "before_sha256": "7efbc82637e67bb0ae81e246bce483e2e1fc584b90306132ebaa551f73d01bef",
+      "after_sha256": "f4b313eea205cf1476819e4dc0ced508544db9f737347dc363738f799b3b61de"
+    },
+    "tests/goldens/result_summary/open_failed.txt": {
+      "before_sha256": "2b7053f9ceab43dee0346a533dbc66673beb46ba2c65016f7cd38cbfb91ab4c8",
+      "after_sha256": "edfcf6577b994e2f4335e1a5236f7970421ef430a9fd8a3a3919710580c802b3"
+    },
+    "tests/goldens/result_summary/process_failed.txt": {
+      "before_sha256": "44272c6306131e25261b497d9c9417b65fde6899b76c1d4394e6f3feaed1ac0c",
+      "after_sha256": "ce846fc7dc072a2678f01881f2db5e0485345249c615d25763312bd7e1e5aa29"
+    },
+    "tests/goldens/result_summary/share.txt": {
+      "before_sha256": "43afb6781c65ca67a2d3710dfdd821be4795c84eb3cffa80e18ab532f874cdc0",
+      "after_sha256": "76939a3393a6fde7306c132bf24ffb5152f1ff6546371bc40e9fe627b5a156ec"
+    },
+    "tests/goldens/result_summary/unicode.txt": {
+      "before_sha256": "53764ec21108e78589f5ce9d92af75e835183b9f2aa60cf4c2b65177003641d3",
+      "after_sha256": "925724439d4cb8daf15a4322ff58d402c085520702838f3c0e090782b25ac5be"
+    },
+    "tests/goldens/result_summary/unverified.txt": {
+      "before_sha256": "eb7d67c32dd4aac54e4460283ba3548ff7939bb2f2e308625fd61ac14efcf43c",
+      "after_sha256": "effc6f9f6e11ea4ee1f2ac2e16552001fb8c25a43cbfc774af10766decf572b8"
+    },
+    "tests/goldens/result_summary/verification_failed.txt": {
+      "before_sha256": "2809a89bd262993e19d5ab52ff6f77050367c6dba79feaea0306f341a5f6b33c",
+      "after_sha256": "2b8ad10426250cd64ffac5ee0124439c54ceb9b783f84cb8e95efc9b999ddd42"
+    },
+    "tests/goldens/result_summary/verified.txt": {
+      "before_sha256": "91a63f7c3d55aa015042489f84a9508f52f7ba225346b30bf7456451f4a828fd",
+      "after_sha256": "fa21bdcc24ba181cd27eef100499fca8e6c00f826fb486fd3426c7532e933e64"
+    }
+  },
+  "change_only": "Application version line in13fake report goldens; share checksum changes only because the same SHARE.json contains the new version. All other bytes unchanged.",
+  "old_share_checksum": "c4e3b56246f19fda946a92762771aa58b1ed104cde0bb63ed17824c8ba2aa43d",
+  "new_share_checksum": "67cdf776176e0546b8aca2eb97f92600af08552364148ed3a609620a527c0723",
+  "old_version_replacement_recovers_original_share_checksum": true,
+  "native_application_operations": 0
+}

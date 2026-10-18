@@ -1,0 +1,2 @@
+54000 seeded public fake navigation events: no unconfirmed start/fabricated result
+54 language/method/detour combinations: full visible countdown required, reaching zero does not launch

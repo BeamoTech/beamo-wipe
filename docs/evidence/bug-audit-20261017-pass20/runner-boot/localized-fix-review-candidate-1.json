@@ -1,0 +1,77 @@
+{
+  "audio_review": "acceptance-event mutation source objection identified; root subsequently proved6FAIL and added revocation; later candidate review required",
+  "branch": "fix/safety-audit-20261015",
+  "candidate_probe": {
+    "cases": 6,
+    "path": "audio_acceptance_boundary_candidate.py",
+    "sha256": "1660507881ea7adef425de04b19b11429d3df0c2a8e5a6ac636ccc5b62744a42",
+    "status": "not run by reviewer; root proof subsequently confirms6FAIL"
+  },
+  "canonical_test_bytes_equal_original_probes": true,
+  "date_utc": "2026-10-17T18:22:09.042616+00:00",
+  "discovery_review": "no source objection found; no newly selectable malformed TYPE path found",
+  "exact_source_diffs": {
+    "src/beamo_wipe/audio_jobs.py": "--- pass19/src/beamo_wipe/audio_jobs.py\n+++ candidate1/src/beamo_wipe/audio_jobs.py\n@@ -90,18 +90,21 @@\n                     if launch_allowed.is_set():\n                         self._run()\n \n-                self._thread = threading.Thread(\n-                    target=accepted_worker, name=\"beamo-audio\", daemon=True\n-                )\n                 try:\n+                    self._thread = threading.Thread(\n+                        target=accepted_worker, name=\"beamo-audio\", daemon=True\n+                    )\n                     self._thread.start()\n                     launch_allowed.set()\n-                except RuntimeError as exc:\n+                except BaseException as exc:\n                     if protected:\n                         self._pending_outcome = None\n                     else:\n                         self._pending = None\n                     self._thread = None\n+                    if not isinstance(exc, RuntimeError):\n+                        ticket.cancel()\n+                        raise\n                     ticket._finish(exc)\n                     return ticket\n                 finally:\n",
+    "src/beamo_wipe/discover.py": "--- pass19/src/beamo_wipe/discover.py\n+++ candidate1/src/beamo_wipe/discover.py\n@@ -518,7 +518,7 @@\n \n \n def _node_type(node: Mapping[str, Any]) -> str:\n-    return (node.get(\"type\") or \"\").lower()\n+    return (node.get(\"type\") or \"\").strip().lower()\n \n \n # lsblk hangs a mounted RAID or multipath volume off one member. The other\n@@ -529,7 +529,7 @@\n # so DMRAID- is ``dmraid`` and md levels ``faulty`` / ``multipath`` do not\n # start with ``raid``. One PKNAME still hides the other member.\n _UNRESOLVED_HOLDER_TYPES = frozenset({\n-    \"mpath\", \"md\", \"dmraid\", \"faulty\", \"multipath\",\n+    \"mpath\", \"md\", \"dmraid\", \"faulty\", \"multipath\", \"dm\",\n })\n _STACKED_HOLDER_TYPES = frozenset({\"lvm\", \"linear\"})\n \n"
+  },
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "inputs": {
+    "src/beamo_wipe/audio_jobs.py": "8b8eb823699099572c49fae867984c8f6fb6981a1f8929abc49e6a4f784263b0",
+    "src/beamo_wipe/discover.py": "9f5a5a36ddf9dad77c7195920ed6290ed745d4684d63beeac103882fb6198f65",
+    "tests/test_audio_launch_interruptions_pass20.py": "bb03ad8879937649b6a22a55508f9a9f7c17b0189e7e8d657f56f8a6870b2cb7",
+    "tests/test_holder_ancestor_mount_pass20.py": "19d12021905905b140a1f97820a9b0c7a02c1f9214f034f84dc82d81451adea1",
+    "tests/test_mounted_holder_type_pass20.py": "76f5b04192faf732d3dc50b07d95932f4ed5585334a318a08f8741da3e79be05"
+  },
+  "new_test_cases": 90,
+  "pass19_archive_authenticated": true,
+  "product_and_canonical_test_edits_by_reviewer": [],
+  "review_document_sha256": "8d916d550f04256afc43ce1d08bdc20963a80ea5f4658a9def6118cf63a38630",
+  "reviewer": "Codex /root/pass20_runner_boot",
+  "root_evidence_hashes": {
+    "ancestor-original-review.json": "7cb134ee8af8d7796a60467ffe67c1826b2080f53dc91d9294ac976fa7ce37a6",
+    "ancestor-original-status.json": "dbe68249c04bf26a571e48882d2686e7a637fe95a3e8171497113f18ecd3857f",
+    "ancestor-original.txt": "8bdd326d44a25a83b3044c16d3ac57ed49d46725491d8673d55d2cec0ab1d3ff",
+    "ancestor-original.xml": "e9a81559ed6b7145b8a6247ad07787eec2f3998a2c74229725dbd601d70cd63d",
+    "audio-complete-original-review.json": "d85951a3ea0b612f34859366c575a933c61919eace86129116ac5cf881de357f",
+    "audio-complete-original-status.json": "206a9b53dc413af930b04e2cec67ed1191abcbd151560666caa503d2ddc5fd44",
+    "audio-complete-original.txt": "4c643206dac574e75323d3d896b8f35e37cd2944c1a5babed3921d2c2cb80d21",
+    "audio-complete-original.xml": "bb1cea00b8d6560eae490f72221317543c479716ff4fe380c304dba0b213e8f9",
+    "localized-fixed-status.json": "69ad2be695157293a63db41511f4bda1e149a75d872422156ab6a9190bc426ac",
+    "localized-fixed.txt": "a53c8e6d130e3d458b1c27b229085bb5bc6fe8126dae1da348c49a0c1aafec4e",
+    "localized-fixed.xml": "3caa50d20491a81be34e9e2e3d615ceb76c893808329628a1d6911fc3fc5200b",
+    "original-candidates-review.json": "abef5524d84a3c7ab4c70a2e6e30f732cb80ba0cace1a41fcb483fe914ce1da5",
+    "original-candidates-status.json": "021d4a019146722f70065967b3cbc81cd73a1dfaeda573d524adea7c6d34d52b",
+    "original-candidates.txt": "a7cb2d784063aa3e6a22742d32a118658c8833b3b9bb32e0655eb1b0f4f2b132",
+    "original-candidates.xml": "11b7c3e8835fbeab0f9491786832ae6235584c6c3e31d1efb315ed062269dacb"
+  },
+  "root_evidence_measurements": {
+    "ancestor-original": {
+      "cases": 44,
+      "errors": 0,
+      "failures": 4,
+      "skipped": 0
+    },
+    "audio-complete-original": {
+      "cases": 18,
+      "errors": 0,
+      "failures": 14,
+      "skipped": 0
+    },
+    "localized-fixed": {
+      "cases": 657,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0
+    },
+    "original-candidates": {
+      "cases": 42,
+      "errors": 0,
+      "failures": 22,
+      "skipped": 0
+    }
+  },
+  "runtime_executed_by_reviewer": false,
+  "schema": 1,
+  "scope": "localized candidate 1 source and retained evidence readback only",
+  "source_identity_note": "Candidate1 read directly before root correction; JSON creation encountered source-change assertion, then authenticated exact earlier candidate by removing only the subsequently added three-line revocation block and matching the previously measured hash. No product source was restored or edited."
+}

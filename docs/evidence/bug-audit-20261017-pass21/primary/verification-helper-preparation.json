@@ -1,0 +1,18 @@
+{
+  "state": "PREPARED / NOT EXECUTED",
+  "owner": "root",
+  "parameters": {
+    "frozen_inputs": 788,
+    "new_audit_modules": 59,
+    "new_audit_cases": 3924,
+    "artifact_skip_ids": 14,
+    "review_path": "runner/final-source-review.json",
+    "peer_reviewed_inputs": 13
+  },
+  "source_archive_policy": "Starting/final only; future actual failed directories require failure receipt; source duplicates indexed dynamically, no fixed116 count.",
+  "scripts": {
+    "review-gates.py": "17a43aded8d60b51990a0f55cf423e7b5c66a024c7289cdaff56b06c33cdb62d",
+    "verify-campaigns.py": "2bbf5517e31ef38951955bc8e18ababeda17d914e0d08af567ef61ab55105049",
+    "retain-evidence.py": "cb24cedbea361d2ae9080be6bcfc06c3e5dbf831b258b2ad1e5929be437dc283"
+  }
+}

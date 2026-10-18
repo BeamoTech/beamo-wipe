@@ -1,0 +1,20 @@
+{
+  "status": "PREPARED / NOT RUN by author; AST-only source parse PASS",
+  "v4_source": "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v4.py",
+  "v4_sha256": "7474b2672dc150f4a0f5e08fcac0fdcb72f35d7680180175de92827b4a6ca62a",
+  "v4_frozen": "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v4-frozen.py",
+  "v5_source": "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v5.py",
+  "v5_sha256": "0fd13a82e25347d93fab78c706be4db302e3a1e75427d4ad1daf3e211ea5090c",
+  "case_count": 22,
+  "added_cases": [
+    "row-frame-before",
+    "row-frame-after"
+  ],
+  "preserved_v4_cases": 20,
+  "fault_targets": "Actual _CheckRow instance entering inherited tk.Frame.__init__, before original Frame initializer or immediately after actual native Frame initialization. Both precede row _variable/_font/_command assignments.",
+  "assertions": "Original exact exception retained; owned root already closed; own row refs/token detached or absent; later worker releases only fixture exception ownership and collects; original Variable/Font/Image destructors must run only on creator thread and assets settle after owner sweep.",
+  "guards": "Same fixed owned-child, 8s outer/2s worker bounds, application effects forbidden, mandatory exact imported source path/hash provenance in both parent and child.",
+  "source_risk": "Currently successful local BooleanVar returned by owned factory is not pinned; if CheckRow fails before adopting it, root walker cannot discover that variable and original comparison/row frames may be its only owner.",
+  "proposed_if_proved": "Pin each successfully created real owned native wrapper at factory return, before handing it to caller/app/widget assignment. Preserve callable fake factory path. Do not implement or claim proof before root-run original failure.",
+  "tradeoff": "Early success pin extends native wrapper lifetime until owner-thread drain but is safe with existing stop callback and explicit collection boundaries. It does not alter variables, peer traces, destructors, handles, or GC settings."
+}

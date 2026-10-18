@@ -1,0 +1,29 @@
+{
+  "all58starting_source_hashes_match": true,
+  "regressions": {
+    "tests.test_runner_prefixed_error_context_pass12": {
+      "failed": 67,
+      "controls": 34
+    },
+    "tests.test_sound_dialog_state_pass12": {
+      "failed": 52,
+      "controls": 26
+    },
+    "tests.test_startup_notice_state_pass12": {
+      "failed": 8,
+      "controls": 3
+    },
+    "tests.test_tk_startup_focus_geometry_pass12": {
+      "failed": 8,
+      "controls": 2
+    }
+  },
+  "all_failures_expected_from_six_proven_roots": true,
+  "shared_checkout_never_reverted": true,
+  "independent_final_ui_hashes_match": 8,
+  "failure_categories": {
+    "observable_assertion_mismatch": 133,
+    "new_persistent_api_unavailable_in_original": 2
+  },
+  "later_audio_fake_fixture_change_does_not_change_new_test_imports": true
+}

@@ -1,0 +1,1 @@
+PASS27 padded hardware two-scan controller/request/helper-receipt roundtrips;27 second-scan hardware replacements refused before helper. All block/process/marker boundaries fake; regular-file evidence only.

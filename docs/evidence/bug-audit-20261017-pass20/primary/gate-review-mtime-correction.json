@@ -1,0 +1,9 @@
+{
+  "original_script_sha256": "cb264987c0492c602c97d6576cba32e2868291304e2b58cd7314ae41923167f4",
+  "original_status": "FAILED helper assertion, first go-vet empty log mtime is 0.7875ms before wall started timestamp",
+  "reproduced_empty_logs": 50,
+  "negative_offsets": 50,
+  "correction": "Only known successful silent phases use prior-phase completed timestamp to current-phase end; exclusive-create runner prevents stale reuse",
+  "full_gate_reused": "same exact all-nine current run, source and actual logs unchanged",
+  "product_or_test_change": false
+}

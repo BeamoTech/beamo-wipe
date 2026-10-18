@@ -1,0 +1,8 @@
+{
+  "result": "PASS",
+  "independent_cases": 240,
+  "valid_padding_length_cases": 135,
+  "malformed_control_overlength_cases": 99,
+  "protected_change_cases": 6,
+  "fake_only": true
+}

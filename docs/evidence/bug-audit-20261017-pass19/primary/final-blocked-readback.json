@@ -1,0 +1,16 @@
+{
+  "at_utc": "2026-10-17T17:00:02.661981+00:00",
+  "frozen_source_inputs": 771,
+  "source_unchanged": true,
+  "immutable_fallback_guards": 8,
+  "forbidden_fallback_attempts": 0,
+  "permitted_offline_sdk_calls": 3,
+  "main_junit_absent": true,
+  "gate_pass_receipt_absent": true,
+  "campaigns_not_started": true,
+  "runner_fixture_files": 0,
+  "report_files": 0,
+  "screenshots": 0,
+  "owned_test_processes_remaining": [],
+  "physical_media_touched": false
+}

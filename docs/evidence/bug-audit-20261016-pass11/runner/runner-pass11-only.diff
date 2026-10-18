@@ -1,0 +1,38 @@
+--- pass11-start/src/beamo_wipe/nwipe_runner.py
++++ pass11-fixed/src/beamo_wipe/nwipe_runner.py
+@@ -1523,6 +1523,9 @@
+                     # turn a malformed status banner into exact engine proof
+                     # that the regular, unprojected log parser rejects.
+                     line = raw[:-1].decode("utf-8", errors="replace")
++                    # Summary parsers recognize prefixed rows and separators.
++                    # Classify that same body, but retain the original record.
++                    body = _engine_log_body(line)
+                     for match in _LOG_DEVICE_RE.finditer(line):
+                         other = os.path.basename(os.path.realpath(match.group(0)))
+                         if (other != target_name
+@@ -1542,7 +1545,7 @@
+                                 new_totals = True
+                     if _is_error_summary_header(line):
+                         in_error_summary = True
+-                    elif in_error_summary and line.lstrip().startswith("***"):
++                    elif in_error_summary and body.lstrip().startswith("***"):
+                         in_error_summary = False
+                     relevant = (
+                         new_totals
+@@ -1554,14 +1557,14 @@
+                         or "hpa_dco" in line
+                         or "hdparm" in line
+                         or "SG_IO bad/missing sense data" in line
+-                        or line.lstrip().startswith("***")
++                        or body.lstrip().startswith("***")
+                         or "Verification mismatch on" in line
+                         or any(regex.search(line) for regex in (
+                             NWIPE_BUSY_RE, NWIPE_ABORT_RE, NWIPE_OPEN_FAIL_RE,
+                             NWIPE_FAILURE_RE, NWIPE_POSSIBLE_ERASURE_STATUS_RE,
+                             NWIPE_GEOMETRY_RE,
+                         ))
+-                        or any(_status_column_has_name(line, name) for name in names)
++                        or any(_status_column_has_name(body, name) for name in names)
+                     )
+                     if relevant:
+                         retained_bytes += len(raw)

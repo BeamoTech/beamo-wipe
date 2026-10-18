@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-17T22:37:51.799081+00:00",
+  "attempt1": "FAILED helper size bound; no completed scan acceptance",
+  "failure": {
+    "archive": "docs/evidence/bug-audit-20261017-pass19/primary/raw-evidence.tar.gz",
+    "member": "font-origin-events.jsonl",
+    "bytes": 111553533,
+    "limit": 67108864
+  },
+  "cause": "Retained original font-origin trace exceeds in-memory helper bound; no publication/content finding inferred.",
+  "correction": "Stream large ordinary members in1MiB chunks with8192-byte overlap; keep large nested archives blocked, preserve original script.",
+  "original_helper_sha256": "4f27db0539e54b3a483e43d6f9593803572b0df8d775607f05048a73e0059a77",
+  "corrected_helper_sha256": "894449b6814e5d85b751b8deaa2e06563a8ebcb870da76475491722de7ea3799"
+}

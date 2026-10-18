@@ -1,0 +1,46 @@
+{
+  "utc": "2026-10-17T23:05:10.227915+00:00",
+  "original_audit_directories": 14,
+  "existing_sha256_manifest_directories": 5,
+  "manifest_files_authenticated": 1106,
+  "legacy_directories_without_top_SHA256SUMS": [
+    "docs/evidence/bug-audit-20261016-pass10",
+    "docs/evidence/bug-audit-20261016-pass11",
+    "docs/evidence/bug-audit-20261016-pass12",
+    "docs/evidence/bug-audit-20261016-pass13",
+    "docs/evidence/bug-audit-20261016-pass14",
+    "docs/evidence/bug-audit-20261016-pass15",
+    "docs/evidence/bug-audit-20261016-pass8",
+    "docs/evidence/bug-audit-20261016-pass9",
+    "docs/evidence/bug-audit-20261017-pass16"
+  ],
+  "all_original_evidence_files_unchanged_from_initial_inventory": 2617,
+  "rows": [
+    {
+      "directory": "docs/evidence/bug-audit-20261017-pass17",
+      "files": 245,
+      "manifest_sha256": "05002231946ad015a9cd81cf7f0fbde986ed46fb21588a53aeccce27fb57ee72"
+    },
+    {
+      "directory": "docs/evidence/bug-audit-20261017-pass18",
+      "files": 117,
+      "manifest_sha256": "aa9e8b2a37dd0c0f85326806247daf9e6cc9a4cb482dbd25dd661a19fb87cfce"
+    },
+    {
+      "directory": "docs/evidence/bug-audit-20261017-pass19",
+      "files": 197,
+      "manifest_sha256": "24f5954b7858bfc58f341a2d56a37616a0e9d4a4d092805c9422cacc655f0fda"
+    },
+    {
+      "directory": "docs/evidence/bug-audit-20261017-pass20",
+      "files": 380,
+      "manifest_sha256": "b590d9222d8cde050747ff707bed82281015b7029be3d5f860206d73c52a74cc"
+    },
+    {
+      "directory": "docs/evidence/bug-audit-20261017-pass21",
+      "files": 167,
+      "manifest_sha256": "0f9917ef86d24baacdded465c6bf9e87d0f021a72d85acab9106fd28af1baf64"
+    }
+  ],
+  "initial_helper_failure": "All content checks passed, then an incorrect assumption that all14audit directories have top-level SHA256SUMS failed. Existing legacy formats are preserved; no missing manifest relabeled as a passing manifest."
+}

@@ -1,0 +1,27 @@
+{
+  "cases": 332,
+  "failures": 137,
+  "controls": 195,
+  "errors": 0,
+  "skips": 0,
+  "deselected": 0,
+  "modules": {
+    "tests.test_checkrow_trace_lifetime_pass18": {
+      "fail": 16,
+      "pass": 4
+    },
+    "tests.test_curses_rendered_erase_gate_pass18": {
+      "fail": 9,
+      "pass": 63
+    },
+    "tests.test_pathless_physical_bridge_pass18": {
+      "fail": 96,
+      "pass": 112
+    },
+    "tests.test_pathless_unresolved_identity_pass18": {
+      "fail": 16,
+      "pass": 16
+    }
+  },
+  "all_final_regression_bytes_replayed": true
+}

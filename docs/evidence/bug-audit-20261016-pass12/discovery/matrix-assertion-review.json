@@ -1,0 +1,12 @@
+{
+  "groups": {
+    "identity": 510,
+    "boot": 180,
+    "equivalent": 36,
+    "tokens": 729
+  },
+  "token_specs_available": 1088,
+  "token_cases_with_available": 676,
+  "token_cases_all_refused": 53,
+  "unique_case_labels": 1455
+}

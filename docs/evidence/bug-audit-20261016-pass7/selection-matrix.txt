@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "controlled_observations": 454,
+  "permutation_cases": 120,
+  "malformed_then_valid_cases": 312,
+  "production_override_cases": 4,
+  "permission_then_valid_cases": 18,
+  "fake_only": true
+}

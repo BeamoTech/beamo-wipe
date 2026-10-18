@@ -1,0 +1,6 @@
+{'ending': "'\\n'", 'bytes': 128, 'large': False, 'direct': (True, 'finished', 'completed'), 'runner': (True, 'finished', 'completed'), 'projection_ready': True, 'unchanged_file': True}
+{'ending': "'\\n'", 'bytes': 1113917, 'large': True, 'direct': (True, 'finished', 'completed'), 'runner': (True, 'finished', 'completed'), 'projection_ready': True, 'unchanged_file': True}
+{'ending': "'\\r\\n'", 'bytes': 129, 'large': False, 'direct': (False, 'nwipe exited without wiping', 'completion_missing'), 'runner': (False, 'nwipe exited without wiping', 'completion_missing'), 'projection_ready': True, 'unchanged_file': True}
+{'ending': "'\\r\\n'", 'bytes': 1113918, 'large': True, 'direct': (False, 'nwipe exited without wiping', 'completion_missing'), 'runner': (True, 'finished', 'completed'), 'projection_ready': True, 'unchanged_file': True}
+{'ending': "'\\r\\r\\n'", 'bytes': 130, 'large': False, 'direct': (False, 'nwipe exited without wiping', 'completion_missing'), 'runner': (False, 'nwipe exited without wiping', 'completion_missing'), 'projection_ready': True, 'unchanged_file': True}
+{'ending': "'\\r\\r\\n'", 'bytes': 1113919, 'large': True, 'direct': (False, 'nwipe exited without wiping', 'completion_missing'), 'runner': (True, 'finished', 'completed'), 'projection_ready': True, 'unchanged_file': True}

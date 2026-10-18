@@ -1,0 +1,99 @@
+MODULES 46 ['tests/test_audit_20260905_discovery.py', 'tests/test_audit_20260907_discovery_duplicates.py', 'tests/test_audit_20260908_discovery.py', 'tests/test_boolean_boot_proof_pass36.py', 'tests/test_boot_exclusion_fails_closed.py', 'tests/test_boot_identity_handoff_regression.py', 'tests/test_boot_label_exact_pass33.py', 'tests/test_boot_serial_alias_pass7.py', 'tests/test_boot_wwn_alias_pass12_discovery.py', 'tests/test_bug_audit_discovery_20260913.py', 'tests/test_build_identity.py', 'tests/test_cmdline_boot_competition_regression.py', 'tests/test_confirm_token.py', 'tests/test_discover.py', 'tests/test_discovery_alias_brackets_pass10.py', 'tests/test_discovery_children_schema_regression.py', 'tests/test_discovery_control_metadata_pass12.py', 'tests/test_discovery_diagnostics_privacy_pass6.py', 'tests/test_discovery_duplicate_json_pass9.py', 'tests/test_discovery_label_whitespace_pass13.py', 'tests/test_discovery_layout_identity_pass9.py', 'tests/test_discovery_live_override_boundary_20260924.py', 'tests/test_discovery_overlong_identity_pass9.py', 'tests/test_discovery_pass5_duplicate_mapper.py', 'tests/test_discovery_typed_source_pass9.py', 'tests/test_discovery_udev_alias_pass10.py', 'tests/test_discovery_unicode_line_break_pass29.py', 'tests/test_discovery_unresolved_override_pass20.py', 'tests/test_excluded_inventory.py', 'tests/test_findmnt_exact_mount_pass12_discovery.py', 'tests/test_identity.py', 'tests/test_inventory_boot_alias_pass34.py', 'tests/test_inventory_count.py', 'tests/test_inventory_count_language_regression.py', 'tests/test_inventory_media_pass16_disk.py', 'tests/test_live_overmount_pass14_discovery.py', 'tests/test_log_source_alias_pass12_discovery.py', 'tests/test_missing_udev_link_pass14_discovery.py', 'tests/test_operation_identity.py', 'tests/test_qemu_discovery_followup.py', 'tests/test_runner_log_launch_identity.py', 'tests/test_runner_preexec_lock_identity.py', 'tests/test_safety.py', 'tests/test_safety_confirm_name_pass9.py', 'tests/test_safety_critical_gaps.py', 'tests/test_safety_scsi_path_pass9.py']
+........................................................................ [ 13%]
+........................................................................ [ 26%]
+........................................................................ [ 39%]
+........................................................................ [ 53%]
+.....................................FF................................. [ 66%]
+........................................................................ [ 79%]
+..........................................F.ss.......................... [ 92%]
+......................................                                   [100%]
+=================================== FAILURES ===================================
+____ test_discovery_failure_logs_type_without_exception_payload[ValueError] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-252/test_discovery_failure_logs_ty0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x787099b886b0>
+error_type = <class 'ValueError'>
+
+    @pytest.mark.parametrize("error_type", (ValueError, RuntimeError))
+    def test_discovery_failure_logs_type_without_exception_payload(tmp_path, monkeypatch, error_type):
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+
+        def malformed_inventory():
+            raise error_type("disk serial SERIAL_PRIVATE_123 at /dev/disk/by-id/private")
+
+        monkeypatch.setattr(discovery, "run_lsblk", malformed_inventory)
+        result = discovery.discover(env={"BEAMO_WIPE_DRY_RUN": "1"})
+        assert not result.boot_identified and not result.selectable
+        logged = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        code = "failed" if error_type is ValueError else "unexpected"
+>       assert f'"code": "{code}"' in logged
+E       assert '"code": "failed"' in '{"area": "discover", "code": "unexpected", "detail": "AssertionError", "pid": 346362, "ts_mono": 42433.030469631, "ts_wall": "2026-10-16T06:18:19.448355Z"}\n'
+
+tests/test_discovery_diagnostics_privacy_pass6.py:35: AssertionError
+___ test_discovery_failure_logs_type_without_exception_payload[RuntimeError] ___
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-252/test_discovery_failure_logs_ty1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x787099bcc410>
+error_type = <class 'RuntimeError'>
+
+    @pytest.mark.parametrize("error_type", (ValueError, RuntimeError))
+    def test_discovery_failure_logs_type_without_exception_payload(tmp_path, monkeypatch, error_type):
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+
+        def malformed_inventory():
+            raise error_type("disk serial SERIAL_PRIVATE_123 at /dev/disk/by-id/private")
+
+        monkeypatch.setattr(discovery, "run_lsblk", malformed_inventory)
+        result = discovery.discover(env={"BEAMO_WIPE_DRY_RUN": "1"})
+        assert not result.boot_identified and not result.selectable
+        logged = (tmp_path / "diagnostics.log").read_text(encoding="utf-8")
+        code = "failed" if error_type is ValueError else "unexpected"
+        assert f'"code": "{code}"' in logged
+>       assert error_type.__name__ in logged
+E       assert 'RuntimeError' in '{"area": "discover", "code": "unexpected", "detail": "AssertionError", "pid": 346362, "ts_mono": 42433.080363155, "ts_wall": "2026-10-16T06:18:19.498244Z"}\n'
+E        +  where 'RuntimeError' = <class 'RuntimeError'>.__name__
+
+tests/test_discovery_diagnostics_privacy_pass6.py:36: AssertionError
+______________ test_accessible_stopping_shows_identity_and_method ______________
+
+    def test_accessible_stopping_shows_identity_and_method():
+        pytest.importorskip("gi")
+        from test_accessible_runtime import text, wait_for_window_size
+
+        from beamo_wipe.ui.accessible_wizard import AccessibleWizard
+
+        wiz = make_demo_wizard()
+        wiz.skip_intro()
+        wiz.accept_what()
+        wiz.set_owner(True)
+        wiz.continue_owner()
+        disk = sorted(wiz.selectable, key=lambda d: d.path)[0]
+        wiz.select_disk(disk.path)
+        wiz.method = MethodId.EXTRA
+        wiz.screen = Screen.STOPPING
+>       app = AccessibleWizard(wiz)
+              ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_operation_identity.py:189:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/beamo_wipe/ui/accessible_wizard.py:58: in __init__
+    self.window = Gtk.Window(title=C.ACCESSIBLE_TITLE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Gtk.Window object at 0x7870937ad000 (uninitialized at 0x(nil))>
+args = (), kwargs = {'title': 'Beamo Wipe — screen-reader view'}
+
+    def __init__(self, *args, **kwargs):
+        if not initialized:
+>           raise RuntimeError(
+                "Gtk couldn't be initialized. "
+                "Use Gtk.init_check() if you want to handle this case.")
+E           RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.
+
+/usr/lib/python3/dist-packages/gi/overrides/Gtk.py:508: RuntimeError
+=========================== short test summary info ============================
+FAILED tests/test_discovery_diagnostics_privacy_pass6.py::test_discovery_failure_logs_type_without_exception_payload[ValueError]
+FAILED tests/test_discovery_diagnostics_privacy_pass6.py::test_discovery_failure_logs_type_without_exception_payload[RuntimeError]
+FAILED tests/test_operation_identity.py::test_accessible_stopping_shows_identity_and_method
+FAKE_HOST_READS {}

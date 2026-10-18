@@ -1,0 +1,4 @@
+....dbus-daemon[179956]: [session uid=0 pid=179956] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=179970 comm="/tmp/beamo-wipe-audit-python/bin/python -m pytest" label="unconfined")
+dbus-daemon[179956]: [session uid=0 pid=179956] Successfully activated service 'org.a11y.Bus'
+............................                                         [100%]
+32 passed in 3.39s

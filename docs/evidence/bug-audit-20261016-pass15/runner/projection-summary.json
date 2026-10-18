@@ -1,0 +1,14 @@
+{
+  "source": {
+    "src/beamo_wipe/nwipe_runner.py": "cd49b65a607f152bd53675dafef80777d49b2fc02afd54f545605b3ccf958175",
+    "src/beamo_wipe/engine_checks.py": "858da2ba9ac347df0b4a92bc196e90949d4279f155e21c98f0ac01b8caa743f3",
+    "src/beamo_wipe/methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13"
+  },
+  "short_differential_cases": 432,
+  "actual_large_cases": 324,
+  "large_fixtures": 108,
+  "mismatches": 0,
+  "native_acquisition_calls": 0,
+  "elapsed_s": 23.043144298993866,
+  "source_unchanged": true
+}

@@ -1,0 +1,22 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass17-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "docs/evidence/bug-audit-20261017-pass17/runner/negative-origin-proof.py",
+    "tests/test_runner_prefixed_error_context_pass12.py::test_prefixed_error_activity_prevents_no_erase_claim",
+    "--junitxml=/tmp/pass17-primary/runner-negative-original-proof.xml"
+  ],
+  "exit_code": 1,
+  "started_utc": "2026-10-17T06:00:29.984747+00:00",
+  "ended_utc": "2026-10-17T06:00:32.411730+00:00"
+}

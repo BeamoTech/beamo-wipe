@@ -1,0 +1,16 @@
+{
+  "AGENTS.md": "1e6f980d50267db488a9beb353802242ac57379450c1d9c0ad77c13928509290",
+  "docs/evidence/bug-audit-20261016-pass15/README.md": "4a106a703b7b965c7a97fd18af36b8f05f0bed0b2d9cadd730c395251fdd91e3",
+  "prepared_regression_sha256": "5441f0a229440e31dbc850fff5c071db642315eb9350e609cb1b97cafa00d419",
+  "src/beamo_wipe/discover.py": "b08767b2e921779f53e62de67ac4c3fbaa281ea6ab90f9f6c682e3be96f9991e",
+  "src/beamo_wipe/identity.py": "4ccada033bab0c3811450cb9ab4e85c74936af56e8cd94fdf84f8d5566942050",
+  "src/beamo_wipe/methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13",
+  "src/beamo_wipe/models.py": "9fb0bcb97d35b1ee0f041f8ccb728fe8a2b9f173242a904bf2af6f7b5f42b95c",
+  "src/beamo_wipe/nwipe_runner.py": "cd49b65a607f152bd53675dafef80777d49b2fc02afd54f545605b3ccf958175",
+  "src/beamo_wipe/safety.py": "ba07089fa9ed77e3616af67147201a16b15b8c8582ca0ca9724e58ef980ecd9b",
+  "src/beamo_wipe/wizard.py": "be375a0861ec569a652e15f9f572bfa689f40048d736c5bedef641453d464bbb",
+  "tests/test_audit_20260907_discovery_duplicates.py": "9414bbd00c433ead60a3b7b499cff9306993ed9113d02eedd9aa05b7dafb7e17",
+  "tests/test_boot_exclusion_fails_closed.py": "1185f079dd52ce1f0cfd9162a2bce321b7b66456df7b1f2f585ee28a87e8128e",
+  "tests/test_cmdline_boot_competition_regression.py": "0ef2cc7de2cd49ff868137eb17affa4616693a7c9d8166c00436bd6c52cfb854",
+  "tests/test_physical_observation_context_pass15.py": "319d7195e4a80be9c77ee00d5829da28d6680401352dc4dff6457b7ee3742323"
+}

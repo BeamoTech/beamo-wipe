@@ -1,0 +1,55 @@
+Frozen application and test hashes match: 558
+Runtime source digest: be7d8d674e102743e61984ca60ba63c912c4b514d52dd755f243049f88562d5c
+Tracked source diff:
+diff --git a/src/beamo_wipe/diagnostic_report.py b/src/beamo_wipe/diagnostic_report.py
+index 4c49824..47f2390 100644
+--- a/src/beamo_wipe/diagnostic_report.py
++++ b/src/beamo_wipe/diagnostic_report.py
+@@ -301,7 +301,7 @@ def validate_report(data: bytes) -> dict:
+         if p["events"][-1]["code"] != p["error_code"]:
+             raise ValueError()
+         return p
+-    except (ValueError, TypeError, KeyError, AttributeError) as exc:
++    except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+         raise SafetyError(INVALID_REPORT) from exc
+
+
+diff --git a/src/beamo_wipe/nwipe_runner.py b/src/beamo_wipe/nwipe_runner.py
+index 14374e1..2ea64f2 100644
+--- a/src/beamo_wipe/nwipe_runner.py
++++ b/src/beamo_wipe/nwipe_runner.py
+@@ -1502,6 +1502,8 @@ class NwipeRunner:
+                 retained: list[str] = []
+                 retained_bytes = 0
+                 last_progress = ""
++                last_progress_position = 0
++                last_progress_retained = False
+                 progress_totals: set[tuple[int, int]] = set()
+                 shared_path = ""
+                 in_error_summary = False
+@@ -1528,6 +1530,7 @@ class NwipeRunner:
+                     new_totals = False
+                     if progress is not None:
+                         last_progress = line
++                        last_progress_position = len(retained)
+                         match = progress[0]
+                         if _progress_has_method_counters(match):
+                             totals = (int(match.group(4)), int(match.group(6)))
+@@ -1562,10 +1565,15 @@ class NwipeRunner:
+                         if retained_bytes > NWIPE_COMPLETION_EVIDENCE_BYTES:
+                             return None
+                         retained.append(line)
++                    if progress is not None:
++                        last_progress_retained = relevant
+                 if _log_signature(os.fstat(fh.fileno())) != expected_identity:
+                     return None
+-                if last_progress:
+-                    retained.append(last_progress)
++                if last_progress and not last_progress_retained:
++                    # Keep the sample in its original table context. Appending
++                    # earlier progress after an incomplete Error Summary turns
++                    # an explicit error row into a malformed/unavailable check.
++                    retained.insert(last_progress_position, last_progress)
+                 if shared_path:
+                     retained.append(f"observed {shared_path}")
+                 return "\n".join(retained) + "\n"

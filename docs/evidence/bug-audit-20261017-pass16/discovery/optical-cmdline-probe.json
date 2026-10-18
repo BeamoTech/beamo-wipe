@@ -1,0 +1,1950 @@
+{
+  "cases": [
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "usb",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sata",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "nvme",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "sas",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "/dev/sr0",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "LABEL=FAKE-OPTICAL",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "virtio",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [
+        "/dev/sda"
+      ],
+      "source": "UUID=optical-uuid",
+      "token": "128"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [],
+      "source": "/dev/sr0"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [],
+      "source": "/dev/sr0"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [],
+      "source": "/dev/sr0"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [],
+      "source": "/dev/sr0"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [],
+      "source": "LABEL=FAKE-OPTICAL"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [],
+      "source": "LABEL=FAKE-OPTICAL"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [],
+      "source": "LABEL=FAKE-OPTICAL"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [],
+      "source": "LABEL=FAKE-OPTICAL"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [],
+      "source": "UUID=optical-uuid"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": false,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [],
+      "source": "UUID=optical-uuid"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": false,
+      "selectable": [],
+      "source": "UUID=optical-uuid"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": true,
+      "optical_size": 0,
+      "reverse": true,
+      "selectable": [],
+      "source": "UUID=optical-uuid"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [],
+      "source": "/dev/sr0"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [],
+      "source": "/dev/sr0"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [],
+      "source": "/dev/sr0"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [],
+      "source": "/dev/sr0"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [],
+      "source": "LABEL=FAKE-OPTICAL"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [],
+      "source": "LABEL=FAKE-OPTICAL"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [],
+      "source": "LABEL=FAKE-OPTICAL"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [],
+      "source": "LABEL=FAKE-OPTICAL"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [],
+      "source": "UUID=optical-uuid"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": false,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [],
+      "source": "UUID=optical-uuid"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": false,
+      "selectable": [],
+      "source": "UUID=optical-uuid"
+    },
+    {
+      "boot": "/dev/sr0",
+      "boot_identified": true,
+      "candidate_bus": "",
+      "error": false,
+      "mounted": true,
+      "optical_size": 4000000000,
+      "reverse": true,
+      "selectable": [],
+      "source": "UUID=optical-uuid"
+    }
+  ],
+  "native_attempts": [],
+  "source_sha256": "b08767b2e921779f53e62de67ac4c3fbaa281ea6ab90f9f6c682e3be96f9991e"
+}

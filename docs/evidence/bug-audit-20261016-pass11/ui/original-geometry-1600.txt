@@ -1,0 +1,316 @@
+dbus-daemon[502927]: [session uid=0 pid=502927] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=502941 comm="/tmp/beamo-wipe-audit-python/bin/python3 -m pytest" label="unconfined")
+dbus-daemon[502927]: [session uid=0 pid=502927] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[502950]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=502941 comm="/tmp/beamo-wipe-audit-python/bin/python3 -m pytest" label="unconfined")
+dbus-daemon[502950]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+..FF..FF                                                                 [100%]
+=================================== FAILURES ===================================
+_ test_gtk_uses_full_monitor_geometry_only_when_fullscreen[False-True-wizard] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7e6328795940>
+surface = 'wizard', fullscreen = True, monitor_origin = False
+
+    @pytest.mark.parametrize("surface", ["wizard", "startup"])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("monitor_origin", [False, True])
+    def test_gtk_uses_full_monitor_geometry_only_when_fullscreen(
+        monkeypatch, surface, fullscreen, monitor_origin
+    ):
+        display = Gdk.Display.get_default()
+        monitor = display.get_primary_monitor() or display.get_monitor(0)
+        actual = monitor.get_geometry()
+        if monitor_origin:
+            geometry = SimpleNamespace(x=100, y=50, width=actual.width - 150, height=actual.height - 100)
+            workarea = SimpleNamespace(x=100, y=80, width=geometry.width - 20, height=geometry.height - 50)
+            reported = SimpleNamespace(get_geometry=lambda: geometry, get_workarea=lambda: workarea)
+            monkeypatch.setattr(Gdk.Display, "get_primary_monitor", lambda _self: reported)
+        else:
+            geometry, workarea = actual, monitor.get_workarea()
+        expected_size = (
+            (geometry.width, geometry.height) if fullscreen else
+            (min(900, workarea.width), min(700, workarea.height)) if surface == "wizard" else
+            (640, 420)
+        )
+        states = []
+        if surface == "wizard":
+            wizard = make_demo_wizard()
+            wizard.skip_intro()
+            app = AccessibleWizard(wizard, fullscreen=fullscreen)
+            try:
+                deadline = time.monotonic() + 0.25
+                while time.monotonic() < deadline:
+                    drain()
+                    time.sleep(0.005)
+                states.append(_state(app.window))
+            finally:
+                app.close()
+                drain()
+        else:
+            monkeypatch.setattr(accessible_wizard, "_ensure_gtk_display", lambda: None)
+            release = threading.Event()
+            retired = threading.Event()
+
+            def build(_report):
+                try:
+                    assert release.wait(timeout=2)
+                    return object()
+                finally:
+                    retired.set()
+
+            def inspect():
+                window = next(w for w in Gtk.Window.list_toplevels() if w.get_mapped() and w.get_title() == C.STARTING_TITLE)
+                states.append(_state(window))
+                window.emit("delete-event", None)
+                return False
+
+            GLib.timeout_add(150, inspect)
+            try:
+                assert accessible_wizard.run_accessible_startup(build, fullscreen=fullscreen) == ("abandoned", None)
+            finally:
+                release.set()
+                assert retired.wait(timeout=1)
+                drain()
+        assert len(states) == 1
+        state = states[0]
+        assert state["mapped"]
+>       assert state["size"] == state["allocation"] == expected_size, state
+E       AssertionError: {'allocation': (900, 700), 'fullscreen': True, 'mapped': True, 'origin': (0, 0), ...}
+E       assert (900, 700) == (1600, 1000)
+E
+E         At index 0 diff: 900 != 1600
+E         Use -v to get more diff
+
+tests/test_accessible_fullscreen_geometry_pass11.py:108: AssertionError
+_ test_gtk_uses_full_monitor_geometry_only_when_fullscreen[False-True-startup] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7e6318eec440>
+surface = 'startup', fullscreen = True, monitor_origin = False
+
+    @pytest.mark.parametrize("surface", ["wizard", "startup"])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("monitor_origin", [False, True])
+    def test_gtk_uses_full_monitor_geometry_only_when_fullscreen(
+        monkeypatch, surface, fullscreen, monitor_origin
+    ):
+        display = Gdk.Display.get_default()
+        monitor = display.get_primary_monitor() or display.get_monitor(0)
+        actual = monitor.get_geometry()
+        if monitor_origin:
+            geometry = SimpleNamespace(x=100, y=50, width=actual.width - 150, height=actual.height - 100)
+            workarea = SimpleNamespace(x=100, y=80, width=geometry.width - 20, height=geometry.height - 50)
+            reported = SimpleNamespace(get_geometry=lambda: geometry, get_workarea=lambda: workarea)
+            monkeypatch.setattr(Gdk.Display, "get_primary_monitor", lambda _self: reported)
+        else:
+            geometry, workarea = actual, monitor.get_workarea()
+        expected_size = (
+            (geometry.width, geometry.height) if fullscreen else
+            (min(900, workarea.width), min(700, workarea.height)) if surface == "wizard" else
+            (640, 420)
+        )
+        states = []
+        if surface == "wizard":
+            wizard = make_demo_wizard()
+            wizard.skip_intro()
+            app = AccessibleWizard(wizard, fullscreen=fullscreen)
+            try:
+                deadline = time.monotonic() + 0.25
+                while time.monotonic() < deadline:
+                    drain()
+                    time.sleep(0.005)
+                states.append(_state(app.window))
+            finally:
+                app.close()
+                drain()
+        else:
+            monkeypatch.setattr(accessible_wizard, "_ensure_gtk_display", lambda: None)
+            release = threading.Event()
+            retired = threading.Event()
+
+            def build(_report):
+                try:
+                    assert release.wait(timeout=2)
+                    return object()
+                finally:
+                    retired.set()
+
+            def inspect():
+                window = next(w for w in Gtk.Window.list_toplevels() if w.get_mapped() and w.get_title() == C.STARTING_TITLE)
+                states.append(_state(window))
+                window.emit("delete-event", None)
+                return False
+
+            GLib.timeout_add(150, inspect)
+            try:
+                assert accessible_wizard.run_accessible_startup(build, fullscreen=fullscreen) == ("abandoned", None)
+            finally:
+                release.set()
+                assert retired.wait(timeout=1)
+                drain()
+        assert len(states) == 1
+        state = states[0]
+        assert state["mapped"]
+>       assert state["size"] == state["allocation"] == expected_size, state
+E       AssertionError: {'allocation': (640, 420), 'fullscreen': True, 'mapped': True, 'origin': (0, 0), ...}
+E       assert (640, 420) == (1600, 1000)
+E
+E         At index 0 diff: 640 != 1600
+E         Use -v to get more diff
+
+tests/test_accessible_fullscreen_geometry_pass11.py:108: AssertionError
+__ test_gtk_uses_full_monitor_geometry_only_when_fullscreen[True-True-wizard] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7e6318eed970>
+surface = 'wizard', fullscreen = True, monitor_origin = True
+
+    @pytest.mark.parametrize("surface", ["wizard", "startup"])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("monitor_origin", [False, True])
+    def test_gtk_uses_full_monitor_geometry_only_when_fullscreen(
+        monkeypatch, surface, fullscreen, monitor_origin
+    ):
+        display = Gdk.Display.get_default()
+        monitor = display.get_primary_monitor() or display.get_monitor(0)
+        actual = monitor.get_geometry()
+        if monitor_origin:
+            geometry = SimpleNamespace(x=100, y=50, width=actual.width - 150, height=actual.height - 100)
+            workarea = SimpleNamespace(x=100, y=80, width=geometry.width - 20, height=geometry.height - 50)
+            reported = SimpleNamespace(get_geometry=lambda: geometry, get_workarea=lambda: workarea)
+            monkeypatch.setattr(Gdk.Display, "get_primary_monitor", lambda _self: reported)
+        else:
+            geometry, workarea = actual, monitor.get_workarea()
+        expected_size = (
+            (geometry.width, geometry.height) if fullscreen else
+            (min(900, workarea.width), min(700, workarea.height)) if surface == "wizard" else
+            (640, 420)
+        )
+        states = []
+        if surface == "wizard":
+            wizard = make_demo_wizard()
+            wizard.skip_intro()
+            app = AccessibleWizard(wizard, fullscreen=fullscreen)
+            try:
+                deadline = time.monotonic() + 0.25
+                while time.monotonic() < deadline:
+                    drain()
+                    time.sleep(0.005)
+                states.append(_state(app.window))
+            finally:
+                app.close()
+                drain()
+        else:
+            monkeypatch.setattr(accessible_wizard, "_ensure_gtk_display", lambda: None)
+            release = threading.Event()
+            retired = threading.Event()
+
+            def build(_report):
+                try:
+                    assert release.wait(timeout=2)
+                    return object()
+                finally:
+                    retired.set()
+
+            def inspect():
+                window = next(w for w in Gtk.Window.list_toplevels() if w.get_mapped() and w.get_title() == C.STARTING_TITLE)
+                states.append(_state(window))
+                window.emit("delete-event", None)
+                return False
+
+            GLib.timeout_add(150, inspect)
+            try:
+                assert accessible_wizard.run_accessible_startup(build, fullscreen=fullscreen) == ("abandoned", None)
+            finally:
+                release.set()
+                assert retired.wait(timeout=1)
+                drain()
+        assert len(states) == 1
+        state = states[0]
+        assert state["mapped"]
+>       assert state["size"] == state["allocation"] == expected_size, state
+E       AssertionError: {'allocation': (900, 700), 'fullscreen': True, 'mapped': True, 'origin': (0, 0), ...}
+E       assert (900, 700) == (1450, 900)
+E
+E         At index 0 diff: 900 != 1450
+E         Use -v to get more diff
+
+tests/test_accessible_fullscreen_geometry_pass11.py:108: AssertionError
+_ test_gtk_uses_full_monitor_geometry_only_when_fullscreen[True-True-startup] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7e6318f1db50>
+surface = 'startup', fullscreen = True, monitor_origin = True
+
+    @pytest.mark.parametrize("surface", ["wizard", "startup"])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("monitor_origin", [False, True])
+    def test_gtk_uses_full_monitor_geometry_only_when_fullscreen(
+        monkeypatch, surface, fullscreen, monitor_origin
+    ):
+        display = Gdk.Display.get_default()
+        monitor = display.get_primary_monitor() or display.get_monitor(0)
+        actual = monitor.get_geometry()
+        if monitor_origin:
+            geometry = SimpleNamespace(x=100, y=50, width=actual.width - 150, height=actual.height - 100)
+            workarea = SimpleNamespace(x=100, y=80, width=geometry.width - 20, height=geometry.height - 50)
+            reported = SimpleNamespace(get_geometry=lambda: geometry, get_workarea=lambda: workarea)
+            monkeypatch.setattr(Gdk.Display, "get_primary_monitor", lambda _self: reported)
+        else:
+            geometry, workarea = actual, monitor.get_workarea()
+        expected_size = (
+            (geometry.width, geometry.height) if fullscreen else
+            (min(900, workarea.width), min(700, workarea.height)) if surface == "wizard" else
+            (640, 420)
+        )
+        states = []
+        if surface == "wizard":
+            wizard = make_demo_wizard()
+            wizard.skip_intro()
+            app = AccessibleWizard(wizard, fullscreen=fullscreen)
+            try:
+                deadline = time.monotonic() + 0.25
+                while time.monotonic() < deadline:
+                    drain()
+                    time.sleep(0.005)
+                states.append(_state(app.window))
+            finally:
+                app.close()
+                drain()
+        else:
+            monkeypatch.setattr(accessible_wizard, "_ensure_gtk_display", lambda: None)
+            release = threading.Event()
+            retired = threading.Event()
+
+            def build(_report):
+                try:
+                    assert release.wait(timeout=2)
+                    return object()
+                finally:
+                    retired.set()
+
+            def inspect():
+                window = next(w for w in Gtk.Window.list_toplevels() if w.get_mapped() and w.get_title() == C.STARTING_TITLE)
+                states.append(_state(window))
+                window.emit("delete-event", None)
+                return False
+
+            GLib.timeout_add(150, inspect)
+            try:
+                assert accessible_wizard.run_accessible_startup(build, fullscreen=fullscreen) == ("abandoned", None)
+            finally:
+                release.set()
+                assert retired.wait(timeout=1)
+                drain()
+        assert len(states) == 1
+        state = states[0]
+        assert state["mapped"]
+>       assert state["size"] == state["allocation"] == expected_size, state
+E       AssertionError: {'allocation': (640, 420), 'fullscreen': True, 'mapped': True, 'origin': (0, 0), ...}
+E       assert (640, 420) == (1450, 900)
+E
+E         At index 0 diff: 640 != 1450
+E         Use -v to get more diff
+
+tests/test_accessible_fullscreen_geometry_pass11.py:108: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_accessible_fullscreen_geometry_pass11.py::test_gtk_uses_full_monitor_geometry_only_when_fullscreen[False-True-wizard]
+FAILED tests/test_accessible_fullscreen_geometry_pass11.py::test_gtk_uses_full_monitor_geometry_only_when_fullscreen[False-True-startup]
+FAILED tests/test_accessible_fullscreen_geometry_pass11.py::test_gtk_uses_full_monitor_geometry_only_when_fullscreen[True-True-wizard]
+FAILED tests/test_accessible_fullscreen_geometry_pass11.py::test_gtk_uses_full_monitor_geometry_only_when_fullscreen[True-True-startup]

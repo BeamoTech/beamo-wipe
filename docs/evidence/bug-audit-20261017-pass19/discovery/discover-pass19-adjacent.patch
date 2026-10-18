@@ -1,0 +1,23 @@
+--- a/src/beamo_wipe/discover.py
++++ b/src/beamo_wipe/discover.py
+@@ -639,7 +639,10 @@
+     """
+     groups: Dict[Tuple[str, str], List[Tuple[Dict[str, Any], Optional[Dict[str, Any]]]]] = {}
+     for node, parent in flat_nodes:
+-        if _node_type(node) in {"disk", "rom", "part", "loop", "ram"}:
++        kind = _node_type(node)
++        if kind in {"rom", "part", "loop", "ram"} or (
++            kind == "disk" and not _is_stacked_holder(node)
++        ):
+             continue
+         name = _identity_text(node.get("name"), "name")
+         path = node_path(node)
+@@ -1882,7 +1885,7 @@
+                 raise ValueError("lsblk mounted ancestry contradicts PKNAME")
+         if (
+             kind in _UNRESOLVED_HOLDER_TYPES
+-            or _is_stacked_holder(candidate)
++            or _has_stacked_holder(candidate, parent, by_name)
+             or kind in {"crypt", "dm", "bcache"}
+             or kind.startswith("raid")
+         ) and (

@@ -1,0 +1,24 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass21-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "-o",
+    "pythonpath=src",
+    "docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py",
+    "docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof.py",
+    "--junitxml=/tmp/pass21-primary/diagnostics-variable-original.xml"
+  ],
+  "exit_code": 1,
+  "started_utc": "2026-10-17T20:53:28.686725+00:00",
+  "ended_utc": "2026-10-17T20:53:31.756649+00:00"
+}

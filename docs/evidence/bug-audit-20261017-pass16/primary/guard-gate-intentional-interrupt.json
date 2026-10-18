@@ -1,0 +1,42 @@
+{
+  "pid": 36787,
+  "cwd": "/root/dev/Beamo Wipe",
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "--deselect=tests/test_accessible_runtime.py::test_orca_announces_every_result",
+    "--junitxml=/tmp/pass16-primary/final.xml"
+  ],
+  "proc_start_ticks": "751847",
+  "signal": "SIGINT",
+  "reason": "Known local-only gcloud guard configuration failure; preserve partial JUnit and correct exact offline allowlist before full rerun",
+  "requested_utc": "2026-10-17T03:21:42.296655+00:00",
+  "signal_sent_utc": "2026-10-17T03:21:42.296955+00:00",
+  "sigint_ignored_evidence": [
+    "SigIgn:\t0000000001081006",
+    "SigCgt:\t00000001080004e8"
+  ],
+  "children_at_term": [
+    {
+      "pid": 42423,
+      "start_ticks": "786229",
+      "command": "/tmp/beamo-pass16-python/lib/python3.12/site-packages/playwright/driver/node /tmp/beamo-pass16-python/lib/python3.12/site-packages/playwright/driver/package/cli.js run-driver "
+    }
+  ],
+  "term_reason": "Bash background job inherited ignored SIGINT; send attributed SIGTERM to the exact owned pytest PID only. This run is canceled/failed, never a pass.",
+  "sigterm_sent_utc": "2026-10-17T03:22:25.187569+00:00",
+  "completion": {
+    "wrapper_exit": 1,
+    "main_junit_fresh": false,
+    "old_main_junit_rejected": true,
+    "pytest_pid_present": false,
+    "tracked_child_present": false,
+    "note": "SIGINT ignored by inherited background disposition; exact owned PID terminated with attributed SIGTERM. This is separate from historical pass8 unknown sender."
+  },
+  "signals_sent": [
+    "SIGINT",
+    "SIGTERM"
+  ],
+  "main_disposition": "known canceled pytest via attributed SIGTERM, wrapper exit1; no fresh main JUnit"
+}

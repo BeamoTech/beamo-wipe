@@ -1,0 +1,962 @@
+[
+  {
+    "case_index": 0,
+    "method": "everyday",
+    "late_stop": false,
+    "bytes": 1048909,
+    "sha256": "7f4e65dfb5ddb5a866076d9129e48d7fa524a49cd04f02f05dd64732cb8372cf",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 0,
+    "method": "everyday",
+    "late_stop": true,
+    "bytes": 1048909,
+    "sha256": "7f4e65dfb5ddb5a866076d9129e48d7fa524a49cd04f02f05dd64732cb8372cf",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 0,
+    "method": "extra",
+    "late_stop": false,
+    "bytes": 1048909,
+    "sha256": "7f4e65dfb5ddb5a866076d9129e48d7fa524a49cd04f02f05dd64732cb8372cf",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 0,
+    "method": "extra",
+    "late_stop": true,
+    "bytes": 1048909,
+    "sha256": "7f4e65dfb5ddb5a866076d9129e48d7fa524a49cd04f02f05dd64732cb8372cf",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 0,
+    "method": "quick_zero",
+    "late_stop": false,
+    "bytes": 1048909,
+    "sha256": "7f4e65dfb5ddb5a866076d9129e48d7fa524a49cd04f02f05dd64732cb8372cf",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 0,
+    "method": "quick_zero",
+    "late_stop": true,
+    "bytes": 1048909,
+    "sha256": "7f4e65dfb5ddb5a866076d9129e48d7fa524a49cd04f02f05dd64732cb8372cf",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 1,
+    "method": "everyday",
+    "late_stop": false,
+    "bytes": 1048910,
+    "sha256": "73b3b75c7e030247ae86e8763ad08bc3e44828341ee4da1441fb0e07d8ef850e",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 1,
+    "method": "everyday",
+    "late_stop": true,
+    "bytes": 1048910,
+    "sha256": "73b3b75c7e030247ae86e8763ad08bc3e44828341ee4da1441fb0e07d8ef850e",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 1,
+    "method": "extra",
+    "late_stop": false,
+    "bytes": 1048910,
+    "sha256": "73b3b75c7e030247ae86e8763ad08bc3e44828341ee4da1441fb0e07d8ef850e",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 1,
+    "method": "extra",
+    "late_stop": true,
+    "bytes": 1048910,
+    "sha256": "73b3b75c7e030247ae86e8763ad08bc3e44828341ee4da1441fb0e07d8ef850e",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 1,
+    "method": "quick_zero",
+    "late_stop": false,
+    "bytes": 1048910,
+    "sha256": "73b3b75c7e030247ae86e8763ad08bc3e44828341ee4da1441fb0e07d8ef850e",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 1,
+    "method": "quick_zero",
+    "late_stop": true,
+    "bytes": 1048910,
+    "sha256": "73b3b75c7e030247ae86e8763ad08bc3e44828341ee4da1441fb0e07d8ef850e",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 2,
+    "method": "everyday",
+    "late_stop": false,
+    "bytes": 1048910,
+    "sha256": "fa70f517a1500fdb073a3e8a9fbee4510778c6bc2295b6dafcd5bad2b48c28f0",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n\t********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 2,
+    "method": "everyday",
+    "late_stop": true,
+    "bytes": 1048910,
+    "sha256": "fa70f517a1500fdb073a3e8a9fbee4510778c6bc2295b6dafcd5bad2b48c28f0",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n\t********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 2,
+    "method": "extra",
+    "late_stop": false,
+    "bytes": 1048910,
+    "sha256": "fa70f517a1500fdb073a3e8a9fbee4510778c6bc2295b6dafcd5bad2b48c28f0",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n\t********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 2,
+    "method": "extra",
+    "late_stop": true,
+    "bytes": 1048910,
+    "sha256": "fa70f517a1500fdb073a3e8a9fbee4510778c6bc2295b6dafcd5bad2b48c28f0",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n\t********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 2,
+    "method": "quick_zero",
+    "late_stop": false,
+    "bytes": 1048910,
+    "sha256": "fa70f517a1500fdb073a3e8a9fbee4510778c6bc2295b6dafcd5bad2b48c28f0",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n\t********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 2,
+    "method": "quick_zero",
+    "late_stop": true,
+    "bytes": 1048910,
+    "sha256": "fa70f517a1500fdb073a3e8a9fbee4510778c6bc2295b6dafcd5bad2b48c28f0",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n\t********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 3,
+    "method": "everyday",
+    "late_stop": false,
+    "bytes": 1048915,
+    "sha256": "024662085b200811fa719c4d534d47baa06b24742dc4e48a61fc446131754c3e",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\ninfo: ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 3,
+    "method": "everyday",
+    "late_stop": true,
+    "bytes": 1048915,
+    "sha256": "024662085b200811fa719c4d534d47baa06b24742dc4e48a61fc446131754c3e",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\ninfo: ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 3,
+    "method": "extra",
+    "late_stop": false,
+    "bytes": 1048915,
+    "sha256": "024662085b200811fa719c4d534d47baa06b24742dc4e48a61fc446131754c3e",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\ninfo: ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 3,
+    "method": "extra",
+    "late_stop": true,
+    "bytes": 1048915,
+    "sha256": "024662085b200811fa719c4d534d47baa06b24742dc4e48a61fc446131754c3e",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\ninfo: ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 3,
+    "method": "quick_zero",
+    "late_stop": false,
+    "bytes": 1048915,
+    "sha256": "024662085b200811fa719c4d534d47baa06b24742dc4e48a61fc446131754c3e",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\ninfo: ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 3,
+    "method": "quick_zero",
+    "late_stop": true,
+    "bytes": 1048915,
+    "sha256": "024662085b200811fa719c4d534d47baa06b24742dc4e48a61fc446131754c3e",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\ninfo: ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 4,
+    "method": "everyday",
+    "late_stop": false,
+    "bytes": 1048937,
+    "sha256": "a3235b5729e7b2c6fa1d00f67b22456a60f50101ecf5abe31b71cec3f2661a26",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n[2026/10/16 12:00:00] info: ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 4,
+    "method": "everyday",
+    "late_stop": true,
+    "bytes": 1048937,
+    "sha256": "a3235b5729e7b2c6fa1d00f67b22456a60f50101ecf5abe31b71cec3f2661a26",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n[2026/10/16 12:00:00] info: ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 4,
+    "method": "extra",
+    "late_stop": false,
+    "bytes": 1048937,
+    "sha256": "a3235b5729e7b2c6fa1d00f67b22456a60f50101ecf5abe31b71cec3f2661a26",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n[2026/10/16 12:00:00] info: ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 4,
+    "method": "extra",
+    "late_stop": true,
+    "bytes": 1048937,
+    "sha256": "a3235b5729e7b2c6fa1d00f67b22456a60f50101ecf5abe31b71cec3f2661a26",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n[2026/10/16 12:00:00] info: ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 4,
+    "method": "quick_zero",
+    "late_stop": false,
+    "bytes": 1048937,
+    "sha256": "a3235b5729e7b2c6fa1d00f67b22456a60f50101ecf5abe31b71cec3f2661a26",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n[2026/10/16 12:00:00] info: ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 4,
+    "method": "quick_zero",
+    "late_stop": true,
+    "bytes": 1048937,
+    "sha256": "a3235b5729e7b2c6fa1d00f67b22456a60f50101ecf5abe31b71cec3f2661a26",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n[2026/10/16 12:00:00] info: ********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 6,
+    "method": "everyday",
+    "late_stop": false,
+    "bytes": 1048909,
+    "sha256": "16951108cb1c00763b801c8fe404a4b0f4e8ff8f0b9dd84a434fb29cee559734",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 6,
+    "method": "everyday",
+    "late_stop": true,
+    "bytes": 1048909,
+    "sha256": "16951108cb1c00763b801c8fe404a4b0f4e8ff8f0b9dd84a434fb29cee559734",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 6,
+    "method": "extra",
+    "late_stop": false,
+    "bytes": 1048909,
+    "sha256": "16951108cb1c00763b801c8fe404a4b0f4e8ff8f0b9dd84a434fb29cee559734",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 6,
+    "method": "extra",
+    "late_stop": true,
+    "bytes": 1048909,
+    "sha256": "16951108cb1c00763b801c8fe404a4b0f4e8ff8f0b9dd84a434fb29cee559734",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 6,
+    "method": "quick_zero",
+    "late_stop": false,
+    "bytes": 1048909,
+    "sha256": "16951108cb1c00763b801c8fe404a4b0f4e8ff8f0b9dd84a434fb29cee559734",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 6,
+    "method": "quick_zero",
+    "late_stop": true,
+    "bytes": 1048909,
+    "sha256": "16951108cb1c00763b801c8fe404a4b0f4e8ff8f0b9dd84a434fb29cee559734",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 12,
+    "method": "everyday",
+    "late_stop": false,
+    "bytes": 1048915,
+    "sha256": "4f84625e26fa23a46d7e439591093a3b9d950d14455751f5c30799b422ab1833",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | unknown | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 12,
+    "method": "everyday",
+    "late_stop": true,
+    "bytes": 1048915,
+    "sha256": "4f84625e26fa23a46d7e439591093a3b9d950d14455751f5c30799b422ab1833",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | unknown | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 12,
+    "method": "extra",
+    "late_stop": false,
+    "bytes": 1048915,
+    "sha256": "4f84625e26fa23a46d7e439591093a3b9d950d14455751f5c30799b422ab1833",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | unknown | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 12,
+    "method": "extra",
+    "late_stop": true,
+    "bytes": 1048915,
+    "sha256": "4f84625e26fa23a46d7e439591093a3b9d950d14455751f5c30799b422ab1833",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | unknown | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 12,
+    "method": "quick_zero",
+    "late_stop": false,
+    "bytes": 1048915,
+    "sha256": "4f84625e26fa23a46d7e439591093a3b9d950d14455751f5c30799b422ab1833",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | unknown | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 12,
+    "method": "quick_zero",
+    "late_stop": true,
+    "bytes": 1048915,
+    "sha256": "4f84625e26fa23a46d7e439591093a3b9d950d14455751f5c30799b422ab1833",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "******************************** Error Summary *********************************\n sda | unknown | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 18,
+    "method": "everyday",
+    "late_stop": false,
+    "bytes": 1048909,
+    "sha256": "70d4e6e385e4eb0842fa7ecf2b40a9f8f479959583dc7615af9ced2e16446e41",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sdb | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 18,
+    "method": "everyday",
+    "late_stop": true,
+    "bytes": 1048909,
+    "sha256": "70d4e6e385e4eb0842fa7ecf2b40a9f8f479959583dc7615af9ced2e16446e41",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sdb | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 18,
+    "method": "extra",
+    "late_stop": false,
+    "bytes": 1048909,
+    "sha256": "70d4e6e385e4eb0842fa7ecf2b40a9f8f479959583dc7615af9ced2e16446e41",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sdb | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 18,
+    "method": "extra",
+    "late_stop": true,
+    "bytes": 1048909,
+    "sha256": "70d4e6e385e4eb0842fa7ecf2b40a9f8f479959583dc7615af9ced2e16446e41",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sdb | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 18,
+    "method": "quick_zero",
+    "late_stop": false,
+    "bytes": 1048909,
+    "sha256": "70d4e6e385e4eb0842fa7ecf2b40a9f8f479959583dc7615af9ced2e16446e41",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sdb | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 18,
+    "method": "quick_zero",
+    "late_stop": true,
+    "bytes": 1048909,
+    "sha256": "70d4e6e385e4eb0842fa7ecf2b40a9f8f479959583dc7615af9ced2e16446e41",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "******************************** Error Summary *********************************\n sdb | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 24,
+    "method": "everyday",
+    "late_stop": false,
+    "bytes": 1048915,
+    "sha256": "06b87c8dee2a2d33ee054dae0d4a54984ca6e425fbe9f345d6777d6f142c27b3",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "info: ******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 24,
+    "method": "everyday",
+    "late_stop": true,
+    "bytes": 1048915,
+    "sha256": "06b87c8dee2a2d33ee054dae0d4a54984ca6e425fbe9f345d6777d6f142c27b3",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "info: ******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 24,
+    "method": "extra",
+    "late_stop": false,
+    "bytes": 1048915,
+    "sha256": "06b87c8dee2a2d33ee054dae0d4a54984ca6e425fbe9f345d6777d6f142c27b3",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "info: ******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 24,
+    "method": "extra",
+    "late_stop": true,
+    "bytes": 1048915,
+    "sha256": "06b87c8dee2a2d33ee054dae0d4a54984ca6e425fbe9f345d6777d6f142c27b3",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "info: ******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 24,
+    "method": "quick_zero",
+    "late_stop": false,
+    "bytes": 1048915,
+    "sha256": "06b87c8dee2a2d33ee054dae0d4a54984ca6e425fbe9f345d6777d6f142c27b3",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "info: ******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 24,
+    "method": "quick_zero",
+    "late_stop": true,
+    "bytes": 1048915,
+    "sha256": "06b87c8dee2a2d33ee054dae0d4a54984ca6e425fbe9f345d6777d6f142c27b3",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "info: ******************************** Error Summary *********************************\n sda | 0 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 30,
+    "method": "everyday",
+    "late_stop": false,
+    "bytes": 1048915,
+    "sha256": "3c511c301b25aa22a0cd25ef577f0cbdc672d3ae1aeb909faa2ced44e679ef1e",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "info: ******************************** Error Summary *********************************\n sda | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 30,
+    "method": "everyday",
+    "late_stop": true,
+    "bytes": 1048915,
+    "sha256": "3c511c301b25aa22a0cd25ef577f0cbdc672d3ae1aeb909faa2ced44e679ef1e",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "info: ******************************** Error Summary *********************************\n sda | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 30,
+    "method": "extra",
+    "late_stop": false,
+    "bytes": 1048915,
+    "sha256": "3c511c301b25aa22a0cd25ef577f0cbdc672d3ae1aeb909faa2ced44e679ef1e",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "info: ******************************** Error Summary *********************************\n sda | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 30,
+    "method": "extra",
+    "late_stop": true,
+    "bytes": 1048915,
+    "sha256": "3c511c301b25aa22a0cd25ef577f0cbdc672d3ae1aeb909faa2ced44e679ef1e",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "info: ******************************** Error Summary *********************************\n sda | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 30,
+    "method": "quick_zero",
+    "late_stop": false,
+    "bytes": 1048915,
+    "sha256": "3c511c301b25aa22a0cd25ef577f0cbdc672d3ae1aeb909faa2ced44e679ef1e",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "info: ******************************** Error Summary *********************************\n sda | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 30,
+    "method": "quick_zero",
+    "late_stop": true,
+    "bytes": 1048915,
+    "sha256": "3c511c301b25aa22a0cd25ef577f0cbdc672d3ae1aeb909faa2ced44e679ef1e",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "info: ******************************** Error Summary *********************************\n sda | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 60,
+    "method": "everyday",
+    "late_stop": false,
+    "bytes": 1048943,
+    "sha256": "c9deae289b3e806e5333f320ba390d62de278536ac3952b51cb16dd951f3d28a",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "[2026/10/16 12:00:00] info: ******************************** Error Summary *********************************\n sda | unknown | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 60,
+    "method": "everyday",
+    "late_stop": true,
+    "bytes": 1048943,
+    "sha256": "c9deae289b3e806e5333f320ba390d62de278536ac3952b51cb16dd951f3d28a",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "[2026/10/16 12:00:00] info: ******************************** Error Summary *********************************\n sda | unknown | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 60,
+    "method": "extra",
+    "late_stop": false,
+    "bytes": 1048943,
+    "sha256": "c9deae289b3e806e5333f320ba390d62de278536ac3952b51cb16dd951f3d28a",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "[2026/10/16 12:00:00] info: ******************************** Error Summary *********************************\n sda | unknown | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 60,
+    "method": "extra",
+    "late_stop": true,
+    "bytes": 1048943,
+    "sha256": "c9deae289b3e806e5333f320ba390d62de278536ac3952b51cb16dd951f3d28a",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "[2026/10/16 12:00:00] info: ******************************** Error Summary *********************************\n sda | unknown | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 60,
+    "method": "quick_zero",
+    "late_stop": false,
+    "bytes": 1048943,
+    "sha256": "c9deae289b3e806e5333f320ba390d62de278536ac3952b51cb16dd951f3d28a",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "[2026/10/16 12:00:00] info: ******************************** Error Summary *********************************\n sda | unknown | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 60,
+    "method": "quick_zero",
+    "late_stop": true,
+    "bytes": 1048943,
+    "sha256": "c9deae289b3e806e5333f320ba390d62de278536ac3952b51cb16dd951f3d28a",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "[2026/10/16 12:00:00] info: ******************************** Error Summary *********************************\n sda | unknown | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 90,
+    "method": "everyday",
+    "late_stop": false,
+    "bytes": 1048842,
+    "sha256": "d22c4e58981c85b4c6f704a5cac1a4f08dd68f90e3023f2100bf0cb62e1c5f4d",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "Error Summary\n sdb | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 90,
+    "method": "everyday",
+    "late_stop": true,
+    "bytes": 1048842,
+    "sha256": "d22c4e58981c85b4c6f704a5cac1a4f08dd68f90e3023f2100bf0cb62e1c5f4d",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "Error Summary\n sdb | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 90,
+    "method": "extra",
+    "late_stop": false,
+    "bytes": 1048842,
+    "sha256": "d22c4e58981c85b4c6f704a5cac1a4f08dd68f90e3023f2100bf0cb62e1c5f4d",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "Error Summary\n sdb | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 90,
+    "method": "extra",
+    "late_stop": true,
+    "bytes": 1048842,
+    "sha256": "d22c4e58981c85b4c6f704a5cac1a4f08dd68f90e3023f2100bf0cb62e1c5f4d",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "Error Summary\n sdb | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 90,
+    "method": "quick_zero",
+    "late_stop": false,
+    "bytes": 1048842,
+    "sha256": "d22c4e58981c85b4c6f704a5cac1a4f08dd68f90e3023f2100bf0cb62e1c5f4d",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "Error Summary\n sdb | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 90,
+    "method": "quick_zero",
+    "late_stop": true,
+    "bytes": 1048842,
+    "sha256": "d22c4e58981c85b4c6f704a5cac1a4f08dd68f90e3023f2100bf0cb62e1c5f4d",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "Error Summary\n sdb | 1 | 0 | 0\n********************************************************************************\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 119,
+    "method": "everyday",
+    "late_stop": false,
+    "bytes": 1048781,
+    "sha256": "fe2c5a37568461c494ebc1db3d000d33e1294e0c62900b02ab3f114a2856b9d5",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 119,
+    "method": "everyday",
+    "late_stop": true,
+    "bytes": 1048781,
+    "sha256": "fe2c5a37568461c494ebc1db3d000d33e1294e0c62900b02ab3f114a2856b9d5",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 119,
+    "method": "extra",
+    "late_stop": false,
+    "bytes": 1048781,
+    "sha256": "fe2c5a37568461c494ebc1db3d000d33e1294e0c62900b02ab3f114a2856b9d5",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 119,
+    "method": "extra",
+    "late_stop": true,
+    "bytes": 1048781,
+    "sha256": "fe2c5a37568461c494ebc1db3d000d33e1294e0c62900b02ab3f114a2856b9d5",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 119,
+    "method": "quick_zero",
+    "late_stop": false,
+    "bytes": 1048781,
+    "sha256": "fe2c5a37568461c494ebc1db3d000d33e1294e0c62900b02ab3f114a2856b9d5",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 119,
+    "method": "quick_zero",
+    "late_stop": true,
+    "bytes": 1048781,
+    "sha256": "fe2c5a37568461c494ebc1db3d000d33e1294e0c62900b02ab3f114a2856b9d5",
+    "ok": true,
+    "reason": "completed",
+    "assessment_text": "********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 120,
+    "method": "everyday",
+    "late_stop": false,
+    "bytes": 1048739,
+    "sha256": "67257e3dd40a8068ff7c5b200ac8bc89b0314a68d8161ae67878775ac59a3c23",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "/dev/sda: >>> FAILURE! <<<\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 120,
+    "method": "everyday",
+    "late_stop": true,
+    "bytes": 1048739,
+    "sha256": "67257e3dd40a8068ff7c5b200ac8bc89b0314a68d8161ae67878775ac59a3c23",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "/dev/sda: >>> FAILURE! <<<\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 120,
+    "method": "extra",
+    "late_stop": false,
+    "bytes": 1048739,
+    "sha256": "67257e3dd40a8068ff7c5b200ac8bc89b0314a68d8161ae67878775ac59a3c23",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "/dev/sda: >>> FAILURE! <<<\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 120,
+    "method": "extra",
+    "late_stop": true,
+    "bytes": 1048739,
+    "sha256": "67257e3dd40a8068ff7c5b200ac8bc89b0314a68d8161ae67878775ac59a3c23",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "/dev/sda: >>> FAILURE! <<<\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 120,
+    "method": "quick_zero",
+    "late_stop": false,
+    "bytes": 1048739,
+    "sha256": "67257e3dd40a8068ff7c5b200ac8bc89b0314a68d8161ae67878775ac59a3c23",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "/dev/sda: >>> FAILURE! <<<\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 120,
+    "method": "quick_zero",
+    "late_stop": true,
+    "bytes": 1048739,
+    "sha256": "67257e3dd40a8068ff7c5b200ac8bc89b0314a68d8161ae67878775ac59a3c23",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": "/dev/sda: >>> FAILURE! <<<\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 126,
+    "method": "everyday",
+    "late_stop": false,
+    "bytes": 1048728,
+    "sha256": "b74b40549d95c3dc264fb50db56fdfcf6f2d5ee3dc00552a4fd425cb9cb27254",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": " sda |-FAILED-|\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 126,
+    "method": "everyday",
+    "late_stop": true,
+    "bytes": 1048728,
+    "sha256": "b74b40549d95c3dc264fb50db56fdfcf6f2d5ee3dc00552a4fd425cb9cb27254",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": " sda |-FAILED-|\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 126,
+    "method": "extra",
+    "late_stop": false,
+    "bytes": 1048728,
+    "sha256": "b74b40549d95c3dc264fb50db56fdfcf6f2d5ee3dc00552a4fd425cb9cb27254",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": " sda |-FAILED-|\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 126,
+    "method": "extra",
+    "late_stop": true,
+    "bytes": 1048728,
+    "sha256": "b74b40549d95c3dc264fb50db56fdfcf6f2d5ee3dc00552a4fd425cb9cb27254",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": " sda |-FAILED-|\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 126,
+    "method": "quick_zero",
+    "late_stop": false,
+    "bytes": 1048728,
+    "sha256": "b74b40549d95c3dc264fb50db56fdfcf6f2d5ee3dc00552a4fd425cb9cb27254",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": " sda |-FAILED-|\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 126,
+    "method": "quick_zero",
+    "late_stop": true,
+    "bytes": 1048728,
+    "sha256": "b74b40549d95c3dc264fb50db56fdfcf6f2d5ee3dc00552a4fd425cb9cb27254",
+    "ok": false,
+    "reason": "engine_failed",
+    "assessment_text": " sda |-FAILED-|\n********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "case_index": 149,
+    "method": "everyday",
+    "late_stop": false,
+    "bytes": 1048797,
+    "sha256": "ca59d8bb22c072a3af2a63a4723c01919eafd9bd20d94b76d3a4ad6854523bb1",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n[2026/10/16 12:00:00] info: /dev/sda is IN USE but --force is not set, not wiping it\n"
+  },
+  {
+    "case_index": 149,
+    "method": "everyday",
+    "late_stop": true,
+    "bytes": 1048797,
+    "sha256": "ca59d8bb22c072a3af2a63a4723c01919eafd9bd20d94b76d3a4ad6854523bb1",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n[2026/10/16 12:00:00] info: /dev/sda is IN USE but --force is not set, not wiping it\n"
+  },
+  {
+    "case_index": 149,
+    "method": "extra",
+    "late_stop": false,
+    "bytes": 1048797,
+    "sha256": "ca59d8bb22c072a3af2a63a4723c01919eafd9bd20d94b76d3a4ad6854523bb1",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n[2026/10/16 12:00:00] info: /dev/sda is IN USE but --force is not set, not wiping it\n"
+  },
+  {
+    "case_index": 149,
+    "method": "extra",
+    "late_stop": true,
+    "bytes": 1048797,
+    "sha256": "ca59d8bb22c072a3af2a63a4723c01919eafd9bd20d94b76d3a4ad6854523bb1",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n[2026/10/16 12:00:00] info: /dev/sda is IN USE but --force is not set, not wiping it\n"
+  },
+  {
+    "case_index": 149,
+    "method": "quick_zero",
+    "late_stop": false,
+    "bytes": 1048797,
+    "sha256": "ca59d8bb22c072a3af2a63a4723c01919eafd9bd20d94b76d3a4ad6854523bb1",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n[2026/10/16 12:00:00] info: /dev/sda is IN USE but --force is not set, not wiping it\n"
+  },
+  {
+    "case_index": 149,
+    "method": "quick_zero",
+    "late_stop": true,
+    "bytes": 1048797,
+    "sha256": "ca59d8bb22c072a3af2a63a4723c01919eafd9bd20d94b76d3a4ad6854523bb1",
+    "ok": false,
+    "reason": "indeterminate",
+    "assessment_text": "********************************* Drive Status *********************************\n sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n[2026/10/16 12:00:00] info: /dev/sda is IN USE but --force is not set, not wiping it\n"
+  }
+]

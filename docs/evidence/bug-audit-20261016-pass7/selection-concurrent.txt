@@ -1,0 +1,10 @@
+{
+  "result": "PASS",
+  "concurrent_discoveries": 160,
+  "workers": 8,
+  "healthy": 40,
+  "unresolved_source": 40,
+  "malformed_topology": 40,
+  "conflicting_sources": 40,
+  "fake_only": true
+}

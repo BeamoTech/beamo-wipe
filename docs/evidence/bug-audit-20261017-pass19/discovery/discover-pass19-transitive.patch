@@ -1,0 +1,24 @@
+--- a/src/beamo_wipe/discover.py
++++ b/src/beamo_wipe/discover.py
+@@ -581,6 +581,10 @@
+     own_pk = ""
+     if node.get("pkname") is not None:
+         own_pk = _identity_text(node.get("pkname"), "pkname")
++    if own_pk and parent is not None:
++        tree_name = _identity_text(parent.get("name"), "name")
++        if own_pk != tree_name:
++            return "", True
+     if _node_type(node) in {"disk", "rom"} and not own_pk and not _is_stacked_holder(node):
+         if node.get("name") is None:
+             return "", False
+@@ -602,6 +606,10 @@
+         ancestor_pk = ""
+         if ancestor.get("pkname") is not None:
+             ancestor_pk = _identity_text(ancestor.get("pkname"), "pkname")
++        if ancestor_pk and tree_parent is not None:
++            tree_name = _identity_text(tree_parent.get("name"), "name")
++            if ancestor_pk != tree_name:
++                return "", True
+         if (
+             _node_type(ancestor) in {"disk", "rom"}
+             and not ancestor_pk

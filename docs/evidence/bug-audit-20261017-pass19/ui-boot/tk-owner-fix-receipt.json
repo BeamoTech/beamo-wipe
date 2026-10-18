@@ -1,0 +1,13 @@
+{
+  "at_utc": "2026-10-17T16:12:33.695657+00:00",
+  "author": "/root/pass19_ui_boot",
+  "final_sha256": "23d280b0451d3e25d64387de62d4912a8867ffbdec934244efe6a7f7a7ee0615",
+  "original_sha256": "612792b7c1328741cd8a194abd90cb297629b0f281cbf30538ca9bb9ae45f50d",
+  "patch_sha256": "28f47577c3a507faecadd68cc4a0087ee0378d60adbc512042848aaa3ded62e0",
+  "root_authorization": "Root reported actual unchanged-source proof: owner8 cases,6 AssertionError failures/2 normal live controls; raw /tmp/pass19-primary/fixture-original.* reviewed by root. Approved exact owned trace cleanup and unchanged proof copy.",
+  "runtime_by_child": false,
+  "scope": "Only tk_wizard.py two token registrations and exact owned-token teardown; one unchanged8case newtest module. No fixture, method, callback-body, authorization, argv or safety gate change.",
+  "test_exact_probe_copy": true,
+  "test_sha256": "dfa703b52c8f404771131afdd5a80235670bba31f87b747a7b6a414401d20d98",
+  "verification": "Prepared; root must run fixed/adjacent tests and full applicable gate. This child ran no application/test runtime."
+}

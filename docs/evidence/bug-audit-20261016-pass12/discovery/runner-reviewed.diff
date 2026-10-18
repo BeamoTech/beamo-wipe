@@ -1,0 +1,24 @@
+--- /tmp/pass12-runner/nwipe_runner-before.py	2026-10-16 20:05:07.680457592 +0000
++++ src/beamo_wipe/nwipe_runner.py	2026-10-16 20:07:06.650516763 +0000
+@@ -677,15 +677,18 @@
+     shared = _status_column_is_shared(log_text, device)
+     in_table = False
+     for line in (log_text or "").split("\n"):
++        # Negative error evidence uses the same record body as its header.
++        # Keep raw records untouched for exact positive Drive Status proof.
++        body = _engine_log_body(line)
+         if _is_error_summary_header(line):
+             in_table = True
+             continue
+-        if in_table and line.lstrip().startswith("***"):
++        if in_table and body.lstrip().startswith("***"):
+             in_table = False
+             continue
+-        if not any(_status_column_has_name(line, n) for n in names):
++        if not any(_status_column_has_name(body, n) for n in names):
+             continue
+-        row = NWIPE_ERROR_ROW_RE.match(line)
++        row = NWIPE_ERROR_ROW_RE.match(body)
+         if not in_table:
+             # The bounded completion tail can start inside Error Summary and
+             # lose its header. A target row with nonzero counts still

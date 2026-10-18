@@ -1,0 +1,387 @@
+{
+  "source": {
+    "src/beamo_wipe/engine_checks.py": "a93a8c91feab0db967e6834367856b5d3a77b37d32a0d7c3bd8b6b7fb4b24183",
+    "src/beamo_wipe/nwipe_runner.py": "7672c9c0646aa9679b87d9b729c3f9228f0cf1b7f9bb4b1c162a7e37e16dbf9b"
+  },
+  "rows": [
+    {
+      "device": "/dev/sda",
+      "suffix": "",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": " ",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda \n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": "\t",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda\t\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": "/part",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda/part\n",
+      "status": "unavailable",
+      "detail": "The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": "/../../sdb",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda/../../sdb\n",
+      "status": "unavailable",
+      "detail": "The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": " uncertain",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda uncertain\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": " (indeterminate)",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda (indeterminate)\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": ": unknown",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda: unknown\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": "\u0000",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda\u0000\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": "\u2028foreign",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda\u2028foreign\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": "/part mentions /dev/sda",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda/part mentions /dev/sda\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": " -- HIDDEN SECTORS INDETERMINATE!",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda -- HIDDEN SECTORS INDETERMINATE!\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": ", except an unknown HPA",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda, except an unknown HPA\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": " ; hdparm reports invalid output, sector information may be invalid",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda ; hdparm reports invalid output, sector information may be invalid\n",
+      "status": "unavailable",
+      "detail": "Contradictory hidden-storage lines were present in the pinned nwipe v0.42 log."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": "",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": " ",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1 \n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": "\t",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1\t\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": "/part",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1/part\n",
+      "status": "unavailable",
+      "detail": "The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": "/../../sdb",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1/../../sdb\n",
+      "status": "unavailable",
+      "detail": "The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": " uncertain",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1 uncertain\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": " (indeterminate)",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1 (indeterminate)\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": ": unknown",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1: unknown\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": "\u0000",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1\u0000\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": "\u2028foreign",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1\u2028foreign\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": "/part mentions /dev/sda",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1/part mentions /dev/sda\n",
+      "status": "unavailable",
+      "detail": "The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": " -- HIDDEN SECTORS INDETERMINATE!",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1 -- HIDDEN SECTORS INDETERMINATE!\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": ", except an unknown HPA",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1, except an unknown HPA\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": " ; hdparm reports invalid output, sector information may be invalid",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1 ; hdparm reports invalid output, sector information may be invalid\n",
+      "status": "unavailable",
+      "detail": "Contradictory hidden-storage lines were present in the pinned nwipe v0.42 log."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": "",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": " ",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0 \n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": "\t",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0\t\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": "/part",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0/part\n",
+      "status": "unavailable",
+      "detail": "The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": "/../../sdb",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0/../../sdb\n",
+      "status": "unavailable",
+      "detail": "The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": " uncertain",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0 uncertain\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": " (indeterminate)",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0 (indeterminate)\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": ": unknown",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0: unknown\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": "\u0000",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0\u0000\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": "\u2028foreign",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0\u2028foreign\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": "/part mentions /dev/sda",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0/part mentions /dev/sda\n",
+      "status": "unavailable",
+      "detail": "The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": " -- HIDDEN SECTORS INDETERMINATE!",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0 -- HIDDEN SECTORS INDETERMINATE!\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": ", except an unknown HPA",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0, except an unknown HPA\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": " ; hdparm reports invalid output, sector information may be invalid",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0 ; hdparm reports invalid output, sector information may be invalid\n",
+      "status": "unavailable",
+      "detail": "Contradictory hidden-storage lines were present in the pinned nwipe v0.42 log."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": "negative_only",
+      "line": "[2026/10/16 12:00:00] info: HIDDEN SECTORS INDETERMINATE! on /dev/sda, Some USB adapters & memory sticks do not support ATA pass through\n",
+      "status": "unavailable",
+      "detail": "Pinned nwipe v0.42 could not determine HPA/DCO status for this disk."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": "negative_before",
+      "line": "[2026/10/16 12:00:00] info: HIDDEN SECTORS INDETERMINATE! on /dev/sda, Some USB adapters & memory sticks do not support ATA pass through\n[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda\n",
+      "status": "unavailable",
+      "detail": "Contradictory hidden-storage lines were present in the pinned nwipe v0.42 log."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": "negative_after",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda\n[2026/10/16 12:00:00] info: HIDDEN SECTORS INDETERMINATE! on /dev/sda, Some USB adapters & memory sticks do not support ATA pass through\n",
+      "status": "unavailable",
+      "detail": "Contradictory hidden-storage lines were present in the pinned nwipe v0.42 log."
+    },
+    {
+      "device": "/dev/sda",
+      "suffix": "foreign_negative_after",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda\n[2026/10/16 12:00:00] info: HIDDEN SECTORS INDETERMINATE! on /dev/sdz, Some USB adapters & memory sticks do not support ATA pass through\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": "negative_only",
+      "line": "[2026/10/16 12:00:00] info: HIDDEN SECTORS INDETERMINATE! on /dev/nvme0n1, Some USB adapters & memory sticks do not support ATA pass through\n",
+      "status": "unavailable",
+      "detail": "Pinned nwipe v0.42 could not determine HPA/DCO status for this disk."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": "negative_before",
+      "line": "[2026/10/16 12:00:00] info: HIDDEN SECTORS INDETERMINATE! on /dev/nvme0n1, Some USB adapters & memory sticks do not support ATA pass through\n[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1\n",
+      "status": "unavailable",
+      "detail": "Contradictory hidden-storage lines were present in the pinned nwipe v0.42 log."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": "negative_after",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1\n[2026/10/16 12:00:00] info: HIDDEN SECTORS INDETERMINATE! on /dev/nvme0n1, Some USB adapters & memory sticks do not support ATA pass through\n",
+      "status": "unavailable",
+      "detail": "Contradictory hidden-storage lines were present in the pinned nwipe v0.42 log."
+    },
+    {
+      "device": "/dev/nvme0n1",
+      "suffix": "foreign_negative_after",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/nvme0n1\n[2026/10/16 12:00:00] info: HIDDEN SECTORS INDETERMINATE! on /dev/sdz, Some USB adapters & memory sticks do not support ATA pass through\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": "negative_only",
+      "line": "[2026/10/16 12:00:00] info: HIDDEN SECTORS INDETERMINATE! on /dev/mmcblk0, Some USB adapters & memory sticks do not support ATA pass through\n",
+      "status": "unavailable",
+      "detail": "Pinned nwipe v0.42 could not determine HPA/DCO status for this disk."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": "negative_before",
+      "line": "[2026/10/16 12:00:00] info: HIDDEN SECTORS INDETERMINATE! on /dev/mmcblk0, Some USB adapters & memory sticks do not support ATA pass through\n[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0\n",
+      "status": "unavailable",
+      "detail": "Contradictory hidden-storage lines were present in the pinned nwipe v0.42 log."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": "negative_after",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0\n[2026/10/16 12:00:00] info: HIDDEN SECTORS INDETERMINATE! on /dev/mmcblk0, Some USB adapters & memory sticks do not support ATA pass through\n",
+      "status": "unavailable",
+      "detail": "Contradictory hidden-storage lines were present in the pinned nwipe v0.42 log."
+    },
+    {
+      "device": "/dev/mmcblk0",
+      "suffix": "foreign_negative_after",
+      "line": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/mmcblk0\n[2026/10/16 12:00:00] info: HIDDEN SECTORS INDETERMINATE! on /dev/sdz, Some USB adapters & memory sticks do not support ATA pass through\n",
+      "status": "pass",
+      "detail": "Pinned nwipe v0.42 logged that no hidden sectors were found on the target."
+    }
+  ],
+  "native_effects": 0
+}

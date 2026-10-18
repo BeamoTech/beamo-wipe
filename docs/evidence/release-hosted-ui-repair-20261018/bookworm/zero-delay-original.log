@@ -1,0 +1,43 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.2, pytest-9.0.3, pluggy-1.7.0
+rootdir: /evidence
+collected 1 item
+
+../evidence/zero_delay_probe.py F                                        [100%]
+
+=================================== FAILURES ===================================
+______________________ test_zero_delay_fresh_native_keys _______________________
+
+native = <class 'test_accessible_focus_input_pass11.native.<locals>.Input'>
+request = <FixtureRequest for <Function test_zero_delay_fresh_native_keys>>
+
+    def test_zero_delay_fresh_native_keys(native, request):
+        state=SimpleNamespace(held=set(), _release_times={})
+        events=[]
+        window=Gtk.Window()
+        window.add(Gtk.Entry())
+        def press(_window,event):
+            row={"time":event.time,"previous_release":state._release_times.get(event.keyval),"held_before":event.keyval in state.held}
+            result=AccessibleWizard._remember_key_press(state,event)
+            row["blocked"]=result;events.append(row)
+            return result
+        window.connect("key-press-event",press)
+        window.connect("key-release-event",lambda _window,event:AccessibleWizard._key_release(state,_window,event))
+        try:
+            window.show_all();window.present();window.get_window().focus(Gdk.CURRENT_TIME);window.get_child().grab_focus();drain()
+            for _ in range(256):
+                native.key(Gdk.KEY_Return,True);native.key(Gdk.KEY_Return,False)
+        finally:
+            window.destroy();drain()
+            request.node.user_properties.append(("native_fresh_events",json.dumps(events)))
+        assert len(events)==256
+>       assert not any(e["blocked"] for e in events), [e for e in events if e["blocked"]]
+E       AssertionError: [{'blocked': True, 'held_before': False, 'previous_release': 84749961, 'time': 84749961}, {'blocked': True, 'held_befo...49963, 'time': 84749963}, {'blocked': True, 'held_before': False, 'previous_release': 84749963, 'time': 84749963}, ...]
+E       assert not True
+E        +  where True = any(<generator object test_zero_delay_fresh_native_keys.<locals>.<genexpr> at 0x76fad419b850>)
+
+/evidence/zero_delay_probe.py:31: AssertionError
+------------ generated xml file: /evidence/zero-delay-original.xml -------------
+=========================== short test summary info ============================
+FAILED ../evidence/zero_delay_probe.py::test_zero_delay_fresh_native_keys - A...
+============================== 1 failed in 0.69s ===============================

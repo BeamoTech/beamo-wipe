@@ -1,0 +1,44 @@
+[
+  {
+    "ending": "lf",
+    "large": false,
+    "size": 128,
+    "ok": true,
+    "reason": "completed"
+  },
+  {
+    "ending": "lf",
+    "large": true,
+    "size": 1048722,
+    "ok": true,
+    "reason": "completed"
+  },
+  {
+    "ending": "cr",
+    "large": false,
+    "size": 129,
+    "ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "ending": "cr",
+    "large": true,
+    "size": 1048723,
+    "ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "ending": "double-cr",
+    "large": false,
+    "size": 130,
+    "ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "ending": "double-cr",
+    "large": true,
+    "size": 1048724,
+    "ok": false,
+    "reason": "completion_missing"
+  }
+]

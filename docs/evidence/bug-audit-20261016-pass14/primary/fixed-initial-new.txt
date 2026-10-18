@@ -1,0 +1,90 @@
+........................................................................ [ 34%]
+........................................................................ [ 69%]
+......................................F..........F..FF..F......          [100%]
+=================================== FAILURES ===================================
+_____ test_initial_typing_and_consent_focus_is_visible[standard-fr-owner] ______
+
+screen = <Screen.OWNER: 'owner'>, language = 'fr', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7455c2f9be00>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+_____ test_initial_typing_and_consent_focus_is_visible[large-de-keyboard] ______
+
+screen = <Screen.KEYBOARD: 'keyboard'>, language = 'de', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7455c2b22720>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+_____ test_initial_typing_and_consent_focus_is_visible[extra-en-keyboard] ______
+
+screen = <Screen.KEYBOARD: 'keyboard'>, language = 'en', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7455c1b568d0>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+_______ test_initial_typing_and_consent_focus_is_visible[extra-en-owner] _______
+
+screen = <Screen.OWNER: 'owner'>, language = 'en', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7455c1b5ad50>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+_______ test_initial_typing_and_consent_focus_is_visible[extra-fr-owner] _______
+
+screen = <Screen.OWNER: 'owner'>, language = 'fr', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7455c1b50440>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-fr-owner]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-de-keyboard]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-en-keyboard]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-en-owner]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-fr-owner]

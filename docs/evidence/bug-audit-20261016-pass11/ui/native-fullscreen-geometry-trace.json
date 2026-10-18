@@ -1,0 +1,90 @@
+{
+  "display": ":122",
+  "states": [
+    {
+      "surface": "wizard",
+      "fullscreen_requested": false,
+      "size": [
+        900,
+        700
+      ],
+      "allocation": [
+        900,
+        700
+      ],
+      "monitor_geometry": [
+        0,
+        0,
+        1600,
+        1000
+      ],
+      "native_fullscreen_state": false,
+      "mapped": true,
+      "xid": 2097155
+    },
+    {
+      "surface": "wizard",
+      "fullscreen_requested": true,
+      "size": [
+        900,
+        700
+      ],
+      "allocation": [
+        900,
+        700
+      ],
+      "monitor_geometry": [
+        0,
+        0,
+        1600,
+        1000
+      ],
+      "native_fullscreen_state": true,
+      "mapped": true,
+      "xid": 2097218
+    },
+    {
+      "surface": "startup",
+      "fullscreen_requested": false,
+      "size": [
+        640,
+        420
+      ],
+      "allocation": [
+        640,
+        420
+      ],
+      "monitor_geometry": [
+        0,
+        0,
+        1600,
+        1000
+      ],
+      "native_fullscreen_state": false,
+      "mapped": true,
+      "xid": 2097254
+    },
+    {
+      "surface": "startup",
+      "fullscreen_requested": true,
+      "size": [
+        640,
+        420
+      ],
+      "allocation": [
+        640,
+        420
+      ],
+      "monitor_geometry": [
+        0,
+        0,
+        1600,
+        1000
+      ],
+      "native_fullscreen_state": true,
+      "mapped": true,
+      "xid": 2097263
+    }
+  ],
+  "owned_teardown": true
+}

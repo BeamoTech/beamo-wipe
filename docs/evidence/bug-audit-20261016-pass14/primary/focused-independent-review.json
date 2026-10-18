@@ -1,0 +1,328 @@
+{
+  "runtime_source_sha256": "ebe614cd285be76d948e81c7f8a04be48240ba4a95a4baab9e3ba9e040197dbb",
+  "geometry_rows": 270,
+  "targeted_focus_full_visibility": 27,
+  "no_bgerror_after_owned_fixture_cleanup": true,
+  "native_application_effects": 0,
+  "captures_to_visually_review": {
+    "fixed-geometry-tk-en-standard-OWNER.png": {
+      "sha256": "23d39d387cb1f32e00d8610950e9ca5235f0a5cebc072fb62b7539816a333354",
+      "size_bytes": 66907,
+      "native_dimensions": [
+        800,
+        600
+      ],
+      "geometry": {
+        "surface": "tk",
+        "language": "en",
+        "text_size": "standard",
+        "screen": "OWNER",
+        "window": [
+          800,
+          600
+        ],
+        "controls": [
+          {
+            "label": "Keyboard layout",
+            "mapped": true,
+            "enabled": true,
+            "rect": [
+              16,
+              478,
+              128,
+              31
+            ],
+            "inside": true
+          },
+          {
+            "label": "Text size: Standard",
+            "mapped": true,
+            "enabled": true,
+            "rect": [
+              148,
+              478,
+              146,
+              31
+            ],
+            "inside": true
+          },
+          {
+            "label": "Check disks again (F5)",
+            "mapped": true,
+            "enabled": true,
+            "rect": [
+              298,
+              478,
+              167,
+              31
+            ],
+            "inside": true
+          },
+          {
+            "label": "Need a report?",
+            "mapped": true,
+            "enabled": true,
+            "rect": [
+              469,
+              478,
+              119,
+              31
+            ],
+            "inside": true
+          },
+          {
+            "label": "Screen-reader view (F8)",
+            "mapped": true,
+            "enabled": true,
+            "rect": [
+              592,
+              478,
+              175,
+              31
+            ],
+            "inside": true
+          },
+          {
+            "label": "Back",
+            "mapped": true,
+            "enabled": true,
+            "rect": [
+              16,
+              545,
+              112,
+              33
+            ],
+            "inside": true
+          },
+          {
+            "label": "Choose a disk",
+            "mapped": true,
+            "enabled": false,
+            "rect": [
+              621,
+              545,
+              163,
+              47
+            ],
+            "inside": true
+          }
+        ],
+        "focus": true,
+        "focus_visible": true,
+        "focus_rect": [
+          16,
+          418,
+          758,
+          60
+        ],
+        "focus_clips": [
+          [
+            16,
+            50,
+            758,
+            428
+          ]
+        ],
+        "focus_fully_visible": true,
+        "state_unchanged": true,
+        "erase_enabled": false,
+        "display_inside": true,
+        "ok": true,
+        "capture": "fixed-geometry-tk-en-standard-OWNER.png",
+        "owned_pending_after_cancelled": 1,
+        "callback_errors": []
+      }
+    },
+    "fixed-geometry-tk-en-extra-KEYBOARD.png": {
+      "sha256": "0bf869dc96abcadc3fa60bebb8a2b78c6156de58cc380bfd7f72b848c59fbe69",
+      "size_bytes": 65753,
+      "native_dimensions": [
+        800,
+        600
+      ],
+      "geometry": {
+        "surface": "tk",
+        "language": "en",
+        "text_size": "extra",
+        "screen": "KEYBOARD",
+        "window": [
+          800,
+          600
+        ],
+        "controls": [
+          {
+            "label": "Continue",
+            "mapped": true,
+            "enabled": true,
+            "rect": [
+              624,
+              539,
+              160,
+              53
+            ],
+            "inside": true
+          }
+        ],
+        "focus": true,
+        "focus_visible": true,
+        "focus_rect": [
+          32,
+          428,
+          726,
+          47
+        ],
+        "focus_clips": [
+          [
+            16,
+            418,
+            758,
+            67
+          ],
+          [
+            16,
+            60,
+            758,
+            415
+          ]
+        ],
+        "focus_fully_visible": true,
+        "state_unchanged": true,
+        "erase_enabled": false,
+        "display_inside": true,
+        "ok": true,
+        "capture": "fixed-geometry-tk-en-extra-KEYBOARD.png",
+        "owned_pending_after_cancelled": 1,
+        "callback_errors": []
+      }
+    },
+    "fixed-geometry-tk-en-large-CONFIRM.png": {
+      "sha256": "114121a896ef7b420552f3eb3cbdfb74439f5b27eb964e937667c7ed2372ed63",
+      "size_bytes": 67984,
+      "native_dimensions": [
+        800,
+        600
+      ],
+      "geometry": {
+        "surface": "tk",
+        "language": "en",
+        "text_size": "large",
+        "screen": "CONFIRM",
+        "window": [
+          800,
+          600
+        ],
+        "controls": [
+          {
+            "label": "Keyboard layout",
+            "mapped": true,
+            "enabled": true,
+            "rect": [
+              16,
+              468,
+              154,
+              34
+            ],
+            "inside": true
+          },
+          {
+            "label": "Text size: Large",
+            "mapped": true,
+            "enabled": true,
+            "rect": [
+              174,
+              468,
+              149,
+              34
+            ],
+            "inside": true
+          },
+          {
+            "label": "Check disks again (F5)",
+            "mapped": true,
+            "enabled": true,
+            "rect": [
+              327,
+              468,
+              203,
+              34
+            ],
+            "inside": true
+          },
+          {
+            "label": "Screen-reader view (F8)",
+            "mapped": true,
+            "enabled": true,
+            "rect": [
+              534,
+              468,
+              211,
+              34
+            ],
+            "inside": true
+          },
+          {
+            "label": "Back",
+            "mapped": true,
+            "enabled": true,
+            "rect": [
+              16,
+              541,
+              112,
+              37
+            ],
+            "inside": true
+          },
+          {
+            "label": "Choose erase method",
+            "mapped": true,
+            "enabled": false,
+            "rect": [
+              521,
+              541,
+              263,
+              51
+            ],
+            "inside": true
+          }
+        ],
+        "focus": true,
+        "focus_visible": true,
+        "focus_rect": [
+          32,
+          404,
+          726,
+          43
+        ],
+        "focus_clips": [
+          [
+            16,
+            394,
+            758,
+            63
+          ],
+          [
+            16,
+            60,
+            758,
+            408
+          ]
+        ],
+        "focus_fully_visible": true,
+        "state_unchanged": true,
+        "erase_enabled": false,
+        "display_inside": true,
+        "ok": true,
+        "capture": "fixed-geometry-tk-en-large-CONFIRM.png",
+        "owned_pending_after_cancelled": 2,
+        "callback_errors": []
+      }
+    }
+  },
+  "adjacent_cases_passed_before_annotation_only_cleanup": 1645,
+  "affected_ui_sequence_passed_before_annotation_only_cleanup": 100,
+  "final_gate_validates_exact_final_bytes": true,
+  "discovery_cases": 558,
+  "starting_inputs_preserved_except_five_authorized_paths": true,
+  "independent_final_peer_approval": false,
+  "three_final_native_captures_independently_viewed": true
+}

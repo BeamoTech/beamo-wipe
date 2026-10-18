@@ -1,0 +1,21 @@
+{
+  "initial-missing-display-focused.xml": {
+    "tests": 461,
+    "passed": 458,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 2,
+    "suite_time": 8.242
+  },
+  "focused.xml": {
+    "tests": 461,
+    "passed": 461,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suite_time": 9.02
+  },
+  "source_hashes_match": true,
+  "source_files": 57,
+  "focused_modules": 51
+}

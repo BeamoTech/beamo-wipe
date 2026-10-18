@@ -1,0 +1,9 @@
+{
+  "command": [
+    "/tmp/beamo-pass17-python/bin/python3",
+    "/tmp/pass17-primary/review-gates.py"
+  ],
+  "exit_code": 1,
+  "observed_failure": ".ai/memory/unfinished-work.md:27: trailing whitespace. This candidate is FAILED, all exactlogs/manifests retained in candidate-one/. [one trailing space]",
+  "effect": "Result authentication stopped at git diff --check; nine runtime gate phases had passed. One documentation space removed; all762 frozen source inputs unchanged."
+}

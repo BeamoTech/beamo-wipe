@@ -211,7 +211,7 @@ def test_payloads_are_closed_and_complete():
 
 def test_prefix_devices_cannot_supply_target_checks():
     for foreign in ('/dev/sdab', '/dev/sda1', '/dev/sda-test'):
-        text = f'No hidden sectors on {foreign}\n'
+        text = f'[2026/07/15 12:00:00] info: No hidden sectors on {foreign}\n'
         checks = _by_id(evaluate_engine_checks(text, '/dev/sda'))
         assert checks['hidden_capacity'].status == 'unavailable', foreign
         text = _log('hidden_none.log') + f'Verification mismatch on {foreign}\n'
@@ -221,10 +221,10 @@ def test_prefix_devices_cannot_supply_target_checks():
 def test_conflicting_error_rows_cannot_hide_errors_in_either_order():
     rows = ('! sda | 1 | 0 | 0\n', '  sda | 0 | 0 | 0\n')
     for ordered in (rows, rows[::-1]):
-        text = 'Error Summary\n' + ''.join(ordered) + '***\n'
+        text = '******************************** Error Summary *********************************\n' + ''.join(ordered) + '***\n'
         assert _by_id(evaluate_engine_checks(text, '/dev/sda'))['io_media'].status == 'unavailable'
 
 
 def test_malformed_error_rows_cannot_keep_a_zero_error_pass():
-    text = 'Error Summary\n  sda | 0 | 0 | 0\n  sda | broken | 0 | 0\n***\n'
+    text = '******************************** Error Summary *********************************\n  sda | 0 | 0 | 0\n  sda | broken | 0 | 0\n***\n'
     assert _by_id(evaluate_engine_checks(text, '/dev/sda'))['io_media'].status == 'unavailable'

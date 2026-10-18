@@ -1,0 +1,1 @@
+{"cases": 144, "source": {"nwipe_runner.py": "cd49b65a607f152bd53675dafef80777d49b2fc02afd54f545605b3ccf958175", "sleep_inhibit.py": "b7df5b80f7d87ae0bcac0be2ddcf082ff887e5492fb8da088237b5b02a9bf11d", "methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13"}, "source_unchanged": true, "native_acquisitions": 0, "elapsed_s": 0.0844003160000284}

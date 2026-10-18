@@ -1,0 +1,19 @@
+[
+  {
+    "event": "startup_root_destroyed",
+    "elapsed": 0.10078069601149764
+  },
+  {
+    "event": "mainloop_still_running_with_orphan",
+    "first_exists": true,
+    "elapsed": 0.22024939200491644
+  },
+  {
+    "event": "orphan_destroyed",
+    "elapsed": 0.3503225110034691
+  },
+  {
+    "event": "mainloop_returned",
+    "elapsed": 0.3511363600118784
+  }
+]

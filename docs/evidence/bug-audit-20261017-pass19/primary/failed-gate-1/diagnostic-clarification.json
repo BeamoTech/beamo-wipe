@@ -1,0 +1,10 @@
+{
+  "original_failure_receipt_preserved": true,
+  "full_early_failure_markers_field_is_not_a_test_failure_count": true,
+  "visible_pytest_failure_glyphs_before_abort": 9,
+  "missing_main_junit_means_final_case_counts_are_unavailable": true,
+  "proved_harness_issue": "PYTEST_PLUGINS inherited by private child pytest cannot import repository docs observer",
+  "harness_proof": "../plugin-inheritance-proof.json; exact child exit1/no JUnit versus exit0/JUnit",
+  "abort_cause": "UNEXPLAINED; cannot attribute fatal garbage collection on audio worker to the child import failure",
+  "later_bounded_prefix": "1062 passed; 8711 deliberately deselected; diagnostic only"
+}

@@ -1,0 +1,115 @@
+[
+  {
+    "phase": "lint",
+    "command": [
+      "./scripts/ci-hosted.sh",
+      "lint"
+    ],
+    "exit_code": 0,
+    "crossbuild_env": {},
+    "started_utc": "2026-10-16T23:53:54.051152+00:00",
+    "ended_utc": "2026-10-16T23:53:59.859701+00:00"
+  },
+  {
+    "phase": "preview",
+    "command": [
+      "./scripts/ci-hosted.sh",
+      "preview"
+    ],
+    "exit_code": 0,
+    "crossbuild_env": {},
+    "started_utc": "2026-10-16T23:53:59.861030+00:00",
+    "ended_utc": "2026-10-16T23:54:01.844294+00:00"
+  },
+  {
+    "phase": "negative",
+    "command": [
+      "./scripts/ci-hosted.sh",
+      "negative"
+    ],
+    "exit_code": 0,
+    "crossbuild_env": {},
+    "started_utc": "2026-10-16T23:54:01.845038+00:00",
+    "ended_utc": "2026-10-16T23:54:03.260644+00:00"
+  },
+  {
+    "phase": "go-version",
+    "command": [
+      "go",
+      "version"
+    ],
+    "exit_code": 0,
+    "crossbuild_env": {},
+    "started_utc": "2026-10-16T23:54:03.261329+00:00",
+    "ended_utc": "2026-10-16T23:54:03.271113+00:00"
+  },
+  {
+    "phase": "go-race",
+    "command": [
+      "go",
+      "test",
+      "-count=1",
+      "-race",
+      "./..."
+    ],
+    "exit_code": 0,
+    "crossbuild_env": {},
+    "started_utc": "2026-10-16T23:54:03.272726+00:00",
+    "ended_utc": "2026-10-16T23:54:06.685005+00:00"
+  },
+  {
+    "phase": "go-vet",
+    "command": [
+      "go",
+      "vet",
+      "./..."
+    ],
+    "exit_code": 0,
+    "crossbuild_env": {},
+    "started_utc": "2026-10-16T23:54:06.685370+00:00",
+    "ended_utc": "2026-10-16T23:54:07.047366+00:00"
+  },
+  {
+    "phase": "go-windows-crossbuild",
+    "command": [
+      "go",
+      "test",
+      "-c",
+      "-o",
+      "/tmp/pass15-primary/desktop-windows.test.exe"
+    ],
+    "exit_code": 0,
+    "crossbuild_env": {
+      "GOOS": "windows",
+      "GOARCH": "amd64"
+    },
+    "started_utc": "2026-10-16T23:54:07.048524+00:00",
+    "ended_utc": "2026-10-16T23:54:07.466209+00:00"
+  },
+  {
+    "phase": "go-fuzz",
+    "command": [
+      "go",
+      "test",
+      "-run=^$",
+      "-fuzz=FuzzBootOption",
+      "-fuzztime=350000x",
+      "-parallel=2"
+    ],
+    "exit_code": 0,
+    "crossbuild_env": {},
+    "started_utc": "2026-10-16T23:54:07.466563+00:00",
+    "ended_utc": "2026-10-16T23:54:25.128468+00:00"
+  },
+  {
+    "phase": "final",
+    "command": [
+      "./scripts/ci-hosted.sh",
+      "tests"
+    ],
+    "exit_code": 0,
+    "crossbuild_env": {},
+    "started_utc": "2026-10-16T23:54:25.128966+00:00",
+    "ended_utc": "2026-10-17T00:05:32.908585+00:00"
+  }
+]

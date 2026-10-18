@@ -642,12 +642,23 @@ def present_export_receipt(receipt: ExportReceipt) -> str:
     return "\n".join(lines)
 
 
-def _strict_text(node: Mapping[str, Any], key: str, *, required: bool = False) -> str:
+def _strict_text(
+    node: Mapping[str, Any], key: str, *, required: bool = False,
+    hardware_padding: bool = False,
+) -> str:
     value = node.get(key)
     if value is None:
         if required:
             raise SafetyError(USB_META_INCOMPLETE)
         return ""
+    # Discovery trims harmless hardware padding before storing the baseline.
+    # Never trim controls or line separators into apparently valid metadata.
+    if hardware_padding and isinstance(value, str) and not any(
+        unicodedata.category(ch).startswith("C")
+        or unicodedata.category(ch) in {"Zl", "Zp"}
+        for ch in value
+    ):
+        value = value.strip()
     if (
         not isinstance(value, str)
         or (value and not SAFE_ID_RE.fullmatch(value))
@@ -730,9 +741,9 @@ def _fingerprint_node(
     return DeviceFingerprint(
         path=path,
         size_bytes=_strict_int(node, "size"),
-        model=_strict_text(node, "model"),
-        serial=_strict_text(node, "serial"),
-        wwn=_strict_text(node, "wwn"),
+        model=_strict_text(node, "model", hardware_padding=True),
+        serial=_strict_text(node, "serial", hardware_padding=True),
+        wwn=_strict_text(node, "wwn", hardware_padding=True),
     )
 
 
@@ -2280,17 +2291,25 @@ def _persist_and_verify_report(
             diagnostic=_is_diagnostic_evidence(evidence.data),
         )
     finally:
-        if mountpoint is not None and mounted:
-            _ordinary_unmount(mountpoint, volume)
-        if lock_fd >= 0:
-            os.close(lock_fd)
-        if mount_name and root_fd >= 0:
+        # An I/O error during one cleanup must not abandon the other owned
+        # resources. Never retry close: Linux may already have released the FD.
+        try:
+            if mountpoint is not None and mounted:
+                _ordinary_unmount(mountpoint, volume)
+        finally:
             try:
-                os.rmdir(mount_name, dir_fd=root_fd)
-            except OSError:
-                pass
-        if root_fd >= 0:
-            os.close(root_fd)
+                if lock_fd >= 0:
+                    os.close(lock_fd)
+            finally:
+                try:
+                    if mount_name and root_fd >= 0:
+                        try:
+                            os.rmdir(mount_name, dir_fd=root_fd)
+                        except OSError:
+                            pass
+                finally:
+                    if root_fd >= 0:
+                        os.close(root_fd)
 
 
 def _worker() -> ExportReceipt:
@@ -2334,9 +2353,11 @@ def _worker() -> ExportReceipt:
             volume, evidence, log_data, log_status, volume_fd, privacy_reduced
         )
     finally:
-        if volume_fd >= 0:
-            os.close(volume_fd)
-        os.close(parent_fd)
+        try:
+            if volume_fd >= 0:
+                os.close(volume_fd)
+        finally:
+            os.close(parent_fd)
 
 
 def worker_main() -> int:

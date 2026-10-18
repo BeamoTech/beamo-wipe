@@ -1,0 +1,8 @@
+{
+  "cases": 900,
+  "outcomes": {
+    "accepted": 6,
+    "refused": 894
+  },
+  "all_physical_and_log_creation_boundaries_stubbed": true
+}

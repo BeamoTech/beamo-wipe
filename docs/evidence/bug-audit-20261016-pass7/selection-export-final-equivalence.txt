@@ -1,0 +1,7 @@
+{
+  "result": "PASS",
+  "helper_equivalence_cases": 1120,
+  "default_exact_original": true,
+  "hardware_matches_original_after_safe_padding_only": true,
+  "fake_only": true
+}

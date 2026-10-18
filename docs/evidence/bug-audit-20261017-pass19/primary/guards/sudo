@@ -1,0 +1,4 @@
+#!/bin/sh
+printf "%s\n" "$0" >> /tmp/pass19-primary/forbidden-fallback-attempts.txt
+printf "Blocked unmocked external or privileged fixture fallback\n" >&2
+exit 97

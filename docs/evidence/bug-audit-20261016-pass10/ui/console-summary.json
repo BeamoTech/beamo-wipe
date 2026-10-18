@@ -1,0 +1,18 @@
+{
+  "original-console-inventory": {
+    "total": 22,
+    "unique": 22,
+    "failures": 10,
+    "errors": 0,
+    "skips": 0,
+    "duplicates": 0
+  },
+  "fixed-console-adjacent": {
+    "total": 107,
+    "unique": 107,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "duplicates": 0
+  }
+}

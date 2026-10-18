@@ -1,0 +1,20 @@
+{
+  "unique_tests": 1864,
+  "unique_passed": 1862,
+  "skipped_only": 2,
+  "ui": {
+    "tests": 1359,
+    "passed": 1357,
+    "initial_setup_skips": 2,
+    "resolved_by_build_replacement": 2
+  },
+  "build": {
+    "tests": 489,
+    "passed": 487,
+    "expected_lb_config_skips": 2
+  },
+  "receipt": {
+    "tests": 59,
+    "passed": 59
+  }
+}

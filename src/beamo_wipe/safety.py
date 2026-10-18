@@ -523,6 +523,31 @@ def possible_hardware_alias(left: Disk, right: Disk) -> bool:
     return bool(left_serial and left_serial == right_serial)
 
 
+def protected_hardware_aliases(anchor: Disk, observations: Sequence[Disk]) -> Tuple[Disk, ...]:
+    """Follow ambiguous identifiers without overriding the anchor's known WWN.
+
+    A serial-only path can lead to a WWN alias with a different serial.
+    Checking only pairs against the protected path misses that later alias.
+    Distinct known WWNs still disambiguate a reused serial, including when a
+    missing-WWN observation sits between them.
+    """
+    anchor_wwn = canonical_wwn(anchor.wwn)
+    reached: set[int] = set()
+    pending = [anchor]
+    while pending:
+        current = pending.pop()
+        for index, candidate in enumerate(observations):
+            if index in reached:
+                continue
+            candidate_wwn = canonical_wwn(candidate.wwn)
+            if anchor_wwn and candidate_wwn and anchor_wwn != candidate_wwn:
+                continue
+            if possible_hardware_alias(current, candidate):
+                reached.add(index)
+                pending.append(candidate)
+    return tuple(candidate for index, candidate in enumerate(observations) if index in reached)
+
+
 def assert_boot_excluded(discovery: DiscoveryResult) -> None:
     if discovery.boot_identified is not True or discovery.boot is None:
         raise SafetyError(_copy.IDENTIFY_ERROR)
@@ -531,7 +556,12 @@ def assert_boot_excluded(discovery: DiscoveryResult) -> None:
     selectable_paths = {os.path.realpath(s.path) for s in discovery.selectable}
     if any(d.is_boot and os.path.realpath(d.path) in selectable_paths for d in discovery.disks):
         raise SafetyError(BOOT_APPEARED_SELECTABLE)
-    if any(possible_hardware_alias(discovery.boot, disk) for disk in discovery.selectable):
+    aliases = protected_hardware_aliases(
+        discovery.boot,
+        (*discovery.disks, *discovery.selectable, *discovery.physical_observations),
+    )
+    alias_paths = {os.path.realpath(disk.path) for disk in aliases}
+    if selectable_paths & alias_paths:
         raise SafetyError(BOOT_APPEARED_ALIAS)
 
 
@@ -985,8 +1015,13 @@ def logfile_for(target: str, log_dir: Optional[Path] = None) -> str:
     return str(path)
 
 
-def truncate_log_file(log_path: str, target: str) -> None:
-    """Create/truncate a regular log file. Never follows symlinks or opens devices."""
+def truncate_log_file(
+    log_path: str, target: str, *, retain_fd: bool = False
+) -> Optional[int]:
+    """Safely truncate a log, optionally transferring its validated descriptor.
+
+    Never follows symlinks or opens devices.
+    """
     assert_log_not_on_target(log_path, target)
     directory = os.path.dirname(log_path)
     name = os.path.basename(log_path)
@@ -997,6 +1032,7 @@ def truncate_log_file(log_path: str, target: str) -> None:
         dirfd = os.open(directory, flags)
     except OSError as exc:
         raise SafetyError(f"Cannot open log directory: {exc}") from exc
+    retained_fd = None
     try:
         st = os.fstat(dirfd)
         if not stat.S_ISDIR(st.st_mode):
@@ -1019,10 +1055,22 @@ def truncate_log_file(log_path: str, target: str) -> None:
             # Truncate only after validating the opened inode. O_TRUNC would
             # destroy a hardlink peer before fstat can reject it.
             os.ftruncate(fd, 0)
+            if retain_fd:
+                retained_fd = fd
+                fd = -1
         finally:
-            os.close(fd)
+            if fd >= 0:
+                os.close(fd)
     finally:
-        os.close(dirfd)
+        try:
+            os.close(dirfd)
+        except BaseException:
+            # The caller cannot receive ownership until directory cleanup
+            # succeeds. Close our still-local log handle on a failed transfer.
+            if retained_fd is not None:
+                os.close(retained_fd)
+            raise
+    return retained_fd
 
 
 def assert_ready_to_wipe(

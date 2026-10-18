@@ -583,6 +583,36 @@ def _print_operation_identity(wizard, width: int = 76) -> None:
     _emit(getattr(wizard, "operation_method_text", "") or "", width)
 
 
+def _retire_erase_typeahead(wizard: Wizard) -> None:
+    """Require fresh terminal input after the visible final review."""
+    try:
+        terminal = sys.stdin.isatty()
+    except (OSError, ValueError, AttributeError) as exc:
+        raise EOFError from exc
+    if not terminal:
+        # Fake previews/tests may inject complete lines without a terminal.
+        # A real erase cannot establish fresh consent from a queued pipe.
+        if wizard.dry_run or wizard.preview:
+            return
+        raise EOFError
+    try:
+        import termios
+    except ImportError as exc:
+        raise EOFError from exc
+    try:
+        descriptor = sys.stdin.fileno()
+        if type(descriptor) is not int or descriptor < 0:
+            raise ValueError("Invalid console input descriptor")
+        attributes = termios.tcgetattr(descriptor)
+        if not attributes[3] & termios.ICANON:
+            raise ValueError("Canonical console input is required")
+        # Canonical reads deliver at most one line. Discard the kernel's
+        # queued complete lines and partial input before accepting Erase.
+        termios.tcflush(descriptor, termios.TCIFLUSH)
+    except (OSError, ValueError, AttributeError, termios.error) as exc:
+        raise EOFError from exc
+
+
 def _answer(wizard: Wizard, prompt: str) -> str:
     confirm_token = wizard.confirm if wizard.screen == Screen.CONFIRM else None
     confirm_word = confirm_token.token.casefold() if confirm_token is not None else ""
@@ -992,6 +1022,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 wizard.tick()
                 print(C.CON_COUNTDOWN.format(seconds=wizard.countdown_display))
                 time.sleep(0.4)
+            _retire_erase_typeahead(wizard)
             ans = _answer(wizard, C.CON_ERASE_PROMPT).strip()
             if ans.upper() == "ERASE":
                 wizard.confirm_erase()
@@ -1217,6 +1248,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
         stdscr.erase()
         h, w = stdscr.getmaxyx()
         h, w = max(2, h), max(20, w)
+        review_ready_painted = wizard.screen == Screen.LAST_CHANCE and wizard.erase_enabled
         footer = _footer_lines(wizard, inventory_open, w, h, review_overlay_held)
         y_max = max(1, h - len(footer))
         chrome = _chrome_lines(wizard, w)
@@ -1704,6 +1736,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
             continue
         if wizard.can_open_diagnostic and ch in (ord("d"), ord("D")):
             wizard.open_diagnostic()
+            inventory_open = False
             continue
         if wizard.screen == Screen.DIAGNOSTIC and ch in (ord("r"), ord("R")):
             _confirm_diagnostic_action(stdscr, wizard)
@@ -1838,6 +1871,13 @@ def _loop(stdscr, wizard: Wizard) -> int:
             continue
         if wizard.screen not in _paged:
             limits_offset = 0
+        # A slow paint can consume the countdown while its footer still
+        # tells the owner to wait. Enter belongs to that displayed frame;
+        # require a visibly enabled action as well as _handle's live gate.
+        # Keep this after hold bookkeeping so repeating the rejected key
+        # cannot become a fresh action when the next frame is ready.
+        if wizard.screen == Screen.LAST_CHANCE and ch in (curses.KEY_ENTER, 10, 13) and not review_ready_painted:
+            continue
         _handle(wizard, ch)
     if review_overlay_held:
         wizard.end_review_overlay()

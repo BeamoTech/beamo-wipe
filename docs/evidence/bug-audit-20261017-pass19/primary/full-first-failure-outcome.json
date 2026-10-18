@@ -1,0 +1,198 @@
+{
+  "exit_code": 1,
+  "failures": [
+    {
+      "nodeid": "tests/test_audio_launch_ownership_pass14.py::test_start_error_after_spawn_never_leaves_a_competing_worker[False-False-True]",
+      "when": "call",
+      "outcome": "failed",
+      "failure": "monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71434067f050>\nrejected_protected = True, active_protected = False, next_protected = False\n\n    @pytest.mark.parametrize('rejected_protected', [False, True])\n    @pytest.mark.parametrize('active_protected', [False, True])\n    @pytest.mark.parametrize('next_protected', [False, True])\n    def test_start_error_after_spawn_never_leaves_a_competing_worker(monkeypatch, rejected_protected, active_protected, next_protected):\n        real_thread = threading.Thread\n        old_gate, active_entered, next_entered, release = [threading.Event() for _ in range(4)]\n        threads, rejected_actions = [], []\n    \n        class StartedThenRaised(real_thread):\n            def __init__(self, *args, **kwargs):\n                first = not threads\n                target = kwargs['target']\n                if first:\n                    def delayed():\n                        assert old_gate.wait(2)\n                        target()\n                    kwargs['target'] = delayed\n                super().__init__(*args, **kwargs)\n                self.first = first\n                threads.append(self)\n    \n            def start(self):\n                super().start()\n                if self.first:\n                    raise RuntimeError('controlled start error after owned spawn')\n    \n        worker = audio_jobs.AudioWorker()\n        monkeypatch.setattr(audio_jobs.threading, 'Thread', StartedThenRaised)\n        try:\n            rejected = worker.submit(lambda: rejected_actions.append(True), protected=rejected_protected)\n            ready, value = rejected.poll()\n            assert ready and isinstance(value, RuntimeError)\n    \n            def active():\n                active_entered.set()\n                assert release.wait(2)\n                return 'active'\n    \n            def following():\n                next_entered.set()\n                return 'following'\n    \n            worker.submit(active, protected=active_protected)\n            assert active_entered.wait(1)\n            old_gate.set()\n            worker.submit(following, protected=next_protected)\n            overlapped = next_entered.wait(0.1)\n            assert not rejected_actions\n            assert not overlapped, 'Two audio actions ran together after rejected launch'\n            release.set()\n>           assert next_entered.wait(1)\nE           assert False\nE            +  where False = wait(1)\nE            +    where wait = <threading.Event at 0x71434060d400: unset>.wait\n\ntests/test_audio_launch_ownership_pass14.py:59: AssertionError\n\nDuring handling of the above exception, another exception occurred:\n\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71434067f050>\nrejected_protected = True, active_protected = False, next_protected = False\n\n    @pytest.mark.parametrize('rejected_protected', [False, True])\n    @pytest.mark.parametrize('active_protected', [False, True])\n    @pytest.mark.parametrize('next_protected', [False, True])\n    def test_start_error_after_spawn_never_leaves_a_competing_worker(monkeypatch, rejected_protected, active_protected, next_protected):\n        real_thread = threading.Thread\n        old_gate, active_entered, next_entered, release = [threading.Event() for _ in range(4)]\n        threads, rejected_actions = [], []\n    \n        class StartedThenRaised(real_thread):\n            def __init__(self, *args, **kwargs):\n                first = not threads\n                target = kwargs['target']\n                if first:\n                    def delayed():\n                        assert old_gate.wait(2)\n                        target()\n                    kwargs['target'] = delayed\n                super().__init__(*args, **kwargs)\n                self.first = first\n                threads.append(self)\n    \n            def start(self):\n                super().start()\n                if self.first:\n                    raise RuntimeError('controlled start error after owned spawn')\n    \n        worker = audio_jobs.AudioWorker()\n        monkeypatch.setattr(audio_jobs.threading, 'Thread', StartedThenRaised)\n        try:\n            rejected = worker.submit(lambda: rejected_actions.append(True), protected=rejected_protected)\n            ready, value = rejected.poll()\n            assert ready and isinstance(value, RuntimeError)\n    \n            def active():\n                active_entered.set()\n                assert release.wait(2)\n                return 'active'\n    \n            def following():\n                next_entered.set()\n                return 'following'\n    \n            worker.submit(active, protected=active_protected)\n            assert active_entered.wait(1)\n            old_gate.set()\n            worker.submit(following, protected=next_protected)\n            overlapped = next_entered.wait(0.1)\n            assert not rejected_actions\n            assert not overlapped, 'Two audio actions ran together after rejected launch'\n            release.set()\n            assert next_entered.wait(1)\n        finally:\n            old_gate.set()\n            release.set()\n            worker.close()\n            for thread in threads:\n                thread.join(2)\n>           assert all(not thread.is_alive() for thread in threads)\nE           assert False\nE            +  where False = all(<generator object test_start_error_after_spawn_never_leaves_a_competing_worker.<locals>.<genexpr> at 0x71433c49d150>)\n\ntests/test_audio_launch_ownership_pass14.py:66: AssertionError",
+      "threads": [
+        {
+          "name": "MainThread",
+          "ident": 124534006382720,
+          "alive": true,
+          "stack": [
+            {
+              "file": "<frozen runpy>",
+              "line": 198,
+              "function": "_run_module_as_main"
+            },
+            {
+              "file": "<frozen runpy>",
+              "line": 88,
+              "function": "_run_code"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pytest/__main__.py",
+              "line": 9,
+              "function": "<module>"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/config/__init__.py",
+              "line": 223,
+              "function": "console_main"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/config/__init__.py",
+              "line": 199,
+              "function": "main"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_caller.py",
+              "line": 197,
+              "function": "__call__"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_manager.py",
+              "line": 183,
+              "function": "_hookexec"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_execution.py",
+              "line": 147,
+              "function": "_multicall"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/main.py",
+              "line": 365,
+              "function": "pytest_cmdline_main"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/main.py",
+              "line": 318,
+              "function": "wrap_session"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/main.py",
+              "line": 372,
+              "function": "_main"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_caller.py",
+              "line": 197,
+              "function": "__call__"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_manager.py",
+              "line": 183,
+              "function": "_hookexec"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_execution.py",
+              "line": 147,
+              "function": "_multicall"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/main.py",
+              "line": 396,
+              "function": "pytest_runtestloop"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_caller.py",
+              "line": 197,
+              "function": "__call__"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_manager.py",
+              "line": 183,
+              "function": "_hookexec"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_execution.py",
+              "line": 147,
+              "function": "_multicall"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/runner.py",
+              "line": 118,
+              "function": "pytest_runtest_protocol"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/runner.py",
+              "line": 137,
+              "function": "runtestprotocol"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/runner.py",
+              "line": 251,
+              "function": "call_and_report"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_caller.py",
+              "line": 197,
+              "function": "__call__"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_manager.py",
+              "line": 183,
+              "function": "_hookexec"
+            },
+            {
+              "file": "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_execution.py",
+              "line": 147,
+              "function": "_multicall"
+            },
+            {
+              "file": "/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass19/primary/first_failure_observer.py",
+              "line": 20,
+              "function": "pytest_runtest_logreport"
+            }
+          ]
+        },
+        {
+          "name": "beamo-audio",
+          "ident": 124533600151232,
+          "alive": true,
+          "stack": [
+            {
+              "file": "/usr/lib/python3.12/threading.py",
+              "line": 1030,
+              "function": "_bootstrap"
+            },
+            {
+              "file": "/usr/lib/python3.12/threading.py",
+              "line": 1073,
+              "function": "_bootstrap_inner"
+            },
+            {
+              "file": "/usr/lib/python3.12/threading.py",
+              "line": 1010,
+              "function": "run"
+            },
+            {
+              "file": "/root/dev/Beamo Wipe/src/beamo_wipe/audio_jobs.py",
+              "line": 91,
+              "function": "accepted_worker"
+            },
+            {
+              "file": "/root/dev/Beamo Wipe/src/beamo_wipe/audio_jobs.py",
+              "line": 142,
+              "function": "_run"
+            },
+            {
+              "file": "/root/dev/Beamo Wipe/tests/test_audio_launch_ownership_pass14.py",
+              "line": 44,
+              "function": "active"
+            },
+            {
+              "file": "/usr/lib/python3.12/threading.py",
+              "line": 652,
+              "function": "wait"
+            },
+            {
+              "file": "/usr/lib/python3.12/threading.py",
+              "line": 299,
+              "function": "__enter__"
+            },
+            {
+              "file": "/usr/lib/python3.12/tkinter/font.py",
+              "line": 121,
+              "function": "__del__"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "selection": {}
+}

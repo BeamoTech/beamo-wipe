@@ -1,0 +1,955 @@
+FFFFFFFFFFFF............FFFFFF......FFFFFFFFF.FFF.FFFdbus-daemon[217040]: [session uid=0 pid=217040] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=217055 comm="python3 -m pytest -o pythonpath=/tmp/beamo-pass5-o" label="unconfined")
+dbus-daemon[217040]: [session uid=0 pid=217040] Successfully activated service 'org.a11y.Bus'
+FFFF.F              [100%]
+=================================== FAILURES ===================================
+_____ test_falsey_malformed_children_refuse_the_inventory[children0-disk] ______
+
+children = {}, placement = 'disk'
+
+    @pytest.mark.parametrize("placement", ["disk", "nested", "flat"])
+    @pytest.mark.parametrize("children", [{}, False, 0, ""])
+    def test_falsey_malformed_children_refuse_the_inventory(children, placement):
+        result = discover(
+            lsblk_payload=_payload(children, placement=placement),
+            mount_sources=["/dev/sdb"], cmdline="",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Same model', serial='sdb', size_bytes=1000000000, size... path='/dev/sdb', parent_path='', kind_label='Disk', summary='Disk · 1 GB · Same model', children=()),), error_code='').error
+
+tests/test_discovery_children_schema_regression.py:32: AssertionError
+____ test_falsey_malformed_children_refuse_the_inventory[children0-nested] _____
+
+children = {}, placement = 'nested'
+
+    @pytest.mark.parametrize("placement", ["disk", "nested", "flat"])
+    @pytest.mark.parametrize("children", [{}, False, 0, ""])
+    def test_falsey_malformed_children_refuse_the_inventory(children, placement):
+        result = discover(
+            lsblk_payload=_payload(children, placement=placement),
+            mount_sources=["/dev/sdb"], cmdline="",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Same model', serial='sdb', size_bytes=1000000000, size... parent_path='/dev/sda', kind_label='Partition', summary='Partition · 1 GB · Same model', children=())), error_code='').error
+
+tests/test_discovery_children_schema_regression.py:32: AssertionError
+_____ test_falsey_malformed_children_refuse_the_inventory[children0-flat] ______
+
+children = {}, placement = 'flat'
+
+    @pytest.mark.parametrize("placement", ["disk", "nested", "flat"])
+    @pytest.mark.parametrize("children", [{}, False, 0, ""])
+    def test_falsey_malformed_children_refuse_the_inventory(children, placement):
+        result = discover(
+            lsblk_payload=_payload(children, placement=placement),
+            mount_sources=["/dev/sdb"], cmdline="",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Same model', serial='sdb', size_bytes=1000000000, size... parent_path='/dev/sda', kind_label='Partition', summary='Partition · 1 GB · Same model', children=())), error_code='').error
+
+tests/test_discovery_children_schema_regression.py:32: AssertionError
+_______ test_falsey_malformed_children_refuse_the_inventory[False-disk] ________
+
+children = False, placement = 'disk'
+
+    @pytest.mark.parametrize("placement", ["disk", "nested", "flat"])
+    @pytest.mark.parametrize("children", [{}, False, 0, ""])
+    def test_falsey_malformed_children_refuse_the_inventory(children, placement):
+        result = discover(
+            lsblk_payload=_payload(children, placement=placement),
+            mount_sources=["/dev/sdb"], cmdline="",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Same model', serial='sdb', size_bytes=1000000000, size... path='/dev/sdb', parent_path='', kind_label='Disk', summary='Disk · 1 GB · Same model', children=()),), error_code='').error
+
+tests/test_discovery_children_schema_regression.py:32: AssertionError
+______ test_falsey_malformed_children_refuse_the_inventory[False-nested] _______
+
+children = False, placement = 'nested'
+
+    @pytest.mark.parametrize("placement", ["disk", "nested", "flat"])
+    @pytest.mark.parametrize("children", [{}, False, 0, ""])
+    def test_falsey_malformed_children_refuse_the_inventory(children, placement):
+        result = discover(
+            lsblk_payload=_payload(children, placement=placement),
+            mount_sources=["/dev/sdb"], cmdline="",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Same model', serial='sdb', size_bytes=1000000000, size... parent_path='/dev/sda', kind_label='Partition', summary='Partition · 1 GB · Same model', children=())), error_code='').error
+
+tests/test_discovery_children_schema_regression.py:32: AssertionError
+_______ test_falsey_malformed_children_refuse_the_inventory[False-flat] ________
+
+children = False, placement = 'flat'
+
+    @pytest.mark.parametrize("placement", ["disk", "nested", "flat"])
+    @pytest.mark.parametrize("children", [{}, False, 0, ""])
+    def test_falsey_malformed_children_refuse_the_inventory(children, placement):
+        result = discover(
+            lsblk_payload=_payload(children, placement=placement),
+            mount_sources=["/dev/sdb"], cmdline="",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Same model', serial='sdb', size_bytes=1000000000, size... parent_path='/dev/sda', kind_label='Partition', summary='Partition · 1 GB · Same model', children=())), error_code='').error
+
+tests/test_discovery_children_schema_regression.py:32: AssertionError
+_________ test_falsey_malformed_children_refuse_the_inventory[0-disk] __________
+
+children = 0, placement = 'disk'
+
+    @pytest.mark.parametrize("placement", ["disk", "nested", "flat"])
+    @pytest.mark.parametrize("children", [{}, False, 0, ""])
+    def test_falsey_malformed_children_refuse_the_inventory(children, placement):
+        result = discover(
+            lsblk_payload=_payload(children, placement=placement),
+            mount_sources=["/dev/sdb"], cmdline="",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Same model', serial='sdb', size_bytes=1000000000, size... path='/dev/sdb', parent_path='', kind_label='Disk', summary='Disk · 1 GB · Same model', children=()),), error_code='').error
+
+tests/test_discovery_children_schema_regression.py:32: AssertionError
+________ test_falsey_malformed_children_refuse_the_inventory[0-nested] _________
+
+children = 0, placement = 'nested'
+
+    @pytest.mark.parametrize("placement", ["disk", "nested", "flat"])
+    @pytest.mark.parametrize("children", [{}, False, 0, ""])
+    def test_falsey_malformed_children_refuse_the_inventory(children, placement):
+        result = discover(
+            lsblk_payload=_payload(children, placement=placement),
+            mount_sources=["/dev/sdb"], cmdline="",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Same model', serial='sdb', size_bytes=1000000000, size... parent_path='/dev/sda', kind_label='Partition', summary='Partition · 1 GB · Same model', children=())), error_code='').error
+
+tests/test_discovery_children_schema_regression.py:32: AssertionError
+_________ test_falsey_malformed_children_refuse_the_inventory[0-flat] __________
+
+children = 0, placement = 'flat'
+
+    @pytest.mark.parametrize("placement", ["disk", "nested", "flat"])
+    @pytest.mark.parametrize("children", [{}, False, 0, ""])
+    def test_falsey_malformed_children_refuse_the_inventory(children, placement):
+        result = discover(
+            lsblk_payload=_payload(children, placement=placement),
+            mount_sources=["/dev/sdb"], cmdline="",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Same model', serial='sdb', size_bytes=1000000000, size... parent_path='/dev/sda', kind_label='Partition', summary='Partition · 1 GB · Same model', children=())), error_code='').error
+
+tests/test_discovery_children_schema_regression.py:32: AssertionError
+__________ test_falsey_malformed_children_refuse_the_inventory[-disk] __________
+
+children = '', placement = 'disk'
+
+    @pytest.mark.parametrize("placement", ["disk", "nested", "flat"])
+    @pytest.mark.parametrize("children", [{}, False, 0, ""])
+    def test_falsey_malformed_children_refuse_the_inventory(children, placement):
+        result = discover(
+            lsblk_payload=_payload(children, placement=placement),
+            mount_sources=["/dev/sdb"], cmdline="",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Same model', serial='sdb', size_bytes=1000000000, size... path='/dev/sdb', parent_path='', kind_label='Disk', summary='Disk · 1 GB · Same model', children=()),), error_code='').error
+
+tests/test_discovery_children_schema_regression.py:32: AssertionError
+_________ test_falsey_malformed_children_refuse_the_inventory[-nested] _________
+
+children = '', placement = 'nested'
+
+    @pytest.mark.parametrize("placement", ["disk", "nested", "flat"])
+    @pytest.mark.parametrize("children", [{}, False, 0, ""])
+    def test_falsey_malformed_children_refuse_the_inventory(children, placement):
+        result = discover(
+            lsblk_payload=_payload(children, placement=placement),
+            mount_sources=["/dev/sdb"], cmdline="",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Same model', serial='sdb', size_bytes=1000000000, size... parent_path='/dev/sda', kind_label='Partition', summary='Partition · 1 GB · Same model', children=())), error_code='').error
+
+tests/test_discovery_children_schema_regression.py:32: AssertionError
+__________ test_falsey_malformed_children_refuse_the_inventory[-flat] __________
+
+children = '', placement = 'flat'
+
+    @pytest.mark.parametrize("placement", ["disk", "nested", "flat"])
+    @pytest.mark.parametrize("children", [{}, False, 0, ""])
+    def test_falsey_malformed_children_refuse_the_inventory(children, placement):
+        result = discover(
+            lsblk_payload=_payload(children, placement=placement),
+            mount_sources=["/dev/sdb"], cmdline="",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Same model', serial='sdb', size_bytes=1000000000, size... parent_path='/dev/sda', kind_label='Partition', summary='Partition · 1 GB · Same model', children=())), error_code='').error
+
+tests/test_discovery_children_schema_regression.py:32: AssertionError
+___ test_malformed_annotation_cannot_invent_boot_identity[[unfinished-sda1] ____
+
+prefix = 'sda1', suffix = '[unfinished'
+
+    @pytest.mark.parametrize("prefix", ["sda1", "/dev/sda1"])
+    @pytest.mark.parametrize("suffix", ["[unfinished", "[subvolume]junk", "[]"])
+    def test_malformed_annotation_cannot_invent_boot_identity(prefix, suffix):
+        source = prefix + suffix
+>       assert normalize_mount_source(source) == source
+E       AssertionError: assert '/dev/sda1' == 'sda1[unfinished'
+E
+E         - sda1[unfinished
+E         + /dev/sda1
+
+tests/test_mount_source_annotation_regression.py:29: AssertionError
+_ test_malformed_annotation_cannot_invent_boot_identity[[unfinished-/dev/sda1] _
+
+prefix = '/dev/sda1', suffix = '[unfinished'
+
+    @pytest.mark.parametrize("prefix", ["sda1", "/dev/sda1"])
+    @pytest.mark.parametrize("suffix", ["[unfinished", "[subvolume]junk", "[]"])
+    def test_malformed_annotation_cannot_invent_boot_identity(prefix, suffix):
+        source = prefix + suffix
+>       assert normalize_mount_source(source) == source
+E       AssertionError: assert '/dev/sda1' == '/dev/sda1[unfinished'
+E
+E         - /dev/sda1[unfinished
+E         + /dev/sda1
+
+tests/test_mount_source_annotation_regression.py:29: AssertionError
+_ test_malformed_annotation_cannot_invent_boot_identity[[subvolume]junk-sda1] __
+
+prefix = 'sda1', suffix = '[subvolume]junk'
+
+    @pytest.mark.parametrize("prefix", ["sda1", "/dev/sda1"])
+    @pytest.mark.parametrize("suffix", ["[unfinished", "[subvolume]junk", "[]"])
+    def test_malformed_annotation_cannot_invent_boot_identity(prefix, suffix):
+        source = prefix + suffix
+>       assert normalize_mount_source(source) == source
+E       AssertionError: assert '/dev/sda1' == 'sda1[subvolume]junk'
+E
+E         - sda1[subvolume]junk
+E         + /dev/sda1
+
+tests/test_mount_source_annotation_regression.py:29: AssertionError
+_ test_malformed_annotation_cannot_invent_boot_identity[[subvolume]junk-/dev/sda1] _
+
+prefix = '/dev/sda1', suffix = '[subvolume]junk'
+
+    @pytest.mark.parametrize("prefix", ["sda1", "/dev/sda1"])
+    @pytest.mark.parametrize("suffix", ["[unfinished", "[subvolume]junk", "[]"])
+    def test_malformed_annotation_cannot_invent_boot_identity(prefix, suffix):
+        source = prefix + suffix
+>       assert normalize_mount_source(source) == source
+E       AssertionError: assert '/dev/sda1' == '/dev/sda1[subvolume]junk'
+E
+E         - /dev/sda1[subvolume]junk
+E         + /dev/sda1
+
+tests/test_mount_source_annotation_regression.py:29: AssertionError
+________ test_malformed_annotation_cannot_invent_boot_identity[[]-sda1] ________
+
+prefix = 'sda1', suffix = '[]'
+
+    @pytest.mark.parametrize("prefix", ["sda1", "/dev/sda1"])
+    @pytest.mark.parametrize("suffix", ["[unfinished", "[subvolume]junk", "[]"])
+    def test_malformed_annotation_cannot_invent_boot_identity(prefix, suffix):
+        source = prefix + suffix
+>       assert normalize_mount_source(source) == source
+E       AssertionError: assert '/dev/sda1' == 'sda1[]'
+E
+E         - sda1[]
+E         + /dev/sda1
+
+tests/test_mount_source_annotation_regression.py:29: AssertionError
+_____ test_malformed_annotation_cannot_invent_boot_identity[[]-/dev/sda1] ______
+
+prefix = '/dev/sda1', suffix = '[]'
+
+    @pytest.mark.parametrize("prefix", ["sda1", "/dev/sda1"])
+    @pytest.mark.parametrize("suffix", ["[unfinished", "[subvolume]junk", "[]"])
+    def test_malformed_annotation_cannot_invent_boot_identity(prefix, suffix):
+        source = prefix + suffix
+>       assert normalize_mount_source(source) == source
+E       AssertionError: assert '/dev/sda1' == '/dev/sda1[]'
+E
+E         - /dev/sda1[]
+E         ?          --
+E         + /dev/sda1
+
+tests/test_mount_source_annotation_regression.py:29: AssertionError
+_____ test_actual_kernel_prefixed_alias_wins_over_annotation_guess[[rev2]] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7894b2acfec0>
+suffix = '[rev2]'
+
+    @pytest.mark.parametrize("suffix", ["[rev2]", "[unfinished", "[subvolume]junk"])
+    def test_actual_kernel_prefixed_alias_wins_over_annotation_guess(monkeypatch, suffix):
+        source = "/dev/sda1" + suffix
+        original_realpath = os.path.realpath
+
+        def resolve(path):
+            return "/dev/sdb1" if str(path) == source else original_realpath(path)
+
+        monkeypatch.setattr(os.path, "realpath", resolve)
+>       assert normalize_mount_source(source) == source
+E       AssertionError: assert '/dev/sda1' == '/dev/sda1[rev2]'
+E
+E         - /dev/sda1[rev2]
+E         ?          ------
+E         + /dev/sda1
+
+tests/test_mount_source_annotation_regression.py:56: AssertionError
+__ test_actual_kernel_prefixed_alias_wins_over_annotation_guess[[unfinished] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7894b2acc9b0>
+suffix = '[unfinished'
+
+    @pytest.mark.parametrize("suffix", ["[rev2]", "[unfinished", "[subvolume]junk"])
+    def test_actual_kernel_prefixed_alias_wins_over_annotation_guess(monkeypatch, suffix):
+        source = "/dev/sda1" + suffix
+        original_realpath = os.path.realpath
+
+        def resolve(path):
+            return "/dev/sdb1" if str(path) == source else original_realpath(path)
+
+        monkeypatch.setattr(os.path, "realpath", resolve)
+>       assert normalize_mount_source(source) == source
+E       AssertionError: assert '/dev/sda1' == '/dev/sda1[unfinished'
+E
+E         - /dev/sda1[unfinished
+E         + /dev/sda1
+
+tests/test_mount_source_annotation_regression.py:56: AssertionError
+_ test_actual_kernel_prefixed_alias_wins_over_annotation_guess[[subvolume]junk] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7894b2acc1a0>
+suffix = '[subvolume]junk'
+
+    @pytest.mark.parametrize("suffix", ["[rev2]", "[unfinished", "[subvolume]junk"])
+    def test_actual_kernel_prefixed_alias_wins_over_annotation_guess(monkeypatch, suffix):
+        source = "/dev/sda1" + suffix
+        original_realpath = os.path.realpath
+
+        def resolve(path):
+            return "/dev/sdb1" if str(path) == source else original_realpath(path)
+
+        monkeypatch.setattr(os.path, "realpath", resolve)
+>       assert normalize_mount_source(source) == source
+E       AssertionError: assert '/dev/sda1' == '/dev/sda1[subvolume]junk'
+E
+E         - /dev/sda1[subvolume]junk
+E         + /dev/sda1
+
+tests/test_mount_source_annotation_regression.py:56: AssertionError
+_______ test_alias_resolution_error_cannot_fall_back_to_shortened_source _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7894b2aceb10>
+
+    def test_alias_resolution_error_cannot_fall_back_to_shortened_source(monkeypatch):
+        source = "/dev/sda1[rev2]"
+        original_realpath = os.path.realpath
+
+        def resolve(path):
+            if str(path) == source:
+                raise OSError("fake unreadable alias")
+            return original_realpath(path)
+
+        monkeypatch.setattr(os.path, "realpath", resolve)
+        result = _scan(source)
+>       assert not result.boot_identified
+E       AssertionError: assert not True
+E        +  where True = DiscoveryResult(disks=(Disk(path='/dev/sda', name='sda', model='Same model', serial='sda', size_bytes=1000000000, size... parent_path='/dev/sdb', kind_label='Partition', summary='Partition · 1 GB · Same model', children=())), error_code='').boot_identified
+
+tests/test_mount_source_annotation_regression.py:74: AssertionError
+______ test_existing_source_with_unchanged_realpath_is_not_an_annotation _______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-193/test_existing_source_with_unch0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7894b2acffe0>
+
+    def test_existing_source_with_unchanged_realpath_is_not_an_annotation(tmp_path, monkeypatch):
+        source = "/dev/sda1[rev2]"
+        fixture = tmp_path / "existing-source"
+        fixture.write_text("fake source path")
+        original_lstat, original_realpath = os.lstat, os.path.realpath
+
+        def lstat(path, *args, **kwargs):
+            return original_lstat(fixture) if str(path) == source else original_lstat(path, *args, **kwargs)
+
+        monkeypatch.setattr(os, "lstat", lstat)
+        monkeypatch.setattr(
+            os.path, "realpath",
+            lambda path: source if str(path) == source else original_realpath(path),
+        )
+>       assert normalize_mount_source(source) == source
+E       AssertionError: assert '/dev/sda1' == '/dev/sda1[rev2]'
+E
+E         - /dev/sda1[rev2]
+E         ?          ------
+E         + /dev/sda1
+
+tests/test_mount_source_annotation_regression.py:93: AssertionError
+_________ test_source_lookup_permission_error_cannot_invent_annotation _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7894b2acd7f0>
+
+    def test_source_lookup_permission_error_cannot_invent_annotation(monkeypatch):
+        source = "/dev/sda1[rev2]"
+        original_lstat, original_realpath = os.lstat, os.path.realpath
+
+        def lstat(path, *args, **kwargs):
+            if str(path) == source:
+                raise PermissionError(errno.EACCES, "fake source lookup denied")
+            return original_lstat(path, *args, **kwargs)
+
+        monkeypatch.setattr(os, "lstat", lstat)
+        monkeypatch.setattr(
+            os.path, "realpath",
+            lambda path: source if str(path) == source else original_realpath(path),
+        )
+        result = _scan(source)
+>       assert not result.boot_identified
+E       AssertionError: assert not True
+E        +  where True = DiscoveryResult(disks=(Disk(path='/dev/sda', name='sda', model='Same model', serial='sda', size_bytes=1000000000, size... parent_path='/dev/sdb', kind_label='Partition', summary='Partition · 1 GB · Same model', children=())), error_code='').boot_identified
+
+tests/test_mount_source_annotation_regression.py:114: AssertionError
+_ test_model_continuations_cannot_supply_passing_checks[X\nNo hidden sectors on /dev/sda-hidden_capacity] _
+
+model = 'X\nNo hidden sectors on /dev/sda', check_id = 'hidden_capacity'
+
+    @pytest.mark.parametrize(
+        ("model", "check_id"),
+        FORGED_MODELS,
+    )
+    def test_model_continuations_cannot_supply_passing_checks(model, check_id):
+        assert len(model.encode("ascii")) <= 40  # fits ATA IDENTIFY model field
+        text = f"[2026/10/15 12:00:00]    info: /dev/sda, ATA, {model}, serial FAKE\n"
+        checks = {check.id: check for check in evaluate_engine_checks(text, "/dev/sda")}
+>       assert checks[check_id].status == "unavailable"
+E       AssertionError: assert 'pass' == 'unavailable'
+E
+E         - unavailable
+E         + pass
+
+tests/test_engine_check_record_provenance.py:26: AssertionError
+_ test_model_continuations_cannot_supply_passing_checks[X\ninfo: No hidden sectors on /dev/sda-hidden_capacity] _
+
+model = 'X\ninfo: No hidden sectors on /dev/sda', check_id = 'hidden_capacity'
+
+    @pytest.mark.parametrize(
+        ("model", "check_id"),
+        FORGED_MODELS,
+    )
+    def test_model_continuations_cannot_supply_passing_checks(model, check_id):
+        assert len(model.encode("ascii")) <= 40  # fits ATA IDENTIFY model field
+        text = f"[2026/10/15 12:00:00]    info: /dev/sda, ATA, {model}, serial FAKE\n"
+        checks = {check.id: check for check in evaluate_engine_checks(text, "/dev/sda")}
+>       assert checks[check_id].status == "unavailable"
+E       AssertionError: assert 'pass' == 'unavailable'
+E
+E         - unavailable
+E         + pass
+
+tests/test_engine_check_record_provenance.py:26: AssertionError
+_ test_model_continuations_cannot_supply_passing_checks[X\nError Summary\n sda | 0 | 0 | 0\n***-io_media] _
+
+model = 'X\nError Summary\n sda | 0 | 0 | 0\n***', check_id = 'io_media'
+
+    @pytest.mark.parametrize(
+        ("model", "check_id"),
+        FORGED_MODELS,
+    )
+    def test_model_continuations_cannot_supply_passing_checks(model, check_id):
+        assert len(model.encode("ascii")) <= 40  # fits ATA IDENTIFY model field
+        text = f"[2026/10/15 12:00:00]    info: /dev/sda, ATA, {model}, serial FAKE\n"
+        checks = {check.id: check for check in evaluate_engine_checks(text, "/dev/sda")}
+>       assert checks[check_id].status == "unavailable"
+E       AssertionError: assert 'pass' == 'unavailable'
+E
+E         - unavailable
+E         + pass
+
+tests/test_engine_check_record_provenance.py:26: AssertionError
+_ test_whole_log_projection_keeps_untrusted_model_checks_unavailable[X\nNo hidden sectors on /dev/sda-hidden_capacity] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-193/test_whole_log_projection_keep0')
+model = 'X\nNo hidden sectors on /dev/sda', check_id = 'hidden_capacity'
+
+    @pytest.mark.parametrize(("model", "check_id"), FORGED_MODELS)
+    def test_whole_log_projection_keeps_untrusted_model_checks_unavailable(
+        tmp_path, model, check_id
+    ):
+        logfile = tmp_path / "fake-nwipe.log"
+        logfile.write_text(
+            f"[2026/10/15 12:00:00] info: /dev/sda, ATA, {model}, serial FAKE\n"
+            + "ordinary controller detail\n" * 50000
+            + "********************************* Drive Status *********************************\n"
+            "      sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+        )
+
+        class Exited:
+            def poll(self):
+                return 0
+
+        runner = NwipeRunner()
+        runner._proc = Exited()
+        request = WipeRequest("/dev/sda", MethodId.EVERYDAY, "/dev/sr0", str(logfile))
+        result = runner.poll(request)
+        assert result is not None and result.ok  # genuine completion stays independent
+        checks = {
+            check.id: check
+            for check in evaluate_engine_checks(runner._assessment_log_text, "/dev/sda")
+        }
+>       assert checks[check_id].status == "unavailable"
+E       AssertionError: assert 'pass' == 'unavailable'
+E
+E         - unavailable
+E         + pass
+
+tests/test_engine_check_record_provenance.py:61: AssertionError
+_ test_whole_log_projection_keeps_untrusted_model_checks_unavailable[X\ninfo: No hidden sectors on /dev/sda-hidden_capacity] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-193/test_whole_log_projection_keep1')
+model = 'X\ninfo: No hidden sectors on /dev/sda', check_id = 'hidden_capacity'
+
+    @pytest.mark.parametrize(("model", "check_id"), FORGED_MODELS)
+    def test_whole_log_projection_keeps_untrusted_model_checks_unavailable(
+        tmp_path, model, check_id
+    ):
+        logfile = tmp_path / "fake-nwipe.log"
+        logfile.write_text(
+            f"[2026/10/15 12:00:00] info: /dev/sda, ATA, {model}, serial FAKE\n"
+            + "ordinary controller detail\n" * 50000
+            + "********************************* Drive Status *********************************\n"
+            "      sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+        )
+
+        class Exited:
+            def poll(self):
+                return 0
+
+        runner = NwipeRunner()
+        runner._proc = Exited()
+        request = WipeRequest("/dev/sda", MethodId.EVERYDAY, "/dev/sr0", str(logfile))
+        result = runner.poll(request)
+        assert result is not None and result.ok  # genuine completion stays independent
+        checks = {
+            check.id: check
+            for check in evaluate_engine_checks(runner._assessment_log_text, "/dev/sda")
+        }
+>       assert checks[check_id].status == "unavailable"
+E       AssertionError: assert 'pass' == 'unavailable'
+E
+E         - unavailable
+E         + pass
+
+tests/test_engine_check_record_provenance.py:61: AssertionError
+_ test_whole_log_projection_keeps_untrusted_model_checks_unavailable[X\nError Summary\n sda | 0 | 0 | 0\n***-io_media] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-193/test_whole_log_projection_keep2')
+model = 'X\nError Summary\n sda | 0 | 0 | 0\n***', check_id = 'io_media'
+
+    @pytest.mark.parametrize(("model", "check_id"), FORGED_MODELS)
+    def test_whole_log_projection_keeps_untrusted_model_checks_unavailable(
+        tmp_path, model, check_id
+    ):
+        logfile = tmp_path / "fake-nwipe.log"
+        logfile.write_text(
+            f"[2026/10/15 12:00:00] info: /dev/sda, ATA, {model}, serial FAKE\n"
+            + "ordinary controller detail\n" * 50000
+            + "********************************* Drive Status *********************************\n"
+            "      sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+        )
+
+        class Exited:
+            def poll(self):
+                return 0
+
+        runner = NwipeRunner()
+        runner._proc = Exited()
+        request = WipeRequest("/dev/sda", MethodId.EVERYDAY, "/dev/sr0", str(logfile))
+        result = runner.poll(request)
+        assert result is not None and result.ok  # genuine completion stays independent
+        checks = {
+            check.id: check
+            for check in evaluate_engine_checks(runner._assessment_log_text, "/dev/sda")
+        }
+>       assert checks[check_id].status == "unavailable"
+E       AssertionError: assert 'pass' == 'unavailable'
+E
+E         - unavailable
+E         + pass
+
+tests/test_engine_check_record_provenance.py:61: AssertionError
+_____________ test_new_startup_uses_current_stage_translations[fr] _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7894b2b49460>
+language = 'fr'
+
+    @pytest.mark.parametrize("language", ["en", "fr", "de"])
+    def test_new_startup_uses_current_stage_translations(monkeypatch, language):
+        monkeypatch.setattr("beamo_wipe.startup_stages._emit", lambda *_args: None)
+        lang.set_language(language)
+>       assert_current_stage_copy(StartupStages())
+
+tests/test_startup_language_refresh_regression.py:29:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+stages = <beamo_wipe.startup_stages.StartupStages object at 0x7894b2b48f50>
+
+    def assert_current_stage_copy(stages):
+        rows = stages.snapshot()
+>       assert [(row["title"], row["hint"]) for row in rows] == [
+            (C.STARTUP_TITLE, C.STARTUP_TITLE_HINT),
+            (C.STARTUP_STAGE_BOOT_USB, C.STARTUP_STAGE_BOOT_USB_HINT),
+            (C.STARTUP_STAGE_FINDING, C.STARTUP_STAGE_FINDING_HINT),
+        ]
+E       AssertionError: assert [('Starting B...s computer.')] == [('Démarrage ...ordinateur.')]
+E
+E         At index 0 diff: ('Starting Beamo Wipe', 'Getting ready.') != ('Démarrage de Beamo Wipe', 'Préparation en cours.')
+E         Use -v to get more diff
+
+tests/test_startup_language_refresh_regression.py:18: AssertionError
+_____________ test_new_startup_uses_current_stage_translations[de] _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7894b2b483e0>
+language = 'de'
+
+    @pytest.mark.parametrize("language", ["en", "fr", "de"])
+    def test_new_startup_uses_current_stage_translations(monkeypatch, language):
+        monkeypatch.setattr("beamo_wipe.startup_stages._emit", lambda *_args: None)
+        lang.set_language(language)
+>       assert_current_stage_copy(StartupStages())
+
+tests/test_startup_language_refresh_regression.py:29:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+stages = <beamo_wipe.startup_stages.StartupStages object at 0x7894b2b49b20>
+
+    def assert_current_stage_copy(stages):
+        rows = stages.snapshot()
+>       assert [(row["title"], row["hint"]) for row in rows] == [
+            (C.STARTUP_TITLE, C.STARTUP_TITLE_HINT),
+            (C.STARTUP_STAGE_BOOT_USB, C.STARTUP_STAGE_BOOT_USB_HINT),
+            (C.STARTUP_STAGE_FINDING, C.STARTUP_STAGE_FINDING_HINT),
+        ]
+E       AssertionError: assert [('Starting B...s computer.')] == [('Beamo Wipe...ufgelistet.')]
+E
+E         At index 0 diff: ('Starting Beamo Wipe', 'Getting ready.') != ('Beamo Wipe startet', 'Wird vorbereitet.')
+E         Use -v to get more diff
+
+tests/test_startup_language_refresh_regression.py:18: AssertionError
+________ test_stage_states_survive_language_switch_and_english_restore _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7894b2b4a960>
+
+    def test_stage_states_survive_language_switch_and_english_restore(monkeypatch):
+        monkeypatch.setattr("beamo_wipe.startup_stages._emit", lambda *_args: None)
+        lang.set_language("en")
+        stages = StartupStages()
+        stages.begin("checking-boot-usb")
+        before = stages.states.copy()
+        for language in ("fr", "de", "en"):
+            lang.set_language(language)
+>           assert_current_stage_copy(stages)
+
+tests/test_startup_language_refresh_regression.py:40:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+stages = <beamo_wipe.startup_stages.StartupStages object at 0x7894b2b4a9f0>
+
+    def assert_current_stage_copy(stages):
+        rows = stages.snapshot()
+>       assert [(row["title"], row["hint"]) for row in rows] == [
+            (C.STARTUP_TITLE, C.STARTUP_TITLE_HINT),
+            (C.STARTUP_STAGE_BOOT_USB, C.STARTUP_STAGE_BOOT_USB_HINT),
+            (C.STARTUP_STAGE_FINDING, C.STARTUP_STAGE_FINDING_HINT),
+        ]
+E       AssertionError: assert [('Starting B...s computer.')] == [('Démarrage ...ordinateur.')]
+E
+E         At index 0 diff: ('Starting Beamo Wipe', 'Getting ready.') != ('Démarrage de Beamo Wipe', 'Préparation en cours.')
+E         Use -v to get more diff
+
+tests/test_startup_language_refresh_regression.py:18: AssertionError
+____________ test_spoken_startup_status_uses_selected_language[fr] _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7894b2b4b3e0>
+language = 'fr'
+
+    @pytest.mark.parametrize("language", ["fr", "de"])
+    def test_spoken_startup_status_uses_selected_language(monkeypatch, language):
+        pytest.importorskip("gi")
+        from beamo_wipe.ui import accessible_wizard as ui
+
+        lang.set_language(language)
+        captured = []
+        unrelated = ui.Gtk.Window(title="Unrelated existing window")
+        unrelated_destroyed = []
+        unrelated.connect("destroy", lambda *_args: unrelated_destroyed.append(True))
+        previous_windows = set(ui.Gtk.Window.list_toplevels())
+        monkeypatch.setattr(ui, "_ensure_gtk_display", lambda: None)
+        monkeypatch.setattr("beamo_wipe.startup_stages._emit", lambda *_args: None)
+
+        def inspect_window():
+            owned = [window for window in ui.Gtk.Window.list_toplevels()
+                     if window not in previous_windows]
+            assert len(owned) == 1
+            window = owned[0]
+            captured.extend(labels(window, ui))
+            window.emit("delete-event", None)
+
+        monkeypatch.setattr(ui.Gtk, "main", inspect_window)
+        try:
+            ui.run_accessible_startup(lambda _report: object())
+>           assert C.STARTUP_TITLE in captured
+E           AssertionError: assert 'Démarrage de Beamo Wipe' in ['En cours…', 'Starting Beamo Wipe', 'Getting ready.', 'En attente', 'Checking the boot USB', 'Learning which disk is this USB stick, so it is never offered for erasure.', ...]
+E            +  where 'Démarrage de Beamo Wipe' = C.STARTUP_TITLE
+
+tests/test_startup_language_refresh_regression.py:77: AssertionError
+____________ test_spoken_startup_status_uses_selected_language[de] _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7894b2156b70>
+language = 'de'
+
+    @pytest.mark.parametrize("language", ["fr", "de"])
+    def test_spoken_startup_status_uses_selected_language(monkeypatch, language):
+        pytest.importorskip("gi")
+        from beamo_wipe.ui import accessible_wizard as ui
+
+        lang.set_language(language)
+        captured = []
+        unrelated = ui.Gtk.Window(title="Unrelated existing window")
+        unrelated_destroyed = []
+        unrelated.connect("destroy", lambda *_args: unrelated_destroyed.append(True))
+        previous_windows = set(ui.Gtk.Window.list_toplevels())
+        monkeypatch.setattr(ui, "_ensure_gtk_display", lambda: None)
+        monkeypatch.setattr("beamo_wipe.startup_stages._emit", lambda *_args: None)
+
+        def inspect_window():
+            owned = [window for window in ui.Gtk.Window.list_toplevels()
+                     if window not in previous_windows]
+            assert len(owned) == 1
+            window = owned[0]
+            captured.extend(labels(window, ui))
+            window.emit("delete-event", None)
+
+        monkeypatch.setattr(ui.Gtk, "main", inspect_window)
+        try:
+            ui.run_accessible_startup(lambda _report: object())
+>           assert C.STARTUP_TITLE in captured
+E           AssertionError: assert 'Beamo Wipe startet' in ['Läuft…', 'Starting Beamo Wipe', 'Getting ready.', 'Wartet', 'Checking the boot USB', 'Learning which disk is this USB stick, so it is never offered for erasure.', ...]
+E            +  where 'Beamo Wipe startet' = C.STARTUP_TITLE
+
+tests/test_startup_language_refresh_regression.py:77: AssertionError
+_ test_cleanup_error_still_removes_owned_mount_directory_and_closes_root[lock_close] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-193/test_cleanup_error_still_remov0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7894b21a0740>
+failure = 'lock_close'
+
+    @pytest.mark.parametrize("failure", ["lock_close", "unmount"])
+    def test_cleanup_error_still_removes_owned_mount_directory_and_closes_root(
+        tmp_path, monkeypatch, failure
+    ):
+        root = tmp_path / "run"
+        monkeypatch.setattr(export, "MOUNT_ROOT", root)
+        real_open, real_close = os.open, os.close
+        opened = {}
+
+        def record_open(path, flags, *args, **kwargs):
+            fd = real_open(path, flags, *args, **kwargs)
+            opened[str(path)] = fd
+            return fd
+
+        def close_with_error(fd):
+            real_close(fd)
+            if failure == "lock_close" and fd == opened.get(".lock"):
+                # Linux releases the descriptor even when close reports EIO.
+                raise OSError(errno.EIO, "fake cleanup failure")
+
+        def refuse_mount(*_args, **_kwargs):
+            raise SafetyError("fake mount refusal")
+
+        def fail_unmount(*_args, **_kwargs):
+            raise OSError(errno.EIO, "fake cleanup failure")
+
+        try:
+            with monkeypatch.context() as patch:
+                patch.setattr(os, "open", record_open)
+                patch.setattr(os, "close", close_with_error)
+                patch.setattr(export, "_run_command", refuse_mount)
+                if failure == "unmount":
+                    patch.setattr(export, "_run_command", lambda *_a, **_kw: SimpleNamespace(returncode=0))
+                    patch.setattr(export, "_mounted_exact", lambda *_a: True)
+                    patch.setattr(export, "_verify_mount", refuse_mount)
+                    patch.setattr(export, "_ordinary_unmount", fail_unmount)
+                with pytest.raises(OSError, match="fake cleanup failure"):
+                    export._persist_and_verify_report(
+                        SimpleNamespace(fstype="vfat"), None, b"", "unavailable", 0
+                    )
+>           with pytest.raises(OSError) as error:
+E           Failed: DID NOT RAISE <class 'OSError'>
+
+tests/test_export_mount_cleanup_regression.py:53: Failed
+_ test_cleanup_error_still_removes_owned_mount_directory_and_closes_root[unmount] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-193/test_cleanup_error_still_remov1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7894b21a1520>
+failure = 'unmount'
+
+    @pytest.mark.parametrize("failure", ["lock_close", "unmount"])
+    def test_cleanup_error_still_removes_owned_mount_directory_and_closes_root(
+        tmp_path, monkeypatch, failure
+    ):
+        root = tmp_path / "run"
+        monkeypatch.setattr(export, "MOUNT_ROOT", root)
+        real_open, real_close = os.open, os.close
+        opened = {}
+
+        def record_open(path, flags, *args, **kwargs):
+            fd = real_open(path, flags, *args, **kwargs)
+            opened[str(path)] = fd
+            return fd
+
+        def close_with_error(fd):
+            real_close(fd)
+            if failure == "lock_close" and fd == opened.get(".lock"):
+                # Linux releases the descriptor even when close reports EIO.
+                raise OSError(errno.EIO, "fake cleanup failure")
+
+        def refuse_mount(*_args, **_kwargs):
+            raise SafetyError("fake mount refusal")
+
+        def fail_unmount(*_args, **_kwargs):
+            raise OSError(errno.EIO, "fake cleanup failure")
+
+        try:
+            with monkeypatch.context() as patch:
+                patch.setattr(os, "open", record_open)
+                patch.setattr(os, "close", close_with_error)
+                patch.setattr(export, "_run_command", refuse_mount)
+                if failure == "unmount":
+                    patch.setattr(export, "_run_command", lambda *_a, **_kw: SimpleNamespace(returncode=0))
+                    patch.setattr(export, "_mounted_exact", lambda *_a: True)
+                    patch.setattr(export, "_verify_mount", refuse_mount)
+                    patch.setattr(export, "_ordinary_unmount", fail_unmount)
+                with pytest.raises(OSError, match="fake cleanup failure"):
+                    export._persist_and_verify_report(
+                        SimpleNamespace(fstype="vfat"), None, b"", "unavailable", 0
+                    )
+>           with pytest.raises(OSError) as error:
+E           Failed: DID NOT RAISE <class 'OSError'>
+
+tests/test_export_mount_cleanup_regression.py:53: Failed
+___________ test_worker_closes_parent_after_volume_close_error[True] ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-193/test_worker_closes_parent_afte1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7894b21a1e50>
+close_error = True
+
+    @pytest.mark.parametrize("close_error", [False, True])
+    def test_worker_closes_parent_after_volume_close_error(tmp_path, monkeypatch, close_error):
+        import io
+
+        parent, child = tmp_path / "fake-parent", tmp_path / "fake-volume"
+        parent.write_bytes(b"parent")
+        child.write_bytes(b"volume")
+        volume = SimpleNamespace(path=str(child), rdev=0, parent=SimpleNamespace(path=str(parent), rdev=0))
+        monkeypatch.setattr(export.sys, "stdin", SimpleNamespace(buffer=io.BytesIO(b"fake request")))
+        monkeypatch.setattr(export, "_decode_worker_request", lambda _: (None, volume, [], set(), b"", "unavailable", False))
+        monkeypatch.setattr(export, "_emit_export_marker", lambda *_: None)
+        monkeypatch.setattr(export, "run_lsblk", lambda: {})
+        monkeypatch.setattr(export, "select_export_volume", lambda *_: volume)
+        monkeypatch.setattr(export, "_same_volume", lambda *_a, **_kw: True)
+        monkeypatch.setattr(export, "_protected_rdevs", lambda *_: set())
+        monkeypatch.setattr(export, "_volume_with_rdev", lambda value: value)
+        monkeypatch.setattr(export, "_assert_partition_parent", lambda *_: None)
+
+        def refuse_export(*_a, **_kw):
+            raise SafetyError("fake export refusal")
+
+        monkeypatch.setattr(export, "_persist_and_verify_report", refuse_export)
+        real_open, real_close = os.open, os.close
+        opened = {}
+
+        def record_open(path, flags, *args, **kwargs):
+            fd = real_open(path, flags, *args, **kwargs)
+            opened[str(path)] = fd
+            return fd
+
+        def close(fd):
+            real_close(fd)
+            if close_error and fd == opened[str(child)]:
+                raise OSError(errno.EIO, "fake volume close failure")
+
+        try:
+            with monkeypatch.context() as patch:
+                patch.setattr(os, "open", record_open)
+                patch.setattr(os, "close", close)
+                error = OSError if close_error else SafetyError
+                with pytest.raises(error, match="fake (volume close failure|export refusal)"):
+                    export._worker()
+            for fd in opened.values():
+>               with pytest.raises(OSError) as caught:
+E               Failed: DID NOT RAISE <class 'OSError'>
+
+tests/test_export_mount_cleanup_regression.py:109: Failed
+=========================== short test summary info ============================
+FAILED tests/test_discovery_children_schema_regression.py::test_falsey_malformed_children_refuse_the_inventory[children0-disk]
+FAILED tests/test_discovery_children_schema_regression.py::test_falsey_malformed_children_refuse_the_inventory[children0-nested]
+FAILED tests/test_discovery_children_schema_regression.py::test_falsey_malformed_children_refuse_the_inventory[children0-flat]
+FAILED tests/test_discovery_children_schema_regression.py::test_falsey_malformed_children_refuse_the_inventory[False-disk]
+FAILED tests/test_discovery_children_schema_regression.py::test_falsey_malformed_children_refuse_the_inventory[False-nested]
+FAILED tests/test_discovery_children_schema_regression.py::test_falsey_malformed_children_refuse_the_inventory[False-flat]
+FAILED tests/test_discovery_children_schema_regression.py::test_falsey_malformed_children_refuse_the_inventory[0-disk]
+FAILED tests/test_discovery_children_schema_regression.py::test_falsey_malformed_children_refuse_the_inventory[0-nested]
+FAILED tests/test_discovery_children_schema_regression.py::test_falsey_malformed_children_refuse_the_inventory[0-flat]
+FAILED tests/test_discovery_children_schema_regression.py::test_falsey_malformed_children_refuse_the_inventory[-disk]
+FAILED tests/test_discovery_children_schema_regression.py::test_falsey_malformed_children_refuse_the_inventory[-nested]
+FAILED tests/test_discovery_children_schema_regression.py::test_falsey_malformed_children_refuse_the_inventory[-flat]
+FAILED tests/test_mount_source_annotation_regression.py::test_malformed_annotation_cannot_invent_boot_identity[[unfinished-sda1]
+FAILED tests/test_mount_source_annotation_regression.py::test_malformed_annotation_cannot_invent_boot_identity[[unfinished-/dev/sda1]
+FAILED tests/test_mount_source_annotation_regression.py::test_malformed_annotation_cannot_invent_boot_identity[[subvolume]junk-sda1]
+FAILED tests/test_mount_source_annotation_regression.py::test_malformed_annotation_cannot_invent_boot_identity[[subvolume]junk-/dev/sda1]
+FAILED tests/test_mount_source_annotation_regression.py::test_malformed_annotation_cannot_invent_boot_identity[[]-sda1]
+FAILED tests/test_mount_source_annotation_regression.py::test_malformed_annotation_cannot_invent_boot_identity[[]-/dev/sda1]
+FAILED tests/test_mount_source_annotation_regression.py::test_actual_kernel_prefixed_alias_wins_over_annotation_guess[[rev2]]
+FAILED tests/test_mount_source_annotation_regression.py::test_actual_kernel_prefixed_alias_wins_over_annotation_guess[[unfinished]
+FAILED tests/test_mount_source_annotation_regression.py::test_actual_kernel_prefixed_alias_wins_over_annotation_guess[[subvolume]junk]
+FAILED tests/test_mount_source_annotation_regression.py::test_alias_resolution_error_cannot_fall_back_to_shortened_source
+FAILED tests/test_mount_source_annotation_regression.py::test_existing_source_with_unchanged_realpath_is_not_an_annotation
+FAILED tests/test_mount_source_annotation_regression.py::test_source_lookup_permission_error_cannot_invent_annotation
+FAILED tests/test_engine_check_record_provenance.py::test_model_continuations_cannot_supply_passing_checks[X\nNo hidden sectors on /dev/sda-hidden_capacity]
+FAILED tests/test_engine_check_record_provenance.py::test_model_continuations_cannot_supply_passing_checks[X\ninfo: No hidden sectors on /dev/sda-hidden_capacity]
+FAILED tests/test_engine_check_record_provenance.py::test_model_continuations_cannot_supply_passing_checks[X\nError Summary\n sda | 0 | 0 | 0\n***-io_media]
+FAILED tests/test_engine_check_record_provenance.py::test_whole_log_projection_keeps_untrusted_model_checks_unavailable[X\nNo hidden sectors on /dev/sda-hidden_capacity]
+FAILED tests/test_engine_check_record_provenance.py::test_whole_log_projection_keeps_untrusted_model_checks_unavailable[X\ninfo: No hidden sectors on /dev/sda-hidden_capacity]
+FAILED tests/test_engine_check_record_provenance.py::test_whole_log_projection_keeps_untrusted_model_checks_unavailable[X\nError Summary\n sda | 0 | 0 | 0\n***-io_media]
+FAILED tests/test_startup_language_refresh_regression.py::test_new_startup_uses_current_stage_translations[fr]
+FAILED tests/test_startup_language_refresh_regression.py::test_new_startup_uses_current_stage_translations[de]
+FAILED tests/test_startup_language_refresh_regression.py::test_stage_states_survive_language_switch_and_english_restore
+FAILED tests/test_startup_language_refresh_regression.py::test_spoken_startup_status_uses_selected_language[fr]
+FAILED tests/test_startup_language_refresh_regression.py::test_spoken_startup_status_uses_selected_language[de]
+FAILED tests/test_export_mount_cleanup_regression.py::test_cleanup_error_still_removes_owned_mount_directory_and_closes_root[lock_close]
+FAILED tests/test_export_mount_cleanup_regression.py::test_cleanup_error_still_removes_owned_mount_directory_and_closes_root[unmount]
+FAILED tests/test_export_mount_cleanup_regression.py::test_worker_closes_parent_after_volume_close_error[True]
+38 failed, 21 passed in 3.78s

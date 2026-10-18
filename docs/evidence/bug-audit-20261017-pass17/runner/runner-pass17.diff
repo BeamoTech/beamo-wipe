@@ -1,0 +1,93 @@
+--- starting/src/beamo_wipe/nwipe_runner.py
++++ final/src/beamo_wipe/nwipe_runner.py
+@@ -91,6 +91,14 @@
+     r"(?:(?:debug|info|notice|warning|error|fatal|sanity):\s*)?",
+     re.I,
+ )
++# Real v0.42 records include a timestamp and severity. A device model can
++# contain an LF plus a bare skip/open/geometry sentence, but not that sentence
++# and this full prefix inside its 40-byte field.
++NWIPE_RECORD_PREFIX_RE = re.compile(
++    r"^\s*\[\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\]\s+"
++    r"(?:debug|info|notice|warning|error|fatal|sanity):\s*",
++    re.I,
++)
+ NWIPE_DIRECT_FAILURE_RE = re.compile(
+     r"^(/dev/[A-Za-z0-9._+-]+):\s*>>> FAILURE! <<<"
+ )
+@@ -539,9 +547,20 @@
+     return NWIPE_LOG_PREFIX_RE.sub("", line, count=1)
+ 
+ 
+-def _target_has_record(log_text: str, device: str, pattern: re.Pattern[str]) -> bool:
++def _target_has_record(
++    log_text: str, device: str, pattern: re.Pattern[str], *, enforce_origin: bool = True
++) -> bool:
+     target = os.path.realpath(device)
+-    for line in (log_text or "").split("\n"):
++    lines = (log_text or "").split("\n")
++    timestamped = enforce_origin and any(
++        NWIPE_RECORD_PREFIX_RE.match(line) for line in lines
++    )
++    for line in lines:
++        # Preserve entirely bare legacy parser inputs. In an actual engine
++        # log, only another timestamped record can establish no erasure; an
++        # unprefixed continuation may still belong to device-controlled data.
++        if timestamped and not NWIPE_RECORD_PREFIX_RE.match(line):
++            continue
+         match = pattern.match(_engine_log_body(line))
+         if match is not None and any(
+             part is not None and os.path.realpath(part) == target
+@@ -973,9 +992,15 @@
+     busy = target_skipped_busy(log_text, device)
+     open_failed = _target_open_failed(log_text, device)
+     geometry_failed = _target_geometry_failed(log_text, device)
+-    if (busy or open_failed or geometry_failed) and _target_has_erase_activity(
+-        log_text, device
+-    ):
++    # An unattributed skip sentence cannot prove nothing was erased, but it
++    # remains negative context when actual activity contradicts that sentence.
++    skip_reported = busy or open_failed or geometry_failed or any(
++        _target_has_record(log_text, device, pattern, enforce_origin=False)
++        for pattern in (
++            NWIPE_BUSY_TARGET_RE, NWIPE_OPEN_TARGET_RE, NWIPE_GEOMETRY_TARGET_RE
++        )
++    )
++    if skip_reported and _target_has_erase_activity(log_text, device):
+         return (
+             False,
+             "nwipe's erase activity contradicted its skip report",
+@@ -1513,6 +1538,7 @@
+                 progress_totals: set[tuple[int, int]] = set()
+                 shared_path = ""
+                 in_error_summary = False
++                native_record_seen = False
+                 remaining = st.st_size
+                 while remaining:
+                     raw = fh.readline(
+@@ -1532,6 +1558,12 @@
+                     # Summary parsers recognize prefixed rows and separators.
+                     # Classify that same body, but retain the original record.
+                     body = _engine_log_body(line)
++                    native_context = (
++                        not native_record_seen
++                        and NWIPE_RECORD_PREFIX_RE.match(line) is not None
++                    )
++                    if native_context:
++                        native_record_seen = True
+                     for match in _LOG_DEVICE_RE.finditer(line):
+                         other = os.path.basename(os.path.realpath(match.group(0)))
+                         if (other != target_name
+@@ -1554,7 +1586,11 @@
+                     elif in_error_summary and body.lstrip().startswith("***"):
+                         in_error_summary = False
+                     relevant = (
+-                        new_totals
++                        # Keep the first real record in its original position
++                        # and byte budget. Otherwise projection could promote
++                        # a model continuation to a trusted bare legacy log.
++                        native_context
++                        or new_totals
+                         or in_error_summary
+                         or _is_error_summary_header(line)
+                         or "Erasure Summary" in line

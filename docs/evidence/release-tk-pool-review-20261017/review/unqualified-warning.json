@@ -1,0 +1,10 @@
+{
+  "qualification": "NOT QUALIFIED",
+  "reason": "Full main passes but emits PytestUnraisableExceptionWarning from retired-native GC callback creating DummyThread while Thread.__init__ is fault-injected.",
+  "main_passed": 10137,
+  "orca_passed": 1,
+  "artifact_skips": 14,
+  "warning_count": 1,
+  "tk_sha256": "fefdc9963a92c7150d794392c337bf660134d683090d083a4c5d2d945575d43b",
+  "full_phase_exit": 0
+}

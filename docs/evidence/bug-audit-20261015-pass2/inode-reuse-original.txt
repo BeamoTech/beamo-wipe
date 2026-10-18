@@ -1,0 +1,8 @@
+Launch identity: ('/tmp/beamo-log-identity-repro-gvrlrifz/engine.log', 2049, 6609527)
+Unrelated file reused inode after 1 unlink/recreates
+Result: WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/beamo-log-identity-repro-gvrlrifz/engine.log', reason='completed')
+Traceback (most recent call last):
+  File "/tmp/beamo-runner-inode-reuse-repro.py", line 33, in <module>
+    assert result is not None and not result.ok, 'Replacement log falsely accepted as completion'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Replacement log falsely accepted as completion

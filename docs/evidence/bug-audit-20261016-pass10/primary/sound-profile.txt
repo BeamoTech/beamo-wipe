@@ -1,0 +1,7 @@
+dbus-daemon[437401]: [session uid=0 pid=437401] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=437415 comm="python3 /tmp/pass10-primary/profile_sound.py" label="unconfined")
+dbus-daemon[437401]: [session uid=0 pid=437401] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[437424]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=437415 comm="python3 /tmp/pass10-primary/profile_sound.py" label="unconfined")
+dbus-daemon[437424]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+.....                                                                    [100%]
+5 passed, 165 deselected in 0.53s

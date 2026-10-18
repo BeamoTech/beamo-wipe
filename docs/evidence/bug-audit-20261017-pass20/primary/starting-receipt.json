@@ -1,0 +1,8 @@
+{
+  "at_utc": "2026-10-17T18:13:47.452475+00:00",
+  "inputs": 771,
+  "matches_pass19": true,
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "branch": "fix/safety-audit-20261015",
+  "index_empty": true
+}

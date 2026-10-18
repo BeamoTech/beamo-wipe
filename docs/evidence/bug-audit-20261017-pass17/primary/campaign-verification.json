@@ -1,0 +1,27 @@
+{
+  "completed_utc": "2026-10-17T06:24:47.920898+00:00",
+  "serial_phases": 4,
+  "exact_peer_files": 12,
+  "frozen_inputs": 762,
+  "runner_short": 153,
+  "runner_actual_large": 153,
+  "runner_fixture_files_hashed": 621,
+  "authenticated_evidence_sidecar_pairs": 90,
+  "runner_cancellation_cases": 144,
+  "retained_cancellation_files": 288,
+  "geometry_cases": 270,
+  "critical_tk_fully_visible": 27,
+  "captures_for_primary_view": [
+    "fixed-geometry-gtk-en-large-LAST_CHANCE.png",
+    "fixed-geometry-gtk-en-extra-OWNER.png",
+    "fixed-geometry-tk-en-standard-OWNER.png",
+    "fixed-geometry-tk-en-large-CONFIRM.png",
+    "fixed-geometry-tk-en-extra-KEYBOARD.png"
+  ],
+  "report_cases": 90,
+  "retained_report_files": 70,
+  "retained_bundles": 5,
+  "native_effects": 0,
+  "callback_errors": 0,
+  "archive_readback": true
+}

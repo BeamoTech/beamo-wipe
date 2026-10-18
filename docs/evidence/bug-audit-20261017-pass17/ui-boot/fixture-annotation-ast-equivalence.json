@@ -1,0 +1,20 @@
+{
+  "scope": "Static AST/hash comparison only, no test runtime or source/test edits",
+  "files": {
+    "tests/test_unresolved_physical_duplicates_pass17.py": {
+      "before_sha256": "17bdd85deaf35580aae49a836593ab03409d5b96e650d6ef91df759a0e0df65a",
+      "final_sha256": "6cc308bdd86fd0b7dfdd2e24653c74834af489e561a32eab88d08a0afd26cafa",
+      "ast_equivalent": true,
+      "assertions_before_and_after": 5,
+      "diff": "--- pre-annotation/tests/test_unresolved_physical_duplicates_pass17.py\n+++ final/tests/test_unresolved_physical_duplicates_pass17.py\n@@ -23,7 +23,7 @@\n @pytest.mark.parametrize(\"reverse\", (False, True))\n @pytest.mark.parametrize(\"parent\", (False, True))\n def test_duplicate_invalid_observations_keep_candidate_context(\n-    scan_fake, field, kind, different, reverse, parent,\n+    scan_fake, field, kind, different, reverse, parent,  # noqa: F811 - imported pytest fixture\n ):\n     values = [\"SIDE-A\", \"SIDE-B\"] if kind == \"conflict\" else [\"SIDE-A\", \"bad\\nidentity\"]\n     rows, _source, original, target = _rows(\n"
+    },
+    "tests/test_unresolved_wwn_uncertainty_pass17.py": {
+      "before_sha256": "9e429f02502d8f1d122dd5b4a90c2b8c156ecfb3c8f869084063c9c8ae7434dc",
+      "final_sha256": "996ef5043c6f0dd1adc8bc181b39b5c72e9c0acbe58848fcb4dae8f596efcfd3",
+      "ast_equivalent": true,
+      "assertions_before_and_after": 3,
+      "diff": "--- pre-annotation/tests/test_unresolved_wwn_uncertainty_pass17.py\n+++ final/tests/test_unresolved_wwn_uncertainty_pass17.py\n@@ -8,7 +8,7 @@\n @pytest.mark.parametrize('reverse', (False, True))\n @pytest.mark.parametrize('nested', (False, True))\n @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))\n-def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):\n+def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):  # noqa: F811 - imported pytest fixture\n     boot = _disk('sdz', tran='usb', size=16_000_000_000,\n                  serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')\n     values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),\n"
+    }
+  },
+  "other_eight_test_and_four_runtime_reviewed_bytes": "All four runtime and six unaffected test files exactly unchanged"
+}

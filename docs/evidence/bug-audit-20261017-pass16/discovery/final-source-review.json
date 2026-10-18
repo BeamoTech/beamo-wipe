@@ -1,0 +1,52 @@
+{
+  "approval": "approve exact assigned source/test bytes, conditional on parent-run focused, adjacent and applicable final gates; no runtime success asserted by this review",
+  "changed_starting_paths": {
+    "src/beamo_wipe/discover.py": {
+      "current": "0e77fcf0fa626e945c40fae8c8e5f544b735490f4acf8c718260abbabb20197f",
+      "start": "b08767b2e921779f53e62de67ac4c3fbaa281ea6ab90f9f6c682e3be96f9991e"
+    },
+    "src/beamo_wipe/ui/accessible_wizard.py": {
+      "current": "2179d1be8dfa960266e611eb0429b1a33670c3ca25111a899355e39a8ca35fed",
+      "start": "bb96f185dd93c55066706379b59c7c4221e1f69d6121a0d4e7e99065d033ce38"
+    },
+    "src/beamo_wipe/ui/tk_wizard.py": {
+      "current": "bbe61c81fb93b9f5cf3a90887eb2f209c640235ec47c2f73b5fa4103b82adf9f",
+      "start": "06cfd5488624c78c98d2b2cabf33256ae81403587065d8a72814ef77f8eb13bd"
+    },
+    "tests/test_tk_input_scroll_pass13.py": {
+      "current": "ddc809323c072f864d2080f1cf76185d18be5551bb9dcd27b7269fd4a1b9fa82",
+      "start": "9538ac0d4e3a0e7a41ac0d658d02a54799648f97b4f85bda43b09e1f1e3e55b3"
+    }
+  },
+  "date_utc": "2026-10-17T02:45:19.699056+00:00",
+  "final_sha256": {
+    "src/beamo_wipe/discover.py": "0e77fcf0fa626e945c40fae8c8e5f544b735490f4acf8c718260abbabb20197f",
+    "tests/test_discovery_observation_fallback_pass16.py": "ef39198161cbd5426e8ea81945d57c96463c8ac094195fa3fb00d57fac86c688"
+  },
+  "incremental_patch_sha256": "57a7ab158fba571ae9f797f6ab6544c4ec827bd0913e96bf7597ee8b99079dd4",
+  "invariants_reviewed": [
+    "canonical repeated physical paths do not become falsely unique through filtering",
+    "complete identical target duplicates remain two and final unique-target guard refuses",
+    "duplicate boot/read-only/optical rows preserve unrelated target",
+    "standalone malformed observations remain per-row skips while alias context is retained",
+    "existing core contradictions, mounted malformed refusal and invalid-ID flags unchanged",
+    "disk and rom cmdline hits/competitors both included; authoritative mounts precede competition; zero-size competitor remains ignored",
+    "no method/argv/token/owner/countdown/pins/claims/build/publication change"
+  ],
+  "objections": [],
+  "original_proof_from_primary": {
+    "controls": 192,
+    "errors": 0,
+    "intended_assertion_failures": 159,
+    "skips": 0,
+    "tests": 351
+  },
+  "remaining_gates_owner": "parent",
+  "reviewer_product_edits": false,
+  "reviewer_runtime_tests_run": false,
+  "scope": "actual pass16 incremental discover.py repair and final 351-case regression module; other UI/fixture bytes are parent-owned and not approved here",
+  "source_start_sha256": "b08767b2e921779f53e62de67ac4c3fbaa281ea6ab90f9f6c682e3be96f9991e",
+  "starting_inputs": 751,
+  "test_prepared_difference": "one WWN fixture construction line only; five named devices have distinct realistic fixed 16-hex IDs; assertions/cases unchanged",
+  "unchanged_starting_inputs": 747
+}

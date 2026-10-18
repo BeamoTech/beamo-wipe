@@ -1,0 +1,102 @@
+{
+  "display": ":120",
+  "results": [
+    {
+      "surface": "tk",
+      "outcome": "abandoned",
+      "phases": [
+        {
+          "frame": 0,
+          "stall_visible": false,
+          "model_note": null,
+          "active_stage": "starting",
+          "clock": 0.0
+        },
+        {
+          "frame": 1,
+          "stall_visible": true,
+          "model_note": "Still working \u2014 this can take a minute on older machines.",
+          "active_stage": "starting",
+          "clock": 11
+        },
+        {
+          "frame": 2,
+          "stall_visible": false,
+          "model_note": null,
+          "active_stage": "starting",
+          "clock": 11
+        },
+        {
+          "frame": 3,
+          "stall_visible": false,
+          "model_note": null,
+          "active_stage": "checking-boot-usb",
+          "clock": 12
+        },
+        {
+          "frame": 4,
+          "stall_visible": true,
+          "model_note": "Still working \u2014 this can take a minute on older machines.",
+          "active_stage": "checking-boot-usb",
+          "clock": 23
+        },
+        {
+          "frame": 5,
+          "stall_visible": false,
+          "model_note": null,
+          "active_stage": "checking-boot-usb",
+          "clock": 23
+        }
+      ]
+    },
+    {
+      "surface": "gtk",
+      "outcome": "abandoned",
+      "phases": [
+        {
+          "frame": 0,
+          "stall_visible": false,
+          "model_note": null,
+          "active_stage": "starting",
+          "clock": 0.0
+        },
+        {
+          "frame": 1,
+          "stall_visible": true,
+          "model_note": "Still working \u2014 this can take a minute on older machines.",
+          "active_stage": "starting",
+          "clock": 11
+        },
+        {
+          "frame": 2,
+          "stall_visible": false,
+          "model_note": null,
+          "active_stage": "starting",
+          "clock": 11
+        },
+        {
+          "frame": 3,
+          "stall_visible": false,
+          "model_note": null,
+          "active_stage": "checking-boot-usb",
+          "clock": 12
+        },
+        {
+          "frame": 4,
+          "stall_visible": true,
+          "model_note": "Still working \u2014 this can take a minute on older machines.",
+          "active_stage": "checking-boot-usb",
+          "clock": 23
+        },
+        {
+          "frame": 5,
+          "stall_visible": false,
+          "model_note": null,
+          "active_stage": "checking-boot-usb",
+          "clock": 23
+        }
+      ]
+    }
+  ],
+  "owned_teardown": true
+}

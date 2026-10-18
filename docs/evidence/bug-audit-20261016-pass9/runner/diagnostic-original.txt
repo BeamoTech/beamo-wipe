@@ -1,0 +1,281 @@
+FF..F.....                                                               [100%]
+=================================== FAILURES ===================================
+______ test_diagnostic_oversized_elapsed_is_a_safe_refusal[huge-positive] ______
+
+elapsed = 100000000000000000...0000000000000000000
+
+    @pytest.mark.parametrize("elapsed", [10**400, -(10**400)], ids=["huge-positive", "huge-negative"])
+    def test_diagnostic_oversized_elapsed_is_a_safe_refusal(elapsed):
+        report = _report()
+        report["time"]["session_elapsed_seconds"] = elapsed
+        with pytest.raises(SafetyError, match=diagnostic.INVALID_REPORT):
+>           diagnostic.validate_report(json.dumps(report).encode())
+
+tests/test_diagnostic_malformed_bounds_pass8.py:24:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+data = b'{"application": {"build": {}, "build_status": "unavailable", "name": "Beamo Wipe", "nwipe_pinned_commit": "6082bde06...ll_confidence": "unverified", "wall_provenance": "os_utc"}, "title": "Diagnostic report \\u2014 wipe could not start"}'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+>               or not math.isfinite(elapsed)
+                       ^^^^^^^^^^^^^^^^^^^^^^
+                or elapsed < 0
+            ):
+E           OverflowError: int too large to convert to float
+
+/tmp/pass9-runner/original/beamo_wipe/diagnostic_report.py:290: OverflowError
+______ test_diagnostic_oversized_elapsed_is_a_safe_refusal[huge-negative] ______
+
+elapsed = -10000000000000000...0000000000000000000
+
+    @pytest.mark.parametrize("elapsed", [10**400, -(10**400)], ids=["huge-positive", "huge-negative"])
+    def test_diagnostic_oversized_elapsed_is_a_safe_refusal(elapsed):
+        report = _report()
+        report["time"]["session_elapsed_seconds"] = elapsed
+        with pytest.raises(SafetyError, match=diagnostic.INVALID_REPORT):
+>           diagnostic.validate_report(json.dumps(report).encode())
+
+tests/test_diagnostic_malformed_bounds_pass8.py:24:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+data = b'{"application": {"build": {}, "build_status": "unavailable", "name": "Beamo Wipe", "nwipe_pinned_commit": "6082bde06...ll_confidence": "unverified", "wall_provenance": "os_utc"}, "title": "Diagnostic report \\u2014 wipe could not start"}'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+>               or not math.isfinite(elapsed)
+                       ^^^^^^^^^^^^^^^^^^^^^^
+                or elapsed < 0
+            ):
+E           OverflowError: int too large to convert to float
+
+/tmp/pass9-runner/original/beamo_wipe/diagnostic_report.py:290: OverflowError
+_____________ test_diagnostic_decoder_recursion_is_a_safe_refusal ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x75b7d928f320>
+
+    def test_diagnostic_decoder_recursion_is_a_safe_refusal(monkeypatch):
+        def exhausted(*_args, **_kwargs):
+            raise RecursionError("fixture parser nesting limit")
+
+        monkeypatch.setattr(diagnostic.json, "loads", exhausted)
+        with pytest.raises(SafetyError, match=diagnostic.INVALID_REPORT):
+>           diagnostic.validate_report(b"{}")
+
+tests/test_diagnostic_malformed_bounds_pass8.py:44:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/tmp/pass9-runner/original/beamo_wipe/diagnostic_report.py:196: in validate_report
+    p = json.loads(data, object_pairs_hook=_unique_report_fields)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+_args = (b'{}',)
+_kwargs = {'object_pairs_hook': <function _unique_report_fields at 0x75b7d938a200>}
+
+    def exhausted(*_args, **_kwargs):
+>       raise RecursionError("fixture parser nesting limit")
+E       RecursionError: fixture parser nesting limit
+
+tests/test_diagnostic_malformed_bounds_pass8.py:40: RecursionError
+=========================== short test summary info ============================
+FAILED tests/test_diagnostic_malformed_bounds_pass8.py::test_diagnostic_oversized_elapsed_is_a_safe_refusal[huge-positive]
+FAILED tests/test_diagnostic_malformed_bounds_pass8.py::test_diagnostic_oversized_elapsed_is_a_safe_refusal[huge-negative]
+FAILED tests/test_diagnostic_malformed_bounds_pass8.py::test_diagnostic_decoder_recursion_is_a_safe_refusal

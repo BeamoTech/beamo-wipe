@@ -1,0 +1,17 @@
+{
+  "total": 486,
+  "failures": [
+    "tests.test_tk_owner_trace_lifetime_pass19::test_destroyed_app_and_local_variables_can_be_collected[confirm]",
+    "tests.test_tk_owner_trace_lifetime_pass19::test_destroyed_app_and_local_variables_can_be_collected[typing]",
+    "tests.test_checkrow_trace_lifetime_pass18::test_destroyed_local_row_and_variable_are_collectable[row-boolean]",
+    "tests.test_checkrow_trace_lifetime_pass18::test_destroyed_local_row_and_variable_are_collectable[row-integer]",
+    "tests.test_checkrow_trace_lifetime_pass18::test_destroyed_local_row_and_variable_are_collectable[parent-boolean]",
+    "tests.test_checkrow_trace_lifetime_pass18::test_destroyed_local_row_and_variable_are_collectable[parent-integer]",
+    "tests.test_checkrow_trace_lifetime_pass18::test_destroyed_local_row_and_variable_are_collectable[redraw-clear-boolean]",
+    "tests.test_checkrow_trace_lifetime_pass18::test_destroyed_local_row_and_variable_are_collectable[redraw-clear-integer]"
+  ],
+  "errors": 0,
+  "skips": 0,
+  "source_sha256": "6b5be8d70416318a83b24e3ce6bc9dc212ab63293d2498889810401ecccbfdbe",
+  "xml_sha256": "3cc0f20e0c51af8d0393409fc30e1e11a1c78c378d49cf58792edaff1f3c40f6"
+}

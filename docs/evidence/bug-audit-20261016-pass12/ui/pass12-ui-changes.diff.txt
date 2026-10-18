@@ -1,0 +1,635 @@
+--- /tmp/pass12-ui/sound_dialog-before.py
++++ src/beamo_wipe/ui/sound_dialog.py
+@@ -19,10 +19,28 @@
+         self.dialog.set_transient_for(window)
+         self.dialog.set_modal(True)
+         self.dialog.set_destroy_with_parent(True)
+-        self.dialog.set_default_size(560, 480)
+-        box = self.dialog.get_content_area()
+-        box.set_spacing(6)
+-        box.set_border_width(16)
++        width, height = 560, 480
++        display = window.get_display()
++        monitor = (display.get_monitor_at_window(window.get_window())
++                   if window.get_window() is not None else display.get_primary_monitor())
++        monitor = monitor or display.get_monitor(0)
++        if monitor is not None:
++            area = monitor.get_workarea()
++            width, height = min(width, area.width), min(height, area.height)
++            self.dialog.set_position(gtk.WindowPosition.NONE)
++            self.dialog.move(area.x + (area.width - width) // 2,
++                             area.y + (area.height - height) // 2)
++        self.dialog.set_default_size(width, height)
++        content = self.dialog.get_content_area()
++        content.set_spacing(6)
++        content.set_border_width(16)
++        # Output lists and recovery text can exceed a small live display.
++        # Keep Close and the live Stop action outside this scrolling area.
++        scroll = gtk.ScrolledWindow()
++        scroll.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
++        content.pack_start(scroll, True, True, 0)
++        box = gtk.Box(orientation=gtk.Orientation.VERTICAL, spacing=6)
++        scroll.add(box)
+         self.status = self._label(C.SOUND_CHECKING)
+         self.status.set_can_focus(True)
+         self.status.set_selectable(True)
+@@ -63,7 +81,7 @@
+         box.pack_start(self._label(C.SOUND_RECOVERY), False, False, 4)
+         if wizard.screen == Screen.WORKING:
+             stop_button = gtk.Button.new_with_label(C.STOP_ASK)
+-            box.pack_start(stop_button, False, False, 4)
++            content.pack_start(stop_button, False, False, 4)
+             stop_button.connect("clicked", self._request_stop)
+         self.dialog.add_button(C.SOUND_CLOSE, gtk.ResponseType.CLOSE)
+         self.dialog.connect("response", lambda *_: self.dialog.destroy())
+@@ -183,7 +201,8 @@
+         if not state.available:
+             self._announce(state.message)
+             return
+-        self.chosen = sound.resolve_output(self.w.sound_output, state)
++        preferred = self.w.sound_output if applied is None or applied.ok else ""
++        self.chosen = sound.resolve_output(preferred, state)
+         group = None
+         for output in state.outputs:
+             choice = self.Gtk.RadioButton.new_with_label_from_widget(group, output.label)
+--- /tmp/pass12-ui/accessible_wizard-before.py
++++ src/beamo_wipe/ui/accessible_wizard.py
+@@ -1270,7 +1270,7 @@
+             status.set_text(_STATUS_WORDS[row["state"]])
+             title.set_text(row["title"])
+             hint.set_text(row["hint"])
+-        note = run.stalled_note()
++        note = run.stalled_note(persistent=True)
+         stall.set_text(note or "")
+         active = [row for row in snap if row["state"] == "active"]
+         if active:
+--- /tmp/pass12-ui/tk_wizard-before.py
++++ src/beamo_wipe/ui/tk_wizard.py
+@@ -4563,11 +4563,13 @@
+         root.geometry(f"{root.winfo_screenwidth()}x{root.winfo_screenheight()}+0+0")
+         root.attributes("-fullscreen", True)
+     else:
+-        root.geometry("640x440")
+-    try:
+-        root.eval("tk::PlaceWindow . center")
+-    except tk.TclError:
+-        pass
++        # PlaceWindow centers the empty widget's requested 200px size,
++        # which can move the configured startup window off a small screen.
++        width = min(640, root.winfo_screenwidth())
++        height = min(440, root.winfo_screenheight())
++        x = (root.winfo_screenwidth() - width) // 2
++        y = (root.winfo_screenheight() - height) // 2
++        root.geometry(f"{width}x{height}+{x}+{y}")
+     root.configure(bg=BG)
+     outcome: list = []
+
+@@ -4599,7 +4601,7 @@
+             status.configure(text=_STATUS_WORDS[row["state"]])
+             title.configure(text=row["title"])
+             hint.configure(text=row["hint"])
+-        note = run.stalled_note()
++        note = run.stalled_note(persistent=True)
+         stall.configure(text=note or "")
+
+     def close() -> None:
+@@ -4644,6 +4646,8 @@
+         render()
+         run.start()
+         root.after(100, poll_once)
++        # Bare X11 has no window manager to give this mapped startup input.
++        root.after_idle(root.focus_force)
+         root.mainloop()
+     finally:
+         # The recursive callback otherwise retains itself and the destroyed
+--- /tmp/pass12-ui/startup_stages-before.py
++++ src/beamo_wipe/startup_stages.py
+@@ -176,8 +176,16 @@
+             self.stages.begin(stage)
+         return self.stages.snapshot()
+
+-    def stalled_note(self) -> str | None:
+-        if self.stages.stalled():
++    def stalled_note(self, *, persistent: bool = False) -> str | None:
++        """One announcement, or current stall text for graphical refreshes."""
++        first_notice = self.stages.stalled()
++        still_stalled = (
++            persistent
++            and self.stages._stalled_reported
++            and not self.stages.done
++            and not self.stages.failed
++        )
++        if first_notice or still_stalled:
+             return C.STARTUP_STILL_WORKING
+         return None
+
+--- /tmp/pass12-ui/test_bug_audit_tk_gc_20260913-before.py
++++ tests/test_bug_audit_tk_gc_20260913.py
+@@ -92,6 +92,8 @@
+     from beamo_wipe.ui import tk_wizard as ui
+
+     root = MagicMock()
++    root.winfo_screenwidth.return_value = 1600
++    root.winfo_screenheight.return_value = 1000
+     monkeypatch.setattr(ui, "_ensure_tk_display", lambda: None)
+     monkeypatch.setattr(ui.tk, "Tk", lambda: root)
+     monkeypatch.setattr(ui.tk, "Frame", MagicMock())
+--- /dev/null
++++ tests/test_sound_dialog_state_pass12.py
+@@ -0,0 +1,205 @@
++"""Sound controls must show accepted state and keep recovery actions visible."""
++
++from dataclasses import replace
++from types import SimpleNamespace
++import time
++
++import pytest
++
++pytest.importorskip("gi")
++from beamo_wipe import audio_jobs, copy as C, sound  # noqa: E402
++from beamo_wipe.demo import make_demo_wizard  # noqa: E402
++from beamo_wipe.methods import DEFAULT_METHOD  # noqa: E402
++from beamo_wipe.models import Screen, WipeRequest  # noqa: E402
++from beamo_wipe.ui import sound_dialog  # noqa: E402
++from beamo_wipe.ui.accessible_wizard import Gdk, Gtk  # noqa: E402
++from test_accessible_runtime import (  # noqa: E402, F401
++    _dialog_button,
++    drain,
++    ui,
++    wait_sound,
++)
++
++
++@pytest.fixture(autouse=True)
++def fake_sound_effects(monkeypatch):
++    def forbidden(*_args, **_kwargs):
++        raise AssertionError("Native application effect reached")
++
++    worker = audio_jobs.AudioWorker()
++    monkeypatch.setattr(audio_jobs, "worker", worker)
++    monkeypatch.setattr(sound_dialog, "worker", worker)
++    monkeypatch.setattr(sound, "orca_running", lambda: True)
++    for name in ("set_output", "nudge_volume", "set_muted", "play_speech_test", "play_test", "play_outcome", "_run", "_popen"):
++        monkeypatch.setattr(sound, name, forbidden)
++    for target in ("subprocess.run", "subprocess.Popen", "beamo_wipe.discover.run_lsblk", "beamo_wipe.discover.read_cmdline", "beamo_wipe.discover.read_mount_sources", "beamo_wipe.nwipe_runner.NwipeRunner.start", "beamo_wipe.nwipe_runner.DryRunRunner.start", "beamo_wipe.app._shutdown"):
++        monkeypatch.setattr(target, forbidden)
++    yield
++    worker.close()
++
++
++def _owner():
++    wizard = make_demo_wizard()
++    wizard.skip_intro()
++    return wizard
++
++
++def _open(app):
++    app.actions[C.SOUND_CHECK_BUTTON].clicked()
++    wait_sound(app)
++    return app._sound_dialog
++
++
++@pytest.mark.parametrize("default", ["speakers", ""])
++@pytest.mark.parametrize("restore_ok", [False, True])
++def test_remembered_restore_uses_only_an_accepted_output(
++    ui, monkeypatch, default, restore_ok  # noqa: F811
++):
++    outputs = (sound.SoundOutput("speakers", "Speakers", "fake", False),
++               sound.SoundOutput("headphones", "Headphones", "fake", False))
++    current = {"default": default, "ok": restore_ok}
++    calls = []
++
++    def state():
++        return sound.SoundState(True, "", tuple(replace(output, is_default=output.id == current["default"]) for output in outputs), 40, False)
++
++    def set_output(sink):
++        calls.append(("set", sink))
++        if current["ok"]:
++            current["default"] = sink
++        return sound.SoundResult(current["ok"], "Controlled output refusal")
++
++    monkeypatch.setattr(sound, "list_outputs", state)
++    monkeypatch.setattr(sound, "set_output", set_output)
++    monkeypatch.setattr(sound, "nudge_volume", lambda sink, delta: calls.append(("volume", sink, delta)) or sound.SoundResult(True, ""))
++    monkeypatch.setattr(sound, "set_muted", lambda sink, value: calls.append(("mute", sink, value)) or sound.SoundResult(True, ""))
++    wizard = _owner()
++    wizard.set_sound_output("headphones")
++    app = ui(wizard)
++    controller = _open(app)
++    accepted = "headphones" if restore_ok else "speakers"
++    assert controller.chosen.id == accepted
++    assert [radio.get_active() for radio in controller.radios] == [accepted == "speakers", accepted == "headphones"]
++    _dialog_button(controller.dialog, C.SOUND_LOUDER).clicked()
++    wait_sound(app)
++    _dialog_button(controller.dialog, C.SOUND_MUTE).clicked()
++    wait_sound(app)
++    assert ("volume", accepted, sound.VOLUME_STEP) in calls
++    assert ("mute", accepted, True) in calls
++    assert wizard.sound_output == "headphones"
++
++
++def test_failed_remembered_restore_can_retry_the_same_output(ui, monkeypatch):  # noqa: F811
++    outputs = (sound.SoundOutput("speakers", "Speakers", "fake", True),
++               sound.SoundOutput("headphones", "Headphones", "fake", False))
++    current = {"default": "speakers", "ok": False}
++    calls = []
++
++    def set_output(sink):
++        calls.append(sink)
++        if current["ok"]:
++            current["default"] = sink
++        return sound.SoundResult(current["ok"], "Controlled restore refused")
++
++    monkeypatch.setattr(sound, "list_outputs", lambda: sound.SoundState(True, "", tuple(replace(output, is_default=output.id == current["default"]) for output in outputs), 40, False))
++    monkeypatch.setattr(sound, "set_output", set_output)
++    wizard = _owner()
++    wizard.set_sound_output("headphones")
++    app = ui(wizard)
++    controller = _open(app)
++    assert controller.status.get_text() == "Controlled restore refused"
++    current["ok"] = True
++    controller.radios[1].set_active(True)
++    wait_sound(app)
++    assert calls == ["headphones", "headphones"]
++    assert current["default"] == controller.chosen.id == wizard.sound_output == "headphones"
++    assert [radio.get_active() for radio in controller.radios] == [False, True]
++
++
++def _bounds(widget, window):
++    origin = tuple(window.get_window().get_origin())[-2:]
++    relative = widget.translate_coordinates(window, 0, 0)
++    assert relative is not None
++    allocation = widget.get_allocation()
++    return origin[0] + relative[0], origin[1] + relative[1], allocation.width, allocation.height
++
++
++def _inside(rectangle, area):
++    x, y, width, height = rectangle
++    return (area.x <= x and area.y <= y and width > 0 and height > 0
++            and x + width <= area.x + area.width and y + height <= area.y + area.height)
++
++
++def _settle_geometry():
++    deadline = time.monotonic() + 0.05
++    while time.monotonic() < deadline:
++        drain()
++        time.sleep(0.002)
++    Gdk.Display.get_default().sync()
++
++
++@pytest.mark.parametrize("language", ["en", "fr", "de"])
++@pytest.mark.parametrize("working", [False, True])
++@pytest.mark.parametrize("count", [1, 2, 8, 16])
++@pytest.mark.parametrize("workarea", [(0, 0, 800, 600), (0, 0, 1600, 1000), (120, 80, 800, 600)])
++def test_sound_recovery_actions_fit_the_monitor_with_many_outputs(
++    ui, monkeypatch, language, working, count, workarea  # noqa: F811
++):
++    outputs = tuple(sound.SoundOutput(f"fake-{index}", f"HDMI sound {index + 1}", "Fake output", index == 0) for index in range(count))
++    monkeypatch.setattr(sound, "list_outputs", lambda: sound.SoundState(True, "", outputs, 40, False))
++    wizard = _owner()
++    wizard.set_language(language)
++    wizard.screen = Screen.WORKING if working else Screen.OWNER
++    app = ui(wizard)
++    area = SimpleNamespace(**dict(zip(("x", "y", "width", "height"), workarea)))
++    monitor = SimpleNamespace(get_workarea=lambda: area)
++    display = SimpleNamespace(get_monitor_at_window=lambda _window: monitor,
++                              get_primary_monitor=lambda: monitor, get_monitor=lambda _index: monitor)
++    with monkeypatch.context() as scoped:
++        scoped.setattr(Gtk.Window, "get_display", lambda _window: display)
++        controller = _open(app)
++    _settle_geometry()
++    dialog = controller.dialog
++    origin = tuple(dialog.get_window().get_origin())[-2:]
++    width, height = dialog.get_size()
++    assert _inside((*origin, width, height), area), (origin, width, height, workarea)
++    close = _dialog_button(dialog, C.SOUND_CLOSE)
++    assert _inside(_bounds(close, dialog), area)
++    assert close.get_can_focus() and close.get_sensitive()
++    if working:
++        stop = _dialog_button(dialog, C.STOP_ASK)
++        assert _inside(_bounds(stop, dialog), area)
++        assert stop.get_can_focus() and stop.get_sensitive()
++    assert len(controller.radios) == count
++    assert all(radio.get_can_focus() and radio.get_sensitive() for radio in controller.radios)
++    assert not wizard.runner.started
++
++
++def test_scrolling_outputs_keeps_stop_action_available(ui, monkeypatch, tmp_path):  # noqa: F811
++    outputs = tuple(sound.SoundOutput(f"fake-{index}", f"HDMI sound {index + 1}", "Fake output", index == 0) for index in range(32))
++    monkeypatch.setattr(sound, "list_outputs", lambda: sound.SoundState(True, "", outputs, 40, False))
++    wizard = _owner()
++    wizard.screen = Screen.WORKING
++    wizard._wipe_request = WipeRequest("/dev/sda", DEFAULT_METHOD, "/dev/sdb", str(tmp_path / "fake.log"))
++    app = ui(wizard)
++    controller = _open(app)
++    stop = _dialog_button(controller.dialog, C.STOP_ASK)
++    area = controller.dialog.get_display().get_monitor_at_window(controller.dialog.get_window()).get_workarea()
++    controller.play_button.grab_focus()
++    _settle_geometry()
++    assert controller.dialog.get_focus() is controller.play_button
++    assert _inside(_bounds(controller.play_button, controller.dialog), area)
++    assert _bounds(controller.play_button, controller.dialog)[1] < _bounds(stop, controller.dialog)[1]
++    controller.radios[-1].grab_focus()
++    _settle_geometry()
++    assert controller.dialog.get_focus() is controller.radios[-1]
++    assert _inside(_bounds(controller.radios[-1], controller.dialog), area)
++    assert _bounds(controller.radios[-1], controller.dialog)[1] < _bounds(stop, controller.dialog)[1]
++    assert _inside(_bounds(stop, controller.dialog), area)
++    _dialog_button(controller.dialog, C.SOUND_CLOSE).grab_focus()
++    _settle_geometry()
++    assert stop.get_sensitive()
++    stop.clicked()
++    assert controller.dialog is None
++    assert wizard.stop_confirmation is not None
++    assert not wizard.runner.started and not wizard.runner.cancelled
+--- /dev/null
++++ tests/test_startup_notice_state_pass12.py
+@@ -0,0 +1,166 @@
++"""A stalled startup remains readable without repeating its event marker."""
++
++import os
++import threading
++
++import pytest
++
++from beamo_wipe import copy as C, lang, startup_stages
++
++
++@pytest.mark.parametrize("language", ["en", "fr", "de"])
++def test_one_shot_startup_stall_notices_remain_one_per_stage(monkeypatch, language):
++    lang.set_language(language)
++    now = [0.0]
++    markers = []
++    monkeypatch.setattr(startup_stages, "_emit", markers.append)
++    run = startup_stages.StartupRun(lambda _report: None, clock=lambda: now[0], stall_after_s=10)
++    assert run.stalled_note() is None
++    now[0] = 11
++    assert run.stalled_note() == C.STARTUP_STILL_WORKING
++    assert all(run.stalled_note() is None for _ in range(10))
++    run.report(startup_stages.STAGE_BOOT_USB)
++    run.drain()
++    assert run.stalled_note() is None
++    now[0] = 22
++    assert run.stalled_note() == C.STARTUP_STILL_WORKING
++    assert run.stalled_note() is None
++    assert markers.count(startup_stages.STAGE_STALLED_MARKER) == 2
++
++
++@pytest.mark.parametrize("terminal", ["done", "failed"])
++def test_graphical_stall_state_clears_at_stage_and_terminal_boundaries(monkeypatch, terminal):
++    now = [0.0]
++    markers = []
++    monkeypatch.setattr(startup_stages, "_emit", markers.append)
++    run = startup_stages.StartupRun(lambda _report: None, clock=lambda: now[0], stall_after_s=10)
++    assert run.stalled_note(persistent=True) is None
++    now[0] = 11
++    assert all(run.stalled_note(persistent=True) == C.STARTUP_STILL_WORKING for _ in range(10))
++    assert run.stalled_note() is None
++    run.report(startup_stages.STAGE_BOOT_USB)
++    run.drain()
++    assert run.stalled_note(persistent=True) is None
++    now[0] = 22
++    assert run.stalled_note(persistent=True) == C.STARTUP_STILL_WORKING
++    run.stages.succeed() if terminal == "done" else run.stages.fail()
++    assert run.stalled_note(persistent=True) is None
++    assert run.stalled_note() is None
++    assert markers.count(startup_stages.STAGE_STALLED_MARKER) == 2
++
++
++@pytest.mark.parametrize("language", ["en", "fr", "de"])
++@pytest.mark.parametrize("surface", ["tk", "gtk"])
++def test_graphical_startup_keeps_stall_text_until_the_stage_changes(monkeypatch, language, surface):
++    if os.environ.get("BEAMO_ISOLATED_X11_TEST") != "1":
++        pytest.skip("Graphical startup checks require an explicitly isolated display")
++    pytest.importorskip("gi")
++    from beamo_wipe.ui import accessible_wizard, tk_wizard
++    from beamo_wipe.ui.accessible_wizard import GLib, Gtk
++
++    lang.set_language(language)
++    now = [0.0]
++    release, finished = threading.Event(), threading.Event()
++    frames, windows, rescue_fired, markers = [], [], [], []
++    real_run = startup_stages.StartupRun
++    frame = [0]
++    monkeypatch.setattr(startup_stages, "_emit", markers.append)
++
++    def forbidden(*_args, **_kwargs):
++        raise AssertionError("A native application operation was reached")
++
++    for target in ("subprocess.run", "subprocess.Popen", "beamo_wipe.discover.run_lsblk", "beamo_wipe.discover.read_cmdline", "beamo_wipe.discover.read_mount_sources", "beamo_wipe.nwipe_runner.NwipeRunner.start", "beamo_wipe.nwipe_runner.DryRunRunner.start", "beamo_wipe.app._shutdown", "beamo_wipe.sound._run", "beamo_wipe.sound._popen"):
++        monkeypatch.setattr(target, forbidden)
++
++    def root():
++        if surface == "tk":
++            return windows[0]
++        return next(window for window in Gtk.Window.list_toplevels() if window.get_title() == C.STARTING_TITLE and window.get_mapped())
++
++    def widgets(widget):
++        yield widget
++        if isinstance(widget, Gtk.Widget):
++            children = widget.get_children() if isinstance(widget, Gtk.Container) else ()
++        else:
++            children = widget.winfo_children()
++        for child in children:
++            yield from widgets(child)
++
++    def close():
++        if surface == "tk":
++            root().destroy()
++        else:
++            root().emit("delete-event", None)
++        return False
++
++    def after(callback):
++        return root().after_idle(callback) if surface == "tk" else GLib.idle_add(callback)
++
++    def fake_run(build, **_kwargs):
++        run = real_run(build, clock=lambda: now[0], stall_after_s=10)
++        original = run.stalled_note
++
++        def note(**kwargs):
++            index = frame[0]
++            frame[0] += 1
++            if index == 1:
++                now[0] = 11
++            value = original(**kwargs)
++
++            def inspect():
++                text = [widget.get_text() if isinstance(widget, Gtk.Label) else widget.cget("text") for widget in widgets(root()) if isinstance(widget, (Gtk.Label, tk_wizard.tk.Label))]
++                frames.append(C.STARTUP_STILL_WORKING in text)
++                if index == 2:
++                    now[0] = 12
++                    run.report(startup_stages.STAGE_BOOT_USB)
++                elif index == 3:
++                    now[0] = 23
++                elif index == 5:
++                    after(close)
++                return False
++
++            after(inspect)
++            return value
++
++        run.stalled_note = note
++        return run
++
++    def build(_report):
++        try:
++            assert release.wait(timeout=4)
++            return object()
++        finally:
++            finished.set()
++
++    def rescue():
++        rescue_fired.append(True)
++        return close()
++
++    monkeypatch.setattr(startup_stages, "StartupRun", fake_run)
++    if surface == "tk":
++        real_tk = tk_wizard.tk.Tk
++
++        def factory():
++            window = real_tk()
++            windows.append(window)
++            window.after(3000, rescue)
++            return window
++
++        monkeypatch.setattr(tk_wizard.tk, "Tk", factory)
++        monkeypatch.setattr(tk_wizard, "_ensure_tk_display", lambda: None)
++        presenter = tk_wizard.run_tk_startup
++    else:
++        monkeypatch.setattr(accessible_wizard, "_ensure_gtk_display", lambda: None)
++        rescue_timer = GLib.timeout_add(3000, rescue)
++        presenter = accessible_wizard.run_accessible_startup
++    try:
++        outcome = presenter(build)
++        assert outcome == ("abandoned", None)
++        assert not rescue_fired
++        assert frames == [False, True, True, False, True, True]
++        assert markers.count(startup_stages.STAGE_STALLED_MARKER) == 2
++    finally:
++        release.set()
++        assert finished.wait(timeout=1)
++        if surface == "gtk" and not rescue_fired:
++            GLib.source_remove(rescue_timer)
+--- /dev/null
++++ tests/test_tk_startup_focus_geometry_pass12.py
+@@ -0,0 +1,119 @@
++"""Bare X11 startup must fit its screen and accept the first real Escape."""
++
++import os
++import threading
++
++import pytest
++
++pytest.importorskip("gi")
++from beamo_wipe import lang  # noqa: E402
++from beamo_wipe.ui import tk_wizard  # noqa: E402
++from beamo_wipe.ui.accessible_wizard import Gdk  # noqa: E402
++from test_accessible_focus_input_pass11 import native  # noqa: E402, F401
++
++
++@pytest.fixture(autouse=True)
++def isolated_startup(monkeypatch):
++    if os.environ.get("BEAMO_ISOLATED_X11_TEST") != "1":
++        pytest.skip("Native startup input requires an explicitly isolated display")
++
++    def forbidden(*_args, **_kwargs):
++        raise AssertionError("Native application operation reached")
++
++    monkeypatch.setattr(tk_wizard, "_ensure_tk_display", lambda: None)
++    for target in ("subprocess.run", "subprocess.Popen", "beamo_wipe.discover.run_lsblk", "beamo_wipe.discover.read_cmdline", "beamo_wipe.discover.read_mount_sources", "beamo_wipe.nwipe_runner.NwipeRunner.start", "beamo_wipe.nwipe_runner.DryRunRunner.start", "beamo_wipe.app._shutdown", "beamo_wipe.sound._run", "beamo_wipe.sound._popen"):
++        monkeypatch.setattr(target, forbidden)
++
++
++@pytest.mark.parametrize("pointer", ["corner", "inside"])
++@pytest.mark.parametrize("fullscreen", [False, True])
++def test_first_tk_startup_accepts_native_escape(native, monkeypatch, pointer, fullscreen):  # noqa: F811
++    native.root_focus()
++    native.pointer(0, 0)
++    release, finished = threading.Event(), threading.Event()
++    real_tk = tk_wizard.tk.Tk
++    rescued, seen, errors = [], [], []
++
++    def factory():
++        root = real_tk()
++
++        def position():
++            x, y = root.winfo_rootx(), root.winfo_rooty()
++            width, height = root.winfo_width(), root.winfo_height()
++            point = (x + width // 2, y + height // 2) if pointer == "inside" else (0, 0)
++            native.pointer(*point)
++            seen.append((x, y, width, height, point))
++
++        def escape():
++            try:
++                native.key(Gdk.KEY_Escape, True)
++                native.key(Gdk.KEY_Escape, False)
++            except BaseException as error:
++                errors.append(error)
++                root.destroy()
++
++        def rescue():
++            rescued.append(True)
++            root.destroy()
++
++        root.after(100, position)
++        root.after(180, escape)
++        root.after(450, rescue)
++        return root
++
++    def build(_report):
++        try:
++            assert release.wait(timeout=2)
++            return object()
++        finally:
++            finished.set()
++
++    monkeypatch.setattr(tk_wizard.tk, "Tk", factory)
++    try:
++        assert tk_wizard.run_tk_startup(build, fullscreen=fullscreen) == ("abandoned", None)
++        assert not errors
++        assert seen
++        assert not rescued, seen
++    finally:
++        release.set()
++        assert finished.wait(timeout=1)
++
++
++@pytest.mark.parametrize("language", ["en", "fr", "de"])
++@pytest.mark.parametrize("fullscreen", [False, True])
++def test_mapped_tk_startup_uses_its_configured_screen_bounds(monkeypatch, language, fullscreen):
++    lang.set_language(language)
++    release, finished = threading.Event(), threading.Event()
++    real_tk = tk_wizard.tk.Tk
++    seen = []
++
++    def factory():
++        root = real_tk()
++
++        def inspect():
++            seen.append((root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height(), root.winfo_screenwidth(), root.winfo_screenheight()))
++            root.destroy()
++
++        root.after(100, inspect)
++        return root
++
++    def build(_report):
++        try:
++            assert release.wait(timeout=2)
++            return object()
++        finally:
++            finished.set()
++
++    monkeypatch.setattr(tk_wizard.tk, "Tk", factory)
++    try:
++        assert tk_wizard.run_tk_startup(build, fullscreen=fullscreen) == ("abandoned", None)
++        assert len(seen) == 1
++        x, y, width, height, screen_width, screen_height = seen[0]
++        expected = ((0, 0, screen_width, screen_height) if fullscreen else
++                    ((screen_width - min(640, screen_width)) // 2,
++                     (screen_height - min(440, screen_height)) // 2,
++                     min(640, screen_width), min(440, screen_height)))
++        assert (x, y, width, height) == expected
++    finally:
++        release.set()
++        assert finished.wait(timeout=1)

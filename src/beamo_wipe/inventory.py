@@ -283,6 +283,11 @@ UNKNOWN_COUNT = (
 USB_PROTECTED = "Beamo USB protected"
 DISC_PROTECTED = "Beamo boot disc protected"
 UNCERTAIN_NOTE = "Some devices could not be fully identified"
+AVAILABLE_NONE = "No disks available to erase"
+AVAILABLE_ONE = "1 disk available to erase"
+AVAILABLE_MANY = "{count} disks available to erase"
+UNAVAILABLE_ONE = "1 other device not available"
+UNAVAILABLE_MANY = "{count} other devices not available"
 _UNCERTAIN_REASONS = frozenset(
     {
         "capacity could not be confirmed",
@@ -300,7 +305,20 @@ def _join_count(parts: tuple[str, ...], *, spoken: bool) -> str:
 
 
 def _has_uncertain_reason(device: ExcludedDevice) -> bool:
-    if any(reason in _UNCERTAIN_REASONS for reason in device.reasons):
+    from beamo_wipe import lang
+
+    # Discovery snapshots retain the language used when their reason strings
+    # were created. Match every supported translation after a language switch.
+    reasons = _UNCERTAIN_REASONS | {
+        lang.translated(code, module, name)
+        for code in lang.LANGUAGE_ORDER if code != "en"
+        for module, name in (
+            ("inventory", "REASON_CAPACITY_UNKNOWN"),
+            ("inventory", "REASON_ELIGIBILITY"),
+            ("discover", "IDENTITY_UNCONFIRMED"),
+        )
+    }
+    if any(reason in reasons for reason in device.reasons):
         return True
     return any(_has_uncertain_reason(child) for child in device.children)
 
@@ -313,11 +331,11 @@ def count_summary(discovery: DiscoveryResult, *, spoken: bool = False) -> str:
 
     eligible = len(selectable_disks(discovery))
     if eligible == 0:
-        available = "No disks available to erase"
+        available = AVAILABLE_NONE
     elif eligible == 1:
-        available = "1 disk available to erase"
+        available = AVAILABLE_ONE
     else:
-        available = f"{eligible} disks available to erase"
+        available = AVAILABLE_MANY.format(count=eligible)
     parts = [available]
     boot = discovery.boot
     # USB-SATA bridges can report ATA/SATA (or no TRAN). A /dev/sd* boot
@@ -331,9 +349,9 @@ def count_summary(discovery: DiscoveryResult, *, spoken: bool = False) -> str:
     if others:
         n = len(others)
         if n == 1:
-            parts.append("1 other device not available")
+            parts.append(UNAVAILABLE_ONE)
         else:
-            parts.append(f"{n} other devices not available")
+            parts.append(UNAVAILABLE_MANY.format(count=n))
         if any(_has_uncertain_reason(device) for device in others):
             parts.append(UNCERTAIN_NOTE)
     return _join_count(tuple(parts), spoken=spoken)

@@ -1,0 +1,11 @@
+{
+  "observed_utc": "2026-10-17T22:49:52.636185+00:00",
+  "candidate": 1,
+  "status": "FAILED case glyph observed; suite still running; exact case identity and final counts pending JUnit",
+  "observed_progress_percent": 44,
+  "full_gate_cancelled": false,
+  "source_freeze_sha256": "2dfdc8035f39f4ab4a2d538fd6536cfe19de2fa8e320cc3e13b813bafbbe7a9e",
+  "partial_log_sha256": "6674d8bfa5468f99b100e95ffdfd1bf18ba4f7c8aca58397ad3b57244888b85a",
+  "partial_log_bytes": 8280,
+  "commit_push_publication": "NOT STARTED; local failure must be diagnosed and fixed before qualification"
+}

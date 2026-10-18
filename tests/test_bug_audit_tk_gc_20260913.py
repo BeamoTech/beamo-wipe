@@ -92,6 +92,8 @@ def test_startup_exception_closes_its_window(monkeypatch, failed_step):
     from beamo_wipe.ui import tk_wizard as ui
 
     root = MagicMock()
+    root.winfo_screenwidth.return_value = 1600
+    root.winfo_screenheight.return_value = 1000
     monkeypatch.setattr(ui, "_ensure_tk_display", lambda: None)
     monkeypatch.setattr(ui.tk, "Tk", lambda: root)
     monkeypatch.setattr(ui.tk, "Frame", MagicMock())

@@ -1,0 +1,1 @@
+First patch context matched picker bind_wheel rather than empty-screen bind_wheel. Initial574-case check542PASS/32UIFAIL caught the unchanged empty behavior; source/log/XML retained. Moved only the independent-scroll guard to _empty and restored picker bytes. No test or assertion change.

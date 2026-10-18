@@ -1,0 +1,15 @@
+........................................................................ [ 11%]
+........................................................................ [ 22%]
+........................................................................ [ 33%]
+........................................................................ [ 44%]
+........................................................................ [ 55%]
+........................................................................ [ 67%]
+.........................dbus-daemon[568521]: [session uid=0 pid=568521] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=568535 comm="python3 /tmp/pass13-discovery/run_focused.py" label="unconfined")
+dbus-daemon[568521]: [session uid=0 pid=568521] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[568566]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=568535 comm="python3 /tmp/pass13-discovery/run_focused.py" label="unconfined")
+dbus-daemon[568566]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+............................................... [ 78%]
+........................................................................ [ 89%]
+....................................................................     [100%]
+fake_host_boundary_reads {'fake_findmnt': 16, '/proc/self/mountinfo': 2, '/proc/cmdline': 2}

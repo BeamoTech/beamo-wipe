@@ -1,0 +1,39 @@
+{
+  "focused": {
+    "actual_testcases": 16,
+    "time": "8.791",
+    "failures": 0,
+    "skips": 0,
+    "signal_send_records": [],
+    "SIGTERM_delivery_records": [],
+    "pytest_exit_zero": true
+  },
+  "module": {
+    "actual_testcases": 311,
+    "time": "200.151",
+    "failures": 0,
+    "skips": 0,
+    "signal_send_records": [],
+    "SIGTERM_delivery_records": [],
+    "pytest_exit_zero": true
+  },
+  "repeat": {
+    "actual_testcases": 1,
+    "time": "0.871",
+    "failures": 0,
+    "skips": 0,
+    "signal_send_records": [],
+    "SIGTERM_delivery_records": [],
+    "pytest_exit_zero": true
+  },
+  "repeated-files": {
+    "actual_testcases": 40,
+    "time": "36.109",
+    "failures": 0,
+    "skips": 0,
+    "signal_send_records": [],
+    "SIGTERM_delivery_records": [],
+    "pytest_exit_zero": true
+  },
+  "reviewed_hashes_match": true
+}

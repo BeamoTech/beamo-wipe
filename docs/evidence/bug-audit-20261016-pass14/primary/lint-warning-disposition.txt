@@ -1,0 +1,1 @@
+The lint TODO scanner matches only the deliberate PLACEHOLDER_RE validation regex at release_manifest.py:40; not an unfinished source instruction. File hash matches starting freeze. Mypy annotation-unchecked notes are unchanged baseline constructor/session notes; full configured type check passes 52 source files. No gate suppression/configuration change.

@@ -68,8 +68,8 @@ STAGE_DONE_MARK = " (done)"
 STAGE_NOW_MARK = " (now)"
 STAGE_NOT_REPORTED = "Current step not reported yet"
 STAGE_MISMATCH = "Engine step does not match the planned method"
-STEP_PCT = "{step} ({pct} of this step)"
-STEP_PCT_OLD = "{step} (last reported {pct} of this step)"
+STEP_PCT = "{step} ({pct} overall)"
+STEP_PCT_OLD = "{step} (last reported {pct} overall)"
 PHASE_NOTE_VERIFYING = (
     "Checking the last overwrite. The erase is not done "
     "until the result screen."
@@ -233,9 +233,8 @@ def step_text(
 ) -> str:
     """Current-step line, or explicit uncertainty. Never a guess.
 
-    A live step percent scopes the number to its step so 100% of one
-    write cannot read as overall completion. Unknown and mismatched
-    steps carry no percent.
+    nwipe reports job-wide round_percent, not a percentage within the
+    located step. Unknown and mismatched steps carry no percent.
     """
     if mismatch:
         return STAGE_MISMATCH
@@ -249,7 +248,9 @@ def step_text(
     from beamo_wipe.wizard import format_progress_percent
 
     template = STEP_PCT_OLD if pct_old else STEP_PCT
-    return template.format(step=step, pct=format_progress_percent(pct))
+    # This is telemetry, not validated terminal evidence. Match the runner's
+    # pre-completion clamp even if the raw observation already reports 100.
+    return template.format(step=step, pct=format_progress_percent(min(pct, 99.9)))
 
 
 def phase_note(phase: str, mismatch: bool) -> str:
@@ -371,7 +372,7 @@ class ProgressView:
     stages: tuple[Stage, ...] = ()
     position: int | None = None
     mismatch: bool = False
-    step_percent: float | None = None
+    step_percent: float | None = None  # Legacy name: job-wide percent beside the step.
     estimate_state: str = ""
 
     @property

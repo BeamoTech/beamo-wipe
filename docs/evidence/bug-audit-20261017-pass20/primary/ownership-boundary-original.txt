@@ -1,0 +1,675 @@
+FFFFFFFFFFFFFFFFFFFFFFFF                                                 [100%]
+=================================== FAILURES ===================================
+__ test_supported_boundary_releases_owned_native_wrappers[False-False-return] __
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[False-False-return]>>
+route = 'return', retain_owner = False, peer = False
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...nalizer-return", "kind": "variable", "identity": 135364753601456, "thread": 135364781371520, "returned": true}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+__ test_supported_boundary_releases_owned_native_wrappers[False-False-raise] ___
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[False-False-raise]>>
+route = 'raise', retain_owner = False, peer = False
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...nalizer-return", "kind": "variable", "identity": 136451742908928, "thread": 136451780640896, "returned": true}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+___ test_supported_boundary_releases_owned_native_wrappers[False-False-quit] ___
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[False-False-quit]>>
+route = 'quit', retain_owner = False, peer = False
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...nalizer-return", "kind": "variable", "identity": 133853676044160, "thread": 133853702754432, "returned": true}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+_ test_supported_boundary_releases_owned_native_wrappers[False-False-raw-destroy] _
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[False-False-raw-destroy]>>
+route = 'raw-destroy', retain_owner = False, peer = False
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...nalizer-return", "kind": "variable", "identity": 133564675865632, "thread": 133564703019136, "returned": true}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+_ test_supported_boundary_releases_owned_native_wrappers[False-False-constructor-raise] _
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[False-False-constructor-raise]>>
+route = 'constructor-raise', retain_owner = False, peer = False
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...kind": "font", "identity": 129401393888624}, {"kind": "font", "identity": 129401393888768}], "finalizers": []}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+__ test_supported_boundary_releases_owned_native_wrappers[False-False-redraw] __
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[False-False-redraw]>>
+route = 'redraw', retain_owner = False, peer = False
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...nalizer-return", "kind": "variable", "identity": 131683033684528, "thread": 131683072712832, "returned": true}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+__ test_supported_boundary_releases_owned_native_wrappers[False-True-return] ___
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[False-True-return]>>
+route = 'return', retain_owner = True, peer = False
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...nalizer-return", "kind": "variable", "identity": 131335147336720, "thread": 131335175053440, "returned": true}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+___ test_supported_boundary_releases_owned_native_wrappers[False-True-raise] ___
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[False-True-raise]>>
+route = 'raise', retain_owner = True, peer = False
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...nalizer-return", "kind": "variable", "identity": 129600428392368, "thread": 129600455815296, "returned": true}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+___ test_supported_boundary_releases_owned_native_wrappers[False-True-quit] ____
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[False-True-quit]>>
+route = 'quit', retain_owner = True, peer = False
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...nalizer-return", "kind": "variable", "identity": 137759338495872, "thread": 137759365251200, "returned": true}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+_ test_supported_boundary_releases_owned_native_wrappers[False-True-raw-destroy] _
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[False-True-raw-destroy]>>
+route = 'raw-destroy', retain_owner = True, peer = False
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...nalizer-return", "kind": "variable", "identity": 126791638024896, "thread": 126791675740288, "returned": true}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+_ test_supported_boundary_releases_owned_native_wrappers[False-True-constructor-raise] _
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[False-True-constructor-raise]>>
+route = 'constructor-raise', retain_owner = True, peer = False
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...kind": "font", "identity": 129354279353184}, {"kind": "font", "identity": 129354279353328}], "finalizers": []}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+__ test_supported_boundary_releases_owned_native_wrappers[False-True-redraw] ___
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[False-True-redraw]>>
+route = 'redraw', retain_owner = True, peer = False
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...nalizer-return", "kind": "variable", "identity": 126653406681648, "thread": 126653445763200, "returned": true}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+__ test_supported_boundary_releases_owned_native_wrappers[True-False-return] ___
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[True-False-return]>>
+route = 'return', retain_owner = False, peer = True
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...variable", "identity": 124914768440032}, {"kind": "variable", "identity": 124914760529008}], "finalizers": []}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+___ test_supported_boundary_releases_owned_native_wrappers[True-False-raise] ___
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[True-False-raise]>>
+route = 'raise', retain_owner = False, peer = True
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...variable", "identity": 125011939409168}, {"kind": "variable", "identity": 125011939409696}], "finalizers": []}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+___ test_supported_boundary_releases_owned_native_wrappers[True-False-quit] ____
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[True-False-quit]>>
+route = 'quit', retain_owner = False, peer = True
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...variable", "identity": 131169340292368}, {"kind": "variable", "identity": 131169340292704}], "finalizers": []}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+_ test_supported_boundary_releases_owned_native_wrappers[True-False-raw-destroy] _
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[True-False-raw-destroy]>>
+route = 'raw-destroy', retain_owner = False, peer = True
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...variable", "identity": 132713021389808}, {"kind": "variable", "identity": 132713021390336}], "finalizers": []}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+_ test_supported_boundary_releases_owned_native_wrappers[True-False-constructor-raise] _
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[True-False-constructor-raise]>>
+route = 'constructor-raise', retain_owner = False, peer = True
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...kind": "font", "identity": 138582517807968}, {"kind": "font", "identity": 138582517808112}], "finalizers": []}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+__ test_supported_boundary_releases_owned_native_wrappers[True-False-redraw] ___
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[True-False-redraw]>>
+route = 'redraw', retain_owner = False, peer = True
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...nalizer-return", "kind": "variable", "identity": 123823254968688, "thread": 123823294046336, "returned": true}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+___ test_supported_boundary_releases_owned_native_wrappers[True-True-return] ___
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[True-True-return]>>
+route = 'return', retain_owner = True, peer = True
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...variable", "identity": 139032132533664}, {"kind": "variable", "identity": 139032132534192}], "finalizers": []}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+___ test_supported_boundary_releases_owned_native_wrappers[True-True-raise] ____
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[True-True-raise]>>
+route = 'raise', retain_owner = True, peer = True
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...variable", "identity": 123574033448880}, {"kind": "variable", "identity": 123574018833728}], "finalizers": []}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+____ test_supported_boundary_releases_owned_native_wrappers[True-True-quit] ____
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[True-True-quit]>>
+route = 'quit', retain_owner = True, peer = True
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...variable", "identity": 129424219106784}, {"kind": "variable", "identity": 129424199367952}], "finalizers": []}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+_ test_supported_boundary_releases_owned_native_wrappers[True-True-raw-destroy] _
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[True-True-raw-destroy]>>
+route = 'raw-destroy', retain_owner = True, peer = True
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...variable", "identity": 124257309686384}, {"kind": "variable", "identity": 124257309802864}], "finalizers": []}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+_ test_supported_boundary_releases_owned_native_wrappers[True-True-constructor-raise] _
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[True-True-constructor-raise]>>
+route = 'constructor-raise', retain_owner = True, peer = True
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...kind": "font", "identity": 123442810436928}, {"kind": "font", "identity": 123442810437072}], "finalizers": []}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+___ test_supported_boundary_releases_owned_native_wrappers[True-True-redraw] ___
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[True-True-redraw]>>
+route = 'redraw', retain_owner = True, peer = True
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...nalizer-return", "kind": "variable", "identity": 126675924490368, "thread": 126675961987200, "returned": true}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[False-False-return]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[False-False-raise]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[False-False-quit]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[False-False-raw-destroy]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[False-False-constructor-raise]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[False-False-redraw]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[False-True-return]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[False-True-raise]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[False-True-quit]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[False-True-raw-destroy]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[False-True-constructor-raise]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[False-True-redraw]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[True-False-return]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[True-False-raise]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[True-False-quit]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[True-False-raw-destroy]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[True-False-constructor-raise]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[True-False-redraw]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[True-True-return]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[True-True-raise]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[True-True-quit]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[True-True-raw-destroy]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[True-True-constructor-raise]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[True-True-redraw]

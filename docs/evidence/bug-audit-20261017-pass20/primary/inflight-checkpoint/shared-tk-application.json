@@ -1,0 +1,14 @@
+{
+  "applied_utc": "2026-10-17T18:56:42.483367+00:00",
+  "old_sha256": "23d280b0451d3e25d64387de62d4912a8867ffbdec934244efe6a7f7a7ee0615",
+  "new_sha256": "d639822ca03fccc2f9be78c476fc4b594118ac2b9195d2a2979b3c8f9a6e7cf8",
+  "private_cases": 486,
+  "private_failures": 0,
+  "canonical_original_cases": 144,
+  "canonical_original_failures": 83,
+  "shared_other_source_changes": [
+    "audio_jobs.py",
+    "discover.py"
+  ],
+  "no_staging": true
+}

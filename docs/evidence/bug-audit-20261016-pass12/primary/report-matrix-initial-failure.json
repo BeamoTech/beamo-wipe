@@ -1,0 +1,8 @@
+{
+  "exit_code": 1,
+  "assertion": "checks[1]['status'] == expected",
+  "fixture_case": "clean",
+  "expected": "pass",
+  "actual": "unavailable",
+  "cause": "The exact raw 80-character banner is required to corroborate a passing zero-error check; a prefixed header only authorizes conservative negative parsing. Product behavior is intended. Corrected matrix expectation only."
+}

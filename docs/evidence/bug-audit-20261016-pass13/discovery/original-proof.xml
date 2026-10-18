@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="32" skipped="0" tests="104" time="0.698" timestamp="2026-10-16T20:53:18.033639+00:00" hostname="srv1606478"><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Benefits-partlabel-ntfs-tree]" time="0.143"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863aaf3620&gt;
+shape = 'tree', fstype = 'ntfs', field = 'partlabel', name = 'Benefits'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Benefits-partlabel-ntfs-flat]" time="0.004"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863aa9d850&gt;
+shape = 'flat', fstype = 'ntfs', field = 'partlabel', name = 'Benefits'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Benefits-partlabel-ext4-tree]" time="0.004"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a956840&gt;
+shape = 'tree', fstype = 'ext4', field = 'partlabel', name = 'Benefits'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Benefits-partlabel-ext4-flat]" time="0.004"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a956bd0&gt;
+shape = 'flat', fstype = 'ext4', field = 'partlabel', name = 'Benefits'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Benefits-parttypename-ntfs-tree]" time="0.004"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a957740&gt;
+shape = 'tree', fstype = 'ntfs', field = 'parttypename', name = 'Benefits'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Benefits-parttypename-ntfs-flat]" time="0.004"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a956300&gt;
+shape = 'flat', fstype = 'ntfs', field = 'parttypename', name = 'Benefits'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Benefits-parttypename-ext4-tree]" time="0.004"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a956540&gt;
+shape = 'tree', fstype = 'ext4', field = 'parttypename', name = 'Benefits'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Benefits-parttypename-ext4-flat]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a956c90&gt;
+shape = 'flat', fstype = 'ext4', field = 'parttypename', name = 'Benefits'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Definitions-partlabel-ntfs-tree]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a9569c0&gt;
+shape = 'tree', fstype = 'ntfs', field = 'partlabel', name = 'Definitions'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Definitions-partlabel-ntfs-flat]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a957c80&gt;
+shape = 'flat', fstype = 'ntfs', field = 'partlabel', name = 'Definitions'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Definitions-partlabel-ext4-tree]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a999f40&gt;
+shape = 'tree', fstype = 'ext4', field = 'partlabel', name = 'Definitions'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Definitions-partlabel-ext4-flat]" time="0.004"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a99a240&gt;
+shape = 'flat', fstype = 'ext4', field = 'partlabel', name = 'Definitions'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Definitions-parttypename-ntfs-tree]" time="0.004"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a99aa50&gt;
+shape = 'tree', fstype = 'ntfs', field = 'parttypename', name = 'Definitions'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Definitions-parttypename-ntfs-flat]" time="0.004"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a998110&gt;
+shape = 'flat', fstype = 'ntfs', field = 'parttypename', name = 'Definitions'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Definitions-parttypename-ext4-tree]" time="0.004"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a99e960&gt;
+shape = 'tree', fstype = 'ext4', field = 'parttypename', name = 'Definitions'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Definitions-parttypename-ext4-flat]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a99c830&gt;
+shape = 'flat', fstype = 'ext4', field = 'parttypename', name = 'Definitions'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[\xe9EFI-partlabel-ntfs-tree]" time="0.004"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a99f9b0&gt;
+shape = 'tree', fstype = 'ntfs', field = 'partlabel', name = 'éEFI'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[\xe9EFI-partlabel-ntfs-flat]" time="0.004"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a99eb40&gt;
+shape = 'flat', fstype = 'ntfs', field = 'partlabel', name = 'éEFI'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[\xe9EFI-partlabel-ext4-tree]" time="0.004"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a99f920&gt;
+shape = 'tree', fstype = 'ext4', field = 'partlabel', name = 'éEFI'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[\xe9EFI-partlabel-ext4-flat]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a99c980&gt;
+shape = 'flat', fstype = 'ext4', field = 'partlabel', name = 'éEFI'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[\xe9EFI-parttypename-ntfs-tree]" time="0.004"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a99e090&gt;
+shape = 'tree', fstype = 'ntfs', field = 'parttypename', name = 'éEFI'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[\xe9EFI-parttypename-ntfs-flat]" time="0.004"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a99e720&gt;
+shape = 'flat', fstype = 'ntfs', field = 'parttypename', name = 'éEFI'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[\xe9EFI-parttypename-ext4-tree]" time="0.004"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a99a240&gt;
+shape = 'tree', fstype = 'ext4', field = 'parttypename', name = 'éEFI'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[\xe9EFI-parttypename-ext4-flat]" time="0.004"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a99acf0&gt;
+shape = 'flat', fstype = 'ext4', field = 'parttypename', name = 'éEFI'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[EFI\u754c-partlabel-ntfs-tree]" time="0.004"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a998290&gt;
+shape = 'tree', fstype = 'ntfs', field = 'partlabel', name = 'EFI界'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[EFI\u754c-partlabel-ntfs-flat]" time="0.004"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a99bda0&gt;
+shape = 'flat', fstype = 'ntfs', field = 'partlabel', name = 'EFI界'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[EFI\u754c-partlabel-ext4-tree]" time="0.004"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a956ae0&gt;
+shape = 'tree', fstype = 'ext4', field = 'partlabel', name = 'EFI界'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[EFI\u754c-partlabel-ext4-flat]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a9a2030&gt;
+shape = 'flat', fstype = 'ext4', field = 'partlabel', name = 'EFI界'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[EFI\u754c-parttypename-ntfs-tree]" time="0.004"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a9a12e0&gt;
+shape = 'tree', fstype = 'ntfs', field = 'parttypename', name = 'EFI界'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[EFI\u754c-parttypename-ntfs-flat]" time="0.004"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a9a00e0&gt;
+shape = 'flat', fstype = 'ntfs', field = 'parttypename', name = 'EFI界'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[EFI\u754c-parttypename-ext4-tree]" time="0.004"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a9a1ca0&gt;
+shape = 'tree', fstype = 'ext4', field = 'parttypename', name = 'EFI界'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[EFI\u754c-parttypename-ext4-flat]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x72863a9a09b0&gt;
+shape = 'flat', fstype = 'ext4', field = 'parttypename', name = 'EFI界'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI system partition-partlabel-ntfs-windows-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI system partition-partlabel-ntfs-windows-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI system partition-partlabel-ext4-system-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI system partition-partlabel-ext4-system-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI system partition-parttypename-ntfs-windows-tree]" time="0.004" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI system partition-parttypename-ntfs-windows-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI system partition-parttypename-ext4-system-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI system partition-parttypename-ext4-system-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[UEFI System-partlabel-ntfs-windows-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[UEFI System-partlabel-ntfs-windows-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[UEFI System-partlabel-ext4-system-tree]" time="0.004" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[UEFI System-partlabel-ext4-system-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[UEFI System-parttypename-ntfs-windows-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[UEFI System-parttypename-ntfs-windows-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[UEFI System-parttypename-ext4-system-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[UEFI System-parttypename-ext4-system-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI_system-partlabel-ntfs-windows-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI_system-partlabel-ntfs-windows-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI_system-partlabel-ext4-system-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI_system-partlabel-ext4-system-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI_system-parttypename-ntfs-windows-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI_system-parttypename-ntfs-windows-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI_system-parttypename-ext4-system-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI_system-parttypename-ext4-system-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[boot-EFI-volume-partlabel-ntfs-windows-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[boot-EFI-volume-partlabel-ntfs-windows-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[boot-EFI-volume-partlabel-ext4-system-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[boot-EFI-volume-partlabel-ext4-system-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[boot-EFI-volume-parttypename-ntfs-windows-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[boot-EFI-volume-parttypename-ntfs-windows-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[boot-EFI-volume-parttypename-ext4-system-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[boot-EFI-volume-parttypename-ext4-system-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[(EFI) syst\xe8me-partlabel-ntfs-windows-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[(EFI) syst\xe8me-partlabel-ntfs-windows-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[(EFI) syst\xe8me-partlabel-ext4-system-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[(EFI) syst\xe8me-partlabel-ext4-system-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[(EFI) syst\xe8me-parttypename-ntfs-windows-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[(EFI) syst\xe8me-parttypename-ntfs-windows-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[(EFI) syst\xe8me-parttypename-ext4-system-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[(EFI) syst\xe8me-parttypename-ext4-system-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[label-EFI-False-ntfs-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[label-EFI-False-ntfs-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[label-EFI-False-ext4-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[label-EFI-False-ext4-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[label-ESP-False-ntfs-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[label-ESP-False-ntfs-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[label-ESP-False-ext4-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[label-ESP-False-ext4-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[partlabel-ESP-False-ntfs-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[partlabel-ESP-False-ntfs-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[partlabel-ESP-False-ext4-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[partlabel-ESP-False-ext4-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-c12a7328-f81f-11d2-ba4b-00a0c93ec93b-False-ntfs-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-c12a7328-f81f-11d2-ba4b-00a0c93ec93b-False-ntfs-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-c12a7328-f81f-11d2-ba4b-00a0c93ec93b-False-ext4-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-c12a7328-f81f-11d2-ba4b-00a0c93ec93b-False-ext4-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-ef00-False-ntfs-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-ef00-False-ntfs-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-ef00-False-ext4-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-ef00-False-ext4-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[partlabel-Windows Recovery-True-ntfs-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[partlabel-Windows Recovery-True-ntfs-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[partlabel-Windows Recovery-True-ext4-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[partlabel-Windows Recovery-True-ext4-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-e3c9e316-0b5c-4db8-817d-f92df00215ae-True-ntfs-tree]" time="0.012" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-e3c9e316-0b5c-4db8-817d-f92df00215ae-True-ntfs-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-e3c9e316-0b5c-4db8-817d-f92df00215ae-True-ext4-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-e3c9e316-0b5c-4db8-817d-f92df00215ae-True-ext4-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[fstype-BitLocker-True-ntfs-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[fstype-BitLocker-True-ntfs-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[fstype-BitLocker-True-ext4-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[fstype-BitLocker-True-ext4-flat]" time="0.003" /></testsuite></testsuites>

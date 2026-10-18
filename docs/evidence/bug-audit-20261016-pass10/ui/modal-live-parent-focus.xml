@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="3" time="0.885" timestamp="2026-10-16T16:52:42.380924+00:00" hostname="srv1606478"><testcase classname="tests.test_accessible_sound_modal_pass10" name="test_sound_close_returns_keyboard_focus_to_the_parent[response]" time="0.228"><failure message="assert None is not None">ui = &lt;function ui.&lt;locals&gt;.build at 0x766ee0ad7060&gt;, fake_audio = []
+response = 'response'
+
+    @pytest.mark.parametrize("response", ["response", "close"])
+    def test_sound_close_returns_keyboard_focus_to_the_parent(ui, fake_audio, response):  # noqa: F811
+        app = ui(_owner())
+        controller = _open(app)
+        controller.dialog.present()
+        controller.dialog.get_window().focus(Gdk.CURRENT_TIME)
+        _assert_modal(app, controller)
+        if response == "response":
+            controller.dialog.response(Gtk.ResponseType.CLOSE)
+        else:
+            controller.close()
+        assert controller.dialog is None
+        state = _state(app)
+        assert state["parent_focused"], state
+        focused = app.window.get_focus()
+&gt;       assert focused is not None
+E       assert None is not None
+
+tests/test_accessible_sound_modal_pass10.py:183: AssertionError</failure></testcase><testcase classname="tests.test_accessible_sound_modal_pass10" name="test_sound_close_returns_keyboard_focus_to_the_parent[close]" time="0.168"><failure message="assert None is not None">ui = &lt;function ui.&lt;locals&gt;.build at 0x766ee0ad7420&gt;, fake_audio = []
+response = 'close'
+
+    @pytest.mark.parametrize("response", ["response", "close"])
+    def test_sound_close_returns_keyboard_focus_to_the_parent(ui, fake_audio, response):  # noqa: F811
+        app = ui(_owner())
+        controller = _open(app)
+        controller.dialog.present()
+        controller.dialog.get_window().focus(Gdk.CURRENT_TIME)
+        _assert_modal(app, controller)
+        if response == "response":
+            controller.dialog.response(Gtk.ResponseType.CLOSE)
+        else:
+            controller.close()
+        assert controller.dialog is None
+        state = _state(app)
+        assert state["parent_focused"], state
+        focused = app.window.get_focus()
+&gt;       assert focused is not None
+E       assert None is not None
+
+tests/test_accessible_sound_modal_pass10.py:183: AssertionError</failure></testcase><testcase classname="tests.test_accessible_sound_modal_pass10" name="test_app_close_does_not_present_its_parent_again" time="0.167" /></testsuite></testsuites>

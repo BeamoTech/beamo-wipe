@@ -1,0 +1,65 @@
+{
+  "captures": [
+    {
+      "image": "sound-working-16outputs-800x600-72dpi.png",
+      "sha256": "3b117531638635e66cb2a9fdd71c70d244b71ed67dfcacb0d595a6b4e7887ba0",
+      "full_root_size": [
+        800,
+        600
+      ],
+      "native_focus_and_bounds": "passed",
+      "independent_visual_review": "passed"
+    },
+    {
+      "image": "tk-startup-windowed-800x600-72dpi.png",
+      "sha256": "1fc00768ea9e089a65aa55788164b011455368d26ae044405776eead7f96e7f3",
+      "full_root_size": [
+        800,
+        600
+      ],
+      "native_focus_and_bounds": "passed",
+      "independent_visual_review": "passed"
+    },
+    {
+      "image": "tk-startup-fullscreen-800x600-72dpi.png",
+      "sha256": "ee53c750edc1053a5884e4fa72188ee6cbafc62d1d87b7cc998fba6f186a2546",
+      "full_root_size": [
+        800,
+        600
+      ],
+      "native_focus_and_bounds": "passed",
+      "independent_visual_review": "passed"
+    },
+    {
+      "image": "sound-working-16outputs-1600x1000-72dpi.png",
+      "sha256": "6a5ce02b9f4a3e74ce423d1a008a065441f81baa288e234050f29605adbe44fd",
+      "full_root_size": [
+        1600,
+        1000
+      ],
+      "native_focus_and_bounds": "passed",
+      "independent_visual_review": "passed"
+    },
+    {
+      "image": "tk-startup-windowed-1600x1000-72dpi.png",
+      "sha256": "c43d6423119be54f463c7963316aa7dc98e5bafa0ab1e107348ed0feb487dd6e",
+      "full_root_size": [
+        1600,
+        1000
+      ],
+      "native_focus_and_bounds": "passed",
+      "independent_visual_review": "passed"
+    },
+    {
+      "image": "tk-startup-fullscreen-1600x1000-72dpi.png",
+      "sha256": "d097c4e91b9a663b9c8756ae8d7c18f2c534b0061be3700cfd1fdf0715363d64",
+      "full_root_size": [
+        1600,
+        1000
+      ],
+      "native_focus_and_bounds": "passed",
+      "independent_visual_review": "passed"
+    }
+  ],
+  "original_and_initial_fixed_sound800_also_inspected": true
+}

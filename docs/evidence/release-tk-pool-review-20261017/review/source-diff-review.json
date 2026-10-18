@@ -1,0 +1,14 @@
+{
+  "unchanged_top_level_definitions": 34,
+  "changed_helpers": [
+    "_pin_retired_interpreter",
+    "_pin_retired_assets",
+    "_drain_retired_assets",
+    "_drain_retired_interpreters"
+  ],
+  "wizard_class_ast_unchanged": true,
+  "runtime_path_changed": "src/beamo_wipe/ui/tk_wizard.py",
+  "tk_before_sha256": "5b1fc0e16f95176ae706a9677d082d2daae7eb3d70a43ce244ce77363e35f9f5",
+  "tk_after_sha256": "fefdc9963a92c7150d794392c337bf660134d683090d083a4c5d2d945575d43b",
+  "disk_discovery_authorization_nwipe_flags_unchanged": true
+}

@@ -1,0 +1,9 @@
+{
+  "frozen_inputs_match": 747,
+  "new_test_modules_exact": 18,
+  "exact_original_artifacts": 209,
+  "retained_artifacts_hashed": 210,
+  "source_patch_matches": true,
+  "git_index_empty": true,
+  "diff_check": "passed"
+}

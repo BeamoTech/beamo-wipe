@@ -1,0 +1,28 @@
+F..                                                                      [100%]
+=================================== FAILURES ===================================
+_ test_owned_image_initializer_preserves_safe_original_finalization[before-init] _
+
+request = <FixtureRequest for <Function test_owned_image_initializer_preserves_safe_original_finalization[before-init]>>
+case = 'before-init'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_owned_image_initializer_preserves_safe_original_finalization(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, case=case, provenance=provenance, returncode=result.returncode,
+                       stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, case=case, provenance=provenance, timed_out=True,
+                       stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("image_preinit_native_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'case': 'before-init', 'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-au...5925e3720938fb5ca1b27427ff296', 'source': '/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/image-preinit-boundary-probe.py:265: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/image-preinit-boundary-probe.py::test_owned_image_initializer_preserves_safe_original_finalization[before-init]

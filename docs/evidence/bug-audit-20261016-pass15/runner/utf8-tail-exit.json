@@ -1,0 +1,1 @@
+{"command": "python3 /tmp/pass15-runner/utf8-tail-probe.py", "exit_code": 0, "campaign_status": "normal exit, proof violations retained", "expected_cases": 30}

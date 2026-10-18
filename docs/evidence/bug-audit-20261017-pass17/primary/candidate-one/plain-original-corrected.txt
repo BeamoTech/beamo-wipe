@@ -1,0 +1,1029 @@
+FFFFFFFFF.........                                                       [100%]
+=================================== FAILURES ===================================
+_____ test_plain_erase_requires_new_input_after_countdown[early-everyday] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b3a38f3b4d0>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-23/test_plain_erase_requires_new_0')
+request = <FixtureRequest for <Function test_plain_erase_requires_new_input_after_countdown[early-everyday]>>
+method = <MethodId.EVERYDAY: 'everyday'>, arrival = 'early'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("arrival", ["early", "middle", "late", "fresh", "cancel", "eof"])
+    def test_plain_erase_requires_new_input_after_countdown(monkeypatch, tmp_path, request, method, arrival):
+        if not hasattr(os, "openpty"):
+            pytest.skip("Requires an ordinary local pseudoterminal fixture")
+        wizard, clock = _last_chance()
+        wizard.back()
+        wizard.set_method(method)
+        wizard.back()
+        assert wizard.screen is Screen.CONFIRM
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+        wizard.continue_method()
+        assert wizard.screen is Screen.LAST_CHANCE
+        master, slave = os.openpty()
+        terminal = os.fdopen(os.dup(slave), "r", encoding="utf-8")
+        monkeypatch.setattr(sys, "stdin", terminal)
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+        monkeypatch.setattr(wizard, "_write_evidence", lambda **_kwargs: None)
+        inputs, starts, answers = [], [], []
+        queued = False
+        real_answer = console._answer
+    
+        def enqueue(text):
+            os.write(master, text)
+            inputs.append({"at": clock.value, "bytes": repr(text), "enabled": wizard.erase_enabled})
+    
+        def sleep(seconds):
+            nonlocal queued
+            cutoff = {"early": 0.0, "middle": 2.0, "late": 4.7,
+                      "cancel": 0.0, "eof": 0.0}.get(arrival)
+            if cutoff is not None and not queued and clock.value >= cutoff:
+                enqueue(b"BACK\n" if arrival == "cancel" else b"\x04" if arrival == "eof" else b"ERASE\n")
+                queued = True
+            clock.add(seconds)
+    
+        def answer(w, prompt):
+            assert prompt == C.CON_ERASE_PROMPT
+            assert w.erase_enabled and clock.value >= 5.0
+            # This is the first action after expiry. An early completed ERASE line
+            # must already have been discarded before this prompt becomes usable.
+            enqueue(b"ERASE\n" if arrival == "fresh" else b"BACK\n")
+            value = real_answer(w, prompt)
+            answers.append({"at": clock.value, "value": value})
+            if value.strip().upper() != "ERASE":
+                wizard.wants_shutdown = True  # bound the fake controller loop
+            return value
+    
+        def fake_start(wipe_request):
+            starts.append({"at": clock.value, "method": wipe_request.method.value})
+            wizard.wants_shutdown = True  # no process or raw disk opened
+    
+        monkeypatch.setattr(console.time, "sleep", sleep)
+        monkeypatch.setattr(console, "_answer", answer)
+        monkeypatch.setattr(wizard.runner, "start", fake_start)
+        try:
+            assert console._plain_loop(wizard) == 0
+            if arrival != "fresh":
+                assert queued and inputs[0]["at"] < 5.0 and not inputs[0]["enabled"]
+            request.node.user_properties.append(("pty_typeahead_trace", json.dumps({
+                "arrival": arrival, "method": method.value, "inputs": inputs,
+                "answers": answers, "fake_engine_starts": starts,
+            })))
+>           assert len(starts) == (1 if arrival == "fresh" else 0), starts
+E           AssertionError: [{'at': 5.2, 'method': 'everyday'}]
+E           assert 1 == 0
+E            +  where 1 = len([{'at': 5.2, 'method': 'everyday'}])
+
+tests/test_plain_erase_typeahead_pass17.py:98: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+============================================================
+Beamo Wipe
+Preparation
+Review before erasing
+============================================================
+Check the selected disk and method. The countdown never starts erasure.
+Samsung SSD 970 EVO
+256 GB  SSD  NVMe
+Serial number: S4EVNX0N123456
+Laptop: keep wall power connected and keep the lid open.
+Preview power (not a hardware reading). Wall power: unknown. Some power information is unavailable.
+Erasing this selected disk removes every file on it, including any operating system, applications, files, and recovery partitions on this disk.
+One overwrite, followed by verification.
+Warning: This will erase Samsung SSD 970 EVO, 256 GB, S4EVNX0N123456. You cannot get the files back.
+Everyday: 1 overwrite pass: random data. Then we check the last overwrite.
+Wait 5…
+Wait 5…
+Wait 5…
+Wait 4…
+Wait 4…
+Wait 3…
+Wait 3…
+Wait 3…
+Wait 2…
+Wait 2…
+Wait 2…
+Wait 1…
+Wait 1…
+K: Keyboard layout
+Type CHECK DISKS AGAIN to refresh. This clears preparation.
+Type ERASE to start: 
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+_______ test_plain_erase_requires_new_input_after_countdown[early-extra] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b3a3907a360>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-23/test_plain_erase_requires_new_1')
+request = <FixtureRequest for <Function test_plain_erase_requires_new_input_after_countdown[early-extra]>>
+method = <MethodId.EXTRA: 'extra'>, arrival = 'early'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("arrival", ["early", "middle", "late", "fresh", "cancel", "eof"])
+    def test_plain_erase_requires_new_input_after_countdown(monkeypatch, tmp_path, request, method, arrival):
+        if not hasattr(os, "openpty"):
+            pytest.skip("Requires an ordinary local pseudoterminal fixture")
+        wizard, clock = _last_chance()
+        wizard.back()
+        wizard.set_method(method)
+        wizard.back()
+        assert wizard.screen is Screen.CONFIRM
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+        wizard.continue_method()
+        assert wizard.screen is Screen.LAST_CHANCE
+        master, slave = os.openpty()
+        terminal = os.fdopen(os.dup(slave), "r", encoding="utf-8")
+        monkeypatch.setattr(sys, "stdin", terminal)
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+        monkeypatch.setattr(wizard, "_write_evidence", lambda **_kwargs: None)
+        inputs, starts, answers = [], [], []
+        queued = False
+        real_answer = console._answer
+    
+        def enqueue(text):
+            os.write(master, text)
+            inputs.append({"at": clock.value, "bytes": repr(text), "enabled": wizard.erase_enabled})
+    
+        def sleep(seconds):
+            nonlocal queued
+            cutoff = {"early": 0.0, "middle": 2.0, "late": 4.7,
+                      "cancel": 0.0, "eof": 0.0}.get(arrival)
+            if cutoff is not None and not queued and clock.value >= cutoff:
+                enqueue(b"BACK\n" if arrival == "cancel" else b"\x04" if arrival == "eof" else b"ERASE\n")
+                queued = True
+            clock.add(seconds)
+    
+        def answer(w, prompt):
+            assert prompt == C.CON_ERASE_PROMPT
+            assert w.erase_enabled and clock.value >= 5.0
+            # This is the first action after expiry. An early completed ERASE line
+            # must already have been discarded before this prompt becomes usable.
+            enqueue(b"ERASE\n" if arrival == "fresh" else b"BACK\n")
+            value = real_answer(w, prompt)
+            answers.append({"at": clock.value, "value": value})
+            if value.strip().upper() != "ERASE":
+                wizard.wants_shutdown = True  # bound the fake controller loop
+            return value
+    
+        def fake_start(wipe_request):
+            starts.append({"at": clock.value, "method": wipe_request.method.value})
+            wizard.wants_shutdown = True  # no process or raw disk opened
+    
+        monkeypatch.setattr(console.time, "sleep", sleep)
+        monkeypatch.setattr(console, "_answer", answer)
+        monkeypatch.setattr(wizard.runner, "start", fake_start)
+        try:
+            assert console._plain_loop(wizard) == 0
+            if arrival != "fresh":
+                assert queued and inputs[0]["at"] < 5.0 and not inputs[0]["enabled"]
+            request.node.user_properties.append(("pty_typeahead_trace", json.dumps({
+                "arrival": arrival, "method": method.value, "inputs": inputs,
+                "answers": answers, "fake_engine_starts": starts,
+            })))
+>           assert len(starts) == (1 if arrival == "fresh" else 0), starts
+E           AssertionError: [{'at': 5.2, 'method': 'extra'}]
+E           assert 1 == 0
+E            +  where 1 = len([{'at': 5.2, 'method': 'extra'}])
+
+tests/test_plain_erase_typeahead_pass17.py:98: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+============================================================
+Beamo Wipe
+Preparation
+Review before erasing
+============================================================
+Check the selected disk and method. The countdown never starts erasure.
+Samsung SSD 970 EVO
+256 GB  SSD  NVMe
+Serial number: S4EVNX0N123456
+Laptop: keep wall power connected and keep the lid open.
+Preview power (not a hardware reading). Wall power: unknown. Some power information is unavailable.
+Erasing this selected disk removes every file on it, including any operating system, applications, files, and recovery partitions on this disk.
+Three overwrites, followed by verification.
+Warning: This will erase Samsung SSD 970 EVO, 256 GB, S4EVNX0N123456. You cannot get the files back.
+Three overwrites: 3 overwrite passes: a pattern, its inverse, then random data. Then we check the last overwrite.
+Wait 5…
+Wait 5…
+Wait 5…
+Wait 4…
+Wait 4…
+Wait 3…
+Wait 3…
+Wait 3…
+Wait 2…
+Wait 2…
+Wait 2…
+Wait 1…
+Wait 1…
+K: Keyboard layout
+Type CHECK DISKS AGAIN to refresh. This clears preparation.
+Type ERASE to start: 
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+____ test_plain_erase_requires_new_input_after_countdown[early-quick_zero] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b3a38d4d010>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-23/test_plain_erase_requires_new_2')
+request = <FixtureRequest for <Function test_plain_erase_requires_new_input_after_countdown[early-quick_zero]>>
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, arrival = 'early'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("arrival", ["early", "middle", "late", "fresh", "cancel", "eof"])
+    def test_plain_erase_requires_new_input_after_countdown(monkeypatch, tmp_path, request, method, arrival):
+        if not hasattr(os, "openpty"):
+            pytest.skip("Requires an ordinary local pseudoterminal fixture")
+        wizard, clock = _last_chance()
+        wizard.back()
+        wizard.set_method(method)
+        wizard.back()
+        assert wizard.screen is Screen.CONFIRM
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+        wizard.continue_method()
+        assert wizard.screen is Screen.LAST_CHANCE
+        master, slave = os.openpty()
+        terminal = os.fdopen(os.dup(slave), "r", encoding="utf-8")
+        monkeypatch.setattr(sys, "stdin", terminal)
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+        monkeypatch.setattr(wizard, "_write_evidence", lambda **_kwargs: None)
+        inputs, starts, answers = [], [], []
+        queued = False
+        real_answer = console._answer
+    
+        def enqueue(text):
+            os.write(master, text)
+            inputs.append({"at": clock.value, "bytes": repr(text), "enabled": wizard.erase_enabled})
+    
+        def sleep(seconds):
+            nonlocal queued
+            cutoff = {"early": 0.0, "middle": 2.0, "late": 4.7,
+                      "cancel": 0.0, "eof": 0.0}.get(arrival)
+            if cutoff is not None and not queued and clock.value >= cutoff:
+                enqueue(b"BACK\n" if arrival == "cancel" else b"\x04" if arrival == "eof" else b"ERASE\n")
+                queued = True
+            clock.add(seconds)
+    
+        def answer(w, prompt):
+            assert prompt == C.CON_ERASE_PROMPT
+            assert w.erase_enabled and clock.value >= 5.0
+            # This is the first action after expiry. An early completed ERASE line
+            # must already have been discarded before this prompt becomes usable.
+            enqueue(b"ERASE\n" if arrival == "fresh" else b"BACK\n")
+            value = real_answer(w, prompt)
+            answers.append({"at": clock.value, "value": value})
+            if value.strip().upper() != "ERASE":
+                wizard.wants_shutdown = True  # bound the fake controller loop
+            return value
+    
+        def fake_start(wipe_request):
+            starts.append({"at": clock.value, "method": wipe_request.method.value})
+            wizard.wants_shutdown = True  # no process or raw disk opened
+    
+        monkeypatch.setattr(console.time, "sleep", sleep)
+        monkeypatch.setattr(console, "_answer", answer)
+        monkeypatch.setattr(wizard.runner, "start", fake_start)
+        try:
+            assert console._plain_loop(wizard) == 0
+            if arrival != "fresh":
+                assert queued and inputs[0]["at"] < 5.0 and not inputs[0]["enabled"]
+            request.node.user_properties.append(("pty_typeahead_trace", json.dumps({
+                "arrival": arrival, "method": method.value, "inputs": inputs,
+                "answers": answers, "fake_engine_starts": starts,
+            })))
+>           assert len(starts) == (1 if arrival == "fresh" else 0), starts
+E           AssertionError: [{'at': 5.2, 'method': 'quick_zero'}]
+E           assert 1 == 0
+E            +  where 1 = len([{'at': 5.2, 'method': 'quick_zero'}])
+
+tests/test_plain_erase_typeahead_pass17.py:98: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+============================================================
+Beamo Wipe
+Preparation
+Review before erasing
+============================================================
+Check the selected disk and method. The countdown never starts erasure.
+Samsung SSD 970 EVO
+256 GB  SSD  NVMe
+Serial number: S4EVNX0N123456
+Laptop: keep wall power connected and keep the lid open.
+Preview power (not a hardware reading). Wall power: unknown. Some power information is unavailable.
+Erasing this selected disk removes every file on it, including any operating system, applications, files, and recovery partitions on this disk.
+One overwrite. Verification is not performed.
+Warning: This will erase Samsung SSD 970 EVO, 256 GB, S4EVNX0N123456. You cannot get the files back.
+Quick zero: 1 overwrite pass: zeros. This method does not check the overwrite.
+Wait 5…
+Wait 5…
+Wait 5…
+Wait 4…
+Wait 4…
+Wait 3…
+Wait 3…
+Wait 3…
+Wait 2…
+Wait 2…
+Wait 2…
+Wait 1…
+Wait 1…
+K: Keyboard layout
+Type CHECK DISKS AGAIN to refresh. This clears preparation.
+Type ERASE to start: 
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+_____ test_plain_erase_requires_new_input_after_countdown[middle-everyday] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b3a38d53fb0>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-23/test_plain_erase_requires_new_3')
+request = <FixtureRequest for <Function test_plain_erase_requires_new_input_after_countdown[middle-everyday]>>
+method = <MethodId.EVERYDAY: 'everyday'>, arrival = 'middle'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("arrival", ["early", "middle", "late", "fresh", "cancel", "eof"])
+    def test_plain_erase_requires_new_input_after_countdown(monkeypatch, tmp_path, request, method, arrival):
+        if not hasattr(os, "openpty"):
+            pytest.skip("Requires an ordinary local pseudoterminal fixture")
+        wizard, clock = _last_chance()
+        wizard.back()
+        wizard.set_method(method)
+        wizard.back()
+        assert wizard.screen is Screen.CONFIRM
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+        wizard.continue_method()
+        assert wizard.screen is Screen.LAST_CHANCE
+        master, slave = os.openpty()
+        terminal = os.fdopen(os.dup(slave), "r", encoding="utf-8")
+        monkeypatch.setattr(sys, "stdin", terminal)
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+        monkeypatch.setattr(wizard, "_write_evidence", lambda **_kwargs: None)
+        inputs, starts, answers = [], [], []
+        queued = False
+        real_answer = console._answer
+    
+        def enqueue(text):
+            os.write(master, text)
+            inputs.append({"at": clock.value, "bytes": repr(text), "enabled": wizard.erase_enabled})
+    
+        def sleep(seconds):
+            nonlocal queued
+            cutoff = {"early": 0.0, "middle": 2.0, "late": 4.7,
+                      "cancel": 0.0, "eof": 0.0}.get(arrival)
+            if cutoff is not None and not queued and clock.value >= cutoff:
+                enqueue(b"BACK\n" if arrival == "cancel" else b"\x04" if arrival == "eof" else b"ERASE\n")
+                queued = True
+            clock.add(seconds)
+    
+        def answer(w, prompt):
+            assert prompt == C.CON_ERASE_PROMPT
+            assert w.erase_enabled and clock.value >= 5.0
+            # This is the first action after expiry. An early completed ERASE line
+            # must already have been discarded before this prompt becomes usable.
+            enqueue(b"ERASE\n" if arrival == "fresh" else b"BACK\n")
+            value = real_answer(w, prompt)
+            answers.append({"at": clock.value, "value": value})
+            if value.strip().upper() != "ERASE":
+                wizard.wants_shutdown = True  # bound the fake controller loop
+            return value
+    
+        def fake_start(wipe_request):
+            starts.append({"at": clock.value, "method": wipe_request.method.value})
+            wizard.wants_shutdown = True  # no process or raw disk opened
+    
+        monkeypatch.setattr(console.time, "sleep", sleep)
+        monkeypatch.setattr(console, "_answer", answer)
+        monkeypatch.setattr(wizard.runner, "start", fake_start)
+        try:
+            assert console._plain_loop(wizard) == 0
+            if arrival != "fresh":
+                assert queued and inputs[0]["at"] < 5.0 and not inputs[0]["enabled"]
+            request.node.user_properties.append(("pty_typeahead_trace", json.dumps({
+                "arrival": arrival, "method": method.value, "inputs": inputs,
+                "answers": answers, "fake_engine_starts": starts,
+            })))
+>           assert len(starts) == (1 if arrival == "fresh" else 0), starts
+E           AssertionError: [{'at': 5.2, 'method': 'everyday'}]
+E           assert 1 == 0
+E            +  where 1 = len([{'at': 5.2, 'method': 'everyday'}])
+
+tests/test_plain_erase_typeahead_pass17.py:98: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+============================================================
+Beamo Wipe
+Preparation
+Review before erasing
+============================================================
+Check the selected disk and method. The countdown never starts erasure.
+Samsung SSD 970 EVO
+256 GB  SSD  NVMe
+Serial number: S4EVNX0N123456
+Laptop: keep wall power connected and keep the lid open.
+Preview power (not a hardware reading). Wall power: unknown. Some power information is unavailable.
+Erasing this selected disk removes every file on it, including any operating system, applications, files, and recovery partitions on this disk.
+One overwrite, followed by verification.
+Warning: This will erase Samsung SSD 970 EVO, 256 GB, S4EVNX0N123456. You cannot get the files back.
+Everyday: 1 overwrite pass: random data. Then we check the last overwrite.
+Wait 5…
+Wait 5…
+Wait 5…
+Wait 4…
+Wait 4…
+Wait 3…
+Wait 3…
+Wait 3…
+Wait 2…
+Wait 2…
+Wait 2…
+Wait 1…
+Wait 1…
+K: Keyboard layout
+Type CHECK DISKS AGAIN to refresh. This clears preparation.
+Type ERASE to start: 
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+______ test_plain_erase_requires_new_input_after_countdown[middle-extra] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b3a38d95e50>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-23/test_plain_erase_requires_new_4')
+request = <FixtureRequest for <Function test_plain_erase_requires_new_input_after_countdown[middle-extra]>>
+method = <MethodId.EXTRA: 'extra'>, arrival = 'middle'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("arrival", ["early", "middle", "late", "fresh", "cancel", "eof"])
+    def test_plain_erase_requires_new_input_after_countdown(monkeypatch, tmp_path, request, method, arrival):
+        if not hasattr(os, "openpty"):
+            pytest.skip("Requires an ordinary local pseudoterminal fixture")
+        wizard, clock = _last_chance()
+        wizard.back()
+        wizard.set_method(method)
+        wizard.back()
+        assert wizard.screen is Screen.CONFIRM
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+        wizard.continue_method()
+        assert wizard.screen is Screen.LAST_CHANCE
+        master, slave = os.openpty()
+        terminal = os.fdopen(os.dup(slave), "r", encoding="utf-8")
+        monkeypatch.setattr(sys, "stdin", terminal)
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+        monkeypatch.setattr(wizard, "_write_evidence", lambda **_kwargs: None)
+        inputs, starts, answers = [], [], []
+        queued = False
+        real_answer = console._answer
+    
+        def enqueue(text):
+            os.write(master, text)
+            inputs.append({"at": clock.value, "bytes": repr(text), "enabled": wizard.erase_enabled})
+    
+        def sleep(seconds):
+            nonlocal queued
+            cutoff = {"early": 0.0, "middle": 2.0, "late": 4.7,
+                      "cancel": 0.0, "eof": 0.0}.get(arrival)
+            if cutoff is not None and not queued and clock.value >= cutoff:
+                enqueue(b"BACK\n" if arrival == "cancel" else b"\x04" if arrival == "eof" else b"ERASE\n")
+                queued = True
+            clock.add(seconds)
+    
+        def answer(w, prompt):
+            assert prompt == C.CON_ERASE_PROMPT
+            assert w.erase_enabled and clock.value >= 5.0
+            # This is the first action after expiry. An early completed ERASE line
+            # must already have been discarded before this prompt becomes usable.
+            enqueue(b"ERASE\n" if arrival == "fresh" else b"BACK\n")
+            value = real_answer(w, prompt)
+            answers.append({"at": clock.value, "value": value})
+            if value.strip().upper() != "ERASE":
+                wizard.wants_shutdown = True  # bound the fake controller loop
+            return value
+    
+        def fake_start(wipe_request):
+            starts.append({"at": clock.value, "method": wipe_request.method.value})
+            wizard.wants_shutdown = True  # no process or raw disk opened
+    
+        monkeypatch.setattr(console.time, "sleep", sleep)
+        monkeypatch.setattr(console, "_answer", answer)
+        monkeypatch.setattr(wizard.runner, "start", fake_start)
+        try:
+            assert console._plain_loop(wizard) == 0
+            if arrival != "fresh":
+                assert queued and inputs[0]["at"] < 5.0 and not inputs[0]["enabled"]
+            request.node.user_properties.append(("pty_typeahead_trace", json.dumps({
+                "arrival": arrival, "method": method.value, "inputs": inputs,
+                "answers": answers, "fake_engine_starts": starts,
+            })))
+>           assert len(starts) == (1 if arrival == "fresh" else 0), starts
+E           AssertionError: [{'at': 5.2, 'method': 'extra'}]
+E           assert 1 == 0
+E            +  where 1 = len([{'at': 5.2, 'method': 'extra'}])
+
+tests/test_plain_erase_typeahead_pass17.py:98: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+============================================================
+Beamo Wipe
+Preparation
+Review before erasing
+============================================================
+Check the selected disk and method. The countdown never starts erasure.
+Samsung SSD 970 EVO
+256 GB  SSD  NVMe
+Serial number: S4EVNX0N123456
+Laptop: keep wall power connected and keep the lid open.
+Preview power (not a hardware reading). Wall power: unknown. Some power information is unavailable.
+Erasing this selected disk removes every file on it, including any operating system, applications, files, and recovery partitions on this disk.
+Three overwrites, followed by verification.
+Warning: This will erase Samsung SSD 970 EVO, 256 GB, S4EVNX0N123456. You cannot get the files back.
+Three overwrites: 3 overwrite passes: a pattern, its inverse, then random data. Then we check the last overwrite.
+Wait 5…
+Wait 5…
+Wait 5…
+Wait 4…
+Wait 4…
+Wait 3…
+Wait 3…
+Wait 3…
+Wait 2…
+Wait 2…
+Wait 2…
+Wait 1…
+Wait 1…
+K: Keyboard layout
+Type CHECK DISKS AGAIN to refresh. This clears preparation.
+Type ERASE to start: 
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+____ test_plain_erase_requires_new_input_after_countdown[middle-quick_zero] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b3a38d96a80>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-23/test_plain_erase_requires_new_5')
+request = <FixtureRequest for <Function test_plain_erase_requires_new_input_after_countdown[middle-quick_zero]>>
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, arrival = 'middle'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("arrival", ["early", "middle", "late", "fresh", "cancel", "eof"])
+    def test_plain_erase_requires_new_input_after_countdown(monkeypatch, tmp_path, request, method, arrival):
+        if not hasattr(os, "openpty"):
+            pytest.skip("Requires an ordinary local pseudoterminal fixture")
+        wizard, clock = _last_chance()
+        wizard.back()
+        wizard.set_method(method)
+        wizard.back()
+        assert wizard.screen is Screen.CONFIRM
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+        wizard.continue_method()
+        assert wizard.screen is Screen.LAST_CHANCE
+        master, slave = os.openpty()
+        terminal = os.fdopen(os.dup(slave), "r", encoding="utf-8")
+        monkeypatch.setattr(sys, "stdin", terminal)
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+        monkeypatch.setattr(wizard, "_write_evidence", lambda **_kwargs: None)
+        inputs, starts, answers = [], [], []
+        queued = False
+        real_answer = console._answer
+    
+        def enqueue(text):
+            os.write(master, text)
+            inputs.append({"at": clock.value, "bytes": repr(text), "enabled": wizard.erase_enabled})
+    
+        def sleep(seconds):
+            nonlocal queued
+            cutoff = {"early": 0.0, "middle": 2.0, "late": 4.7,
+                      "cancel": 0.0, "eof": 0.0}.get(arrival)
+            if cutoff is not None and not queued and clock.value >= cutoff:
+                enqueue(b"BACK\n" if arrival == "cancel" else b"\x04" if arrival == "eof" else b"ERASE\n")
+                queued = True
+            clock.add(seconds)
+    
+        def answer(w, prompt):
+            assert prompt == C.CON_ERASE_PROMPT
+            assert w.erase_enabled and clock.value >= 5.0
+            # This is the first action after expiry. An early completed ERASE line
+            # must already have been discarded before this prompt becomes usable.
+            enqueue(b"ERASE\n" if arrival == "fresh" else b"BACK\n")
+            value = real_answer(w, prompt)
+            answers.append({"at": clock.value, "value": value})
+            if value.strip().upper() != "ERASE":
+                wizard.wants_shutdown = True  # bound the fake controller loop
+            return value
+    
+        def fake_start(wipe_request):
+            starts.append({"at": clock.value, "method": wipe_request.method.value})
+            wizard.wants_shutdown = True  # no process or raw disk opened
+    
+        monkeypatch.setattr(console.time, "sleep", sleep)
+        monkeypatch.setattr(console, "_answer", answer)
+        monkeypatch.setattr(wizard.runner, "start", fake_start)
+        try:
+            assert console._plain_loop(wizard) == 0
+            if arrival != "fresh":
+                assert queued and inputs[0]["at"] < 5.0 and not inputs[0]["enabled"]
+            request.node.user_properties.append(("pty_typeahead_trace", json.dumps({
+                "arrival": arrival, "method": method.value, "inputs": inputs,
+                "answers": answers, "fake_engine_starts": starts,
+            })))
+>           assert len(starts) == (1 if arrival == "fresh" else 0), starts
+E           AssertionError: [{'at': 5.2, 'method': 'quick_zero'}]
+E           assert 1 == 0
+E            +  where 1 = len([{'at': 5.2, 'method': 'quick_zero'}])
+
+tests/test_plain_erase_typeahead_pass17.py:98: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+============================================================
+Beamo Wipe
+Preparation
+Review before erasing
+============================================================
+Check the selected disk and method. The countdown never starts erasure.
+Samsung SSD 970 EVO
+256 GB  SSD  NVMe
+Serial number: S4EVNX0N123456
+Laptop: keep wall power connected and keep the lid open.
+Preview power (not a hardware reading). Wall power: unknown. Some power information is unavailable.
+Erasing this selected disk removes every file on it, including any operating system, applications, files, and recovery partitions on this disk.
+One overwrite. Verification is not performed.
+Warning: This will erase Samsung SSD 970 EVO, 256 GB, S4EVNX0N123456. You cannot get the files back.
+Quick zero: 1 overwrite pass: zeros. This method does not check the overwrite.
+Wait 5…
+Wait 5…
+Wait 5…
+Wait 4…
+Wait 4…
+Wait 3…
+Wait 3…
+Wait 3…
+Wait 2…
+Wait 2…
+Wait 2…
+Wait 1…
+Wait 1…
+K: Keyboard layout
+Type CHECK DISKS AGAIN to refresh. This clears preparation.
+Type ERASE to start: 
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+______ test_plain_erase_requires_new_input_after_countdown[late-everyday] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b3a38d979e0>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-23/test_plain_erase_requires_new_6')
+request = <FixtureRequest for <Function test_plain_erase_requires_new_input_after_countdown[late-everyday]>>
+method = <MethodId.EVERYDAY: 'everyday'>, arrival = 'late'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("arrival", ["early", "middle", "late", "fresh", "cancel", "eof"])
+    def test_plain_erase_requires_new_input_after_countdown(monkeypatch, tmp_path, request, method, arrival):
+        if not hasattr(os, "openpty"):
+            pytest.skip("Requires an ordinary local pseudoterminal fixture")
+        wizard, clock = _last_chance()
+        wizard.back()
+        wizard.set_method(method)
+        wizard.back()
+        assert wizard.screen is Screen.CONFIRM
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+        wizard.continue_method()
+        assert wizard.screen is Screen.LAST_CHANCE
+        master, slave = os.openpty()
+        terminal = os.fdopen(os.dup(slave), "r", encoding="utf-8")
+        monkeypatch.setattr(sys, "stdin", terminal)
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+        monkeypatch.setattr(wizard, "_write_evidence", lambda **_kwargs: None)
+        inputs, starts, answers = [], [], []
+        queued = False
+        real_answer = console._answer
+    
+        def enqueue(text):
+            os.write(master, text)
+            inputs.append({"at": clock.value, "bytes": repr(text), "enabled": wizard.erase_enabled})
+    
+        def sleep(seconds):
+            nonlocal queued
+            cutoff = {"early": 0.0, "middle": 2.0, "late": 4.7,
+                      "cancel": 0.0, "eof": 0.0}.get(arrival)
+            if cutoff is not None and not queued and clock.value >= cutoff:
+                enqueue(b"BACK\n" if arrival == "cancel" else b"\x04" if arrival == "eof" else b"ERASE\n")
+                queued = True
+            clock.add(seconds)
+    
+        def answer(w, prompt):
+            assert prompt == C.CON_ERASE_PROMPT
+            assert w.erase_enabled and clock.value >= 5.0
+            # This is the first action after expiry. An early completed ERASE line
+            # must already have been discarded before this prompt becomes usable.
+            enqueue(b"ERASE\n" if arrival == "fresh" else b"BACK\n")
+            value = real_answer(w, prompt)
+            answers.append({"at": clock.value, "value": value})
+            if value.strip().upper() != "ERASE":
+                wizard.wants_shutdown = True  # bound the fake controller loop
+            return value
+    
+        def fake_start(wipe_request):
+            starts.append({"at": clock.value, "method": wipe_request.method.value})
+            wizard.wants_shutdown = True  # no process or raw disk opened
+    
+        monkeypatch.setattr(console.time, "sleep", sleep)
+        monkeypatch.setattr(console, "_answer", answer)
+        monkeypatch.setattr(wizard.runner, "start", fake_start)
+        try:
+            assert console._plain_loop(wizard) == 0
+            if arrival != "fresh":
+                assert queued and inputs[0]["at"] < 5.0 and not inputs[0]["enabled"]
+            request.node.user_properties.append(("pty_typeahead_trace", json.dumps({
+                "arrival": arrival, "method": method.value, "inputs": inputs,
+                "answers": answers, "fake_engine_starts": starts,
+            })))
+>           assert len(starts) == (1 if arrival == "fresh" else 0), starts
+E           AssertionError: [{'at': 5.2, 'method': 'everyday'}]
+E           assert 1 == 0
+E            +  where 1 = len([{'at': 5.2, 'method': 'everyday'}])
+
+tests/test_plain_erase_typeahead_pass17.py:98: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+============================================================
+Beamo Wipe
+Preparation
+Review before erasing
+============================================================
+Check the selected disk and method. The countdown never starts erasure.
+Samsung SSD 970 EVO
+256 GB  SSD  NVMe
+Serial number: S4EVNX0N123456
+Laptop: keep wall power connected and keep the lid open.
+Preview power (not a hardware reading). Wall power: unknown. Some power information is unavailable.
+Erasing this selected disk removes every file on it, including any operating system, applications, files, and recovery partitions on this disk.
+One overwrite, followed by verification.
+Warning: This will erase Samsung SSD 970 EVO, 256 GB, S4EVNX0N123456. You cannot get the files back.
+Everyday: 1 overwrite pass: random data. Then we check the last overwrite.
+Wait 5…
+Wait 5…
+Wait 5…
+Wait 4…
+Wait 4…
+Wait 3…
+Wait 3…
+Wait 3…
+Wait 2…
+Wait 2…
+Wait 2…
+Wait 1…
+Wait 1…
+K: Keyboard layout
+Type CHECK DISKS AGAIN to refresh. This clears preparation.
+Type ERASE to start: 
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+_______ test_plain_erase_requires_new_input_after_countdown[late-extra] ________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b3a38d53ef0>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-23/test_plain_erase_requires_new_7')
+request = <FixtureRequest for <Function test_plain_erase_requires_new_input_after_countdown[late-extra]>>
+method = <MethodId.EXTRA: 'extra'>, arrival = 'late'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("arrival", ["early", "middle", "late", "fresh", "cancel", "eof"])
+    def test_plain_erase_requires_new_input_after_countdown(monkeypatch, tmp_path, request, method, arrival):
+        if not hasattr(os, "openpty"):
+            pytest.skip("Requires an ordinary local pseudoterminal fixture")
+        wizard, clock = _last_chance()
+        wizard.back()
+        wizard.set_method(method)
+        wizard.back()
+        assert wizard.screen is Screen.CONFIRM
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+        wizard.continue_method()
+        assert wizard.screen is Screen.LAST_CHANCE
+        master, slave = os.openpty()
+        terminal = os.fdopen(os.dup(slave), "r", encoding="utf-8")
+        monkeypatch.setattr(sys, "stdin", terminal)
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+        monkeypatch.setattr(wizard, "_write_evidence", lambda **_kwargs: None)
+        inputs, starts, answers = [], [], []
+        queued = False
+        real_answer = console._answer
+    
+        def enqueue(text):
+            os.write(master, text)
+            inputs.append({"at": clock.value, "bytes": repr(text), "enabled": wizard.erase_enabled})
+    
+        def sleep(seconds):
+            nonlocal queued
+            cutoff = {"early": 0.0, "middle": 2.0, "late": 4.7,
+                      "cancel": 0.0, "eof": 0.0}.get(arrival)
+            if cutoff is not None and not queued and clock.value >= cutoff:
+                enqueue(b"BACK\n" if arrival == "cancel" else b"\x04" if arrival == "eof" else b"ERASE\n")
+                queued = True
+            clock.add(seconds)
+    
+        def answer(w, prompt):
+            assert prompt == C.CON_ERASE_PROMPT
+            assert w.erase_enabled and clock.value >= 5.0
+            # This is the first action after expiry. An early completed ERASE line
+            # must already have been discarded before this prompt becomes usable.
+            enqueue(b"ERASE\n" if arrival == "fresh" else b"BACK\n")
+            value = real_answer(w, prompt)
+            answers.append({"at": clock.value, "value": value})
+            if value.strip().upper() != "ERASE":
+                wizard.wants_shutdown = True  # bound the fake controller loop
+            return value
+    
+        def fake_start(wipe_request):
+            starts.append({"at": clock.value, "method": wipe_request.method.value})
+            wizard.wants_shutdown = True  # no process or raw disk opened
+    
+        monkeypatch.setattr(console.time, "sleep", sleep)
+        monkeypatch.setattr(console, "_answer", answer)
+        monkeypatch.setattr(wizard.runner, "start", fake_start)
+        try:
+            assert console._plain_loop(wizard) == 0
+            if arrival != "fresh":
+                assert queued and inputs[0]["at"] < 5.0 and not inputs[0]["enabled"]
+            request.node.user_properties.append(("pty_typeahead_trace", json.dumps({
+                "arrival": arrival, "method": method.value, "inputs": inputs,
+                "answers": answers, "fake_engine_starts": starts,
+            })))
+>           assert len(starts) == (1 if arrival == "fresh" else 0), starts
+E           AssertionError: [{'at': 5.2, 'method': 'extra'}]
+E           assert 1 == 0
+E            +  where 1 = len([{'at': 5.2, 'method': 'extra'}])
+
+tests/test_plain_erase_typeahead_pass17.py:98: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+============================================================
+Beamo Wipe
+Preparation
+Review before erasing
+============================================================
+Check the selected disk and method. The countdown never starts erasure.
+Samsung SSD 970 EVO
+256 GB  SSD  NVMe
+Serial number: S4EVNX0N123456
+Laptop: keep wall power connected and keep the lid open.
+Preview power (not a hardware reading). Wall power: unknown. Some power information is unavailable.
+Erasing this selected disk removes every file on it, including any operating system, applications, files, and recovery partitions on this disk.
+Three overwrites, followed by verification.
+Warning: This will erase Samsung SSD 970 EVO, 256 GB, S4EVNX0N123456. You cannot get the files back.
+Three overwrites: 3 overwrite passes: a pattern, its inverse, then random data. Then we check the last overwrite.
+Wait 5…
+Wait 5…
+Wait 5…
+Wait 4…
+Wait 4…
+Wait 3…
+Wait 3…
+Wait 3…
+Wait 2…
+Wait 2…
+Wait 2…
+Wait 1…
+Wait 1…
+K: Keyboard layout
+Type CHECK DISKS AGAIN to refresh. This clears preparation.
+Type ERASE to start: 
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+_____ test_plain_erase_requires_new_input_after_countdown[late-quick_zero] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b3a38d511c0>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-23/test_plain_erase_requires_new_8')
+request = <FixtureRequest for <Function test_plain_erase_requires_new_input_after_countdown[late-quick_zero]>>
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, arrival = 'late'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("arrival", ["early", "middle", "late", "fresh", "cancel", "eof"])
+    def test_plain_erase_requires_new_input_after_countdown(monkeypatch, tmp_path, request, method, arrival):
+        if not hasattr(os, "openpty"):
+            pytest.skip("Requires an ordinary local pseudoterminal fixture")
+        wizard, clock = _last_chance()
+        wizard.back()
+        wizard.set_method(method)
+        wizard.back()
+        assert wizard.screen is Screen.CONFIRM
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+        wizard.continue_method()
+        assert wizard.screen is Screen.LAST_CHANCE
+        master, slave = os.openpty()
+        terminal = os.fdopen(os.dup(slave), "r", encoding="utf-8")
+        monkeypatch.setattr(sys, "stdin", terminal)
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+        monkeypatch.setattr(wizard, "_write_evidence", lambda **_kwargs: None)
+        inputs, starts, answers = [], [], []
+        queued = False
+        real_answer = console._answer
+    
+        def enqueue(text):
+            os.write(master, text)
+            inputs.append({"at": clock.value, "bytes": repr(text), "enabled": wizard.erase_enabled})
+    
+        def sleep(seconds):
+            nonlocal queued
+            cutoff = {"early": 0.0, "middle": 2.0, "late": 4.7,
+                      "cancel": 0.0, "eof": 0.0}.get(arrival)
+            if cutoff is not None and not queued and clock.value >= cutoff:
+                enqueue(b"BACK\n" if arrival == "cancel" else b"\x04" if arrival == "eof" else b"ERASE\n")
+                queued = True
+            clock.add(seconds)
+    
+        def answer(w, prompt):
+            assert prompt == C.CON_ERASE_PROMPT
+            assert w.erase_enabled and clock.value >= 5.0
+            # This is the first action after expiry. An early completed ERASE line
+            # must already have been discarded before this prompt becomes usable.
+            enqueue(b"ERASE\n" if arrival == "fresh" else b"BACK\n")
+            value = real_answer(w, prompt)
+            answers.append({"at": clock.value, "value": value})
+            if value.strip().upper() != "ERASE":
+                wizard.wants_shutdown = True  # bound the fake controller loop
+            return value
+    
+        def fake_start(wipe_request):
+            starts.append({"at": clock.value, "method": wipe_request.method.value})
+            wizard.wants_shutdown = True  # no process or raw disk opened
+    
+        monkeypatch.setattr(console.time, "sleep", sleep)
+        monkeypatch.setattr(console, "_answer", answer)
+        monkeypatch.setattr(wizard.runner, "start", fake_start)
+        try:
+            assert console._plain_loop(wizard) == 0
+            if arrival != "fresh":
+                assert queued and inputs[0]["at"] < 5.0 and not inputs[0]["enabled"]
+            request.node.user_properties.append(("pty_typeahead_trace", json.dumps({
+                "arrival": arrival, "method": method.value, "inputs": inputs,
+                "answers": answers, "fake_engine_starts": starts,
+            })))
+>           assert len(starts) == (1 if arrival == "fresh" else 0), starts
+E           AssertionError: [{'at': 5.2, 'method': 'quick_zero'}]
+E           assert 1 == 0
+E            +  where 1 = len([{'at': 5.2, 'method': 'quick_zero'}])
+
+tests/test_plain_erase_typeahead_pass17.py:98: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+============================================================
+Beamo Wipe
+Preparation
+Review before erasing
+============================================================
+Check the selected disk and method. The countdown never starts erasure.
+Samsung SSD 970 EVO
+256 GB  SSD  NVMe
+Serial number: S4EVNX0N123456
+Laptop: keep wall power connected and keep the lid open.
+Preview power (not a hardware reading). Wall power: unknown. Some power information is unavailable.
+Erasing this selected disk removes every file on it, including any operating system, applications, files, and recovery partitions on this disk.
+One overwrite. Verification is not performed.
+Warning: This will erase Samsung SSD 970 EVO, 256 GB, S4EVNX0N123456. You cannot get the files back.
+Quick zero: 1 overwrite pass: zeros. This method does not check the overwrite.
+Wait 5…
+Wait 5…
+Wait 5…
+Wait 4…
+Wait 4…
+Wait 3…
+Wait 3…
+Wait 3…
+Wait 2…
+Wait 2…
+Wait 2…
+Wait 1…
+Wait 1…
+K: Keyboard layout
+Type CHECK DISKS AGAIN to refresh. This clears preparation.
+Type ERASE to start: 
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_plain_erase_typeahead_pass17.py::test_plain_erase_requires_new_input_after_countdown[early-everyday]
+FAILED tests/test_plain_erase_typeahead_pass17.py::test_plain_erase_requires_new_input_after_countdown[early-extra]
+FAILED tests/test_plain_erase_typeahead_pass17.py::test_plain_erase_requires_new_input_after_countdown[early-quick_zero]
+FAILED tests/test_plain_erase_typeahead_pass17.py::test_plain_erase_requires_new_input_after_countdown[middle-everyday]
+FAILED tests/test_plain_erase_typeahead_pass17.py::test_plain_erase_requires_new_input_after_countdown[middle-extra]
+FAILED tests/test_plain_erase_typeahead_pass17.py::test_plain_erase_requires_new_input_after_countdown[middle-quick_zero]
+FAILED tests/test_plain_erase_typeahead_pass17.py::test_plain_erase_requires_new_input_after_countdown[late-everyday]
+FAILED tests/test_plain_erase_typeahead_pass17.py::test_plain_erase_requires_new_input_after_countdown[late-extra]
+FAILED tests/test_plain_erase_typeahead_pass17.py::test_plain_erase_requires_new_input_after_countdown[late-quick_zero]

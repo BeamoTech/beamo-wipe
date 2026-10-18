@@ -1,0 +1,471 @@
+FFFFFFFFFFFFFFFFFFFFFFFF................................................ [ 34%]
+........................................................................ [ 69%]
+..............................................................           [100%]
+=================================== FAILURES ===================================
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-nested-bcache-disk-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9fe3100>
+route = 'injected', kind = 'bcache-disk', placement = 'nested', depth = 1
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-nested-bcache-disk-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9fe3c40>
+route = 'production-metadata-stub', kind = 'bcache-disk', placement = 'nested'
+depth = 1
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-nested-lvm-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9fe3920>
+route = 'injected', kind = 'lvm', placement = 'nested', depth = 1
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-nested-lvm-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9fe3740>
+route = 'production-metadata-stub', kind = 'lvm', placement = 'nested'
+depth = 1
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-nested-linear-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5dc60>
+route = 'injected', kind = 'linear', placement = 'nested', depth = 1
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-nested-linear-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5dda0>
+route = 'production-metadata-stub', kind = 'linear', placement = 'nested'
+depth = 1
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-flat-bcache-disk-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5dee0>
+route = 'injected', kind = 'bcache-disk', placement = 'flat', depth = 1
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-flat-bcache-disk-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5d3a0>
+route = 'production-metadata-stub', kind = 'bcache-disk', placement = 'flat'
+depth = 1
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-flat-lvm-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5eac0>
+route = 'injected', kind = 'lvm', placement = 'flat', depth = 1
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-flat-lvm-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5e480>
+route = 'production-metadata-stub', kind = 'lvm', placement = 'flat', depth = 1
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-flat-linear-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5c180>
+route = 'injected', kind = 'linear', placement = 'flat', depth = 1
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-flat-linear-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5d1c0>
+route = 'production-metadata-stub', kind = 'linear', placement = 'flat'
+depth = 1
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-nested-bcache-disk-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5e160>
+route = 'injected', kind = 'bcache-disk', placement = 'nested', depth = 2
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-nested-bcache-disk-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9fe3880>
+route = 'production-metadata-stub', kind = 'bcache-disk', placement = 'nested'
+depth = 2
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-nested-lvm-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5ed40>
+route = 'injected', kind = 'lvm', placement = 'nested', depth = 2
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-nested-lvm-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5da80>
+route = 'production-metadata-stub', kind = 'lvm', placement = 'nested'
+depth = 2
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-nested-linear-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5d1c0>
+route = 'injected', kind = 'linear', placement = 'nested', depth = 2
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-nested-linear-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5e340>
+route = 'production-metadata-stub', kind = 'linear', placement = 'nested'
+depth = 2
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-flat-bcache-disk-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5db20>
+route = 'injected', kind = 'bcache-disk', placement = 'flat', depth = 2
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-flat-bcache-disk-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5f920>
+route = 'production-metadata-stub', kind = 'bcache-disk', placement = 'flat'
+depth = 2
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-flat-lvm-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5fb00>
+route = 'injected', kind = 'lvm', placement = 'flat', depth = 2
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-flat-lvm-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5f6a0>
+route = 'production-metadata-stub', kind = 'lvm', placement = 'flat', depth = 2
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-flat-linear-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5efc0>
+route = 'injected', kind = 'linear', placement = 'flat', depth = 2
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+_ test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-flat-linear-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7a07d9f5d6c0>
+route = 'production-metadata-stub', kind = 'linear', placement = 'flat'
+depth = 2
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("kind", HOLDERS)
+    @pytest.mark.parametrize("placement", ("nested", "flat"))
+    @pytest.mark.parametrize("depth", (1, 2))
+    def test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge(
+        fake_machine, route, kind, placement, depth  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(kind, placement, depth, contradictory=True), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py:62: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-nested-bcache-disk-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-nested-bcache-disk-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-nested-lvm-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-nested-lvm-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-nested-linear-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-nested-linear-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-flat-bcache-disk-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-flat-bcache-disk-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-flat-lvm-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-flat-lvm-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-flat-linear-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[1-flat-linear-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-nested-bcache-disk-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-nested-bcache-disk-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-nested-lvm-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-nested-lvm-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-nested-linear-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-nested-linear-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-flat-bcache-disk-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-flat-bcache-disk-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-flat-lvm-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-flat-lvm-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-flat-linear-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/holder_ancestor_contradiction_probe.py::test_descendant_filesystem_cannot_cross_a_contradictory_holder_edge[2-flat-linear-production-metadata-stub]

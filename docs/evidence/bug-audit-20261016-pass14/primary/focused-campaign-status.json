@@ -1,0 +1,52 @@
+[
+  {
+    "phase": "independent-original",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass14-primary/original-proof.py"
+    ],
+    "started_utc": "2026-10-16T21:44:03.799987+00:00",
+    "exit_code": 0,
+    "ended_utc": "2026-10-16T21:44:12.487826+00:00"
+  },
+  {
+    "phase": "adjacent-final",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass14-primary/run-adjacent.py"
+    ],
+    "started_utc": "2026-10-16T21:44:12.489217+00:00",
+    "exit_code": 0,
+    "ended_utc": "2026-10-16T21:45:45.255576+00:00"
+  },
+  {
+    "phase": "discovery-matrix",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass14-discovery/permutation_matrix.py"
+    ],
+    "started_utc": "2026-10-16T21:45:45.257186+00:00",
+    "exit_code": 0,
+    "ended_utc": "2026-10-16T21:45:45.934036+00:00"
+  },
+  {
+    "phase": "runner-differential",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass14-runner/differential-matrix.py"
+    ],
+    "started_utc": "2026-10-16T21:45:45.934445+00:00",
+    "exit_code": 0,
+    "ended_utc": "2026-10-16T21:45:52.182041+00:00"
+  },
+  {
+    "phase": "ui-geometry",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass14-ui/run-geometry.py"
+    ],
+    "started_utc": "2026-10-16T21:45:52.182463+00:00",
+    "exit_code": 0,
+    "ended_utc": "2026-10-16T21:46:36.167653+00:00"
+  }
+]

@@ -1,0 +1,446 @@
+{
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/README.md": {
+    "sha256": "61dec6dc4b783811ecb6ffd378eb51fc2b40e8669dd341c82d8a3f87aa875400",
+    "bytes": 5129
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/codeql/focused-display-tests.log": {
+    "sha256": "475bcfb56b286d857c4310602373e306e2cb722ad6df6053d0e1aff939c18220",
+    "bytes": 80
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/codeql/focused-display-tests.xml": {
+    "sha256": "ea146d99589d72691f6b1dd50b04a486accf592ea866f777212871d2da4cb974",
+    "bytes": 2837
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/codeql/focused-tests.log": {
+    "sha256": "7177e64dad20c756bb0439f15799540f0e4ac60c0a77e3b0c4cc1870eb9efa73",
+    "bytes": 80
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/codeql/focused-tests.xml": {
+    "sha256": "1b4a6a920724da61c5f59cb32cbc931ab5ef3c4936b38f13b13d1dcf6a9148ef",
+    "bytes": 3073
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/codeql/reviewed-alerts.json": {
+    "sha256": "8f95aa619f3268d701fea4d5a1a73bbac09c788739476d4dc0e6ee3632d74735",
+    "bytes": 3183
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/codeql/trace-findings.json": {
+    "sha256": "7b6dfbf652b76b7b85a47f94081987ca249c40d06cfc2abaaeb3d754b723cba1",
+    "bytes": 5373
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/codeql/trace-findings.py": {
+    "sha256": "7e09a4ad2df9bac057b11d768e5878ead56dcee81385c3158269ebc1b933a1c2",
+    "bytes": 3594
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/duplicate-compiled-artifact-map.json": {
+    "sha256": "3fdd39b482cea99b052313da95ff50e72e3dc1f9697cd92fe85cf5a2b96d87fc",
+    "bytes": 358
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/final.txt": {
+    "sha256": "f3a7c9384857ba6cce9bed82abee1979e8c1eea7ed2ca3172cde2a11cf31480c",
+    "bytes": 14795
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/final.xml": {
+    "sha256": "8dfccac0441b2c4ea54c84cd83e700a33f97a1cf71d12f6ce4fd07b7af233774",
+    "bytes": 2917509
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/final.xml.orca.xml": {
+    "sha256": "7ea6ea9563573e98859d23ca5ee37cbd7bb626c696c81c630815b3afe6af5811",
+    "bytes": 355
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/go-fuzz.txt": {
+    "sha256": "382ef034487cf595944e8a3acdee3e635aeccfc147226806736adb12d4c451d7",
+    "bytes": 507
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/go-race.txt": {
+    "sha256": "18ac447a57487d481eaceb3a0b23eb70a4fc6a0dfe68c5bc120b1f76db520189",
+    "bytes": 31
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/go-version.txt": {
+    "sha256": "7e35a947feee25f89c2649aa041942db786be35c3d6c484ab2ba2da849e3dc00",
+    "bytes": 32
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/go-vet.txt": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/go-windows-crossbuild.txt": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/guard-manifest.json": {
+    "sha256": "aeff96a8a369e420af44c84b151723b1d0e3ec46f298d24060b5b4f3f38ec1da",
+    "bytes": 1005
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/guards/aws": {
+    "sha256": "24ab317c1f2ded107fd305eab330c4e6a2cf0f15c12c5b85172436aa41d2074a",
+    "bytes": 199
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/guards/curl": {
+    "sha256": "24ab317c1f2ded107fd305eab330c4e6a2cf0f15c12c5b85172436aa41d2074a",
+    "bytes": 199
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/guards/docker": {
+    "sha256": "24ab317c1f2ded107fd305eab330c4e6a2cf0f15c12c5b85172436aa41d2074a",
+    "bytes": 199
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/guards/gcloud": {
+    "sha256": "ba1400844ba1ccb295d890ecc921f5ffb39493007dd96493e9850cebd2057a6a",
+    "bytes": 2136
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/guards/gh": {
+    "sha256": "24ab317c1f2ded107fd305eab330c4e6a2cf0f15c12c5b85172436aa41d2074a",
+    "bytes": 199
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/guards/losetup": {
+    "sha256": "24ab317c1f2ded107fd305eab330c4e6a2cf0f15c12c5b85172436aa41d2074a",
+    "bytes": 199
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/guards/qemu-system-x86_64": {
+    "sha256": "24ab317c1f2ded107fd305eab330c4e6a2cf0f15c12c5b85172436aa41d2074a",
+    "bytes": 199
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/guards/sudo": {
+    "sha256": "24ab317c1f2ded107fd305eab330c4e6a2cf0f15c12c5b85172436aa41d2074a",
+    "bytes": 199
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/lint.txt": {
+    "sha256": "8f516a7b4cdf99e4a7010798da05d2e8ef77892c31a6a56ac32cd2ac243232e4",
+    "bytes": 1250
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/local-gate-status.json": {
+    "sha256": "af1eada5afd7adc2ba289b371e049b1444c1233ba288e552c559466ed9c57eca",
+    "bytes": 3661
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/negative.txt": {
+    "sha256": "e23ce0ce0e21bc0992043ead0b33a6ac4fc4adf15c57ccfc798f76c70843f62a",
+    "bytes": 1586
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/new-tests-sha256.json": {
+    "sha256": "0f4bbdb8245ff4112cee8a9c9405b9f3c7f93979eaa025fe1ef80db9285ba80b",
+    "bytes": 7141
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/permitted-offline-gcloud.jsonl": {
+    "sha256": "7f95f6952035ee737f3ddb2467f6410137e9964150aae07490af7561a0c42012",
+    "bytes": 219
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/preview.txt": {
+    "sha256": "70c9bf2df0820c895a0d898f7cf233ce80688317d9067cd07b5747d6fe241cb9",
+    "bytes": 545
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/prior-regression-map.json": {
+    "sha256": "a3e07c5c65081c5fd3a82b45fb7be16d2ee89878291be3bf12a6cbc0bbed4750",
+    "bytes": 7141
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/regression-map-admission.json": {
+    "sha256": "77cb10e67a9e03600924bd8a958c268ce36702c7c3b2fbe266df414c4b7ff182",
+    "bytes": 409
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/review-local-gates.py": {
+    "sha256": "d1f530cc17a10b23a1a82c9beeb03f9033564c16c6c3346ce49b54a5264d2a26",
+    "bytes": 6878
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/review-native-results.py": {
+    "sha256": "151ca6af432eed1f848b2af0b85e8e3c0af434e66b4b1c45b86a14f4fe6bac6f",
+    "bytes": 2551
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/run-gates.py": {
+    "sha256": "eb711c1618c93e99159f459ad5004ecb1eae562d0f667e418678d26788aa8a13",
+    "bytes": 2894
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/source-freeze.json": {
+    "sha256": "e123a59f19dcb0027685e54087f5022e485cda79a6a86a948e7f338546dc5fcc",
+    "bytes": 97190
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/source-identity.json": {
+    "sha256": "3b5baefdee37834e3d2df5b720d4a5a13e31425abf67bdd7595b119c1043b43a",
+    "bytes": 420
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/initial-unqualified-local-gates/source-inputs.tar.gz": {
+    "sha256": "5630af2aad0a6c6b61b16e675533fe3ae8b62f35375c276939c4c995611531a6",
+    "bytes": 1786686
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/duplicate-compiled-artifact-map.json": {
+    "sha256": "3fdd39b482cea99b052313da95ff50e72e3dc1f9697cd92fe85cf5a2b96d87fc",
+    "bytes": 358
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/final.txt": {
+    "sha256": "dd63913d000dbda878d4e1607af4ef727c29ceeeaed362129b1361744330c9cf",
+    "bytes": 12929
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/final.xml": {
+    "sha256": "1c4eda9d79d92b8198454d528eb7b847eae7fe439f1dca56dd8f893112fe8518",
+    "bytes": 2917820
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/final.xml.orca.xml": {
+    "sha256": "f5de2537c52f568fd14fda6df94dc7a5abbf5766554c854e2f7fa1ae36229bb4",
+    "bytes": 355
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/gate-verification.json": {
+    "sha256": "e73272bb2b718ec13801a43b7efb99c2b6601eb1442d20f1a3997a9fce54129c",
+    "bytes": 7402
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/go-fuzz.txt": {
+    "sha256": "1b75032f5baa4afbdc9ceece5c2560887085630beb7adbb7c4818005a5729d5b",
+    "bytes": 507
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/go-race.txt": {
+    "sha256": "9794a80c51b1ccd11ab91af6a7cded35af6eaa948a45bcda52b11ae3ff8a5602",
+    "bytes": 31
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/go-version.txt": {
+    "sha256": "7e35a947feee25f89c2649aa041942db786be35c3d6c484ab2ba2da849e3dc00",
+    "bytes": 32
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/go-vet.txt": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/go-windows-crossbuild.txt": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/guard-manifest.json": {
+    "sha256": "7349698e71360dfecdedae5f6993c5017701d66a6bc98a9f660b0170ecdde8e9",
+    "bytes": 1005
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/guards/aws": {
+    "sha256": "99beaf6b633265df5c45bd21045671cae04aa08ce6b644c9d76f38286197519f",
+    "bytes": 202
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/guards/curl": {
+    "sha256": "99beaf6b633265df5c45bd21045671cae04aa08ce6b644c9d76f38286197519f",
+    "bytes": 202
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/guards/docker": {
+    "sha256": "99beaf6b633265df5c45bd21045671cae04aa08ce6b644c9d76f38286197519f",
+    "bytes": 202
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/guards/gcloud": {
+    "sha256": "1617b820110bd33934fd22adba71f0cd82451bb0e19bf8a3d9f3c378c14fbfb4",
+    "bytes": 2142
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/guards/gh": {
+    "sha256": "99beaf6b633265df5c45bd21045671cae04aa08ce6b644c9d76f38286197519f",
+    "bytes": 202
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/guards/losetup": {
+    "sha256": "99beaf6b633265df5c45bd21045671cae04aa08ce6b644c9d76f38286197519f",
+    "bytes": 202
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/guards/qemu-system-x86_64": {
+    "sha256": "99beaf6b633265df5c45bd21045671cae04aa08ce6b644c9d76f38286197519f",
+    "bytes": 202
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/guards/sudo": {
+    "sha256": "99beaf6b633265df5c45bd21045671cae04aa08ce6b644c9d76f38286197519f",
+    "bytes": 202
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/lint.txt": {
+    "sha256": "8f516a7b4cdf99e4a7010798da05d2e8ef77892c31a6a56ac32cd2ac243232e4",
+    "bytes": 1250
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/local-gate-status.json": {
+    "sha256": "4661a09525458b919c31d95b768e32a70cc5f9253b90a739ec7c0e3c59e58a43",
+    "bytes": 3664
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/native-final-readback.json": {
+    "sha256": "63db7a415d43e3248b81def4f6ada529417cc9a84614972055db2848b0ae198b",
+    "bytes": 21903
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/native-readback-helper-correction.json": {
+    "sha256": "d7d0d04503e54353770291ea3191f47d5093d8ae2803c21b810e3904d25e20a3",
+    "bytes": 518
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/negative.txt": {
+    "sha256": "ca2687dd122fb5ea8ef0e7320d64358b66081a843777ab6ad2526842b982b5e3",
+    "bytes": 1586
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/new-tests-sha256.json": {
+    "sha256": "b5fa45b7b1eeb25b0989ad1469f54265b89e21b2ee033c8fcb171beb1a714458",
+    "bytes": 7141
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/permitted-offline-gcloud.jsonl": {
+    "sha256": "74c268b44599cb3e90a6602418b5fefbcfe29a5105931c8ee5828ec43af13ee2",
+    "bytes": 219
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/preview.txt": {
+    "sha256": "70c9bf2df0820c895a0d898f7cf233ce80688317d9067cd07b5747d6fe241cb9",
+    "bytes": 545
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/review-local-gates.py": {
+    "sha256": "2386bc38c7a1134fed1cc409926da7668d6f43f816129930579ba8fda00d770a",
+    "bytes": 7023
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/review-native-results-v1.py": {
+    "sha256": "69f40cbe6974d158c40850f58ac7445008d4d521d4010029c35cf71b335cbe14",
+    "bytes": 2554
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/review-native-results.py": {
+    "sha256": "7fc4b57449b3aa2b0f1ae6625e86b396c6d58f8ee69f7519731c668ebd595a68",
+    "bytes": 2690
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/run-gates.py": {
+    "sha256": "d6a62885e48c03953ec7a5e1063f32b66de161b040edd3265552563963cf1b90",
+    "bytes": 2897
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/source-freeze.json": {
+    "sha256": "fd1496381d10cd93169f56b276260d8aa5cbe7badf3976f18f4e7d2a8e3891a5",
+    "bytes": 97190
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/source-identity.json": {
+    "sha256": "45de1c0429c1195eee349e9e4ffb270ff41c1451fd488904a30e08253c342ae5",
+    "bytes": 525
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/local-gates/source-inputs.tar.gz": {
+    "sha256": "794aa94ee7d9dbbb2101ba530817828af8ce115dd374fdfd9be563a32176569a",
+    "bytes": 1787165
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/candidate-identity-v2.json": {
+    "sha256": "45de1c0429c1195eee349e9e4ffb270ff41c1451fd488904a30e08253c342ae5",
+    "bytes": 525
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/candidate-identity.json": {
+    "sha256": "8bbd06e0c25d71adf15b6d8c2d84f4ecc873e633ebd4900ba435b8d59790755a",
+    "bytes": 515
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/final-test-original-replay.json": {
+    "sha256": "3facbe4ba6901327faff7fd990f7bb2da506cfe6d3421bd2da98220bf5869609",
+    "bytes": 821
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/fixed.txt": {
+    "sha256": "3f1505414e6d9dc89b69a0c26354fcc138986d24518eddf8ebb6a66120fda8b1",
+    "bytes": 99
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/fixed.xml": {
+    "sha256": "b44bd8c5e5bbbbca385f1b125d7f014a425c4dc7caf0743f513e985678082b2f",
+    "bytes": 1711
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/focused-native-v2.txt": {
+    "sha256": "5d8fb315e8c6e5e8845b28d2ae7f1333265d18ebf95b2289b9860270586c9ceb",
+    "bytes": 180
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/focused-native-v2.xml": {
+    "sha256": "a4b47a7e5b378973d080e8dd8a75876aedcde6c1dd2a002d1a16ca8def08b263",
+    "bytes": 886687
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/focused-native.txt": {
+    "sha256": "ac5350ea6514cf04bcec1a0f9642708e71ef5261419cdaa5375487c567460283",
+    "bytes": 180
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/focused-native.xml": {
+    "sha256": "f15ac68ee5107c0c67aa56be99950789157cad3102de20e23d83a87b88d96b4a",
+    "bytes": 884825
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/focused-readback-v2.json": {
+    "sha256": "99c6af193d3757ee3380a89cc33f631fcf3e0ebe00ded238a3865b63dddc66f3",
+    "bytes": 19456
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/focused-readback.json": {
+    "sha256": "064313ed39bcbcd757ff487e9825854f1244cb02cbf43970e2d937b432860183",
+    "bytes": 19484
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/foreign-thread-original.txt": {
+    "sha256": "26818b7bad9c421cf6f14c0a5523b23b1a17144fb9bfd5e052c463066884cc38",
+    "bytes": 5204
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/foreign-thread-original.xml": {
+    "sha256": "880a33c8c76c4339ea7d0fd31ef7b4d27faf458afa10303c2e2e3cb5b0e62a55",
+    "bytes": 5462
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/original-identity.json": {
+    "sha256": "2d1ed132cb2c017053e069d512a307a89eaf3f26184ee9ec7409625a0dfb08eb",
+    "bytes": 234
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/original-race-replay/result.xml": {
+    "sha256": "3abff5e0f9e98fa6cdd4b680594d7edea9a4a7714813acd9a5d25ad7dc3fc00e",
+    "bytes": 36194
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/original-race-replay/stderr.txt": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/original-race-replay/stdout.txt": {
+    "sha256": "5d37d3587357f99563dbf2d73a736878e3f3d12d43ad48acb13068ac06befe33",
+    "bytes": 34307
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/original-test-v1.py": {
+    "sha256": "c50175fa8d62c58ddbe9a96d5e1cc4dc3c26415cf72d57db9c0bf209cba82a22",
+    "bytes": 4757
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/original-test-v2.py": {
+    "sha256": "9f8a3635ec098645b37d506c48a8d86d89281585581552d5429038fbb4501eda",
+    "bytes": 4829
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/original-tk_wizard.py.gz": {
+    "sha256": "c3eec4bbed74c8b924b7793106c93b92fa79143f9dd22da73bc5a15a11c7b354",
+    "bytes": 50811
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/original-v2.txt": {
+    "sha256": "75cf9f72f6cb7c437ba4479af7346760b4e89505d08d3e4a87a3764683aa6429",
+    "bytes": 34373
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/original-v2.xml": {
+    "sha256": "871b12b5a792fb8893bc044a6145f49db6d71b2667071ef0816a186a454bb531",
+    "bytes": 36358
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/original-warning-replay/result.xml": {
+    "sha256": "d27617a3845045efa433436bb3f53552f21ea34daa2c4d324f58e781c9652a15",
+    "bytes": 5436
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/original-warning-replay/stderr.txt": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/original-warning-replay/stdout.txt": {
+    "sha256": "f1d4f912a64e7e8e11a142acaf7fa0891a13e599e3b25420887e21546d254356",
+    "bytes": 5187
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/original.txt": {
+    "sha256": "ad6080f79159b71b01047dabe2a7688a907e5f755e01790e57eb1ae36b4b9125",
+    "bytes": 17010
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/original.xml": {
+    "sha256": "ae14e2c759498e884b329ddce1b6dde82d9344e350ef3f669826b178a5c1bc7c",
+    "bytes": 18735
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/partition-v1-tests.py": {
+    "sha256": "b9f4bbfc89aa95d53e8731489b64cb57abe6acea1253ce510c08301833ad8c1b",
+    "bytes": 9337
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/partition-v1-tk_wizard.py.gz": {
+    "sha256": "6299cc5e935679e9e84880f29aac211948e5f53a45e1ec1be1a5015702c9ffa5",
+    "bytes": 50999
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/replay-final-tests.py": {
+    "sha256": "628ad59a3c7c94eae6fa67769c4407c9319e796fc14511044ea2adb1a4154445",
+    "bytes": 2852
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/retain-evidence.py": {
+    "sha256": "1c58cfd4e01870cd7dbfe7c72d87df12b8827d56e79722df288a954b60e3a8f7",
+    "bytes": 10858
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/source-diff-review-v2.json": {
+    "sha256": "79454c1fe8275472be5b9b743dc98bfd67b6120deae20bb060c1f0a0e2e8d2d6",
+    "bytes": 431
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/source-diff-review.json": {
+    "sha256": "566d273e88088bebaa8870d259e11d2143b5eb86e7fd5c74bb70f7094840d5ef",
+    "bytes": 533
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review/unqualified-warning.json": {
+    "sha256": "391bd002830a70ae40cc78bfe5ac26341efc7fb09de29ee9fac3a643b86fa491",
+    "bytes": 405
+  },
+  "/root/dev/Beamo Wipe/docs/evidence/release-tk-pool-review-20261017/review-publication-content.py": {
+    "sha256": "ddb5ae79d00ee0b88df58aeab1090a3d41059c84ed73802f8ea5c016d2981717",
+    "bytes": 3095
+  },
+  "/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py": {
+    "sha256": "f43af23bfb37ca184a3a85c316c5f6235c528a102fd4a98493f9df9452db740b",
+    "bytes": 217330
+  },
+  "/root/dev/Beamo Wipe/tests/test_tk_retired_pool_threads.py": {
+    "sha256": "9ad54014ba5db3af9c609539a4badfe3c290fc6d8099be896bc45c113cb58909",
+    "bytes": 11141
+  }
+}

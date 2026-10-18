@@ -1,0 +1,22 @@
+{
+  "base": "/tmp/pass20-primary/private-candidate4-agent.py",
+  "base_sha256": "68b25648c658e5dc9de1e9f7edf3663c90f4dc52520852a8ea8458aa40f8327f",
+  "candidate": "/tmp/pass20-primary/private-candidate5-agent.py",
+  "candidate_sha256": "6b5be8d70416318a83b24e3ce6bc9dc212ab63293d2498889810401ecccbfdbe",
+  "ast_parse": "PASS",
+  "runtime": "NOT RUN by author; no product imports/Tk/threads/tests",
+  "shared_and_active_private_edits": "NONE",
+  "changes": [
+    "partial real wrapper tk lookup via __dict__",
+    "identity-keyed asset and raw interpreter dicts; no native object equality in drain",
+    "complete direct-run setup boundary",
+    "owned startup root wrapper covering all configuration/widget construction/mainloop errors",
+    "existing TclError startup translation/cause preserved",
+    "callable root factories and actual StartupRun semantics preserved"
+  ],
+  "limitations": [
+    "Root must independently review and run frozen proofs/gates.",
+    "Full sweep at explicit ownership boundaries only; draw drains remain lightweight.",
+    "Creator-thread pool deferral while external owners remain is deliberate."
+  ]
+}

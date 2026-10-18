@@ -1,0 +1,88 @@
+dbus-daemon[502389]: [session uid=0 pid=502389] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=502403 comm="/tmp/beamo-wipe-audit-python/bin/python3 /tmp/pass" label="unconfined")
+dbus-daemon[502389]: [session uid=0 pid=502389] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[502412]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=502403 comm="/tmp/beamo-wipe-audit-python/bin/python3 /tmp/pass" label="unconfined")
+dbus-daemon[502412]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{
+  "display": ":120",
+  "events": [
+    {
+      "target": "modal",
+      "key": 65293,
+      "time": 85840301
+    }
+  ],
+  "snapshots": [
+    {
+      "phase": "parent-ready",
+      "held": [],
+      "release_times": {},
+      "modal_open": false,
+      "screen": "OWNER"
+    },
+    {
+      "phase": "return-pressed-opened-dialog",
+      "held": [
+        65293
+      ],
+      "release_times": {},
+      "modal_open": true,
+      "screen": "OWNER"
+    },
+    {
+      "phase": "release-routed-to-modal",
+      "held": [],
+      "release_times": {
+        "65293": 85840301
+      },
+      "modal_open": true,
+      "screen": "OWNER"
+    },
+    {
+      "phase": "modal-closed",
+      "held": [],
+      "release_times": {
+        "65293": 85840301
+      },
+      "modal_open": false,
+      "screen": "OWNER"
+    },
+    {
+      "phase": "next-fresh-return-pressed",
+      "held": [
+        65293
+      ],
+      "release_times": {},
+      "modal_open": false,
+      "screen": "OWNER"
+    },
+    {
+      "phase": "next-fresh-return-released",
+      "held": [],
+      "release_times": {
+        "65293": 85840706
+      },
+      "modal_open": true,
+      "screen": "OWNER"
+    },
+    {
+      "phase": "third-return-pressed-control",
+      "held": [
+        65293
+      ],
+      "release_times": {},
+      "modal_open": false,
+      "screen": "OWNER"
+    },
+    {
+      "phase": "third-return-released-control",
+      "held": [],
+      "release_times": {
+        "65293": 85841067
+      },
+      "modal_open": true,
+      "screen": "OWNER"
+    }
+  ],
+  "owned_teardown": true
+}

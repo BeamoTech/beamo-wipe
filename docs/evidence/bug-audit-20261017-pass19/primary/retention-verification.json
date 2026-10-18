@@ -1,0 +1,19 @@
+{
+  "compacted_raw_files": 29,
+  "raw_original_bytes": 141242864,
+  "raw_archive_bytes": 15906545,
+  "raw_archive_readback": true,
+  "source_inputs_unchanged": 771,
+  "index_empty": true,
+  "staged_files": 0,
+  "working_staging_retained": "/tmp/pass19-primary",
+  "runner_fixture_files": 0,
+  "report_artifact_files": 0,
+  "screenshots": 0,
+  "final_campaigns": "HELD; no acceptance claimed",
+  "local_gate": "FAILED; see final logs/status",
+  "historical_abort": "UNEXPLAINED; both uncanceled full aborts retained separately; owned native-asset gap proved",
+  "source_committed": false,
+  "pushed": false,
+  "deployed": false
+}

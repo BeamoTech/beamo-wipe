@@ -1,0 +1,1078 @@
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF                                           [100%]
+=================================== FAILURES ===================================
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-missing-parent-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169c99d00>
+route = 'injected', ancestry = 'missing-parent'
+evidence = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-missing-parent-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169c9a7a0>
+route = 'production-metadata-stub', ancestry = 'missing-parent'
+evidence = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-unknown-parent-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169c9ab60>
+route = 'injected', ancestry = 'unknown-parent'
+evidence = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-unknown-parent-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169c9aca0>
+route = 'production-metadata-stub', ancestry = 'unknown-parent'
+evidence = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-cycle-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169c9a7a0>
+route = 'injected', ancestry = 'cycle'
+evidence = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-cycle-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169c9b380>
+route = 'production-metadata-stub', ancestry = 'cycle'
+evidence = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-contradictory-tree-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169c9b880>
+route = 'injected', ancestry = 'contradictory-tree'
+evidence = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-contradictory-tree-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169c9bce0>
+route = 'production-metadata-stub', ancestry = 'contradictory-tree'
+evidence = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-missing-parent-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7781695540e0>
+route = 'injected', ancestry = 'missing-parent'
+evidence = {'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-missing-parent-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7781695544a0>
+route = 'production-metadata-stub', ancestry = 'missing-parent'
+evidence = {'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-unknown-parent-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7781695547c0>
+route = 'injected', ancestry = 'unknown-parent'
+evidence = {'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-unknown-parent-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169554720>
+route = 'production-metadata-stub', ancestry = 'unknown-parent'
+evidence = {'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-cycle-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169554b80>
+route = 'injected', ancestry = 'cycle', evidence = {'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-cycle-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169555080>
+route = 'production-metadata-stub', ancestry = 'cycle'
+evidence = {'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-contradictory-tree-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7781695556c0>
+route = 'injected', ancestry = 'contradictory-tree'
+evidence = {'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-contradictory-tree-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169555800>
+route = 'production-metadata-stub', ancestry = 'contradictory-tree'
+evidence = {'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-missing-parent-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169554900>
+route = 'injected', ancestry = 'missing-parent'
+evidence = {'partlabel': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'partlabel': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-missing-parent-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169554180>
+route = 'production-metadata-stub', ancestry = 'missing-parent'
+evidence = {'partlabel': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'partlabel': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-unknown-parent-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169554a40>
+route = 'injected', ancestry = 'unknown-parent'
+evidence = {'partlabel': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'partlabel': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-unknown-parent-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169555d00>
+route = 'production-metadata-stub', ancestry = 'unknown-parent'
+evidence = {'partlabel': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'partlabel': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-cycle-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7781695544a0>
+route = 'injected', ancestry = 'cycle'
+evidence = {'partlabel': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'partlabel': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-cycle-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169554720>
+route = 'production-metadata-stub', ancestry = 'cycle'
+evidence = {'partlabel': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'partlabel': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-contradictory-tree-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7781695563e0>
+route = 'injected', ancestry = 'contradictory-tree'
+evidence = {'partlabel': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'partlabel': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-contradictory-tree-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7781695567a0>
+route = 'production-metadata-stub', ancestry = 'contradictory-tree'
+evidence = {'partlabel': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, evidence), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'partlabel': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bound_bcache_keeps_filesystem_in_raw_disk_identity[flat-bound-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169556660>
+route = 'injected', ancestry = 'flat-bound'
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("flat-bound", "tree-bound"))
+    def test_unmounted_bound_bcache_keeps_filesystem_in_raw_disk_identity(
+        fake_machine, route, ancestry  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, {
+            "fstype": "ext4", "uuid": "fake-open-volume", "label": "root",
+        }), route)
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bound_bcache_keeps_filesystem_in_raw_disk_identity[flat-bound-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169556c00>
+route = 'production-metadata-stub', ancestry = 'flat-bound'
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("flat-bound", "tree-bound"))
+    def test_unmounted_bound_bcache_keeps_filesystem_in_raw_disk_identity(
+        fake_machine, route, ancestry  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, {
+            "fstype": "ext4", "uuid": "fake-open-volume", "label": "root",
+        }), route)
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bound_bcache_keeps_filesystem_in_raw_disk_identity[tree-bound-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169556e80>
+route = 'injected', ancestry = 'tree-bound'
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("flat-bound", "tree-bound"))
+    def test_unmounted_bound_bcache_keeps_filesystem_in_raw_disk_identity(
+        fake_machine, route, ancestry  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, {
+            "fstype": "ext4", "uuid": "fake-open-volume", "label": "root",
+        }), route)
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_unmounted_bound_bcache_keeps_filesystem_in_raw_disk_identity[tree-bound-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169557100>
+route = 'production-metadata-stub', ancestry = 'tree-bound'
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("flat-bound", "tree-bound"))
+    def test_unmounted_bound_bcache_keeps_filesystem_in_raw_disk_identity(
+        fake_machine, route, ancestry  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload(ancestry, {
+            "fstype": "ext4", "uuid": "fake-open-volume", "label": "root",
+        }), route)
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_blank_unmounted_orphan_bcache_has_no_unbound_filesystem_claim[injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x7781695571a0>
+route = 'injected'
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    def test_blank_unmounted_orphan_bcache_has_no_unbound_filesystem_claim(
+        fake_machine, route  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload("missing-parent", {}), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+_ test_blank_unmounted_orphan_bcache_has_no_unbound_filesystem_claim[production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x778169556e80>
+route = 'production-metadata-stub'
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    def test_blank_unmounted_orphan_bcache_has_no_unbound_filesystem_claim(
+        fake_machine, route  # noqa: F811 - imported pytest fixture
+    ):
+>       result = fake_machine(_payload("missing-parent", {}), route)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:26: in _payload
+    holder = _holder(**evidence)
+             ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+changes = {}
+
+    def _holder(**changes):
+>       return _disk(
+            "sdc", name="bcache0", path="/dev/bcache0", tran=None,
+            serial="FAKE-BCACHE", wwn="50014ee2000000044", **changes,
+        )
+E       TypeError: _disk() got multiple values for argument 'name'
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:16: TypeError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-missing-parent-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-missing-parent-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-unknown-parent-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-unknown-parent-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-cycle-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-cycle-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-contradictory-tree-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-contradictory-tree-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-missing-parent-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-missing-parent-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-unknown-parent-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-unknown-parent-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-cycle-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-cycle-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-contradictory-tree-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-contradictory-tree-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-missing-parent-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-missing-parent-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-unknown-parent-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-unknown-parent-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-cycle-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-cycle-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-contradictory-tree-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-contradictory-tree-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bound_bcache_keeps_filesystem_in_raw_disk_identity[flat-bound-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bound_bcache_keeps_filesystem_in_raw_disk_identity[flat-bound-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bound_bcache_keeps_filesystem_in_raw_disk_identity[tree-bound-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bound_bcache_keeps_filesystem_in_raw_disk_identity[tree-bound-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_blank_unmounted_orphan_bcache_has_no_unbound_filesystem_claim[injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_blank_unmounted_orphan_bcache_has_no_unbound_filesystem_claim[production-metadata-stub]

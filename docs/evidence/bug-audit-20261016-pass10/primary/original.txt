@@ -1,0 +1,864 @@
+dbus-daemon[438547]: [session uid=0 pid=438547] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=438561 comm="/tmp/beamo-wipe-audit-python/bin/python3 -m pytest" label="unconfined")
+dbus-daemon[438547]: [session uid=0 pid=438547] Successfully activated service 'org.a11y.Bus'
+FFFFFFFFFF........................FFFFFF............FFFFFF........Fdbus-daemon[438572]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=438561 comm="/tmp/beamo-wipe-audit-python/bin/python3 -m pytest" label="unconfined")
+dbus-daemon[438572]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+.FFFF [ 92%]
+FFFF.F                                                                   [100%]
+=================================== FAILURES ===================================
+___________ test_diagnostic_shortcut_replaces_inventory_overlay[d-b] ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eb71da60>
+overlay = 'b', diagnostic = 'd'
+
+    @pytest.mark.parametrize("overlay", ["b", "B", "o", "O"])
+    @pytest.mark.parametrize("diagnostic", ["d", "D"])
+    def test_diagnostic_shortcut_replaces_inventory_overlay(monkeypatch, overlay, diagnostic):
+        wizard, terminal = _run(monkeypatch, [ord(overlay), ord(diagnostic)])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        screen, text = terminal.frames[-1]
+        assert screen == Screen.DIAGNOSTIC
+>       assert D.NOTICE in text
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Protected boot media Beamo USB — protected, cannot be erased Be...his disk (cannot be erased separately): Partition · 16 GB · BEAMO_WIPE Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:65: AssertionError
+___________ test_diagnostic_shortcut_replaces_inventory_overlay[d-B] ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eb5b9ee0>
+overlay = 'B', diagnostic = 'd'
+
+    @pytest.mark.parametrize("overlay", ["b", "B", "o", "O"])
+    @pytest.mark.parametrize("diagnostic", ["d", "D"])
+    def test_diagnostic_shortcut_replaces_inventory_overlay(monkeypatch, overlay, diagnostic):
+        wizard, terminal = _run(monkeypatch, [ord(overlay), ord(diagnostic)])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        screen, text = terminal.frames[-1]
+        assert screen == Screen.DIAGNOSTIC
+>       assert D.NOTICE in text
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Protected boot media Beamo USB — protected, cannot be erased Be...his disk (cannot be erased separately): Partition · 16 GB · BEAMO_WIPE Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:65: AssertionError
+___________ test_diagnostic_shortcut_replaces_inventory_overlay[d-o] ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eb5b97f0>
+overlay = 'o', diagnostic = 'd'
+
+    @pytest.mark.parametrize("overlay", ["b", "B", "o", "O"])
+    @pytest.mark.parametrize("diagnostic", ["d", "D"])
+    def test_diagnostic_shortcut_replaces_inventory_overlay(monkeypatch, overlay, diagnostic):
+        wizard, terminal = _run(monkeypatch, [ord(overlay), ord(diagnostic)])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        screen, text = terminal.frames[-1]
+        assert screen == Screen.DIAGNOSTIC
+>       assert D.NOTICE in text
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Other detected devices Information only. These devices cannot b...| Serial number: Serial not reported Cannot erase: unsupported device. Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:65: AssertionError
+___________ test_diagnostic_shortcut_replaces_inventory_overlay[d-O] ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eb5c0bf0>
+overlay = 'O', diagnostic = 'd'
+
+    @pytest.mark.parametrize("overlay", ["b", "B", "o", "O"])
+    @pytest.mark.parametrize("diagnostic", ["d", "D"])
+    def test_diagnostic_shortcut_replaces_inventory_overlay(monkeypatch, overlay, diagnostic):
+        wizard, terminal = _run(monkeypatch, [ord(overlay), ord(diagnostic)])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        screen, text = terminal.frames[-1]
+        assert screen == Screen.DIAGNOSTIC
+>       assert D.NOTICE in text
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Other detected devices Information only. These devices cannot b...| Serial number: Serial not reported Cannot erase: unsupported device. Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:65: AssertionError
+___________ test_diagnostic_shortcut_replaces_inventory_overlay[D-b] ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eb5c3e90>
+overlay = 'b', diagnostic = 'D'
+
+    @pytest.mark.parametrize("overlay", ["b", "B", "o", "O"])
+    @pytest.mark.parametrize("diagnostic", ["d", "D"])
+    def test_diagnostic_shortcut_replaces_inventory_overlay(monkeypatch, overlay, diagnostic):
+        wizard, terminal = _run(monkeypatch, [ord(overlay), ord(diagnostic)])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        screen, text = terminal.frames[-1]
+        assert screen == Screen.DIAGNOSTIC
+>       assert D.NOTICE in text
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Protected boot media Beamo USB — protected, cannot be erased Be...his disk (cannot be erased separately): Partition · 16 GB · BEAMO_WIPE Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:65: AssertionError
+___________ test_diagnostic_shortcut_replaces_inventory_overlay[D-B] ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eb5c1340>
+overlay = 'B', diagnostic = 'D'
+
+    @pytest.mark.parametrize("overlay", ["b", "B", "o", "O"])
+    @pytest.mark.parametrize("diagnostic", ["d", "D"])
+    def test_diagnostic_shortcut_replaces_inventory_overlay(monkeypatch, overlay, diagnostic):
+        wizard, terminal = _run(monkeypatch, [ord(overlay), ord(diagnostic)])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        screen, text = terminal.frames[-1]
+        assert screen == Screen.DIAGNOSTIC
+>       assert D.NOTICE in text
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Protected boot media Beamo USB — protected, cannot be erased Be...his disk (cannot be erased separately): Partition · 16 GB · BEAMO_WIPE Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:65: AssertionError
+___________ test_diagnostic_shortcut_replaces_inventory_overlay[D-o] ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eb5b9760>
+overlay = 'o', diagnostic = 'D'
+
+    @pytest.mark.parametrize("overlay", ["b", "B", "o", "O"])
+    @pytest.mark.parametrize("diagnostic", ["d", "D"])
+    def test_diagnostic_shortcut_replaces_inventory_overlay(monkeypatch, overlay, diagnostic):
+        wizard, terminal = _run(monkeypatch, [ord(overlay), ord(diagnostic)])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        screen, text = terminal.frames[-1]
+        assert screen == Screen.DIAGNOSTIC
+>       assert D.NOTICE in text
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Other detected devices Information only. These devices cannot b...| Serial number: Serial not reported Cannot erase: unsupported device. Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:65: AssertionError
+___________ test_diagnostic_shortcut_replaces_inventory_overlay[D-O] ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eb5bb260>
+overlay = 'O', diagnostic = 'D'
+
+    @pytest.mark.parametrize("overlay", ["b", "B", "o", "O"])
+    @pytest.mark.parametrize("diagnostic", ["d", "D"])
+    def test_diagnostic_shortcut_replaces_inventory_overlay(monkeypatch, overlay, diagnostic):
+        wizard, terminal = _run(monkeypatch, [ord(overlay), ord(diagnostic)])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        screen, text = terminal.frames[-1]
+        assert screen == Screen.DIAGNOSTIC
+>       assert D.NOTICE in text
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Other detected devices Information only. These devices cannot b...| Serial number: Serial not reported Cannot erase: unsupported device. Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:65: AssertionError
+_________ test_diagnostic_prepare_prompt_follows_visible_diagnostic[b] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eb5c29c0>
+overlay = 'b'
+
+    @pytest.mark.parametrize("overlay", ["b", "o"])
+    def test_diagnostic_prepare_prompt_follows_visible_diagnostic(monkeypatch, overlay):
+        prompts = []
+
+        def confirm(terminal, wizard):
+            prompts.append((wizard.screen, " ".join(terminal.rows.values())))
+
+        monkeypatch.setattr(console, "_confirm_diagnostic_action", confirm)
+        wizard, _terminal = _run(monkeypatch, [ord(overlay), ord("d"), ord("r")])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        assert len(prompts) == 1
+        assert prompts[0][0] == Screen.DIAGNOSTIC
+>       assert D.NOTICE in prompts[0][1]
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Protected boot media Beamo USB — protected, cannot be erased Be...his disk (cannot be erased separately): Partition · 16 GB · BEAMO_WIPE Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:82: AssertionError
+_________ test_diagnostic_prepare_prompt_follows_visible_diagnostic[o] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eb5c28a0>
+overlay = 'o'
+
+    @pytest.mark.parametrize("overlay", ["b", "o"])
+    def test_diagnostic_prepare_prompt_follows_visible_diagnostic(monkeypatch, overlay):
+        prompts = []
+
+        def confirm(terminal, wizard):
+            prompts.append((wizard.screen, " ".join(terminal.rows.values())))
+
+        monkeypatch.setattr(console, "_confirm_diagnostic_action", confirm)
+        wizard, _terminal = _run(monkeypatch, [ord(overlay), ord("d"), ord("r")])
+        assert wizard.screen == Screen.DIAGNOSTIC
+        assert len(prompts) == 1
+        assert prompts[0][0] == Screen.DIAGNOSTIC
+>       assert D.NOTICE in prompts[0][1]
+E       AssertionError: assert 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' in 'Beamo Wipe — Diagnostic report — wipe could not start Other detected devices Information only. These devices cannot b...| Serial number: Serial not reported Cannot erase: unsupported device. Read only. Up/Down, PgUp/PgDn: read. Esc: back.'
+E        +  where 'Support diagnostics only. This is not erase evidence and does not establish that an operation ran. No disk identifiers or raw logs are included.' = D.NOTICE
+
+tests/test_console_inventory_diagnostic_pass10.py:82: AssertionError
+_ test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\n-everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-299/test_terminal_status_banner_is12')
+method = <MethodId.EVERYDAY: 'everyday'>, banner_ending = '\r\n', large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_terminal_status_banner_is_not_normalized_by_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-terminal.log"
+        logfile.write_bytes(text.encode())
+        runner = module.NwipeRunner()
+        runner._proc = _Exited()
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+
+        result = runner.poll(request)
+
+        assert result is not None
+>       assert (result.ok, result.summary, result.reason) == module.completion_for_method(
+            0, text, request.device, method
+        )
+E       AssertionError: assert (True, 'finis..., 'completed') == (False, 'nwip...tion_missing')
+E
+E         At index 0 diff: True != False
+E         Use -v to get more diff
+
+tests/test_runner_projection_record_endings_pass10.py:62: AssertionError
+__ test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\n-extra] __
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-299/test_terminal_status_banner_is13')
+method = <MethodId.EXTRA: 'extra'>, banner_ending = '\r\n', large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_terminal_status_banner_is_not_normalized_by_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-terminal.log"
+        logfile.write_bytes(text.encode())
+        runner = module.NwipeRunner()
+        runner._proc = _Exited()
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+
+        result = runner.poll(request)
+
+        assert result is not None
+>       assert (result.ok, result.summary, result.reason) == module.completion_for_method(
+            0, text, request.device, method
+        )
+E       AssertionError: assert (True, 'finis..., 'completed') == (False, 'nwip...tion_missing')
+E
+E         At index 0 diff: True != False
+E         Use -v to get more diff
+
+tests/test_runner_projection_record_endings_pass10.py:62: AssertionError
+_ test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\n-quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-299/test_terminal_status_banner_is14')
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, banner_ending = '\r\n'
+large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_terminal_status_banner_is_not_normalized_by_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-terminal.log"
+        logfile.write_bytes(text.encode())
+        runner = module.NwipeRunner()
+        runner._proc = _Exited()
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+
+        result = runner.poll(request)
+
+        assert result is not None
+>       assert (result.ok, result.summary, result.reason) == module.completion_for_method(
+            0, text, request.device, method
+        )
+E       AssertionError: assert (True, 'finis..., 'completed') == (False, 'nwip...tion_missing')
+E
+E         At index 0 diff: True != False
+E         Use -v to get more diff
+
+tests/test_runner_projection_record_endings_pass10.py:62: AssertionError
+_ test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\r\n-everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-299/test_terminal_status_banner_is15')
+method = <MethodId.EVERYDAY: 'everyday'>, banner_ending = '\r\r\n', large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_terminal_status_banner_is_not_normalized_by_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-terminal.log"
+        logfile.write_bytes(text.encode())
+        runner = module.NwipeRunner()
+        runner._proc = _Exited()
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+
+        result = runner.poll(request)
+
+        assert result is not None
+>       assert (result.ok, result.summary, result.reason) == module.completion_for_method(
+            0, text, request.device, method
+        )
+E       AssertionError: assert (True, 'finis..., 'completed') == (False, 'nwip...tion_missing')
+E
+E         At index 0 diff: True != False
+E         Use -v to get more diff
+
+tests/test_runner_projection_record_endings_pass10.py:62: AssertionError
+_ test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\r\n-extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-299/test_terminal_status_banner_is16')
+method = <MethodId.EXTRA: 'extra'>, banner_ending = '\r\r\n', large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_terminal_status_banner_is_not_normalized_by_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-terminal.log"
+        logfile.write_bytes(text.encode())
+        runner = module.NwipeRunner()
+        runner._proc = _Exited()
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+
+        result = runner.poll(request)
+
+        assert result is not None
+>       assert (result.ok, result.summary, result.reason) == module.completion_for_method(
+            0, text, request.device, method
+        )
+E       AssertionError: assert (True, 'finis..., 'completed') == (False, 'nwip...tion_missing')
+E
+E         At index 0 diff: True != False
+E         Use -v to get more diff
+
+tests/test_runner_projection_record_endings_pass10.py:62: AssertionError
+_ test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\r\n-quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-299/test_terminal_status_banner_is17')
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, banner_ending = '\r\r\n'
+large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_terminal_status_banner_is_not_normalized_by_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-terminal.log"
+        logfile.write_bytes(text.encode())
+        runner = module.NwipeRunner()
+        runner._proc = _Exited()
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+
+        result = runner.poll(request)
+
+        assert result is not None
+>       assert (result.ok, result.summary, result.reason) == module.completion_for_method(
+            0, text, request.device, method
+        )
+E       AssertionError: assert (True, 'finis..., 'completed') == (False, 'nwip...tion_missing')
+E
+E         At index 0 diff: True != False
+E         Use -v to get more diff
+
+tests/test_runner_projection_record_endings_pass10.py:62: AssertionError
+_ test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\n-everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e12')
+method = <MethodId.EVERYDAY: 'everyday'>, banner_ending = '\r\n', large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_stop_race_uses_the_same_exact_status_banner_at_every_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-stop.log"
+        logfile.write_bytes(text.encode())
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._proc = _ExitsAtStop()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+
+        runner.cancel()
+
+        assert runner.result is not None
+>       assert runner.result.ok is (banner_ending == "\n")
+E       AssertionError: assert True is ('\r\n' == '\n'
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e12/fake-stop.log', reason='completed').ok
+E        +    where WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e12/fake-stop.log', reason='completed') = <beamo_wipe.nwipe_runner.NwipeRunner object at 0x7668eb5d4320>.result
+E
+E         Strings contain only whitespace, escaping them using repr()
+E         - '\n'
+E         + '\r\n'
+E         ?  ++)
+
+tests/test_runner_projection_record_endings_pass10.py:87: AssertionError
+_ test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\n-extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e13')
+method = <MethodId.EXTRA: 'extra'>, banner_ending = '\r\n', large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_stop_race_uses_the_same_exact_status_banner_at_every_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-stop.log"
+        logfile.write_bytes(text.encode())
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._proc = _ExitsAtStop()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+
+        runner.cancel()
+
+        assert runner.result is not None
+>       assert runner.result.ok is (banner_ending == "\n")
+E       AssertionError: assert True is ('\r\n' == '\n'
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e13/fake-stop.log', reason='completed').ok
+E        +    where WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e13/fake-stop.log', reason='completed') = <beamo_wipe.nwipe_runner.NwipeRunner object at 0x7668eb5d89b0>.result
+E
+E         Strings contain only whitespace, escaping them using repr()
+E         - '\n'
+E         + '\r\n'
+E         ?  ++)
+
+tests/test_runner_projection_record_endings_pass10.py:87: AssertionError
+_ test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\n-quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e14')
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, banner_ending = '\r\n'
+large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_stop_race_uses_the_same_exact_status_banner_at_every_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-stop.log"
+        logfile.write_bytes(text.encode())
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._proc = _ExitsAtStop()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+
+        runner.cancel()
+
+        assert runner.result is not None
+>       assert runner.result.ok is (banner_ending == "\n")
+E       AssertionError: assert True is ('\r\n' == '\n'
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e14/fake-stop.log', reason='completed').ok
+E        +    where WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e14/fake-stop.log', reason='completed') = <beamo_wipe.nwipe_runner.NwipeRunner object at 0x7668eaeff3b0>.result
+E
+E         Strings contain only whitespace, escaping them using repr()
+E         - '\n'
+E         + '\r\n'
+E         ?  ++)
+
+tests/test_runner_projection_record_endings_pass10.py:87: AssertionError
+_ test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\r\n-everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e15')
+method = <MethodId.EVERYDAY: 'everyday'>, banner_ending = '\r\r\n', large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_stop_race_uses_the_same_exact_status_banner_at_every_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-stop.log"
+        logfile.write_bytes(text.encode())
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._proc = _ExitsAtStop()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+
+        runner.cancel()
+
+        assert runner.result is not None
+>       assert runner.result.ok is (banner_ending == "\n")
+E       AssertionError: assert True is ('\r\r\n' == '\n'
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e15/fake-stop.log', reason='completed').ok
+E        +    where WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e15/fake-stop.log', reason='completed') = <beamo_wipe.nwipe_runner.NwipeRunner object at 0x7668eaeff470>.result
+E
+E         Strings contain only whitespace, escaping them using repr()
+E         - '\n'
+E         + '\r\r\n')
+
+tests/test_runner_projection_record_endings_pass10.py:87: AssertionError
+_ test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\r\n-extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e16')
+method = <MethodId.EXTRA: 'extra'>, banner_ending = '\r\r\n', large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_stop_race_uses_the_same_exact_status_banner_at_every_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-stop.log"
+        logfile.write_bytes(text.encode())
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._proc = _ExitsAtStop()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+
+        runner.cancel()
+
+        assert runner.result is not None
+>       assert runner.result.ok is (banner_ending == "\n")
+E       AssertionError: assert True is ('\r\r\n' == '\n'
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e16/fake-stop.log', reason='completed').ok
+E        +    where WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e16/fake-stop.log', reason='completed') = <beamo_wipe.nwipe_runner.NwipeRunner object at 0x7668eb5d67b0>.result
+E
+E         Strings contain only whitespace, escaping them using repr()
+E         - '\n'
+E         + '\r\r\n')
+
+tests/test_runner_projection_record_endings_pass10.py:87: AssertionError
+_ test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\r\n-quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e17')
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, banner_ending = '\r\r\n'
+large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_stop_race_uses_the_same_exact_status_banner_at_every_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-stop.log"
+        logfile.write_bytes(text.encode())
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._proc = _ExitsAtStop()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+
+        runner.cancel()
+
+        assert runner.result is not None
+>       assert runner.result.ok is (banner_ending == "\n")
+E       AssertionError: assert True is ('\r\r\n' == '\n'
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e17/fake-stop.log', reason='completed').ok
+E        +    where WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-299/test_stop_race_uses_the_same_e17/fake-stop.log', reason='completed') = <beamo_wipe.nwipe_runner.NwipeRunner object at 0x7668eb5dbe90>.result
+E
+E         Strings contain only whitespace, escaping them using repr()
+E         - '\n'
+E         + '\r\r\n')
+
+tests/test_runner_projection_record_endings_pass10.py:87: AssertionError
+___ test_malformed_banner_stays_unproven_at_the_completion_scan_boundary[1] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-299/test_malformed_banner_stays_un2')
+size_delta = 1
+
+    @pytest.mark.parametrize("size_delta", [-1, 0, 1])
+    def test_malformed_banner_stays_unproven_at_the_completion_scan_boundary(
+        tmp_path, size_delta
+    ):
+        terminal = _terminal_text("\r\n", "FAKE/DISK")
+        desired = module.NWIPE_COMPLETION_LOG_BYTES + size_delta
+        padding_size = desired - len(terminal)
+        full_lines, tail_size = divmod(padding_size, 65536)
+        padding = ("x" * 65535 + "\n") * full_lines
+        if tail_size:
+            padding += "x" * (tail_size - 1) + "\n"
+        text = padding + terminal
+        assert len(text) == desired
+        logfile = tmp_path / "fake-boundary.log"
+        logfile.write_bytes(text.encode())
+        runner = module.NwipeRunner()
+        runner._proc = _Exited()
+        request = WipeRequest(
+            "/dev/sda", MethodId.EVERYDAY, "/dev/sr0", str(logfile)
+        )
+
+        result = runner.poll(request)
+
+>       assert result is not None and not result.ok
+E       AssertionError: assert (WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-299/test_malformed_banner_stays_un2/fake-boundary.log', reason='completed') is not None and not True)
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-299/test_malformed_banner_stays_un2/fake-boundary.log', reason='completed').ok
+
+tests/test_runner_projection_record_endings_pass10.py:139: AssertionError
+_________ test_output_selection_and_following_controls_agree[refused] __________
+
+ui = <function ui.<locals>.build at 0x7668eade3100>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eb5c0f50>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7668eb5d3590>
+outcome = 'refused'
+
+    @pytest.mark.parametrize("outcome", ["success", "refused", "exception", "timeout", "cancelled"])
+    def test_output_selection_and_following_controls_agree(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch)
+        _select(app, controller, monkeypatch, state, outcome)
+        selected = "headphones-id" if outcome == "success" else "speakers-id"
+        _dialog_button(controller.dialog, C.SOUND_LOUDER).clicked()
+        wait_sound(app)
+        _dialog_button(controller.dialog, C.SOUND_MUTE).clicked()
+        wait_sound(app)
+        assert ("volume", selected, sound.VOLUME_STEP) in calls
+        assert ("mute", selected, True) in calls
+        assert controller.chosen.id == selected
+>       assert [radio.get_active() for radio in controller.radios] == [selected == "speakers-id", selected == "headphones-id"]
+E       assert [False, True] == [True, False]
+E
+E         At index 0 diff: False != True
+E         Use -v to get more diff
+
+tests/test_sound_output_selection_pass10.py:106: AssertionError
+________ test_output_selection_and_following_controls_agree[exception] _________
+
+ui = <function ui.<locals>.build at 0x7668eade1bc0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eb5c38c0>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7668eb5c2930>
+outcome = 'exception'
+
+    @pytest.mark.parametrize("outcome", ["success", "refused", "exception", "timeout", "cancelled"])
+    def test_output_selection_and_following_controls_agree(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch)
+        _select(app, controller, monkeypatch, state, outcome)
+        selected = "headphones-id" if outcome == "success" else "speakers-id"
+        _dialog_button(controller.dialog, C.SOUND_LOUDER).clicked()
+        wait_sound(app)
+        _dialog_button(controller.dialog, C.SOUND_MUTE).clicked()
+        wait_sound(app)
+        assert ("volume", selected, sound.VOLUME_STEP) in calls
+        assert ("mute", selected, True) in calls
+        assert controller.chosen.id == selected
+>       assert [radio.get_active() for radio in controller.radios] == [selected == "speakers-id", selected == "headphones-id"]
+E       assert [False, True] == [True, False]
+E
+E         At index 0 diff: False != True
+E         Use -v to get more diff
+
+tests/test_sound_output_selection_pass10.py:106: AssertionError
+_________ test_output_selection_and_following_controls_agree[timeout] __________
+
+ui = <function ui.<locals>.build at 0x7668ead99bc0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eb5d61e0>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7668eb5d7950>
+outcome = 'timeout'
+
+    @pytest.mark.parametrize("outcome", ["success", "refused", "exception", "timeout", "cancelled"])
+    def test_output_selection_and_following_controls_agree(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch)
+        _select(app, controller, monkeypatch, state, outcome)
+        selected = "headphones-id" if outcome == "success" else "speakers-id"
+        _dialog_button(controller.dialog, C.SOUND_LOUDER).clicked()
+        wait_sound(app)
+        _dialog_button(controller.dialog, C.SOUND_MUTE).clicked()
+        wait_sound(app)
+        assert ("volume", selected, sound.VOLUME_STEP) in calls
+        assert ("mute", selected, True) in calls
+        assert controller.chosen.id == selected
+>       assert [radio.get_active() for radio in controller.radios] == [selected == "speakers-id", selected == "headphones-id"]
+E       assert [False, True] == [True, False]
+E
+E         At index 0 diff: False != True
+E         Use -v to get more diff
+
+tests/test_sound_output_selection_pass10.py:106: AssertionError
+________ test_output_selection_and_following_controls_agree[cancelled] _________
+
+ui = <function ui.<locals>.build at 0x7668ead998a0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eaee9400>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7668eaeebc80>
+outcome = 'cancelled'
+
+    @pytest.mark.parametrize("outcome", ["success", "refused", "exception", "timeout", "cancelled"])
+    def test_output_selection_and_following_controls_agree(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch)
+        _select(app, controller, monkeypatch, state, outcome)
+        selected = "headphones-id" if outcome == "success" else "speakers-id"
+        _dialog_button(controller.dialog, C.SOUND_LOUDER).clicked()
+        wait_sound(app)
+        _dialog_button(controller.dialog, C.SOUND_MUTE).clicked()
+        wait_sound(app)
+        assert ("volume", selected, sound.VOLUME_STEP) in calls
+        assert ("mute", selected, True) in calls
+        assert controller.chosen.id == selected
+>       assert [radio.get_active() for radio in controller.radios] == [selected == "speakers-id", selected == "headphones-id"]
+E       assert [False, True] == [True, False]
+E
+E         At index 0 diff: False != True
+E         Use -v to get more diff
+
+tests/test_sound_output_selection_pass10.py:106: AssertionError
+________ test_failed_output_selection_can_retry_the_same_radio[refused] ________
+
+ui = <function ui.<locals>.build at 0x7668ead9a8e0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eb5d8ec0>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7668eb5dbfe0>
+outcome = 'refused'
+
+    @pytest.mark.parametrize("outcome", ["refused", "exception", "timeout", "cancelled"])
+    def test_failed_output_selection_can_retry_the_same_radio(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch)
+        _select(app, controller, monkeypatch, state, outcome)
+        state["selection"] = "success"
+        controller.radios[1].set_active(True)
+        wait_sound(app)
+>       assert controller.chosen.id == "headphones-id"
+E       AssertionError: assert 'speakers-id' == 'headphones-id'
+E
+E         - headphones-id
+E         + speakers-id
+
+tests/test_sound_output_selection_pass10.py:122: AssertionError
+_______ test_failed_output_selection_can_retry_the_same_radio[exception] _______
+
+ui = <function ui.<locals>.build at 0x7668ead99da0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eaee8770>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7668eaee8890>
+outcome = 'exception'
+
+    @pytest.mark.parametrize("outcome", ["refused", "exception", "timeout", "cancelled"])
+    def test_failed_output_selection_can_retry_the_same_radio(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch)
+        _select(app, controller, monkeypatch, state, outcome)
+        state["selection"] = "success"
+        controller.radios[1].set_active(True)
+        wait_sound(app)
+>       assert controller.chosen.id == "headphones-id"
+E       AssertionError: assert 'speakers-id' == 'headphones-id'
+E
+E         - headphones-id
+E         + speakers-id
+
+tests/test_sound_output_selection_pass10.py:122: AssertionError
+________ test_failed_output_selection_can_retry_the_same_radio[timeout] ________
+
+ui = <function ui.<locals>.build at 0x7668ead9ade0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eaee7920>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7668eaee4b60>
+outcome = 'timeout'
+
+    @pytest.mark.parametrize("outcome", ["refused", "exception", "timeout", "cancelled"])
+    def test_failed_output_selection_can_retry_the_same_radio(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch)
+        _select(app, controller, monkeypatch, state, outcome)
+        state["selection"] = "success"
+        controller.radios[1].set_active(True)
+        wait_sound(app)
+>       assert controller.chosen.id == "headphones-id"
+E       AssertionError: assert 'speakers-id' == 'headphones-id'
+E
+E         - headphones-id
+E         + speakers-id
+
+tests/test_sound_output_selection_pass10.py:122: AssertionError
+_______ test_failed_output_selection_can_retry_the_same_radio[cancelled] _______
+
+ui = <function ui.<locals>.build at 0x7668ead98b80>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eb5d7920>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7668eb5d4620>
+outcome = 'cancelled'
+
+    @pytest.mark.parametrize("outcome", ["refused", "exception", "timeout", "cancelled"])
+    def test_failed_output_selection_can_retry_the_same_radio(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch)
+        _select(app, controller, monkeypatch, state, outcome)
+        state["selection"] = "success"
+        controller.radios[1].set_active(True)
+        wait_sound(app)
+>       assert controller.chosen.id == "headphones-id"
+E       AssertionError: assert 'speakers-id' == 'headphones-id'
+E
+E         - headphones-id
+E         + speakers-id
+
+tests/test_sound_output_selection_pass10.py:122: AssertionError
+________ test_failed_duplicate_label_choice_restores_the_accepted_radio ________
+
+ui = <function ui.<locals>.build at 0x7668ead9b920>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7668eaee3620>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7668eaeff950>
+
+    def test_failed_duplicate_label_choice_restores_the_accepted_radio(
+        ui, monkeypatch, selection_audio_worker  # noqa: F811
+    ):
+        app, controller, calls, state = _open(ui, monkeypatch, duplicate_labels=True)
+        assert controller.radios[0].get_label() == controller.radios[1].get_label()
+        _select(app, controller, monkeypatch, state, "refused")
+        assert controller.chosen.id == "speakers-id"
+>       assert [radio.get_active() for radio in controller.radios] == [True, False]
+E       assert [False, True] == [True, False]
+E
+E         At index 0 diff: False != True
+E         Use -v to get more diff
+
+tests/test_sound_output_selection_pass10.py:167: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_console_inventory_diagnostic_pass10.py::test_diagnostic_shortcut_replaces_inventory_overlay[d-b]
+FAILED tests/test_console_inventory_diagnostic_pass10.py::test_diagnostic_shortcut_replaces_inventory_overlay[d-B]
+FAILED tests/test_console_inventory_diagnostic_pass10.py::test_diagnostic_shortcut_replaces_inventory_overlay[d-o]
+FAILED tests/test_console_inventory_diagnostic_pass10.py::test_diagnostic_shortcut_replaces_inventory_overlay[d-O]
+FAILED tests/test_console_inventory_diagnostic_pass10.py::test_diagnostic_shortcut_replaces_inventory_overlay[D-b]
+FAILED tests/test_console_inventory_diagnostic_pass10.py::test_diagnostic_shortcut_replaces_inventory_overlay[D-B]
+FAILED tests/test_console_inventory_diagnostic_pass10.py::test_diagnostic_shortcut_replaces_inventory_overlay[D-o]
+FAILED tests/test_console_inventory_diagnostic_pass10.py::test_diagnostic_shortcut_replaces_inventory_overlay[D-O]
+FAILED tests/test_console_inventory_diagnostic_pass10.py::test_diagnostic_prepare_prompt_follows_visible_diagnostic[b]
+FAILED tests/test_console_inventory_diagnostic_pass10.py::test_diagnostic_prepare_prompt_follows_visible_diagnostic[o]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\n-everyday]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\n-extra]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\n-quick_zero]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\r\n-everyday]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\r\n-extra]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\r\n-quick_zero]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\n-everyday]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\n-extra]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\n-quick_zero]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\r\n-everyday]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\r\n-extra]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\r\n-quick_zero]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_malformed_banner_stays_unproven_at_the_completion_scan_boundary[1]
+FAILED tests/test_sound_output_selection_pass10.py::test_output_selection_and_following_controls_agree[refused]
+FAILED tests/test_sound_output_selection_pass10.py::test_output_selection_and_following_controls_agree[exception]
+FAILED tests/test_sound_output_selection_pass10.py::test_output_selection_and_following_controls_agree[timeout]
+FAILED tests/test_sound_output_selection_pass10.py::test_output_selection_and_following_controls_agree[cancelled]
+FAILED tests/test_sound_output_selection_pass10.py::test_failed_output_selection_can_retry_the_same_radio[refused]
+FAILED tests/test_sound_output_selection_pass10.py::test_failed_output_selection_can_retry_the_same_radio[exception]
+FAILED tests/test_sound_output_selection_pass10.py::test_failed_output_selection_can_retry_the_same_radio[timeout]
+FAILED tests/test_sound_output_selection_pass10.py::test_failed_output_selection_can_retry_the_same_radio[cancelled]
+FAILED tests/test_sound_output_selection_pass10.py::test_failed_duplicate_label_choice_restores_the_accepted_radio
+32 failed, 46 passed in 3.26s

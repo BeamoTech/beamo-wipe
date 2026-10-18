@@ -1,0 +1,31 @@
+{
+  "compacted_raw_files": 36,
+  "completed_utc": "2026-10-17T19:49:08.829139+00:00",
+  "deployed": false,
+  "duplicate_source_files_indexed": 116,
+  "existing_files_overwritten": 0,
+  "final_campaigns": "PASS; exact artifact readback",
+  "historical_runs": "Both failed pass20 gates, all prior candidate logs and source archives retained; no earlier abort/signal/latency attribution",
+  "index_empty": true,
+  "inflight_checkpoint_unchanged": true,
+  "local_gate": "PASS; all nine fresh phases",
+  "pushed": false,
+  "raw_archive_bytes": 10517669,
+  "raw_archive_readback": true,
+  "raw_original_bytes": 32070150,
+  "report_artifact_files": 70,
+  "runner_fixture_files": 621,
+  "screenshots": 5,
+  "source_archives_retained": [
+    "starting-inputs.tar.gz",
+    "final-source-inputs.tar.gz",
+    "failed-gate-1/final-source-inputs.tar.gz",
+    "failed-gate-2/final-source-inputs.tar.gz"
+  ],
+  "source_committed": false,
+  "source_freeze_sha256": "bc83136ee6bd52c8ef4c80206c9b80b958845f839546eb57d8d518263d59ca04",
+  "source_inputs_unchanged": 779,
+  "staged_files": 0,
+  "unique_private_sources_preserved": 6,
+  "working_staging_retained": "/tmp/pass20-primary"
+}

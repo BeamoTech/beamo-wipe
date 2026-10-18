@@ -1,0 +1,10 @@
+{
+  "file": "src/beamo_wipe/ui/tk_wizard.py",
+  "starting_sha256": "9764924b29c3c491a6acde0ca0853135e1e9eccf71bd77cbeb7c90b35534b29f",
+  "final_sha256": "bb64632df587965f41afc70efe2201d3b776579038d680c3a2405319764f170d",
+  "regression": {
+    "file": "tests/test_startup_callback_retirement_pass17.py",
+    "sha256": "b008493fee9540ca0f659a54aaca491b4197f93566e5a4fff29d03d6369bc65c"
+  },
+  "scope": "Only startup poll/focus after-ID tracking and exact-ID finally cancellation. No runtime by peer. Root authenticated original16-case proof; final runtime pending root."
+}

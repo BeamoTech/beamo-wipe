@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="236.988" timestamp="2026-10-17T23:33:01.870901+00:00" hostname="ebd10255db57"><testcase classname="tests.test_accessible_runtime" name="test_orca_announces_every_result" time="236.799" /></testsuite></testsuites>

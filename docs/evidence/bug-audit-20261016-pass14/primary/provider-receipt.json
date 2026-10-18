@@ -1,0 +1,8 @@
+{
+  "catalog_checked": true,
+  "parent_provider": "codex",
+  "parent_model": "gpt-6.1-sol",
+  "native_same_provider_delegation": true,
+  "model_override": false,
+  "environment_status_tool_in_bounded_catalog": false
+}

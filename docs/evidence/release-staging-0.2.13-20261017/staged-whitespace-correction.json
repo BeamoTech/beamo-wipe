@@ -1,0 +1,21 @@
+{
+  "utc": "2026-10-17T23:28:28.757527+00:00",
+  "initial_staged_whitespace_check_exit": 2,
+  "initial_diagnostic_lines": 12861,
+  "archival_diagnostics": 6441,
+  "only_source_diagnostic": {
+    "path": "tests/test_pathless_physical_bridge_pass18.py",
+    "line": 91,
+    "kind": "new blank line at EOF"
+  },
+  "staged_objects_already_equal_raw_worktree": 2837,
+  "normalized_objects_found": [],
+  "source_fix": "Remove only redundant EOF blank line from one regression module",
+  "before_sha256": "04eec1aa841a1b30d65acd3bcdac5d61b0ef794940e03e78010acd7fe8ee1ef7",
+  "after_sha256": "26fc12c4a476686da24ffda5164d23dc31dec107276ee63b1c4b0d68aedd61fb",
+  "ast_identical": true,
+  "compiled_code_marshal_identical": true,
+  "runtime_files_changed_after_full_gate": [],
+  "evidence_policy": "docs/evidence/.gitattributes preserves raw data bytes and excludes archival whitespace diagnostics; application/test whitespace checks stay active.",
+  "full_gate_provenance": "Candidate2 full run remains bound to its original f6b944 source freeze; final exact committed source will receive hosted CI before merge/release."
+}

@@ -1,0 +1,29 @@
+{
+  "all59_retained_regression_modules_unchanged": true,
+  "pass21_code_delta": [
+    ".github/workflows/release.yml",
+    "helper/de.html",
+    "helper/fr.html",
+    "helper/index.html",
+    "packaging/live/inside-docker.sh",
+    "pyproject.toml",
+    "scripts/build-iso.sh",
+    "scripts/ci-hosted.sh",
+    "scripts/generate-release-manifest.sh",
+    "scripts/publish_release_gcs.py",
+    "scripts/qemu-verify.sh",
+    "src/beamo_wipe/__init__.py",
+    "tests/test_compatibility_matrix.py",
+    "tests/test_release_manifest_tag_pass10.py",
+    "tests/test_runbook.py"
+  ],
+  "runtime_delta": [
+    "src/beamo_wipe/__init__.py"
+  ],
+  "version_aligned_files": 21,
+  "pins_and_claims_unchanged": true,
+  "version_focused": "40PASS; see version-focused.xml",
+  "publication_scan": "2698 initial files,104archives,15631members,2367069201scannedbytes; no matching secret patterns or media members",
+  "hosted_qualification": "PENDING",
+  "release_authorized": true
+}

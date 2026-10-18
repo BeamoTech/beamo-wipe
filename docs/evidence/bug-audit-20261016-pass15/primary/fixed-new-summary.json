@@ -1,0 +1,11 @@
+{
+  "passed": 574,
+  "errors": 0,
+  "skips": 0,
+  "input_test_hashes": {
+    "tests/test_empty_inventory_wheel_pass15.py": "9e1dd204f39e96c7a6943783687481056caff0dffff3b0b520d206666c069138",
+    "tests/test_hidden_positive_record_pass15.py": "0d3281f94d233dd07cc515a696b260f097dac86060dc9134ad80427e33c51b7d",
+    "tests/test_physical_observation_context_pass15.py": "3a49bd5dc72f4e310dd054b84cfbf8b2564b0edb268e639f8e980cf58ec97e1c",
+    "tests/test_utf8_log_snapshot_bounds_pass15.py": "50a3592d799553f2ec9adf24b1703fac2b85e7b818f1e908d3db28b2ac231dbf"
+  }
+}

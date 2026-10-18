@@ -24,6 +24,16 @@ PARSER = "beamo_wipe.engine_checks"
 _LEVEL = re.compile(
     r"^(?:\[[^\]\r\n]*\]\s*)?\s*(?:debug|info|notice|warning|error|fatal|sanity):\s*"
 )
+# Positive hidden-storage results are timestamped INFO records in v0.42.
+# A bare sentence (even with an info label) fits inside an ATA model field
+# after an embedded LF and is not evidence emitted by hpa_dco_status().
+_INFO_RECORD = re.compile(
+    r"^\[[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\]\s+info:\s+"
+)
+_ERROR_SUMMARY_HEADER = (
+    "******************************** Error Summary "
+    "*********************************"
+)
 # v0.42 hpa_dco.c / logging.c English lines. Do not add later-release GUI tokens.
 _HIDDEN_DETECTED = re.compile(
     r"\*\*\*\s*HIDDEN SECTORS DETECTED\s*!\s*\*\*\*\s+on\s+(/dev/[A-Za-z0-9._+-]+)"
@@ -31,7 +41,7 @@ _HIDDEN_DETECTED = re.compile(
 _HIDDEN_INDETERMINATE = re.compile(
     r"HIDDEN SECTORS INDETERMINATE!\s+on\s+(/dev/[A-Za-z0-9._+-]+)"
 )
-_HIDDEN_NONE = re.compile(r"No hidden sectors on\s+(/dev/[A-Za-z0-9._+-]+)")
+_HIDDEN_NONE = re.compile(r"No hidden sectors on[ \t]+(/dev/[A-Za-z0-9._+-]+)[ \t]*\Z")
 _HPA_LINE_UNKNOWN = re.compile(
     r"\[UNKNOWN\] We can't find the HPA line, has hdparm ouput unknown/changed\?\s+"
     r"(/dev/[A-Za-z0-9._+-]+)"
@@ -180,7 +190,10 @@ def _parse_hidden_capacity(log_text: str, device: str) -> CheckResult:
         )
     lines = _target_lines(log_text, names)
     detected = [line for line in lines if _matches_device(_HIDDEN_DETECTED, line, names)]
-    none = [line for line in lines if _matches_device(_HIDDEN_NONE, line, names)]
+    none = [
+        line for line in lines
+        if _INFO_RECORD.match(line) and _matches_device(_HIDDEN_NONE, line, names)
+    ]
     unknown = [
         line
         for line in lines
@@ -381,10 +394,13 @@ def _error_summary_row(
     in_table = False
     malformed = False
     found = None
+    trusted_table = False
+    trusted_zero = False
     for raw in (log_text or "").split("\n"):
         body = _body(raw)
         if _ERROR_SUMMARY.fullmatch(body.strip()):
             in_table = True
+            trusted_table = raw.rstrip("\r\n") == _ERROR_SUMMARY_HEADER
             continue
         if in_table and body.startswith("***"):
             in_table = False
@@ -409,7 +425,14 @@ def _error_summary_row(
         if found is not None and counts != found:
             malformed = True
         found = counts
+        if trusted_table and not any(counts):
+            trusted_zero = True
     if malformed:
+        return None
+    # The exact 80-character engine banner cannot fit inside a device model.
+    # Keep conservative nonzero/error parsing, but do not bless a forged
+    # short Error Summary followed by a zero row as a passing check.
+    if found == (0, 0, 0) and not trusted_zero:
         return None
     return found
 
@@ -432,11 +455,26 @@ def evaluate_engine_checks(
     disk: Optional[Disk] = None,
 ) -> list[CheckResult]:
     """Return the three structured checks. Order is stable."""
-    return [
+    checks = [
         _parse_hidden_capacity(log_text, device),
         _parse_io_media(log_text, device),
         _parse_coverage(disk),
     ]
+    # nwipe terminates every record with LF. A missing final LF may cut a
+    # zero error count or a hidden-storage result before contradictory text.
+    # Keep warning/failure evidence, but never turn an incomplete log into a
+    # passing report check, even if its current numeric prefix looks valid.
+    if log_text and not log_text.endswith("\n"):
+        checks = [
+            _check(
+                item.id, "unavailable",
+                HIDDEN_UNAVAILABLE if item.id == "hidden_capacity" else IO_UNAVAILABLE,
+                "The nwipe log ended before its final record was complete.",
+                _provenance(item.provenance["parser"]),
+            ) if item.status == "pass" else item
+            for item in checks
+        ]
+    return checks
 
 
 def check_payloads(

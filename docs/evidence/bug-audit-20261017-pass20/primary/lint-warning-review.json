@@ -1,0 +1,12 @@
+{
+  "status": "reviewed existing non-material false positive; no source change",
+  "log": "lint.txt",
+  "warning": "[ci-hosted] warning: untracked TODO found; use TODO(#issue): form",
+  "matched_source": "src/beamo_wipe/release_manifest.py",
+  "matched_line": 40,
+  "matched_text": "PLACEHOLDER_RE = re.compile(r\"PLACEHOLDER|TODO|XXX|CHANGEME\", re.I)",
+  "reason": "TODO is one alternative of the placeholder-detection regular expression, not an outstanding task marker",
+  "source_sha256": "4f2ab923d177a4440143e116f0d4bfc096aa2f22f91679df672956c8ed888307",
+  "unchanged_from_start": true,
+  "script": "scripts/ci-hosted.sh:130-131"
+}

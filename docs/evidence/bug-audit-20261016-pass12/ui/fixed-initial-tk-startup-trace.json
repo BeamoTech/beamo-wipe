@@ -1,0 +1,122 @@
+{
+  "display": ":120",
+  "results": [
+    {
+      "fullscreen": false,
+      "requested_pointer_inside": false,
+      "outcome": "abandoned",
+      "phases": [
+        {
+          "phase": "position-pointer",
+          "window_rect": [
+            700,
+            400,
+            640,
+            440
+          ],
+          "pointer": [
+            0,
+            0
+          ],
+          "pointer_is_inside": false
+        },
+        {
+          "phase": "before-key",
+          "native_focus": 4194308,
+          "window_xid": 4194307,
+          "gtk_focus": ".",
+          "mapped": true
+        }
+      ],
+      "native_escape_effective": true
+    },
+    {
+      "fullscreen": false,
+      "requested_pointer_inside": true,
+      "outcome": "abandoned",
+      "phases": [
+        {
+          "phase": "position-pointer",
+          "window_rect": [
+            700,
+            400,
+            640,
+            440
+          ],
+          "pointer": [
+            1020,
+            620
+          ],
+          "pointer_is_inside": true
+        },
+        {
+          "phase": "before-key",
+          "native_focus": 4194402,
+          "window_xid": 4194401,
+          "gtk_focus": ".",
+          "mapped": true
+        }
+      ],
+      "native_escape_effective": true
+    },
+    {
+      "fullscreen": true,
+      "requested_pointer_inside": false,
+      "outcome": "abandoned",
+      "phases": [
+        {
+          "phase": "position-pointer",
+          "window_rect": [
+            0,
+            0,
+            1600,
+            1000
+          ],
+          "pointer": [
+            0,
+            0
+          ],
+          "pointer_is_inside": true
+        },
+        {
+          "phase": "before-key",
+          "native_focus": 4194522,
+          "window_xid": 4194521,
+          "gtk_focus": ".",
+          "mapped": true
+        }
+      ],
+      "native_escape_effective": true
+    },
+    {
+      "fullscreen": true,
+      "requested_pointer_inside": true,
+      "outcome": "abandoned",
+      "phases": [
+        {
+          "phase": "position-pointer",
+          "window_rect": [
+            0,
+            0,
+            1600,
+            1000
+          ],
+          "pointer": [
+            800,
+            500
+          ],
+          "pointer_is_inside": true
+        },
+        {
+          "phase": "before-key",
+          "native_focus": 4194608,
+          "window_xid": 4194607,
+          "gtk_focus": ".",
+          "mapped": true
+        }
+      ],
+      "native_escape_effective": true
+    }
+  ],
+  "owned_teardown": true
+}

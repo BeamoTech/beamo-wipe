@@ -1,0 +1,194 @@
+--- starting/src/beamo_wipe/discover.py
++++ final/src/beamo_wipe/discover.py
+@@ -581,7 +581,11 @@
+     own_pk = ""
+     if node.get("pkname") is not None:
+         own_pk = _identity_text(node.get("pkname"), "pkname")
+-    if _node_type(node) in {"disk", "rom"} and not own_pk:
++    if own_pk and parent is not None:
++        tree_name = _identity_text(parent.get("name"), "name")
++        if own_pk != tree_name:
++            return "", True
++    if _node_type(node) in {"disk", "rom"} and not own_pk and not _is_stacked_holder(node):
+         if node.get("name") is None:
+             return "", False
+         return _identity_text(node.get("name"), "name"), False
+@@ -602,7 +606,15 @@
+         ancestor_pk = ""
+         if ancestor.get("pkname") is not None:
+             ancestor_pk = _identity_text(ancestor.get("pkname"), "pkname")
+-        if _node_type(ancestor) in {"disk", "rom"} and not ancestor_pk:
++        if ancestor_pk and tree_parent is not None:
++            tree_name = _identity_text(tree_parent.get("name"), "name")
++            if ancestor_pk != tree_name:
++                return "", True
++        if (
++            _node_type(ancestor) in {"disk", "rom"}
++            and not ancestor_pk
++            and not _is_stacked_holder(ancestor)
++        ):
+             return current, False
+         if ancestor_pk:
+             current = ancestor_pk
+@@ -635,7 +647,10 @@
+     """
+     groups: Dict[Tuple[str, str], List[Tuple[Dict[str, Any], Optional[Dict[str, Any]]]]] = {}
+     for node, parent in flat_nodes:
+-        if _node_type(node) in {"disk", "rom", "part", "loop", "ram"}:
++        kind = _node_type(node)
++        if kind in {"rom", "part", "loop", "ram"} or (
++            kind == "disk" and not _is_stacked_holder(node)
++        ):
+             continue
+         name = _identity_text(node.get("name"), "name")
+         path = node_path(node)
+@@ -1878,7 +1893,7 @@
+                 raise ValueError("lsblk mounted ancestry contradicts PKNAME")
+         if (
+             kind in _UNRESOLVED_HOLDER_TYPES
+-            or kind in _STACKED_HOLDER_TYPES
++            or _has_stacked_holder(candidate, parent, by_name)
+             or kind in {"crypt", "dm", "bcache"}
+             or kind.startswith("raid")
+         ) and (
+@@ -1901,6 +1916,8 @@
+                 # An opened filesystem with no physical ancestry can belong
+                 # to any candidate disk. Omitting it would hide contents and
+                 # weaken the layout identity presented for confirmation.
++                if mounts:
++                    raise ValueError("lsblk mounted ancestry is unresolved")
+                 raise ValueError("lsblk filesystem ancestry is unresolved")
+         if mounts and _clean(candidate.get("fstype")).casefold() == "btrfs":
+             # lsblk may show a mount on only one Btrfs member. A second
+--- starting/src/beamo_wipe/ui/tk_wizard.py
++++ final/src/beamo_wipe/ui/tk_wizard.py
+@@ -1237,8 +1237,8 @@
+         self._layout_drawing = False
+         self._build_chrome()
+         self.root.bind("<Configure>", self._on_root_configure)
+-        self._confirm_var.trace_add("write", self._confirm_var_written)
+-        self._typing_var.trace_add("write", self._typing_var_written)
++        self._confirm_var_trace: Optional[str] = self._confirm_var.trace_add("write", self._confirm_var_written)
++        self._typing_var_trace: Optional[str] = self._typing_var.trace_add("write", self._typing_var_written)
+         self.root.bind("<Escape>", self._on_escape)
+         self.root.bind("<KeyRelease-Escape>", self._on_escape_release)
+         self.root.bind("<KP_Enter>", self._on_return)
+@@ -1630,6 +1630,22 @@
+         # In-flight scans finish into the void: polls stop here and any late
+         # worker result finds no owner. Workers are daemons; join them only.
+         self._ui_dead = True
++        for variable_name, token_name in (
++            ("_confirm_var", "_confirm_var_trace"),
++            ("_typing_var", "_typing_var_trace"),
++        ):
++            token = getattr(self, token_name, None)
++            if token is None:
++                continue
++            setattr(self, token_name, None)
++            variable = getattr(self, variable_name, None)
++            if variable is not None:
++                try:
++                    # Variables outlive the window. Retire only this owner's
++                    # callback, preserving every independent observer.
++                    variable.trace_remove("write", token)
++                except tk.TclError:
++                    pass  # Interpreter teardown may have removed the trace.
+         getattr(self.w, "cancel_audio", lambda: None)()
+         self._cancel_pick_restore()
+         for attr in ("_return_release_after", "_space_release_after"):
+--- starting/tests/test_accessible_runtime.py
++++ final/tests/test_accessible_runtime.py
+@@ -1604,6 +1604,8 @@
+ def test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog(ui, monkeypatch):
+     from threading import Event
+     from beamo_wipe import sound
++    from beamo_wipe.audio_jobs import AudioWorker
++    from beamo_wipe.ui import sound_dialog
+ 
+     entered = Event()
+     release = Event()
+@@ -1615,10 +1617,13 @@
+         return state
+     monkeypatch.setattr(sound, "list_outputs", slow_outputs)
+     app = ui()
+-    started = time.perf_counter()
+-    app.actions[C.SOUND_CHECK_BUTTON].clicked()
+-    assert time.perf_counter() - started < 0.06
++    # Own this controlled job so failure cleanup settles it before mocks retire.
++    audio_worker = AudioWorker()
++    monkeypatch.setattr(sound_dialog, "worker", audio_worker)
+     try:
++        started = time.perf_counter()
++        app.actions[C.SOUND_CHECK_BUTTON].clicked()
++        assert time.perf_counter() - started < 0.06
+         assert entered.wait(timeout=1)
+         started = time.perf_counter()
+         app.tick()
+@@ -1630,6 +1635,8 @@
+         assert app._sound_dialog.ticket is None
+     finally:
+         release.set()
++        audio_worker.close()
++        assert audio_worker._thread is None or not audio_worker._thread.is_alive()
+     time.sleep(0.02)
+     app.tick()
+     assert _sound_dialog() == []
+--- starting/tests/test_checkrow_trace_lifetime_pass18.py
++++ final/tests/test_checkrow_trace_lifetime_pass18.py
+@@ -96,29 +96,33 @@
+     variable = _variable(root, kind)
+     peer_trace_calls = []
+     peer_token = variable.trace_add("write", lambda *_args: peer_trace_calls.append(variable.get()))
+-    row = _CheckRow(parent, text="Report preference", variable=variable, command=lambda: None, font=font)
+-    row.pack()
+-    before = [str(token) for _modes, token in variable.trace_info()]
+-    row_tokens = set(before) - {peer_token}
+-    assert len(row_tokens) == 1
+-    root_jobs = []
+-    root.after_idle(lambda: root_jobs.append("live root"))
+-    _retire_row(root, parent, row, lifecycle)
+-    variable.set(1)
+-    root.update()
+-    after = [str(token) for _modes, token in variable.trace_info()]
+-    native_errors = list(root.tk.call("set", "pass18_trace_bgerrors"))
+-    request.node.user_properties.append(("trace_retirement", json.dumps({
+-        "kind": kind, "lifecycle": lifecycle, "before": before, "after": after,
+-        "python_errors": errors, "tcl_errors": native_errors, "root_jobs": root_jobs,
+-        "peer_calls": peer_trace_calls,
+-    })))
+-    assert not errors
+-    assert not native_errors
+-    assert not row_tokens.intersection(after)
+-    assert after == [peer_token]
+-    assert peer_trace_calls == [variable.get()]
+-    assert root_jobs == ["live root"]
++    try:
++        row = _CheckRow(parent, text="Report preference", variable=variable, command=lambda: None, font=font)
++        row.pack()
++        before = [str(token) for _modes, token in variable.trace_info()]
++        row_tokens = set(before) - {peer_token}
++        assert len(row_tokens) == 1
++        root_jobs = []
++        root.after_idle(lambda: root_jobs.append("live root"))
++        _retire_row(root, parent, row, lifecycle)
++        variable.set(1)
++        root.update()
++        after = [str(token) for _modes, token in variable.trace_info()]
++        native_errors = list(root.tk.call("set", "pass18_trace_bgerrors"))
++        request.node.user_properties.append(("trace_retirement", json.dumps({
++            "kind": kind, "lifecycle": lifecycle, "before": before, "after": after,
++            "python_errors": errors, "tcl_errors": native_errors, "root_jobs": root_jobs,
++            "peer_calls": peer_trace_calls,
++        })))
++        assert not errors
++        assert not native_errors
++        assert not row_tokens.intersection(after)
++        assert after == [peer_token]
++        assert peer_trace_calls == [variable.get()]
++        assert root_jobs == ["live root"]
++    finally:
++        if any(str(token) == peer_token for _modes, token in variable.trace_info()):
++            variable.trace_remove("write", peer_token)
+ 
+ 
+ @pytest.mark.parametrize("kind", ["boolean", "integer"])

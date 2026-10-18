@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.212" timestamp="2026-10-18T00:06:41.711282+00:00" hostname="srv1606478"><testcase classname="tests.test_tk_retired_pool_threads" name="test_unregistered_thread_drain_does_not_construct_dummy_thread[False]" time="0.018"><failure message="AssertionError: ([('KeyError', &quot;'target'&quot;)], ['dummy thread constructor'])&#10;assert (not [('KeyError', &quot;'target'&quot;)])">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7dca9d0aedb0&gt;
+via_gc_callback = False
+
+    @pytest.mark.parametrize("via_gc_callback", [False, True])
+    def test_unregistered_thread_drain_does_not_construct_dummy_thread(monkeypatch, via_gc_callback):
+        """GC on an unrelated native thread must not create threading wrappers."""
+        monkeypatch.setattr(ui, "_RETIRED_NATIVE_ASSETS", {})
+        monkeypatch.setattr(ui, "_RETIRED_INTERPRETERS", {})
+    
+        class Probe(ui.tk.Variable):
+            def __init__(self):
+                pass
+    
+            def __del__(self):
+                pass  # This probe allocates no Tcl resource.
+    
+        resource = Probe()
+        ui._pin_retired_assets((resource,), threading.current_thread())
+        del resource
+        ui._drain_retired_native()  # Leave a legitimate empty creator bucket.
+        done = threading.Event()
+        errors = []
+        attempted = []
+        original = threading.Thread.__init__
+    
+        def initialize(thread, *args, **kwargs):
+            if "target" not in kwargs:
+                attempted.append("dummy thread constructor")
+                raise KeyError("target")
+            return original(thread, *args, **kwargs)
+    
+        def collect():
+            try:
+                if via_gc_callback:
+                    ui._drain_retired_native_after_gc("stop", {})
+                else:
+                    ui._drain_retired_native()
+            except BaseException as error:
+                errors.append((type(error).__name__, str(error)))
+            finally:
+                done.set()
+    
+        enabled = gc.isenabled()
+        gc.disable()
+        try:
+            monkeypatch.setattr(threading.Thread, "__init__", initialize)
+            _thread.start_new_thread(collect, ())
+            assert done.wait(5), "Owned raw-thread fixture did not finish"
+        finally:
+            monkeypatch.setattr(threading.Thread, "__init__", original)
+            if enabled:
+                gc.enable()
+&gt;       assert not errors and not attempted, (errors, attempted)
+E       AssertionError: ([('KeyError', "'target'")], ['dummy thread constructor'])
+E       assert (not [('KeyError', "'target'")])
+
+tests/test_tk_retired_pool_threads.py:195: AssertionError</failure></testcase><testcase classname="tests.test_tk_retired_pool_threads" name="test_unregistered_thread_drain_does_not_construct_dummy_thread[True]" time="0.002"><failure message="AssertionError: ([('KeyError', &quot;'target'&quot;)], ['dummy thread constructor'])&#10;assert (not [('KeyError', &quot;'target'&quot;)])">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7dca9d052420&gt;
+via_gc_callback = True
+
+    @pytest.mark.parametrize("via_gc_callback", [False, True])
+    def test_unregistered_thread_drain_does_not_construct_dummy_thread(monkeypatch, via_gc_callback):
+        """GC on an unrelated native thread must not create threading wrappers."""
+        monkeypatch.setattr(ui, "_RETIRED_NATIVE_ASSETS", {})
+        monkeypatch.setattr(ui, "_RETIRED_INTERPRETERS", {})
+    
+        class Probe(ui.tk.Variable):
+            def __init__(self):
+                pass
+    
+            def __del__(self):
+                pass  # This probe allocates no Tcl resource.
+    
+        resource = Probe()
+        ui._pin_retired_assets((resource,), threading.current_thread())
+        del resource
+        ui._drain_retired_native()  # Leave a legitimate empty creator bucket.
+        done = threading.Event()
+        errors = []
+        attempted = []
+        original = threading.Thread.__init__
+    
+        def initialize(thread, *args, **kwargs):
+            if "target" not in kwargs:
+                attempted.append("dummy thread constructor")
+                raise KeyError("target")
+            return original(thread, *args, **kwargs)
+    
+        def collect():
+            try:
+                if via_gc_callback:
+                    ui._drain_retired_native_after_gc("stop", {})
+                else:
+                    ui._drain_retired_native()
+            except BaseException as error:
+                errors.append((type(error).__name__, str(error)))
+            finally:
+                done.set()
+    
+        enabled = gc.isenabled()
+        gc.disable()
+        try:
+            monkeypatch.setattr(threading.Thread, "__init__", initialize)
+            _thread.start_new_thread(collect, ())
+            assert done.wait(5), "Owned raw-thread fixture did not finish"
+        finally:
+            monkeypatch.setattr(threading.Thread, "__init__", original)
+            if enabled:
+                gc.enable()
+&gt;       assert not errors and not attempted, (errors, attempted)
+E       AssertionError: ([('KeyError', "'target'")], ['dummy thread constructor'])
+E       assert (not [('KeyError', "'target'")])
+
+tests/test_tk_retired_pool_threads.py:195: AssertionError</failure></testcase></testsuite></testsuites>

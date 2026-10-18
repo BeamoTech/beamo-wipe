@@ -1,0 +1,268 @@
+dbus-daemon[647208]: [session uid=0 pid=647208] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=647222 comm="/tmp/beamo-wipe-audit-python/bin/python3 -m pytest" label="unconfined")
+dbus-daemon[647208]: [session uid=0 pid=647208] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[647231]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=647222 comm="/tmp/beamo-wipe-audit-python/bin/python3 -m pytest" label="unconfined")
+dbus-daemon[647231]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+........................................................................ [  3%]
+........................................................................ [  6%]
+........................................................................ [  9%]
+........................................................................ [ 12%]
+........................................................................ [ 15%]
+........................................................................ [ 19%]
+.......................................FFF.......................FFFF... [ 22%]
+........................................................................ [ 25%]
+........................................................................ [ 28%]
+........................................................................ [ 31%]
+........................................................................ [ 34%]
+........................................................................ [ 38%]
+........................................................................ [ 41%]
+........................................................................ [ 44%]
+........................................................................ [ 47%]
+........................................................................ [ 50%]
+........................................................................ [ 53%]
+........................................................................ [ 57%]
+........................................................................ [ 60%]
+........................................................................ [ 63%]
+........................................................................ [ 66%]
+........................................................................ [ 69%]
+........................................................................ [ 72%]
+........................................................................ [ 76%]
+........................................................................ [ 79%]
+........................................................................ [ 82%]
+........................................................................ [ 85%]
+........................................................................ [ 88%]
+........................................................................ [ 91%]
+........................................................................ [ 95%]
+........................................................................ [ 98%]
+.......................................                                  [100%]
+=================================== FAILURES ===================================
+________ test_overlong_hardware_id_is_not_a_selectable_identity[serial] ________
+
+field = 'serial'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn", "child_serial"))
+    def test_overlong_hardware_id_is_not_a_selectable_identity(field):
+        # Before the fix, all three raw values were truncated to the same 128
+        # characters. A fake fresh rescan replacing suffix 1 with 2 passed
+        # assert_rediscovered_identity even though the hardware ID had changed.
+>       before = _inventory(**{field: "A" * 128 + "1"})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_discovery_overlong_identity_pass9.py:52:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_discovery_overlong_identity_pass9.py:9: in _inventory
+    return parse_lsblk_json(
+src/beamo_wipe/discover.py:1888: in parse_lsblk_json
+    observation = _physical_observation(node, effective_mounts)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/discover.py:1331: in _physical_observation
+    serial=_hardware_identity(node.get("serial"), "serial")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+value = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1'
+field = 'serial'
+
+    def _hardware_identity(value: Any, field: str) -> str:
+        """Keep a hardware ID intact or refuse it; an abbreviated ID is unsafe."""
+        if value is None:
+            return ""
+        if not isinstance(value, str):
+            raise ValueError(f"lsblk {field} must be text")
+        if any(_unsafe_text_character(ch) for ch in value):
+            raise ValueError(f"lsblk {field} contains control characters")
+        text = value.strip()
+        if len(text) > 128:
+>           raise ValueError(f"lsblk {field} is too long")
+E           ValueError: lsblk serial is too long
+
+src/beamo_wipe/discover.py:287: ValueError
+_________ test_overlong_hardware_id_is_not_a_selectable_identity[wwn] __________
+
+field = 'wwn'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn", "child_serial"))
+    def test_overlong_hardware_id_is_not_a_selectable_identity(field):
+        # Before the fix, all three raw values were truncated to the same 128
+        # characters. A fake fresh rescan replacing suffix 1 with 2 passed
+        # assert_rediscovered_identity even though the hardware ID had changed.
+>       before = _inventory(**{field: "A" * 128 + "1"})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_discovery_overlong_identity_pass9.py:52:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_discovery_overlong_identity_pass9.py:9: in _inventory
+    return parse_lsblk_json(
+src/beamo_wipe/discover.py:1888: in parse_lsblk_json
+    observation = _physical_observation(node, effective_mounts)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/discover.py:1333: in _physical_observation
+    wwn=_hardware_identity(node.get("wwn"), "wwn")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+value = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1'
+field = 'wwn'
+
+    def _hardware_identity(value: Any, field: str) -> str:
+        """Keep a hardware ID intact or refuse it; an abbreviated ID is unsafe."""
+        if value is None:
+            return ""
+        if not isinstance(value, str):
+            raise ValueError(f"lsblk {field} must be text")
+        if any(_unsafe_text_character(ch) for ch in value):
+            raise ValueError(f"lsblk {field} contains control characters")
+        text = value.strip()
+        if len(text) > 128:
+>           raise ValueError(f"lsblk {field} is too long")
+E           ValueError: lsblk wwn is too long
+
+src/beamo_wipe/discover.py:287: ValueError
+_____ test_overlong_hardware_id_is_not_a_selectable_identity[child_serial] _____
+
+field = 'child_serial'
+
+    @pytest.mark.parametrize("field", ("serial", "wwn", "child_serial"))
+    def test_overlong_hardware_id_is_not_a_selectable_identity(field):
+        # Before the fix, all three raw values were truncated to the same 128
+        # characters. A fake fresh rescan replacing suffix 1 with 2 passed
+        # assert_rediscovered_identity even though the hardware ID had changed.
+>       before = _inventory(**{field: "A" * 128 + "1"})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_discovery_overlong_identity_pass9.py:52:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_discovery_overlong_identity_pass9.py:9: in _inventory
+    return parse_lsblk_json(
+src/beamo_wipe/discover.py:1888: in parse_lsblk_json
+    observation = _physical_observation(node, effective_mounts)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/discover.py:1332: in _physical_observation
+    or _first_descendant_field(node, "serial"),
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/discover.py:960: in _first_descendant_field
+    got = _hardware_identity(child.get(key), key)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+value = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1'
+field = 'serial'
+
+    def _hardware_identity(value: Any, field: str) -> str:
+        """Keep a hardware ID intact or refuse it; an abbreviated ID is unsafe."""
+        if value is None:
+            return ""
+        if not isinstance(value, str):
+            raise ValueError(f"lsblk {field} must be text")
+        if any(_unsafe_text_character(ch) for ch in value):
+            raise ValueError(f"lsblk {field} contains control characters")
+        text = value.strip()
+        if len(text) > 128:
+>           raise ValueError(f"lsblk {field} is too long")
+E           ValueError: lsblk serial is too long
+
+src/beamo_wipe/discover.py:287: ValueError
+_ test_drive_identity_line_separator_cannot_spoof_picker_identity[serial-\u2028] _
+
+field = 'serial', separator = '\u2028'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    def test_drive_identity_line_separator_cannot_spoof_picker_identity(field, separator):
+        payload = copy.deepcopy(load_lsblk_json_text(FIXTURE.read_text()))
+        target = next(node for node in payload["blockdevices"] if node["path"] == "/dev/vda")
+        target[field] = f"Data SSD{separator}Beamo boot USB"
+
+        result = discover(
+            lsblk_payload=payload,
+            boot_path="/dev/sr0",
+            mount_sources=["/dev/sr0"],
+            cmdline="boot=live",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+
+>       assert result.boot_identified and result.boot.path == "/dev/sr0"
+E       AssertionError: assert (False)
+E        +  where False = DiscoveryResult(disks=(), selectable=(), boot=None, error='We cannot tell which disk is this USB. Shut down, check USB...rror: lsblk serial contains control characters', excluded=(), error_code='discovery_invalid', physical_observations=()).boot_identified
+
+tests/test_discovery_unicode_line_break_pass29.py:30: AssertionError
+_ test_drive_identity_line_separator_cannot_spoof_picker_identity[serial-\u2029] _
+
+field = 'serial', separator = '\u2029'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    def test_drive_identity_line_separator_cannot_spoof_picker_identity(field, separator):
+        payload = copy.deepcopy(load_lsblk_json_text(FIXTURE.read_text()))
+        target = next(node for node in payload["blockdevices"] if node["path"] == "/dev/vda")
+        target[field] = f"Data SSD{separator}Beamo boot USB"
+
+        result = discover(
+            lsblk_payload=payload,
+            boot_path="/dev/sr0",
+            mount_sources=["/dev/sr0"],
+            cmdline="boot=live",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+
+>       assert result.boot_identified and result.boot.path == "/dev/sr0"
+E       AssertionError: assert (False)
+E        +  where False = DiscoveryResult(disks=(), selectable=(), boot=None, error='We cannot tell which disk is this USB. Shut down, check USB...rror: lsblk serial contains control characters', excluded=(), error_code='discovery_invalid', physical_observations=()).boot_identified
+
+tests/test_discovery_unicode_line_break_pass29.py:30: AssertionError
+_ test_drive_identity_line_separator_cannot_spoof_picker_identity[wwn-\u2028] __
+
+field = 'wwn', separator = '\u2028'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    def test_drive_identity_line_separator_cannot_spoof_picker_identity(field, separator):
+        payload = copy.deepcopy(load_lsblk_json_text(FIXTURE.read_text()))
+        target = next(node for node in payload["blockdevices"] if node["path"] == "/dev/vda")
+        target[field] = f"Data SSD{separator}Beamo boot USB"
+
+        result = discover(
+            lsblk_payload=payload,
+            boot_path="/dev/sr0",
+            mount_sources=["/dev/sr0"],
+            cmdline="boot=live",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+
+>       assert result.boot_identified and result.boot.path == "/dev/sr0"
+E       AssertionError: assert (False)
+E        +  where False = DiscoveryResult(disks=(), selectable=(), boot=None, error='We cannot tell which disk is this USB. Shut down, check USB...ueError: lsblk wwn contains control characters', excluded=(), error_code='discovery_invalid', physical_observations=()).boot_identified
+
+tests/test_discovery_unicode_line_break_pass29.py:30: AssertionError
+_ test_drive_identity_line_separator_cannot_spoof_picker_identity[wwn-\u2029] __
+
+field = 'wwn', separator = '\u2029'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    @pytest.mark.parametrize("field", ["model", "serial", "wwn"])
+    def test_drive_identity_line_separator_cannot_spoof_picker_identity(field, separator):
+        payload = copy.deepcopy(load_lsblk_json_text(FIXTURE.read_text()))
+        target = next(node for node in payload["blockdevices"] if node["path"] == "/dev/vda")
+        target[field] = f"Data SSD{separator}Beamo boot USB"
+
+        result = discover(
+            lsblk_payload=payload,
+            boot_path="/dev/sr0",
+            mount_sources=["/dev/sr0"],
+            cmdline="boot=live",
+            env={"BEAMO_WIPE_DRY_RUN": "1"},
+        )
+
+>       assert result.boot_identified and result.boot.path == "/dev/sr0"
+E       AssertionError: assert (False)
+E        +  where False = DiscoveryResult(disks=(), selectable=(), boot=None, error='We cannot tell which disk is this USB. Shut down, check USB...ueError: lsblk wwn contains control characters', excluded=(), error_code='discovery_invalid', physical_observations=()).boot_identified
+
+tests/test_discovery_unicode_line_break_pass29.py:30: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_discovery_overlong_identity_pass9.py::test_overlong_hardware_id_is_not_a_selectable_identity[serial]
+FAILED tests/test_discovery_overlong_identity_pass9.py::test_overlong_hardware_id_is_not_a_selectable_identity[wwn]
+FAILED tests/test_discovery_overlong_identity_pass9.py::test_overlong_hardware_id_is_not_a_selectable_identity[child_serial]
+FAILED tests/test_discovery_unicode_line_break_pass29.py::test_drive_identity_line_separator_cannot_spoof_picker_identity[serial-\u2028]
+FAILED tests/test_discovery_unicode_line_break_pass29.py::test_drive_identity_line_separator_cannot_spoof_picker_identity[serial-\u2029]
+FAILED tests/test_discovery_unicode_line_break_pass29.py::test_drive_identity_line_separator_cannot_spoof_picker_identity[wwn-\u2028]
+FAILED tests/test_discovery_unicode_line_break_pass29.py::test_drive_identity_line_separator_cannot_spoof_picker_identity[wwn-\u2029]

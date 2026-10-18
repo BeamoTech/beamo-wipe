@@ -1,0 +1,22 @@
+{
+  "cases": 18,
+  "failures": 14,
+  "passing_controls": 4,
+  "source_unchanged": true,
+  "failed_ids": [
+    "test_rejected_launch_releases_ticket_and_allows_retry[RuntimeError-False-construct]",
+    "test_rejected_launch_releases_ticket_and_allows_retry[RuntimeError-True-construct]",
+    "test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-False-construct]",
+    "test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-False-start-before]",
+    "test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-False-start-after]",
+    "test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-True-construct]",
+    "test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-True-start-before]",
+    "test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-True-start-after]",
+    "test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-False-construct]",
+    "test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-False-start-before]",
+    "test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-False-start-after]",
+    "test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-True-construct]",
+    "test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-True-start-before]",
+    "test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-True-start-after]"
+  ]
+}

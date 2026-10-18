@@ -1,0 +1,7 @@
+{
+  "platform": "Linux",
+  "machine": "x86_64",
+  "native_inventory_override": null,
+  "cloud_environment_status_tool_exposed": false,
+  "shared_guide_exists": false
+}

@@ -1,0 +1,13 @@
+01-splash SPLASH
+02-owner OWNER
+03-pick PICK
+04-confirm CONFIRM
+05-method METHOD
+06-review LAST_CHANCE
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+07-working WORKING
+08-stop-confirm WORKING
+09-interrupted DONE

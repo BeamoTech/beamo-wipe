@@ -1,0 +1,10 @@
+{
+  "exit_code": 0,
+  "failures": [],
+  "selection": {
+    "total": 9772,
+    "retained": 1061,
+    "deselected": 8711,
+    "last": "tests/test_checkrow_trace_lifetime_pass18.py::test_live_and_peer_rows_keep_their_variable_callbacks[True-1-integer]"
+  }
+}

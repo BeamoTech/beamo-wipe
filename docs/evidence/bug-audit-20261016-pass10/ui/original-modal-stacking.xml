@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="9" skipped="0" tests="11" time="2.281" timestamp="2026-10-16T16:49:53.631938+00:00" hostname="srv1606478"><testcase classname="tests.test_accessible_sound_modal_pass10" name="test_owner_without_modal_has_keyboard_focus" time="0.135" /><testcase classname="tests.test_accessible_sound_modal_pass10" name="test_sound_button_keeps_dialog_above_parent_with_keyboard_focus" time="0.189"><failure message="AssertionError: {'focused': 2097218, 'modal': 2097254, 'modal_above': False, 'modal_focused': False, ...}&#10;assert (False)">ui = &lt;function ui.&lt;locals&gt;.build at 0x79606f38eac0&gt;, fake_audio = []
+
+    def test_sound_button_keeps_dialog_above_parent_with_keyboard_focus(ui, fake_audio):  # noqa: F811
+        app = ui(_owner())
+        controller = _open(app)
+&gt;       _assert_modal(app, controller)
+
+tests/test_accessible_sound_modal_pass10.py:127: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+app = &lt;beamo_wipe.ui.accessible_wizard.AccessibleWizard object at 0x79605efb8260&gt;
+controller = &lt;beamo_wipe.ui.sound_dialog.SoundDialog object at 0x79605efbbec0&gt;
+
+    def _assert_modal(app, controller):
+        state = _state(app, controller.dialog)
+&gt;       assert state["modal_above"] and state["modal_focused"], state
+E       AssertionError: {'focused': 2097218, 'modal': 2097254, 'modal_above': False, 'modal_focused': False, ...}
+E       assert (False)
+
+tests/test_accessible_sound_modal_pass10.py:115: AssertionError</failure></testcase><testcase classname="tests.test_accessible_sound_modal_pass10" name="test_existing_sound_dialog_reopen_keeps_the_same_modal_visible" time="0.254"><failure message="AssertionError: {'focused': 2097708, 'modal': 2097746, 'modal_above': False, 'modal_focused': False, ...}&#10;assert (False)">ui = &lt;function ui.&lt;locals&gt;.build at 0x79605efd5c60&gt;, fake_audio = []
+
+    def test_existing_sound_dialog_reopen_keeps_the_same_modal_visible(ui, fake_audio):  # noqa: F811
+        app = ui(_owner())
+        controller = _open(app)
+        app.actions[C.SOUND_CHECK_BUTTON].clicked()
+        drain()
+        assert app._sound_dialog is controller
+        assert [window for window in Gtk.Window.list_toplevels() if isinstance(window, Gtk.Dialog) and window.get_mapped()] == [controller.dialog]
+&gt;       _assert_modal(app, controller)
+
+tests/test_accessible_sound_modal_pass10.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+app = &lt;beamo_wipe.ui.accessible_wizard.AccessibleWizard object at 0x79605eff66f0&gt;
+controller = &lt;beamo_wipe.ui.sound_dialog.SoundDialog object at 0x79605eff4dd0&gt;
+
+    def _assert_modal(app, controller):
+        state = _state(app, controller.dialog)
+&gt;       assert state["modal_above"] and state["modal_focused"], state
+E       AssertionError: {'focused': 2097708, 'modal': 2097746, 'modal_above': False, 'modal_focused': False, ...}
+E       assert (False)
+
+tests/test_accessible_sound_modal_pass10.py:115: AssertionError</failure></testcase><testcase classname="tests.test_accessible_sound_modal_pass10" name="test_parent_rerender_preserves_sound_modal_stacking_and_focus[owner]" time="0.226"><failure message="AssertionError: {'focused': 2098833, 'modal': 2098870, 'modal_above': False, 'modal_focused': False, ...}&#10;assert (False)">ui = &lt;function ui.&lt;locals&gt;.build at 0x79605efd5da0&gt;, fake_audio = []
+screen = &lt;Screen.OWNER: 'owner'&gt;
+
+    @pytest.mark.parametrize("screen", [Screen.OWNER, Screen.WORKING, Screen.LAST_CHANCE])
+    def test_parent_rerender_preserves_sound_modal_stacking_and_focus(ui, fake_audio, screen):  # noqa: F811
+        wizard = _review()[0] if screen == Screen.LAST_CHANCE else _owner()
+        wizard.screen = screen
+        app = ui(wizard)
+        controller = _open(app)
+        # Establish a correct native stack independently of the opening bug.
+        controller.dialog.present()
+        controller.dialog.get_window().focus(Gdk.CURRENT_TIME)
+        _assert_modal(app, controller)
+        app.render()
+&gt;       _assert_modal(app, controller)
+
+tests/test_accessible_sound_modal_pass10.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+app = &lt;beamo_wipe.ui.accessible_wizard.AccessibleWizard object at 0x79605eff65d0&gt;
+controller = &lt;beamo_wipe.ui.sound_dialog.SoundDialog object at 0x79605f011be0&gt;
+
+    def _assert_modal(app, controller):
+        state = _state(app, controller.dialog)
+&gt;       assert state["modal_above"] and state["modal_focused"], state
+E       AssertionError: {'focused': 2098833, 'modal': 2098870, 'modal_above': False, 'modal_focused': False, ...}
+E       assert (False)
+
+tests/test_accessible_sound_modal_pass10.py:115: AssertionError</failure></testcase><testcase classname="tests.test_accessible_sound_modal_pass10" name="test_parent_rerender_preserves_sound_modal_stacking_and_focus[working]" time="0.093"><failure message="AssertionError: {'focused': 2099984, 'modal': 2100017, 'modal_above': False, 'modal_focused': False, ...}&#10;assert (False)">ui = &lt;function ui.&lt;locals&gt;.build at 0x79605efd6200&gt;, fake_audio = []
+screen = &lt;Screen.WORKING: 'working'&gt;
+
+    @pytest.mark.parametrize("screen", [Screen.OWNER, Screen.WORKING, Screen.LAST_CHANCE])
+    def test_parent_rerender_preserves_sound_modal_stacking_and_focus(ui, fake_audio, screen):  # noqa: F811
+        wizard = _review()[0] if screen == Screen.LAST_CHANCE else _owner()
+        wizard.screen = screen
+        app = ui(wizard)
+        controller = _open(app)
+        # Establish a correct native stack independently of the opening bug.
+        controller.dialog.present()
+        controller.dialog.get_window().focus(Gdk.CURRENT_TIME)
+        _assert_modal(app, controller)
+        app.render()
+&gt;       _assert_modal(app, controller)
+
+tests/test_accessible_sound_modal_pass10.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+app = &lt;beamo_wipe.ui.accessible_wizard.AccessibleWizard object at 0x79605eff7470&gt;
+controller = &lt;beamo_wipe.ui.sound_dialog.SoundDialog object at 0x79605f0126f0&gt;
+
+    def _assert_modal(app, controller):
+        state = _state(app, controller.dialog)
+&gt;       assert state["modal_above"] and state["modal_focused"], state
+E       AssertionError: {'focused': 2099984, 'modal': 2100017, 'modal_above': False, 'modal_focused': False, ...}
+E       assert (False)
+
+tests/test_accessible_sound_modal_pass10.py:115: AssertionError</failure></testcase><testcase classname="tests.test_accessible_sound_modal_pass10" name="test_parent_rerender_preserves_sound_modal_stacking_and_focus[last_chance]" time="0.150"><failure message="AssertionError: {'focused': 2100263, 'modal': 2100305, 'modal_above': False, 'modal_focused': False, ...}&#10;assert (False)">ui = &lt;function ui.&lt;locals&gt;.build at 0x79605efd68e0&gt;, fake_audio = []
+screen = &lt;Screen.LAST_CHANCE: 'last_chance'&gt;
+
+    @pytest.mark.parametrize("screen", [Screen.OWNER, Screen.WORKING, Screen.LAST_CHANCE])
+    def test_parent_rerender_preserves_sound_modal_stacking_and_focus(ui, fake_audio, screen):  # noqa: F811
+        wizard = _review()[0] if screen == Screen.LAST_CHANCE else _owner()
+        wizard.screen = screen
+        app = ui(wizard)
+        controller = _open(app)
+        # Establish a correct native stack independently of the opening bug.
+        controller.dialog.present()
+        controller.dialog.get_window().focus(Gdk.CURRENT_TIME)
+        _assert_modal(app, controller)
+        app.render()
+&gt;       _assert_modal(app, controller)
+
+tests/test_accessible_sound_modal_pass10.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+app = &lt;beamo_wipe.ui.accessible_wizard.AccessibleWizard object at 0x79605eff41d0&gt;
+controller = &lt;beamo_wipe.ui.sound_dialog.SoundDialog object at 0x79605eff58e0&gt;
+
+    def _assert_modal(app, controller):
+        state = _state(app, controller.dialog)
+&gt;       assert state["modal_above"] and state["modal_focused"], state
+E       AssertionError: {'focused': 2100263, 'modal': 2100305, 'modal_above': False, 'modal_focused': False, ...}
+E       assert (False)
+
+tests/test_accessible_sound_modal_pass10.py:115: AssertionError</failure></testcase><testcase classname="tests.test_accessible_sound_modal_pass10" name="test_sound_close_returns_keyboard_focus_to_the_parent[response]" time="0.201"><failure message="AssertionError: {'focused': 543, 'parent': 2101007, 'parent_focused': False, 'stack': [2097153, 2097169, 2101007]}&#10;assert False">ui = &lt;function ui.&lt;locals&gt;.build at 0x79605efd6de0&gt;, fake_audio = []
+response = 'response'
+
+    @pytest.mark.parametrize("response", ["response", "close"])
+    def test_sound_close_returns_keyboard_focus_to_the_parent(ui, fake_audio, response):  # noqa: F811
+        app = ui(_owner())
+        controller = _open(app)
+        controller.dialog.present()
+        controller.dialog.get_window().focus(Gdk.CURRENT_TIME)
+        _assert_modal(app, controller)
+        if response == "response":
+            controller.dialog.response(Gtk.ResponseType.CLOSE)
+        else:
+            controller.close()
+        assert controller.dialog is None
+        state = _state(app)
+&gt;       assert state["parent_focused"], state
+E       AssertionError: {'focused': 543, 'parent': 2101007, 'parent_focused': False, 'stack': [2097153, 2097169, 2101007]}
+E       assert False
+
+tests/test_accessible_sound_modal_pass10.py:167: AssertionError</failure></testcase><testcase classname="tests.test_accessible_sound_modal_pass10" name="test_sound_close_returns_keyboard_focus_to_the_parent[close]" time="0.174"><failure message="AssertionError: {'focused': 543, 'parent': 2101379, 'parent_focused': False, 'stack': [2097153, 2097169, 2101379]}&#10;assert False">ui = &lt;function ui.&lt;locals&gt;.build at 0x79605efd6520&gt;, fake_audio = []
+response = 'close'
+
+    @pytest.mark.parametrize("response", ["response", "close"])
+    def test_sound_close_returns_keyboard_focus_to_the_parent(ui, fake_audio, response):  # noqa: F811
+        app = ui(_owner())
+        controller = _open(app)
+        controller.dialog.present()
+        controller.dialog.get_window().focus(Gdk.CURRENT_TIME)
+        _assert_modal(app, controller)
+        if response == "response":
+            controller.dialog.response(Gtk.ResponseType.CLOSE)
+        else:
+            controller.close()
+        assert controller.dialog is None
+        state = _state(app)
+&gt;       assert state["parent_focused"], state
+E       AssertionError: {'focused': 543, 'parent': 2101379, 'parent_focused': False, 'stack': [2097153, 2097169, 2101379]}
+E       assert False
+
+tests/test_accessible_sound_modal_pass10.py:167: AssertionError</failure></testcase><testcase classname="tests.test_accessible_sound_modal_pass10" name="test_sound_review_close_starts_a_fresh_visible_countdown" time="0.121" /><testcase classname="tests.test_accessible_sound_modal_pass10" name="test_direct_render_closes_sound_modal_from_an_obsolete_screen_epoch[False]" time="0.191"><failure message="assert &lt;Gtk.Dialog object at 0x79605dabc700 (GtkDialog at 0x227b6460)&gt; is None&#10; +  where &lt;Gtk.Dialog object at 0x79605dabc700 (GtkDialog at 0x227b6460)&gt; = &lt;beamo_wipe.ui.sound_dialog.SoundDialog object at 0x79605efb8e00&gt;.dialog">ui = &lt;function ui.&lt;locals&gt;.build at 0x79605efd5a80&gt;, fake_audio = []
+same_screen_revisit = False
+
+    @pytest.mark.parametrize("same_screen_revisit", [False, True])
+    def test_direct_render_closes_sound_modal_from_an_obsolete_screen_epoch(
+        ui, fake_audio, same_screen_revisit  # noqa: F811
+    ):
+        app = ui(_owner())
+        controller = _open(app)
+        app.w.screen = Screen.KEYBOARD
+        if same_screen_revisit:
+            app.w.screen = Screen.OWNER
+        app.render()
+&gt;       assert controller.dialog is None
+E       assert &lt;Gtk.Dialog object at 0x79605dabc700 (GtkDialog at 0x227b6460)&gt; is None
+E        +  where &lt;Gtk.Dialog object at 0x79605dabc700 (GtkDialog at 0x227b6460)&gt; = &lt;beamo_wipe.ui.sound_dialog.SoundDialog object at 0x79605efb8e00&gt;.dialog
+
+tests/test_accessible_sound_modal_pass10.py:195: AssertionError</failure></testcase><testcase classname="tests.test_accessible_sound_modal_pass10" name="test_direct_render_closes_sound_modal_from_an_obsolete_screen_epoch[True]" time="0.214"><failure message="assert &lt;Gtk.Dialog object at 0x79606e8b04c0 (GtkDialog at 0x22811ba0)&gt; is None&#10; +  where &lt;Gtk.Dialog object at 0x79606e8b04c0 (GtkDialog at 0x22811ba0)&gt; = &lt;beamo_wipe.ui.sound_dialog.SoundDialog object at 0x79605daca0c0&gt;.dialog">ui = &lt;function ui.&lt;locals&gt;.build at 0x79605f030ae0&gt;, fake_audio = []
+same_screen_revisit = True
+
+    @pytest.mark.parametrize("same_screen_revisit", [False, True])
+    def test_direct_render_closes_sound_modal_from_an_obsolete_screen_epoch(
+        ui, fake_audio, same_screen_revisit  # noqa: F811
+    ):
+        app = ui(_owner())
+        controller = _open(app)
+        app.w.screen = Screen.KEYBOARD
+        if same_screen_revisit:
+            app.w.screen = Screen.OWNER
+        app.render()
+&gt;       assert controller.dialog is None
+E       assert &lt;Gtk.Dialog object at 0x79606e8b04c0 (GtkDialog at 0x22811ba0)&gt; is None
+E        +  where &lt;Gtk.Dialog object at 0x79606e8b04c0 (GtkDialog at 0x22811ba0)&gt; = &lt;beamo_wipe.ui.sound_dialog.SoundDialog object at 0x79605daca0c0&gt;.dialog
+
+tests/test_accessible_sound_modal_pass10.py:195: AssertionError</failure></testcase></testsuite></testsuites>

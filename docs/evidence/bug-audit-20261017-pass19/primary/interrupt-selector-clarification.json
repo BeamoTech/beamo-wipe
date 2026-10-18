@@ -1,0 +1,6 @@
+{
+  "initial_selector_matches": 3,
+  "initial_selector_rejected": true,
+  "signals_sent_by_initial_attempt": 0,
+  "reason": "Argument match also found own dbus/xvfb wrappers; corrected selector requires exact Python executable argv0 and -m pytest."
+}

@@ -1,0 +1,23 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass20-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "-o",
+    "pythonpath=src",
+    "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/image-preinit-boundary-probe.py",
+    "--junitxml=/tmp/pass20-primary/image-preinit-original.xml"
+  ],
+  "exit_code": 1,
+  "started_utc": "2026-10-17T19:18:41.525833+00:00",
+  "ended_utc": "2026-10-17T19:18:43.006619+00:00"
+}

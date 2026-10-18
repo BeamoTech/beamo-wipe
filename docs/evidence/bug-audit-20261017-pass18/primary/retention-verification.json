@@ -1,0 +1,18 @@
+{
+  "compacted_raw_files": 15,
+  "raw_original_bytes": 24808601,
+  "raw_archive_bytes": 10205580,
+  "raw_archive_readback": true,
+  "source_inputs_unchanged": 766,
+  "index_empty": true,
+  "staged_files": 0,
+  "working_staging_retained": "/tmp/pass18-primary",
+  "runner_fixture_files": 0,
+  "report_artifact_files": 0,
+  "screenshots": 0,
+  "final_campaigns": "NOT RUN; failed local gate",
+  "local_gate": "FAILED; GTK click latency assertion",
+  "source_committed": false,
+  "pushed": false,
+  "deployed": false
+}

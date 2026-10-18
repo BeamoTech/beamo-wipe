@@ -1,0 +1,2441 @@
+[
+  {
+    "index": 0,
+    "target": "/dev/sda",
+    "method": "everyday",
+    "complete": false,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 1,
+    "target": "/dev/sda",
+    "method": "everyday",
+    "complete": false,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 2,
+    "target": "/dev/sda",
+    "method": "everyday",
+    "complete": false,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 3,
+    "target": "/dev/sda",
+    "method": "everyday",
+    "complete": false,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 4,
+    "target": "/dev/sda",
+    "method": "everyday",
+    "complete": false,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 5,
+    "target": "/dev/sda",
+    "method": "everyday",
+    "complete": false,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 6,
+    "target": "/dev/sda",
+    "method": "everyday",
+    "complete": false,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 7,
+    "target": "/dev/sda",
+    "method": "everyday",
+    "complete": false,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 8,
+    "target": "/dev/sda",
+    "method": "everyday",
+    "complete": true,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 9,
+    "target": "/dev/sda",
+    "method": "everyday",
+    "complete": true,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 10,
+    "target": "/dev/sda",
+    "method": "everyday",
+    "complete": true,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 11,
+    "target": "/dev/sda",
+    "method": "everyday",
+    "complete": true,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 12,
+    "target": "/dev/sda",
+    "method": "everyday",
+    "complete": true,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 13,
+    "target": "/dev/sda",
+    "method": "everyday",
+    "complete": true,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 14,
+    "target": "/dev/sda",
+    "method": "everyday",
+    "complete": true,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 15,
+    "target": "/dev/sda",
+    "method": "everyday",
+    "complete": true,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 16,
+    "target": "/dev/sda",
+    "method": "extra",
+    "complete": false,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 17,
+    "target": "/dev/sda",
+    "method": "extra",
+    "complete": false,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 18,
+    "target": "/dev/sda",
+    "method": "extra",
+    "complete": false,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 19,
+    "target": "/dev/sda",
+    "method": "extra",
+    "complete": false,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 20,
+    "target": "/dev/sda",
+    "method": "extra",
+    "complete": false,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 21,
+    "target": "/dev/sda",
+    "method": "extra",
+    "complete": false,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 22,
+    "target": "/dev/sda",
+    "method": "extra",
+    "complete": false,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 23,
+    "target": "/dev/sda",
+    "method": "extra",
+    "complete": false,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 24,
+    "target": "/dev/sda",
+    "method": "extra",
+    "complete": true,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 25,
+    "target": "/dev/sda",
+    "method": "extra",
+    "complete": true,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 26,
+    "target": "/dev/sda",
+    "method": "extra",
+    "complete": true,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 27,
+    "target": "/dev/sda",
+    "method": "extra",
+    "complete": true,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 28,
+    "target": "/dev/sda",
+    "method": "extra",
+    "complete": true,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 29,
+    "target": "/dev/sda",
+    "method": "extra",
+    "complete": true,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 30,
+    "target": "/dev/sda",
+    "method": "extra",
+    "complete": true,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 31,
+    "target": "/dev/sda",
+    "method": "extra",
+    "complete": true,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 32,
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 33,
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 34,
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 35,
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 36,
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 37,
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 38,
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 39,
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 40,
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 41,
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 42,
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 43,
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 44,
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 45,
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 46,
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 47,
+    "target": "/dev/sda",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 48,
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "complete": false,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 49,
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "complete": false,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 50,
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "complete": false,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 51,
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "complete": false,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 52,
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "complete": false,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 53,
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "complete": false,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 54,
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "complete": false,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 55,
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "complete": false,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 56,
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "complete": true,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 57,
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "complete": true,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 58,
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "complete": true,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 59,
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "complete": true,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 60,
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "complete": true,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 61,
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "complete": true,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 62,
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "complete": true,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 63,
+    "target": "/dev/nvme0n100",
+    "method": "everyday",
+    "complete": true,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 64,
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "complete": false,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 65,
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "complete": false,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 66,
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "complete": false,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 67,
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "complete": false,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 68,
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "complete": false,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 69,
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "complete": false,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 70,
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "complete": false,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 71,
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "complete": false,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 72,
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "complete": true,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 73,
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "complete": true,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 74,
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "complete": true,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 75,
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "complete": true,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 76,
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "complete": true,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 77,
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "complete": true,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 78,
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "complete": true,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 79,
+    "target": "/dev/nvme0n100",
+    "method": "extra",
+    "complete": true,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 80,
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 81,
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 82,
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 83,
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 84,
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 85,
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 86,
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 87,
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 88,
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 89,
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 90,
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 91,
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 92,
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 93,
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 94,
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 95,
+    "target": "/dev/nvme0n100",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 96,
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "complete": false,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 97,
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "complete": false,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 98,
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "complete": false,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 99,
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "complete": false,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 100,
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "complete": false,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 101,
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "complete": false,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 102,
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "complete": false,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 103,
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "complete": false,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 104,
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "complete": true,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 105,
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "complete": true,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 106,
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "complete": true,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 107,
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "complete": true,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 108,
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "complete": true,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 109,
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "complete": true,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 110,
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "complete": true,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 111,
+    "target": "/dev/mmcblk100",
+    "method": "everyday",
+    "complete": true,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 112,
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "complete": false,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 113,
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "complete": false,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 114,
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "complete": false,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 115,
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "complete": false,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 116,
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "complete": false,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 117,
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "complete": false,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 118,
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "complete": false,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 119,
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "complete": false,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 120,
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "complete": true,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 121,
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "complete": true,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 122,
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "complete": true,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 123,
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "complete": true,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 124,
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "complete": true,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 125,
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "complete": true,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 126,
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "complete": true,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 127,
+    "target": "/dev/mmcblk100",
+    "method": "extra",
+    "complete": true,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 128,
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 129,
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 130,
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 131,
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "completion_missing"
+  },
+  {
+    "index": 132,
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 133,
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 134,
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 135,
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "complete": false,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 136,
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "already_exited",
+    "actions": [
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 137,
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "natural_on_probe",
+    "actions": [
+      "poll",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 138,
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "natural_on_terminate",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 139,
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "lookup_gone",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": true,
+    "reason": "completed"
+  },
+  {
+    "index": 140,
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "status_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 141,
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "timeout_kill",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait"
+    ],
+    "initial_error": null,
+    "retried": false,
+    "result_ok": false,
+    "reason": "cancelled"
+  },
+  {
+    "index": 142,
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "wait_error_once",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "poll"
+    ],
+    "initial_error": "OSError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "process_failed"
+  },
+  {
+    "index": 143,
+    "target": "/dev/mmcblk100",
+    "method": "quick_zero",
+    "complete": true,
+    "mode": "never_exits",
+    "actions": [
+      "poll",
+      "terminate",
+      "wait",
+      "kill",
+      "wait",
+      "poll",
+      "poll",
+      "terminate",
+      "wait"
+    ],
+    "initial_error": "SafetyError",
+    "retried": true,
+    "result_ok": false,
+    "reason": "cancelled"
+  }
+]

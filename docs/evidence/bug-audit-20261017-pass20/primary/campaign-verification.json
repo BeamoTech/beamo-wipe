@@ -1,0 +1,31 @@
+{
+  "source_freeze_sha256": "bc83136ee6bd52c8ef4c80206c9b80b958845f839546eb57d8d518263d59ca04",
+  "gate_verification_sha256": "f9ded6f770505de04c951c7968a5e61a2b762d5138a06603e266f10993e60514",
+  "peer_review_sha256": "0ac8a2f9c0bfb1f6eaf6c128c340b968ccf0cb617814f6e56ec908812aa2925b",
+  "campaign_status_sha256": "b6741b7af11f07fee605a9b80336dd6995e1cbc1a4c5e869f8a5dbddc030c480",
+  "completed_utc": "2026-10-17T19:42:26.097364+00:00",
+  "serial_phases": 4,
+  "exact_peer_files": 11,
+  "frozen_inputs": 779,
+  "runner_short": 153,
+  "runner_actual_large": 153,
+  "runner_fixture_files_hashed": 621,
+  "authenticated_evidence_sidecar_pairs": 90,
+  "runner_cancellation_cases": 144,
+  "retained_cancellation_files": 288,
+  "geometry_cases": 270,
+  "critical_tk_fully_visible": 27,
+  "captures_for_primary_view": [
+    "fixed-geometry-gtk-en-large-LAST_CHANCE.png",
+    "fixed-geometry-gtk-en-extra-OWNER.png",
+    "fixed-geometry-tk-en-standard-OWNER.png",
+    "fixed-geometry-tk-en-large-CONFIRM.png",
+    "fixed-geometry-tk-en-extra-KEYBOARD.png"
+  ],
+  "report_cases": 90,
+  "retained_report_files": 70,
+  "retained_bundles": 5,
+  "native_effects": 0,
+  "callback_errors": 0,
+  "archive_readback": true
+}

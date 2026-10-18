@@ -1,0 +1,10 @@
+{
+  "parent_sha": "4f7ee8d434497f52b58966792ed6cc28b587635e",
+  "frozen_inputs": 876,
+  "source_freeze_sha256": "fd1496381d10cd93169f56b276260d8aa5cbe7badf3976f18f4e7d2a8e3891a5",
+  "tk_sha256": "f43af23bfb37ca184a3a85c316c5f6235c528a102fd4a98493f9df9452db740b",
+  "runtime_source_sha256": "d8f527df821941d73332ae365b98f45ac289848bd9e535838e006c958e14e08a",
+  "only_runtime_change": "src/beamo_wipe/ui/tk_wizard.py",
+  "version": "0.2.13",
+  "status": "local corrected candidate; exact commit/hosted qualification pending"
+}

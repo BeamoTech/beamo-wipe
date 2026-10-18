@@ -1,0 +1,5 @@
+libgtk-3-0:amd64	3.24.38-2~deb12u3
+libtcl8.6:amd64	8.6.13+dfsg-2
+libtk8.6:amd64	8.6.13-2
+python3-gi	3.42.2-3+b1
+python3-tk:amd64	3.11.2-3

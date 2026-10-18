@@ -1,0 +1,113 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_ test_malformed_container_keys_never_export_private_identifiers[warnings_dict] _
+
+placement = 'warnings_dict'
+
+    @pytest.mark.parametrize("placement", ["warnings_dict", "warnings_list", "root_scalar", "section_scalar"])
+    def test_malformed_container_keys_never_export_private_identifiers(placement):
+        secret = "PRIVATE-CUSTOMER-SERIAL"
+        evidence, _ = _collision(CASES[0], secret)
+        if placement == "warnings_dict":
+            evidence["warnings"] = {secret: "malformed warning"}
+        elif placement == "warnings_list":
+            evidence["warnings"] = ["ordinary warning", {secret: "malformed warning"}]
+        elif placement == "root_scalar":
+            evidence["beamo_wipe_version"] = {secret: "malformed version"}
+        else:
+            evidence["method"]["id"] = {secret: "malformed method"}
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert secret not in privacy.encode_sharing_copy(shared).decode()
+E       assert 'PRIVATE-CUSTOMER-SERIAL' not in '{"beamo_wip...warning"}}\n'
+E
+E         'PRIVATE-CUSTOMER-SERIAL' is contained here:
+E           rnings":{"PRIVATE-CUSTOMER-SERIAL":"malformed warning"}}
+
+tests/test_sharing_semantic_collision_regression.py:116: AssertionError
+_ test_malformed_container_keys_never_export_private_identifiers[warnings_list] _
+
+placement = 'warnings_list'
+
+    @pytest.mark.parametrize("placement", ["warnings_dict", "warnings_list", "root_scalar", "section_scalar"])
+    def test_malformed_container_keys_never_export_private_identifiers(placement):
+        secret = "PRIVATE-CUSTOMER-SERIAL"
+        evidence, _ = _collision(CASES[0], secret)
+        if placement == "warnings_dict":
+            evidence["warnings"] = {secret: "malformed warning"}
+        elif placement == "warnings_list":
+            evidence["warnings"] = ["ordinary warning", {secret: "malformed warning"}]
+        elif placement == "root_scalar":
+            evidence["beamo_wipe_version"] = {secret: "malformed version"}
+        else:
+            evidence["method"]["id"] = {secret: "malformed method"}
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert secret not in privacy.encode_sharing_copy(shared).decode()
+E       assert 'PRIVATE-CUSTOMER-SERIAL' not in '{"beamo_wip...arning"}]}\n'
+E
+E         'PRIVATE-CUSTOMER-SERIAL' is contained here:
+E           arning",{"PRIVATE-CUSTOMER-SERIAL":"malformed warning"}]}
+E         ?           +++++++++++++++++++++++
+
+tests/test_sharing_semantic_collision_regression.py:116: AssertionError
+_ test_malformed_container_keys_never_export_private_identifiers[root_scalar] __
+
+placement = 'root_scalar'
+
+    @pytest.mark.parametrize("placement", ["warnings_dict", "warnings_list", "root_scalar", "section_scalar"])
+    def test_malformed_container_keys_never_export_private_identifiers(placement):
+        secret = "PRIVATE-CUSTOMER-SERIAL"
+        evidence, _ = _collision(CASES[0], secret)
+        if placement == "warnings_dict":
+            evidence["warnings"] = {secret: "malformed warning"}
+        elif placement == "warnings_list":
+            evidence["warnings"] = ["ordinary warning", {secret: "malformed warning"}]
+        elif placement == "root_scalar":
+            evidence["beamo_wipe_version"] = {secret: "malformed version"}
+        else:
+            evidence["method"]["id"] = {secret: "malformed method"}
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert secret not in privacy.encode_sharing_copy(shared).decode()
+E       assert 'PRIVATE-CUSTOMER-SERIAL' not in '{"beamo_wip...ithheld"]}\n'
+E
+E         'PRIVATE-CUSTOMER-SERIAL' is contained here:
+E           {"beamo_wipe_version":{"PRIVATE-CUSTOMER-SERIAL":"malformed version"},"build_id":"","build_status":"unavailable","completion":{"reason":"completed","validated":true},"device":{"bus":"NVMe","kind":"NVMe","model":"private-model-withheld","size_bytes":256060514304,"size_gb_label":"256"},"device_presentation":{"capacity":"256 GB","connection":"NVMe","kind":"SSD","title":"Samsung SSD 970 EVO"},"exit_evidence":{"exit_code":0,"signal":null},"failure_reason":null,"interruption":{"cancelled":false,"interrupted":false,"origin":"none"},"l...
+E
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_sharing_semantic_collision_regression.py:116: AssertionError
+_ test_malformed_container_keys_never_export_private_identifiers[section_scalar] _
+
+placement = 'section_scalar'
+
+    @pytest.mark.parametrize("placement", ["warnings_dict", "warnings_list", "root_scalar", "section_scalar"])
+    def test_malformed_container_keys_never_export_private_identifiers(placement):
+        secret = "PRIVATE-CUSTOMER-SERIAL"
+        evidence, _ = _collision(CASES[0], secret)
+        if placement == "warnings_dict":
+            evidence["warnings"] = {secret: "malformed warning"}
+        elif placement == "warnings_list":
+            evidence["warnings"] = ["ordinary warning", {secret: "malformed warning"}]
+        elif placement == "root_scalar":
+            evidence["beamo_wipe_version"] = {secret: "malformed version"}
+        else:
+            evidence["method"]["id"] = {secret: "malformed method"}
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert secret not in privacy.encode_sharing_copy(shared).decode()
+E       assert 'PRIVATE-CUSTOMER-SERIAL' not in '{"beamo_wip...ithheld"]}\n'
+E
+E         'PRIVATE-CUSTOMER-SERIAL' is contained here:
+E         ?           ^^^^^^^^^^^^
+E           .","id":{"PRIVATE-CUSTOMER-SERIAL":"malformed method"},"noblank":true,"nwipe_method":"prng","operation_summary":"One overwrite, followed by verification.","overwrite_passes":1,"rounds":1,"title":"Everyday","verification_passes":1,"verify":"last"},"nwipe":{"version":"0.42"},"nwipe_commit":"6082bde060091e66365d852a1877f2ee80c67105","nwipe_version":"0.42","outcome":"verified","presentation":{"code":"indeterminate","icon":"warn","message":"The result could not be confirmed","next_step":"Files may still be on...
+E
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_sharing_semantic_collision_regression.py:116: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_sharing_semantic_collision_regression.py::test_malformed_container_keys_never_export_private_identifiers[warnings_dict]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_malformed_container_keys_never_export_private_identifiers[warnings_list]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_malformed_container_keys_never_export_private_identifiers[root_scalar]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_malformed_container_keys_never_export_private_identifiers[section_scalar]

@@ -1,0 +1,52 @@
+[
+  {
+    "phase": "geometry-final",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass14-ui/run-geometry.py"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T21:58:48.742588+00:00",
+    "ended_utc": "2026-10-16T21:59:29.111010+00:00"
+  },
+  {
+    "phase": "report-checks-matrix-artifacts",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass14-primary/report-checks-matrix.py"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T21:59:29.111231+00:00",
+    "ended_utc": "2026-10-16T21:59:33.058926+00:00"
+  },
+  {
+    "phase": "final-summary-driver",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass14-primary/summarize.py"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T21:59:33.059266+00:00",
+    "ended_utc": "2026-10-16T21:59:33.405476+00:00"
+  },
+  {
+    "phase": "artifact-review-driver",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass14-primary/review-artifacts.py"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T21:59:33.405827+00:00",
+    "ended_utc": "2026-10-16T21:59:33.465889+00:00"
+  },
+  {
+    "phase": "focused-final-review-driver",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass14-primary/verify-focused-final.py"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T21:59:33.466286+00:00",
+    "ended_utc": "2026-10-16T21:59:33.515423+00:00"
+  }
+]

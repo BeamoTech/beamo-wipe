@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-17",
+  "author": "Codex pass19_runner peer",
+  "scope": "Independent source-only final review of exactly two runtime files, two existing fixtures and five new canonical modules; no application/test runtime or product/test edits",
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "branch": "fix/safety-audit-20261015",
+  "frozen_inputs": 771,
+  "runtime_source_sha256": "225602f1aa6e063ae64b2dd68f2da0861dec382b77693f9612f48927fdc51fb7",
+  "starting_archive": "/tmp/pass19-primary/starting-inputs.tar.gz",
+  "starting_archive_streams_authenticated": 766,
+  "final_inputs_authenticated": 771,
+  "unchanged_starting_inputs": 762,
+  "runtime": {
+    "src/beamo_wipe/discover.py": {
+      "starting_sha256": "b66f3f50692dbeaa7cfad3ed87ed1edea4530756e45b3bbd057fff0ee0278a29",
+      "reviewed_sha256": "47d73620758d07f6352e9afd6f8430091c35f1b6df9f113a0502f352465145e8"
+    },
+    "src/beamo_wipe/ui/tk_wizard.py": {
+      "starting_sha256": "612792b7c1328741cd8a194abd90cb297629b0f281cbf30538ca9bb9ae45f50d",
+      "reviewed_sha256": "23d280b0451d3e25d64387de62d4912a8867ffbdec934244efe6a7f7a7ee0615"
+    }
+  },
+  "tests": {
+    "tests/test_accessible_runtime.py": "8802b2f52a0ea6c1c866b703fffa7246f0d5c965e09f91d1e6f2322fb44a5ed4",
+    "tests/test_checkrow_trace_lifetime_pass18.py": "ecaccbf8efcde94b4bff69c902a6ac5f2917bc7207434324b2dafe826524e1c5",
+    "tests/test_descendant_holder_filesystem_pass19.py": "91d29c2893a48dd878faf06089053714b092a5a424e58f9b23e5a5d1bdb09a10",
+    "tests/test_duplicate_bcache_filesystem_pass19.py": "fe520ce1c5adfde6cdac781c2edc9b4d85ddf1298cf70871944f624acbd16c7e",
+    "tests/test_holder_ancestor_contradiction_pass19.py": "64d68bef146c0298cae17398b5e31286a8aa63ab00aceb4fee4c18bf29762736",
+    "tests/test_tk_owner_trace_lifetime_pass19.py": "dfa703b52c8f404771131afdd5a80235670bba31f87b747a7b6a414401d20d98",
+    "tests/test_unbound_bcache_filesystem_pass19.py": "0d85a54e13de50b18b3402896f2bb426e0adad6e3bfd96b2c86cef21cdf4e127"
+  },
+  "fixture_assertion_preservation": {
+    "tests/test_accessible_runtime.py": {
+      "before_assertions": 301,
+      "after_assertions": 302,
+      "all_original_assertions_preserved": true
+    },
+    "tests/test_checkrow_trace_lifetime_pass18.py": {
+      "before_assertions": 24,
+      "after_assertions": 24,
+      "all_original_assertions_preserved": true
+    }
+  },
+  "new_case_counts_from_literal_parametrization": {
+    "tests/test_descendant_holder_filesystem_pass19.py": 74,
+    "tests/test_duplicate_bcache_filesystem_pass19.py": 30,
+    "tests/test_holder_ancestor_contradiction_pass19.py": 72,
+    "tests/test_tk_owner_trace_lifetime_pass19.py": 8,
+    "tests/test_unbound_bcache_filesystem_pass19.py": 30
+  },
+  "incremental_diff_sha256": "e4b9d2b668c57b585740d309f8b1dd47d7c06823c768eb1034bd1ed955116719",
+  "changes_authenticated": "Independently read all766 starting archive streams, all771 final frozen inputs, complete four-file incremental patch and five new test modules. Regenerated incremental diff exactly matches retained root diff. Runtime framing recomputed from bytes without importing application.",
+  "conclusion": "No source objection to exact reviewed bytes. Discovery refuses unbound, duplicated and contradictory stacked filesystem ownership, including descendant filesystem paths and TYPE=disk bcache, before display skipping. Tk retires exactly its two owned variable traces. Fixture cleanup preserves all original assertions and observers while settling controlled worker/trace ownership.",
+  "runtime_acceptance": "Root owns original/fixed proofs, full local gates and final campaigns; no peer runtime pass claimed",
+  "remaining_limits": "Original74.932779ms GTK click delay remains unexplained; unchanged60ms bounds and source cleanup do not prove its cause. Historical incidents and native platform/physical acceptance remain separate; no commit/push/release authority implied."
+}

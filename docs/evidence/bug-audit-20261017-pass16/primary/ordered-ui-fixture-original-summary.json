@@ -1,0 +1,31 @@
+{
+  "cases": 398,
+  "failures": 203,
+  "errors": 0,
+  "skips": 0,
+  "modules": {
+    "tests.test_discovery_observation_fallback_pass16": {
+      "failed": 159,
+      "passed": 192
+    },
+    "tests.test_accessible_modal_key_hold_pass16": {
+      "failed": 18,
+      "passed": 3
+    },
+    "tests.test_confirm_focus_callback_lifetime_pass16": {
+      "failed": 26
+    }
+  },
+  "failed_functions": {
+    "test_malformed_duplicate_cannot_hide_another_identity_conflict": 84,
+    "test_unusable_same_path_copy_cannot_manufacture_unique_target": 36,
+    "test_clean_retry_after_filtered_duplicate_recovers": 3,
+    "test_cmdline_fallback_considers_every_physical_medium": 36,
+    "test_native_escape_closes_modal_once_and_waits_for_a_fresh_press": 8,
+    "test_modal_owns_guarded_press_and_repeat_without_dispatching_parent": 10,
+    "test_obsolete_confirmation_callbacks_do_not_outlive_their_owner": 18,
+    "test_current_confirmation_focus_work_keeps_input_and_authority": 6,
+    "test_redraw_retires_child_work_but_preserves_container_and_peer_work": 1,
+    "test_teardown_retires_root_and_descendant_work_but_keeps_peer_work": 1
+  }
+}

@@ -282,6 +282,15 @@ class FakeWidget:
     def __getattr__(self, name):
         def ui_method(*args, **kwargs):
             assert threading.current_thread() is threading.main_thread(), name
+            if name == "get_display":
+                monitor = SimpleNamespace(get_workarea=lambda: SimpleNamespace(
+                    x=0, y=0, width=1600, height=1000,
+                ))
+                return SimpleNamespace(
+                    get_primary_monitor=lambda: monitor,
+                    get_monitor=lambda _index: monitor,
+                    get_monitor_at_window=lambda _window: monitor,
+                )
             if name == "get_content_area":
                 if self.content is None:
                     self.content = FakeWidget()
@@ -296,7 +305,7 @@ class FakeWidget:
                 self.label = args[0]
             if name == "set_sensitive":
                 self.sensitive = args[0]
-            if name == "pack_start":
+            if name in {"pack_start", "add"}:
                 self.children.append(args[0])
             if name == "connect":
                 self.signals.setdefault(args[0], []).append((args[1], args[2:]))
@@ -313,9 +322,14 @@ class FakeGtk:
         VERTICAL = 1
     class ResponseType:
         CLOSE = 0
+    class WindowPosition:
+        NONE = 0
+    class PolicyType:
+        AUTOMATIC = 0
     Dialog = FakeWidget
     Label = FakeWidget
     Box = FakeWidget
+    ScrolledWindow = FakeWidget
     class Button:
         @staticmethod
         def new_with_label(label):

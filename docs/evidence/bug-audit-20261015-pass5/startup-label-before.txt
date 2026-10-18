@@ -1,0 +1,66 @@
+dbus-daemon[177515]: [session uid=0 pid=177515] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=177529 comm="/tmp/beamo-wipe-audit-python/bin/python -m pytest" label="unconfined")
+dbus-daemon[177515]: [session uid=0 pid=177515] Successfully activated service 'org.a11y.Bus'
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+____________ test_spoken_startup_status_uses_selected_language[fr] _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7421e4b39c10>
+language = 'fr'
+
+    @pytest.mark.parametrize('language', ['fr', 'de'])
+    def test_spoken_startup_status_uses_selected_language(monkeypatch, language):
+        previous = lang.current()
+        lang.set_language(language)
+        captured = []
+        monkeypatch.setattr(ui, '_ensure_gtk_display', lambda: None)
+        monkeypatch.setattr('beamo_wipe.startup_stages._emit', lambda *_args: None)
+
+        def inspect_window():
+            window = ui.Gtk.Window.list_toplevels()[0]
+            captured.extend(labels(window))
+            window.emit('delete-event', None)
+
+        monkeypatch.setattr(ui.Gtk, 'main', inspect_window)
+        try:
+            ui.run_accessible_startup(lambda _report: object())
+            print('Startup labels:',captured)
+>           assert any(' — ' + C.STARTUP_STATE_WORKING in value for value in captured)
+E           assert False
+E            +  where False = any(<generator object test_spoken_startup_status_uses_selected_language.<locals>.<genexpr> at 0x7421e4d828e0>)
+
+/tmp/test_beamo_startup_status_language.py:32: AssertionError
+----------------------------- Captured stdout call -----------------------------
+Startup labels: ['En cours…', 'Starting Beamo Wipe', 'Getting ready.', 'En attente', 'Checking the boot USB', 'Learning which disk is this USB stick, so it is never offered for erasure.', 'En attente', 'Finding disks', 'Listing the disks connected to this computer.', '', 'Starting Beamo Wipe — working.']
+____________ test_spoken_startup_status_uses_selected_language[de] _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7421d4e77dd0>
+language = 'de'
+
+    @pytest.mark.parametrize('language', ['fr', 'de'])
+    def test_spoken_startup_status_uses_selected_language(monkeypatch, language):
+        previous = lang.current()
+        lang.set_language(language)
+        captured = []
+        monkeypatch.setattr(ui, '_ensure_gtk_display', lambda: None)
+        monkeypatch.setattr('beamo_wipe.startup_stages._emit', lambda *_args: None)
+
+        def inspect_window():
+            window = ui.Gtk.Window.list_toplevels()[0]
+            captured.extend(labels(window))
+            window.emit('delete-event', None)
+
+        monkeypatch.setattr(ui.Gtk, 'main', inspect_window)
+        try:
+            ui.run_accessible_startup(lambda _report: object())
+            print('Startup labels:',captured)
+>           assert any(' — ' + C.STARTUP_STATE_WORKING in value for value in captured)
+E           assert False
+E            +  where False = any(<generator object test_spoken_startup_status_uses_selected_language.<locals>.<genexpr> at 0x7421d4e7b6b0>)
+
+/tmp/test_beamo_startup_status_language.py:32: AssertionError
+----------------------------- Captured stdout call -----------------------------
+Startup labels: ['Läuft…', 'Starting Beamo Wipe', 'Getting ready.', 'Wartet', 'Checking the boot USB', 'Learning which disk is this USB stick, so it is never offered for erasure.', 'Wartet', 'Finding disks', 'Listing the disks connected to this computer.', '', 'Starting Beamo Wipe — working.']
+=========================== short test summary info ============================
+FAILED ../../../tmp/test_beamo_startup_status_language.py::test_spoken_startup_status_uses_selected_language[fr]
+FAILED ../../../tmp/test_beamo_startup_status_language.py::test_spoken_startup_status_uses_selected_language[de]
+2 failed in 0.25s

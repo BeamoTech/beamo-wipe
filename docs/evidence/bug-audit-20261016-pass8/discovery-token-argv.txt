@@ -1,0 +1,7 @@
+{
+  "seed": 381871,
+  "token_inventories": 5000,
+  "token_specs_accepted": 9753,
+  "ambiguous_specs_refused": 5276,
+  "argv_cases": 102
+}

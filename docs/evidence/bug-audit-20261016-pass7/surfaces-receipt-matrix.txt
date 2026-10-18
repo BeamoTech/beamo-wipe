@@ -1,0 +1,1 @@
+2268 independent kind/count combinations: 63 valid accepted/revalidated; 2205 inconsistent rejected

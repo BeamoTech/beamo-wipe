@@ -1,0 +1,1 @@
+["tests/test_ci_hosted.py::test_cloud_upload_excludes_local_captures_and_env_files"]

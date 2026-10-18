@@ -1,0 +1,2 @@
+Owned ./preview fake Tk process remained running; 72-DPI screenshot saved.
+Owned fake preview teardown returncode -15

@@ -1,0 +1,9 @@
+[
+  {
+    "target": "tests/test_tk_runtime.py::test_isolated_x11_physical_return_release_after_start",
+    "autouse": true,
+    "applicable_fixture_baseids": [
+      ""
+    ]
+  }
+]

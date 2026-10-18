@@ -1,0 +1,79 @@
+[
+  {
+    "phase": "original",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass15-primary/original-proof.py"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T23:50:58.441041+00:00",
+    "ended_utc": "2026-10-16T23:51:43.777322+00:00",
+    "receipt_validated": true
+  },
+  {
+    "phase": "alias",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass15-primary/independent-alias-probe.py"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T23:51:43.803334+00:00",
+    "ended_utc": "2026-10-16T23:51:44.311158+00:00",
+    "receipt_validated": true
+  },
+  {
+    "phase": "duplicate",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass15-primary/independent-duplicate-probe.py"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T23:51:44.338960+00:00",
+    "ended_utc": "2026-10-16T23:51:44.455987+00:00",
+    "receipt_validated": true
+  },
+  {
+    "phase": "wheel",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass15-primary/run-empty-wheel.py"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T23:51:44.478449+00:00",
+    "ended_utc": "2026-10-16T23:51:47.094701+00:00",
+    "receipt_validated": true
+  },
+  {
+    "phase": "utf8",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass15-primary/independent-utf8-tail.py"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T23:51:47.115658+00:00",
+    "ended_utc": "2026-10-16T23:51:48.909958+00:00",
+    "receipt_validated": true
+  },
+  {
+    "phase": "runner",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass15-runner/projection-state-matrix.py"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T23:51:48.979515+00:00",
+    "ended_utc": "2026-10-16T23:52:12.122729+00:00",
+    "receipt_validated": true
+  },
+  {
+    "phase": "geometry",
+    "command": [
+      "/tmp/beamo-wipe-audit-python/bin/python3",
+      "/tmp/pass15-ui/run-geometry.py"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T23:52:12.141970+00:00",
+    "ended_utc": "2026-10-16T23:52:57.615958+00:00",
+    "receipt_validated": true
+  }
+]

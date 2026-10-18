@@ -1,0 +1,37 @@
+{
+  "requested_utc": "2026-10-17T16:56:14.306644+00:00",
+  "signal": "SIGINT",
+  "target_pid": 160353,
+  "owned_ancestry": [
+    {
+      "pid": 160353,
+      "ppid": 160340,
+      "command": "/tmp/beamo-pass19-python/bin/python3 -m pytest --deselect=tests/test_accessible_runtime.py::test_orca_announces_every_result --maxfail=1 -p docs.evidence.bug-audit-20261017-pass19.primary.font_origin_observer --junitxml=/tmp/pass19-primary/font-origin.xml ",
+      "start_ticks": "5640146"
+    },
+    {
+      "pid": 160340,
+      "ppid": 160338,
+      "command": "/bin/sh /usr/bin/xvfb-run -a -n 200 -s -screen 0 1600x1000x24 -dpi 72 /tmp/beamo-pass19-python/bin/python3 -m pytest --deselect=tests/test_accessible_runtime.py::test_orca_announces_every_result --maxfail=1 -p docs.evidence.bug-audit-20261017-pass19.primary.font_origin_observer --junitxml=/tmp/pass19-primary/font-origin.xml ",
+      "start_ticks": "5640139"
+    },
+    {
+      "pid": 160338,
+      "ppid": 160337,
+      "command": "dbus-run-session -- xvfb-run -a -n 200 -s -screen 0 1600x1000x24 -dpi 72 /tmp/beamo-pass19-python/bin/python3 -m pytest --deselect=tests/test_accessible_runtime.py::test_orca_announces_every_result --maxfail=1 -p docs.evidence.bug-audit-20261017-pass19.primary.font_origin_observer --junitxml=/tmp/pass19-primary/font-origin.xml ",
+      "start_ticks": "5640138"
+    },
+    {
+      "pid": 160337,
+      "ppid": 131146,
+      "command": "python3 /tmp/pass19-primary/run-font-origin.py ",
+      "start_ticks": "5640133"
+    }
+  ],
+  "reason": "Bounded font provenance diagnostic passed relevant region without reproduction; observer changes GC pressure. Ending explicitly, not acceptance.",
+  "acceptance": false,
+  "sigint_ignored_observed": true,
+  "termination_signal": "SIGTERM",
+  "termination_requested_utc": "2026-10-17T16:57:22.335849+00:00",
+  "direct_children_at_termination": []
+}

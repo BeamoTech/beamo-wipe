@@ -1,0 +1,22 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass20-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py::test_full_supported_run_releases_assets_before_later_worker_collection",
+    "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py",
+    "--junitxml=/tmp/pass20-primary/private-graph-supported.xml"
+  ],
+  "exit_code": 1,
+  "started_utc": "2026-10-17T18:22:45.760057+00:00",
+  "ended_utc": "2026-10-17T18:23:10.887781+00:00"
+}

@@ -1,0 +1,2 @@
+PASS 21600 completion full-log/projection comparisons, 1800 seeded record-order fixtures
+PASS 24 exact readiness provenance/partial-record checks

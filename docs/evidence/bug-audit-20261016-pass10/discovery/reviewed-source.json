@@ -1,0 +1,13 @@
+{
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "branch": "fix/safety-audit-20261015",
+  "hashes": {
+    "src/beamo_wipe/discover.py": "6528038ba87a46e2d58957cccdbf1a7b963d77b9961b724883f7809e93e9c7a4",
+    "src/beamo_wipe/safety.py": "6b69c10e9aafcd8c11ca03563dd04ac90e3aa89fc2be3106aafe4144fb558360",
+    "src/beamo_wipe/identity.py": "4ccada033bab0c3811450cb9ab4e85c74936af56e8cd94fdf84f8d5566942050",
+    "src/beamo_wipe/methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13",
+    "src/beamo_wipe/models.py": "f1567e2d8a8773ab90f6ae06dde099ed7596fbb3187d7779f207e9489f896af5",
+    "src/beamo_wipe/wizard.py": "be375a0861ec569a652e15f9f572bfa689f40048d736c5bedef641453d464bbb",
+    "src/beamo_wipe/nwipe_runner.py": "4bd60d299c6529b0c861f5339019e5ef6f91df3c760438ed85380245be6fdfa2"
+  }
+}

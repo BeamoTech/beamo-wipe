@@ -1,0 +1,6057 @@
+{
+  "cases": 216,
+  "methods_per_case": 3,
+  "terminal_polls": 648,
+  "log_threshold_bytes": 1048576,
+  "defects": [],
+  "records": [
+    {
+      "case": 0,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "0 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049197,
+      "sha256": "4366e99458a94799cb425813839ce065daa4e6a69fa6f47a238ce623b4a0ce01",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 1,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "0 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049196,
+      "sha256": "d8fe1bf4ad74a7c96df82bdd425a9b79e5ffe7f4468c1bd4e614994fe9cafe9b",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 2,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "0 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049202,
+      "sha256": "97c98952bd6f15a348ba9f2fce53d466313ae040ba3471651f1828bde7371e48",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 3,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "0 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049220,
+      "sha256": "cb7d43a8d025fe9728e70a36ab4da1289c2a6c25ee8fc482cbae5b45a0ab8a93",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 4,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "1 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049197,
+      "sha256": "2746c99914251adc338205259e8d3492c5d3ac9831fd05ed588f7781eedd093f",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 5,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "1 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049196,
+      "sha256": "b3d6301ac9565eec8edef383e8920e08906a8ff71309f6d92afd7780e37fd6f3",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 6,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "1 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049202,
+      "sha256": "1455f971c8f9283c21c1a516d65b370fe9af83bf3cc55d65e7d3956ed4671143",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 7,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "1 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049220,
+      "sha256": "801361c92ba5954c076786902f74e7fe706dae67c19cd656ec71c6a6b24e88e5",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 8,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "0 | 1 | 0",
+      "variant": "complete",
+      "bytes": 1049197,
+      "sha256": "f3a93ea332d625bef53b1a957d8f856f3555fef1fc29c33fdcba0249f40e9c0d",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 9,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "0 | 1 | 0",
+      "variant": "shortfall",
+      "bytes": 1049196,
+      "sha256": "f0ab2db5398d6ec08e5ef77d7c7455fc72069bd8de9295361f7c3bfd98983209",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 10,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "0 | 1 | 0",
+      "variant": "malformed",
+      "bytes": 1049202,
+      "sha256": "a1868759ed9a2acacbd8ff98d821a1b2005e348fd5d92fb35e7b1dee8057049e",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 11,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "0 | 1 | 0",
+      "variant": "conflicting",
+      "bytes": 1049220,
+      "sha256": "7493158fb5e3afbddde9cbec0327d7b1bc319dc5188bf1f6f4416daf99f1114a",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 12,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "0 | 0 | 1",
+      "variant": "complete",
+      "bytes": 1049197,
+      "sha256": "9bc38c2f1fae52f417384843cd822c6f8730983fce83eceaf4c130e223521a35",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 13,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "0 | 0 | 1",
+      "variant": "shortfall",
+      "bytes": 1049196,
+      "sha256": "ff60bc3091f7252ca12c5c2ca7038208ca4be3350fa9b69bcbcd38f8137ad65c",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 14,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "0 | 0 | 1",
+      "variant": "malformed",
+      "bytes": 1049202,
+      "sha256": "b00034951bf8d8958090f242f05f48e94088744085939c73fc228fb434e510e9",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 15,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "0 | 0 | 1",
+      "variant": "conflicting",
+      "bytes": 1049220,
+      "sha256": "ea57c03d4deb56d685fa4ac605aa8d23423593f6cdfa12e1e6f2ab0aba8174da",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 16,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "unknown | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049203,
+      "sha256": "04926073421445d01b4beb57f17fa2e0a19e01326c4939cfa02733c2a00ba804",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 17,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "unknown | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049202,
+      "sha256": "9b8bcc9dde2936931127892c903ba074235bcb7ff07799a45b2c10b32ece7386",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 18,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "unknown | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049208,
+      "sha256": "1ff7d2adba4206b270a79ae39822c8fe5322d37255d19dc9cd835e737a8b3559",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 19,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "unknown | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049226,
+      "sha256": "4abb9ac5496c3e6667dcb56c80e3d4aab4ca0b2094afe56afbb0e6ea0129d978",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 20,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049216,
+      "sha256": "ac6b1b7053310ed90e52940b30be0131c0b5cb6eabc84f204ab5cfb894d12698",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 21,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049215,
+      "sha256": "3d5a714391f91aeaa1d4e475c20b753e9637cdd47f504e856656cf6d924d17a5",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 22,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049221,
+      "sha256": "3a75c375ed93d009109397e0fe60bf131d789dcc86fa673f363011a44a18218b",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 23,
+      "target": "/dev/sda",
+      "prefix": "",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049239,
+      "sha256": "b0cfb8cfc31eef4e69b54f35f0c3b900fa2ea77aedfa3f5dbe4991caa2e9360e",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 24,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049221,
+      "sha256": "4fb46d79efce2f096ef1237ad0465975ae68e2e6ed295ab8edb21a078d23622a",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 25,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049220,
+      "sha256": "2f0d1ee537c250acebdefa3b4b66076a2aa47d2c50c2d5f32716de2f8fc2f662",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 26,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049226,
+      "sha256": "fec69c1651e9cfb026d3a058d0c4c9516add80cd0b41ac3874f7025a0482dd43",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 27,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049250,
+      "sha256": "945b7657edf5d593c152a66045bbcf62a3433c16a3eefd81198d0c98a7dc36d8",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 28,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049221,
+      "sha256": "1a099e3b3168a00f0bd124637b40fde5c43ddfb3775e070e70778f59b934a7dc",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 29,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049220,
+      "sha256": "f8649711d70376e1ed96a35639b1050303dd26305e7a2dba6c41ba7696ab1edd",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 30,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049226,
+      "sha256": "77fbf27660cb1e82fea8e56b61cb5cb09d90aeda6d145e52420b6e1e1ce79203",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 31,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049250,
+      "sha256": "7ca305cea5cc45df2f837bf48e4bc26665627025dac1612b643d0881facd4bf2",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 32,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "complete",
+      "bytes": 1049221,
+      "sha256": "160c9694a66b2f82563e56d166832d455c3b649060f9189571fe4d0046495537",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 33,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "shortfall",
+      "bytes": 1049220,
+      "sha256": "e7ab529e474d6f1e0e70b9bb263e4556894eea74c0d54a8a28c3ff4b98feb162",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 34,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "malformed",
+      "bytes": 1049226,
+      "sha256": "15503690ee0922cea15b7a13d8d78df83083061de27de2c890f5158f0201422e",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 35,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "conflicting",
+      "bytes": 1049250,
+      "sha256": "42dcc5cf1a408ccd097060f8be9033f0e97beab8b6be47505ac745811e769d18",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 36,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "complete",
+      "bytes": 1049221,
+      "sha256": "2ac41f18a601e1207c2af659b0a6b353323334afb52c2e2dda7fba353e225c21",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 37,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "shortfall",
+      "bytes": 1049220,
+      "sha256": "80c7fabd309ba57bafbecf84f8a84392704d2c5207b6f14c1bf19d570f7ed7b8",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 38,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "malformed",
+      "bytes": 1049226,
+      "sha256": "adb616be21a73f72273fe247ca5db30bb1c4f077f36dd42230292047a257b56c",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 39,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "conflicting",
+      "bytes": 1049250,
+      "sha256": "914eada4b6b94730c115f5fbb9d7a0f88f5dac683382f4b26acf1a062ee1ec80",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 40,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049227,
+      "sha256": "253a79d45be5f716bdf87bea8d5fce4698187ab2cb6b97802d284184060a9611",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 41,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049226,
+      "sha256": "327a1d89d30c77908157dd568c31d0276b0f75bf6f1574cd5d10a44e269b5c78",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 42,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049232,
+      "sha256": "d52b6312cf9b19e2064199e1869a94ee1d3de5bad3eedbc3794738d6e632e4ef",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 43,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049256,
+      "sha256": "5cf86d78375371eb3d579042020f140eb6c6b5382e51f11fcd3dd8d33cda7b58",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 44,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049240,
+      "sha256": "9bcaba46eccad7709805442ad8a6e48aa0a84a6143e2a1e8401e396eba3d3a3a",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 45,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049239,
+      "sha256": "f1a24e2dea2ed0489bd91d8821cb86841484a65418225c2d4dd3f233fa688a13",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 46,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049245,
+      "sha256": "fbd41c971eb06b66779c0ec05671546d1b3fb0d79cb71171ecad75b252970472",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 47,
+      "target": "/dev/sda",
+      "prefix": "info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049269,
+      "sha256": "a8e9517c0096e4e16d2e9bbcfa0c9d45824769cf360fb3efe18630a3ac79ed14",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 48,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049309,
+      "sha256": "b430f36870ffcbc2645326a5e67060a7c0486edb3bbc23b38645c3626454caf6",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 49,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049308,
+      "sha256": "c5cf084e6a2eff58810e7096ef97380162abe8abd0a9909c3b1bad661bb5aa02",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 50,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049314,
+      "sha256": "a8eceb39dbe43031d4b2eeceb0c419ac371d0dca0cbccaf40c10516f93ddcff5",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 51,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049360,
+      "sha256": "488466c0be0fc71396e087220ca1df63bd6e3dc9178721e0c98e0dc96aff3bd0",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 52,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049309,
+      "sha256": "1be10c88e84f67d99a2133fb568392926534e5a7234634726ab81cfe14aa0c62",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 53,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049308,
+      "sha256": "67134890b975886ea8c7ae835b87f12b7df952a54ee697ab0bb87f3469b1cd7b",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 54,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049314,
+      "sha256": "c57b9ca2c3c71f8b8a3bbafaa294e909448ca3f17c2e9db6acd1449d5c14994c",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 55,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049360,
+      "sha256": "f680346cecee4129a85da3977c6c111d4bf3a6f3f7d0dbc85f0fb165bacd8614",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 56,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "complete",
+      "bytes": 1049309,
+      "sha256": "313d3dede1f5432cdb580883f013191c9a2b1e0b99b73e5f6eedeaab70700508",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 57,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "shortfall",
+      "bytes": 1049308,
+      "sha256": "ee37361e23260035348f88b13299fe4ed02a8d9bb2c6981fee89a05cb108df37",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 58,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "malformed",
+      "bytes": 1049314,
+      "sha256": "6e462961dc0a4004503e346096aa250ab0280e7a0ca77f7db1f837d511e873c8",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 59,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "conflicting",
+      "bytes": 1049360,
+      "sha256": "85bfbd4f0c13f4a5fc2d809ac0967ea6be365913fe27d5b271c71cb4e7a7392a",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 60,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "complete",
+      "bytes": 1049309,
+      "sha256": "d5b825da73c32608de3c31117791051ee777f619e83caaa6f40ea1d9233ad438",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 61,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "shortfall",
+      "bytes": 1049308,
+      "sha256": "b6835d8cfcc018b776d56d5e4ea3432f75877b8f0782c588518805db7ac480ba",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 62,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "malformed",
+      "bytes": 1049314,
+      "sha256": "8cc7b7c2a4e7790a8265684238ddc77040378d8e1f69c48a66904aa9bc3c1014",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 63,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "conflicting",
+      "bytes": 1049360,
+      "sha256": "0db32b0140ff780e3fd36883b451900efce3e5a67ec9b369aac7e8531adbac0e",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 64,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049315,
+      "sha256": "a6322e920b742e4c6c408eefb39ded0a3ab76628cad532cde6833fe34f174890",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 65,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049314,
+      "sha256": "4cd28e4b011916c340c9999915edb25faa2755a1a490377d04f1e770777fc97b",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 66,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049320,
+      "sha256": "16d2eaad171ffbc3b9c670d15b02450a5712ea24821ccc1326d9166222629413",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 67,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049366,
+      "sha256": "f5291f101bdd0b81359b851b0e13ebe14a481a85a59744af2d572b861fa234a6",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 68,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049328,
+      "sha256": "41492d22b594d54da8c2a4a12e1ef8f6f22a6223958d54ce4e5af32de65f7d51",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 69,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049327,
+      "sha256": "8d8a49818d1e2ae515cf215b606aaaa7dde6c76a179deb71f42eae7a2a5db60a",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 70,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049333,
+      "sha256": "763531d7d7316177c3c857e722006adf332fdb9e81df2e48c76a2572231f993b",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 71,
+      "target": "/dev/sda",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049379,
+      "sha256": "b4753e4dfc6a87ac115f769f6107a7851c07dfa8256e63176da703f85d5ac720",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 72,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "0 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049224,
+      "sha256": "f4f379ea88d74fdd15005500e93c8100f2f9af0bdb66defd7862fb8e479f5ec4",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 73,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "0 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049223,
+      "sha256": "12deea622983d5ffa0a33dbc509f7c058da24d1b72bbdb1bcef6bfd3134cf1c4",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 74,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "0 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049229,
+      "sha256": "abc2caa904ea3fc07f3fdee326b27d16745334276fedce2303ed858f8c8174e8",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 75,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "0 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049252,
+      "sha256": "eff3b575f0f811c8c5c7eff24f975d8ad60619161fd2a196746380abeed4fb43",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 76,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "1 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049224,
+      "sha256": "d43a66a8db27b29de4291109a2d756a3df24d32b9879f245a1d02d5da580ce1f",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 77,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "1 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049223,
+      "sha256": "49d7c65b35f5116e20dfb49fc9bc5426f4c3c269bafc906021149b963a881c1b",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 78,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "1 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049229,
+      "sha256": "50ae8cd5c59ea052d10695422657cfe95bb759e553697973a66ef21b99f63282",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 79,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "1 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049252,
+      "sha256": "346489b03d58ae924684fcbf068016e963dfcb54c04772becbaff9694a4178f0",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 80,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "0 | 1 | 0",
+      "variant": "complete",
+      "bytes": 1049224,
+      "sha256": "92ca5a3d9613d9b1a99ab95c4b55e284ed2b197e5e94f0a844147b7e44b2919b",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 81,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "0 | 1 | 0",
+      "variant": "shortfall",
+      "bytes": 1049223,
+      "sha256": "96065dad6d543d40692ed06eb70c3951a5a3ee78d365a267311775aaae4bf0dc",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 82,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "0 | 1 | 0",
+      "variant": "malformed",
+      "bytes": 1049229,
+      "sha256": "c07c57b54782b965790aac4cdfb60243cd53624bf0f7f5659ff75f8b7fdd653b",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 83,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "0 | 1 | 0",
+      "variant": "conflicting",
+      "bytes": 1049252,
+      "sha256": "970c46a73974751458473b55bd36e7a73bbdf3654320967f9f51b945f396671a",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 84,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "0 | 0 | 1",
+      "variant": "complete",
+      "bytes": 1049224,
+      "sha256": "e165457caa0048d6642aab24b78a553e7b9e505a40140dca7c5765022f2c67ac",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 85,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "0 | 0 | 1",
+      "variant": "shortfall",
+      "bytes": 1049223,
+      "sha256": "b7724de0f5ab435e79aea25d052fed2b7bc1bd764ae2a8110ba40e0421a67f0f",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 86,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "0 | 0 | 1",
+      "variant": "malformed",
+      "bytes": 1049229,
+      "sha256": "b679c068139c332aa57cd4749d826b090ba2c22bd61703ee5be5ebf0b570d696",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 87,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "0 | 0 | 1",
+      "variant": "conflicting",
+      "bytes": 1049252,
+      "sha256": "1f94794f941748ef4e80c0ae7c060cbd8a65ac3e1217508b4139f7a852563871",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 88,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "unknown | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049230,
+      "sha256": "205f2c6df91c9392d0fe2a6bb07020cef87fe24fcd32dcc2000664a5cb42bd1a",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 89,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "unknown | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049229,
+      "sha256": "68ae313283631aa7ec35b602bf4b4b10e63a6f3066bbf4553c1888bb4bff157d",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 90,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "unknown | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049235,
+      "sha256": "5be828059d52530462333969c24714f5d06cd34d892425271955485ff652d03d",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 91,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "unknown | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049258,
+      "sha256": "997d33ed30ae385d78386ade760b962c47814a777d4e1d3afd8a346802b81a1f",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 92,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049243,
+      "sha256": "33bae29650f9148293d0622c89bc3c07e04ece8fc860f20711270f9ff70e944e",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 93,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049242,
+      "sha256": "431cff427b13eb858d625d412586fa7d8557d74a7793bfaf4c969201e8a07fda",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 94,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049248,
+      "sha256": "03afe73186a0502c15a2413cd07f1d86add58edb9227d6daa90883318b939f1a",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 95,
+      "target": "/dev/nvme0n100",
+      "prefix": "",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049271,
+      "sha256": "1e4098ba3c4099d8409d23e62fd27116316bd08bca45955bb77ea585ad8cada7",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 96,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049248,
+      "sha256": "89d1d57752ad35874ca73e647ac894557c63159275d7c0eabec05ba78558af94",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 97,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049247,
+      "sha256": "9a50dd9069388beb0d39dd007fb3d88b63daccb0e35464970f184dfffb714019",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 98,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049253,
+      "sha256": "e8e71c8bf631edfe3cebae0d3e0e42e591f3a037ee388ef5d0bd8b32b2dfce18",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 99,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049282,
+      "sha256": "85fda33e0485131f34d3fac02567f0711d3b0fefc220ecb090267dd0e07c3f1a",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 100,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049248,
+      "sha256": "92c1ba90c5de7fb3701db6e762619991f355d478b27a4164c0f7662867c37056",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 101,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049247,
+      "sha256": "5e2aede6263e04bec5111fbf3e41d92f86ee48c319fe47294ce3ba1e98922183",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 102,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049253,
+      "sha256": "ff7481bb37b7549c73fefb39ffaf50b0eda1bd55da8927eb3c07f877425f70a6",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 103,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049282,
+      "sha256": "da9d93de12e6a311486cacc72aaef1d0182240b1282f4b2bf0f8b8e7b3fc5b37",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 104,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "complete",
+      "bytes": 1049248,
+      "sha256": "025287385c70a411ac5b451d3627140be0d6a3e83a17249caaff92af55aa95ce",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 105,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "shortfall",
+      "bytes": 1049247,
+      "sha256": "f94875184bf1a2383418e1267cd389f5a01acf4509adc14a33d473b2a20f0f54",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 106,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "malformed",
+      "bytes": 1049253,
+      "sha256": "45e259f12bd4cfdf67070216c75d92d99b80e891164b58113057dc7a23a27d03",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 107,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "conflicting",
+      "bytes": 1049282,
+      "sha256": "271616d07b0e3c5dc6f107b74af70148f12b40612b41cd17ff704f34b9a0df0e",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 108,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "complete",
+      "bytes": 1049248,
+      "sha256": "3beb78a8fb9b8bc940770a594e28bbc95cf8e7d01397f054c9c16b6d36ea1739",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 109,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "shortfall",
+      "bytes": 1049247,
+      "sha256": "d679e670e66d484e95e17b3edcb78b787c04e24a4fd487762c62898adf1e94e2",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 110,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "malformed",
+      "bytes": 1049253,
+      "sha256": "7546941e5162eaa1fa22c781f2562e3d7717e5f6ee5c876cc621b02c800030ea",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 111,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "conflicting",
+      "bytes": 1049282,
+      "sha256": "d6a30642274cb5dac39bde25695a88fc6babd315d8a6406f27e6e2b7fe2c16aa",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 112,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049254,
+      "sha256": "5b2354391d312b86401cfe6bd8d6880e7ba060154d50f992da68f9b1f459f71a",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 113,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049253,
+      "sha256": "a08d96c0639470b657264a6cbbe1c2cacba6ea7dee988a1753c8cfd965898f5a",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 114,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049259,
+      "sha256": "bbf632a08a16f3d70427ef82b0118fc38f04fbdfba202a9b42f2401bf566ee3f",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 115,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049288,
+      "sha256": "839231b2ff3fe64fbc8971516497ced61e3bf0429b8ef0544eb32322e32e2d56",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 116,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049267,
+      "sha256": "6639a0377cfa6e071d4e6cbc006c65a5c70c88025eb925085c6d58f96f24ecdb",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 117,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049266,
+      "sha256": "a6733064a33f9a145e6563ec5eb9f60520bf8ec6163e2f4fa05e1a1afb26f4ae",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 118,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049272,
+      "sha256": "2c8d2141d9deddc10a8fbdbf30eda7017596557ebcf893e3f9723e1e5dbcdca5",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 119,
+      "target": "/dev/nvme0n100",
+      "prefix": "info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049301,
+      "sha256": "2179ec3a7dde13b3ff1113f795050d74845e2b304d33fc6b6af01b7fb7ffa115",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 120,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049336,
+      "sha256": "5623e5576ac4c9a58deaa2d31a0f1972067aaaa2b15bfd5e5ae338dc7c181e9a",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 121,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049335,
+      "sha256": "0420f0fc31023eb24daaae417330c97011c1627cd49506431aa5d59ac4511786",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 122,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049341,
+      "sha256": "7d8a7697e1cd586db1c0e48814778429cb5d678872741f76845157e73367f1d0",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 123,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049392,
+      "sha256": "e78cec789047025eb39571da4844338c890791a8bb629a45db8ce8e90242953d",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 124,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049336,
+      "sha256": "17f4d50f96fd91e70a011f3a63e1d1d620cfcca253597b60dcdbd2148cd81819",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 125,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049335,
+      "sha256": "d7ca0378dab8ac980acffc59545dba728f81864924e4268ca7d8c336405dc3b0",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 126,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049341,
+      "sha256": "a8b5717d5e043bf776695d3641d2ad7f692bed991fc5b45ac45c52452a1eec53",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 127,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049392,
+      "sha256": "8daa915c82838b5fdc2eae4026dfcb68e75a394dc54b32d2f9cde8239614bda3",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 128,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "complete",
+      "bytes": 1049336,
+      "sha256": "f859c9cc745cb4238371c8ae710aefd1261e961d1c771b30e9ce14e11f485b6e",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 129,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "shortfall",
+      "bytes": 1049335,
+      "sha256": "20bf298826fba6042edfeb64fc565c7b135fdedefcff8e3b0881cd1289eead36",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 130,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "malformed",
+      "bytes": 1049341,
+      "sha256": "19dd68668a4e140c38e662e0c6da79aa9d24047f15e297bb04a288dc2279c107",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 131,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "conflicting",
+      "bytes": 1049392,
+      "sha256": "8a621d41af843770850a9ef0ae7a8af642cb9353a971408083b02af70fd69289",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 132,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "complete",
+      "bytes": 1049336,
+      "sha256": "4570275800c339eabc027c4c697dfebc68f7baca3c1304d949d8bf123d97b79b",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 133,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "shortfall",
+      "bytes": 1049335,
+      "sha256": "4e607d1de917e537bddb76d4542d7e9d95b78ee363c9ac9032898d8423c69809",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 134,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "malformed",
+      "bytes": 1049341,
+      "sha256": "01ed6afcccb6fe78c6f41eb4bb8cb3133857d04b1fe42f5889159d6731b21cc0",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 135,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "conflicting",
+      "bytes": 1049392,
+      "sha256": "89aef5d0e713b0ee3a8849aa65135f493325148ee34e807add584aaf19c5841d",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 136,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049342,
+      "sha256": "8dc779796a4551ba20fab34685e4a93c9256df7a86ad4ee621f6a894f70ce681",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 137,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049341,
+      "sha256": "14f6e2a49ae2fe28dc32aef3322de902662d7283c345bd187ac2056df79020e3",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 138,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049347,
+      "sha256": "70fa1b4ee2735c224b50dddb3af28e2a95bca95a50c270b00d11a7500374eb29",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 139,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049398,
+      "sha256": "b613a7fc56b5a688a5e4bd0a73f25f8580673da9a5d48fe9ea2fca9dbba076fd",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 140,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049355,
+      "sha256": "523a696009e77f38e14ff83431bca73ba48263cbc6cdad9ff9a8af22a58c840e",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 141,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049354,
+      "sha256": "60ede1349556297ca699c24b16f1beb3dcb764af640c3579da6812c5c4816f96",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 142,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049360,
+      "sha256": "61ee223b99927c6c692faf71f52ed77021696a986f5ae2a2567addf38fdea09d",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 143,
+      "target": "/dev/nvme0n100",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049411,
+      "sha256": "d3472db626ca477b279ea50d9b292e79f9f10ff676873bd6aa99870e14407977",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 144,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "0 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049222,
+      "sha256": "4f8ed118e3ba79080beb8a133af072b839efd0bcc04e5851662e863f92c73cbd",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 145,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "0 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049221,
+      "sha256": "2fc3355ae626b371e7cf52b744e2223dd74584c7c40d8abf0d21af2910d9f7c0",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 146,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "0 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049227,
+      "sha256": "ff3b2f9b6c0a553f0c3064d165fe55864a52a1f7a057742a1f0cbf988c286cd1",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 147,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "0 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049250,
+      "sha256": "7eec31d240b0b0084abb854b972f24d9f3666bd3e0eae06e0980c0c07e01d29c",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 148,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "1 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049222,
+      "sha256": "fbf18c6a4bedc671224f84c177c07f088f2183bfc68b9e782debd4f3e87be181",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 149,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "1 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049221,
+      "sha256": "fe8562d7e80000d2c7b35bf8389644f926c0239b49e983d7378a521a31c200a5",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 150,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "1 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049227,
+      "sha256": "8c43ba2bffcb70232a9a872bb38418ae135a6fd2edfde14653de5dccace2d717",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 151,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "1 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049250,
+      "sha256": "3b25707231b7b5cc4f6efc3d2980b6f3026d7fd82e6a374a2660d48dfff9c595",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 152,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "0 | 1 | 0",
+      "variant": "complete",
+      "bytes": 1049222,
+      "sha256": "30ae65e24d36b10ac0322d85e91159e60c647d79aedba2bbfd29ba54f98313dc",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 153,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "0 | 1 | 0",
+      "variant": "shortfall",
+      "bytes": 1049221,
+      "sha256": "1774126a513a6b5a9a820a3ab3908b55c76c2c6617d72863cb501b55db496a6c",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 154,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "0 | 1 | 0",
+      "variant": "malformed",
+      "bytes": 1049227,
+      "sha256": "47a7b57c42aa68b9da3393cafc0980d5fd46bd7161a806921da9a9aa2530f8ef",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 155,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "0 | 1 | 0",
+      "variant": "conflicting",
+      "bytes": 1049250,
+      "sha256": "55859fc640b42c8b60cbe1f2ee008005fee1466a977aab2bd1f88dd0bbb332d7",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 156,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "0 | 0 | 1",
+      "variant": "complete",
+      "bytes": 1049222,
+      "sha256": "ce66945890b0d5fd8b1d410f3f4207855960f0ec9ecde081f85ff0c3b77e4713",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 157,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "0 | 0 | 1",
+      "variant": "shortfall",
+      "bytes": 1049221,
+      "sha256": "f845134d1b56480cd37f2a52e73c3b7b86aa0b7eb4754adba26c88e8d9b86d20",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 158,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "0 | 0 | 1",
+      "variant": "malformed",
+      "bytes": 1049227,
+      "sha256": "6a41c80541c82d2f7eee333d0c5e50ca307d6e94e15b6eac81264a1394f6ecb7",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 159,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "0 | 0 | 1",
+      "variant": "conflicting",
+      "bytes": 1049250,
+      "sha256": "fd0fab58be2b9dfa1183ed67b74c525e1823482b8caf11bbceffa5aa526db559",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 160,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "unknown | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049228,
+      "sha256": "407fbc7d497ca0c3ad4e7a8ac673f7d5ccba91b990f582464c82c13ccce3c3ee",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 161,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "unknown | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049227,
+      "sha256": "8fe8e7b2c49d8671cfe5dd2bd74cd9439c975dc1c5e7dde0a5f114f5b75cf453",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 162,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "unknown | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049233,
+      "sha256": "a2b85f99e0918544ec726cbe3f0580bb4fa73f242e339bcbdbe8f6b7baba4753",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 163,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "unknown | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049256,
+      "sha256": "7f699f56dcf71b16fae52aa2943c5f9ec1af20c962224144008ffcce2de491a7",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 164,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049241,
+      "sha256": "47fd78e8929fa8e9a81a46e8c8d463675d78874e2060c7ea87f668758bd41eb7",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 165,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049240,
+      "sha256": "a517e58501fb5adae9977c75eb041d618dfe35ef5136c48c95c4c31aed1eb5ad",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 166,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049246,
+      "sha256": "db95c09cae53b600c5096d222bde03aae15d17ba416a3cf18023fd642a383aaf",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 167,
+      "target": "/dev/sdabcdef",
+      "prefix": "",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049269,
+      "sha256": "fb834a1e47d6f9ff802c7e25e69b83a01634e73c50e8bc1b39437a24fa4e7dff",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 168,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049246,
+      "sha256": "06142ca1c03240deddd35a8085bca6a7f490e3b48780d21a0fa1b163db0f434e",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 169,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049245,
+      "sha256": "e3bfa47a4240c73f6da7e062000f6bbcaffc1baae39808bcf0417eb3055f2b18",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 170,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049251,
+      "sha256": "2ec80d556c14b52aeb5cb8bc888ef92a7d6f3a05a5c2c39d2455c190926160ac",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 171,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049280,
+      "sha256": "d9b6c7223163c23f5f37f9bc0d5e03266f035aedb40e4ef8a7d006e60bc7e5db",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 172,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049246,
+      "sha256": "39016c5736a228fa2a22218a64a78194f0bb5b74cac55d81099720fb8c3f27ca",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 173,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049245,
+      "sha256": "e11032dd21168fb1bf1f12e4d8eea914625103805a09c303767c83ec64674638",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 174,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049251,
+      "sha256": "ed5bf443fd6899658fe27843ab78ae8eab78385d3d3c8aa7b2867146e400b005",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 175,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049280,
+      "sha256": "6c2695189c925100ceb683e8fcffaece0030e19654f650b88d1032f625476578",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 176,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "complete",
+      "bytes": 1049246,
+      "sha256": "85fd6ec9ac70ebc7741b90505622143ed35c7fc4bde9b5b9c7127475d62de5dd",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 177,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "shortfall",
+      "bytes": 1049245,
+      "sha256": "feffa4e17637c3556a61c618d2341ae1b0c8f5bdc27e7448671459e352688047",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 178,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "malformed",
+      "bytes": 1049251,
+      "sha256": "fbf8c11108f2e141a02ee5debb076af5676830ddd1b464d8ba7935d8a037d0df",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 179,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "conflicting",
+      "bytes": 1049280,
+      "sha256": "ef4d21fa420e3ca017dac5011649ad60c421ff57d5a0a79da72adf5e95d15faa",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 180,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "complete",
+      "bytes": 1049246,
+      "sha256": "a83579b882e9ff76cb86353d5b7582c6f3063441bfb1786e232295c5727021f5",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 181,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "shortfall",
+      "bytes": 1049245,
+      "sha256": "4fdf709e2558253cdbbb06e25b609b6ce585bdff04e00bb2307caad89e5af790",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 182,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "malformed",
+      "bytes": 1049251,
+      "sha256": "1fd8c8cf4ab6b8db615e4cf8585dd79744156945c727fd0a8234f860b10d462e",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 183,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "conflicting",
+      "bytes": 1049280,
+      "sha256": "72d1cce45e3a0f15e41e214d3c3dd4475b1f456d9fb435c587c75628a95f1e9e",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 184,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049252,
+      "sha256": "69533d77dcc08ae69b125b3f2f305835f7d519a9311c1f849b061d886f00350a",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 185,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049251,
+      "sha256": "94d4d278d19d07359f5185a94598e106a334bff8627ff1d986b69119282d839c",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 186,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049257,
+      "sha256": "0fb2a8c909431f06434fbc6e538b9b54d722eadca7feee36a46cc83eabfcd562",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 187,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049286,
+      "sha256": "adda8786fe6c48bfbb931d63a7bdfd28e21292e70fb223d5bf4d1e38fcd8cb2a",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 188,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049265,
+      "sha256": "c3e2f2beda6c6750a95e2e5bd97f5a601a1cf4604d4fe94b84198f77cf7267dd",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 189,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049264,
+      "sha256": "43000202a4f72fc43775a7507fe58ecd3513675bc039a9a7a13823fda011c2b6",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 190,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049270,
+      "sha256": "c51402afe75e4fb07507be7e7228f6abd4207cfcc376946970cb145d86626402",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 191,
+      "target": "/dev/sdabcdef",
+      "prefix": "info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049299,
+      "sha256": "774938379940188392c1af5e1228e7b83767348b416ff135aa817134d1f12171",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 192,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049334,
+      "sha256": "f25a9b6a2b837a460a5172b4f14ccf355347e65bb93d4e6c552bb996f0c92b72",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 193,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049333,
+      "sha256": "2c93b965a4327f11af55e7ff628291285b0afe2b9231655429539e83b73923f0",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 194,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049339,
+      "sha256": "89197d3687353eadac09a3309c7cd8b2549aff77c5503deb712dcb86506345b4",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 195,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049390,
+      "sha256": "0d0cc25f78c6929ac11959094addce1f4d4f364e388286e158471765b055cba7",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "pass",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": true,
+          "reason": "completed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": true,
+          "reason": "completed"
+        }
+      }
+    },
+    {
+      "case": 196,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049334,
+      "sha256": "80d3d7b6119a0974d07984867dc0b273a1f79c5138b81d13dc67bc94d91686c5",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 197,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049333,
+      "sha256": "abe63ecfc9f5615c07b285a74ca0fd94cefed71be06ebe707bb268046f72087e",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 198,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049339,
+      "sha256": "3dab5a739baa1196b20cacc1223ea08895799472fe84c3d361bc3ffb7302549e",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 199,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "1 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049390,
+      "sha256": "1a38079d66773dc6964904854ed6d05b492d96d08d4c51b0b8b17db4db841415",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 200,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "complete",
+      "bytes": 1049334,
+      "sha256": "b52adbd28a526b9d6575749dd63a37c313ab631564857c3d85239f57fe2dcfd3",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 201,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "shortfall",
+      "bytes": 1049333,
+      "sha256": "d472d46e2611a8b8cb730f5aaf8e4f92f0511f49a0ef86f24626a0525fa3e022",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 202,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "malformed",
+      "bytes": 1049339,
+      "sha256": "d676f44ca6b7b37ddf6fde526f54757ad3fb03f0f678beeca17a0b640ce03104",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 203,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 1 | 0",
+      "variant": "conflicting",
+      "bytes": 1049390,
+      "sha256": "145f7f2c55a353dcc8eaa6fb02d822f0f7e54552621177b165282b0891c4b478",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 204,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "complete",
+      "bytes": 1049334,
+      "sha256": "20c09bac0703a98ab26485f0265e0fd62fabe0b29a8d835428a6d3f0ba64262e",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 205,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "shortfall",
+      "bytes": 1049333,
+      "sha256": "57a6cff29392b8385e0e049e3731f7c325460b4ad806e46dcfcb12cb46722e6f",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 206,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "malformed",
+      "bytes": 1049339,
+      "sha256": "1ac70974202c24f9bbd590702585b9834d89490987bce4b1ec6b07dcdd2813ec",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 207,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "0 | 0 | 1",
+      "variant": "conflicting",
+      "bytes": 1049390,
+      "sha256": "6a395357c10dcc096f4a441ded2c47cd91621f2f8de05f5249363b504f370b2a",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "fail",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 208,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049340,
+      "sha256": "be35422a7b3f239239e86454a61fd0183a97d292c0c7f581a5d30ac7ca08bd43",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 209,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049339,
+      "sha256": "5e07c73d28559ad3bf1ff848902f91d61b7d2a26462237b7cc2af8663f4f3ba8",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 210,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049345,
+      "sha256": "b1a63f07cd0545904e110201734a2f46653f9f61c04595cb07a3f9114720935f",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 211,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "unknown | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049396,
+      "sha256": "3509bdcf1443aa8317ac7bb3475dd1aa44db3e5a04870d2eb397b034db7818b2",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "indeterminate"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "indeterminate"
+        }
+      }
+    },
+    {
+      "case": 212,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "complete",
+      "bytes": 1049353,
+      "sha256": "ab230c3f403df0591b0fe092c3cbace763e6db4991ea9214d037e7253eeb1e26",
+      "check_statuses": {
+        "hidden_capacity": "pass",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 213,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "shortfall",
+      "bytes": 1049352,
+      "sha256": "aa55ffcba6d286b82133dd847501743160d436adbab7f06e0c7485c02541a615",
+      "check_statuses": {
+        "hidden_capacity": "warning",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 214,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "malformed",
+      "bytes": 1049358,
+      "sha256": "f297e0a9c43f003ed00f0c323012f817932cd5206e70c2370ec3f0cc3f837916",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    },
+    {
+      "case": 215,
+      "target": "/dev/sdabcdef",
+      "prefix": "[2026/10/16 12:00:00] info: ",
+      "counts": "18446744073709551616 | 0 | 0",
+      "variant": "conflicting",
+      "bytes": 1049409,
+      "sha256": "1dea481a1abd43a434bf58e66dfa100e5a898eb517ba565ad4100f8fc4495f61",
+      "check_statuses": {
+        "hidden_capacity": "unavailable",
+        "io_media": "unavailable",
+        "coverage": "warning"
+      },
+      "outcomes": {
+        "everyday": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "extra": {
+          "ok": false,
+          "reason": "engine_failed"
+        },
+        "quick_zero": {
+          "ok": false,
+          "reason": "engine_failed"
+        }
+      }
+    }
+  ]
+}

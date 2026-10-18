@@ -1,0 +1,4 @@
+#!/bin/sh
+printf "%s\n" "$0" >> /tmp/beamo-release-20261017/hosted-ui-repair/local-gates/forbidden-fallback-attempts.txt
+printf "Blocked unmocked external or privileged fixture fallback\n" >&2
+exit 97

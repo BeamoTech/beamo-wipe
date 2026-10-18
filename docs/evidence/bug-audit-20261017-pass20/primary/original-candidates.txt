@@ -1,0 +1,621 @@
+FFFFFFFFFFFFFFFF..............FFFF....F.F.                               [100%]
+=================================== FAILURES ===================================
+_ test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[dm-flat-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x77d2bb59bd80>
+route = 'injected', placement = 'flat', kind = 'dm'
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("kind", ("dm", " lvm ", "linear ", " mpath"))
+    def test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it(
+        fake_machine, route, placement, kind  # noqa: F811 - imported pytest fixture
+    ):
+        # One PKNAME identifies a backing leg, not a complete generic mapping.
+        # A padded known multi-member token must not acquire weaker rules than
+        # its unpadded form. The second disk intentionally has no member signature:
+        # stale/empty metadata cannot establish that it is outside this mapping.
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py:47: AssertionError
+_ test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[dm-flat-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x77d2bb5a4400>
+route = 'production-metadata-stub', placement = 'flat', kind = 'dm'
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("kind", ("dm", " lvm ", "linear ", " mpath"))
+    def test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it(
+        fake_machine, route, placement, kind  # noqa: F811 - imported pytest fixture
+    ):
+        # One PKNAME identifies a backing leg, not a complete generic mapping.
+        # A padded known multi-member token must not acquire weaker rules than
+        # its unpadded form. The second disk intentionally has no member signature:
+        # stale/empty metadata cannot establish that it is outside this mapping.
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py:47: AssertionError
+_ test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[dm-nested-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x77d2bb5a5f80>
+route = 'injected', placement = 'nested', kind = 'dm'
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("kind", ("dm", " lvm ", "linear ", " mpath"))
+    def test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it(
+        fake_machine, route, placement, kind  # noqa: F811 - imported pytest fixture
+    ):
+        # One PKNAME identifies a backing leg, not a complete generic mapping.
+        # A padded known multi-member token must not acquire weaker rules than
+        # its unpadded form. The second disk intentionally has no member signature:
+        # stale/empty metadata cannot establish that it is outside this mapping.
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py:47: AssertionError
+_ test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[dm-nested-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x77d2bb5a62a0>
+route = 'production-metadata-stub', placement = 'nested', kind = 'dm'
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("kind", ("dm", " lvm ", "linear ", " mpath"))
+    def test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it(
+        fake_machine, route, placement, kind  # noqa: F811 - imported pytest fixture
+    ):
+        # One PKNAME identifies a backing leg, not a complete generic mapping.
+        # A padded known multi-member token must not acquire weaker rules than
+        # its unpadded form. The second disk intentionally has no member signature:
+        # stale/empty metadata cannot establish that it is outside this mapping.
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py:47: AssertionError
+_ test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[ lvm -flat-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x77d2bb5a4220>
+route = 'injected', placement = 'flat', kind = ' lvm '
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("kind", ("dm", " lvm ", "linear ", " mpath"))
+    def test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it(
+        fake_machine, route, placement, kind  # noqa: F811 - imported pytest fixture
+    ):
+        # One PKNAME identifies a backing leg, not a complete generic mapping.
+        # A padded known multi-member token must not acquire weaker rules than
+        # its unpadded form. The second disk intentionally has no member signature:
+        # stale/empty metadata cannot establish that it is outside this mapping.
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py:47: AssertionError
+_ test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[ lvm -flat-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x77d2bb5a5800>
+route = 'production-metadata-stub', placement = 'flat', kind = ' lvm '
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("kind", ("dm", " lvm ", "linear ", " mpath"))
+    def test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it(
+        fake_machine, route, placement, kind  # noqa: F811 - imported pytest fixture
+    ):
+        # One PKNAME identifies a backing leg, not a complete generic mapping.
+        # A padded known multi-member token must not acquire weaker rules than
+        # its unpadded form. The second disk intentionally has no member signature:
+        # stale/empty metadata cannot establish that it is outside this mapping.
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py:47: AssertionError
+_ test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[ lvm -nested-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x77d2bb5a5f80>
+route = 'injected', placement = 'nested', kind = ' lvm '
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("kind", ("dm", " lvm ", "linear ", " mpath"))
+    def test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it(
+        fake_machine, route, placement, kind  # noqa: F811 - imported pytest fixture
+    ):
+        # One PKNAME identifies a backing leg, not a complete generic mapping.
+        # A padded known multi-member token must not acquire weaker rules than
+        # its unpadded form. The second disk intentionally has no member signature:
+        # stale/empty metadata cannot establish that it is outside this mapping.
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py:47: AssertionError
+_ test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[ lvm -nested-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x77d2bb5a6480>
+route = 'production-metadata-stub', placement = 'nested', kind = ' lvm '
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("kind", ("dm", " lvm ", "linear ", " mpath"))
+    def test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it(
+        fake_machine, route, placement, kind  # noqa: F811 - imported pytest fixture
+    ):
+        # One PKNAME identifies a backing leg, not a complete generic mapping.
+        # A padded known multi-member token must not acquire weaker rules than
+        # its unpadded form. The second disk intentionally has no member signature:
+        # stale/empty metadata cannot establish that it is outside this mapping.
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py:47: AssertionError
+_ test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[linear -flat-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x77d2bb5a6de0>
+route = 'injected', placement = 'flat', kind = 'linear '
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("kind", ("dm", " lvm ", "linear ", " mpath"))
+    def test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it(
+        fake_machine, route, placement, kind  # noqa: F811 - imported pytest fixture
+    ):
+        # One PKNAME identifies a backing leg, not a complete generic mapping.
+        # A padded known multi-member token must not acquire weaker rules than
+        # its unpadded form. The second disk intentionally has no member signature:
+        # stale/empty metadata cannot establish that it is outside this mapping.
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py:47: AssertionError
+_ test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[linear -flat-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x77d2bb5a5bc0>
+route = 'production-metadata-stub', placement = 'flat', kind = 'linear '
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("kind", ("dm", " lvm ", "linear ", " mpath"))
+    def test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it(
+        fake_machine, route, placement, kind  # noqa: F811 - imported pytest fixture
+    ):
+        # One PKNAME identifies a backing leg, not a complete generic mapping.
+        # A padded known multi-member token must not acquire weaker rules than
+        # its unpadded form. The second disk intentionally has no member signature:
+        # stale/empty metadata cannot establish that it is outside this mapping.
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py:47: AssertionError
+_ test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[linear -nested-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x77d2bb5a6ca0>
+route = 'injected', placement = 'nested', kind = 'linear '
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("kind", ("dm", " lvm ", "linear ", " mpath"))
+    def test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it(
+        fake_machine, route, placement, kind  # noqa: F811 - imported pytest fixture
+    ):
+        # One PKNAME identifies a backing leg, not a complete generic mapping.
+        # A padded known multi-member token must not acquire weaker rules than
+        # its unpadded form. The second disk intentionally has no member signature:
+        # stale/empty metadata cannot establish that it is outside this mapping.
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py:47: AssertionError
+_ test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[linear -nested-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x77d2bb5a6b60>
+route = 'production-metadata-stub', placement = 'nested', kind = 'linear '
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("kind", ("dm", " lvm ", "linear ", " mpath"))
+    def test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it(
+        fake_machine, route, placement, kind  # noqa: F811 - imported pytest fixture
+    ):
+        # One PKNAME identifies a backing leg, not a complete generic mapping.
+        # A padded known multi-member token must not acquire weaker rules than
+        # its unpadded form. The second disk intentionally has no member signature:
+        # stale/empty metadata cannot establish that it is outside this mapping.
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py:47: AssertionError
+_ test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[ mpath-flat-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x77d2bb5a79c0>
+route = 'injected', placement = 'flat', kind = ' mpath'
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("kind", ("dm", " lvm ", "linear ", " mpath"))
+    def test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it(
+        fake_machine, route, placement, kind  # noqa: F811 - imported pytest fixture
+    ):
+        # One PKNAME identifies a backing leg, not a complete generic mapping.
+        # A padded known multi-member token must not acquire weaker rules than
+        # its unpadded form. The second disk intentionally has no member signature:
+        # stale/empty metadata cannot establish that it is outside this mapping.
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py:47: AssertionError
+_ test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[ mpath-flat-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x77d2bb5a77e0>
+route = 'production-metadata-stub', placement = 'flat', kind = ' mpath'
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("kind", ("dm", " lvm ", "linear ", " mpath"))
+    def test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it(
+        fake_machine, route, placement, kind  # noqa: F811 - imported pytest fixture
+    ):
+        # One PKNAME identifies a backing leg, not a complete generic mapping.
+        # A padded known multi-member token must not acquire weaker rules than
+        # its unpadded form. The second disk intentionally has no member signature:
+        # stale/empty metadata cannot establish that it is outside this mapping.
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py:47: AssertionError
+_ test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[ mpath-nested-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x77d2bb5a67a0>
+route = 'injected', placement = 'nested', kind = ' mpath'
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("kind", ("dm", " lvm ", "linear ", " mpath"))
+    def test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it(
+        fake_machine, route, placement, kind  # noqa: F811 - imported pytest fixture
+    ):
+        # One PKNAME identifies a backing leg, not a complete generic mapping.
+        # A padded known multi-member token must not acquire weaker rules than
+        # its unpadded form. The second disk intentionally has no member signature:
+        # stale/empty metadata cannot establish that it is outside this mapping.
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py:47: AssertionError
+_ test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[ mpath-nested-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x77d2bb5a6700>
+route = 'production-metadata-stub', placement = 'nested', kind = ' mpath'
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("kind", ("dm", " lvm ", "linear ", " mpath"))
+    def test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it(
+        fake_machine, route, placement, kind  # noqa: F811 - imported pytest fixture
+    ):
+        # One PKNAME identifies a backing leg, not a complete generic mapping.
+        # A padded known multi-member token must not acquire weaker rules than
+        # its unpadded form. The second disk intentionally has no member signature:
+        # stale/empty metadata cannot establish that it is outside this mapping.
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py:47: AssertionError
+_____ test_rejected_audio_launch_retires_its_slot[KeyboardInterrupt-False] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x77d2bc41ba10>
+after_handoff = False, failure = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("after_handoff", [False, True])
+    @pytest.mark.parametrize("failure", [RuntimeError, KeyboardInterrupt, SystemExit])
+    def test_rejected_audio_launch_retires_its_slot(monkeypatch, after_handoff, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = after_handoff
+                    raise failure("controlled audio thread start rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+                rejected = worker.submit(lambda: actions.append("rejected"))
+                ready, value = rejected.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled audio thread start rejection"):
+                    worker.submit(lambda: actions.append("rejected"))
+            if constructed[0].handed_off:
+                # The decision event is now set. A rejected handoff must never
+                # enter _run or consume a future request, so this is synchronous.
+                constructed[0].target()
+            assert actions == []
+            following = worker.submit(lambda: actions.append("following"))
+            assert not following.poll()[0]
+>           assert len(constructed) == 2, "A rejected launch stranded the audio worker slot"
+E           AssertionError: A rejected launch stranded the audio worker slot
+E           assert 1 == 2
+E            +  where 1 = len([<audio-launch-interruption-probe.test_rejected_audio_launch_retires_its_slot.<locals>.FakeThread object at 0x77d2bb5bc530>])
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio-launch-interruption-probe.py:53: AssertionError
+_____ test_rejected_audio_launch_retires_its_slot[KeyboardInterrupt-True] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x77d2bb5bfce0>
+after_handoff = True, failure = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("after_handoff", [False, True])
+    @pytest.mark.parametrize("failure", [RuntimeError, KeyboardInterrupt, SystemExit])
+    def test_rejected_audio_launch_retires_its_slot(monkeypatch, after_handoff, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = after_handoff
+                    raise failure("controlled audio thread start rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+                rejected = worker.submit(lambda: actions.append("rejected"))
+                ready, value = rejected.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled audio thread start rejection"):
+                    worker.submit(lambda: actions.append("rejected"))
+            if constructed[0].handed_off:
+                # The decision event is now set. A rejected handoff must never
+                # enter _run or consume a future request, so this is synchronous.
+                constructed[0].target()
+            assert actions == []
+            following = worker.submit(lambda: actions.append("following"))
+            assert not following.poll()[0]
+>           assert len(constructed) == 2, "A rejected launch stranded the audio worker slot"
+E           AssertionError: A rejected launch stranded the audio worker slot
+E           assert 1 == 2
+E            +  where 1 = len([<audio-launch-interruption-probe.test_rejected_audio_launch_retires_its_slot.<locals>.FakeThread object at 0x77d2bb5bff20>])
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio-launch-interruption-probe.py:53: AssertionError
+________ test_rejected_audio_launch_retires_its_slot[SystemExit-False] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x77d2bb5bc230>
+after_handoff = False, failure = <class 'SystemExit'>
+
+    @pytest.mark.parametrize("after_handoff", [False, True])
+    @pytest.mark.parametrize("failure", [RuntimeError, KeyboardInterrupt, SystemExit])
+    def test_rejected_audio_launch_retires_its_slot(monkeypatch, after_handoff, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = after_handoff
+                    raise failure("controlled audio thread start rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+                rejected = worker.submit(lambda: actions.append("rejected"))
+                ready, value = rejected.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled audio thread start rejection"):
+                    worker.submit(lambda: actions.append("rejected"))
+            if constructed[0].handed_off:
+                # The decision event is now set. A rejected handoff must never
+                # enter _run or consume a future request, so this is synchronous.
+                constructed[0].target()
+            assert actions == []
+            following = worker.submit(lambda: actions.append("following"))
+            assert not following.poll()[0]
+>           assert len(constructed) == 2, "A rejected launch stranded the audio worker slot"
+E           AssertionError: A rejected launch stranded the audio worker slot
+E           assert 1 == 2
+E            +  where 1 = len([<audio-launch-interruption-probe.test_rejected_audio_launch_retires_its_slot.<locals>.FakeThread object at 0x77d2bb5be810>])
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio-launch-interruption-probe.py:53: AssertionError
+_________ test_rejected_audio_launch_retires_its_slot[SystemExit-True] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x77d2bb5f9700>
+after_handoff = True, failure = <class 'SystemExit'>
+
+    @pytest.mark.parametrize("after_handoff", [False, True])
+    @pytest.mark.parametrize("failure", [RuntimeError, KeyboardInterrupt, SystemExit])
+    def test_rejected_audio_launch_retires_its_slot(monkeypatch, after_handoff, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = after_handoff
+                    raise failure("controlled audio thread start rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+                rejected = worker.submit(lambda: actions.append("rejected"))
+                ready, value = rejected.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled audio thread start rejection"):
+                    worker.submit(lambda: actions.append("rejected"))
+            if constructed[0].handed_off:
+                # The decision event is now set. A rejected handoff must never
+                # enter _run or consume a future request, so this is synchronous.
+                constructed[0].target()
+            assert actions == []
+            following = worker.submit(lambda: actions.append("following"))
+            assert not following.poll()[0]
+>           assert len(constructed) == 2, "A rejected launch stranded the audio worker slot"
+E           AssertionError: A rejected launch stranded the audio worker slot
+E           assert 1 == 2
+E            +  where 1 = len([<audio-launch-interruption-probe.test_rejected_audio_launch_retires_its_slot.<locals>.FakeThread object at 0x77d2bb5f8080>])
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio-launch-interruption-probe.py:53: AssertionError
+_ test_full_supported_run_releases_assets_before_later_worker_collection[return-False] _
+
+request = <FixtureRequest for <Function test_full_supported_run_releases_assets_before_later_worker_collection[return-False]>>
+retained = False, route = 'return'
+
+    @pytest.mark.parametrize("retained", [False, True])
+    @pytest.mark.parametrize("route", ["return", "raise"])
+    def test_full_supported_run_releases_assets_before_later_worker_collection(request, retained, route):
+        _admit_private_x11()
+        assert not os.environ.get("PYTEST_PLUGINS")
+        source = Path(__file__).resolve()
+        command = [sys.executable, str(source), "--owned-child", "retained" if retained else "unretained", route]
+        # This is the only child launch. The fixed script/arguments are local and
+        # child-side guards reject every native application action, including a
+        # second process. Private display ownership belongs to the root runner.
+        env = dict(os.environ, PYTHONFAULTHANDLER="1")
+        try:
+            result = subprocess.run(command, env=env, capture_output=True, text=True, timeout=8, check=False)
+            evidence = dict(command=command, retained=retained, route=route, returncode=result.returncode,
+                            stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            evidence = dict(command=command, retained=retained, route=route, timed_out=True,
+                            stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("owned_native_collection_child", json.dumps(evidence)))
+        assert not evidence["timed_out"], evidence
+>       assert evidence["returncode"] == 0, evidence
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass19/ui-...etime-probe.py', '--owned-child', 'unretained', 'return'], 'retained': False, 'returncode': 91, 'route': 'return', ...}
+E       assert 91 == 0
+
+docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py:256: AssertionError
+_ test_full_supported_run_releases_assets_before_later_worker_collection[raise-False] _
+
+request = <FixtureRequest for <Function test_full_supported_run_releases_assets_before_later_worker_collection[raise-False]>>
+retained = False, route = 'raise'
+
+    @pytest.mark.parametrize("retained", [False, True])
+    @pytest.mark.parametrize("route", ["return", "raise"])
+    def test_full_supported_run_releases_assets_before_later_worker_collection(request, retained, route):
+        _admit_private_x11()
+        assert not os.environ.get("PYTEST_PLUGINS")
+        source = Path(__file__).resolve()
+        command = [sys.executable, str(source), "--owned-child", "retained" if retained else "unretained", route]
+        # This is the only child launch. The fixed script/arguments are local and
+        # child-side guards reject every native application action, including a
+        # second process. Private display ownership belongs to the root runner.
+        env = dict(os.environ, PYTHONFAULTHANDLER="1")
+        try:
+            result = subprocess.run(command, env=env, capture_output=True, text=True, timeout=8, check=False)
+            evidence = dict(command=command, retained=retained, route=route, returncode=result.returncode,
+                            stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            evidence = dict(command=command, retained=retained, route=route, timed_out=True,
+                            stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("owned_native_collection_child", json.dumps(evidence)))
+        assert not evidence["timed_out"], evidence
+>       assert evidence["returncode"] == 0, evidence
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass19/ui-...ifetime-probe.py', '--owned-child', 'unretained', 'raise'], 'retained': False, 'returncode': 91, 'route': 'raise', ...}
+E       assert 91 == 0
+
+docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py:256: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py::test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[dm-flat-injected]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py::test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[dm-flat-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py::test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[dm-nested-injected]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py::test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[dm-nested-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py::test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[ lvm -flat-injected]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py::test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[ lvm -flat-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py::test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[ lvm -nested-injected]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py::test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[ lvm -nested-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py::test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[linear -flat-injected]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py::test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[linear -flat-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py::test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[linear -nested-injected]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py::test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[linear -nested-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py::test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[ mpath-flat-injected]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py::test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[ mpath-flat-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py::test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[ mpath-nested-injected]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py::test_unknown_or_padded_mounted_mapping_cannot_prove_other_disk_is_outside_it[ mpath-nested-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio-launch-interruption-probe.py::test_rejected_audio_launch_retires_its_slot[KeyboardInterrupt-False]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio-launch-interruption-probe.py::test_rejected_audio_launch_retires_its_slot[KeyboardInterrupt-True]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio-launch-interruption-probe.py::test_rejected_audio_launch_retires_its_slot[SystemExit-False]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio-launch-interruption-probe.py::test_rejected_audio_launch_retires_its_slot[SystemExit-True]
+FAILED docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py::test_full_supported_run_releases_assets_before_later_worker_collection[return-False]
+FAILED docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py::test_full_supported_run_releases_assets_before_later_worker_collection[raise-False]

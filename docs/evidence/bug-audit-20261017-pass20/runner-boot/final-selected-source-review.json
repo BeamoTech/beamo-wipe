@@ -1,0 +1,244 @@
+{
+  "branch": "fix/safety-audit-20261015",
+  "candidate6_to7": {
+    "all_other_methods_ast_equal": true,
+    "all_top_level_functions_ast_equal": true,
+    "only_changed_method": [
+      "TkWizard",
+      "_cancel_pick_restore"
+    ],
+    "pool_constructor_startup_gc_helpers_unchanged": true,
+    "source6_results_not_transferred": true,
+    "test_bytes_unchanged": true
+  },
+  "canonical_proofs": {
+    "byte_identical_pairs": {
+      "tests/test_audio_launch_acceptance_pass20.py": "docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_acceptance_boundary_candidate.py",
+      "tests/test_audio_launch_interruptions_pass20.py": "docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py",
+      "tests/test_holder_ancestor_mount_pass20.py": "docs/evidence/bug-audit-20261017-pass20/discovery/holder_ancestor_mount_candidate.py",
+      "tests/test_mounted_holder_type_pass20.py": "docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py",
+      "tests/test_tk_native_boundary_pass20.py": "docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py"
+    },
+    "collector_named_nodes_equal": [
+      "_admit_private_x11",
+      "_forbid_application_effects",
+      "_fake_wizard",
+      "_font_refs",
+      "_emit",
+      "ControlledInterfaceFailure",
+      "_child",
+      "test_full_supported_run_releases_assets_before_later_worker_collection"
+    ],
+    "constructor_adapter_nodes": [
+      "_admit",
+      "test_partial_native_and_row_constructor_releases_ownership"
+    ],
+    "constructor_assertions": 76,
+    "constructor_assertions_equal": true,
+    "constructor_child_equal": true
+  },
+  "document_sha256": "aba12594a3b1061182f404a0e2229f92449e884f3715cfae16f5bae0db5d6bab",
+  "evidence_hashes": {
+    "/tmp/pass20-primary/failed-gate-1/failure-receipt.json": "6ea6d3bd0b65e81e867e2b25ab981403bca97570adb76dd11b290d93e422d344",
+    "/tmp/pass20-primary/failed-gate-1/lint.txt": "609584dc1d7e9d1ff076d79359728dd8ba9de96ab163eb137f2202a6cf52f334",
+    "/tmp/pass20-primary/final-canonical-original-review.json": "8a29c83697be828455a5f47c97e222d4e19bc466fa66fc93afbab06fdcf118a5",
+    "/tmp/pass20-primary/final-canonical-original-status.json": "ec229717709751404393261803343547ae83b0ac8fdbf55e724b934f286b4c72",
+    "/tmp/pass20-primary/final-canonical-original.xml": "c59b7d7f6dbf5cf953ee849d6135b4544e8f526a7ff226d19319800813bdaa91",
+    "/tmp/pass20-primary/final-source-inputs.tar.gz": "90b456dc5695a2ab6aab735c02b91cd4ae146e2afde530a935555aaec99b29a5",
+    "/tmp/pass20-primary/localized-final-focused-review.json": "92a06ab54aa7ba8c6b9dceed507072f35d0027f8b007ddfc43663c753c5cc86f",
+    "/tmp/pass20-primary/localized-final-focused.xml": "f5e7b8aeb6695d3b9ca3154e8d9d83a341a134a91d9f0e432e07ec0bea92cb35",
+    "/tmp/pass20-primary/pass20-source.diff": "2612e361a2b73067aadcfb69574c7d561f2429d55b8d2b067453d801fd623693",
+    "/tmp/pass20-primary/private-candidate6-agent.py": "d639822ca03fccc2f9be78c476fc4b594118ac2b9195d2a2979b3c8f9a6e7cf8",
+    "/tmp/pass20-primary/private-candidate7-typed.py": "b436a56dbf5a61d9471f51f24767a0adf535925e3720938fb5ca1b27427ff296",
+    "/tmp/pass20-primary/source-freeze.json": "1b9b9c35433cd761e1275dcfac0a32efc2c22e49b2ef83148e664be321dd9a91",
+    "/tmp/pass20-primary/source-review.json": "09b9ab8be61d43b8e407f97e627f26ad7ea018c4e0f83d10fe6d0493b44f9750",
+    "/tmp/pass20-primary/starting-freeze.json": "3ed58390c17884a357e12d00e63c358b504e7733fb0caf9f552983abf63a8b3a",
+    "/tmp/pass20-primary/starting-inputs.tar.gz": "6a19d7ecc9438c968eb8a6f334033bc96a54ccba21ed1d4632e76580ebf72ff8"
+  },
+  "freeze": {
+    "added": [
+      "tests/test_audio_launch_acceptance_pass20.py",
+      "tests/test_audio_launch_interruptions_pass20.py",
+      "tests/test_holder_ancestor_mount_pass20.py",
+      "tests/test_mounted_holder_type_pass20.py",
+      "tests/test_tk_native_boundary_pass20.py",
+      "tests/test_tk_native_collector_pass20.py",
+      "tests/test_tk_native_constructor_pass20.py"
+    ],
+    "changed": [
+      "src/beamo_wipe/audio_jobs.py",
+      "src/beamo_wipe/discover.py",
+      "src/beamo_wipe/ui/tk_wizard.py"
+    ],
+    "current": 778,
+    "current_inputs_all_match": true,
+    "final_archive_all778_match": true,
+    "incremental_diff_exact": true,
+    "starting": 771,
+    "starting_archive_all771_match": true,
+    "unchanged_starting": 768
+  },
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "inputs": {
+    "/root/dev/Beamo Wipe/src/beamo_wipe/audio_jobs.py": "07e34b995a4df7424e6e1c5cd1a345856cd6b9ff622606fa74a79af2688597e0",
+    "/root/dev/Beamo Wipe/src/beamo_wipe/discover.py": "9f5a5a36ddf9dad77c7195920ed6290ed745d4684d63beeac103882fb6198f65",
+    "/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py": "b436a56dbf5a61d9471f51f24767a0adf535925e3720938fb5ca1b27427ff296",
+    "/root/dev/Beamo Wipe/tests/test_audio_launch_acceptance_pass20.py": "1660507881ea7adef425de04b19b11429d3df0c2a8e5a6ac636ccc5b62744a42",
+    "/root/dev/Beamo Wipe/tests/test_audio_launch_interruptions_pass20.py": "bb03ad8879937649b6a22a55508f9a9f7c17b0189e7e8d657f56f8a6870b2cb7",
+    "/root/dev/Beamo Wipe/tests/test_holder_ancestor_mount_pass20.py": "19d12021905905b140a1f97820a9b0c7a02c1f9214f034f84dc82d81451adea1",
+    "/root/dev/Beamo Wipe/tests/test_mounted_holder_type_pass20.py": "76f5b04192faf732d3dc50b07d95932f4ed5585334a318a08f8741da3e79be05",
+    "/root/dev/Beamo Wipe/tests/test_tk_native_boundary_pass20.py": "354136282d634b78307d053378fc27f65bb3d4f211c95be7725248c37e58fbe5",
+    "/root/dev/Beamo Wipe/tests/test_tk_native_collector_pass20.py": "7c9b05b8f63edff831529fde0ffe9c57caeb29f3343109aec3c72eb8f1db33ad",
+    "/root/dev/Beamo Wipe/tests/test_tk_native_constructor_pass20.py": "3e9219a82d777744600aaa3a8f3c988f8b2f26c19ee12fe2f296535c23bff0ca"
+  },
+  "inventory_correction": {
+    "corrected": "All three are unchanged in starting771 and final778; only seven command/XML modules were replayed.",
+    "files": [
+      "tests/test_discovery_unresolved_override_pass20.py",
+      "tests/test_iso_live_assets_pass20.py",
+      "tests/test_iso_stage_publication_pass20.py"
+    ],
+    "prior_reviewer_message_incorrect": "Three pre-existing pass20-named files were said absent from final freeze."
+  },
+  "localized_final": {
+    "cases": 663,
+    "errors": 0,
+    "failures": 0,
+    "skips": 0,
+    "source_audio_discovery_equal_previously_reviewed": true
+  },
+  "mode": "source/evidence read-only; stdlib AST/XML/hash parsing; no product imports/runtime/tests/source edits",
+  "original_replay": {
+    "cases": 144,
+    "command": [
+      "dbus-run-session",
+      "--",
+      "xvfb-run",
+      "-a",
+      "-n",
+      "160",
+      "-s",
+      "-screen 0 1600x1000x24 -dpi 72",
+      "/tmp/beamo-pass20-python/bin/python3",
+      "-m",
+      "pytest",
+      "-q",
+      "-o",
+      "pythonpath=/tmp/pass20-primary/original-replay/src",
+      "tests/test_mounted_holder_type_pass20.py",
+      "tests/test_holder_ancestor_mount_pass20.py",
+      "tests/test_audio_launch_interruptions_pass20.py",
+      "tests/test_audio_launch_acceptance_pass20.py",
+      "tests/test_tk_native_boundary_pass20.py",
+      "tests/test_tk_native_collector_pass20.py",
+      "tests/test_tk_native_constructor_pass20.py",
+      "--junitxml=/tmp/pass20-primary/final-canonical-original.xml"
+    ],
+    "controls": 61,
+    "current_seven_test_hashes_equal_proof": true,
+    "errors": 0,
+    "failures": 83,
+    "modules": {
+      "tests.test_audio_launch_acceptance_pass20": 6,
+      "tests.test_audio_launch_interruptions_pass20": 18,
+      "tests.test_holder_ancestor_mount_pass20": 44,
+      "tests.test_mounted_holder_type_pass20": 28,
+      "tests.test_tk_native_boundary_pass20": 24,
+      "tests.test_tk_native_collector_pass20": 4,
+      "tests.test_tk_native_constructor_pass20": 20
+    },
+    "skips": 0,
+    "source_inputs58_equal_start": true,
+    "terminal_failure_classes": {
+      "AssertionError": 81,
+      "RuntimeError": 2
+    }
+  },
+  "pending": [
+    "Candidate7 full local/main/Orca/negative/preview/launcher gate completion and actual failure review.",
+    "Owned-child finalization/stderr acceptance and fresh artifact campaigns.",
+    "Python3.11 NOT RUN; native/physical/firmware/ISO/QEMU/Windows acceptance not implied.",
+    "No historical abort/signal/latency attribution."
+  ],
+  "repo": "BeamoTech/beamo-wipe",
+  "reviewed_at_utc": "2026-10-17T19:03:11.501485+00:00",
+  "reviewer": "Codex /root/pass20_runner_boot",
+  "runtime": {
+    "bytes": 1645208,
+    "files": 58,
+    "independently_recomputed_without_product_import": true,
+    "sha256": "4817bf533ff21292aa21d8c6a267af2424ca4f03b5fd0f061b97c92819940d0d"
+  },
+  "schema": 1,
+  "selected_input_count": 10,
+  "source_verdict": "No additional source objection for exact selected bytes; final exact-source gates required",
+  "starting_to7_tk": {
+    "added_methods": [
+      [
+        "_Button",
+        "destroy"
+      ],
+      [
+        "_CheckRow",
+        "_retire_native_refs"
+      ],
+      [
+        "_CheckRow",
+        "destroy"
+      ]
+    ],
+    "changed_methods": [
+      [
+        "_CheckRow",
+        "__init__"
+      ],
+      [
+        "_CheckRow",
+        "_retire_variable_trace"
+      ],
+      [
+        "TkWizard",
+        "__init__"
+      ],
+      [
+        "TkWizard",
+        "_load_image"
+      ],
+      [
+        "TkWizard",
+        "_nav"
+      ],
+      [
+        "TkWizard",
+        "_teardown"
+      ],
+      [
+        "TkWizard",
+        "_draw"
+      ],
+      [
+        "TkWizard",
+        "_comparison"
+      ],
+      [
+        "TkWizard",
+        "_cancel_pick_restore"
+      ],
+      [
+        "TkWizard",
+        "_support_block"
+      ],
+      [
+        "TkWizard",
+        "_report_help"
+      ],
+      [
+        "TkWizard",
+        "run"
+      ]
+    ],
+    "existing_methods": 175,
+    "native_factory_calls": 25,
+    "unchanged_methods": 163
+  }
+}

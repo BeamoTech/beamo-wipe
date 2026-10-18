@@ -1,0 +1,50 @@
+dbus-daemon[464654]: [session uid=0 pid=464654] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=464668 comm="/tmp/beamo-wipe-audit-python/bin/python3 /tmp/pass" label="unconfined")
+dbus-daemon[464654]: [session uid=0 pid=464654] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[464677]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=464668 comm="/tmp/beamo-wipe-audit-python/bin/python3 /tmp/pass" label="unconfined")
+dbus-daemon[464677]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+/tmp/pass10-ui/capture_sound_rollback.py:99: DeprecationWarning: Gdk.Screen.get_width is deprecated
+  dpi_x = screen.get_width() * 25.4 / screen.get_width_mm()
+/tmp/pass10-ui/capture_sound_rollback.py:99: DeprecationWarning: Gdk.Screen.get_width_mm is deprecated
+  dpi_x = screen.get_width() * 25.4 / screen.get_width_mm()
+/tmp/pass10-ui/capture_sound_rollback.py:100: DeprecationWarning: Gdk.Screen.get_height is deprecated
+  dpi_y = screen.get_height() * 25.4 / screen.get_height_mm()
+/tmp/pass10-ui/capture_sound_rollback.py:100: DeprecationWarning: Gdk.Screen.get_height_mm is deprecated
+  dpi_y = screen.get_height() * 25.4 / screen.get_height_mm()
+{
+  "screenshot": "/tmp/pass10-ui/sound-output-refusal-restored-72dpi.png",
+  "sha256": "88977b72c8f75578b4fede3f4e6fc49bcf86f213dc412294d81a17cfaaf1377f",
+  "dimensions": [
+    560,
+    536
+  ],
+  "x11_dpi": [
+    72.05673758865248,
+    71.95467422096317
+  ],
+  "status": "That change did not work. Try again.",
+  "accepted_sink": "speakers-fake",
+  "radio_active": [
+    true,
+    false
+  ],
+  "radio_sensitive": [
+    true,
+    true
+  ],
+  "radio_labels": [
+    "Speakers",
+    "Headphones"
+  ],
+  "persisted_output": "",
+  "calls": [
+    {
+      "operation": "set_output",
+      "sink": "headphones-fake"
+    }
+  ],
+  "real_gtk_timer": true,
+  "fake_boundaries_only": true,
+  "owned_window_closed": true,
+  "owned_worker_retired": true
+}

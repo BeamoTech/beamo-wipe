@@ -1,0 +1,554 @@
+FFFFFFFFFFFFFFFFFFFFFFFF......                                           [100%]
+=================================== FAILURES ===================================
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-missing-parent-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282c19d00>
+route = 'injected', ancestry = 'missing-parent'
+evidence = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-missing-parent-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282c1aa20>
+route = 'production-metadata-stub', ancestry = 'missing-parent'
+evidence = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-unknown-parent-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282c1bec0>
+route = 'injected', ancestry = 'unknown-parent'
+evidence = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-unknown-parent-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282c1a980>
+route = 'production-metadata-stub', ancestry = 'unknown-parent'
+evidence = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-cycle-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282c1bb00>
+route = 'injected', ancestry = 'cycle'
+evidence = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-cycle-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a2825600e0>
+route = 'production-metadata-stub', ancestry = 'cycle'
+evidence = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-contradictory-tree-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282560fe0>
+route = 'injected', ancestry = 'contradictory-tree'
+evidence = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-contradictory-tree-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282560680>
+route = 'production-metadata-stub', ancestry = 'contradictory-tree'
+evidence = {'fstype': 'ext4', 'label': 'root', 'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-missing-parent-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282561760>
+route = 'injected', ancestry = 'missing-parent'
+evidence = {'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-missing-parent-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282560360>
+route = 'production-metadata-stub', ancestry = 'missing-parent'
+evidence = {'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-unknown-parent-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282561ee0>
+route = 'injected', ancestry = 'unknown-parent'
+evidence = {'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-unknown-parent-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a2825620c0>
+route = 'production-metadata-stub', ancestry = 'unknown-parent'
+evidence = {'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-cycle-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a2825623e0>
+route = 'injected', ancestry = 'cycle', evidence = {'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-cycle-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282562b60>
+route = 'production-metadata-stub', ancestry = 'cycle'
+evidence = {'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-contradictory-tree-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282563420>
+route = 'injected', ancestry = 'contradictory-tree'
+evidence = {'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-contradictory-tree-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282560900>
+route = 'production-metadata-stub', ancestry = 'contradictory-tree'
+evidence = {'uuid': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-missing-parent-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282561bc0>
+route = 'injected', ancestry = 'missing-parent'
+evidence = {'partlabel': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-missing-parent-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282561580>
+route = 'production-metadata-stub', ancestry = 'missing-parent'
+evidence = {'partlabel': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-unknown-parent-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282562d40>
+route = 'injected', ancestry = 'unknown-parent'
+evidence = {'partlabel': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-unknown-parent-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282562b60>
+route = 'production-metadata-stub', ancestry = 'unknown-parent'
+evidence = {'partlabel': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-cycle-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282561ee0>
+route = 'injected', ancestry = 'cycle'
+evidence = {'partlabel': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-cycle-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282560fe0>
+route = 'production-metadata-stub', ancestry = 'cycle'
+evidence = {'partlabel': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000... wwn='50014ee2000000044', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-contradictory-tree-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282563d80>
+route = 'injected', ancestry = 'contradictory-tree'
+evidence = {'partlabel': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+_ test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-contradictory-tree-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x78a282561620>
+route = 'production-metadata-stub', ancestry = 'contradictory-tree'
+evidence = {'partlabel': 'fake-open-volume'}
+
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    @pytest.mark.parametrize("ancestry", ("missing-parent", "unknown-parent", "cycle", "contradictory-tree"))
+    @pytest.mark.parametrize("evidence", (
+        {"fstype": "ext4", "uuid": "fake-open-volume", "label": "root"},
+        {"uuid": "fake-open-volume"},
+        {"partlabel": "fake-open-volume"},
+    ), ids=("opened-filesystem", "uuid-only", "partition-label-only"))
+    def test_unmounted_bcache_filesystem_requires_proven_ancestry(
+        fake_machine, route, ancestry, evidence  # noqa: F811 - imported pytest fixture
+    ):
+        result = fake_machine(_payload(ancestry, evidence), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py:66: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-missing-parent-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-missing-parent-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-unknown-parent-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-unknown-parent-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-cycle-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-cycle-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-contradictory-tree-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[opened-filesystem-contradictory-tree-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-missing-parent-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-missing-parent-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-unknown-parent-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-unknown-parent-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-cycle-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-cycle-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-contradictory-tree-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[uuid-only-contradictory-tree-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-missing-parent-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-missing-parent-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-unknown-parent-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-unknown-parent-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-cycle-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-cycle-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-contradictory-tree-injected]
+FAILED docs/evidence/bug-audit-20261017-pass19/discovery/unbound_bcache_filesystem_probe.py::test_unmounted_bcache_filesystem_requires_proven_ancestry[partition-label-only-contradictory-tree-production-metadata-stub]

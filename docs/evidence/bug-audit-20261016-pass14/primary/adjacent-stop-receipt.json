@@ -1,0 +1,10 @@
+{
+  "pid": 604704,
+  "owned_pytest_junit": "/tmp/pass14-primary/adjacent.xml",
+  "cwd_verified": "/root/dev/Beamo Wipe",
+  "action": "SIGABRT to obtain enabled pytest faulthandler stacks after no progress",
+  "core_dump_disabled": true,
+  "utc": "2026-10-16T21:39:56.670888+00:00",
+  "intentional": true,
+  "not_a_passing_gate": true
+}

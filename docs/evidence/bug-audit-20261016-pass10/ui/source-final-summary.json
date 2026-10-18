@@ -1,0 +1,14 @@
+{
+  "sha256": {
+    "src/beamo_wipe/ui/console_wizard.py": "794525a0185cd652d977b84cd1cd318c07c90dcf8dcaad20c730260ef4f1cc1c",
+    "src/beamo_wipe/ui/sound_dialog.py": "dec869b260dfc13b9b93d19f1face4d2c5fa870e8f9b0bf1fc07fa8f82186ed5",
+    "tests/test_console_inventory_diagnostic_pass10.py": "019443d03deccdd21fbb87ed9b94c97d25909d7d39528c9afa44c8b9a995600f",
+    "tests/test_sound_output_selection_pass10.py": "3cdbf1ea3b99d3cdf59dc813812c46ec4207ed4673f2d7876bdd8fe0a46ae63a"
+  },
+  "final_sound": {
+    "cases": 11,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0
+  }
+}

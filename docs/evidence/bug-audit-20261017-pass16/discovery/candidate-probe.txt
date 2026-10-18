@@ -1,0 +1,1 @@
+{"duplicates": 64, "duplicates_target_selectable": 48, "native_attempts": [], "numeric_cases": 36, "numeric_escaped": 5}

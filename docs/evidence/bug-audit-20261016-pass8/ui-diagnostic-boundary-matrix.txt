@@ -1,0 +1,7 @@
+{
+  "original_unhandled": 3,
+  "fixed_refused": 3,
+  "finite_controls": 6,
+  "malformed_controls": 11
+}
+diagnostic_report.py SHA256 fc01e84c6f917d679ea743bc104c5c5d6031de34bd9d68b6f6ee43f63986a1dd

@@ -1,0 +1,91 @@
+{
+  "read_only_loop_bookkeeping_nodes_examined": 0,
+  "fixture_backing_matches": [],
+  "read_errors": [],
+  "fake_loop_states": [
+    {
+      "fixture": "test_loop_pool_prepares_concur0",
+      "state": {
+        "loops": {},
+        "peak": 0,
+        "files": []
+      }
+    },
+    {
+      "fixture": "test_loop_pool_prepares_concur1",
+      "state": {
+        "loops": {},
+        "peak": 0,
+        "files": []
+      }
+    },
+    {
+      "fixture": "test_loop_pool_prepares_concur2",
+      "state": {
+        "loops": {},
+        "peak": 0,
+        "files": []
+      }
+    },
+    {
+      "fixture": "test_loop_pool_prepares_concurcurrent",
+      "state": {
+        "loops": {},
+        "peak": 0,
+        "files": []
+      }
+    }
+  ],
+  "download_signature_ids": [
+    {
+      "fixture": "test_copyable_document_block_w4",
+      "key_id": "93caaf7ca93eff4d",
+      "signature_path": "/tmp/pytest-of-root/pytest-4/test_copyable_document_block_w4/beamo-usb-verify.KAFjRu6P/release-downloads.json.sig"
+    },
+    {
+      "fixture": "test_copyable_document_block_w1",
+      "key_id": "93caaf7ca93eff4d",
+      "signature_path": "/tmp/pytest-of-root/pytest-4/test_copyable_document_block_w1/beamo-usb-verify.bMHv63zb/release-downloads.json.sig"
+    },
+    {
+      "fixture": "test_copyable_document_block_w0",
+      "key_id": "93caaf7ca93eff4d",
+      "signature_path": "/tmp/pytest-of-root/pytest-4/test_copyable_document_block_w0/beamo-usb-verify.Evw4nDbW/release-downloads.json.sig"
+    },
+    {
+      "fixture": "test_copyable_document_block_w5",
+      "key_id": "93caaf7ca93eff4d",
+      "signature_path": "/tmp/pytest-of-root/pytest-4/test_copyable_document_block_w5/beamo-usb-verify.oRYgn8Cx/release-downloads.json.sig"
+    },
+    {
+      "fixture": "test_copyable_document_block_w6",
+      "key_id": "93caaf7ca93eff4d",
+      "signature_path": "/tmp/pytest-of-root/pytest-4/test_copyable_document_block_w6/beamo-usb-verify.8c6i1Gum/release-downloads.json.sig"
+    },
+    {
+      "fixture": "test_copyable_document_block_w2",
+      "key_id": "93caaf7ca93eff4d",
+      "signature_path": "/tmp/pytest-of-root/pytest-4/test_copyable_document_block_w2/beamo-usb-verify.27I8Tdzo/release-downloads.json.sig"
+    },
+    {
+      "fixture": "test_copyable_document_block_w7",
+      "key_id": "93caaf7ca93eff4d",
+      "signature_path": "/tmp/pytest-of-root/pytest-4/test_copyable_document_block_w7/beamo-usb-verify.n1IV254j/release-downloads.json.sig"
+    },
+    {
+      "fixture": "test_copyable_document_block_w3",
+      "key_id": "93caaf7ca93eff4d",
+      "signature_path": "/tmp/pytest-of-root/pytest-4/test_copyable_document_block_w3/beamo-usb-verify.gyyt9WJi/release-downloads.json.sig"
+    }
+  ],
+  "loop_device_metadata": {
+    "/dev/loop-control": true,
+    "/sys/block": true
+  },
+  "actual_loop_probe_failure_messages": [
+    "tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_loop_pool_prepares_concur0')\nfailure = ''\n\n    @pytest.mark.parametrize(\"failure\", [\"\", \"attach\", \"ownership\"])\n    def test_loop_pool_prepares_concurrent_nodes_and_cleans_only_owned_files(tmp_path, failure):\n        tools = tmp_path / \"bin\"\n        tools.mkdir()\n        state = tmp_path / \"loops.json\"\n        state.write_text(json.dumps({\"loops\": {}, \"peak\": 0, \"files\": []}))\n        command = tools / \"losetup\"\n        command.write_text(f\"#!{sys.executable}\\n\" + '''\n    import json, os, pathlib, sys\n    path = pathlib.Path(os.environ['LOOP_STATE'])\n    state = json.loads(path.read_text())\n    args = sys.argv[1:]\n    failure = os.environ['LOOP_FAILURE']\n    if args[:3] == ['--find', '--show', '--read-only']:\n        if failure == 'attach' and len(state['loops']) == 3:\n            raise SystemExit(1)\n        source = pathlib.Path(args[3])\n        assert source.is_file() and source.stat().st_size == 1024 * 1024\n        device = '/dev/loop' + str(len(state['loops']))\n        state['loops'][device] = str(source)\n        state['files'].append(str(source))\n        state['peak'] = max(state['peak'], len(state['loops']))\n        print(device)\n    elif args[:5] == ['--list', '--noheadings', '--raw', '--output', 'BACK-FILE']:\n        print('another-owner' if failure == 'ownership' and args[5] == '/dev/loop0'\n              else state['loops'][args[5]])\n    elif args[0] == '--detach':\n        assert not (failure == 'ownership' and args[1] == '/dev/loop0')\n        del state['loops'][args[1]]\n    else:\n        raise AssertionError(args)\n    path.write_text(json.dumps(state))\n    ''')\n        command.chmod(0o755)\n        shell = (ROOT / \"scripts/check-ci-kvm.sh\").read_text()\n        code = shell.split(\"sudo python3 - <<'PY'\\n\")[2].split(\"\\nPY\", 1)[0]\n        result = subprocess.run(\n            [sys.executable, \"-c\", code],\n            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ[\"PATH\"],\n                     TMPDIR=str(tmp_path), LOOP_STATE=str(state), LOOP_FAILURE=failure),\n            capture_output=True, text=True, timeout=15,\n        )\n        recorded = json.loads(state.read_text())\n        assert (result.returncode == 0) == (failure == \"\"), result.stderr\n>       assert recorded['peak'] == (3 if failure == 'attach' else 8)\nE       assert 0 == 8\n\ntests/test_blacksmith_ci.py:141: AssertionError",
+    "tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_loop_pool_prepares_concur1')\nfailure = 'attach'\n\n    @pytest.mark.parametrize(\"failure\", [\"\", \"attach\", \"ownership\"])\n    def test_loop_pool_prepares_concurrent_nodes_and_cleans_only_owned_files(tmp_path, failure):\n        tools = tmp_path / \"bin\"\n        tools.mkdir()\n        state = tmp_path / \"loops.json\"\n        state.write_text(json.dumps({\"loops\": {}, \"peak\": 0, \"files\": []}))\n        command = tools / \"losetup\"\n        command.write_text(f\"#!{sys.executable}\\n\" + '''\n    import json, os, pathlib, sys\n    path = pathlib.Path(os.environ['LOOP_STATE'])\n    state = json.loads(path.read_text())\n    args = sys.argv[1:]\n    failure = os.environ['LOOP_FAILURE']\n    if args[:3] == ['--find', '--show', '--read-only']:\n        if failure == 'attach' and len(state['loops']) == 3:\n            raise SystemExit(1)\n        source = pathlib.Path(args[3])\n        assert source.is_file() and source.stat().st_size == 1024 * 1024\n        device = '/dev/loop' + str(len(state['loops']))\n        state['loops'][device] = str(source)\n        state['files'].append(str(source))\n        state['peak'] = max(state['peak'], len(state['loops']))\n        print(device)\n    elif args[:5] == ['--list', '--noheadings', '--raw', '--output', 'BACK-FILE']:\n        print('another-owner' if failure == 'ownership' and args[5] == '/dev/loop0'\n              else state['loops'][args[5]])\n    elif args[0] == '--detach':\n        assert not (failure == 'ownership' and args[1] == '/dev/loop0')\n        del state['loops'][args[1]]\n    else:\n        raise AssertionError(args)\n    path.write_text(json.dumps(state))\n    ''')\n        command.chmod(0o755)\n        shell = (ROOT / \"scripts/check-ci-kvm.sh\").read_text()\n        code = shell.split(\"sudo python3 - <<'PY'\\n\")[2].split(\"\\nPY\", 1)[0]\n        result = subprocess.run(\n            [sys.executable, \"-c\", code],\n            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ[\"PATH\"],\n                     TMPDIR=str(tmp_path), LOOP_STATE=str(state), LOOP_FAILURE=failure),\n            capture_output=True, text=True, timeout=15,\n        )\n        recorded = json.loads(state.read_text())\n>       assert (result.returncode == 0) == (failure == \"\"), result.stderr\nE       AssertionError: \nE       assert (0 == 0) == ('attach' == ''\nE        +  where 0 = CompletedProcess(args=['/root/dev/Beamo Wipe/.venv-linux/bin/python3', '-c', \"import os\\nfrom pathlib import Path\\nimp...ttachments succeeded.\\nPrivate loop probes detached and removed; squashfs and FAT support are available.\\n', stderr='').returncode\nE         \nE         + attach)\n\ntests/test_blacksmith_ci.py:140: AssertionError",
+    "tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_loop_pool_prepares_concur2')\nfailure = 'ownership'\n\n    @pytest.mark.parametrize(\"failure\", [\"\", \"attach\", \"ownership\"])\n    def test_loop_pool_prepares_concurrent_nodes_and_cleans_only_owned_files(tmp_path, failure):\n        tools = tmp_path / \"bin\"\n        tools.mkdir()\n        state = tmp_path / \"loops.json\"\n        state.write_text(json.dumps({\"loops\": {}, \"peak\": 0, \"files\": []}))\n        command = tools / \"losetup\"\n        command.write_text(f\"#!{sys.executable}\\n\" + '''\n    import json, os, pathlib, sys\n    path = pathlib.Path(os.environ['LOOP_STATE'])\n    state = json.loads(path.read_text())\n    args = sys.argv[1:]\n    failure = os.environ['LOOP_FAILURE']\n    if args[:3] == ['--find', '--show', '--read-only']:\n        if failure == 'attach' and len(state['loops']) == 3:\n            raise SystemExit(1)\n        source = pathlib.Path(args[3])\n        assert source.is_file() and source.stat().st_size == 1024 * 1024\n        device = '/dev/loop' + str(len(state['loops']))\n        state['loops'][device] = str(source)\n        state['files'].append(str(source))\n        state['peak'] = max(state['peak'], len(state['loops']))\n        print(device)\n    elif args[:5] == ['--list', '--noheadings', '--raw', '--output', 'BACK-FILE']:\n        print('another-owner' if failure == 'ownership' and args[5] == '/dev/loop0'\n              else state['loops'][args[5]])\n    elif args[0] == '--detach':\n        assert not (failure == 'ownership' and args[1] == '/dev/loop0')\n        del state['loops'][args[1]]\n    else:\n        raise AssertionError(args)\n    path.write_text(json.dumps(state))\n    ''')\n        command.chmod(0o755)\n        shell = (ROOT / \"scripts/check-ci-kvm.sh\").read_text()\n        code = shell.split(\"sudo python3 - <<'PY'\\n\")[2].split(\"\\nPY\", 1)[0]\n        result = subprocess.run(\n            [sys.executable, \"-c\", code],\n            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ[\"PATH\"],\n                     TMPDIR=str(tmp_path), LOOP_STATE=str(state), LOOP_FAILURE=failure),\n            capture_output=True, text=True, timeout=15,\n        )\n        recorded = json.loads(state.read_text())\n>       assert (result.returncode == 0) == (failure == \"\"), result.stderr\nE       AssertionError: \nE       assert (0 == 0) == ('ownership' == ''\nE        +  where 0 = CompletedProcess(args=['/root/dev/Beamo Wipe/.venv-linux/bin/python3', '-c', \"import os\\nfrom pathlib import Path\\nimp...ttachments succeeded.\\nPrivate loop probes detached and removed; squashfs and FAT support are available.\\n', stderr='').returncode\nE         \nE         + ownership)\n\ntests/test_blacksmith_ci.py:140: AssertionError"
+  ],
+  "conclusion": "Invalid space-bearing stub shebangs permitted PATH fallback. Actual xorriso operated on an ordinary temporary file. Downloaded metadata has the public publisher key, confirming real network metadata reads. Loop fixtures report no successful attachments, but no synthetic-only claim is made for this failed run. No physical device path was passed as a wipe target. Corrected runs require no-space interpreter plus rejecting fallback guards."
+}

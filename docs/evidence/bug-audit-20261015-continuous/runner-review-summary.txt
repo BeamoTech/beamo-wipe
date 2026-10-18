@@ -1,0 +1,38 @@
+Reviewer-reported execution summary; not a raw redirected terminal transcript.
+
+Repository: BeamoTech/beamo-wipe
+Worktree: /root/dev/Beamo Wipe
+Baseline HEAD: 20ae39a556ab961baf204e3108e6ebc93b695ac5
+Final reviewed source: src/beamo_wipe/nwipe_runner.py
+Source SHA-256: 2979312e1b415b9d3e367133817d46d4e1650b33c82ba03f082a02045efa37c5
+Reviewer: Codex runner_audit
+Date: 2026-10-15
+
+Actual executed shell command:
+mapfile -t audit_tests < <(rg --files tests | rg '^tests/test_(nwipe_runner|runner_.*|progress_.*|stale_progress|completion_.*|cancel_.*|engine_checks.*|evidence.*|large_log_evidence_assessment|log_tail_export_regression|write_vs_completion|operation_sequence|start_failure_retry_regression|ambiguous_popen_interrupt_pass5_regression)\.py$')
+/tmp/beamo-wipe-audit-python/bin/python -m pytest -o addopts= -q "${audit_tests[@]}"
+
+Observed result: 595 passed in 100.66s (0:01:40).
+Observed process exit status: 0.
+No failures or skips reported in this selected scope.
+Tool execution session: 86325.
+
+Fresh final source review: no new actionable reproducible finding after the
+three root fixes. Re-read completion precedence, whole-log projection and cap,
+complete/malformed/truncated/control-character records, immutable request
+binding, same/new-process progress publication, retained-log descriptor
+preexec/spawn/cancel/cleanup lifetimes, evidence checksums/readback/recovery,
+and progress timing/staleness. Ordinary Wizard.tick serialization remains
+unchanged; ordering fix protects the concurrently callable runner API.
+
+Systematic independent matrix: 1,176 cases, zero failures; exact source hash
+recorded in /tmp/beamo-pass4-completion-matrix.txt. Reproduction script:
+/tmp/beamo-pass4-completion-matrix.py.
+
+Independent cross-review: mounted-alias discovery and zero-capacity historical
+reader recovery changes approved after diff inspection and 216 passing tests
+across their new regressions, session recovery, boot exclusion and discovery.
+
+Scope limitation: these are local fake-device/process and regular-file tests.
+No real engine, physical media, ISO/QEMU, native Windows, hosted CI, commit,
+push or release operation was performed by this reviewer.

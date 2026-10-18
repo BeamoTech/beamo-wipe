@@ -1,0 +1,15 @@
+dbus-daemon[465932]: [session uid=0 pid=465932] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=465946 comm="/tmp/beamo-wipe-audit-python/bin/python3 /tmp/pass" label="unconfined")
+dbus-daemon[465932]: [session uid=0 pid=465932] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[465955]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=465946 comm="/tmp/beamo-wipe-audit-python/bin/python3 /tmp/pass" label="unconfined")
+dbus-daemon[465955]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+Traceback (most recent call last):
+  File "/tmp/pass10-primary/capture-modal-visible.py", line 196, in <module>
+    main()
+  File "/tmp/pass10-primary/capture-modal-visible.py", line 186, in main
+    raise AssertionError("\n".join(failures))
+AssertionError: Traceback (most recent call last):
+  File "/tmp/pass10-primary/capture-modal-visible.py", line 106, in inspect
+    assert 71 <= dpi_x <= 73 and 71 <= dpi_y <= 73, (dpi_x, dpi_y)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (96.07565011820331, 95.84905660377359)

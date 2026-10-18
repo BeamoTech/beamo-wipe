@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/tmp/beamo-pass8-ui-state-matrix.py", line 22, in <module>
+    w,c=authorized(code,method)
+        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/beamo-pass8-ui-state-matrix.py", line 13, in authorized
+    clock=Clock();w=Wizard(make_demo_wizard().discovery,DryRunRunner(clock=clock),clock=clock,dry_run=True,preview=True)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Wizard.__init__() got an unexpected keyword argument 'preview'

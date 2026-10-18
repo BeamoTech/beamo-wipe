@@ -1,0 +1,10 @@
+{
+  "cases": 288,
+  "passed": 168,
+  "violations": 120,
+  "native_attempts": [],
+  "source_sha256": {
+    "src/beamo_wipe/discover.py": "9a95b24403dad52c2ca4212a25ccc069ac7c55eafc3a4cb366a0bf62fdbefd92",
+    "src/beamo_wipe/safety.py": "f0ad1dc5d32d5f71aa8d27c7172634ace061111a47f5135d4df55021121be818"
+  }
+}

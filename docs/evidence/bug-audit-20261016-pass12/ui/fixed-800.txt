@@ -1,0 +1,8 @@
+dbus-daemon[526928]: [session uid=0 pid=526928] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=526929 comm="/tmp/beamo-wipe-audit-python/bin/python -m pytest" label="unconfined")
+dbus-daemon[526928]: [session uid=0 pid=526928] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[526942]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=526929 comm="/tmp/beamo-wipe-audit-python/bin/python -m pytest" label="unconfined")
+dbus-daemon[526942]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+........................................................................ [ 81%]
+................                                                         [100%]
+88 passed in 17.22s

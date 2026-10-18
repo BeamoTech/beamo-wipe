@@ -1,0 +1,68 @@
+dbus-daemon[604690]: [session uid=0 pid=604690] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=604704 comm="/tmp/beamo-wipe-audit-python/bin/python3 -m pytest" label="unconfined")
+dbus-daemon[604690]: [session uid=0 pid=604690] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[604727]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=604704 comm="/tmp/beamo-wipe-audit-python/bin/python3 -m pytest" label="unconfined")
+dbus-daemon[604727]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+........................................................................ [  4%]
+........................................................................ [  8%]
+........................................................................ [ 13%]
+........................................................................ [ 17%]
+........................................................................ [ 21%]
+........................................................................ [ 26%]
+........................................................................ [ 30%]
+........................................................................ [ 35%]
+........................................................................ [ 39%]
+........................................................................ [ 43%]
+........................................................................ [ 48%]
+........................................................................ [ 52%]
+........................................................................ [ 56%]
+........................................................................ [ 61%]
+........................................................................ [ 65%]
+........................................................................ [ 70%]
+........................................................................ [ 74%]
+........................................................................ [ 78%]
+........................................................................ [ 83%]
+........................................................................ [ 87%]
+........................................................................ [ 91%]
+........................................................................ [ 96%]
+....FFFatal Python error: Aborted
+
+Current thread 0x00007ad46cffc080 (most recent call first):
+  File "/usr/lib/python3.12/tkinter/__init__.py", line 1504 in mainloop
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py", line 4730 in run_tk_startup
+  File "/root/dev/Beamo Wipe/tests/test_tk_startup_focus_geometry_pass12.py", line 73 in test_first_tk_startup_accepts_native_escape
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/_pytest/python.py", line 166 in pytest_pyfunc_call
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/pluggy/_execution.py", line 147 in _multicall
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/pluggy/_manager.py", line 183 in _hookexec
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/pluggy/_caller.py", line 197 in __call__
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/_pytest/python.py", line 1720 in runtest
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/_pytest/runner.py", line 179 in pytest_runtest_call
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/pluggy/_execution.py", line 147 in _multicall
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/pluggy/_manager.py", line 183 in _hookexec
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/pluggy/_caller.py", line 197 in __call__
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/_pytest/runner.py", line 245 in <lambda>
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/_pytest/runner.py", line 353 in from_call
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/_pytest/runner.py", line 244 in call_and_report
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/_pytest/runner.py", line 137 in runtestprotocol
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/_pytest/runner.py", line 118 in pytest_runtest_protocol
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/pluggy/_execution.py", line 147 in _multicall
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/pluggy/_manager.py", line 183 in _hookexec
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/pluggy/_caller.py", line 197 in __call__
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/_pytest/main.py", line 396 in pytest_runtestloop
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/pluggy/_execution.py", line 147 in _multicall
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/pluggy/_manager.py", line 183 in _hookexec
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/pluggy/_caller.py", line 197 in __call__
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/_pytest/main.py", line 372 in _main
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/_pytest/main.py", line 318 in wrap_session
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/_pytest/main.py", line 365 in pytest_cmdline_main
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/pluggy/_execution.py", line 147 in _multicall
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/pluggy/_manager.py", line 183 in _hookexec
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/pluggy/_caller.py", line 197 in __call__
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/_pytest/config/__init__.py", line 199 in main
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/_pytest/config/__init__.py", line 223 in console_main
+  File "/tmp/beamo-wipe-audit-python/lib/python3.12/site-packages/pytest/__main__.py", line 9 in <module>
+  File "<frozen runpy>", line 88 in _run_code
+  File "<frozen runpy>", line 198 in _run_module_as_main
+
+Extension modules: gi._gi, PIL._imaging (total: 2)
+Aborted

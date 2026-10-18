@@ -1,0 +1,97 @@
+[ci-hosted] orca on a dedicated Xvfb 1600x1000 @ 72 DPI
+[ci-hosted] pytest under a separate Xvfb 1600x1000 @ 72 DPI
+dbus-daemon[143818]: [session uid=0 pid=143818] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=143846 comm="python3 -m pytest -p no:cacheprovider tests/test_a" label="unconfined")
+dbus-daemon[143818]: [session uid=0 pid=143818] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[143819]: [session uid=0 pid=143819] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=143847 comm="python3 -m pytest --deselect=tests/test_accessible" label="unconfined")
+dbus-daemon[143856]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=143846 comm="python3 -m pytest -p no:cacheprovider tests/test_a" label="unconfined")
+dbus-daemon[143819]: [session uid=0 pid=143819] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[143856]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+........................................................................ [  0%]
+....dbus-daemon[143869]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=143847 comm="python3 -m pytest --deselect=tests/test_accessible" label="unconfined")
+dbus-daemon[143869]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+.................................................................... [  1%]
+........................................................................ [  2%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+....                                                                        [100%]
+1 passed in 59.06s
+..................................................................... [  4%]
+.............................................F.......................... [  5%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+.................................................F...................... [  8%]
+...F.................................................................... [  9%]
+........................................................................ [ 10%]
+.......................................FFFFFF........................... [ 11%]
+........................................................................ [ 11%]
+........................................................................ [ 12%]
+........................................................................ [ 13%]
+........................................................................ [ 13%]
+.............................................................Fatal Python error: Aborted
+
+Current thread 0x00007093a27fe6c0 (most recent call first):
+  Garbage-collecting
+  File "/usr/lib/python3.12/threading.py", line 299 in __enter__
+  File "/usr/lib/python3.12/threading.py", line 652 in wait
+  File "/root/dev/Beamo Wipe/tests/test_audio_launch_ownership_pass14.py", line 44 in active
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/audio_jobs.py", line 142 in _run
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/audio_jobs.py", line 91 in accepted_worker
+  File "/usr/lib/python3.12/threading.py", line 1010 in run
+  File "/usr/lib/python3.12/threading.py", line 1073 in _bootstrap_inner
+  File "/usr/lib/python3.12/threading.py", line 1030 in _bootstrap
+
+Thread 0x00007093bea8f080 (most recent call first):
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/ui/console_wizard.py", line 1024 in _plain_loop_body
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/ui/console_wizard.py", line 679 in _plain_loop
+  File "/root/dev/Beamo Wipe/tests/test_console_pick.py", line 110 in test_plain_console_empty_method_keeps_extra
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/python.py", line 166 in pytest_pyfunc_call
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_execution.py", line 147 in _multicall
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_manager.py", line 183 in _hookexec
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_caller.py", line 197 in __call__
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/python.py", line 1720 in runtest
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/runner.py", line 179 in pytest_runtest_call
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_execution.py", line 147 in _multicall
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_manager.py", line 183 in _hookexec
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_caller.py", line 197 in __call__
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/runner.py", line 245 in <lambda>
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/runner.py", line 353 in from_call
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/runner.py", line 244 in call_and_report
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/runner.py", line 137 in runtestprotocol
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/runner.py", line 118 in pytest_runtest_protocol
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_execution.py", line 147 in _multicall
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_manager.py", line 183 in _hookexec
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_caller.py", line 197 in __call__
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/main.py", line 396 in pytest_runtestloop
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_execution.py", line 147 in _multicall
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_manager.py", line 183 in _hookexec
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_caller.py", line 197 in __call__
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/main.py", line 372 in _main
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/main.py", line 318 in wrap_session
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/main.py", line 365 in pytest_cmdline_main
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_execution.py", line 147 in _multicall
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_manager.py", line 183 in _hookexec
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pluggy/_caller.py", line 197 in __call__
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/config/__init__.py", line 199 in main
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/_pytest/config/__init__.py", line 223 in console_main
+  File "/tmp/beamo-pass19-python/lib/python3.12/site-packages/pytest/__main__.py", line 9 in <module>
+  File "<frozen runpy>", line 88 in _run_code
+  File "<frozen runpy>", line 198 in _run_module_as_main
+
+Extension modules: gi._gi, PIL._imaging, _cffi_backend, greenlet._greenlet (total: 4)
+Aborted
+Traceback (most recent call last):
+  File "/root/dev/Beamo Wipe/scripts/check-gtk-test-results.py", line 29, in <module>
+    check(Path(sys.argv[1]))
+  File "/root/dev/Beamo Wipe/scripts/check-gtk-test-results.py", line 16, in check
+    cases = list(ET.parse(report).getroot().iter("testcase"))
+                 ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/xml/etree/ElementTree.py", line 1204, in parse
+    tree.parse(source, parser)
+  File "/usr/lib/python3.12/xml/etree/ElementTree.py", line 558, in parse
+    source = open(source, "rb")
+             ^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pass19-primary/final.xml'

@@ -1,0 +1,6 @@
+{
+  "initial_result": "AssertionError: new module unit case has no subprocess receipt",
+  "reason": "New module mixes twelve in-process unit cases and one native child case; old classifier treated all selected module cases as child tests.",
+  "correction": "Select the one explicitly named native child in this module. Preserve all65 child predicates and exact expected counts. Full-gate audit classifier independently requires all13 new cases and3937 total audit cases to pass.",
+  "product_or_test_changes": false
+}

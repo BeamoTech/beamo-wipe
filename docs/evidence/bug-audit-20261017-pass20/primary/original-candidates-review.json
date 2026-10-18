@@ -1,0 +1,11 @@
+{
+  "cases": 42,
+  "assertion_failures": 22,
+  "passing_controls": 20,
+  "by_module": {
+    "docs.evidence.bug-audit-20261017-pass20.discovery.mounted_holder_type_candidate": 16,
+    "docs.evidence.bug-audit-20261017-pass20.runner-boot.audio-launch-interruption-probe": 4,
+    "docs.evidence.bug-audit-20261017-pass19.ui-boot.tk-native-asset-lifetime-probe": 2
+  },
+  "source_unchanged": true
+}

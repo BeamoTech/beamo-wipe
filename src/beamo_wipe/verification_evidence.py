@@ -431,7 +431,10 @@ def build_gate_receipt(
         raise RuntimeError(f"gate {gate} is missing its build identity")
     counts = _check_measured(measured, what=f"gate {gate}")
     skip_list = _check_skips(list(skips), what=f"gate {gate}")
-    if counts["skipped"] + counts["xfailed"] != len(skip_list):
+    if (
+        counts["skipped"] != sum(entry["kind"] == "skip" for entry in skip_list)
+        or counts["xfailed"] != sum(entry["kind"] == "xfail" for entry in skip_list)
+    ):
         raise RuntimeError(f"gate {gate} skip list does not match its counts")
     if status == "skip":
         if not isinstance(reason, str) or not reason.strip():

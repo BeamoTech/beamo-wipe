@@ -1,0 +1,86 @@
+{
+  "src/beamo_wipe/__init__.py": {
+    "before_sha256": "b686d2f0d7d67a152c60427c69a81e9d06f509df5e48a846ed1652da8c1c4868",
+    "after_sha256": "faed3c3986f42f67b7802a93015e9c3d2ddb09b6545bb965d16efa03ca96feea"
+  },
+  "pyproject.toml": {
+    "before_sha256": "1313c0d9ac5153621a08f5f10f4a22e66a2bd61c3fefe9b66f187f1e10e49363",
+    "after_sha256": "a6bd88a0064cf3a05e3d090383864c97bdaefbf1b0632097b738a53dd1f3c95a"
+  },
+  "scripts/build-iso.sh": {
+    "before_sha256": "e5fc440e065fbb33ea1d6a580584aa0537390ba92e60e3cd331e9622cfb48a00",
+    "after_sha256": "f5aed8103e2970e2e61e4c3ee3e163ef439b007f230ab04bb971087e9b8edcd2"
+  },
+  "scripts/generate-release-manifest.sh": {
+    "before_sha256": "4a0f29e3089ea5ea960b5a7def26ce8ce4c77649bfa886417c82b71e36f15e62",
+    "after_sha256": "6495d413451cac01ea53e754a12d8437b580b71f3dd75fb8e18bf9b1b37052bd"
+  },
+  "scripts/ci-hosted.sh": {
+    "before_sha256": "3cdd4f49dfd12f9342a16ac2115c4870076097cd2134206f9657ccada11ebc25",
+    "after_sha256": "b40cf2e20722db295f363254623fa8a47daf6cc39740dc0aad132ef8a5b1d1ac"
+  },
+  "scripts/qemu-verify.sh": {
+    "before_sha256": "429390a41976fa83c69404ca64cc3ee9a7635f84628aeaf52155c64a1d7d097f",
+    "after_sha256": "11192addbe436e2f254ce2788aa72e610b622d30547f21418c7d507efb727395"
+  },
+  "scripts/publish_release_gcs.py": {
+    "before_sha256": "70e77238f38bdc9046369ae625e58186d9db8175bb721c94e5e892ee1638c06c",
+    "after_sha256": "d7f2b474ffe08c2f2acc809e1b8f15cd42636792c69907a335a584cdd199d3d4"
+  },
+  "packaging/live/inside-docker.sh": {
+    "before_sha256": "423de8da010530ae4e44b0d228faab902a4548d8fef45fb71866697337ffa6d5",
+    "after_sha256": "0708bbdc19c0e01093c62aff700f5e7f0a2ec64c34878c6a60027d5daa25a825"
+  },
+  ".github/workflows/release.yml": {
+    "before_sha256": "3506861987054841f929c49cd2a0c5212ca9307182914ea0d6649d7075e3eb2d",
+    "after_sha256": "916f44551d91cdd629f2c0b48d124e4bb53e150a74614360c4f5c7637956158a"
+  },
+  "helper/index.html": {
+    "before_sha256": "45015184d4fec927ed1e73d6005e4e6ab621d5c92f788a0f5337940e1ed726ce",
+    "after_sha256": "02478cb15c5566040a1cbcd3c62b4983b1ebd95fff40d72177d21a8e4f6d6257"
+  },
+  "helper/fr.html": {
+    "before_sha256": "d6c4dd9a6e705e0981a3e79498747ee589f0e342cc92940a7a9e2c8ecd2eb678",
+    "after_sha256": "e0aa48eae7264564c1f9f6a94c0e670459140a3272a3bbda239468a938db7266"
+  },
+  "helper/de.html": {
+    "before_sha256": "e366bdc07bba620f2217226a0562a012af2acf3ed4ba4eae4f75b1c12d96d364",
+    "after_sha256": "a107cbc33d6a100e3f47f9b0f4132ac30a5d302ee34aefb637aa2978462aaf73"
+  },
+  "README.md": {
+    "before_sha256": "5f90c4431f1dee815f3748294073d6fe0d38744f0260d8fe4f2c843202940620",
+    "after_sha256": "625c783f666242e5de66affec8b3116230f0c6d65ab4754ec807de431212c0fc"
+  },
+  "docs/vm-test.md": {
+    "before_sha256": "ac50702c38c423f67b7aecd0e2199e055eb002ef4355a36c3fe2be261e24063e",
+    "after_sha256": "6f484fd921518deed09427a01d68eee4baeb4ed7615ae89028f12c0ade040f7b"
+  },
+  "docs/qemu-verify.md": {
+    "before_sha256": "db48214b3a81dc5a40c84f4623d3138360d861aa1ef950ace94856a1b1f452ba",
+    "after_sha256": "a7ba1ee648d7bae9da51ef860d9c19fbd69434bcf762a9bac178408be7dccc0a"
+  },
+  "docs/runbook.md": {
+    "before_sha256": "aa8e600ce9786b1a0ba7c63a6e443404013c80f388c3028440f1af928cf4df8a",
+    "after_sha256": "ef93b33479199d2d08d4e18a4311f21ecbef9b7719d17d8e731cbe2645b23ecb"
+  },
+  "docs/compatibility-matrix.md": {
+    "before_sha256": "9d885a2216fff3004683119d8183d5363df320cc9099a7a3f521b8cdb2894835",
+    "after_sha256": "78bc4af0f0e3966fbc35415fcf70416c4307e75fdb70e727479fc8a2e3780f29"
+  },
+  "tests/test_runbook.py": {
+    "before_sha256": "914d06413601b0662203526028fb1fd42a7da79ef36204e08b283ef359ae2966",
+    "after_sha256": "2103a4efd5dbc44c8c17dadd8d258f502e69608ad160b6161fba1211bb036ccb"
+  },
+  "tests/test_compatibility_matrix.py": {
+    "before_sha256": "9c8979b48ec9091a89abdbf6a0fbbbe4d24346a911f3a7852b46d39e12818021",
+    "after_sha256": "ddadd0238f1251f894bf6fcb7082e44fde4fb664c983b2b1501b40a447ff2930"
+  },
+  "tests/test_release_manifest_tag_pass10.py": {
+    "before_sha256": "6b469633d4aa9dc1480dfec816ac9b3e5e3a3f67b34bcf71b5f9388c19421293",
+    "after_sha256": "234fa3aab194b965a145ecf1874a79aa28871f838f081adaec691c55d4a6c175"
+  },
+  "cloudbuild.yaml": {
+    "before_sha256": "4199ac29984b83035a3b80ddb19d2187cb9ebad9586581310211a84c16e3ef32",
+    "after_sha256": "6904c926a1fab3315ac5f84d373b7d09326dde74bbe5467c3e4ca6ed1e7bd6b8"
+  }
+}

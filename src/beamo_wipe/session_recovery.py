@@ -68,7 +68,7 @@ def _disk(raw):
             if type(value) is not bool:
                 raise ValueError("Invalid disk flag")
         elif key == "size_bytes":
-            if type(value) is not int or not 0 < value < 2**64:
+            if type(value) is not int or not 0 <= value < 2**64:
                 raise ValueError("Invalid disk size")
         elif key == "mountpoints":
             if value != []:
@@ -117,6 +117,22 @@ class SessionStore:
         self.boot = boot
         self.build = build
 
+    def _verify_directory(self):
+        """All lock names must still belong to the public recovery directory."""
+        try:
+            opened = os.fstat(self.fd)
+            named = os.stat(self.directory, follow_symlinks=False)
+            if (
+                (opened.st_dev, opened.st_ino) != (named.st_dev, named.st_ino)
+                or not stat.S_ISDIR(named.st_mode)
+                or named.st_uid != os.getuid()
+                or stat.S_IMODE(named.st_mode) != 0o700
+            ):
+                raise SafetyError(RECOVERY_UNSAFE_RECOVERY_DIRECTORY)
+        except (OSError, SafetyError) as exc:
+            self.invalid = True
+            raise SafetyError(RECOVERY_UNSAFE_RECOVERY_DIRECTORY) from exc
+
     def _file(self, name, flags=os.O_RDONLY):
         fd = os.open(name, flags | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600, dir_fd=self.fd)
         try:
@@ -128,6 +144,7 @@ class SessionStore:
                 or st.st_nlink != 1
             ):
                 raise SafetyError(RECOVERY_UNSAFE_RECOVERY_FILE)
+            self._verify_directory()
         except BaseException:
             os.close(fd)
             raise
@@ -172,9 +189,28 @@ class SessionStore:
                 or sum(map(len, chunks)) != opened.st_size
             ):
                 raise SafetyError(RECOVERY_UNSAFE_RECOVERY_FILE)
+            self._verify_directory()
             return b"".join(chunks)
         finally:
             os.close(fd)
+
+    def _verify_named_lock(self, name, fd):
+        """A flock on a replaced inode does not coordinate other callers."""
+        self._verify_directory()
+        try:
+            opened = os.fstat(fd)
+            named = os.stat(name, dir_fd=self.fd, follow_symlinks=False)
+            if (
+                (opened.st_dev, opened.st_ino) != (named.st_dev, named.st_ino)
+                or not stat.S_ISREG(opened.st_mode)
+                or opened.st_uid != os.getuid()
+                or stat.S_IMODE(opened.st_mode) != 0o600
+                or opened.st_nlink != 1
+            ):
+                raise SafetyError(RECOVERY_UNSAFE_RECOVERY_FILE)
+        except (OSError, SafetyError) as exc:
+            self.invalid = True
+            raise SafetyError(RECOVERY_UNSAFE_RECOVERY_FILE) from exc
 
     def open(self):
         # A second open on this object would replace fd/owner before flock()
@@ -211,6 +247,7 @@ class SessionStore:
                 raise SafetyError(RECOVERY_DIRECTORY_NOT_VOLATILE)
         self.owner = self._file("interface.lock", os.O_RDWR | os.O_CREAT)
         fcntl.flock(self.owner, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        self._verify_named_lock("interface.lock", self.owner)
         if self.boot is None:
             self.boot = Path("/proc/sys/kernel/random/boot_id").read_text().strip()
         if self.build is None:
@@ -322,6 +359,14 @@ class SessionStore:
             or [d.path for d in disks if d.is_boot] != [context["boot"]]
         ):
             raise ValueError("Contradictory disk identities")
+        # Empty readers belong in the baseline, but neither the authorized
+        # target nor the identified boot medium may have zero capacity.
+        if any(
+            disk.size_bytes <= 0
+            for disk in disks
+            if disk.path in (context["target"], context["boot"])
+        ):
+            raise ValueError("Invalid target or boot disk size")
         MethodId(context["method"])
         if Path(context["logfile"]).parent != self.directory or not re.fullmatch(
             r"[A-Za-z0-9_.-]+", Path(context["logfile"]).name
@@ -344,6 +389,7 @@ class SessionStore:
     def save(self, changes):
         if self.invalid or self.owner < 0:
             raise SafetyError(RECOVERY_RECOVERY_IS_UNAVAILABLE)
+        self._verify_named_lock("interface.lock", self.owner)
         record = {
             "schema": 1,
             "boot": self.boot,
@@ -369,6 +415,7 @@ class SessionStore:
                     raise OSError("Incomplete recovery write")
                 data = data[n:]
             os.fsync(fd)
+            self._verify_named_lock("interface.lock", self.owner)
             os.replace(name, NAME, src_dir_fd=self.fd, dst_dir_fd=self.fd)
             replaced = True
             # The new journal is now visible. A failed directory sync makes
@@ -376,6 +423,7 @@ class SessionStore:
             # further writes until recovery reopens the on-disk record.
             self.record = record
             os.fsync(self.fd)
+            self._verify_named_lock("interface.lock", self.owner)
         except BaseException:
             if replaced:
                 self.invalid = True
@@ -501,11 +549,14 @@ class SessionStore:
         )
 
     def is_quiescent(self):
+        self._verify_named_lock("interface.lock", self.owner)
         if self.quiescent >= 0:
+            self._verify_named_lock("wipe.lock", self.quiescent)
             return True
         fd = self._file("wipe.lock", os.O_RDWR | os.O_CREAT)
         try:
             fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            self._verify_named_lock("wipe.lock", fd)
         except BlockingIOError:
             os.close(fd)
             return False

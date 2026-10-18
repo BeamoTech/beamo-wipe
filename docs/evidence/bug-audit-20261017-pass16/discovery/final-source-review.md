@@ -1,0 +1,20 @@
+# Pass16 discovery final source review
+
+Reviewed 2026-10-17 against the exact `starting-source.tar.gz` snapshot, rather than the aggregate Git diff containing prior passes. **Approve the assigned final source and test bytes, conditional on primary's focused, adjacent and final local gates. No unresolved source objection.** This review ran no runtime test and makes no gate-pass claim.
+
+- Starting discover.py SHA256: `b08767b2e921779f53e62de67ac4c3fbaa281ea6ab90f9f6c682e3be96f9991e`.
+- Final discover.py SHA256: `0e77fcf0fa626e945c40fae8c8e5f544b735490f4acf8c718260abbabb20197f`.
+- Final 351-case regression module SHA256: `ef39198161cbd5426e8ea81945d57c96463c8ac094195fa3fb00d57fac86c688`.
+- Exact assigned incremental patch: `reviewed-pass16-discovery.diff`; machine receipt: `final-source-review.json`.
+
+The actual diff implements only the approved discovery changes. Both cmdline hit lookup and competitor scan use a flattened local disk/rom collection. Authoritative mount returns remain earlier, positive-size `_could_be_live_medium` remains the competing predicate, and the picker helper still returns disks only. This closes optical-hit and optical-competitor omissions without weakening unrelated resolution, physical ancestry or live-source validation. Zero-size competitor and normal mounted optical controls retain their contracts.
+
+The parser adds a per-call set when a canonical physical path repeats after existing core signature comparison. Existing contradictory core facts still raise first. After ordinary wipeability filtering, exactly one surviving selectable observation at a repeated physical path raises ValueError. This enforces unique target evidence even when the discarded row differs in model/vendor/layout or is malformed without another changed valid field. The public wrapper converts the exception into a closed result; low-level parser exception behavior remains normal.
+
+The check deliberately does not collapse complete identical duplicate target rows: two remain and the existing final identity guard refuses them. Boot/read-only/hidden/optical observations are not selectable, so duplicate boot/RO rows and rom's special one-row presentation fallback preserve unrelated legitimate targets. Unique malformed sibling paths remain skipped. Safety-only context, mounted full validation, invalid-versus-missing identifier flags, alias closure and clean-retry local state are unchanged.
+
+Read every final test assertion and fixture. The final module differs from the prepared/reviewed one only in a WWN construction line giving five named fake devices distinct realistic 16-hex IDs. All cases/assertions remain. It covers 84 independent valid-field contradictions,36unusable same-core copies,18complete duplicate controls,3clean retries,18unrelated malformed controls and192disk/rom fallback cases. Direct parser and direct resolver contracts are contrasted with injected public discovery and the actual production metadata validator under a stubbed acquisition. `/dev`, `/sys` and `/proc` reads/lstat and process/inventory acquisitions are guarded. Root independently established the original351test result159intended AssertionError failures/192controls with no errors/skips; this reviewer does not replace that evidence with source confidence.
+
+The 751-input snapshot currently differs in exactly four starting files: this assigned discovery source plus parent-owned Tk/accessible source and the pass13 wheel fixture. The other747starting inputs match. The additional three changed paths are recorded in `final-snapshot-delta.json` and are outside this discovery approval; primary owns their authorization/review/gates. No source deletion was found. No method/argv, token, owner, countdown, engine/version, claims, build/publication, physical-device or host-control change occurs in this assigned delta.
+
+No reviewer product/test writes, staging, commit, push, release, hosted job or native-device/process acquisition. Final acceptance still requires the primary gates and previously recorded historical/platform qualification blockers.

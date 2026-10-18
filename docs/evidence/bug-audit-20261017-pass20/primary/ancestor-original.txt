@@ -1,0 +1,67 @@
+F....F....F....F............................                             [100%]
+=================================== FAILURES ===================================
+__ test_opened_mount_preserves_ancestor_member_uncertainty[injected-flat-dm] ___
+
+fake_machine = <function fake_machine.<locals>.scan at 0x788dc9569a80>
+kind = 'dm', placement = 'flat', route = 'injected'
+
+    @pytest.mark.parametrize("kind", ("dm", "mpath", "md", "raid1", "lvm"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    def test_opened_mount_preserves_ancestor_member_uncertainty(fake_machine, kind, placement, route):  # noqa: F811
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/holder_ancestor_mount_candidate.py:27: AssertionError
+_ test_opened_mount_preserves_ancestor_member_uncertainty[injected-nested-dm] __
+
+fake_machine = <function fake_machine.<locals>.scan at 0x788dc93d0860>
+kind = 'dm', placement = 'nested', route = 'injected'
+
+    @pytest.mark.parametrize("kind", ("dm", "mpath", "md", "raid1", "lvm"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    def test_opened_mount_preserves_ancestor_member_uncertainty(fake_machine, kind, placement, route):  # noqa: F811
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/holder_ancestor_mount_candidate.py:27: AssertionError
+_ test_opened_mount_preserves_ancestor_member_uncertainty[production-metadata-stub-flat-dm] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x788dc93d1260>
+kind = 'dm', placement = 'flat', route = 'production-metadata-stub'
+
+    @pytest.mark.parametrize("kind", ("dm", "mpath", "md", "raid1", "lvm"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    def test_opened_mount_preserves_ancestor_member_uncertainty(fake_machine, kind, placement, route):  # noqa: F811
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/holder_ancestor_mount_candidate.py:27: AssertionError
+_ test_opened_mount_preserves_ancestor_member_uncertainty[production-metadata-stub-nested-dm] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x788dc93d1ee0>
+kind = 'dm', placement = 'nested', route = 'production-metadata-stub'
+
+    @pytest.mark.parametrize("kind", ("dm", "mpath", "md", "raid1", "lvm"))
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    @pytest.mark.parametrize("route", ("injected", "production-metadata-stub"))
+    def test_opened_mount_preserves_ancestor_member_uncertainty(fake_machine, kind, placement, route):  # noqa: F811
+        result = fake_machine(_payload(kind, placement), route)
+>       assert result.error
+E       AssertionError: assert None
+E        +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-sdz', size_bytes=128000000000..., wwn='50014ee200000003', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass20/discovery/holder_ancestor_mount_candidate.py:27: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/holder_ancestor_mount_candidate.py::test_opened_mount_preserves_ancestor_member_uncertainty[injected-flat-dm]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/holder_ancestor_mount_candidate.py::test_opened_mount_preserves_ancestor_member_uncertainty[injected-nested-dm]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/holder_ancestor_mount_candidate.py::test_opened_mount_preserves_ancestor_member_uncertainty[production-metadata-stub-flat-dm]
+FAILED docs/evidence/bug-audit-20261017-pass20/discovery/holder_ancestor_mount_candidate.py::test_opened_mount_preserves_ancestor_member_uncertainty[production-metadata-stub-nested-dm]

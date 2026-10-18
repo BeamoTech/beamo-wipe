@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.197" timestamp="2026-10-17T03:22:52.558489+00:00" hostname="srv1606478"><testcase classname="tests.test_ci_hosted" name="test_cloud_upload_excludes_local_captures_and_env_files" time="0.060"><failure message="AssertionError: Blocked unmocked external or privileged fixture fallback&#10;  &#10;assert 97 == 0&#10; +  where 97 = CompletedProcess(args=['/tmp/beamo-pass16-fallback-guard/gcloud', 'meta', 'list-files-for-upload', '/tmp/pytest-of-roo..._excludes_loc0/upload'], returncode=97, stdout='', stderr='Blocked unmocked external or privileged fixture fallback\n').returncode">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-11/test_cloud_upload_excludes_loc0')
+
+    def test_cloud_upload_excludes_local_captures_and_env_files(tmp_path):
+        gcloud = shutil.which("gcloud")
+        if gcloud is None:
+            pytest.skip("gcloud CLI is unavailable")
+        upload = tmp_path / "upload"
+        upload.mkdir()
+        for name in (".gcloudignore", ".gitignore"):
+            (upload / name).write_bytes((ROOT / name).read_bytes())
+        paths = (
+            ".git/HEAD",
+            ".env",
+            ".env.local",
+            ".playwright-mcp/private-page.png",
+            ".mypy_cache/cache.db",
+            ".ruff_cache/cache.db",
+            "packaging/live/config/includes.binary/START-HERE.html",
+            "packaging/live/config/hooks/normal/0500-build-nwipe.hook.chroot",
+        )
+        for name in paths:
+            path = upload / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("fake fixture\n", encoding="utf-8")
+        env = dict(os.environ)
+        env["CLOUDSDK_CONFIG"] = str(tmp_path / "gcloud-config")
+        env["CLOUDSDK_GCLOUDIGNORE_ENABLED"] = "true"
+        proc = subprocess.run(
+            [gcloud, "meta", "list-files-for-upload", str(upload)],
+            check=False,
+            capture_output=True,
+            text=True,
+            env=env,
+            timeout=30,
+        )
+&gt;       assert proc.returncode == 0, proc.stderr
+E       AssertionError: Blocked unmocked external or privileged fixture fallback
+E         
+E       assert 97 == 0
+E        +  where 97 = CompletedProcess(args=['/tmp/beamo-pass16-fallback-guard/gcloud', 'meta', 'list-files-for-upload', '/tmp/pytest-of-roo..._excludes_loc0/upload'], returncode=97, stdout='', stderr='Blocked unmocked external or privileged fixture fallback\n').returncode
+
+tests/test_ci_hosted.py:551: AssertionError</failure></testcase></testsuite></testsuites>

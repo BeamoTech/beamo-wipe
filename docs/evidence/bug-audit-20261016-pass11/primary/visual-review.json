@@ -1,0 +1,50 @@
+{
+  "artifacts": [
+    {
+      "image": "ui/wizard-fullscreen-1600x1000-72dpi.png",
+      "sha256": "a82f352b39f893876cb5c82aec3931ed9b2f3ab1052205dd316fb4c38c826d4e",
+      "dimensions": [
+        1600,
+        1000
+      ],
+      "native_geometry_focus_and_72dpi": "passed",
+      "primary_opened_and_visually_inspected": true
+    },
+    {
+      "image": "ui/startup-fullscreen-1600x1000-72dpi.png",
+      "sha256": "4c63cbfc8c20d29647eb634304ed06c1539849f597204cd3210eda4c81555592",
+      "dimensions": [
+        1600,
+        1000
+      ],
+      "native_geometry_focus_and_72dpi": "passed",
+      "primary_opened_and_visually_inspected": true
+    },
+    {
+      "image": "ui/wizard-fullscreen-800x600-72dpi.png",
+      "sha256": "25d325dd2ed219823c244de8300a46f259b0f34711edac2de279de0f3a2e8d4f",
+      "dimensions": [
+        800,
+        600
+      ],
+      "native_geometry_focus_and_72dpi": "passed",
+      "primary_opened_and_visually_inspected": true
+    },
+    {
+      "image": "ui/startup-fullscreen-800x600-72dpi.png",
+      "sha256": "727d629a8cacf0421e61e3b0f7c7f07a4f2e5d5fd132013293e1cc0901b8771a",
+      "dimensions": [
+        800,
+        600
+      ],
+      "native_geometry_focus_and_72dpi": "passed",
+      "primary_opened_and_visually_inspected": true
+    }
+  ],
+  "observations": [
+    "Both fullscreen surfaces fill the entire private Xvfb root at both resolutions.",
+    "Owner navigation/utilities fit the screen; the800x600 body uses its intended scroll viewport.",
+    "Startup stage labels and focused status are readable and inside both viewports."
+  ],
+  "scope": "Fake-only private Xvfb artifacts, no physical display/firmware qualification."
+}

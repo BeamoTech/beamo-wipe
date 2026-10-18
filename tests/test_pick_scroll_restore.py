@@ -24,6 +24,9 @@ class Canvas(tk.Misc):
         self.content = 1000
         self.top = 0.0
 
+    def winfo_children(self):
+        return []  # Tcl-only leaf fixture; it has no Tk widget hierarchy.
+
     def bbox(self, _tag):
         return (0, 0, 500, self.content)
 

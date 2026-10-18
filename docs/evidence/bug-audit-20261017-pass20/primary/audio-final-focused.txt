@@ -1,0 +1,7 @@
+dbus-daemon[172279]: [session uid=0 pid=172279] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=172293 comm="/tmp/beamo-pass20-python/bin/python3 -m pytest -q" label="unconfined")
+dbus-daemon[172279]: [session uid=0 pid=172279] Successfully activated service 'org.a11y.Bus'
+.....................................................dbus-daemon[172302]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=172293 comm="/tmp/beamo-pass20-python/bin/python3 -m pytest -q" label="unconfined")
+dbus-daemon[172302]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+................... [ 50%]
+......................................................................   [100%]

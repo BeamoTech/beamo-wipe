@@ -1,0 +1,146 @@
+[
+  {
+    "fstype": "ntfs",
+    "field": "partlabel",
+    "name": "Benefits",
+    "contents": "windows",
+    "selectable": [
+      "/dev/sda"
+    ]
+  },
+  {
+    "fstype": "ntfs",
+    "field": "partlabel",
+    "name": "Definitions",
+    "contents": "windows",
+    "selectable": [
+      "/dev/sda"
+    ]
+  },
+  {
+    "fstype": "ntfs",
+    "field": "partlabel",
+    "name": "EFI system partition",
+    "contents": "windows",
+    "selectable": [
+      "/dev/sda"
+    ]
+  },
+  {
+    "fstype": "ntfs",
+    "field": "partlabel",
+    "name": "UEFI System",
+    "contents": "windows",
+    "selectable": [
+      "/dev/sda"
+    ]
+  },
+  {
+    "fstype": "ntfs",
+    "field": "parttypename",
+    "name": "Benefits",
+    "contents": "windows",
+    "selectable": [
+      "/dev/sda"
+    ]
+  },
+  {
+    "fstype": "ntfs",
+    "field": "parttypename",
+    "name": "Definitions",
+    "contents": "windows",
+    "selectable": [
+      "/dev/sda"
+    ]
+  },
+  {
+    "fstype": "ntfs",
+    "field": "parttypename",
+    "name": "EFI system partition",
+    "contents": "windows",
+    "selectable": [
+      "/dev/sda"
+    ]
+  },
+  {
+    "fstype": "ntfs",
+    "field": "parttypename",
+    "name": "UEFI System",
+    "contents": "windows",
+    "selectable": [
+      "/dev/sda"
+    ]
+  },
+  {
+    "fstype": "ext4",
+    "field": "partlabel",
+    "name": "Benefits",
+    "contents": "system",
+    "selectable": [
+      "/dev/sda"
+    ]
+  },
+  {
+    "fstype": "ext4",
+    "field": "partlabel",
+    "name": "Definitions",
+    "contents": "system",
+    "selectable": [
+      "/dev/sda"
+    ]
+  },
+  {
+    "fstype": "ext4",
+    "field": "partlabel",
+    "name": "EFI system partition",
+    "contents": "system",
+    "selectable": [
+      "/dev/sda"
+    ]
+  },
+  {
+    "fstype": "ext4",
+    "field": "partlabel",
+    "name": "UEFI System",
+    "contents": "system",
+    "selectable": [
+      "/dev/sda"
+    ]
+  },
+  {
+    "fstype": "ext4",
+    "field": "parttypename",
+    "name": "Benefits",
+    "contents": "system",
+    "selectable": [
+      "/dev/sda"
+    ]
+  },
+  {
+    "fstype": "ext4",
+    "field": "parttypename",
+    "name": "Definitions",
+    "contents": "system",
+    "selectable": [
+      "/dev/sda"
+    ]
+  },
+  {
+    "fstype": "ext4",
+    "field": "parttypename",
+    "name": "EFI system partition",
+    "contents": "system",
+    "selectable": [
+      "/dev/sda"
+    ]
+  },
+  {
+    "fstype": "ext4",
+    "field": "parttypename",
+    "name": "UEFI System",
+    "contents": "system",
+    "selectable": [
+      "/dev/sda"
+    ]
+  }
+]

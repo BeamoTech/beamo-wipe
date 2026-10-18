@@ -1,0 +1,21 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass17-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py",
+    "--junitxml=/tmp/pass17-primary/bridge-duplicate-corrected-proof.xml"
+  ],
+  "exit_code": 1,
+  "started_utc": "2026-10-17T06:00:44.211202+00:00",
+  "ended_utc": "2026-10-17T06:00:44.876366+00:00"
+}

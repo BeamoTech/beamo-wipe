@@ -1,0 +1,27 @@
+{
+  "files": {
+    "source-freeze.json": "987a75cfa238e023abd95676d0a1c4e222fab93384ee238bb4e4aaef4af1a431",
+    "source-review.json": "95d40f6589843943d0b71b85a238194ddb84d29fde4b1479200ef152c1e3367f",
+    "local-gate-status.json": "05bd7f3f770c530b9d9fe8b684e0279a719d8dd728d2d95f5c77fe2aeeedd995",
+    "guard-manifest.json": "32789efabedfcdccb9d0f92c8dc6d6a4791aa9dbd214066d87e7ed853efbcf63",
+    "permitted-offline-gcloud.jsonl": "2e0be78a95e9918a65cddba72afe90967372beec9f2ae14ed245a426097607c3",
+    "final.xml": "3d7356a376840fff4faa06ba45a5c94ab94d719978fd3ecdd13fe52134fbacaf",
+    "final.xml.orca.xml": "920e0ac6cc8d7d5284c542d1b7d211a000d3e58cd901abbf139bd8eef8d3dd90",
+    "desktop-windows.test.exe": "d05ac4db6463aa6d7f51188f3bcfcfb4891aeab549ab481843538114904a76d9",
+    "lint.txt": "8f516a7b4cdf99e4a7010798da05d2e8ef77892c31a6a56ac32cd2ac243232e4",
+    "preview.txt": "70c9bf2df0820c895a0d898f7cf233ce80688317d9067cd07b5747d6fe241cb9",
+    "negative.txt": "6484915961a11619efb00b1f492cf22d1e2dae8103bbfe7db8bee08c85621e0d",
+    "go-version.txt": "7e35a947feee25f89c2649aa041942db786be35c3d6c484ab2ba2da849e3dc00",
+    "go-race.txt": "0e23c151e3cf971f65a9b79d5f8555e0e450d6ce56636e25facc9482e57bc525",
+    "go-vet.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "go-windows-crossbuild.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "go-fuzz.txt": "39bd24930b5070fc7369170441fbdf2537eabefba1172e79ca3dd8f584cff57b",
+    "final.txt": "2e66188c7f00a1a4806d2fc844e364c1a465afc289273508152e34e9a878619a"
+  },
+  "first_failure": "test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog",
+  "measured_seconds": 0.074932778999937,
+  "threshold_seconds": 0.06,
+  "main_passed": 9543,
+  "orca_passed": 1,
+  "skipped": 14
+}

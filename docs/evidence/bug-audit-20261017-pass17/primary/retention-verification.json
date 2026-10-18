@@ -1,0 +1,16 @@
+{
+  "compacted_raw_files": 38,
+  "raw_original_bytes": 34707643,
+  "raw_archive_bytes": 10451844,
+  "raw_archive_readback": true,
+  "source_inputs_unchanged": 762,
+  "index_empty": true,
+  "staged_files": 0,
+  "working_staging_retained": "/tmp/pass17-primary",
+  "runner_fixture_files": 621,
+  "report_artifact_files": 70,
+  "screenshots": 5,
+  "source_committed": false,
+  "pushed": false,
+  "deployed": false
+}

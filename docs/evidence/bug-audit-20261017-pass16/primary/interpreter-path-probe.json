@@ -1,0 +1,23 @@
+{
+  "space": {
+    "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "executable": "/root/dev/Beamo Wipe/.venv-linux/bin/python3",
+    "prefix": "/root/dev/Beamo Wipe/.venv-linux",
+    "base_prefix": "/usr",
+    "pytest": "9.0.3",
+    "pytest_file": "/root/dev/Beamo Wipe/.venv-linux/lib/python3.12/site-packages/pytest/__init__.py",
+    "error_type": "FileNotFoundError",
+    "errno": 2
+  },
+  "plain": {
+    "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "executable": "/tmp/beamo-pass16-python/bin/python3",
+    "prefix": "/tmp/beamo-pass16-python",
+    "base_prefix": "/usr",
+    "pytest": "9.0.3",
+    "pytest_file": "/tmp/beamo-pass16-python/lib/python3.12/site-packages/pytest/__init__.py",
+    "returncode": 0,
+    "stdout": "PASS16_SHEBANG_OK\n",
+    "stderr": ""
+  }
+}

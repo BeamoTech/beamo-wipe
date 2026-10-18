@@ -1,0 +1,120 @@
+{
+  "artifacts": {
+    "audio-launch-interruption-candidate.md": "a7d6501933be2eb1e8ad553bccba916e16a50477e68a1930c9c48e32883e5c69",
+    "audio-launch-interruption-probe.py": "b6cac3567bb241ef4a2d96e3cef260745f74f1d1bd3961f97404f93f03aef80d",
+    "source-review.md": "cb224a7d04ba3c8e6c8f0bd842b113f33b8e1c4da4a0002785739d79c8e4a0d2"
+  },
+  "author": "Codex /root/pass20_runner_boot",
+  "branch": "fix/safety-audit-20261015",
+  "candidate": {
+    "cases": 6,
+    "control_interruptions": 4,
+    "name": "optional_audio_start_control_interruption",
+    "probe": "audio-launch-interruption-probe.py",
+    "runtime_error_controls": 2,
+    "status": "unproved_not_run"
+  },
+  "canonical_test_edits": [],
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "input_count": 21,
+  "inputs": {
+    "packaging/live/config/includes.chroot/etc/systemd/system/beamo-wipe-kiosk.service": {
+      "matches_pass19": true,
+      "sha256": "29042ffc1f4d6a60dc27878344909982dd9ff5980b4460c5ee841313cfbdaf07"
+    },
+    "packaging/live/config/includes.chroot/usr/local/bin/beamo-wipe": {
+      "matches_pass19": true,
+      "sha256": "0a45eb29375be43b6d776d31d6dd3c22a52ab9a03fce493a9aa3c4b403b1a4ee"
+    },
+    "packaging/live/config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk": {
+      "matches_pass19": true,
+      "sha256": "5532b8e162621be12b284c5a01eb4e1817b5b19bd242c3ad9ac50452c5c5e9a4"
+    },
+    "packaging/live/inside-docker.sh": {
+      "matches_pass19": true,
+      "sha256": "423de8da010530ae4e44b0d228faab902a4548d8fef45fb71866697337ffa6d5"
+    },
+    "scripts/build-iso.sh": {
+      "matches_pass19": true,
+      "sha256": "e5fc440e065fbb33ea1d6a580584aa0537390ba92e60e3cd331e9622cfb48a00"
+    },
+    "scripts/ci-blacksmith.sh": {
+      "matches_pass19": true,
+      "sha256": "39a7e452724e007b2fd7c42ee21fe7eb6cc6f671a5b74c2e352ffdc827f282d0"
+    },
+    "scripts/ci-hosted.sh": {
+      "matches_pass19": true,
+      "sha256": "3cdd4f49dfd12f9342a16ac2115c4870076097cd2134206f9657ccada11ebc25"
+    },
+    "scripts/stage_live_assets.py": {
+      "matches_pass19": true,
+      "sha256": "538413c57bfaa7454a896836720b52b55708f42d61910c3e0a943ea5abddd39e"
+    },
+    "scripts/stage_wrapper_sources.py": {
+      "matches_pass19": true,
+      "sha256": "49ca76afb4134eabadfb59de0e82a9804c2c4c5bb6a806d3eca9196358d8418d"
+    },
+    "src/beamo_wipe/app.py": {
+      "matches_pass19": true,
+      "sha256": "30e005d148b07415b57fa293762f142a491fa1ec012661cf02ed2739bfb261e5"
+    },
+    "src/beamo_wipe/audio_jobs.py": {
+      "matches_pass19": true,
+      "sha256": "26cf096f25c911530233b8c0c37e4ad0285ceb6fdbac7d4c7ecb2ce6f5b966d6"
+    },
+    "src/beamo_wipe/engine_checks.py": {
+      "matches_pass19": true,
+      "sha256": "858da2ba9ac347df0b4a92bc196e90949d4279f155e21c98f0ac01b8caa743f3"
+    },
+    "src/beamo_wipe/evidence.py": {
+      "matches_pass19": true,
+      "sha256": "512c9b024b3231bf2625b6c802a8dc2282c275153b62e2995d4d01ba9466b5c5"
+    },
+    "src/beamo_wipe/nwipe_runner.py": {
+      "matches_pass19": true,
+      "sha256": "465d3495bd36b3be2507798ad3b57930645c165ba025a2afbe2ea0ca6c45e39d"
+    },
+    "src/beamo_wipe/power.py": {
+      "matches_pass19": true,
+      "sha256": "70fd7c90188b3f00dc082755ea4550d18b0884246e6fcd6b45f9c0e7ded7638b"
+    },
+    "src/beamo_wipe/progress.py": {
+      "matches_pass19": true,
+      "sha256": "fef87a29ceabb1fb97b8abc521d55cea1ceb9428989104973783da6eb52c4fa6"
+    },
+    "src/beamo_wipe/recovery.py": {
+      "matches_pass19": true,
+      "sha256": "2c9d7994872173b92225efb953d48ad25e3a77c4824632530b400d86005f5aa7"
+    },
+    "src/beamo_wipe/session_recovery.py": {
+      "matches_pass19": true,
+      "sha256": "128c5daa4c53197437682c637d3078917a79037a9edf5d1796fc9916cdd4ba53"
+    },
+    "src/beamo_wipe/sleep_inhibit.py": {
+      "matches_pass19": true,
+      "sha256": "b7df5b80f7d87ae0bcac0be2ddcf082ff887e5492fb8da088237b5b02a9bf11d"
+    },
+    "src/beamo_wipe/support_export.py": {
+      "matches_pass19": true,
+      "sha256": "23308f130079eb98cc8f77c597e227efbbf1cdb06234dd1336b2e034660bcc04"
+    },
+    "src/beamo_wipe/wizard.py": {
+      "matches_pass19": true,
+      "sha256": "be375a0861ec569a652e15f9f572bfa689f40048d736c5bedef641453d464bbb"
+    }
+  },
+  "limits": [
+    "No new product defect proved in source-only round.",
+    "Native asset correction/final canonical verification remain root-owned.",
+    "Physical reconnect, ISO/QEMU, native Windows and firmware/hardware acceptance are not established by this review."
+  ],
+  "mode": "source_only",
+  "native_inventory_or_devices": false,
+  "network_build_hosted_or_publication": false,
+  "product_edits": [],
+  "repository": "BeamoTech/beamo-wipe",
+  "reviewed_at_utc": "2026-10-17T18:13:53.240106+00:00",
+  "runtime_executed": false,
+  "schema": 1,
+  "shared_guide_exists": false
+}

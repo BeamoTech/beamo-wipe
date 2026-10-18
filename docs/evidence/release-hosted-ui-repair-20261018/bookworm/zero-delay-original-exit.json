@@ -1,0 +1,26 @@
+{
+  "exit_code": 1,
+  "command": [
+    "docker",
+    "--host=unix:///var/run/docker.sock",
+    "exec",
+    "-e",
+    "PYTHONPATH=/evidence:/workspace/tests:/workspace/src",
+    "beamo-pr90-bookworm-20261018",
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "200",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "python3",
+    "-m",
+    "pytest",
+    "-p",
+    "no:cacheprovider",
+    "/evidence/zero_delay_probe.py",
+    "--junitxml=/evidence/zero-delay-original.xml"
+  ]
+}

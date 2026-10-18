@@ -1,0 +1,10 @@
+{
+  "files": 140,
+  "archive_files": 2,
+  "large_members_streamed": 0,
+  "archive_regular_members": 1750,
+  "bytes_scanned": 25397536,
+  "potential_secret_patterns": [],
+  "archive_media_members": [],
+  "note": "Pattern inventory only. Values are never printed; controlled test fixtures require source review before classification."
+}

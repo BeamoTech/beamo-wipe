@@ -1,0 +1,434 @@
+............FFFFFF............FFFFFF........F                            [100%]
+=================================== FAILURES ===================================
+_ test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\n-everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-296/test_terminal_status_banner_is12')
+method = <MethodId.EVERYDAY: 'everyday'>, banner_ending = '\r\n', large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_terminal_status_banner_is_not_normalized_by_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-terminal.log"
+        logfile.write_bytes(text.encode())
+        runner = module.NwipeRunner()
+        runner._proc = _Exited()
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+
+        result = runner.poll(request)
+
+        assert result is not None
+>       assert (result.ok, result.summary, result.reason) == module.completion_for_method(
+            0, text, request.device, method
+        )
+E       AssertionError: assert (True, 'finis..., 'completed') == (False, 'nwip...tion_missing')
+E
+E         At index 0 diff: True != False
+E         Use -v to get more diff
+
+tests/test_runner_projection_record_endings_pass10.py:62: AssertionError
+__ test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\n-extra] __
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-296/test_terminal_status_banner_is13')
+method = <MethodId.EXTRA: 'extra'>, banner_ending = '\r\n', large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_terminal_status_banner_is_not_normalized_by_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-terminal.log"
+        logfile.write_bytes(text.encode())
+        runner = module.NwipeRunner()
+        runner._proc = _Exited()
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+
+        result = runner.poll(request)
+
+        assert result is not None
+>       assert (result.ok, result.summary, result.reason) == module.completion_for_method(
+            0, text, request.device, method
+        )
+E       AssertionError: assert (True, 'finis..., 'completed') == (False, 'nwip...tion_missing')
+E
+E         At index 0 diff: True != False
+E         Use -v to get more diff
+
+tests/test_runner_projection_record_endings_pass10.py:62: AssertionError
+_ test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\n-quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-296/test_terminal_status_banner_is14')
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, banner_ending = '\r\n'
+large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_terminal_status_banner_is_not_normalized_by_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-terminal.log"
+        logfile.write_bytes(text.encode())
+        runner = module.NwipeRunner()
+        runner._proc = _Exited()
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+
+        result = runner.poll(request)
+
+        assert result is not None
+>       assert (result.ok, result.summary, result.reason) == module.completion_for_method(
+            0, text, request.device, method
+        )
+E       AssertionError: assert (True, 'finis..., 'completed') == (False, 'nwip...tion_missing')
+E
+E         At index 0 diff: True != False
+E         Use -v to get more diff
+
+tests/test_runner_projection_record_endings_pass10.py:62: AssertionError
+_ test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\r\n-everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-296/test_terminal_status_banner_is15')
+method = <MethodId.EVERYDAY: 'everyday'>, banner_ending = '\r\r\n', large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_terminal_status_banner_is_not_normalized_by_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-terminal.log"
+        logfile.write_bytes(text.encode())
+        runner = module.NwipeRunner()
+        runner._proc = _Exited()
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+
+        result = runner.poll(request)
+
+        assert result is not None
+>       assert (result.ok, result.summary, result.reason) == module.completion_for_method(
+            0, text, request.device, method
+        )
+E       AssertionError: assert (True, 'finis..., 'completed') == (False, 'nwip...tion_missing')
+E
+E         At index 0 diff: True != False
+E         Use -v to get more diff
+
+tests/test_runner_projection_record_endings_pass10.py:62: AssertionError
+_ test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\r\n-extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-296/test_terminal_status_banner_is16')
+method = <MethodId.EXTRA: 'extra'>, banner_ending = '\r\r\n', large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_terminal_status_banner_is_not_normalized_by_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-terminal.log"
+        logfile.write_bytes(text.encode())
+        runner = module.NwipeRunner()
+        runner._proc = _Exited()
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+
+        result = runner.poll(request)
+
+        assert result is not None
+>       assert (result.ok, result.summary, result.reason) == module.completion_for_method(
+            0, text, request.device, method
+        )
+E       AssertionError: assert (True, 'finis..., 'completed') == (False, 'nwip...tion_missing')
+E
+E         At index 0 diff: True != False
+E         Use -v to get more diff
+
+tests/test_runner_projection_record_endings_pass10.py:62: AssertionError
+_ test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\r\n-quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-296/test_terminal_status_banner_is17')
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, banner_ending = '\r\r\n'
+large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_terminal_status_banner_is_not_normalized_by_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-terminal.log"
+        logfile.write_bytes(text.encode())
+        runner = module.NwipeRunner()
+        runner._proc = _Exited()
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+
+        result = runner.poll(request)
+
+        assert result is not None
+>       assert (result.ok, result.summary, result.reason) == module.completion_for_method(
+            0, text, request.device, method
+        )
+E       AssertionError: assert (True, 'finis..., 'completed') == (False, 'nwip...tion_missing')
+E
+E         At index 0 diff: True != False
+E         Use -v to get more diff
+
+tests/test_runner_projection_record_endings_pass10.py:62: AssertionError
+_ test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\n-everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e12')
+method = <MethodId.EVERYDAY: 'everyday'>, banner_ending = '\r\n', large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_stop_race_uses_the_same_exact_status_banner_at_every_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-stop.log"
+        logfile.write_bytes(text.encode())
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._proc = _ExitsAtStop()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+
+        runner.cancel()
+
+        assert runner.result is not None
+>       assert runner.result.ok is (banner_ending == "\n")
+E       AssertionError: assert True is ('\r\n' == '\n'
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e12/fake-stop.log', reason='completed').ok
+E        +    where WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e12/fake-stop.log', reason='completed') = <beamo_wipe.nwipe_runner.NwipeRunner object at 0x745cfabc28a0>.result
+E
+E         Strings contain only whitespace, escaping them using repr()
+E         - '\n'
+E         + '\r\n'
+E         ?  ++)
+
+tests/test_runner_projection_record_endings_pass10.py:87: AssertionError
+_ test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\n-extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e13')
+method = <MethodId.EXTRA: 'extra'>, banner_ending = '\r\n', large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_stop_race_uses_the_same_exact_status_banner_at_every_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-stop.log"
+        logfile.write_bytes(text.encode())
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._proc = _ExitsAtStop()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+
+        runner.cancel()
+
+        assert runner.result is not None
+>       assert runner.result.ok is (banner_ending == "\n")
+E       AssertionError: assert True is ('\r\n' == '\n'
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e13/fake-stop.log', reason='completed').ok
+E        +    where WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e13/fake-stop.log', reason='completed') = <beamo_wipe.nwipe_runner.NwipeRunner object at 0x745cfabf0920>.result
+E
+E         Strings contain only whitespace, escaping them using repr()
+E         - '\n'
+E         + '\r\n'
+E         ?  ++)
+
+tests/test_runner_projection_record_endings_pass10.py:87: AssertionError
+_ test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\n-quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e14')
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, banner_ending = '\r\n'
+large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_stop_race_uses_the_same_exact_status_banner_at_every_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-stop.log"
+        logfile.write_bytes(text.encode())
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._proc = _ExitsAtStop()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+
+        runner.cancel()
+
+        assert runner.result is not None
+>       assert runner.result.ok is (banner_ending == "\n")
+E       AssertionError: assert True is ('\r\n' == '\n'
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e14/fake-stop.log', reason='completed').ok
+E        +    where WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e14/fake-stop.log', reason='completed') = <beamo_wipe.nwipe_runner.NwipeRunner object at 0x745cfabc38c0>.result
+E
+E         Strings contain only whitespace, escaping them using repr()
+E         - '\n'
+E         + '\r\n'
+E         ?  ++)
+
+tests/test_runner_projection_record_endings_pass10.py:87: AssertionError
+_ test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\r\n-everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e15')
+method = <MethodId.EVERYDAY: 'everyday'>, banner_ending = '\r\r\n', large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_stop_race_uses_the_same_exact_status_banner_at_every_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-stop.log"
+        logfile.write_bytes(text.encode())
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._proc = _ExitsAtStop()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+
+        runner.cancel()
+
+        assert runner.result is not None
+>       assert runner.result.ok is (banner_ending == "\n")
+E       AssertionError: assert True is ('\r\r\n' == '\n'
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e15/fake-stop.log', reason='completed').ok
+E        +    where WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e15/fake-stop.log', reason='completed') = <beamo_wipe.nwipe_runner.NwipeRunner object at 0x745cfabf30b0>.result
+E
+E         Strings contain only whitespace, escaping them using repr()
+E         - '\n'
+E         + '\r\r\n')
+
+tests/test_runner_projection_record_endings_pass10.py:87: AssertionError
+_ test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\r\n-extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e16')
+method = <MethodId.EXTRA: 'extra'>, banner_ending = '\r\r\n', large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_stop_race_uses_the_same_exact_status_banner_at_every_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-stop.log"
+        logfile.write_bytes(text.encode())
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._proc = _ExitsAtStop()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+
+        runner.cancel()
+
+        assert runner.result is not None
+>       assert runner.result.ok is (banner_ending == "\n")
+E       AssertionError: assert True is ('\r\r\n' == '\n'
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e16/fake-stop.log', reason='completed').ok
+E        +    where WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e16/fake-stop.log', reason='completed') = <beamo_wipe.nwipe_runner.NwipeRunner object at 0x745cfabf0da0>.result
+E
+E         Strings contain only whitespace, escaping them using repr()
+E         - '\n'
+E         + '\r\r\n')
+
+tests/test_runner_projection_record_endings_pass10.py:87: AssertionError
+_ test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\r\n-quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e17')
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, banner_ending = '\r\r\n'
+large = True
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("banner_ending", ["\n", "\r\n", "\r\r\n"])
+    @pytest.mark.parametrize("large", [False, True])
+    def test_stop_race_uses_the_same_exact_status_banner_at_every_log_size(
+        tmp_path, method, banner_ending, large
+    ):
+        text = _padding(large) + _terminal_text(banner_ending, "FAKE/DISK")
+        logfile = tmp_path / "fake-stop.log"
+        logfile.write_bytes(text.encode())
+        request = WipeRequest("/dev/sda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._proc = _ExitsAtStop()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+
+        runner.cancel()
+
+        assert runner.result is not None
+>       assert runner.result.ok is (banner_ending == "\n")
+E       AssertionError: assert True is ('\r\r\n' == '\n'
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e17/fake-stop.log', reason='completed').ok
+E        +    where WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-296/test_stop_race_uses_the_same_e17/fake-stop.log', reason='completed') = <beamo_wipe.nwipe_runner.NwipeRunner object at 0x745cfabc30e0>.result
+E
+E         Strings contain only whitespace, escaping them using repr()
+E         - '\n'
+E         + '\r\r\n')
+
+tests/test_runner_projection_record_endings_pass10.py:87: AssertionError
+___ test_malformed_banner_stays_unproven_at_the_completion_scan_boundary[1] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-296/test_malformed_banner_stays_un2')
+size_delta = 1
+
+    @pytest.mark.parametrize("size_delta", [-1, 0, 1])
+    def test_malformed_banner_stays_unproven_at_the_completion_scan_boundary(
+        tmp_path, size_delta
+    ):
+        terminal = _terminal_text("\r\n", "FAKE/DISK")
+        desired = module.NWIPE_COMPLETION_LOG_BYTES + size_delta
+        padding_size = desired - len(terminal)
+        full_lines, tail_size = divmod(padding_size, 65536)
+        padding = ("x" * 65535 + "\n") * full_lines
+        if tail_size:
+            padding += "x" * (tail_size - 1) + "\n"
+        text = padding + terminal
+        assert len(text) == desired
+        logfile = tmp_path / "fake-boundary.log"
+        logfile.write_bytes(text.encode())
+        runner = module.NwipeRunner()
+        runner._proc = _Exited()
+        request = WipeRequest(
+            "/dev/sda", MethodId.EVERYDAY, "/dev/sr0", str(logfile)
+        )
+
+        result = runner.poll(request)
+
+>       assert result is not None and not result.ok
+E       AssertionError: assert (WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-296/test_malformed_banner_stays_un2/fake-boundary.log', reason='completed') is not None and not True)
+E        +  where True = WipeResult(ok=True, exit_code=0, summary='finished', logfile='/tmp/pytest-of-root/pytest-296/test_malformed_banner_stays_un2/fake-boundary.log', reason='completed').ok
+
+tests/test_runner_projection_record_endings_pass10.py:139: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\n-everyday]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\n-extra]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\n-quick_zero]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\r\n-everyday]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\r\n-extra]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_terminal_status_banner_is_not_normalized_by_log_size[True-\r\r\n-quick_zero]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\n-everyday]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\n-extra]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\n-quick_zero]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\r\n-everyday]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\r\n-extra]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_stop_race_uses_the_same_exact_status_banner_at_every_log_size[True-\r\r\n-quick_zero]
+FAILED tests/test_runner_projection_record_endings_pass10.py::test_malformed_banner_stays_unproven_at_the_completion_scan_boundary[1]

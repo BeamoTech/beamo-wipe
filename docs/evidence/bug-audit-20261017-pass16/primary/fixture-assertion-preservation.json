@@ -1,0 +1,22 @@
+[
+  {
+    "path": "tests/test_tk_input_scroll_pass13.py",
+    "prior_assertions_preserved": 38,
+    "added_assertions": 1
+  },
+  {
+    "path": "tests/test_accessible_key_repeat.py",
+    "prior_assertions_preserved": 19,
+    "added_assertions": 0
+  },
+  {
+    "path": "tests/test_accessible_last_chance_actions_pass12_ui.py",
+    "prior_assertions_preserved": 9,
+    "added_assertions": 0
+  },
+  {
+    "path": "tests/test_pick_scroll_restore.py",
+    "prior_assertions_preserved": 11,
+    "added_assertions": 0
+  }
+]

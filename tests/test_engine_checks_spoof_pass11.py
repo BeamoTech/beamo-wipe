@@ -17,7 +17,7 @@ def test_model_text_cannot_start_error_summary():
 
 def test_model_text_cannot_start_erasure_summary():
     log = (
-        "info: No hidden sectors on /dev/sda\n"
+        "[2026/07/15 12:00:00] info: No hidden sectors on /dev/sda\n"
         "info: Model: Erasure Summary\n"
         "  sda | 1 | 2 | 50.00%\n***\n"
     )

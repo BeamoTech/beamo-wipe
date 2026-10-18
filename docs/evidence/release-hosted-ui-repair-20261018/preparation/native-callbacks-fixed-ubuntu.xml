@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="5" time="1.026" timestamp="2026-10-18T00:41:48.183596+00:00" hostname="srv1606478"><testcase classname="tests.test_tk_interpreter_callback_retirement" name="test_closed_root_retires_native_tcl_work_and_preserves_peer[idle-wizard]" time="0.246" /><testcase classname="tests.test_tk_interpreter_callback_retirement" name="test_closed_root_retires_native_tcl_work_and_preserves_peer[idle-startup]" time="0.142" /><testcase classname="tests.test_tk_interpreter_callback_retirement" name="test_closed_root_retires_native_tcl_work_and_preserves_peer[timer-wizard]" time="0.214" /><testcase classname="tests.test_tk_interpreter_callback_retirement" name="test_closed_root_retires_native_tcl_work_and_preserves_peer[timer-startup]" time="0.147" /><testcase classname="tests.test_tk_interpreter_callback_retirement" name="test_native_theme_remains_live_after_destroy_failure_and_retires_on_retry" time="0.035"><failure message="TypeError: '&gt;' not supported between instances of 'int' and 'str'">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7c20080e01d0&gt;
+
+    def test_native_theme_remains_live_after_destroy_failure_and_retires_on_retry(monkeypatch):
+        _admit()
+        effects = _guard(monkeypatch)
+        root = ui.tk.Tk()
+        root.withdraw()
+        root.tk.eval('set theme_calls 0; ttk::button .probe; bind .probe &lt;&lt;ThemeChanged&gt;&gt; {incr ::theme_calls}')
+        original = root.destroy
+    
+        def fail_destroy():
+            raise RuntimeError("controlled destroy interruption")
+    
+        root.destroy = fail_destroy
+        try:
+            with pytest.raises(RuntimeError, match="controlled destroy interruption"):
+                ui._close_owned_startup_root(root, threading.current_thread())
+            # An interrupted teardown must preserve the actual live notification.
+            before = root.tk.call("set", "theme_calls")
+            root.tk.call("ttk::ThemeChanged")
+&gt;           assert root.tk.call("set", "theme_calls") &gt; before
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: '&gt;' not supported between instances of 'int' and 'str'
+
+tests/test_tk_interpreter_callback_retirement.py:89: TypeError</failure></testcase></testsuite></testsuites>

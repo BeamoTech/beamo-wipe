@@ -1,0 +1,53 @@
+{
+  "suites": {
+    "original-final-focus-input": {
+      "cases": 14,
+      "passed": 8,
+      "failed": 6,
+      "errors": 0,
+      "skipped": 0
+    },
+    "original-geometry-1600": {
+      "cases": 8,
+      "passed": 4,
+      "failed": 4,
+      "errors": 0,
+      "skipped": 0
+    },
+    "original-geometry-800": {
+      "cases": 8,
+      "passed": 5,
+      "failed": 3,
+      "errors": 0,
+      "skipped": 0
+    },
+    "fixed-ui-adjacent": {
+      "cases": 114,
+      "passed": 114,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "final-ui-adjacent": {
+      "cases": 122,
+      "passed": 122,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "final-geometry-800": {
+      "cases": 8,
+      "passed": 8,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "final_source_sha256": {
+    "src/beamo_wipe/ui/accessible_wizard.py": "d36f63ec32016334c0d4936bc29ac406c166f4622905c80ca3e1719f2a342f15",
+    "tests/test_accessible_focus_input_pass11.py": "84a639b875e884c157bb88b3ecb34886f5739fc043240db0f1aef85ff14f9ba9",
+    "tests/test_accessible_fullscreen_geometry_pass11.py": "1d6463763ad5e94e73873452ed9c050abce7176c13f16e56a49e5bc290110e8b"
+  },
+  "all_owned_jobs_retired": true,
+  "local_only": true
+}

@@ -1,0 +1,7 @@
+{
+  "original": "docs/evidence/bug-audit-20261017-pass20/primary/gtk-owner-focus-final.py",
+  "original_sha256": "74471a248abcf5ec16fb9841dd3ec0978227386aefb1162ecaf21c6a9886568b",
+  "fresh_script": "/tmp/pass21-primary/gtk-owner-focus-final.py",
+  "sha256": "3f7e3cf43060ded575d67285a963c4776d9a02a4afc89ddee00c6801cbca9013",
+  "adaptation": "Only unused output directory changed; assertions and actual native Tab behavior retained. Fresh 800x600 follow-up of below-fold ownership checkbox."
+}

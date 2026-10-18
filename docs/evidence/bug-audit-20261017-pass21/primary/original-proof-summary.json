@@ -1,0 +1,86 @@
+{
+  "baseline-core": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "228",
+      "time": "9.110",
+      "timestamp": "2026-10-17T20:52:25.280694+00:00",
+      "hostname": "srv1606478"
+    }
+  ],
+  "discovery-original": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "16",
+      "skipped": "0",
+      "tests": "60",
+      "time": "0.217",
+      "timestamp": "2026-10-17T20:53:17.062506+00:00",
+      "hostname": "srv1606478"
+    }
+  ],
+  "diagnostics-variable-original": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "24",
+      "skipped": "0",
+      "tests": "34",
+      "time": "2.000",
+      "timestamp": "2026-10-17T20:53:28.931701+00:00",
+      "hostname": "srv1606478"
+    }
+  ],
+  "additional-original": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "21",
+      "skipped": "0",
+      "tests": "88",
+      "time": "3.733",
+      "timestamp": "2026-10-17T20:55:42.953488+00:00",
+      "hostname": "srv1606478"
+    }
+  ],
+  "trace-adoption-original": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "4",
+      "skipped": "0",
+      "tests": "4",
+      "time": "4.304",
+      "timestamp": "2026-10-17T20:56:17.061079+00:00",
+      "hostname": "srv1606478"
+    }
+  ],
+  "corrected-native-original": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "8",
+      "skipped": "0",
+      "tests": "11",
+      "time": "9.929",
+      "timestamp": "2026-10-17T20:57:21.036571+00:00",
+      "hostname": "srv1606478"
+    }
+  ],
+  "noncanonical-name-original": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "24",
+      "skipped": "0",
+      "tests": "30",
+      "time": "0.228",
+      "timestamp": "2026-10-17T20:59:04.465277+00:00",
+      "hostname": "srv1606478"
+    }
+  ]
+}

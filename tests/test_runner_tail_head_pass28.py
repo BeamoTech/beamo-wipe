@@ -44,7 +44,7 @@ def test_cut_progress_tail_keeps_a_later_complete_sample(tmp_path):
 
 
 def test_cut_log_tail_cannot_arm_early_sigusr1(tmp_path):
-    ready = "Program options are set as follows\n"
+    ready = "[2026/10/16 12:00:00] info: Program options are set as follows\n"
     filler = "X" * (65536 - len(ready) - 1) + "\n"
     log = tmp_path / "nwipe.log"
     log.write_text("info: Model: " + ready + filler, encoding="utf-8")
@@ -77,7 +77,7 @@ def test_cut_log_tail_cannot_arm_early_sigusr1(tmp_path):
 
 def test_unterminated_readiness_record_cannot_arm_sigusr1(tmp_path):
     log = tmp_path / "nwipe.log"
-    log.write_text("info: Program options are set as follows", encoding="utf-8")
+    log.write_text("[2026/10/16 12:00:00] info: Program options are set as follows", encoding="utf-8")
     assert not nwipe_accepts_sigusr1(log.read_text(encoding="utf-8"))
 
     class FakeProcess:
@@ -107,7 +107,7 @@ def test_unterminated_readiness_record_cannot_arm_sigusr1(tmp_path):
 
 
 def test_complete_record_at_exact_tail_boundary_is_still_readable(tmp_path):
-    ready = "info: Program options are set as follows\n"
+    ready = "[2026/10/16 12:00:00] info: Program options are set as follows\n"
     filler = "X" * (65536 - len(ready) - 1) + "\n"
     log = tmp_path / "nwipe.log"
     log.write_text("earlier record\n" + ready + filler, encoding="utf-8")

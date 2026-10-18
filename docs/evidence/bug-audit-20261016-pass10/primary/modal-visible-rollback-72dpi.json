@@ -1,0 +1,67 @@
+{
+  "screenshot": "/tmp/pass10-primary/modal-visible-rollback-72dpi.png",
+  "sha256": "6ddcba140a650c46348017500382205c1de28c0b6c28836da868243edff2f400",
+  "dimensions": [
+    1600,
+    1000
+  ],
+  "pixel_extrema": [
+    [
+      0,
+      255
+    ],
+    [
+      0,
+      255
+    ],
+    [
+      0,
+      255
+    ]
+  ],
+  "capture_method": "Pillow ImageGrab full private Xvfb root; no cropping or editing",
+  "x11_dpi": [
+    72.05673758865248,
+    71.95467422096317
+  ],
+  "native_state": {
+    "parent": 2097155,
+    "focused": 2097218,
+    "stack": [
+      2097153,
+      2097155,
+      2097169,
+      2097218
+    ],
+    "parent_focused": false,
+    "modal": 2097218,
+    "modal_above": true,
+    "modal_focused": true
+  },
+  "modal_status_child_focused": true,
+  "status": "That change did not work. Try again.",
+  "accepted_sink": "speakers-fake",
+  "radio_active": [
+    true,
+    false
+  ],
+  "radio_sensitive": [
+    true,
+    true
+  ],
+  "radio_labels": [
+    "Speakers",
+    "Headphones"
+  ],
+  "persisted_output": "",
+  "calls": [
+    {
+      "operation": "set_output",
+      "sink": "headphones-fake"
+    }
+  ],
+  "real_gtk_timer": true,
+  "fake_boundaries_only": true,
+  "owned_window_closed": true,
+  "owned_worker_retired": true
+}

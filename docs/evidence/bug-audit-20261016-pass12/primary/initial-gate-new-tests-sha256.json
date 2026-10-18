@@ -1,0 +1,15 @@
+{
+  "tests/test_accessible_focus_input_pass11.py": "84a639b875e884c157bb88b3ecb34886f5739fc043240db0f1aef85ff14f9ba9",
+  "tests/test_accessible_fullscreen_geometry_pass11.py": "1d6463763ad5e94e73873452ed9c050abce7176c13f16e56a49e5bc290110e8b",
+  "tests/test_accessible_sound_modal_pass10.py": "526853280c9c737ab84fb4735b6b122f982125b7fd7cc8a7d0e03456daab8dce",
+  "tests/test_console_inventory_diagnostic_pass10.py": "019443d03deccdd21fbb87ed9b94c97d25909d7d39528c9afa44c8b9a995600f",
+  "tests/test_diagnostic_malformed_bounds_pass8.py": "e052a9d54dbd9c13156d9590ce2b94a014b7a2e5507d355305a49ddbf63787a6",
+  "tests/test_runner_prefixed_error_context_pass12.py": "a115e79460175e0697c3f95ea1713aa4f64bdd5ae090b8f4126671a2ef1f7d9e",
+  "tests/test_runner_projection_progress_order_pass8.py": "59eecdf582771001ae2dad8c51a20a312e4a58b27f05a5b270e895e37bd59a9b",
+  "tests/test_runner_projection_record_endings_pass10.py": "f49f2c78ce2a04e531d2d86de08d91b6af03b2714209efc179a9a770b92cb6c0",
+  "tests/test_runner_projection_summary_context_pass11.py": "6d96aea29951521b15725119a3d0107fab502886b0ee002096382ed937071173",
+  "tests/test_sound_dialog_state_pass12.py": "0d95acf5ab97f63a4bc730d821da3c9de848dce935be99c3c8cfb5ae0f9277cf",
+  "tests/test_sound_output_selection_pass10.py": "3cdbf1ea3b99d3cdf59dc813812c46ec4207ed4673f2d7876bdd8fe0a46ae63a",
+  "tests/test_startup_notice_state_pass12.py": "a4ae9c7ca00c23972e6b27591cb3a891602d1382491b423b3038315ac07e5fef",
+  "tests/test_tk_startup_focus_geometry_pass12.py": "0cf3cd0eefa1598064f50d8988cdff96f279b7375b6c7cdbe048d6206b40e64b"
+}

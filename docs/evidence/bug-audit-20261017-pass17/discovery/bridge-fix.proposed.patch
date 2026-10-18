@@ -1,0 +1,213 @@
+*** Begin Patch
+*** Update File: src/beamo_wipe/discover.py
+@@
+ def _hardware_identity_key(value: str, field: str) -> str:
+     return canonical_wwn(value) if field == "wwn" else meaningful_serial(value).casefold()
+ 
+ 
++_HardwareObservation = Tuple[str, Tuple[str, ...], Optional[str], bool]
++_PhysicalIdentityContext = Tuple[Tuple[str, ...], Tuple[str, ...], bool, bool]
++_UnresolvedPhysicalIdentity = Tuple[str, Tuple[str, ...], Tuple[str, ...]]
++
++
++def _descendant_hardware_observations(
++    node: Dict[str, Any], field: str
++) -> Tuple[Tuple[str, ...], Optional[str]]:
++    values: List[str] = []
++    seen: set[str] = set()
++    malformed: Optional[str] = None
++
++    def visit(parent: Dict[str, Any]) -> None:
++        nonlocal malformed
++        for child in parent.get("children") or []:
++            if not isinstance(child, dict):
++                continue
++            try:
++                value = _hardware_identity(child.get(field), field)
++            except ValueError as exc:
++                if malformed is None:
++                    malformed = str(exc)
++            else:
++                if value and value not in seen:
++                    seen.add(value)
++                    values.append(value)
++            visit(child)
++
++    visit(node)
++    return tuple(values), malformed
++
++
++def _node_hardware_observation(node: Dict[str, Any], field: str) -> _HardwareObservation:
++    malformed: Optional[str] = None
++    try:
++        reported = _hardware_identity(node.get(field), field)
++    except ValueError as exc:
++        reported, malformed = "", str(exc)
++    identity = _hardware_identity_key(reported, field)
++    if identity:
++        # A meaningful physical-parent field remains authoritative.
++        return reported, (identity,), None, False
++    values, descendant_error = _descendant_hardware_observations(node, field)
++    keys: set[str] = set()
++    meaningful = ""
++    for value in values:
++        identity = _hardware_identity_key(value, field)
++        if identity:
++            keys.add(identity)
++            if not meaningful:
++                meaningful = value
++    selected = meaningful or reported or (values[0] if values else "")
++    return (
++        selected, tuple(sorted(keys)), malformed or descendant_error,
++        len(keys) > 1,
++    )
++
++
+ def _node_hardware_identity(node: Dict[str, Any], field: str) -> str:
+-    reported = _hardware_identity(node.get(field), field)
+-    if _hardware_identity_key(reported, field):
+-        return reported
+-    inherited = _first_descendant_field(node, field)
+-    if _hardware_identity_key(inherited, field):
+-        return inherited
+-    # Preserve raw placeholder observations when no meaningful ID is available.
+-    return reported or inherited
++    selected, _keys, malformed, conflict = _node_hardware_observation(node, field)
++    if malformed is not None:
++        raise ValueError(malformed)
++    if conflict:
++        raise ValueError(f"lsblk descendant {field} identity conflicts")
++    return selected
+ 
+ 
+ def _first_descendant_field(node: Dict[str, Any], key: str) -> str:
+     if key in {"serial", "wwn"}:
+-        first_raw = ""
+-        first_meaningful = ""
+-        comparison = ""
+-
+-        def visit(parent: Dict[str, Any]) -> None:
+-            nonlocal first_raw, first_meaningful, comparison
+-            for child in parent.get("children") or []:
+-                if not isinstance(child, dict):
+-                    continue
+-                got = _hardware_identity(child.get(key), key)
+-                if got and not first_raw:
+-                    first_raw = got
+-                identity = _hardware_identity_key(got, key)
+-                if identity:
+-                    if comparison and identity != comparison:
+-                        raise ValueError(f"lsblk descendant {key} identity conflicts")
+-                    if not first_meaningful:
+-                        first_meaningful, comparison = got, identity
+-                visit(child)
+-
+-        visit(node)
+-        return first_meaningful or first_raw
++        return _node_hardware_identity({"children": node.get("children")}, key)
+@@
+ def _physical_observation(
+     node: Dict[str, Any], mounts: Tuple[str, ...]
+-) -> Tuple[Disk, Tuple[bool, bool]]:
++) -> Tuple[Disk, Tuple[bool, bool], _PhysicalIdentityContext]:
+     """Retain safety facts without depending on display or layout metadata."""
+-    def hardware(field: str) -> Tuple[str, bool]:
+-        try:
+-            return _node_hardware_identity(node, field), False
+-        except ValueError:
+-            # This projection never supplies target identity. Keep a valid
+-            # other ID without repairing the unusable field; duplicate rows
+-            # must retain the invalidity rather than compare it to missing.
+-            return "", True
+-
+     name = _identity_text(node.get("name"), "name")
+     size = _as_int(node.get("size"))
+-    serial, serial_invalid = hardware("serial")
+-    wwn, wwn_invalid = hardware("wwn")
++    serial_facts = _node_hardware_observation(node, "serial")
++    wwn_facts = _node_hardware_observation(node, "wwn")
++    serial_invalid = serial_facts[2] is not None or serial_facts[3]
++    wwn_invalid = wwn_facts[2] is not None or wwn_facts[3]
+     observation = Disk(
+         path=node_path(node), name=name, model="", label="",
+-        serial=serial, wwn=wwn,
++        serial="" if serial_invalid else serial_facts[0],
++        wwn="" if wwn_invalid else wwn_facts[0],
+@@
+-    return observation, (serial_invalid, wwn_invalid)
++    # Parser-local context is never a target identity or confirmation peer.
++    # Deterministic candidate keys and booleans also distinguish conflicting
++    # duplicate physical observations without comparing exception objects.
++    context = (
++        serial_facts[1], wwn_facts[1],
++        serial_facts[2] is not None, wwn_facts[2] is not None,
++    )
++    return observation, (serial_invalid, wwn_invalid), context
++
++
++def _unresolved_identity_overlaps_protected(
++    boot: Optional[Disk], disks: Sequence[Disk],
++    physical_observations: Sequence[Disk],
++    unresolved: Sequence[_UnresolvedPhysicalIdentity],
++) -> bool:
++    if not unresolved:
++        return False
++    observations = (*disks, *physical_observations)
++    anchors = [disk for disk in observations if disk.mountpoints]
++    if boot is not None:
++        anchors.append(boot)
++    for anchor in anchors:
++        component = (anchor, *protected_hardware_aliases(anchor, observations))
++        paths = {os.path.realpath(disk.path) for disk in component}
++        anchor_wwn = canonical_wwn(anchor.wwn)
++        for path, serials, wwns in unresolved:
++            # The partial projection may already connect through its valid
++            # other field; unresolved identity cannot truncate that bridge.
++            if path in paths:
++                return True
++            serial_keys, wwn_keys = set(serials), set(wwns)
++            if anchor_wwn and wwn_keys:
++                if anchor_wwn not in wwn_keys:
++                    continue
++                wwn_keys = {anchor_wwn}
++            for current in component:
++                current_wwn = canonical_wwn(current.wwn)
++                # Same rule as possible_hardware_alias: distinct known
++                # WWNs disambiguate serial reuse, including on a bridge.
++                if current_wwn and wwn_keys:
++                    if current_wwn in wwn_keys:
++                        return True
++                else:
++                    serial = meaningful_serial(current.serial).casefold()
++                    if serial and serial in serial_keys:
++                        return True
++    return False
+@@
+     physical_observations = []
+-    physical_by_path: Dict[str, Tuple[Disk, Optional[bool], Tuple[bool, bool]]] = {}
++    physical_by_path: Dict[
++        str, Tuple[Disk, Optional[bool], Tuple[bool, bool], _PhysicalIdentityContext]
++    ] = {}
++    unresolved_physical: List[_UnresolvedPhysicalIdentity] = []
+     repeated_physical_paths: set[str] = set()
+@@
+-        observation, invalid_ids = _physical_observation(node, effective_mounts)
++        observation, invalid_ids, identity_context = _physical_observation(node, effective_mounts)
+         canonical = os.path.realpath(path)
+-        signature = (observation, _as_bool(node.get("ro")), invalid_ids)
++        signature = (observation, _as_bool(node.get("ro")), invalid_ids, identity_context)
+@@
+         physical_by_path[canonical] = signature
+         physical_observations.append(observation)
++        if any(invalid_ids):
++            unresolved_physical.append((canonical, identity_context[0], identity_context[1]))
+@@
+     boot = identified_boot
+     if require_boot and boot is None:
+         return DiscoveryResult(error=_copy.IDENTIFY_ERROR, boot_identified=False)
++    if _unresolved_identity_overlaps_protected(
++        boot, disks, physical_observations, unresolved_physical
++    ):
++        raise ValueError("lsblk unresolved physical identity overlaps protected storage")
+     from beamo_wipe.safety import is_wipeable_disk
+*** End Patch

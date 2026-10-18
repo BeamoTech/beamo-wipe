@@ -1,0 +1,21 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass19-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_bug_audit_runner_20260913.py::test_junit_accepts_authentic_pytest_lifecycle_outcomes",
+    "--junitxml=/tmp/pass19-primary/inherited-plugin-proof.xml"
+  ],
+  "exit_code": 1,
+  "started_utc": "2026-10-17T16:34:59.615054+00:00",
+  "ended_utc": "2026-10-17T16:35:00.353259+00:00"
+}

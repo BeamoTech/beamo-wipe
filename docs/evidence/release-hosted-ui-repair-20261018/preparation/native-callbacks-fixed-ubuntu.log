@@ -1,0 +1,32 @@
+....F                                                                    [100%]
+=================================== FAILURES ===================================
+__ test_native_theme_remains_live_after_destroy_failure_and_retires_on_retry ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7c20080e01d0>
+
+    def test_native_theme_remains_live_after_destroy_failure_and_retires_on_retry(monkeypatch):
+        _admit()
+        effects = _guard(monkeypatch)
+        root = ui.tk.Tk()
+        root.withdraw()
+        root.tk.eval('set theme_calls 0; ttk::button .probe; bind .probe <<ThemeChanged>> {incr ::theme_calls}')
+        original = root.destroy
+    
+        def fail_destroy():
+            raise RuntimeError("controlled destroy interruption")
+    
+        root.destroy = fail_destroy
+        try:
+            with pytest.raises(RuntimeError, match="controlled destroy interruption"):
+                ui._close_owned_startup_root(root, threading.current_thread())
+            # An interrupted teardown must preserve the actual live notification.
+            before = root.tk.call("set", "theme_calls")
+            root.tk.call("ttk::ThemeChanged")
+>           assert root.tk.call("set", "theme_calls") > before
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: '>' not supported between instances of 'int' and 'str'
+
+tests/test_tk_interpreter_callback_retirement.py:89: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_tk_interpreter_callback_retirement.py::test_native_theme_remains_live_after_destroy_failure_and_retires_on_retry
+1 failed, 4 passed in 1.05s

@@ -1,0 +1,4 @@
+src/beamo_wipe/diagnostic_report.py: OK
+src/beamo_wipe/nwipe_runner.py: OK
+tests/test_diagnostic_malformed_bounds_pass8.py: OK
+tests/test_runner_projection_progress_order_pass8.py: OK

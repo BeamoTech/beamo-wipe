@@ -1,0 +1,20 @@
+{
+  "visible_selected_sink": "headphones",
+  "chosen_sink": "speakers",
+  "events": [
+    {
+      "announce": "controlled failure"
+    },
+    {
+      "nudge_sink": "speakers"
+    },
+    {
+      "announce": "controlled failure"
+    }
+  ]
+}
+Traceback (most recent call last):
+  File "/tmp/pass10-ui/sound_failed_selection_trace.py", line 45, in <module>
+    assert trace["visible_selected_sink"] == trace["chosen_sink"], "Visible sink and subsequent volume target disagree after failed selection"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Visible sink and subsequent volume target disagree after failed selection

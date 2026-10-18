@@ -1,0 +1,11 @@
+{
+  "exit_code": 1,
+  "location": "differential-matrix-v1.py:108",
+  "kind": "auxiliary expectation failed; intentional product evidence cap",
+  "actual_fixture": "initial-cap-case.log",
+  "fixture_sha256": "88901330334a18ab2c4eeb818b4ebb2ad365f718c3bfd5f1e210b925cd08e872",
+  "why": "An Error Summary without a closing banner kept all regular padding parser-relevant; retaining more than the 1MiB evidence cap correctly returns an indeterminate result. The direct unlimited parser is not an expected success oracle past a documented cap.",
+  "product_bug": false,
+  "product_edits": false,
+  "signals_or_cancellation_sent": false
+}

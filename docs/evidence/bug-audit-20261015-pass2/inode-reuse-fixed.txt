@@ -1,0 +1,3 @@
+Launch identity: ('/tmp/beamo-log-identity-repro-sckireg8/engine.log', 2049, 6608758)
+Retained inode resisted 1000 unlink/recreates
+Replacement result: WipeResult(ok=False, exit_code=0, summary='nwipe completion log was incomplete', logfile='/tmp/beamo-log-identity-repro-sckireg8/engine.log', reason='indeterminate')

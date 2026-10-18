@@ -1,0 +1,11 @@
+{
+  "sha256": {
+    "/tmp/pass12-primary/test_audio_responsiveness-before.py": "fefdcc3c43f523f81f7fb134d854d6785ae399da54bf23d468db18f077ce4cb9",
+    "tests/test_audio_responsiveness.py": "0ed6f1872296ba3c30d060b3d025cf591e8e8151b3a3d371e34072fe13702504",
+    "src/beamo_wipe/ui/sound_dialog.py": "9165731d320e6f19de3e6632a7b0c43a4c688a72dbd6558b39ba46c0052aed9e"
+  },
+  "all_top_level_function_asts_identical": true,
+  "top_level_functions_preserved": 18,
+  "raw_initial_gate_matching_failures": 6,
+  "review_kind": "source and retained log only; no runtime validation"
+}

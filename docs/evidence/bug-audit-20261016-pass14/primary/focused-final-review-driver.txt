@@ -1,0 +1,13 @@
+{
+  "runtime_source_sha256": "ebe614cd285be76d948e81c7f8a04be48240ba4a95a4baab9e3ba9e040197dbb",
+  "geometry_rows": 270,
+  "targeted_focus_full_visibility": 27,
+  "no_bgerror_after_owned_fixture_cleanup": true,
+  "native_application_effects": 0,
+  "adjacent_cases_passed_before_annotation_only_cleanup": 1645,
+  "affected_ui_sequence_passed_before_annotation_only_cleanup": 100,
+  "final_gate_validates_exact_final_bytes": true,
+  "discovery_cases": 558,
+  "starting_inputs_preserved_except_five_authorized_paths": true,
+  "independent_final_peer_approval": false
+}

@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from beamo_wipe import ci_evidence
+from beamo_wipe import __version__, ci_evidence
 from beamo_wipe import release_manifest as rm
 
 
@@ -17,7 +17,7 @@ def test_finalizer_uses_verified_manifest_bytes_after_path_replacement(
     monkeypatch.setenv("BUILD_ID", "local")
     dist = tmp_path / "dist"
     dist.mkdir()
-    dest = dist / "beamo-wipe-0.2.12-amd64.manifest.json"
+    dest = dist / f"beamo-wipe-{__version__}-amd64.manifest.json"
     verified = {
         "source": {"commit": "a" * 40},
         "build": {"release_build_id": "local"},

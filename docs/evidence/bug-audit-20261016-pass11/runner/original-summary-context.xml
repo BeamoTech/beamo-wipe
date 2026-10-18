@@ -1,0 +1,729 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="25" skipped="0" tests="81" time="3.338" timestamp="2026-10-16T18:19:05.258970+00:00" hostname="srv1606478"><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning--False-everyday]" time="0.061" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning--False-extra]" time="0.006" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning--False-quick_zero]" time="0.005" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning--True-everyday]" time="0.081" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning--True-extra]" time="0.075" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning--True-quick_zero]" time="0.070" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning-info: -False-everyday]" time="0.011" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning-info: -False-extra]" time="0.009" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning-info: -False-quick_zero]" time="0.009" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning-info: -True-everyday]" time="0.066"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_summary_row_prefix_does_n9')
+method = &lt;MethodId.EVERYDAY: 'everyday'&gt;, large = True, prefix = 'info: '
+row = '! sda | 1 | 2 | 50.00%\n', expected = 'warning'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["", "info: ", _STAMP])
+    @pytest.mark.parametrize(
+        ("row", "expected"),
+        [
+            ("! sda | 1 | 2 | 50.00%\n", "warning"),
+            ("! sda | invalid | 2 | 50.00%\n", "unavailable"),
+            ("! sda | 2 | 2 | 100.00%\n", "pass"),
+        ],
+    )
+    def test_summary_row_prefix_does_not_change_checks_at_large_log_boundary(
+        tmp_path, method, large, prefix, row, expected
+    ):
+        text = (
+            _NONE + _HEADER + prefix + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == expected
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:88: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning-info: -True-extra]" time="0.088"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_summary_row_prefix_does_n10')
+method = &lt;MethodId.EXTRA: 'extra'&gt;, large = True, prefix = 'info: '
+row = '! sda | 1 | 2 | 50.00%\n', expected = 'warning'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["", "info: ", _STAMP])
+    @pytest.mark.parametrize(
+        ("row", "expected"),
+        [
+            ("! sda | 1 | 2 | 50.00%\n", "warning"),
+            ("! sda | invalid | 2 | 50.00%\n", "unavailable"),
+            ("! sda | 2 | 2 | 100.00%\n", "pass"),
+        ],
+    )
+    def test_summary_row_prefix_does_not_change_checks_at_large_log_boundary(
+        tmp_path, method, large, prefix, row, expected
+    ):
+        text = (
+            _NONE + _HEADER + prefix + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == expected
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:88: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning-info: -True-quick_zero]" time="0.062"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_summary_row_prefix_does_n11')
+method = &lt;MethodId.QUICK_ZERO: 'quick_zero'&gt;, large = True, prefix = 'info: '
+row = '! sda | 1 | 2 | 50.00%\n', expected = 'warning'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["", "info: ", _STAMP])
+    @pytest.mark.parametrize(
+        ("row", "expected"),
+        [
+            ("! sda | 1 | 2 | 50.00%\n", "warning"),
+            ("! sda | invalid | 2 | 50.00%\n", "unavailable"),
+            ("! sda | 2 | 2 | 100.00%\n", "pass"),
+        ],
+    )
+    def test_summary_row_prefix_does_not_change_checks_at_large_log_boundary(
+        tmp_path, method, large, prefix, row, expected
+    ):
+        text = (
+            _NONE + _HEADER + prefix + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == expected
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:88: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning-[2026/10/16 12:00:00] info: -False-everyday]" time="0.005" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning-[2026/10/16 12:00:00] info: -False-extra]" time="0.005" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning-[2026/10/16 12:00:00] info: -False-quick_zero]" time="0.005" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning-[2026/10/16 12:00:00] info: -True-everyday]" time="0.073"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_summary_row_prefix_does_n15')
+method = &lt;MethodId.EVERYDAY: 'everyday'&gt;, large = True
+prefix = '[2026/10/16 12:00:00] info: ', row = '! sda | 1 | 2 | 50.00%\n'
+expected = 'warning'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["", "info: ", _STAMP])
+    @pytest.mark.parametrize(
+        ("row", "expected"),
+        [
+            ("! sda | 1 | 2 | 50.00%\n", "warning"),
+            ("! sda | invalid | 2 | 50.00%\n", "unavailable"),
+            ("! sda | 2 | 2 | 100.00%\n", "pass"),
+        ],
+    )
+    def test_summary_row_prefix_does_not_change_checks_at_large_log_boundary(
+        tmp_path, method, large, prefix, row, expected
+    ):
+        text = (
+            _NONE + _HEADER + prefix + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == expected
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:88: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning-[2026/10/16 12:00:00] info: -True-extra]" time="0.073"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_summary_row_prefix_does_n16')
+method = &lt;MethodId.EXTRA: 'extra'&gt;, large = True
+prefix = '[2026/10/16 12:00:00] info: ', row = '! sda | 1 | 2 | 50.00%\n'
+expected = 'warning'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["", "info: ", _STAMP])
+    @pytest.mark.parametrize(
+        ("row", "expected"),
+        [
+            ("! sda | 1 | 2 | 50.00%\n", "warning"),
+            ("! sda | invalid | 2 | 50.00%\n", "unavailable"),
+            ("! sda | 2 | 2 | 100.00%\n", "pass"),
+        ],
+    )
+    def test_summary_row_prefix_does_not_change_checks_at_large_log_boundary(
+        tmp_path, method, large, prefix, row, expected
+    ):
+        text = (
+            _NONE + _HEADER + prefix + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == expected
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:88: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 1 | 2 | 50.00%\n-warning-[2026/10/16 12:00:00] info: -True-quick_zero]" time="0.062"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_summary_row_prefix_does_n17')
+method = &lt;MethodId.QUICK_ZERO: 'quick_zero'&gt;, large = True
+prefix = '[2026/10/16 12:00:00] info: ', row = '! sda | 1 | 2 | 50.00%\n'
+expected = 'warning'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["", "info: ", _STAMP])
+    @pytest.mark.parametrize(
+        ("row", "expected"),
+        [
+            ("! sda | 1 | 2 | 50.00%\n", "warning"),
+            ("! sda | invalid | 2 | 50.00%\n", "unavailable"),
+            ("! sda | 2 | 2 | 100.00%\n", "pass"),
+        ],
+    )
+    def test_summary_row_prefix_does_not_change_checks_at_large_log_boundary(
+        tmp_path, method, large, prefix, row, expected
+    ):
+        text = (
+            _NONE + _HEADER + prefix + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == expected
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:88: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable--False-everyday]" time="0.004" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable--False-extra]" time="0.004" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable--False-quick_zero]" time="0.004" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable--True-everyday]" time="0.068" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable--True-extra]" time="0.064" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable--True-quick_zero]" time="0.057" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable-info: -False-everyday]" time="0.005" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable-info: -False-extra]" time="0.004" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable-info: -False-quick_zero]" time="0.004" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable-info: -True-everyday]" time="0.060"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_summary_row_prefix_does_n27')
+method = &lt;MethodId.EVERYDAY: 'everyday'&gt;, large = True, prefix = 'info: '
+row = '! sda | invalid | 2 | 50.00%\n', expected = 'unavailable'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["", "info: ", _STAMP])
+    @pytest.mark.parametrize(
+        ("row", "expected"),
+        [
+            ("! sda | 1 | 2 | 50.00%\n", "warning"),
+            ("! sda | invalid | 2 | 50.00%\n", "unavailable"),
+            ("! sda | 2 | 2 | 100.00%\n", "pass"),
+        ],
+    )
+    def test_summary_row_prefix_does_not_change_checks_at_large_log_boundary(
+        tmp_path, method, large, prefix, row, expected
+    ):
+        text = (
+            _NONE + _HEADER + prefix + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == expected
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:88: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable-info: -True-extra]" time="0.072"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_summary_row_prefix_does_n28')
+method = &lt;MethodId.EXTRA: 'extra'&gt;, large = True, prefix = 'info: '
+row = '! sda | invalid | 2 | 50.00%\n', expected = 'unavailable'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["", "info: ", _STAMP])
+    @pytest.mark.parametrize(
+        ("row", "expected"),
+        [
+            ("! sda | 1 | 2 | 50.00%\n", "warning"),
+            ("! sda | invalid | 2 | 50.00%\n", "unavailable"),
+            ("! sda | 2 | 2 | 100.00%\n", "pass"),
+        ],
+    )
+    def test_summary_row_prefix_does_not_change_checks_at_large_log_boundary(
+        tmp_path, method, large, prefix, row, expected
+    ):
+        text = (
+            _NONE + _HEADER + prefix + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == expected
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:88: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable-info: -True-quick_zero]" time="0.060"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_summary_row_prefix_does_n29')
+method = &lt;MethodId.QUICK_ZERO: 'quick_zero'&gt;, large = True, prefix = 'info: '
+row = '! sda | invalid | 2 | 50.00%\n', expected = 'unavailable'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["", "info: ", _STAMP])
+    @pytest.mark.parametrize(
+        ("row", "expected"),
+        [
+            ("! sda | 1 | 2 | 50.00%\n", "warning"),
+            ("! sda | invalid | 2 | 50.00%\n", "unavailable"),
+            ("! sda | 2 | 2 | 100.00%\n", "pass"),
+        ],
+    )
+    def test_summary_row_prefix_does_not_change_checks_at_large_log_boundary(
+        tmp_path, method, large, prefix, row, expected
+    ):
+        text = (
+            _NONE + _HEADER + prefix + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == expected
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:88: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable-[2026/10/16 12:00:00] info: -False-everyday]" time="0.005" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable-[2026/10/16 12:00:00] info: -False-extra]" time="0.005" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable-[2026/10/16 12:00:00] info: -False-quick_zero]" time="0.004" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable-[2026/10/16 12:00:00] info: -True-everyday]" time="0.061"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_summary_row_prefix_does_n33')
+method = &lt;MethodId.EVERYDAY: 'everyday'&gt;, large = True
+prefix = '[2026/10/16 12:00:00] info: ', row = '! sda | invalid | 2 | 50.00%\n'
+expected = 'unavailable'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["", "info: ", _STAMP])
+    @pytest.mark.parametrize(
+        ("row", "expected"),
+        [
+            ("! sda | 1 | 2 | 50.00%\n", "warning"),
+            ("! sda | invalid | 2 | 50.00%\n", "unavailable"),
+            ("! sda | 2 | 2 | 100.00%\n", "pass"),
+        ],
+    )
+    def test_summary_row_prefix_does_not_change_checks_at_large_log_boundary(
+        tmp_path, method, large, prefix, row, expected
+    ):
+        text = (
+            _NONE + _HEADER + prefix + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == expected
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:88: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable-[2026/10/16 12:00:00] info: -True-extra]" time="0.061"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_summary_row_prefix_does_n34')
+method = &lt;MethodId.EXTRA: 'extra'&gt;, large = True
+prefix = '[2026/10/16 12:00:00] info: ', row = '! sda | invalid | 2 | 50.00%\n'
+expected = 'unavailable'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["", "info: ", _STAMP])
+    @pytest.mark.parametrize(
+        ("row", "expected"),
+        [
+            ("! sda | 1 | 2 | 50.00%\n", "warning"),
+            ("! sda | invalid | 2 | 50.00%\n", "unavailable"),
+            ("! sda | 2 | 2 | 100.00%\n", "pass"),
+        ],
+    )
+    def test_summary_row_prefix_does_not_change_checks_at_large_log_boundary(
+        tmp_path, method, large, prefix, row, expected
+    ):
+        text = (
+            _NONE + _HEADER + prefix + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == expected
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:88: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | invalid | 2 | 50.00%\n-unavailable-[2026/10/16 12:00:00] info: -True-quick_zero]" time="0.061"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_summary_row_prefix_does_n35')
+method = &lt;MethodId.QUICK_ZERO: 'quick_zero'&gt;, large = True
+prefix = '[2026/10/16 12:00:00] info: ', row = '! sda | invalid | 2 | 50.00%\n'
+expected = 'unavailable'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["", "info: ", _STAMP])
+    @pytest.mark.parametrize(
+        ("row", "expected"),
+        [
+            ("! sda | 1 | 2 | 50.00%\n", "warning"),
+            ("! sda | invalid | 2 | 50.00%\n", "unavailable"),
+            ("! sda | 2 | 2 | 100.00%\n", "pass"),
+        ],
+    )
+    def test_summary_row_prefix_does_not_change_checks_at_large_log_boundary(
+        tmp_path, method, large, prefix, row, expected
+    ):
+        text = (
+            _NONE + _HEADER + prefix + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == expected
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:88: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass--False-everyday]" time="0.004" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass--False-extra]" time="0.004" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass--False-quick_zero]" time="0.004" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass--True-everyday]" time="0.055" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass--True-extra]" time="0.054" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass--True-quick_zero]" time="0.056" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass-info: -False-everyday]" time="0.004" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass-info: -False-extra]" time="0.004" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass-info: -False-quick_zero]" time="0.004" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass-info: -True-everyday]" time="0.055" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass-info: -True-extra]" time="0.054" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass-info: -True-quick_zero]" time="0.059" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass-[2026/10/16 12:00:00] info: -False-everyday]" time="0.006" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass-[2026/10/16 12:00:00] info: -False-extra]" time="0.004" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass-[2026/10/16 12:00:00] info: -False-quick_zero]" time="0.004" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass-[2026/10/16 12:00:00] info: -True-everyday]" time="0.063" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass-[2026/10/16 12:00:00] info: -True-extra]" time="0.061" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_row_prefix_does_not_change_checks_at_large_log_boundary[! sda | 2 | 2 | 100.00%\n-pass-[2026/10/16 12:00:00] info: -True-quick_zero]" time="0.060" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_prefixed_summary_close_keeps_later_rows_outside_table[info: -False-everyday]" time="0.005" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_prefixed_summary_close_keeps_later_rows_outside_table[info: -False-extra]" time="0.005" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_prefixed_summary_close_keeps_later_rows_outside_table[info: -False-quick_zero]" time="0.005" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_prefixed_summary_close_keeps_later_rows_outside_table[info: -True-everyday]" time="0.061"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not a pass.', 'detail': 'The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105'}} != {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwip...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_prefixed_summary_close_ke3')
+method = &lt;MethodId.EVERYDAY: 'everyday'&gt;, large = True, prefix = 'info: '
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["info: ", _STAMP])
+    def test_prefixed_summary_close_keeps_later_rows_outside_table(
+        tmp_path, method, large, prefix
+    ):
+        text = (
+            _NONE + _HEADER + " sda | 2 | 2 | 100.00%\n"
+            + prefix + _CLOSE + "! sda | 1 | 2 | 50.00%\n"
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == "pass"
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not a pass.', 'detail': 'The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105'}} != {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwip...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:106: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_prefixed_summary_close_keeps_later_rows_outside_table[info: -True-extra]" time="0.078"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not a pass.', 'detail': 'The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105'}} != {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwip...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_prefixed_summary_close_ke4')
+method = &lt;MethodId.EXTRA: 'extra'&gt;, large = True, prefix = 'info: '
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["info: ", _STAMP])
+    def test_prefixed_summary_close_keeps_later_rows_outside_table(
+        tmp_path, method, large, prefix
+    ):
+        text = (
+            _NONE + _HEADER + " sda | 2 | 2 | 100.00%\n"
+            + prefix + _CLOSE + "! sda | 1 | 2 | 50.00%\n"
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == "pass"
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not a pass.', 'detail': 'The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105'}} != {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwip...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:106: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_prefixed_summary_close_keeps_later_rows_outside_table[info: -True-quick_zero]" time="0.056"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not a pass.', 'detail': 'The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105'}} != {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwip...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_prefixed_summary_close_ke5')
+method = &lt;MethodId.QUICK_ZERO: 'quick_zero'&gt;, large = True, prefix = 'info: '
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["info: ", _STAMP])
+    def test_prefixed_summary_close_keeps_later_rows_outside_table(
+        tmp_path, method, large, prefix
+    ):
+        text = (
+            _NONE + _HEADER + " sda | 2 | 2 | 100.00%\n"
+            + prefix + _CLOSE + "! sda | 1 | 2 | 50.00%\n"
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == "pass"
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not a pass.', 'detail': 'The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105'}} != {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwip...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:106: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_prefixed_summary_close_keeps_later_rows_outside_table[[2026/10/16 12:00:00] info: -False-everyday]" time="0.007" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_prefixed_summary_close_keeps_later_rows_outside_table[[2026/10/16 12:00:00] info: -False-extra]" time="0.011" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_prefixed_summary_close_keeps_later_rows_outside_table[[2026/10/16 12:00:00] info: -False-quick_zero]" time="0.009" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_prefixed_summary_close_keeps_later_rows_outside_table[[2026/10/16 12:00:00] info: -True-everyday]" time="0.074"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not a pass.', 'detail': 'The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105'}} != {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwip...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_prefixed_summary_close_ke9')
+method = &lt;MethodId.EVERYDAY: 'everyday'&gt;, large = True
+prefix = '[2026/10/16 12:00:00] info: '
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["info: ", _STAMP])
+    def test_prefixed_summary_close_keeps_later_rows_outside_table(
+        tmp_path, method, large, prefix
+    ):
+        text = (
+            _NONE + _HEADER + " sda | 2 | 2 | 100.00%\n"
+            + prefix + _CLOSE + "! sda | 1 | 2 | 50.00%\n"
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == "pass"
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not a pass.', 'detail': 'The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105'}} != {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwip...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:106: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_prefixed_summary_close_keeps_later_rows_outside_table[[2026/10/16 12:00:00] info: -True-extra]" time="0.069"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not a pass.', 'detail': 'The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105'}} != {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwip...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_prefixed_summary_close_ke10')
+method = &lt;MethodId.EXTRA: 'extra'&gt;, large = True
+prefix = '[2026/10/16 12:00:00] info: '
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["info: ", _STAMP])
+    def test_prefixed_summary_close_keeps_later_rows_outside_table(
+        tmp_path, method, large, prefix
+    ):
+        text = (
+            _NONE + _HEADER + " sda | 2 | 2 | 100.00%\n"
+            + prefix + _CLOSE + "! sda | 1 | 2 | 50.00%\n"
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == "pass"
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not a pass.', 'detail': 'The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105'}} != {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwip...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:106: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_prefixed_summary_close_keeps_later_rows_outside_table[[2026/10/16 12:00:00] info: -True-quick_zero]" time="0.074"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not a pass.', 'detail': 'The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105'}} != {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwip...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_prefixed_summary_close_ke11')
+method = &lt;MethodId.QUICK_ZERO: 'quick_zero'&gt;, large = True
+prefix = '[2026/10/16 12:00:00] info: '
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize("prefix", ["info: ", _STAMP])
+    def test_prefixed_summary_close_keeps_later_rows_outside_table(
+        tmp_path, method, large, prefix
+    ):
+        text = (
+            _NONE + _HEADER + " sda | 2 | 2 | 100.00%\n"
+            + prefix + _CLOSE + "! sda | 1 | 2 | 50.00%\n"
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+            + _STATUS
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] == "pass"
+        assessment = _assess(tmp_path, text, method)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not a pass.', 'detail': 'The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105'}} != {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwip...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:106: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_stop_keeps_prefixed_summary_warning_or_uncertainty[! sda | 1 | 2 | 50.00%\n-False-everyday]" time="0.003" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_stop_keeps_prefixed_summary_warning_or_uncertainty[! sda | 1 | 2 | 50.00%\n-False-extra]" time="0.002" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_stop_keeps_prefixed_summary_warning_or_uncertainty[! sda | 1 | 2 | 50.00%\n-False-quick_zero]" time="0.002" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_stop_keeps_prefixed_summary_warning_or_uncertainty[! sda | 1 | 2 | 50.00%\n-True-everyday]" time="0.055"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_stop_keeps_prefixed_summa3')
+method = &lt;MethodId.EVERYDAY: 'everyday'&gt;, large = True
+row = '! sda | 1 | 2 | 50.00%\n'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize(
+        "row", ["! sda | 1 | 2 | 50.00%\n", "! sda | invalid | 2 | 50.00%\n"]
+    )
+    def test_stop_keeps_prefixed_summary_warning_or_uncertainty(
+        tmp_path, method, large, row
+    ):
+        text = (
+            _NONE + _HEADER + _STAMP + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] in {"warning", "unavailable"}
+        assessment = _assess(tmp_path, text, method, stop=True)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:124: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_stop_keeps_prefixed_summary_warning_or_uncertainty[! sda | 1 | 2 | 50.00%\n-True-extra]" time="0.093"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_stop_keeps_prefixed_summa4')
+method = &lt;MethodId.EXTRA: 'extra'&gt;, large = True
+row = '! sda | 1 | 2 | 50.00%\n'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize(
+        "row", ["! sda | 1 | 2 | 50.00%\n", "! sda | invalid | 2 | 50.00%\n"]
+    )
+    def test_stop_keeps_prefixed_summary_warning_or_uncertainty(
+        tmp_path, method, large, row
+    ):
+        text = (
+            _NONE + _HEADER + _STAMP + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] in {"warning", "unavailable"}
+        assessment = _assess(tmp_path, text, method, stop=True)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:124: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_stop_keeps_prefixed_summary_warning_or_uncertainty[! sda | 1 | 2 | 50.00%\n-True-quick_zero]" time="0.069"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_stop_keeps_prefixed_summa5')
+method = &lt;MethodId.QUICK_ZERO: 'quick_zero'&gt;, large = True
+row = '! sda | 1 | 2 | 50.00%\n'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize(
+        "row", ["! sda | 1 | 2 | 50.00%\n", "! sda | invalid | 2 | 50.00%\n"]
+    )
+    def test_stop_keeps_prefixed_summary_warning_or_uncertainty(
+        tmp_path, method, large, row
+    ):
+        text = (
+            _NONE + _HEADER + _STAMP + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] in {"warning", "unavailable"}
+        assessment = _assess(tmp_path, text, method, stop=True)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'warning', 'summary': 'This disk may have hidden storage the erase did not reach. ...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:124: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_stop_keeps_prefixed_summary_warning_or_uncertainty[! sda | invalid | 2 | 50.00%\n-False-everyday]" time="0.004" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_stop_keeps_prefixed_summary_warning_or_uncertainty[! sda | invalid | 2 | 50.00%\n-False-extra]" time="0.003" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_stop_keeps_prefixed_summary_warning_or_uncertainty[! sda | invalid | 2 | 50.00%\n-False-quick_zero]" time="0.004" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_stop_keeps_prefixed_summary_warning_or_uncertainty[! sda | invalid | 2 | 50.00%\n-True-everyday]" time="0.083"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_stop_keeps_prefixed_summa9')
+method = &lt;MethodId.EVERYDAY: 'everyday'&gt;, large = True
+row = '! sda | invalid | 2 | 50.00%\n'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize(
+        "row", ["! sda | 1 | 2 | 50.00%\n", "! sda | invalid | 2 | 50.00%\n"]
+    )
+    def test_stop_keeps_prefixed_summary_warning_or_uncertainty(
+        tmp_path, method, large, row
+    ):
+        text = (
+            _NONE + _HEADER + _STAMP + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] in {"warning", "unavailable"}
+        assessment = _assess(tmp_path, text, method, stop=True)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:124: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_stop_keeps_prefixed_summary_warning_or_uncertainty[! sda | invalid | 2 | 50.00%\n-True-extra]" time="0.085"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_stop_keeps_prefixed_summa10')
+method = &lt;MethodId.EXTRA: 'extra'&gt;, large = True
+row = '! sda | invalid | 2 | 50.00%\n'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize(
+        "row", ["! sda | 1 | 2 | 50.00%\n", "! sda | invalid | 2 | 50.00%\n"]
+    )
+    def test_stop_keeps_prefixed_summary_warning_or_uncertainty(
+        tmp_path, method, large, row
+    ):
+        text = (
+            _NONE + _HEADER + _STAMP + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] in {"warning", "unavailable"}
+        assessment = _assess(tmp_path, text, method, stop=True)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:124: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_stop_keeps_prefixed_summary_warning_or_uncertainty[! sda | invalid | 2 | 50.00%\n-True-quick_zero]" time="0.065"><failure message="AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]&#10;  &#10;  At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_stop_keeps_prefixed_summa11')
+method = &lt;MethodId.QUICK_ZERO: 'quick_zero'&gt;, large = True
+row = '! sda | invalid | 2 | 50.00%\n'
+
+    @pytest.mark.parametrize("method", list(MethodId))
+    @pytest.mark.parametrize("large", [False, True])
+    @pytest.mark.parametrize(
+        "row", ["! sda | 1 | 2 | 50.00%\n", "! sda | invalid | 2 | 50.00%\n"]
+    )
+    def test_stop_keeps_prefixed_summary_warning_or_uncertainty(
+        tmp_path, method, large, row
+    ):
+        text = (
+            _NONE + _HEADER + _STAMP + row + _CLOSE
+            + (_padding(module.NWIPE_COMPLETION_LOG_BYTES) if large else "")
+        )
+        full_checks = check_payloads(text, "/dev/sda")
+        assert full_checks[0]["status"] in {"warning", "unavailable"}
+        assessment = _assess(tmp_path, text, method, stop=True)
+&gt;       assert check_payloads(assessment, "/dev/sda") == full_checks
+E       AssertionError: assert [{'detail': '...arning', ...}] == [{'detail': '...arning', ...}]
+E         
+E         At index 0 diff: {'id': 'hidden_capacity', 'status': 'pass', 'summary': 'No hidden storage was reported for this disk.', 'detail': 'Pinned nwipe v0.42 logged that no hidden sectors were found on the target.', 'provenance': {'source': 'nwipe_log', 'parser': 'beamo_wipe.engine_checks.hidden_capacity', 'engine': 'nwipe', 'engine_version': '0.42', 'engine_commit': '6082bde060091e66365d852a1877f2ee80c67105', 'matched': 'No hidden sectors on /dev/&lt;disk&gt;'}} != {'id': 'hidden_capacity', 'status': 'unavailable', 'summary': 'The hidden-storage check was not available. That is not...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_runner_projection_summary_context_pass11.py:124: AssertionError</failure></testcase><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_shortfall_stays_warning_at_exact_scan_boundary[-1]" time="0.063" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_shortfall_stays_warning_at_exact_scan_boundary[0]" time="0.057" /><testcase classname="tests.test_runner_projection_summary_context_pass11" name="test_summary_shortfall_stays_warning_at_exact_scan_boundary[1]" time="0.019"><failure message="AssertionError: assert 'pass' == 'warning'&#10;  &#10;  - warning&#10;  + pass">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-313/test_summary_shortfall_stays_w2')
+delta = 1
+
+    @pytest.mark.parametrize("delta", [-1, 0, 1])
+    def test_summary_shortfall_stays_warning_at_exact_scan_boundary(tmp_path, delta):
+        evidence = _NONE + _HEADER + _STAMP + "! sda | 1 | 2 | 50.00%\n" + _CLOSE
+        text = evidence + _padding(
+            module.NWIPE_COMPLETION_LOG_BYTES + delta - len(evidence) - len(_STATUS)
+        ) + _STATUS
+        assert len(text) == module.NWIPE_COMPLETION_LOG_BYTES + delta
+        assessment = _assess(tmp_path, text, MethodId.EVERYDAY)
+&gt;       assert check_payloads(assessment, "/dev/sda")[0]["status"] == "warning"
+E       AssertionError: assert 'pass' == 'warning'
+E         
+E         - warning
+E         + pass
+
+tests/test_runner_projection_summary_context_pass11.py:135: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1604,6 +1604,8 @@ def test_sound_check_dialog_toggles_and_hears_outcome_sounds(ui, monkeypatch):
 def test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog(ui, monkeypatch):
     from threading import Event
     from beamo_wipe import sound
+    from beamo_wipe.audio_jobs import AudioWorker
+    from beamo_wipe.ui import sound_dialog
 
     entered = Event()
     release = Event()
@@ -1615,10 +1617,13 @@ def test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog(ui, mon
         return state
     monkeypatch.setattr(sound, "list_outputs", slow_outputs)
     app = ui()
-    started = time.perf_counter()
-    app.actions[C.SOUND_CHECK_BUTTON].clicked()
-    assert time.perf_counter() - started < 0.06
+    # Own this controlled job so failure cleanup settles it before mocks retire.
+    audio_worker = AudioWorker()
+    monkeypatch.setattr(sound_dialog, "worker", audio_worker)
     try:
+        started = time.perf_counter()
+        app.actions[C.SOUND_CHECK_BUTTON].clicked()
+        assert time.perf_counter() - started < 0.06
         assert entered.wait(timeout=1)
         started = time.perf_counter()
         app.tick()
@@ -1630,6 +1635,8 @@ def test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog(ui, mon
         assert app._sound_dialog.ticket is None
     finally:
         release.set()
+        audio_worker.close()
+        assert audio_worker._thread is None or not audio_worker._thread.is_alive()
     time.sleep(0.02)
     app.tick()
     assert _sound_dialog() == []

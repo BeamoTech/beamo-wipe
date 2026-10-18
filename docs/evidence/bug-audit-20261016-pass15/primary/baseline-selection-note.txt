@@ -1,0 +1,1 @@
+Preparation-only count assertion failed before any test started: a pre-existing tracked module also ends pass14.py. Selected prior audit modules through the canonical18-module manifest, adding the three untracked pass14 regressions to42 baseline modules.45 unique modules; no tests or scope relaxed.

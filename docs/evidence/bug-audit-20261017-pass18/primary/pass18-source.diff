@@ -1,0 +1,101 @@
+--- starting/src/beamo_wipe/discover.py
++++ final/src/beamo_wipe/discover.py
+@@ -1435,12 +1435,15 @@
+         anchors.append(boot)
+     for anchor in anchors:
+         component = (anchor, *protected_hardware_aliases(anchor, observations))
+-        paths = {os.path.realpath(disk.path) for disk in component}
++        paths = {
++            os.path.realpath(disk.path) for disk in component
++            if disk.path and disk.path != "/dev/"
++        }
+         anchor_wwn = canonical_wwn(anchor.wwn)
+         for path, serials, wwns, wwn_unknown in unresolved:
+             # The partial projection may already connect through its valid
+             # other field; unresolved identity cannot truncate that bridge.
+-            if path in paths:
++            if path and path in paths:
+                 return True
+             serial_keys, wwn_keys = set(serials), set(wwns)
+             if anchor_wwn and wwn_keys and not wwn_unknown:
+@@ -2020,7 +2023,23 @@
+             # Keep the direct parser API fail-closed without an escaped error.
+             return DiscoveryResult(error=_copy.IDENTIFY_ERROR, boot_identified=False)
+         if not path or path == "/dev/":
+-            continue  # An isolated pathless row still cannot hide its siblings.
++            # Preserve hardware facts without repairing a path or validating
++            # unrelated display/size/transport data from this excluded row.
++            identity_node = {
++                "name": "", "path": path,
++                "serial": node.get("serial"), "wwn": node.get("wwn"),
++                "children": node.get("children"),
++            }
++            observation, invalid_ids, identity_context = _physical_observation(
++                identity_node, ()
++            )
++            physical_observations.append(observation)
++            if any(invalid_ids):
++                # Empty path means unknown, never a shared device identity.
++                unresolved_physical.append((
++                    "", identity_context[0], identity_context[1], identity_context[3]
++                ))
++            continue
+         observation, invalid_ids, identity_context = _physical_observation(node, effective_mounts)
+         canonical = os.path.realpath(path)
+         signature = (observation, _as_bool(node.get("ro")), invalid_ids, identity_context)
+--- starting/src/beamo_wipe/ui/console_wizard.py
++++ final/src/beamo_wipe/ui/console_wizard.py
+@@ -1248,6 +1248,7 @@
+         stdscr.erase()
+         h, w = stdscr.getmaxyx()
+         h, w = max(2, h), max(20, w)
++        review_ready_painted = wizard.screen == Screen.LAST_CHANCE and wizard.erase_enabled
+         footer = _footer_lines(wizard, inventory_open, w, h, review_overlay_held)
+         y_max = max(1, h - len(footer))
+         chrome = _chrome_lines(wizard, w)
+@@ -1870,6 +1871,13 @@
+             continue
+         if wizard.screen not in _paged:
+             limits_offset = 0
++        # A slow paint can consume the countdown while its footer still
++        # tells the owner to wait. Enter belongs to that displayed frame;
++        # require a visibly enabled action as well as _handle's live gate.
++        # Keep this after hold bookkeeping so repeating the rejected key
++        # cannot become a fresh action when the next frame is ready.
++        if wizard.screen == Screen.LAST_CHANCE and ch in (curses.KEY_ENTER, 10, 13) and not review_ready_painted:
++            continue
+         _handle(wizard, ch)
+     if review_overlay_held:
+         wizard.end_review_overlay()
+--- starting/src/beamo_wipe/ui/tk_wizard.py
++++ final/src/beamo_wipe/ui/tk_wizard.py
+@@ -983,7 +983,8 @@
+         self.bind("<Configure>", self._flow_label, add="+")
+         self._sync()
+         self._paint()
+-        variable.trace_add("write", self._on_variable)
++        self._variable_trace: Optional[str] = variable.trace_add("write", self._on_variable)
++        self.bind("<Destroy>", self._retire_variable_trace, add="+")
+         self.bind("<Enter>", self._enter)
+         self.bind("<Leave>", self._leave)
+         self.bind("<ButtonPress-1>", self._press)
+@@ -1010,6 +1011,19 @@
+     def _on_variable(self, *_args) -> None:
+         self._sync()
+         self._paint()
++
++    def _retire_variable_trace(self, event) -> None:
++        if event.widget is not self or self._variable_trace is None:
++            return
++        token = self._variable_trace
++        self._variable_trace = None
++        try:
++            # Variable callbacks outlive widgets unless explicitly removed.
++            # Keep other rows and independent observers on this variable.
++            self._variable.trace_remove("write", token)
++        except tk.TclError:
++            # Interpreter teardown may already have removed the variable.
++            pass
+ 
+     def _row_bg(self) -> str:
+         if self._pressed:

@@ -1,0 +1,133 @@
+[
+  {
+    "phase": "lint",
+    "command": [
+      "./scripts/ci-hosted.sh",
+      "lint"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-17T18:58:00.007392+00:00",
+    "ended_utc": "2026-10-17T18:58:04.746156+00:00",
+    "source_freeze_sha256": "1b9b9c35433cd761e1275dcfac0a32efc2c22e49b2ef83148e664be321dd9a91",
+    "crossbuild_env": {},
+    "pytest_plugins": null
+  },
+  {
+    "phase": "preview",
+    "command": [
+      "./scripts/ci-hosted.sh",
+      "preview"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-17T18:58:04.775827+00:00",
+    "ended_utc": "2026-10-17T18:58:06.220358+00:00",
+    "source_freeze_sha256": "1b9b9c35433cd761e1275dcfac0a32efc2c22e49b2ef83148e664be321dd9a91",
+    "crossbuild_env": {},
+    "pytest_plugins": null
+  },
+  {
+    "phase": "negative",
+    "command": [
+      "./scripts/ci-hosted.sh",
+      "negative"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-17T18:58:06.246515+00:00",
+    "ended_utc": "2026-10-17T18:58:07.314739+00:00",
+    "source_freeze_sha256": "1b9b9c35433cd761e1275dcfac0a32efc2c22e49b2ef83148e664be321dd9a91",
+    "crossbuild_env": {},
+    "pytest_plugins": null
+  },
+  {
+    "phase": "go-version",
+    "command": [
+      "go",
+      "version"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-17T18:58:07.340747+00:00",
+    "ended_utc": "2026-10-17T18:58:07.413009+00:00",
+    "source_freeze_sha256": "1b9b9c35433cd761e1275dcfac0a32efc2c22e49b2ef83148e664be321dd9a91",
+    "crossbuild_env": {},
+    "pytest_plugins": null
+  },
+  {
+    "phase": "go-race",
+    "command": [
+      "go",
+      "test",
+      "-count=1",
+      "-race",
+      "./..."
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-17T18:58:07.440632+00:00",
+    "ended_utc": "2026-10-17T18:58:10.419083+00:00",
+    "source_freeze_sha256": "1b9b9c35433cd761e1275dcfac0a32efc2c22e49b2ef83148e664be321dd9a91",
+    "crossbuild_env": {},
+    "pytest_plugins": null
+  },
+  {
+    "phase": "go-vet",
+    "command": [
+      "go",
+      "vet",
+      "./..."
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-17T18:58:10.447717+00:00",
+    "ended_utc": "2026-10-17T18:58:10.792983+00:00",
+    "source_freeze_sha256": "1b9b9c35433cd761e1275dcfac0a32efc2c22e49b2ef83148e664be321dd9a91",
+    "crossbuild_env": {},
+    "pytest_plugins": null
+  },
+  {
+    "phase": "go-windows-crossbuild",
+    "command": [
+      "go",
+      "test",
+      "-c",
+      "-o",
+      "/tmp/pass20-primary/desktop-windows.test.exe"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-17T18:58:10.817718+00:00",
+    "ended_utc": "2026-10-17T18:58:11.886257+00:00",
+    "source_freeze_sha256": "1b9b9c35433cd761e1275dcfac0a32efc2c22e49b2ef83148e664be321dd9a91",
+    "crossbuild_env": {
+      "GOOS": "windows",
+      "GOARCH": "amd64"
+    },
+    "pytest_plugins": null
+  },
+  {
+    "phase": "go-fuzz",
+    "command": [
+      "go",
+      "test",
+      "-run=^$",
+      "-fuzz=FuzzBootOption",
+      "-fuzztime=350000x",
+      "-parallel=2"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-17T18:58:11.910777+00:00",
+    "ended_utc": "2026-10-17T18:58:27.957074+00:00",
+    "source_freeze_sha256": "1b9b9c35433cd761e1275dcfac0a32efc2c22e49b2ef83148e664be321dd9a91",
+    "crossbuild_env": {},
+    "pytest_plugins": null
+  },
+  {
+    "phase": "final",
+    "command": [
+      "./scripts/ci-hosted.sh",
+      "tests"
+    ],
+    "exit_code": 1,
+    "started_utc": "2026-10-17T18:58:27.981073+00:00",
+    "ended_utc": "2026-10-17T19:17:55.572029+00:00",
+    "source_freeze_sha256": "1b9b9c35433cd761e1275dcfac0a32efc2c22e49b2ef83148e664be321dd9a91",
+    "crossbuild_env": {},
+    "pytest_plugins": null
+  }
+]

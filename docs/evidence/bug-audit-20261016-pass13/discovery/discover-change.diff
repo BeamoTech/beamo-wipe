@@ -1,0 +1,24 @@
+diff --git a/src/beamo_wipe/discover.py b/src/beamo_wipe/discover.py
+index 666aa94..71b2441 100644
+--- a/src/beamo_wipe/discover.py
++++ b/src/beamo_wipe/discover.py
+@@ -996,6 +996,10 @@ _EFI_PARTTYPES = frozenset(
+         "ef00",
+     }
+ )
++# GPT names such as "Benefits" contain the letters "efi" without naming
++# firmware. Preserve EFI/UEFI tokens separated by spaces or punctuation;
++# underscores count as separators, while Unicode letters remain word text.
++_EFI_PARTNAME_RE = re.compile(r"(?:^|[\W_])u?efi(?:$|[\W_])")
+ _WINDOWS_OS_PARTTYPES = frozenset(
+     {
+         "de94bba4-06d1-4d40-a16a-bfd50179d6ac",  # Windows recovery
+@@ -1063,7 +1067,7 @@ def _contents_from_evidence(
+     )
+     efi = bool(
+         labels & {item.casefold() for item in FIRMWARE_LABELS}
+-        or any("efi" in name or name == "esp" for name in partnames)
++        or any(_EFI_PARTNAME_RE.search(name) or name == "esp" for name in partnames)
+         or parttypes & _EFI_PARTTYPES
+     )
+     posix = bool(fstypes & _POSIX_FS)

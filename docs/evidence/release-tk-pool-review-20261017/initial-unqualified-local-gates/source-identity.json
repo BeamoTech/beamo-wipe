@@ -1,0 +1,9 @@
+{
+  "parent_sha": "4f7ee8d434497f52b58966792ed6cc28b587635e",
+  "frozen_inputs": 876,
+  "source_freeze_sha256": "e123a59f19dcb0027685e54087f5022e485cda79a6a86a948e7f338546dc5fcc",
+  "tk_sha256": "fefdc9963a92c7150d794392c337bf660134d683090d083a4c5d2d945575d43b",
+  "only_runtime_change": "src/beamo_wipe/ui/tk_wizard.py",
+  "version": "0.2.13",
+  "status": "local candidate; exact commit/hosted qualification pending"
+}

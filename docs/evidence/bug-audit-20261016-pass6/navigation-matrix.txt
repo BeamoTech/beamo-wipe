@@ -1,0 +1,1 @@
+20000 seeded fake UI transitions across 100 seeds: no unconfirmed start or fabricated result

@@ -1,0 +1,7 @@
+{
+  "status": "FAILED lint/type gate; later phases NOT RUN",
+  "error": "Optional Canvas not narrowed through getattr guard",
+  "source_tk_sha256": "d639822ca03fccc2f9be78c476fc4b594118ac2b9195d2a2979b3c8f9a6e7cf8",
+  "source_freeze_inputs": 778,
+  "at": "2026-10-17T18:57:57.801249+00:00"
+}

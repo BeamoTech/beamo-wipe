@@ -1,0 +1,58 @@
+dbus-daemon[465556]: [session uid=0 pid=465556] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=465570 comm="/tmp/beamo-wipe-audit-python/bin/python3 -m pytest" label="unconfined")
+dbus-daemon[465556]: [session uid=0 pid=465556] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[465579]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=465570 comm="/tmp/beamo-wipe-audit-python/bin/python3 -m pytest" label="unconfined")
+dbus-daemon[465579]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+FF.                                                                      [100%]
+=================================== FAILURES ===================================
+_______ test_sound_close_returns_keyboard_focus_to_the_parent[response] ________
+
+ui = <function ui.<locals>.build at 0x766ee0ad7060>, fake_audio = []
+response = 'response'
+
+    @pytest.mark.parametrize("response", ["response", "close"])
+    def test_sound_close_returns_keyboard_focus_to_the_parent(ui, fake_audio, response):  # noqa: F811
+        app = ui(_owner())
+        controller = _open(app)
+        controller.dialog.present()
+        controller.dialog.get_window().focus(Gdk.CURRENT_TIME)
+        _assert_modal(app, controller)
+        if response == "response":
+            controller.dialog.response(Gtk.ResponseType.CLOSE)
+        else:
+            controller.close()
+        assert controller.dialog is None
+        state = _state(app)
+        assert state["parent_focused"], state
+        focused = app.window.get_focus()
+>       assert focused is not None
+E       assert None is not None
+
+tests/test_accessible_sound_modal_pass10.py:183: AssertionError
+_________ test_sound_close_returns_keyboard_focus_to_the_parent[close] _________
+
+ui = <function ui.<locals>.build at 0x766ee0ad7420>, fake_audio = []
+response = 'close'
+
+    @pytest.mark.parametrize("response", ["response", "close"])
+    def test_sound_close_returns_keyboard_focus_to_the_parent(ui, fake_audio, response):  # noqa: F811
+        app = ui(_owner())
+        controller = _open(app)
+        controller.dialog.present()
+        controller.dialog.get_window().focus(Gdk.CURRENT_TIME)
+        _assert_modal(app, controller)
+        if response == "response":
+            controller.dialog.response(Gtk.ResponseType.CLOSE)
+        else:
+            controller.close()
+        assert controller.dialog is None
+        state = _state(app)
+        assert state["parent_focused"], state
+        focused = app.window.get_focus()
+>       assert focused is not None
+E       assert None is not None
+
+tests/test_accessible_sound_modal_pass10.py:183: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_accessible_sound_modal_pass10.py::test_sound_close_returns_keyboard_focus_to_the_parent[response]
+FAILED tests/test_accessible_sound_modal_pass10.py::test_sound_close_returns_keyboard_focus_to_the_parent[close]

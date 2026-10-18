@@ -1,0 +1,1497 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="60" skipped="0" tests="165" time="15.252" timestamp="2026-10-16T21:03:33.604059+00:00" hostname="srv1606478"><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Benefits-partlabel-ntfs-tree]" time="0.031"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a68cd70&gt;
+shape = 'tree', fstype = 'ntfs', field = 'partlabel', name = 'Benefits'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Benefits-partlabel-ntfs-flat]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a689430&gt;
+shape = 'flat', fstype = 'ntfs', field = 'partlabel', name = 'Benefits'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Benefits-partlabel-ext4-tree]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a68ae70&gt;
+shape = 'tree', fstype = 'ext4', field = 'partlabel', name = 'Benefits'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Benefits-partlabel-ext4-flat]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a68a960&gt;
+shape = 'flat', fstype = 'ext4', field = 'partlabel', name = 'Benefits'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Benefits-parttypename-ntfs-tree]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a689100&gt;
+shape = 'tree', fstype = 'ntfs', field = 'parttypename', name = 'Benefits'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Benefits-parttypename-ntfs-flat]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a68a720&gt;
+shape = 'flat', fstype = 'ntfs', field = 'parttypename', name = 'Benefits'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Benefits-parttypename-ext4-tree]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a9becc0&gt;
+shape = 'tree', fstype = 'ext4', field = 'parttypename', name = 'Benefits'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Benefits-parttypename-ext4-flat]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a9bc980&gt;
+shape = 'flat', fstype = 'ext4', field = 'parttypename', name = 'Benefits'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Definitions-partlabel-ntfs-tree]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a9bc4d0&gt;
+shape = 'tree', fstype = 'ntfs', field = 'partlabel', name = 'Definitions'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Definitions-partlabel-ntfs-flat]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a7ba300&gt;
+shape = 'flat', fstype = 'ntfs', field = 'partlabel', name = 'Definitions'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Definitions-partlabel-ext4-tree]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a678890&gt;
+shape = 'tree', fstype = 'ext4', field = 'partlabel', name = 'Definitions'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Definitions-partlabel-ext4-flat]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a68abd0&gt;
+shape = 'flat', fstype = 'ext4', field = 'partlabel', name = 'Definitions'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Definitions-parttypename-ntfs-tree]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a68b680&gt;
+shape = 'tree', fstype = 'ntfs', field = 'parttypename', name = 'Definitions'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Definitions-parttypename-ntfs-flat]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a9bce30&gt;
+shape = 'flat', fstype = 'ntfs', field = 'parttypename', name = 'Definitions'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Definitions-parttypename-ext4-tree]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a9bcf80&gt;
+shape = 'tree', fstype = 'ext4', field = 'parttypename', name = 'Definitions'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[Definitions-parttypename-ext4-flat]" time="0.004"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a9bf7d0&gt;
+shape = 'flat', fstype = 'ext4', field = 'parttypename', name = 'Definitions'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[\xe9EFI-partlabel-ntfs-tree]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a9be390&gt;
+shape = 'tree', fstype = 'ntfs', field = 'partlabel', name = 'éEFI'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[\xe9EFI-partlabel-ntfs-flat]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a9bc3e0&gt;
+shape = 'flat', fstype = 'ntfs', field = 'partlabel', name = 'éEFI'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[\xe9EFI-partlabel-ext4-tree]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a975520&gt;
+shape = 'tree', fstype = 'ext4', field = 'partlabel', name = 'éEFI'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[\xe9EFI-partlabel-ext4-flat]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a977890&gt;
+shape = 'flat', fstype = 'ext4', field = 'partlabel', name = 'éEFI'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[\xe9EFI-parttypename-ntfs-tree]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a974590&gt;
+shape = 'tree', fstype = 'ntfs', field = 'parttypename', name = 'éEFI'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[\xe9EFI-parttypename-ntfs-flat]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a976d80&gt;
+shape = 'flat', fstype = 'ntfs', field = 'parttypename', name = 'éEFI'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[\xe9EFI-parttypename-ext4-tree]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a976210&gt;
+shape = 'tree', fstype = 'ext4', field = 'parttypename', name = 'éEFI'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[\xe9EFI-parttypename-ext4-flat]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a9762a0&gt;
+shape = 'flat', fstype = 'ext4', field = 'parttypename', name = 'éEFI'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[EFI\u754c-partlabel-ntfs-tree]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a9bdf40&gt;
+shape = 'tree', fstype = 'ntfs', field = 'partlabel', name = 'EFI界'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[EFI\u754c-partlabel-ntfs-flat]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a9bcaa0&gt;
+shape = 'flat', fstype = 'ntfs', field = 'partlabel', name = 'EFI界'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[EFI\u754c-partlabel-ext4-tree]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a9bc5c0&gt;
+shape = 'tree', fstype = 'ext4', field = 'partlabel', name = 'EFI界'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[EFI\u754c-partlabel-ext4-flat]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a689010&gt;
+shape = 'flat', fstype = 'ext4', field = 'partlabel', name = 'EFI界'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[EFI\u754c-parttypename-ntfs-tree]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a9be3c0&gt;
+shape = 'tree', fstype = 'ntfs', field = 'parttypename', name = 'EFI界'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[EFI\u754c-parttypename-ntfs-flat]" time="0.003"><failure message="AssertionError: assert 'windows' == 'data'&#10;  &#10;  - data&#10;  + windows">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a952060&gt;
+shape = 'flat', fstype = 'ntfs', field = 'parttypename', name = 'EFI界'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'windows' == 'data'
+E         
+E         - data
+E         + windows
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[EFI\u754c-parttypename-ext4-tree]" time="0.003"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a952ea0&gt;
+shape = 'tree', fstype = 'ext4', field = 'parttypename', name = 'EFI界'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_efi_letters_inside_ordinary_names_remain_data[EFI\u754c-parttypename-ext4-flat]" time="0.002"><failure message="AssertionError: assert 'system' == 'data'&#10;  &#10;  - data&#10;  + system">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x71ac8a9528d0&gt;
+shape = 'flat', fstype = 'ext4', field = 'parttypename', name = 'EFI界'
+
+    @pytest.mark.parametrize("shape", ["tree", "flat"])
+    @pytest.mark.parametrize("fstype", ["ntfs", "ext4"])
+    @pytest.mark.parametrize("field", ["partlabel", "parttypename"])
+    @pytest.mark.parametrize("name", ["Benefits", "Definitions", "éEFI", "EFI界"])
+    def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
+        disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
+&gt;       assert disk.contents == CONTENTS_DATA
+E       AssertionError: assert 'system' == 'data'
+E         
+E         - data
+E         + system
+
+tests/test_contents_efi_token_pass13.py:63: AssertionError</failure></testcase><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI system partition-partlabel-ntfs-windows-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI system partition-partlabel-ntfs-windows-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI system partition-partlabel-ext4-system-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI system partition-partlabel-ext4-system-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI system partition-parttypename-ntfs-windows-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI system partition-parttypename-ntfs-windows-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI system partition-parttypename-ext4-system-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI system partition-parttypename-ext4-system-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[UEFI System-partlabel-ntfs-windows-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[UEFI System-partlabel-ntfs-windows-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[UEFI System-partlabel-ext4-system-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[UEFI System-partlabel-ext4-system-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[UEFI System-parttypename-ntfs-windows-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[UEFI System-parttypename-ntfs-windows-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[UEFI System-parttypename-ext4-system-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[UEFI System-parttypename-ext4-system-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI_system-partlabel-ntfs-windows-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI_system-partlabel-ntfs-windows-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI_system-partlabel-ext4-system-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI_system-partlabel-ext4-system-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI_system-parttypename-ntfs-windows-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI_system-parttypename-ntfs-windows-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI_system-parttypename-ext4-system-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[EFI_system-parttypename-ext4-system-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[boot-EFI-volume-partlabel-ntfs-windows-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[boot-EFI-volume-partlabel-ntfs-windows-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[boot-EFI-volume-partlabel-ext4-system-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[boot-EFI-volume-partlabel-ext4-system-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[boot-EFI-volume-parttypename-ntfs-windows-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[boot-EFI-volume-parttypename-ntfs-windows-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[boot-EFI-volume-parttypename-ext4-system-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[boot-EFI-volume-parttypename-ext4-system-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[(EFI) syst\xe8me-partlabel-ntfs-windows-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[(EFI) syst\xe8me-partlabel-ntfs-windows-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[(EFI) syst\xe8me-partlabel-ext4-system-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[(EFI) syst\xe8me-partlabel-ext4-system-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[(EFI) syst\xe8me-parttypename-ntfs-windows-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[(EFI) syst\xe8me-parttypename-ntfs-windows-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[(EFI) syst\xe8me-parttypename-ext4-system-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_explicit_efi_names_keep_operating_system_guidance[(EFI) syst\xe8me-parttypename-ext4-system-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[label-EFI-False-ntfs-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[label-EFI-False-ntfs-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[label-EFI-False-ext4-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[label-EFI-False-ext4-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[label-ESP-False-ntfs-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[label-ESP-False-ntfs-flat]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[label-ESP-False-ext4-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[label-ESP-False-ext4-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[partlabel-ESP-False-ntfs-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[partlabel-ESP-False-ntfs-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[partlabel-ESP-False-ext4-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[partlabel-ESP-False-ext4-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-c12a7328-f81f-11d2-ba4b-00a0c93ec93b-False-ntfs-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-c12a7328-f81f-11d2-ba4b-00a0c93ec93b-False-ntfs-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-c12a7328-f81f-11d2-ba4b-00a0c93ec93b-False-ext4-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-c12a7328-f81f-11d2-ba4b-00a0c93ec93b-False-ext4-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-ef00-False-ntfs-tree]" time="0.002" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-ef00-False-ntfs-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-ef00-False-ext4-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-ef00-False-ext4-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[partlabel-Windows Recovery-True-ntfs-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[partlabel-Windows Recovery-True-ntfs-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[partlabel-Windows Recovery-True-ext4-tree]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[partlabel-Windows Recovery-True-ext4-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-e3c9e316-0b5c-4db8-817d-f92df00215ae-True-ntfs-tree]" time="0.004" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-e3c9e316-0b5c-4db8-817d-f92df00215ae-True-ntfs-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-e3c9e316-0b5c-4db8-817d-f92df00215ae-True-ext4-tree]" time="0.004" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[parttype-e3c9e316-0b5c-4db8-817d-f92df00215ae-True-ext4-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[fstype-BitLocker-True-ntfs-tree]" time="0.004" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[fstype-BitLocker-True-ntfs-flat]" time="0.003" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[fstype-BitLocker-True-ext4-tree]" time="0.004" /><testcase classname="tests.test_contents_efi_token_pass13" name="test_independent_firmware_and_windows_evidence_remains_authoritative[fstype-BitLocker-True-ext4-flat]" time="0.003" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[inside-False-65307]" time="0.404"><failure message="AssertionError: {'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)}&#10;assert ({'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)} and False)">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+key = 65307, fullscreen = False, pointer = 'inside'
+
+    @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
+    def test_first_native_key_works_with_pointer_outside_window(native, key, fullscreen, pointer):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        errors = []
+    
+        def send():
+            try:
+                root = app.root
+                rect = (root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height())
+                point = ((rect[0] + 20, rect[1] + 20) if pointer == "inside" else
+                         (root.winfo_screenwidth() - 1, root.winfo_screenheight() - 1))
+                native.pointer(*point)
+                seen.update(rect=rect, pointer=point, focused=root.focus_get() is app._primary)
+                native.key(key, True)
+                native.key(key, False)
+            except BaseException as error:
+                errors.append(error)
+    
+        app.root.after(120, send)
+        app.root.after(320, app._teardown)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and seen["focused"], seen
+E           AssertionError: {'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)}
+E           assert ({'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)} and False)
+
+tests/test_tk_input_scroll_pass13.py:99: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[inside-False-65293]" time="0.362"><failure message="AssertionError: {'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)}&#10;assert ({'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)} and False)">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+key = 65293, fullscreen = False, pointer = 'inside'
+
+    @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
+    def test_first_native_key_works_with_pointer_outside_window(native, key, fullscreen, pointer):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        errors = []
+    
+        def send():
+            try:
+                root = app.root
+                rect = (root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height())
+                point = ((rect[0] + 20, rect[1] + 20) if pointer == "inside" else
+                         (root.winfo_screenwidth() - 1, root.winfo_screenheight() - 1))
+                native.pointer(*point)
+                seen.update(rect=rect, pointer=point, focused=root.focus_get() is app._primary)
+                native.key(key, True)
+                native.key(key, False)
+            except BaseException as error:
+                errors.append(error)
+    
+        app.root.after(120, send)
+        app.root.after(320, app._teardown)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and seen["focused"], seen
+E           AssertionError: {'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)}
+E           assert ({'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)} and False)
+
+tests/test_tk_input_scroll_pass13.py:99: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[inside-False-65421]" time="0.372"><failure message="AssertionError: {'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)}&#10;assert ({'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)} and False)">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+key = 65421, fullscreen = False, pointer = 'inside'
+
+    @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
+    def test_first_native_key_works_with_pointer_outside_window(native, key, fullscreen, pointer):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        errors = []
+    
+        def send():
+            try:
+                root = app.root
+                rect = (root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height())
+                point = ((rect[0] + 20, rect[1] + 20) if pointer == "inside" else
+                         (root.winfo_screenwidth() - 1, root.winfo_screenheight() - 1))
+                native.pointer(*point)
+                seen.update(rect=rect, pointer=point, focused=root.focus_get() is app._primary)
+                native.key(key, True)
+                native.key(key, False)
+            except BaseException as error:
+                errors.append(error)
+    
+        app.root.after(120, send)
+        app.root.after(320, app._teardown)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and seen["focused"], seen
+E           AssertionError: {'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)}
+E           assert ({'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)} and False)
+
+tests/test_tk_input_scroll_pass13.py:99: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[inside-False-32]" time="0.364"><failure message="AssertionError: {'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)}&#10;assert ({'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)} and False)">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+key = 32, fullscreen = False, pointer = 'inside'
+
+    @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
+    def test_first_native_key_works_with_pointer_outside_window(native, key, fullscreen, pointer):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        errors = []
+    
+        def send():
+            try:
+                root = app.root
+                rect = (root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height())
+                point = ((rect[0] + 20, rect[1] + 20) if pointer == "inside" else
+                         (root.winfo_screenwidth() - 1, root.winfo_screenheight() - 1))
+                native.pointer(*point)
+                seen.update(rect=rect, pointer=point, focused=root.focus_get() is app._primary)
+                native.key(key, True)
+                native.key(key, False)
+            except BaseException as error:
+                errors.append(error)
+    
+        app.root.after(120, send)
+        app.root.after(320, app._teardown)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and seen["focused"], seen
+E           AssertionError: {'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)}
+E           assert ({'focused': False, 'pointer': (20, 20), 'rect': (0, 0, 1280, 820)} and False)
+
+tests/test_tk_input_scroll_pass13.py:99: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[inside-True-65307]" time="0.367" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[inside-True-65293]" time="0.367" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[inside-True-65421]" time="0.375" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[inside-True-32]" time="0.371" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[far_corner-False-65307]" time="0.397"><failure message="AssertionError: {'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)}&#10;assert ({'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)} and False)">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+key = 65307, fullscreen = False, pointer = 'far_corner'
+
+    @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
+    def test_first_native_key_works_with_pointer_outside_window(native, key, fullscreen, pointer):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        errors = []
+    
+        def send():
+            try:
+                root = app.root
+                rect = (root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height())
+                point = ((rect[0] + 20, rect[1] + 20) if pointer == "inside" else
+                         (root.winfo_screenwidth() - 1, root.winfo_screenheight() - 1))
+                native.pointer(*point)
+                seen.update(rect=rect, pointer=point, focused=root.focus_get() is app._primary)
+                native.key(key, True)
+                native.key(key, False)
+            except BaseException as error:
+                errors.append(error)
+    
+        app.root.after(120, send)
+        app.root.after(320, app._teardown)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and seen["focused"], seen
+E           AssertionError: {'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)}
+E           assert ({'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)} and False)
+
+tests/test_tk_input_scroll_pass13.py:99: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[far_corner-False-65293]" time="0.366"><failure message="AssertionError: {'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)}&#10;assert ({'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)} and False)">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+key = 65293, fullscreen = False, pointer = 'far_corner'
+
+    @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
+    def test_first_native_key_works_with_pointer_outside_window(native, key, fullscreen, pointer):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        errors = []
+    
+        def send():
+            try:
+                root = app.root
+                rect = (root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height())
+                point = ((rect[0] + 20, rect[1] + 20) if pointer == "inside" else
+                         (root.winfo_screenwidth() - 1, root.winfo_screenheight() - 1))
+                native.pointer(*point)
+                seen.update(rect=rect, pointer=point, focused=root.focus_get() is app._primary)
+                native.key(key, True)
+                native.key(key, False)
+            except BaseException as error:
+                errors.append(error)
+    
+        app.root.after(120, send)
+        app.root.after(320, app._teardown)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and seen["focused"], seen
+E           AssertionError: {'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)}
+E           assert ({'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)} and False)
+
+tests/test_tk_input_scroll_pass13.py:99: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[far_corner-False-65421]" time="0.366"><failure message="AssertionError: {'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)}&#10;assert ({'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)} and False)">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+key = 65421, fullscreen = False, pointer = 'far_corner'
+
+    @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
+    def test_first_native_key_works_with_pointer_outside_window(native, key, fullscreen, pointer):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        errors = []
+    
+        def send():
+            try:
+                root = app.root
+                rect = (root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height())
+                point = ((rect[0] + 20, rect[1] + 20) if pointer == "inside" else
+                         (root.winfo_screenwidth() - 1, root.winfo_screenheight() - 1))
+                native.pointer(*point)
+                seen.update(rect=rect, pointer=point, focused=root.focus_get() is app._primary)
+                native.key(key, True)
+                native.key(key, False)
+            except BaseException as error:
+                errors.append(error)
+    
+        app.root.after(120, send)
+        app.root.after(320, app._teardown)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and seen["focused"], seen
+E           AssertionError: {'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)}
+E           assert ({'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)} and False)
+
+tests/test_tk_input_scroll_pass13.py:99: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[far_corner-False-32]" time="0.361"><failure message="AssertionError: {'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)}&#10;assert ({'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)} and False)">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+key = 32, fullscreen = False, pointer = 'far_corner'
+
+    @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
+    def test_first_native_key_works_with_pointer_outside_window(native, key, fullscreen, pointer):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard, fullscreen=fullscreen)
+        seen = {}
+        errors = []
+    
+        def send():
+            try:
+                root = app.root
+                rect = (root.winfo_rootx(), root.winfo_rooty(), root.winfo_width(), root.winfo_height())
+                point = ((rect[0] + 20, rect[1] + 20) if pointer == "inside" else
+                         (root.winfo_screenwidth() - 1, root.winfo_screenheight() - 1))
+                native.pointer(*point)
+                seen.update(rect=rect, pointer=point, focused=root.focus_get() is app._primary)
+                native.key(key, True)
+                native.key(key, False)
+            except BaseException as error:
+                errors.append(error)
+    
+        app.root.after(120, send)
+        app.root.after(320, app._teardown)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and seen["focused"], seen
+E           AssertionError: {'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)}
+E           assert ({'focused': False, 'pointer': (1599, 999), 'rect': (0, 0, 1280, 820)} and False)
+
+tests/test_tk_input_scroll_pass13.py:99: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[far_corner-True-65307]" time="0.365" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[far_corner-True-65293]" time="0.369" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[far_corner-True-65421]" time="0.376" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_native_key_works_with_pointer_outside_window[far_corner-True-32]" time="0.371" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_initial_focus_is_claimed_once_and_held_return_keeps_gate" time="0.453"><failure message="AssertionError: assert {'held_before...eclaim': True} == {'held_before...eclaim': True}&#10;  &#10;  Omitting 2 identical items, use -vv to show&#10;  Differing items:&#10;  {'initial_child': False} != {'initial_child': True}&#10;  {'held_before': False} != {'held_before': True}&#10;  Use -v to get more diff">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+
+    def test_initial_focus_is_claimed_once_and_held_return_keeps_gate(native):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard = make_demo_wizard()
+        app = TkWizard(wizard)
+        seen, errors = {}, []
+    
+        def first():
+            try:
+                native.pointer(app.root.winfo_screenwidth() - 1, app.root.winfo_screenheight() - 1)
+                seen["initial_child"] = app.root.focus_get() is app._primary
+                native.key(Gdk.KEY_Return, True)
+            except BaseException as error:
+                errors.append(error)
+    
+        def held():
+            try:
+                seen["held_before"] = app._return_held
+                app._on_return(SimpleNamespace(time=123))
+                seen["held_screen"] = wizard.screen.name
+                native.key(Gdk.KEY_Return, False)
+                native.root_focus()
+            except BaseException as error:
+                errors.append(error)
+    
+        def inspect():
+            seen["no_reclaim"] = app.root.focus_get() is None
+            app._teardown()
+    
+        app.root.after(120, first)
+        app.root.after(200, held)
+        app.root.after(400, inspect)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen == {"initial_child": True, "held_before": True, "held_screen": "KEYBOARD", "no_reclaim": True}
+E           AssertionError: assert {'held_before...eclaim': True} == {'held_before...eclaim': True}
+E             
+E             Omitting 2 identical items, use -vv to show
+E             Differing items:
+E             {'initial_child': False} != {'initial_child': True}
+E             {'held_before': False} != {'held_before': True}
+E             Use -v to get more diff
+
+tests/test_tk_input_scroll_pass13.py:142: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_run_restores_each_screen_focus_without_changing_state[keyboard-False]" time="0.197"><failure message="assert ([False] and False)&#10; +  where False = all([False])">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+screen = &lt;Screen.KEYBOARD: 'keyboard'&gt;, mapped = False
+
+    @pytest.mark.parametrize("mapped", [False, True])
+    @pytest.mark.parametrize("screen", [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM, Screen.LAST_CHANCE])
+    def test_first_run_restores_each_screen_focus_without_changing_state(native, screen, mapped):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard, clock = _review()
+        if screen is Screen.KEYBOARD:
+            wizard.open_keyboard()
+        else:
+            while wizard.screen is not screen:
+                wizard.back()
+        app = TkWizard(wizard)
+        if mapped:
+            app.root.update()
+            native.root_focus()
+        clock.value = 2
+        before = (wizard.screen, wizard.owner_ok, wizard.selected, wizard.confirm_input,
+                  wizard.method, wizard._erase_until, wizard._authorized_operation)
+        seen, errors = [], []
+    
+        def inspect():
+            try:
+                focus = app.root.focus_get()
+                if screen in {Screen.KEYBOARD, Screen.CONFIRM}:
+                    variable = app._typing_var if screen is Screen.KEYBOARD else app._confirm_var
+                    seen.append(isinstance(focus, tk.Entry) and focus.cget("textvariable") == str(variable))
+                elif screen is Screen.OWNER:
+                    seen.append(isinstance(focus, _Box) and "owner_key" in focus.bind("&lt;space&gt;"))
+                else:
+                    seen.append(isinstance(focus, _Button) and focus.itemcget(focus._label, "text") == C.BTN_BACK)
+                    seen.append(wizard.countdown_left == 3 and not wizard.erase_enabled)
+            except BaseException as error:
+                errors.append(error)
+            finally:
+                app._teardown()
+    
+        app.root.after(140, inspect)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and all(seen)
+E           assert ([False] and False)
+E            +  where False = all([False])
+
+tests/test_tk_input_scroll_pass13.py:189: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_run_restores_each_screen_focus_without_changing_state[keyboard-True]" time="0.223"><failure message="assert ([False] and False)&#10; +  where False = all([False])">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+screen = &lt;Screen.KEYBOARD: 'keyboard'&gt;, mapped = True
+
+    @pytest.mark.parametrize("mapped", [False, True])
+    @pytest.mark.parametrize("screen", [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM, Screen.LAST_CHANCE])
+    def test_first_run_restores_each_screen_focus_without_changing_state(native, screen, mapped):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard, clock = _review()
+        if screen is Screen.KEYBOARD:
+            wizard.open_keyboard()
+        else:
+            while wizard.screen is not screen:
+                wizard.back()
+        app = TkWizard(wizard)
+        if mapped:
+            app.root.update()
+            native.root_focus()
+        clock.value = 2
+        before = (wizard.screen, wizard.owner_ok, wizard.selected, wizard.confirm_input,
+                  wizard.method, wizard._erase_until, wizard._authorized_operation)
+        seen, errors = [], []
+    
+        def inspect():
+            try:
+                focus = app.root.focus_get()
+                if screen in {Screen.KEYBOARD, Screen.CONFIRM}:
+                    variable = app._typing_var if screen is Screen.KEYBOARD else app._confirm_var
+                    seen.append(isinstance(focus, tk.Entry) and focus.cget("textvariable") == str(variable))
+                elif screen is Screen.OWNER:
+                    seen.append(isinstance(focus, _Box) and "owner_key" in focus.bind("&lt;space&gt;"))
+                else:
+                    seen.append(isinstance(focus, _Button) and focus.itemcget(focus._label, "text") == C.BTN_BACK)
+                    seen.append(wizard.countdown_left == 3 and not wizard.erase_enabled)
+            except BaseException as error:
+                errors.append(error)
+            finally:
+                app._teardown()
+    
+        app.root.after(140, inspect)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and all(seen)
+E           assert ([False] and False)
+E            +  where False = all([False])
+
+tests/test_tk_input_scroll_pass13.py:189: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_run_restores_each_screen_focus_without_changing_state[owner-False]" time="0.213"><failure message="assert ([False] and False)&#10; +  where False = all([False])">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+screen = &lt;Screen.OWNER: 'owner'&gt;, mapped = False
+
+    @pytest.mark.parametrize("mapped", [False, True])
+    @pytest.mark.parametrize("screen", [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM, Screen.LAST_CHANCE])
+    def test_first_run_restores_each_screen_focus_without_changing_state(native, screen, mapped):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard, clock = _review()
+        if screen is Screen.KEYBOARD:
+            wizard.open_keyboard()
+        else:
+            while wizard.screen is not screen:
+                wizard.back()
+        app = TkWizard(wizard)
+        if mapped:
+            app.root.update()
+            native.root_focus()
+        clock.value = 2
+        before = (wizard.screen, wizard.owner_ok, wizard.selected, wizard.confirm_input,
+                  wizard.method, wizard._erase_until, wizard._authorized_operation)
+        seen, errors = [], []
+    
+        def inspect():
+            try:
+                focus = app.root.focus_get()
+                if screen in {Screen.KEYBOARD, Screen.CONFIRM}:
+                    variable = app._typing_var if screen is Screen.KEYBOARD else app._confirm_var
+                    seen.append(isinstance(focus, tk.Entry) and focus.cget("textvariable") == str(variable))
+                elif screen is Screen.OWNER:
+                    seen.append(isinstance(focus, _Box) and "owner_key" in focus.bind("&lt;space&gt;"))
+                else:
+                    seen.append(isinstance(focus, _Button) and focus.itemcget(focus._label, "text") == C.BTN_BACK)
+                    seen.append(wizard.countdown_left == 3 and not wizard.erase_enabled)
+            except BaseException as error:
+                errors.append(error)
+            finally:
+                app._teardown()
+    
+        app.root.after(140, inspect)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and all(seen)
+E           assert ([False] and False)
+E            +  where False = all([False])
+
+tests/test_tk_input_scroll_pass13.py:189: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_run_restores_each_screen_focus_without_changing_state[owner-True]" time="0.247"><failure message="assert ([False] and False)&#10; +  where False = all([False])">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+screen = &lt;Screen.OWNER: 'owner'&gt;, mapped = True
+
+    @pytest.mark.parametrize("mapped", [False, True])
+    @pytest.mark.parametrize("screen", [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM, Screen.LAST_CHANCE])
+    def test_first_run_restores_each_screen_focus_without_changing_state(native, screen, mapped):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard, clock = _review()
+        if screen is Screen.KEYBOARD:
+            wizard.open_keyboard()
+        else:
+            while wizard.screen is not screen:
+                wizard.back()
+        app = TkWizard(wizard)
+        if mapped:
+            app.root.update()
+            native.root_focus()
+        clock.value = 2
+        before = (wizard.screen, wizard.owner_ok, wizard.selected, wizard.confirm_input,
+                  wizard.method, wizard._erase_until, wizard._authorized_operation)
+        seen, errors = [], []
+    
+        def inspect():
+            try:
+                focus = app.root.focus_get()
+                if screen in {Screen.KEYBOARD, Screen.CONFIRM}:
+                    variable = app._typing_var if screen is Screen.KEYBOARD else app._confirm_var
+                    seen.append(isinstance(focus, tk.Entry) and focus.cget("textvariable") == str(variable))
+                elif screen is Screen.OWNER:
+                    seen.append(isinstance(focus, _Box) and "owner_key" in focus.bind("&lt;space&gt;"))
+                else:
+                    seen.append(isinstance(focus, _Button) and focus.itemcget(focus._label, "text") == C.BTN_BACK)
+                    seen.append(wizard.countdown_left == 3 and not wizard.erase_enabled)
+            except BaseException as error:
+                errors.append(error)
+            finally:
+                app._teardown()
+    
+        app.root.after(140, inspect)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and all(seen)
+E           assert ([False] and False)
+E            +  where False = all([False])
+
+tests/test_tk_input_scroll_pass13.py:189: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_run_restores_each_screen_focus_without_changing_state[confirm-False]" time="0.208" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_run_restores_each_screen_focus_without_changing_state[confirm-True]" time="0.232" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_run_restores_each_screen_focus_without_changing_state[last_chance-False]" time="0.206"><failure message="assert ([False, True] and False)&#10; +  where False = all([False, True])">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+screen = &lt;Screen.LAST_CHANCE: 'last_chance'&gt;, mapped = False
+
+    @pytest.mark.parametrize("mapped", [False, True])
+    @pytest.mark.parametrize("screen", [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM, Screen.LAST_CHANCE])
+    def test_first_run_restores_each_screen_focus_without_changing_state(native, screen, mapped):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard, clock = _review()
+        if screen is Screen.KEYBOARD:
+            wizard.open_keyboard()
+        else:
+            while wizard.screen is not screen:
+                wizard.back()
+        app = TkWizard(wizard)
+        if mapped:
+            app.root.update()
+            native.root_focus()
+        clock.value = 2
+        before = (wizard.screen, wizard.owner_ok, wizard.selected, wizard.confirm_input,
+                  wizard.method, wizard._erase_until, wizard._authorized_operation)
+        seen, errors = [], []
+    
+        def inspect():
+            try:
+                focus = app.root.focus_get()
+                if screen in {Screen.KEYBOARD, Screen.CONFIRM}:
+                    variable = app._typing_var if screen is Screen.KEYBOARD else app._confirm_var
+                    seen.append(isinstance(focus, tk.Entry) and focus.cget("textvariable") == str(variable))
+                elif screen is Screen.OWNER:
+                    seen.append(isinstance(focus, _Box) and "owner_key" in focus.bind("&lt;space&gt;"))
+                else:
+                    seen.append(isinstance(focus, _Button) and focus.itemcget(focus._label, "text") == C.BTN_BACK)
+                    seen.append(wizard.countdown_left == 3 and not wizard.erase_enabled)
+            except BaseException as error:
+                errors.append(error)
+            finally:
+                app._teardown()
+    
+        app.root.after(140, inspect)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and all(seen)
+E           assert ([False, True] and False)
+E            +  where False = all([False, True])
+
+tests/test_tk_input_scroll_pass13.py:189: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_first_run_restores_each_screen_focus_without_changing_state[last_chance-True]" time="0.226"><failure message="assert ([False, True] and False)&#10; +  where False = all([False, True])">native = &lt;class 'test_accessible_focus_input_pass11.native.&lt;locals&gt;.Input'&gt;
+screen = &lt;Screen.LAST_CHANCE: 'last_chance'&gt;, mapped = True
+
+    @pytest.mark.parametrize("mapped", [False, True])
+    @pytest.mark.parametrize("screen", [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM, Screen.LAST_CHANCE])
+    def test_first_run_restores_each_screen_focus_without_changing_state(native, screen, mapped):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard, clock = _review()
+        if screen is Screen.KEYBOARD:
+            wizard.open_keyboard()
+        else:
+            while wizard.screen is not screen:
+                wizard.back()
+        app = TkWizard(wizard)
+        if mapped:
+            app.root.update()
+            native.root_focus()
+        clock.value = 2
+        before = (wizard.screen, wizard.owner_ok, wizard.selected, wizard.confirm_input,
+                  wizard.method, wizard._erase_until, wizard._authorized_operation)
+        seen, errors = [], []
+    
+        def inspect():
+            try:
+                focus = app.root.focus_get()
+                if screen in {Screen.KEYBOARD, Screen.CONFIRM}:
+                    variable = app._typing_var if screen is Screen.KEYBOARD else app._confirm_var
+                    seen.append(isinstance(focus, tk.Entry) and focus.cget("textvariable") == str(variable))
+                elif screen is Screen.OWNER:
+                    seen.append(isinstance(focus, _Box) and "owner_key" in focus.bind("&lt;space&gt;"))
+                else:
+                    seen.append(isinstance(focus, _Button) and focus.itemcget(focus._label, "text") == C.BTN_BACK)
+                    seen.append(wizard.countdown_left == 3 and not wizard.erase_enabled)
+            except BaseException as error:
+                errors.append(error)
+            finally:
+                app._teardown()
+    
+        app.root.after(140, inspect)
+        try:
+            assert app.run() == 0
+            assert not errors
+&gt;           assert seen and all(seen)
+E           assert ([False, True] and False)
+E            +  where False = all([False, True])
+
+tests/test_tk_input_scroll_pass13.py:189: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;Button-5&gt;-None-1-label]" time="0.148"><failure message="assert (0.1993517017...9546191247974) == (0.2625607779...7552674230146)&#10;  &#10;  At index 0 diff: 0.1993517017828201 != 0.2625607779578606&#10;  Use -v to get more diff">target_kind = 'label', sequence = '&lt;Button-5&gt;', delta = None, direction = 1
+
+    @pytest.mark.parametrize("target_kind", ["label", "canvas", "inner", "panel"])
+    @pytest.mark.parametrize(("sequence", "delta", "direction"), [
+        ("&lt;Button-5&gt;", None, 1), ("&lt;Button-4&gt;", None, -1),
+        ("&lt;MouseWheel&gt;", -120, 1), ("&lt;MouseWheel&gt;", 120, -1),
+    ])
+    def test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent(target_kind, sequence, delta, direction):
+        app = _app()
+        try:
+            canvas = app._body_canvas
+            canvas.yview_moveto(0.2)
+            app.root.update()
+            label = _visible_label(app)
+            target = {"label": label, "canvas": canvas, "inner": app._body_inner,
+                      "panel": next(w for w in _children(app._body_inner) if isinstance(w, tk.Canvas))}[target_kind]
+            app.root.focus_force()
+            focus = app.root.focus_get()
+            consent = (app.w.screen, app.w.selected, app.w.owner_ok, app.w.confirm_input, app.w.method)
+            before = canvas.yview()
+            target.event_generate(sequence, **({"delta": delta} if delta is not None else {}))
+            app.root.update()
+            after = canvas.yview()
+            canvas.yview_moveto(before[0])
+            canvas.yview_scroll(direction, "units")
+            expected = canvas.yview()
+&gt;           assert after == expected
+E           assert (0.1993517017...9546191247974) == (0.2625607779...7552674230146)
+E             
+E             At index 0 diff: 0.1993517017828201 != 0.2625607779578606
+E             Use -v to get more diff
+
+tests/test_tk_input_scroll_pass13.py:221: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;Button-5&gt;-None-1-canvas]" time="0.144" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;Button-5&gt;-None-1-inner]" time="0.154"><failure message="assert (0.1993517017...9546191247974) == (0.2625607779...7552674230146)&#10;  &#10;  At index 0 diff: 0.1993517017828201 != 0.2625607779578606&#10;  Use -v to get more diff">target_kind = 'inner', sequence = '&lt;Button-5&gt;', delta = None, direction = 1
+
+    @pytest.mark.parametrize("target_kind", ["label", "canvas", "inner", "panel"])
+    @pytest.mark.parametrize(("sequence", "delta", "direction"), [
+        ("&lt;Button-5&gt;", None, 1), ("&lt;Button-4&gt;", None, -1),
+        ("&lt;MouseWheel&gt;", -120, 1), ("&lt;MouseWheel&gt;", 120, -1),
+    ])
+    def test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent(target_kind, sequence, delta, direction):
+        app = _app()
+        try:
+            canvas = app._body_canvas
+            canvas.yview_moveto(0.2)
+            app.root.update()
+            label = _visible_label(app)
+            target = {"label": label, "canvas": canvas, "inner": app._body_inner,
+                      "panel": next(w for w in _children(app._body_inner) if isinstance(w, tk.Canvas))}[target_kind]
+            app.root.focus_force()
+            focus = app.root.focus_get()
+            consent = (app.w.screen, app.w.selected, app.w.owner_ok, app.w.confirm_input, app.w.method)
+            before = canvas.yview()
+            target.event_generate(sequence, **({"delta": delta} if delta is not None else {}))
+            app.root.update()
+            after = canvas.yview()
+            canvas.yview_moveto(before[0])
+            canvas.yview_scroll(direction, "units")
+            expected = canvas.yview()
+&gt;           assert after == expected
+E           assert (0.1993517017...9546191247974) == (0.2625607779...7552674230146)
+E             
+E             At index 0 diff: 0.1993517017828201 != 0.2625607779578606
+E             Use -v to get more diff
+
+tests/test_tk_input_scroll_pass13.py:221: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;Button-5&gt;-None-1-panel]" time="0.159"><failure message="assert (0.1993517017...9546191247974) == (0.2625607779...7552674230146)&#10;  &#10;  At index 0 diff: 0.1993517017828201 != 0.2625607779578606&#10;  Use -v to get more diff">target_kind = 'panel', sequence = '&lt;Button-5&gt;', delta = None, direction = 1
+
+    @pytest.mark.parametrize("target_kind", ["label", "canvas", "inner", "panel"])
+    @pytest.mark.parametrize(("sequence", "delta", "direction"), [
+        ("&lt;Button-5&gt;", None, 1), ("&lt;Button-4&gt;", None, -1),
+        ("&lt;MouseWheel&gt;", -120, 1), ("&lt;MouseWheel&gt;", 120, -1),
+    ])
+    def test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent(target_kind, sequence, delta, direction):
+        app = _app()
+        try:
+            canvas = app._body_canvas
+            canvas.yview_moveto(0.2)
+            app.root.update()
+            label = _visible_label(app)
+            target = {"label": label, "canvas": canvas, "inner": app._body_inner,
+                      "panel": next(w for w in _children(app._body_inner) if isinstance(w, tk.Canvas))}[target_kind]
+            app.root.focus_force()
+            focus = app.root.focus_get()
+            consent = (app.w.screen, app.w.selected, app.w.owner_ok, app.w.confirm_input, app.w.method)
+            before = canvas.yview()
+            target.event_generate(sequence, **({"delta": delta} if delta is not None else {}))
+            app.root.update()
+            after = canvas.yview()
+            canvas.yview_moveto(before[0])
+            canvas.yview_scroll(direction, "units")
+            expected = canvas.yview()
+&gt;           assert after == expected
+E           assert (0.1993517017...9546191247974) == (0.2625607779...7552674230146)
+E             
+E             At index 0 diff: 0.1993517017828201 != 0.2625607779578606
+E             Use -v to get more diff
+
+tests/test_tk_input_scroll_pass13.py:221: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;Button-4&gt;-None--1-label]" time="0.145"><failure message="assert (0.1993517017...9546191247974) == (0.1345218800...7163695299838)&#10;  &#10;  At index 0 diff: 0.1993517017828201 != 0.13452188006482982&#10;  Use -v to get more diff">target_kind = 'label', sequence = '&lt;Button-4&gt;', delta = None, direction = -1
+
+    @pytest.mark.parametrize("target_kind", ["label", "canvas", "inner", "panel"])
+    @pytest.mark.parametrize(("sequence", "delta", "direction"), [
+        ("&lt;Button-5&gt;", None, 1), ("&lt;Button-4&gt;", None, -1),
+        ("&lt;MouseWheel&gt;", -120, 1), ("&lt;MouseWheel&gt;", 120, -1),
+    ])
+    def test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent(target_kind, sequence, delta, direction):
+        app = _app()
+        try:
+            canvas = app._body_canvas
+            canvas.yview_moveto(0.2)
+            app.root.update()
+            label = _visible_label(app)
+            target = {"label": label, "canvas": canvas, "inner": app._body_inner,
+                      "panel": next(w for w in _children(app._body_inner) if isinstance(w, tk.Canvas))}[target_kind]
+            app.root.focus_force()
+            focus = app.root.focus_get()
+            consent = (app.w.screen, app.w.selected, app.w.owner_ok, app.w.confirm_input, app.w.method)
+            before = canvas.yview()
+            target.event_generate(sequence, **({"delta": delta} if delta is not None else {}))
+            app.root.update()
+            after = canvas.yview()
+            canvas.yview_moveto(before[0])
+            canvas.yview_scroll(direction, "units")
+            expected = canvas.yview()
+&gt;           assert after == expected
+E           assert (0.1993517017...9546191247974) == (0.1345218800...7163695299838)
+E             
+E             At index 0 diff: 0.1993517017828201 != 0.13452188006482982
+E             Use -v to get more diff
+
+tests/test_tk_input_scroll_pass13.py:221: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;Button-4&gt;-None--1-canvas]" time="0.135" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;Button-4&gt;-None--1-inner]" time="0.152"><failure message="assert (0.1993517017...9546191247974) == (0.1345218800...7163695299838)&#10;  &#10;  At index 0 diff: 0.1993517017828201 != 0.13452188006482982&#10;  Use -v to get more diff">target_kind = 'inner', sequence = '&lt;Button-4&gt;', delta = None, direction = -1
+
+    @pytest.mark.parametrize("target_kind", ["label", "canvas", "inner", "panel"])
+    @pytest.mark.parametrize(("sequence", "delta", "direction"), [
+        ("&lt;Button-5&gt;", None, 1), ("&lt;Button-4&gt;", None, -1),
+        ("&lt;MouseWheel&gt;", -120, 1), ("&lt;MouseWheel&gt;", 120, -1),
+    ])
+    def test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent(target_kind, sequence, delta, direction):
+        app = _app()
+        try:
+            canvas = app._body_canvas
+            canvas.yview_moveto(0.2)
+            app.root.update()
+            label = _visible_label(app)
+            target = {"label": label, "canvas": canvas, "inner": app._body_inner,
+                      "panel": next(w for w in _children(app._body_inner) if isinstance(w, tk.Canvas))}[target_kind]
+            app.root.focus_force()
+            focus = app.root.focus_get()
+            consent = (app.w.screen, app.w.selected, app.w.owner_ok, app.w.confirm_input, app.w.method)
+            before = canvas.yview()
+            target.event_generate(sequence, **({"delta": delta} if delta is not None else {}))
+            app.root.update()
+            after = canvas.yview()
+            canvas.yview_moveto(before[0])
+            canvas.yview_scroll(direction, "units")
+            expected = canvas.yview()
+&gt;           assert after == expected
+E           assert (0.1993517017...9546191247974) == (0.1345218800...7163695299838)
+E             
+E             At index 0 diff: 0.1993517017828201 != 0.13452188006482982
+E             Use -v to get more diff
+
+tests/test_tk_input_scroll_pass13.py:221: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;Button-4&gt;-None--1-panel]" time="0.138"><failure message="assert (0.1993517017...9546191247974) == (0.1345218800...7163695299838)&#10;  &#10;  At index 0 diff: 0.1993517017828201 != 0.13452188006482982&#10;  Use -v to get more diff">target_kind = 'panel', sequence = '&lt;Button-4&gt;', delta = None, direction = -1
+
+    @pytest.mark.parametrize("target_kind", ["label", "canvas", "inner", "panel"])
+    @pytest.mark.parametrize(("sequence", "delta", "direction"), [
+        ("&lt;Button-5&gt;", None, 1), ("&lt;Button-4&gt;", None, -1),
+        ("&lt;MouseWheel&gt;", -120, 1), ("&lt;MouseWheel&gt;", 120, -1),
+    ])
+    def test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent(target_kind, sequence, delta, direction):
+        app = _app()
+        try:
+            canvas = app._body_canvas
+            canvas.yview_moveto(0.2)
+            app.root.update()
+            label = _visible_label(app)
+            target = {"label": label, "canvas": canvas, "inner": app._body_inner,
+                      "panel": next(w for w in _children(app._body_inner) if isinstance(w, tk.Canvas))}[target_kind]
+            app.root.focus_force()
+            focus = app.root.focus_get()
+            consent = (app.w.screen, app.w.selected, app.w.owner_ok, app.w.confirm_input, app.w.method)
+            before = canvas.yview()
+            target.event_generate(sequence, **({"delta": delta} if delta is not None else {}))
+            app.root.update()
+            after = canvas.yview()
+            canvas.yview_moveto(before[0])
+            canvas.yview_scroll(direction, "units")
+            expected = canvas.yview()
+&gt;           assert after == expected
+E           assert (0.1993517017...9546191247974) == (0.1345218800...7163695299838)
+E             
+E             At index 0 diff: 0.1993517017828201 != 0.13452188006482982
+E             Use -v to get more diff
+
+tests/test_tk_input_scroll_pass13.py:221: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;MouseWheel&gt;--120-1-label]" time="0.146"><failure message="assert (0.1993517017...9546191247974) == (0.2625607779...7552674230146)&#10;  &#10;  At index 0 diff: 0.1993517017828201 != 0.2625607779578606&#10;  Use -v to get more diff">target_kind = 'label', sequence = '&lt;MouseWheel&gt;', delta = -120, direction = 1
+
+    @pytest.mark.parametrize("target_kind", ["label", "canvas", "inner", "panel"])
+    @pytest.mark.parametrize(("sequence", "delta", "direction"), [
+        ("&lt;Button-5&gt;", None, 1), ("&lt;Button-4&gt;", None, -1),
+        ("&lt;MouseWheel&gt;", -120, 1), ("&lt;MouseWheel&gt;", 120, -1),
+    ])
+    def test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent(target_kind, sequence, delta, direction):
+        app = _app()
+        try:
+            canvas = app._body_canvas
+            canvas.yview_moveto(0.2)
+            app.root.update()
+            label = _visible_label(app)
+            target = {"label": label, "canvas": canvas, "inner": app._body_inner,
+                      "panel": next(w for w in _children(app._body_inner) if isinstance(w, tk.Canvas))}[target_kind]
+            app.root.focus_force()
+            focus = app.root.focus_get()
+            consent = (app.w.screen, app.w.selected, app.w.owner_ok, app.w.confirm_input, app.w.method)
+            before = canvas.yview()
+            target.event_generate(sequence, **({"delta": delta} if delta is not None else {}))
+            app.root.update()
+            after = canvas.yview()
+            canvas.yview_moveto(before[0])
+            canvas.yview_scroll(direction, "units")
+            expected = canvas.yview()
+&gt;           assert after == expected
+E           assert (0.1993517017...9546191247974) == (0.2625607779...7552674230146)
+E             
+E             At index 0 diff: 0.1993517017828201 != 0.2625607779578606
+E             Use -v to get more diff
+
+tests/test_tk_input_scroll_pass13.py:221: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;MouseWheel&gt;--120-1-canvas]" time="0.149" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;MouseWheel&gt;--120-1-inner]" time="0.148" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;MouseWheel&gt;--120-1-panel]" time="0.146"><failure message="assert (0.1993517017...9546191247974) == (0.2625607779...7552674230146)&#10;  &#10;  At index 0 diff: 0.1993517017828201 != 0.2625607779578606&#10;  Use -v to get more diff">target_kind = 'panel', sequence = '&lt;MouseWheel&gt;', delta = -120, direction = 1
+
+    @pytest.mark.parametrize("target_kind", ["label", "canvas", "inner", "panel"])
+    @pytest.mark.parametrize(("sequence", "delta", "direction"), [
+        ("&lt;Button-5&gt;", None, 1), ("&lt;Button-4&gt;", None, -1),
+        ("&lt;MouseWheel&gt;", -120, 1), ("&lt;MouseWheel&gt;", 120, -1),
+    ])
+    def test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent(target_kind, sequence, delta, direction):
+        app = _app()
+        try:
+            canvas = app._body_canvas
+            canvas.yview_moveto(0.2)
+            app.root.update()
+            label = _visible_label(app)
+            target = {"label": label, "canvas": canvas, "inner": app._body_inner,
+                      "panel": next(w for w in _children(app._body_inner) if isinstance(w, tk.Canvas))}[target_kind]
+            app.root.focus_force()
+            focus = app.root.focus_get()
+            consent = (app.w.screen, app.w.selected, app.w.owner_ok, app.w.confirm_input, app.w.method)
+            before = canvas.yview()
+            target.event_generate(sequence, **({"delta": delta} if delta is not None else {}))
+            app.root.update()
+            after = canvas.yview()
+            canvas.yview_moveto(before[0])
+            canvas.yview_scroll(direction, "units")
+            expected = canvas.yview()
+&gt;           assert after == expected
+E           assert (0.1993517017...9546191247974) == (0.2625607779...7552674230146)
+E             
+E             At index 0 diff: 0.1993517017828201 != 0.2625607779578606
+E             Use -v to get more diff
+
+tests/test_tk_input_scroll_pass13.py:221: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;MouseWheel&gt;-120--1-label]" time="0.147"><failure message="assert (0.1993517017...9546191247974) == (0.1345218800...7163695299838)&#10;  &#10;  At index 0 diff: 0.1993517017828201 != 0.13452188006482982&#10;  Use -v to get more diff">target_kind = 'label', sequence = '&lt;MouseWheel&gt;', delta = 120, direction = -1
+
+    @pytest.mark.parametrize("target_kind", ["label", "canvas", "inner", "panel"])
+    @pytest.mark.parametrize(("sequence", "delta", "direction"), [
+        ("&lt;Button-5&gt;", None, 1), ("&lt;Button-4&gt;", None, -1),
+        ("&lt;MouseWheel&gt;", -120, 1), ("&lt;MouseWheel&gt;", 120, -1),
+    ])
+    def test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent(target_kind, sequence, delta, direction):
+        app = _app()
+        try:
+            canvas = app._body_canvas
+            canvas.yview_moveto(0.2)
+            app.root.update()
+            label = _visible_label(app)
+            target = {"label": label, "canvas": canvas, "inner": app._body_inner,
+                      "panel": next(w for w in _children(app._body_inner) if isinstance(w, tk.Canvas))}[target_kind]
+            app.root.focus_force()
+            focus = app.root.focus_get()
+            consent = (app.w.screen, app.w.selected, app.w.owner_ok, app.w.confirm_input, app.w.method)
+            before = canvas.yview()
+            target.event_generate(sequence, **({"delta": delta} if delta is not None else {}))
+            app.root.update()
+            after = canvas.yview()
+            canvas.yview_moveto(before[0])
+            canvas.yview_scroll(direction, "units")
+            expected = canvas.yview()
+&gt;           assert after == expected
+E           assert (0.1993517017...9546191247974) == (0.1345218800...7163695299838)
+E             
+E             At index 0 diff: 0.1993517017828201 != 0.13452188006482982
+E             Use -v to get more diff
+
+tests/test_tk_input_scroll_pass13.py:221: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;MouseWheel&gt;-120--1-canvas]" time="0.147" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;MouseWheel&gt;-120--1-inner]" time="0.152" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent[&lt;MouseWheel&gt;-120--1-panel]" time="0.142"><failure message="assert (0.1993517017...9546191247974) == (0.1345218800...7163695299838)&#10;  &#10;  At index 0 diff: 0.1993517017828201 != 0.13452188006482982&#10;  Use -v to get more diff">target_kind = 'panel', sequence = '&lt;MouseWheel&gt;', delta = 120, direction = -1
+
+    @pytest.mark.parametrize("target_kind", ["label", "canvas", "inner", "panel"])
+    @pytest.mark.parametrize(("sequence", "delta", "direction"), [
+        ("&lt;Button-5&gt;", None, 1), ("&lt;Button-4&gt;", None, -1),
+        ("&lt;MouseWheel&gt;", -120, 1), ("&lt;MouseWheel&gt;", 120, -1),
+    ])
+    def test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent(target_kind, sequence, delta, direction):
+        app = _app()
+        try:
+            canvas = app._body_canvas
+            canvas.yview_moveto(0.2)
+            app.root.update()
+            label = _visible_label(app)
+            target = {"label": label, "canvas": canvas, "inner": app._body_inner,
+                      "panel": next(w for w in _children(app._body_inner) if isinstance(w, tk.Canvas))}[target_kind]
+            app.root.focus_force()
+            focus = app.root.focus_get()
+            consent = (app.w.screen, app.w.selected, app.w.owner_ok, app.w.confirm_input, app.w.method)
+            before = canvas.yview()
+            target.event_generate(sequence, **({"delta": delta} if delta is not None else {}))
+            app.root.update()
+            after = canvas.yview()
+            canvas.yview_moveto(before[0])
+            canvas.yview_scroll(direction, "units")
+            expected = canvas.yview()
+&gt;           assert after == expected
+E           assert (0.1993517017...9546191247974) == (0.1345218800...7163695299838)
+E             
+E             At index 0 diff: 0.1993517017828201 != 0.13452188006482982
+E             Use -v to get more diff
+
+tests/test_tk_input_scroll_pass13.py:221: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_small_wheel_deltas_do_not_move_body[-119]" time="0.139" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_small_wheel_deltas_do_not_move_body[-1]" time="0.150" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_small_wheel_deltas_do_not_move_body[0]" time="0.144" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_small_wheel_deltas_do_not_move_body[1]" time="0.151" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_small_wheel_deltas_do_not_move_body[119]" time="0.137" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;Button-5&gt;-Text]" time="0.164" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;Button-5&gt;-Listbox]" time="0.145" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;Button-5&gt;-Treeview]" time="0.150" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;Button-5&gt;-nested_canvas]" time="0.157" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;Button-5&gt;-custom_scrollbar]" time="0.142" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;Button-5&gt;-footer]" time="0.165" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;MouseWheel&gt;-Text]" time="0.166" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;MouseWheel&gt;-Listbox]" time="0.160" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;MouseWheel&gt;-Treeview]" time="0.159" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;MouseWheel&gt;-nested_canvas]" time="0.145" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;MouseWheel&gt;-custom_scrollbar]" time="0.148" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_independent_scroll_surfaces_and_footer_do_not_scroll_parent[&lt;MouseWheel&gt;-footer]" time="0.154" /><testcase classname="tests.test_tk_input_scroll_pass13" name="test_wheel_uses_current_body_after_redraw_and_leaves_picker_controls_intact" time="0.224"><failure message="assert 0.0 &gt; 0.0">def test_wheel_uses_current_body_after_redraw_and_leaves_picker_controls_intact():
+        app = _app()
+        try:
+            old = app._body_canvas
+            app._draw()
+            app.root.update()
+            current = app._body_canvas
+            assert current is not old
+            before = current.yview()
+            _visible_label(app).event_generate("&lt;Button-5&gt;")
+            app.root.update()
+&gt;           assert current.yview()[0] &gt; before[0]
+E           assert 0.0 &gt; 0.0
+
+tests/test_tk_input_scroll_pass13.py:295: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_native_wheel_over_hit_tested_prose_works[4]" time="0.161"><failure message="assert (-1 * (0.1993517017828201 - 0.1993517017828201)) &gt; 0">button = 4
+
+    @pytest.mark.parametrize("button", [4, 5])
+    def test_native_wheel_over_hit_tested_prose_works(button):
+        app = _app()
+        connection = None
+        try:
+            canvas = app._body_canvas
+            canvas.yview_moveto(0.2)
+            app.root.update()
+            label = _visible_label(app)
+            point = (label.winfo_rootx() + 10, label.winfo_rooty() + 10)
+            assert app.root.winfo_containing(*point) is label
+            x11 = ctypes.CDLL("libX11.so.6")
+            xtst = ctypes.CDLL("libXtst.so.6")
+            x11.XOpenDisplay.argtypes = [ctypes.c_char_p]
+            x11.XOpenDisplay.restype = ctypes.c_void_p
+            x11.XCloseDisplay.argtypes = [ctypes.c_void_p]
+            x11.XSync.argtypes = [ctypes.c_void_p, ctypes.c_int]
+            xtst.XTestFakeMotionEvent.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_ulong]
+            xtst.XTestFakeButtonEvent.argtypes = [ctypes.c_void_p, ctypes.c_uint, ctypes.c_int, ctypes.c_ulong]
+            connection = x11.XOpenDisplay(os.environ["DISPLAY"].encode())
+            assert connection
+            assert xtst.XTestFakeMotionEvent(connection, -1, *point, 0)
+            x11.XSync(connection, False)
+            before = canvas.yview()
+            assert xtst.XTestFakeButtonEvent(connection, button, True, 0)
+            assert xtst.XTestFakeButtonEvent(connection, button, False, 0)
+            x11.XSync(connection, False)
+            app.root.update()
+&gt;           assert (1 if button == 5 else -1) * (canvas.yview()[0] - before[0]) &gt; 0
+E           assert (-1 * (0.1993517017828201 - 0.1993517017828201)) &gt; 0
+
+tests/test_tk_input_scroll_pass13.py:346: AssertionError</failure></testcase><testcase classname="tests.test_tk_input_scroll_pass13" name="test_native_wheel_over_hit_tested_prose_works[5]" time="0.151"><failure message="assert (1 * (0.1993517017828201 - 0.1993517017828201)) &gt; 0">button = 5
+
+    @pytest.mark.parametrize("button", [4, 5])
+    def test_native_wheel_over_hit_tested_prose_works(button):
+        app = _app()
+        connection = None
+        try:
+            canvas = app._body_canvas
+            canvas.yview_moveto(0.2)
+            app.root.update()
+            label = _visible_label(app)
+            point = (label.winfo_rootx() + 10, label.winfo_rooty() + 10)
+            assert app.root.winfo_containing(*point) is label
+            x11 = ctypes.CDLL("libX11.so.6")
+            xtst = ctypes.CDLL("libXtst.so.6")
+            x11.XOpenDisplay.argtypes = [ctypes.c_char_p]
+            x11.XOpenDisplay.restype = ctypes.c_void_p
+            x11.XCloseDisplay.argtypes = [ctypes.c_void_p]
+            x11.XSync.argtypes = [ctypes.c_void_p, ctypes.c_int]
+            xtst.XTestFakeMotionEvent.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_ulong]
+            xtst.XTestFakeButtonEvent.argtypes = [ctypes.c_void_p, ctypes.c_uint, ctypes.c_int, ctypes.c_ulong]
+            connection = x11.XOpenDisplay(os.environ["DISPLAY"].encode())
+            assert connection
+            assert xtst.XTestFakeMotionEvent(connection, -1, *point, 0)
+            x11.XSync(connection, False)
+            before = canvas.yview()
+            assert xtst.XTestFakeButtonEvent(connection, button, True, 0)
+            assert xtst.XTestFakeButtonEvent(connection, button, False, 0)
+            x11.XSync(connection, False)
+            app.root.update()
+&gt;           assert (1 if button == 5 else -1) * (canvas.yview()[0] - before[0]) &gt; 0
+E           assert (1 * (0.1993517017828201 - 0.1993517017828201)) &gt; 0
+
+tests/test_tk_input_scroll_pass13.py:346: AssertionError</failure></testcase></testsuite></testsuites>

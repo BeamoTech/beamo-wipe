@@ -1,0 +1,58 @@
+...F                                                                     [100%]
+=================================== FAILURES ===================================
+___________ test_worker_closes_parent_after_volume_close_error[True] ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-181/test_worker_closes_parent_afte1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b2592aefd10>
+close_error = True
+
+    @pytest.mark.parametrize("close_error", [False, True])
+    def test_worker_closes_parent_after_volume_close_error(tmp_path, monkeypatch, close_error):
+        import io
+
+        parent, child = tmp_path / "fake-parent", tmp_path / "fake-volume"
+        parent.write_bytes(b"parent")
+        child.write_bytes(b"volume")
+        volume = SimpleNamespace(path=str(child), rdev=0, parent=SimpleNamespace(path=str(parent), rdev=0))
+        monkeypatch.setattr(export.sys, "stdin", SimpleNamespace(buffer=io.BytesIO(b"fake request")))
+        monkeypatch.setattr(export, "_decode_worker_request", lambda _: (None, volume, [], set(), b"", "unavailable", False))
+        monkeypatch.setattr(export, "_emit_export_marker", lambda *_: None)
+        monkeypatch.setattr(export, "run_lsblk", lambda: {})
+        monkeypatch.setattr(export, "select_export_volume", lambda *_: volume)
+        monkeypatch.setattr(export, "_same_volume", lambda *_a, **_kw: True)
+        monkeypatch.setattr(export, "_protected_rdevs", lambda *_: set())
+        monkeypatch.setattr(export, "_volume_with_rdev", lambda value: value)
+        monkeypatch.setattr(export, "_assert_partition_parent", lambda *_: None)
+
+        def refuse_export(*_a, **_kw):
+            raise SafetyError("fake export refusal")
+
+        monkeypatch.setattr(export, "_persist_and_verify_report", refuse_export)
+        real_open, real_close = os.open, os.close
+        opened = {}
+
+        def record_open(path, flags, *args, **kwargs):
+            fd = real_open(path, flags, *args, **kwargs)
+            opened[str(path)] = fd
+            return fd
+
+        def close(fd):
+            real_close(fd)
+            if close_error and fd == opened[str(child)]:
+                raise OSError(errno.EIO, "fake volume close failure")
+
+        try:
+            with monkeypatch.context() as patch:
+                patch.setattr(os, "open", record_open)
+                patch.setattr(os, "close", close)
+                error = OSError if close_error else SafetyError
+                with pytest.raises(error, match="fake (volume close failure|export refusal)"):
+                    export._worker()
+            for fd in opened.values():
+>               with pytest.raises(OSError) as caught:
+E               Failed: DID NOT RAISE <class 'OSError'>
+
+tests/test_export_mount_cleanup_regression.py:109: Failed
+=========================== short test summary info ============================
+FAILED tests/test_export_mount_cleanup_regression.py::test_worker_closes_parent_after_volume_close_error[True]
+1 failed, 3 passed in 0.19s

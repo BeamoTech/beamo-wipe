@@ -1,0 +1,121 @@
+..FF.................F.....F                                             [100%]
+=================================== FAILURES ===================================
+_ test_full_supported_run_releases_assets_before_later_worker_collection[raise-False] _
+
+request = <FixtureRequest for <Function test_full_supported_run_releases_assets_before_later_worker_collection[raise-False]>>
+retained = False, route = 'raise'
+
+    @pytest.mark.parametrize("retained", [False, True])
+    @pytest.mark.parametrize("route", ["return", "raise"])
+    def test_full_supported_run_releases_assets_before_later_worker_collection(request, retained, route):
+        _admit_private_x11()
+        assert not os.environ.get("PYTEST_PLUGINS")
+        source = Path(__file__).resolve()
+        command = [sys.executable, str(source), "--owned-child", "retained" if retained else "unretained", route]
+        # This is the only child launch. The fixed script/arguments are local and
+        # child-side guards reject every native application action, including a
+        # second process. Private display ownership belongs to the root runner.
+        env = dict(os.environ, PYTHONFAULTHANDLER="1")
+        try:
+            result = subprocess.run(command, env=env, capture_output=True, text=True, timeout=8, check=False)
+            evidence = dict(command=command, retained=retained, route=route, returncode=result.returncode,
+                            stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            evidence = dict(command=command, retained=retained, route=route, timed_out=True,
+                            stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("owned_native_collection_child", json.dumps(evidence)))
+        assert not evidence["timed_out"], evidence
+>       assert evidence["returncode"] == 0, evidence
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass19/ui-...ifetime-probe.py', '--owned-child', 'unretained', 'raise'], 'retained': False, 'returncode': -6, 'route': 'raise', ...}
+E       assert -6 == 0
+
+docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py:256: AssertionError
+_ test_full_supported_run_releases_assets_before_later_worker_collection[raise-True] _
+
+request = <FixtureRequest for <Function test_full_supported_run_releases_assets_before_later_worker_collection[raise-True]>>
+retained = True, route = 'raise'
+
+    @pytest.mark.parametrize("retained", [False, True])
+    @pytest.mark.parametrize("route", ["return", "raise"])
+    def test_full_supported_run_releases_assets_before_later_worker_collection(request, retained, route):
+        _admit_private_x11()
+        assert not os.environ.get("PYTEST_PLUGINS")
+        source = Path(__file__).resolve()
+        command = [sys.executable, str(source), "--owned-child", "retained" if retained else "unretained", route]
+        # This is the only child launch. The fixed script/arguments are local and
+        # child-side guards reject every native application action, including a
+        # second process. Private display ownership belongs to the root runner.
+        env = dict(os.environ, PYTHONFAULTHANDLER="1")
+        try:
+            result = subprocess.run(command, env=env, capture_output=True, text=True, timeout=8, check=False)
+            evidence = dict(command=command, retained=retained, route=route, returncode=result.returncode,
+                            stdout=result.stdout, stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            evidence = dict(command=command, retained=retained, route=route, timed_out=True,
+                            stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("owned_native_collection_child", json.dumps(evidence)))
+        assert not evidence["timed_out"], evidence
+>       assert evidence["returncode"] == 0, evidence
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass19/ui-...t-lifetime-probe.py', '--owned-child', 'retained', 'raise'], 'retained': True, 'returncode': -6, 'route': 'raise', ...}
+E       assert -6 == 0
+
+docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py:256: AssertionError
+__ test_supported_boundary_releases_owned_native_wrappers[True-False-redraw] ___
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[True-False-redraw]>>
+route = 'redraw', retain_owner = False, peer = True
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...e-finalizer-return", "kind": "font", "identity": 130522834804208, "thread": 130522851659904, "returned": true}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+___ test_supported_boundary_releases_owned_native_wrappers[True-True-redraw] ___
+
+request = <FixtureRequest for <Function test_supported_boundary_releases_owned_native_wrappers[True-True-redraw]>>
+route = 'redraw', retain_owner = True, peer = True
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("retain_owner", (False, True))
+    @pytest.mark.parametrize("peer", (False, True))
+    def test_supported_boundary_releases_owned_native_wrappers(request, route, retain_owner, peer):
+        _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", route,
+                   "retained" if retain_owner else "unretained", "peer" if peer else "no-peer"]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, returncode=result.returncode, stdout=result.stdout,
+                       stderr=result.stderr, timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, timed_out=True, stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("native_owned_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/tk-...e-finalizer-return", "kind": "font", "identity": 128684505119632, "thread": 128684524540032, "returned": true}
+E         ', ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py:282: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py::test_full_supported_run_releases_assets_before_later_worker_collection[raise-False]
+FAILED docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py::test_full_supported_run_releases_assets_before_later_worker_collection[raise-True]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[True-False-redraw]
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/ownership-boundary-probe.py::test_supported_boundary_releases_owned_native_wrappers[True-True-redraw]

@@ -1,0 +1,67 @@
+........................................................................ [ 15%]
+........................................................................ [ 30%]
+........................................................................ [ 46%]
+........................................................................ [ 61%]
+.................................................................Fatal Python error: Aborted
+
+Current thread 0x0000713a2a54d6c0 (most recent call first):
+  Garbage-collecting
+  File "/usr/lib/python3.12/pathlib.py", line 404 in _parse_path
+  File "/usr/lib/python3.12/pathlib.py", line 415 in _load_parts
+  File "/usr/lib/python3.12/pathlib.py", line 557 in drive
+  File "/usr/lib/python3.12/pathlib.py", line 443 in __str__
+  File "/usr/lib/python3.12/pathlib.py", line 491 in _str_normcase
+  File "/usr/lib/python3.12/pathlib.py", line 522 in __eq__
+  File "/usr/lib/python3.12/pathlib.py", line 700 in is_relative_to
+  File "/usr/lib/python3.12/pathlib.py", line 679 in relative_to
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/build_identity.py", line 67 in runtime_source_sha256
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/build_identity.py", line 216 in load_build
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/build_identity.py", line 237 in evidence_identity
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/evidence.py", line 399 in build_evidence
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/wizard.py", line 2414 in _persist_evidence
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/wizard.py", line 2353 in _write_evidence
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/wizard.py", line 2003 in _perform_start
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/wizard.py", line 1788 in <lambda>
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/wizard.py", line 270 in guarded
+  File "/usr/lib/python3.12/threading.py", line 1010 in run
+  File "/usr/lib/python3.12/threading.py", line 1073 in _bootstrap_inner
+  File "/usr/lib/python3.12/threading.py", line 1030 in _bootstrap
+
+Thread 0x0000713a2dd50080 (most recent call first):
+  File "/usr/lib/python3.12/tkinter/__init__.py", line 1372 in update
+  File "/root/dev/Beamo Wipe/tests/test_tk_runtime.py", line 2631 in test_done_post_erase_boot_note
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/_pytest/python.py", line 166 in pytest_pyfunc_call
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pluggy/_execution.py", line 147 in _multicall
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pluggy/_manager.py", line 183 in _hookexec
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pluggy/_caller.py", line 197 in __call__
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/_pytest/python.py", line 1720 in runtest
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/_pytest/runner.py", line 179 in pytest_runtest_call
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pluggy/_execution.py", line 147 in _multicall
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pluggy/_manager.py", line 183 in _hookexec
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pluggy/_caller.py", line 197 in __call__
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/_pytest/runner.py", line 245 in <lambda>
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/_pytest/runner.py", line 353 in from_call
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/_pytest/runner.py", line 244 in call_and_report
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/_pytest/runner.py", line 137 in runtestprotocol
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/_pytest/runner.py", line 118 in pytest_runtest_protocol
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pluggy/_execution.py", line 147 in _multicall
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pluggy/_manager.py", line 183 in _hookexec
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pluggy/_caller.py", line 197 in __call__
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/_pytest/main.py", line 396 in pytest_runtestloop
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pluggy/_execution.py", line 147 in _multicall
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pluggy/_manager.py", line 183 in _hookexec
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pluggy/_caller.py", line 197 in __call__
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/_pytest/main.py", line 372 in _main
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/_pytest/main.py", line 318 in wrap_session
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/_pytest/main.py", line 365 in pytest_cmdline_main
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pluggy/_execution.py", line 147 in _multicall
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pluggy/_manager.py", line 183 in _hookexec
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pluggy/_caller.py", line 197 in __call__
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/_pytest/config/__init__.py", line 199 in main
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/_pytest/config/__init__.py", line 223 in console_main
+  File "/tmp/beamo-pass20-python/lib/python3.12/site-packages/pytest/__main__.py", line 9 in <module>
+  File "<frozen runpy>", line 88 in _run_code
+  File "<frozen runpy>", line 198 in _run_module_as_main
+
+Extension modules: PIL._imaging (total: 1)
+Aborted

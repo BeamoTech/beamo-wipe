@@ -1,0 +1,56 @@
+{
+  "display": ":127",
+  "states": [
+    {
+      "surface": "wizard-fullscreen",
+      "image": "/tmp/pass11-ui/wizard-fullscreen-1600x1000-72dpi.png",
+      "image_sha256": "a82f352b39f893876cb5c82aec3931ed9b2f3ab1052205dd316fb4c38c826d4e",
+      "root_size": [
+        1600,
+        1000
+      ],
+      "native_allocation": [
+        1600,
+        1000
+      ],
+      "native_origin": [
+        0,
+        0
+      ],
+      "native_xid": 2097155,
+      "native_fullscreen": true,
+      "gtk_child_focused": true,
+      "xserver_dpi": [
+        72.05673758865248,
+        71.95467422096317
+      ],
+      "capture": "Pillow full private-Xvfb root; unedited"
+    },
+    {
+      "surface": "startup-fullscreen",
+      "image": "/tmp/pass11-ui/startup-fullscreen-1600x1000-72dpi.png",
+      "image_sha256": "4c63cbfc8c20d29647eb634304ed06c1539849f597204cd3210eda4c81555592",
+      "root_size": [
+        1600,
+        1000
+      ],
+      "native_allocation": [
+        1600,
+        1000
+      ],
+      "native_origin": [
+        0,
+        0
+      ],
+      "native_xid": 2097220,
+      "native_fullscreen": true,
+      "gtk_child_focused": true,
+      "xserver_dpi": [
+        72.05673758865248,
+        71.95467422096317
+      ],
+      "capture": "Pillow full private-Xvfb root; unedited"
+    }
+  ],
+  "owned_teardown": true
+}

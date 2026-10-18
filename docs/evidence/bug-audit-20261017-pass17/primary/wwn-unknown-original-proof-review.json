@@ -1,0 +1,8 @@
+{
+  "cases": 48,
+  "counts": {
+    "fail": 16,
+    "pass": 32
+  },
+  "source_sha256": "7dbff4e97c5e4087681744ce02857c08c6f7173de355371aff838814e1b3a8ea"
+}

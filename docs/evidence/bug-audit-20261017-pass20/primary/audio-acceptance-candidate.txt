@@ -1,0 +1,411 @@
+FFFFFF                                                                   [100%]
+=================================== FAILURES ===================================
+_____ test_failed_acceptance_rejects_handed_off_target[RuntimeError-False] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x710de71d1310>
+protected = False, failure = <class 'RuntimeError'>
+
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_failed_acceptance_rejects_handed_off_target(monkeypatch, protected, failure):
+        events = []
+        threads = []
+        entered = []
+    
+        class FakeEvent:
+            def __init__(self):
+                self.flag = False
+                self.reject = len(events) == 2  # ticket cancellation, decision, allowed
+                events.append(self)
+    
+            def set(self):
+                self.flag = True
+                if self.reject:
+                    self.reject = False
+                    raise failure("controlled interruption after acceptance mutation")
+    
+            def clear(self):
+                self.flag = False
+    
+            def is_set(self):
+                return self.flag
+    
+            def wait(self):
+                assert self.flag, "This probe never waits on an actual thread"
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                threads.append(self)
+    
+            def start(self):
+                pass  # target handoff waits for the caller's final decision
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Event", FakeEvent)
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        monkeypatch.setattr(worker, "_run", lambda: entered.append("old worker admitted"))
+        try:
+            if failure is RuntimeError:
+                ticket = worker.submit(lambda: None, protected=protected)
+                ready, value = ticket.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled interruption after acceptance mutation"):
+                    worker.submit(lambda: None, protected=protected)
+            assert worker._thread is None
+            threads[0].target()
+>           assert entered == [], "Rejected acceptance still authorized the old worker"
+E           AssertionError: Rejected acceptance still authorized the old worker
+E           assert ['old worker admitted'] == []
+E             
+E             Left contains one more item: 'old worker admitted'
+E             Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_acceptance_boundary_candidate.py:67: AssertionError
+_____ test_failed_acceptance_rejects_handed_off_target[RuntimeError-True] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x710de71d0d70>
+protected = True, failure = <class 'RuntimeError'>
+
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_failed_acceptance_rejects_handed_off_target(monkeypatch, protected, failure):
+        events = []
+        threads = []
+        entered = []
+    
+        class FakeEvent:
+            def __init__(self):
+                self.flag = False
+                self.reject = len(events) == 2  # ticket cancellation, decision, allowed
+                events.append(self)
+    
+            def set(self):
+                self.flag = True
+                if self.reject:
+                    self.reject = False
+                    raise failure("controlled interruption after acceptance mutation")
+    
+            def clear(self):
+                self.flag = False
+    
+            def is_set(self):
+                return self.flag
+    
+            def wait(self):
+                assert self.flag, "This probe never waits on an actual thread"
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                threads.append(self)
+    
+            def start(self):
+                pass  # target handoff waits for the caller's final decision
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Event", FakeEvent)
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        monkeypatch.setattr(worker, "_run", lambda: entered.append("old worker admitted"))
+        try:
+            if failure is RuntimeError:
+                ticket = worker.submit(lambda: None, protected=protected)
+                ready, value = ticket.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled interruption after acceptance mutation"):
+                    worker.submit(lambda: None, protected=protected)
+            assert worker._thread is None
+            threads[0].target()
+>           assert entered == [], "Rejected acceptance still authorized the old worker"
+E           AssertionError: Rejected acceptance still authorized the old worker
+E           assert ['old worker admitted'] == []
+E             
+E             Left contains one more item: 'old worker admitted'
+E             Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_acceptance_boundary_candidate.py:67: AssertionError
+__ test_failed_acceptance_rejects_handed_off_target[KeyboardInterrupt-False] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x710de71d2420>
+protected = False, failure = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_failed_acceptance_rejects_handed_off_target(monkeypatch, protected, failure):
+        events = []
+        threads = []
+        entered = []
+    
+        class FakeEvent:
+            def __init__(self):
+                self.flag = False
+                self.reject = len(events) == 2  # ticket cancellation, decision, allowed
+                events.append(self)
+    
+            def set(self):
+                self.flag = True
+                if self.reject:
+                    self.reject = False
+                    raise failure("controlled interruption after acceptance mutation")
+    
+            def clear(self):
+                self.flag = False
+    
+            def is_set(self):
+                return self.flag
+    
+            def wait(self):
+                assert self.flag, "This probe never waits on an actual thread"
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                threads.append(self)
+    
+            def start(self):
+                pass  # target handoff waits for the caller's final decision
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Event", FakeEvent)
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        monkeypatch.setattr(worker, "_run", lambda: entered.append("old worker admitted"))
+        try:
+            if failure is RuntimeError:
+                ticket = worker.submit(lambda: None, protected=protected)
+                ready, value = ticket.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled interruption after acceptance mutation"):
+                    worker.submit(lambda: None, protected=protected)
+            assert worker._thread is None
+            threads[0].target()
+>           assert entered == [], "Rejected acceptance still authorized the old worker"
+E           AssertionError: Rejected acceptance still authorized the old worker
+E           assert ['old worker admitted'] == []
+E             
+E             Left contains one more item: 'old worker admitted'
+E             Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_acceptance_boundary_candidate.py:67: AssertionError
+___ test_failed_acceptance_rejects_handed_off_target[KeyboardInterrupt-True] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x710de71d2ea0>
+protected = True, failure = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_failed_acceptance_rejects_handed_off_target(monkeypatch, protected, failure):
+        events = []
+        threads = []
+        entered = []
+    
+        class FakeEvent:
+            def __init__(self):
+                self.flag = False
+                self.reject = len(events) == 2  # ticket cancellation, decision, allowed
+                events.append(self)
+    
+            def set(self):
+                self.flag = True
+                if self.reject:
+                    self.reject = False
+                    raise failure("controlled interruption after acceptance mutation")
+    
+            def clear(self):
+                self.flag = False
+    
+            def is_set(self):
+                return self.flag
+    
+            def wait(self):
+                assert self.flag, "This probe never waits on an actual thread"
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                threads.append(self)
+    
+            def start(self):
+                pass  # target handoff waits for the caller's final decision
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Event", FakeEvent)
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        monkeypatch.setattr(worker, "_run", lambda: entered.append("old worker admitted"))
+        try:
+            if failure is RuntimeError:
+                ticket = worker.submit(lambda: None, protected=protected)
+                ready, value = ticket.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled interruption after acceptance mutation"):
+                    worker.submit(lambda: None, protected=protected)
+            assert worker._thread is None
+            threads[0].target()
+>           assert entered == [], "Rejected acceptance still authorized the old worker"
+E           AssertionError: Rejected acceptance still authorized the old worker
+E           assert ['old worker admitted'] == []
+E             
+E             Left contains one more item: 'old worker admitted'
+E             Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_acceptance_boundary_candidate.py:67: AssertionError
+______ test_failed_acceptance_rejects_handed_off_target[SystemExit-False] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x710de71d3b00>
+protected = False, failure = <class 'SystemExit'>
+
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_failed_acceptance_rejects_handed_off_target(monkeypatch, protected, failure):
+        events = []
+        threads = []
+        entered = []
+    
+        class FakeEvent:
+            def __init__(self):
+                self.flag = False
+                self.reject = len(events) == 2  # ticket cancellation, decision, allowed
+                events.append(self)
+    
+            def set(self):
+                self.flag = True
+                if self.reject:
+                    self.reject = False
+                    raise failure("controlled interruption after acceptance mutation")
+    
+            def clear(self):
+                self.flag = False
+    
+            def is_set(self):
+                return self.flag
+    
+            def wait(self):
+                assert self.flag, "This probe never waits on an actual thread"
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                threads.append(self)
+    
+            def start(self):
+                pass  # target handoff waits for the caller's final decision
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Event", FakeEvent)
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        monkeypatch.setattr(worker, "_run", lambda: entered.append("old worker admitted"))
+        try:
+            if failure is RuntimeError:
+                ticket = worker.submit(lambda: None, protected=protected)
+                ready, value = ticket.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled interruption after acceptance mutation"):
+                    worker.submit(lambda: None, protected=protected)
+            assert worker._thread is None
+            threads[0].target()
+>           assert entered == [], "Rejected acceptance still authorized the old worker"
+E           AssertionError: Rejected acceptance still authorized the old worker
+E           assert ['old worker admitted'] == []
+E             
+E             Left contains one more item: 'old worker admitted'
+E             Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_acceptance_boundary_candidate.py:67: AssertionError
+______ test_failed_acceptance_rejects_handed_off_target[SystemExit-True] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x710de7244620>
+protected = True, failure = <class 'SystemExit'>
+
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_failed_acceptance_rejects_handed_off_target(monkeypatch, protected, failure):
+        events = []
+        threads = []
+        entered = []
+    
+        class FakeEvent:
+            def __init__(self):
+                self.flag = False
+                self.reject = len(events) == 2  # ticket cancellation, decision, allowed
+                events.append(self)
+    
+            def set(self):
+                self.flag = True
+                if self.reject:
+                    self.reject = False
+                    raise failure("controlled interruption after acceptance mutation")
+    
+            def clear(self):
+                self.flag = False
+    
+            def is_set(self):
+                return self.flag
+    
+            def wait(self):
+                assert self.flag, "This probe never waits on an actual thread"
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                threads.append(self)
+    
+            def start(self):
+                pass  # target handoff waits for the caller's final decision
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Event", FakeEvent)
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        monkeypatch.setattr(worker, "_run", lambda: entered.append("old worker admitted"))
+        try:
+            if failure is RuntimeError:
+                ticket = worker.submit(lambda: None, protected=protected)
+                ready, value = ticket.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled interruption after acceptance mutation"):
+                    worker.submit(lambda: None, protected=protected)
+            assert worker._thread is None
+            threads[0].target()
+>           assert entered == [], "Rejected acceptance still authorized the old worker"
+E           AssertionError: Rejected acceptance still authorized the old worker
+E           assert ['old worker admitted'] == []
+E             
+E             Left contains one more item: 'old worker admitted'
+E             Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_acceptance_boundary_candidate.py:67: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_acceptance_boundary_candidate.py::test_failed_acceptance_rejects_handed_off_target[RuntimeError-False]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_acceptance_boundary_candidate.py::test_failed_acceptance_rejects_handed_off_target[RuntimeError-True]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_acceptance_boundary_candidate.py::test_failed_acceptance_rejects_handed_off_target[KeyboardInterrupt-False]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_acceptance_boundary_candidate.py::test_failed_acceptance_rejects_handed_off_target[KeyboardInterrupt-True]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_acceptance_boundary_candidate.py::test_failed_acceptance_rejects_handed_off_target[SystemExit-False]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_acceptance_boundary_candidate.py::test_failed_acceptance_rejects_handed_off_target[SystemExit-True]

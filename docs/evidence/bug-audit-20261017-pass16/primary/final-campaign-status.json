@@ -1,0 +1,42 @@
+[
+  {
+    "phase": "runner-fresh",
+    "command": [
+      "/tmp/beamo-pass16-python/bin/python3",
+      "/tmp/pass16-runner/fresh-boundaries.py"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-17T03:40:11.860267+00:00",
+    "ended_utc": "2026-10-17T03:40:18.614557+00:00"
+  },
+  {
+    "phase": "runner-cancel",
+    "command": [
+      "/tmp/beamo-pass16-python/bin/python3",
+      "/tmp/pass16-runner/cancel-boundaries.py"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-17T03:40:18.614897+00:00",
+    "ended_utc": "2026-10-17T03:40:18.781042+00:00"
+  },
+  {
+    "phase": "geometry",
+    "command": [
+      "/tmp/beamo-pass16-python/bin/python3",
+      "/tmp/pass16-ui/run-geometry.py"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-17T03:40:18.781708+00:00",
+    "ended_utc": "2026-10-17T03:41:10.215264+00:00"
+  },
+  {
+    "phase": "reports",
+    "command": [
+      "/tmp/beamo-pass16-python/bin/python3",
+      "/tmp/pass16-primary/report-checks-matrix.py"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-17T03:41:10.216694+00:00",
+    "ended_utc": "2026-10-17T03:41:14.725660+00:00"
+  }
+]

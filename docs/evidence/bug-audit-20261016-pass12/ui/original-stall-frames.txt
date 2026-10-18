@@ -1,0 +1,108 @@
+dbus-daemon[518356]: [session uid=0 pid=518356] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=518357 comm="/tmp/beamo-wipe-audit-python/bin/python /tmp/pass1" label="unconfined")
+dbus-daemon[518356]: [session uid=0 pid=518356] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[518366]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=518357 comm="/tmp/beamo-wipe-audit-python/bin/python /tmp/pass1" label="unconfined")
+dbus-daemon[518366]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{
+  "display": ":120",
+  "results": [
+    {
+      "surface": "tk",
+      "outcome": "abandoned",
+      "phases": [
+        {
+          "frame": 0,
+          "stall_visible": false,
+          "model_note": null,
+          "active_stage": "starting",
+          "clock": 0.0
+        },
+        {
+          "frame": 1,
+          "stall_visible": true,
+          "model_note": "Still working \u2014 this can take a minute on older machines.",
+          "active_stage": "starting",
+          "clock": 11
+        },
+        {
+          "frame": 2,
+          "stall_visible": false,
+          "model_note": null,
+          "active_stage": "starting",
+          "clock": 11
+        },
+        {
+          "frame": 3,
+          "stall_visible": false,
+          "model_note": null,
+          "active_stage": "checking-boot-usb",
+          "clock": 12
+        },
+        {
+          "frame": 4,
+          "stall_visible": true,
+          "model_note": "Still working \u2014 this can take a minute on older machines.",
+          "active_stage": "checking-boot-usb",
+          "clock": 23
+        },
+        {
+          "frame": 5,
+          "stall_visible": false,
+          "model_note": null,
+          "active_stage": "checking-boot-usb",
+          "clock": 23
+        }
+      ]
+    },
+    {
+      "surface": "gtk",
+      "outcome": "abandoned",
+      "phases": [
+        {
+          "frame": 0,
+          "stall_visible": false,
+          "model_note": null,
+          "active_stage": "starting",
+          "clock": 0.0
+        },
+        {
+          "frame": 1,
+          "stall_visible": true,
+          "model_note": "Still working \u2014 this can take a minute on older machines.",
+          "active_stage": "starting",
+          "clock": 11
+        },
+        {
+          "frame": 2,
+          "stall_visible": false,
+          "model_note": null,
+          "active_stage": "starting",
+          "clock": 11
+        },
+        {
+          "frame": 3,
+          "stall_visible": false,
+          "model_note": null,
+          "active_stage": "checking-boot-usb",
+          "clock": 12
+        },
+        {
+          "frame": 4,
+          "stall_visible": true,
+          "model_note": "Still working \u2014 this can take a minute on older machines.",
+          "active_stage": "checking-boot-usb",
+          "clock": 23
+        },
+        {
+          "frame": 5,
+          "stall_visible": false,
+          "model_note": null,
+          "active_stage": "checking-boot-usb",
+          "clock": 23
+        }
+      ]
+    }
+  ],
+  "owned_teardown": true
+}
+X connection to :120 broken (explicit kill or server shutdown).

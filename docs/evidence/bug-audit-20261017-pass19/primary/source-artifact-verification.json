@@ -1,0 +1,41 @@
+{
+  "starting_inputs": 766,
+  "starting_matches_prior_final": true,
+  "final_inputs": 771,
+  "unchanged_starting_inputs": 762,
+  "changed_inputs": [
+    "src/beamo_wipe/discover.py",
+    "src/beamo_wipe/ui/tk_wizard.py",
+    "tests/test_accessible_runtime.py",
+    "tests/test_checkrow_trace_lifetime_pass18.py"
+  ],
+  "new_test_inputs": 5,
+  "retained_regression_modules": 42,
+  "source_and_test_archives_readback": true,
+  "exact_incremental_and_cumulative_patches": true,
+  "original_final_proof_cases": 222,
+  "original_assertion_failures": 118,
+  "original_passing_controls": 104,
+  "original_errors": 0,
+  "original_skips": 0,
+  "original_failures_by_module": {
+    "tests.test_descendant_holder_filesystem_pass19": 36,
+    "tests.test_duplicate_bcache_filesystem_pass19": 20,
+    "tests.test_holder_ancestor_contradiction_pass19": 24,
+    "tests.test_tk_owner_trace_lifetime_pass19": 6,
+    "tests.test_unbound_bcache_filesystem_pass19": 24,
+    "docs.evidence.bug-audit-20261017-pass19.primary.fixture_release_probe": 8
+  },
+  "original_helper_only_controls_deselected": 0,
+  "index_empty": true,
+  "guidance_sha256": {
+    "AGENTS.md": "1e6f980d50267db488a9beb353802242ac57379450c1d9c0ad77c13928509290",
+    "docs/ci.md": "4bea0e17f8017df4541f4e37b7b91521ded7b334d3063b21cf57af0d51d0c67d",
+    "docs/remote-development.md": "48bbc2df74fbe3e83eb6ae9ac8bbac83f46fcf5c1a61e1971aec1489edc67cf0",
+    "docs/claims.md": "7957215efb558d248a3af044432810035840e0ac9191a10a08c2848632c1f4c4",
+    "README.md": "5f90c4431f1dee815f3748294073d6fe0d38744f0260d8fe4f2c843202940620",
+    "docs/runbook.md": "aa8e600ce9786b1a0ba7c63a6e443404013c80f388c3028440f1af928cf4df8a",
+    ".ai/memory/product-constraints.md": "a63b79d933ab129c25c14a6f5e0ca930fd2163f92a0f18590e7c672417ec02e9"
+  },
+  "shared_parent_guide_present": false
+}

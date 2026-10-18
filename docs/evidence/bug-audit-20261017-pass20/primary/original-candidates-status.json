@@ -1,0 +1,23 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass20-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "docs/evidence/bug-audit-20261017-pass20/discovery/mounted_holder_type_candidate.py",
+    "docs/evidence/bug-audit-20261017-pass20/runner-boot/audio-launch-interruption-probe.py",
+    "docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py",
+    "--junitxml=/tmp/pass20-primary/original-candidates.xml"
+  ],
+  "exit_code": 1,
+  "started_utc": "2026-10-17T18:14:06.375267+00:00",
+  "ended_utc": "2026-10-17T18:14:12.720769+00:00"
+}

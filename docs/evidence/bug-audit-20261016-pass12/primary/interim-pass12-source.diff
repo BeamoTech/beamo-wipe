@@ -1,0 +1,146 @@
+--- starting/src/beamo_wipe/nwipe_runner.py
++++ current/src/beamo_wipe/nwipe_runner.py
+@@ -677,15 +677,18 @@
+     shared = _status_column_is_shared(log_text, device)
+     in_table = False
+     for line in (log_text or "").split("\n"):
++        # Negative error evidence uses the same record body as its header.
++        # Keep raw records untouched for exact positive Drive Status proof.
++        body = _engine_log_body(line)
+         if _is_error_summary_header(line):
+             in_table = True
+             continue
+-        if in_table and line.lstrip().startswith("***"):
++        if in_table and body.lstrip().startswith("***"):
+             in_table = False
+             continue
+-        if not any(_status_column_has_name(line, n) for n in names):
++        if not any(_status_column_has_name(body, n) for n in names):
+             continue
+-        row = NWIPE_ERROR_ROW_RE.match(line)
++        row = NWIPE_ERROR_ROW_RE.match(body)
+         if not in_table:
+             # The bounded completion tail can start inside Error Summary and
+             # lose its header. A target row with nonzero counts still
+--- starting/src/beamo_wipe/startup_stages.py
++++ current/src/beamo_wipe/startup_stages.py
+@@ -176,8 +176,16 @@
+             self.stages.begin(stage)
+         return self.stages.snapshot()
+ 
+-    def stalled_note(self) -> str | None:
+-        if self.stages.stalled():
++    def stalled_note(self, *, persistent: bool = False) -> str | None:
++        """One announcement, or current stall text for graphical refreshes."""
++        first_notice = self.stages.stalled()
++        still_stalled = (
++            persistent
++            and self.stages._stalled_reported
++            and not self.stages.done
++            and not self.stages.failed
++        )
++        if first_notice or still_stalled:
+             return C.STARTUP_STILL_WORKING
+         return None
+ 
+--- starting/src/beamo_wipe/ui/accessible_wizard.py
++++ current/src/beamo_wipe/ui/accessible_wizard.py
+@@ -1270,7 +1270,7 @@
+             status.set_text(_STATUS_WORDS[row["state"]])
+             title.set_text(row["title"])
+             hint.set_text(row["hint"])
+-        note = run.stalled_note()
++        note = run.stalled_note(persistent=True)
+         stall.set_text(note or "")
+         active = [row for row in snap if row["state"] == "active"]
+         if active:
+--- starting/src/beamo_wipe/ui/sound_dialog.py
++++ current/src/beamo_wipe/ui/sound_dialog.py
+@@ -19,10 +19,28 @@
+         self.dialog.set_transient_for(window)
+         self.dialog.set_modal(True)
+         self.dialog.set_destroy_with_parent(True)
+-        self.dialog.set_default_size(560, 480)
+-        box = self.dialog.get_content_area()
+-        box.set_spacing(6)
+-        box.set_border_width(16)
++        width, height = 560, 480
++        display = window.get_display()
++        monitor = (display.get_monitor_at_window(window.get_window())
++                   if window.get_window() is not None else display.get_primary_monitor())
++        monitor = monitor or display.get_monitor(0)
++        if monitor is not None:
++            area = monitor.get_workarea()
++            width, height = min(width, area.width), min(height, area.height)
++            self.dialog.set_position(gtk.WindowPosition.NONE)
++            self.dialog.move(area.x + (area.width - width) // 2,
++                             area.y + (area.height - height) // 2)
++        self.dialog.set_default_size(width, height)
++        content = self.dialog.get_content_area()
++        content.set_spacing(6)
++        content.set_border_width(16)
++        # Output lists and recovery text can exceed a small live display.
++        # Keep Close and the live Stop action outside this scrolling area.
++        scroll = gtk.ScrolledWindow()
++        scroll.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
++        content.pack_start(scroll, True, True, 0)
++        box = gtk.Box(orientation=gtk.Orientation.VERTICAL, spacing=6)
++        scroll.add(box)
+         self.status = self._label(C.SOUND_CHECKING)
+         self.status.set_can_focus(True)
+         self.status.set_selectable(True)
+@@ -63,7 +81,7 @@
+         box.pack_start(self._label(C.SOUND_RECOVERY), False, False, 4)
+         if wizard.screen == Screen.WORKING:
+             stop_button = gtk.Button.new_with_label(C.STOP_ASK)
+-            box.pack_start(stop_button, False, False, 4)
++            content.pack_start(stop_button, False, False, 4)
+             stop_button.connect("clicked", self._request_stop)
+         self.dialog.add_button(C.SOUND_CLOSE, gtk.ResponseType.CLOSE)
+         self.dialog.connect("response", lambda *_: self.dialog.destroy())
+@@ -183,7 +201,8 @@
+         if not state.available:
+             self._announce(state.message)
+             return
+-        self.chosen = sound.resolve_output(self.w.sound_output, state)
++        preferred = self.w.sound_output if applied is None or applied.ok else ""
++        self.chosen = sound.resolve_output(preferred, state)
+         group = None
+         for output in state.outputs:
+             choice = self.Gtk.RadioButton.new_with_label_from_widget(group, output.label)
+--- starting/src/beamo_wipe/ui/tk_wizard.py
++++ current/src/beamo_wipe/ui/tk_wizard.py
+@@ -4564,10 +4564,11 @@
+         root.attributes("-fullscreen", True)
+     else:
+         root.geometry("640x440")
+-    try:
+-        root.eval("tk::PlaceWindow . center")
+-    except tk.TclError:
+-        pass
++    if not fullscreen:
++        try:
++            root.eval("tk::PlaceWindow . center")
++        except tk.TclError:
++            pass
+     root.configure(bg=BG)
+     outcome: list = []
+ 
+@@ -4599,7 +4600,7 @@
+             status.configure(text=_STATUS_WORDS[row["state"]])
+             title.configure(text=row["title"])
+             hint.configure(text=row["hint"])
+-        note = run.stalled_note()
++        note = run.stalled_note(persistent=True)
+         stall.configure(text=note or "")
+ 
+     def close() -> None:
+@@ -4644,6 +4645,8 @@
+         render()
+         run.start()
+         root.after(100, poll_once)
++        # Bare X11 has no window manager to give this mapped startup input.
++        root.after_idle(root.focus_force)
+         root.mainloop()
+     finally:
+         # The recursive callback otherwise retains itself and the destroyed

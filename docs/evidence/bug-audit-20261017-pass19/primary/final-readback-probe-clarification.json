@@ -1,0 +1,7 @@
+{
+  "initial_verifier_failure": "KeyError failed-gate-1/final.txt",
+  "reason": "Only bulky raw files are compacted; smaller full-failure logs remain plain. First verifier wrongly assumed every failed log was in the raw archive.",
+  "data_missing": false,
+  "correction": "Resolve authenticated relative names from raw archive or retained plain file; all195 prior manifest files and29 archived streams verified before final receipts.",
+  "final_readback": "PASS"
+}

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/tmp/beamo-pass8-discovery-token-argv.py", line 15, in <module>
+    disk=node_to_disk(dict(name=name,path='/dev/'+name,type='disk',size=rng.choice([255999999999,256000000000,1024000000000]),serial=rng.choice(ids),wwn=rng.choice(ids),tran='sata'),False)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/discover.py", line 1295, in node_to_disk
+    serial=_hardware_identity(node.get("serial"), "serial")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/dev/Beamo Wipe/src/beamo_wipe/discover.py", line 284, in _hardware_identity
+    raise ValueError(f"lsblk {field} contains control characters")
+ValueError: lsblk serial contains control characters

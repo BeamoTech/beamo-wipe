@@ -1,0 +1,201 @@
+--- starting/src/beamo_wipe/audio_jobs.py
++++ final/src/beamo_wipe/audio_jobs.py
+@@ -79,11 +79,23 @@
+                     self._pending[0].cancel()
+                 self._pending = (ticket, action)
+             if self._thread is None:
++                launch_decided = threading.Event()
++                launch_allowed = threading.Event()
++
++                def accepted_worker() -> None:
++                    # start() can raise after its OS thread exists. A rejected
++                    # worker must never consume a later launch's queue or
++                    # retire that launch's thread reference.
++                    launch_decided.wait()
++                    if launch_allowed.is_set():
++                        self._run()
++
+                 self._thread = threading.Thread(
+-                    target=self._run, name="beamo-audio", daemon=True
++                    target=accepted_worker, name="beamo-audio", daemon=True
+                 )
+                 try:
+                     self._thread.start()
++                    launch_allowed.set()
+                 except RuntimeError as exc:
+                     if protected:
+                         self._pending_outcome = None
+@@ -92,6 +104,8 @@
+                     self._thread = None
+                     ticket._finish(exc)
+                     return ticket
++                finally:
++                    launch_decided.set()
+             self._condition.notify()
+         return ticket
+ 
+--- starting/src/beamo_wipe/discover.py
++++ final/src/beamo_wipe/discover.py
+@@ -23,7 +23,7 @@
+     DiskKind,
+     DiscoveryResult,
+ )
+-from beamo_wipe.safety import possible_hardware_alias
++from beamo_wipe.safety import protected_hardware_aliases
+ 
+ IDENTITY_UNAVAILABLE = "Device identity unavailable"
+ IDENTITY_UNCONFIRMED = "identity could not be confirmed"
+@@ -549,14 +549,14 @@
+     mounted = [disk for disk in (*disks, *mounted_observations) if disk.mountpoints]
+     if not mounted:
+         return list(disks)
++    mounts_by_path: Dict[str, List[str]] = {}
++    observations = (*disks, *mounted_observations)
++    for source in mounted:
++        for alias in protected_hardware_aliases(source, observations):
++            mounts_by_path.setdefault(os.path.realpath(alias.path), []).extend(source.mountpoints)
+     covered: List[Disk] = []
+     for disk in disks:
+-        extra = [
+-            mountpoint
+-            for source in mounted
+-            if possible_hardware_alias(source, disk)
+-            for mountpoint in source.mountpoints
+-        ]
++        extra = mounts_by_path.get(os.path.realpath(disk.path), [])
+         if not extra:
+             covered.append(disk)
+             continue
+@@ -1933,9 +1933,13 @@
+     # A distinct path sharing the boot medium's WWN, or its serial without
+     # distinct WWNs, may be an alias. Mark ambiguous paths as protected.
+     if boot is not None:
++        boot_alias_paths = {
++            os.path.realpath(d.path)
++            for d in protected_hardware_aliases(boot, (*disks, *mounted_observations))
++        }
+         disks = [
+             replace(d, is_boot=True)
+-            if possible_hardware_alias(boot, d)
++            if os.path.realpath(d.path) in boot_alias_paths
+             else d
+             for d in disks
+         ]
+--- starting/src/beamo_wipe/safety.py
++++ final/src/beamo_wipe/safety.py
+@@ -523,6 +523,31 @@
+     return bool(left_serial and left_serial == right_serial)
+ 
+ 
++def protected_hardware_aliases(anchor: Disk, observations: Sequence[Disk]) -> Tuple[Disk, ...]:
++    """Follow ambiguous identifiers without overriding the anchor's known WWN.
++
++    A serial-only path can lead to a WWN alias with a different serial.
++    Checking only pairs against the protected path misses that later alias.
++    Distinct known WWNs still disambiguate a reused serial, including when a
++    missing-WWN observation sits between them.
++    """
++    anchor_wwn = canonical_wwn(anchor.wwn)
++    reached: set[int] = set()
++    pending = [anchor]
++    while pending:
++        current = pending.pop()
++        for index, candidate in enumerate(observations):
++            if index in reached:
++                continue
++            candidate_wwn = canonical_wwn(candidate.wwn)
++            if anchor_wwn and candidate_wwn and anchor_wwn != candidate_wwn:
++                continue
++            if possible_hardware_alias(current, candidate):
++                reached.add(index)
++                pending.append(candidate)
++    return tuple(candidate for index, candidate in enumerate(observations) if index in reached)
++
++
+ def assert_boot_excluded(discovery: DiscoveryResult) -> None:
+     if discovery.boot_identified is not True or discovery.boot is None:
+         raise SafetyError(_copy.IDENTIFY_ERROR)
+@@ -531,7 +556,11 @@
+     selectable_paths = {os.path.realpath(s.path) for s in discovery.selectable}
+     if any(d.is_boot and os.path.realpath(d.path) in selectable_paths for d in discovery.disks):
+         raise SafetyError(BOOT_APPEARED_SELECTABLE)
+-    if any(possible_hardware_alias(discovery.boot, disk) for disk in discovery.selectable):
++    aliases = protected_hardware_aliases(
++        discovery.boot, (*discovery.disks, *discovery.selectable)
++    )
++    alias_paths = {os.path.realpath(disk.path) for disk in aliases}
++    if selectable_paths & alias_paths:
+         raise SafetyError(BOOT_APPEARED_ALIAS)
+ 
+ 
+--- starting/src/beamo_wipe/ui/tk_wizard.py
++++ final/src/beamo_wipe/ui/tk_wizard.py
+@@ -1236,6 +1236,7 @@
+         self.root.bind("<Key>", self._on_key)
+         for sequence in ("<MouseWheel>", "<Button-4>", "<Button-5>"):
+             self.root.bind(sequence, self._on_body_wheel)
++        self.root.bind("<FocusIn>", self._on_body_focus)
+         self.root.protocol("WM_DELETE_WINDOW", self._close)
+         self._draw()
+         self._after_id = self.root.after(100, self._tick)
+@@ -1480,12 +1481,21 @@
+         self._body.grid_rowconfigure(0, weight=1)
+         inner = tk.Frame(canvas, bg=BG)
+         window = canvas.create_window((0, 0), window=inner, anchor="nw")
++        inner_size = (0, 0)
+ 
+         def on_inner(_event=None) -> None:
++            nonlocal inner_size
+             canvas.configure(scrollregion=canvas.bbox("all") or (0, 0, 0, 0))
++            size = (inner.winfo_width(), inner.winfo_height())
++            if size != inner_size:
++                inner_size = size
++                # Wrapping can finish after focus arrived. React to content
++                # size changes, not position changes caused by manual scroll.
++                self._schedule_body_focus_reveal(self.root.focus_get())
+ 
+         def on_canvas(event) -> None:
+             canvas.itemconfigure(window, width=max(1, event.width))
++            self._schedule_body_focus_reveal(self.root.focus_get())
+ 
+         inner.bind("<Configure>", on_inner)
+         canvas.bind("<Configure>", on_canvas)
+@@ -1520,6 +1530,38 @@
+             return None
+         canvas.yview_scroll(steps, "units")
+         return "break"
++
++    def _on_body_focus(self, event) -> None:
++        self._schedule_body_focus_reveal(event.widget)
++
++    def _schedule_body_focus_reveal(self, widget: tk.Misc | None) -> None:
++        canvas = self._body_canvas
++        if canvas is None or widget is None:
++            return
++        parent: tk.Misc | None = widget
++        while parent is not None and parent is not canvas:
++            parent = parent.master
++        if parent is not canvas:
++            return
++
++        def reveal() -> None:
++            try:
++                if self._body_canvas is not canvas or self.root.focus_get() is not widget:
++                    return
++                bounds = canvas.bbox("all")
++                if not bounds:
++                    return
++                top = widget.winfo_rooty() - canvas.winfo_rooty()
++                height = widget.winfo_height()
++                viewport = canvas.winfo_height()
++                offset = top if top < 0 else max(0, top + height - viewport)
++                if offset:
++                    canvas.yview_moveto((canvas.canvasy(0) + offset) / max(1, bounds[3]))
++            except tk.TclError:
++                # A redraw can destroy the focused widget before its idle job.
++                return
++
++        canvas.after_idle(reveal)
+ 
+     def _clear(self, frame: tk.Frame) -> None:
+         for child in frame.winfo_children():

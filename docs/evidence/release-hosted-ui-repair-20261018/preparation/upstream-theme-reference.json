@@ -1,0 +1,15 @@
+{
+  "repository": "tcltk/tk",
+  "ref": "core-8-6-13",
+  "path": "generic/ttk/ttkTheme.c",
+  "blob_sha": "711c4107f8bb4a89a8b15a9f1859396a999ca499",
+  "url": "https://github.com/tcltk/tk/blob/core-8-6-13/generic/ttk/ttkTheme.c",
+  "observed_symbols": [
+    402,
+    405,
+    423,
+    497,
+    509,
+    528
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "exit_code": 0,
+  "iterations": 40,
+  "observer": "native_trace.py; original production method called unchanged"
+}

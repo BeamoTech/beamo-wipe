@@ -1,0 +1,12 @@
+{
+  "lookup_only": true,
+  "available": {
+    "python3.11": null,
+    "python3.12": "/usr/bin/python3.12",
+    "python3": "/usr/bin/python3",
+    "pypy3": null
+  },
+  "native_3_11_acceptance": "NOT RUN; no available python3.11 on PATH",
+  "install_or_network_attempted": false,
+  "host_or_device_actions": false
+}

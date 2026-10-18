@@ -418,10 +418,10 @@ def test_preview_ticks_move_through_stages():
         )
         seen.append(line)
     assert seen == [
-        "Step 1 of 4: Overwrite 1 of 3 (10% of this step)",
-        "Step 2 of 4: Overwrite 2 of 3 (30% of this step)",
-        "Step 3 of 4: Overwrite 3 of 3 (60% of this step)",
-        "Step 4 of 4: Read-back verification (90% of this step)",
+        "Step 1 of 4: Overwrite 1 of 3 (10% overall)",
+        "Step 2 of 4: Overwrite 2 of 3 (30% overall)",
+        "Step 3 of 4: Overwrite 3 of 3 (60% overall)",
+        "Step 4 of 4: Read-back verification (90% overall)",
     ]
 
 

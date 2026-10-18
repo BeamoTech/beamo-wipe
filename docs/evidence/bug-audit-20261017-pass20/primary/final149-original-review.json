@@ -1,0 +1,80 @@
+{
+  "suites": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "88",
+      "skipped": "0",
+      "tests": "149",
+      "time": "25.709",
+      "timestamp": "2026-10-17T19:19:52.552057+00:00",
+      "hostname": "srv1606478"
+    }
+  ],
+  "canonical_files": {
+    "tests/test_audio_launch_acceptance_pass20.py": "1660507881ea7adef425de04b19b11429d3df0c2a8e5a6ac636ccc5b62744a42",
+    "tests/test_audio_launch_interruptions_pass20.py": "bb03ad8879937649b6a22a55508f9a9f7c17b0189e7e8d657f56f8a6870b2cb7",
+    "tests/test_holder_ancestor_mount_pass20.py": "19d12021905905b140a1f97820a9b0c7a02c1f9214f034f84dc82d81451adea1",
+    "tests/test_mounted_holder_type_pass20.py": "76f5b04192faf732d3dc50b07d95932f4ed5585334a318a08f8741da3e79be05",
+    "tests/test_tk_native_boundary_pass20.py": "354136282d634b78307d053378fc27f65bb3d4f211c95be7725248c37e58fbe5",
+    "tests/test_tk_native_collector_pass20.py": "7c9b05b8f63edff831529fde0ffe9c57caeb29f3343109aec3c72eb8f1db33ad",
+    "tests/test_tk_native_constructor_pass20.py": "a4cc48c8fd52731b5aa1a620199d264239db5d3e8597fb44e11ac9468d39f352",
+    "tests/test_tk_native_image_pass20.py": "c172d81b5a408a8b63aaa1c2f9d3025fed14489cd7611e7e361c0704c1a22515"
+  },
+  "per_module": {
+    "tests/test_mounted_holder_type_pass20.py": {
+      "cases": 28,
+      "failures": 16,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tests/test_holder_ancestor_mount_pass20.py": {
+      "cases": 44,
+      "failures": 4,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tests/test_audio_launch_interruptions_pass20.py": {
+      "cases": 18,
+      "failures": 14,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tests/test_audio_launch_acceptance_pass20.py": {
+      "cases": 6,
+      "failures": 6,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tests/test_tk_native_boundary_pass20.py": {
+      "cases": 24,
+      "failures": 24,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tests/test_tk_native_collector_pass20.py": {
+      "cases": 4,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tests/test_tk_native_constructor_pass20.py": {
+      "cases": 22,
+      "failures": 19,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tests/test_tk_native_image_pass20.py": {
+      "cases": 3,
+      "failures": 3,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "original_source_files_authenticated": 58,
+  "child_provenance": [
+    "{\"sha256\": \"23d280b0451d3e25d64387de62d4912a8867ffbdec934244efe6a7f7a7ee0615\", \"source\": \"/tmp/pass20-primary/original-replay/src/beamo_wipe/ui/tk_wizard.py\"}"
+  ],
+  "unchanged_final_tests": true,
+  "original_source_restored_to_shared": false
+}

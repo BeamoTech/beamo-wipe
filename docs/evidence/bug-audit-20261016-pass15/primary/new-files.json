@@ -1,0 +1,6 @@
+[
+  "tests/test_empty_inventory_wheel_pass15.py",
+  "tests/test_hidden_positive_record_pass15.py",
+  "tests/test_physical_observation_context_pass15.py",
+  "tests/test_utf8_log_snapshot_bounds_pass15.py"
+]

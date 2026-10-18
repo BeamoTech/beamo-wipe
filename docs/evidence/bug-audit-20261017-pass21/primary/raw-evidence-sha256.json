@@ -1,0 +1,19 @@
+{
+  "additional-original.txt": "cf378cb384be24af2357fdf1c65857f2b1d720ecb3ea05654622aaba9c838a79",
+  "additional-original.xml": "e26d0cee802ef70a8f28165d5a5303cd5d7fc0610cd8d8ee6aedaa5387d3c5cb",
+  "baseline-core.xml": "96beb4733d062f9dcc0dba76c661a1d443ecaf456bdb398c9c1975b6ce5010a0",
+  "canonical-fixed.xml": "4ca009d172ab12b35d6093f4d17c7ba4101348284a4058b64ede28c7aaae4bb4",
+  "corrected-native-original.xml": "830fa6e3845a481d53839f5fa8bf4eec3151a3a1e752aca36408b2c00ffb19ae",
+  "desktop-windows.test.exe": "d05ac4db6463aa6d7f51188f3bcfcfb4891aeab549ab481843538114904a76d9",
+  "diagnostics-variable-original.xml": "b07c28aaf1c69f4959d4d1033eb6dc5e8eca56c1e7f75360ddedba504a532005",
+  "discovery-original.xml": "618e0c55d71b54f2d1e4929368caa2d18c220696160687017502c139f4ddd8c0",
+  "final-canonical-original.txt": "27dbe5c4bd689f94fcd3b87b5538238894d83ad0cb87454fcdfdecc0b4e99957",
+  "final-canonical-original.xml": "67d8c18bad77cc4c6e8b99cddb1d3dd8a70b04fb720ab612555b2c2561c233a4",
+  "final-focused-corrected.xml": "c4ab05cec42bc579b42f9f557d4a6b58e9980342c03ead5440f9814db6e38575",
+  "final-focused.xml": "e3803c555ec7500d4d5973cd4cbc90d91f741f597906368d8a1166ae952c6639",
+  "final.xml": "6b489600d823005c91a59ba70f17e1d055276fbfeddd950067e7e6b73f594607",
+  "final.xml.orca.xml": "5cbd9b51305bcfc2d3a0bf24a12ed0c0fd342b983559b2be1fd2e20bab560906",
+  "fixes-focused.xml": "7e9466f0c606bc393637673d8feccf2f33e2fcf692434fd04058d7285e7c8179",
+  "noncanonical-name-original.xml": "6dd36b982ef6061d88cbf1f2c5bbb679093f4234b4b3add234b7be907570bf32",
+  "trace-adoption-original.xml": "a15ffa35e369a08d01111cc389c5d19494ff64da4c534b18e012a2e72b9a3b24"
+}

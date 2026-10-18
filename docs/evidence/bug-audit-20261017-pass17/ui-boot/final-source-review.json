@@ -1,0 +1,24 @@
+{
+  "review": "Exact peer-final source and tests, runtime pending root; no peer runtime campaign performed.",
+  "files": {
+    "src/beamo_wipe/ui/tk_wizard.py": {
+      "starting_sha256": "9764924b29c3c491a6acde0ca0853135e1e9eccf71bd77cbeb7c90b35534b29f",
+      "final_sha256": "bb64632df587965f41afc70efe2201d3b776579038d680c3a2405319764f170d"
+    },
+    "src/beamo_wipe/ui/console_wizard.py": {
+      "starting_sha256": "794525a0185cd652d977b84cd1cd318c07c90dcf8dcaad20c730260ef4f1cc1c",
+      "final_sha256": "1c3dc2f6839b7a4b1c7d43225b2175b7bc8b5f5d2b5af63aa17725c417c5ded5"
+    },
+    "tests/test_startup_callback_retirement_pass17.py": {
+      "sha256": "b008493fee9540ca0f659a54aaca491b4197f93566e5a4fff29d03d6369bc65c"
+    },
+    "tests/test_plain_erase_typeahead_pass17.py": {
+      "sha256": "671fe42ce50ee56fa1be19331aa989c2191709d761afb857e5054ccffb77d012"
+    }
+  },
+  "findings": [
+    "Startup callbacks outlived destroyed widget commands (root original16 proof10fail/6control)",
+    "Plain TTY queued ERASE consumed after gate without fresh input (root corrected18 proof9fail/9control)"
+  ],
+  "guards": "Only ordinary private PTY/native X11 fixtures; application/process/discovery/power effects denied. No physical media, engines, privileged build or remote actions."
+}

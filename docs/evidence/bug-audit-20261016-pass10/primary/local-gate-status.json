@@ -1,0 +1,90 @@
+[
+  {
+    "phase": "lint",
+    "command": [
+      "./scripts/ci-hosted.sh",
+      "lint"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T16:55:49.279039+00:00",
+    "ended_utc": "2026-10-16T16:55:53.587197+00:00"
+  },
+  {
+    "phase": "preview",
+    "command": [
+      "./scripts/ci-hosted.sh",
+      "preview"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T16:55:53.587562+00:00",
+    "ended_utc": "2026-10-16T16:55:55.743524+00:00"
+  },
+  {
+    "phase": "negative",
+    "command": [
+      "./scripts/ci-hosted.sh",
+      "negative"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T16:55:55.743819+00:00",
+    "ended_utc": "2026-10-16T16:55:56.782606+00:00"
+  },
+  {
+    "phase": "go-version",
+    "command": [
+      "go",
+      "version"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T16:55:56.783408+00:00",
+    "ended_utc": "2026-10-16T16:55:56.787888+00:00"
+  },
+  {
+    "phase": "go-race",
+    "command": [
+      "go",
+      "test",
+      "-count=1",
+      "-race",
+      "./..."
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T16:55:56.788257+00:00",
+    "ended_utc": "2026-10-16T16:55:59.262004+00:00"
+  },
+  {
+    "phase": "go-vet",
+    "command": [
+      "go",
+      "vet",
+      "./..."
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T16:55:59.262329+00:00",
+    "ended_utc": "2026-10-16T16:55:59.485841+00:00"
+  },
+  {
+    "phase": "go-fuzz",
+    "command": [
+      "go",
+      "test",
+      "-run=^$",
+      "-fuzz=FuzzBootOption",
+      "-fuzztime=350000x",
+      "-parallel=2"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T16:55:59.486229+00:00",
+    "ended_utc": "2026-10-16T16:56:12.432316+00:00"
+  },
+  {
+    "phase": "final",
+    "command": [
+      "./scripts/ci-hosted.sh",
+      "tests"
+    ],
+    "exit_code": 0,
+    "started_utc": "2026-10-16T16:56:12.432708+00:00",
+    "ended_utc": "2026-10-16T17:04:53.502498+00:00"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "differential_cases": 150,
+  "differential_method_assessments": 450,
+  "actual_large_log_polls": 96,
+  "explicit_evidence_cap_controls": 1,
+  "mismatches": 0,
+  "elapsed_s": 6.157168710997212,
+  "native_acquisition_calls": 0,
+  "files_unchanged": true,
+  "product_or_test_edits": false
+}

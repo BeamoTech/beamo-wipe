@@ -1,0 +1,8 @@
+{
+  "web_preview_bytes": 185540,
+  "sha256": "5492d76fb06bee55066b55cc305c66bd6149514d3367456337f045032f752880",
+  "compressed_readback": true,
+  "helper_sha256": "45015184d4fec927ed1e73d6005e4e6ab621d5c92f788a0f5337940e1ed726ce",
+  "gate_preview_and_browser_tests": "passed; fake disks",
+  "erasure": false
+}

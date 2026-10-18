@@ -1,0 +1,91 @@
+{
+  "display": ":130",
+  "states": [
+    {
+      "surface": "sound-working-16outputs",
+      "image": "/tmp/pass12-ui/sound-working-16outputs-800x600-72dpi.png",
+      "sha256": "3b117531638635e66cb2a9fdd71c70d244b71ed67dfcacb0d595a6b4e7887ba0",
+      "root_size": [
+        800,
+        600
+      ],
+      "xserver_dpi": [
+        72.05673758865248,
+        71.88679245283019
+      ],
+      "native": {
+        "size": [
+          560,
+          480
+        ],
+        "origin": [
+          120,
+          60
+        ],
+        "xid": 2097164,
+        "gtk_child_focus": true,
+        "outputs": 16,
+        "modal": true
+      },
+      "focused_xid": 2097164,
+      "capture": "Pillow full private-Xvfb root; unedited"
+    },
+    {
+      "surface": "tk-startup-windowed",
+      "image": "/tmp/pass12-ui/tk-startup-windowed-800x600-72dpi.png",
+      "sha256": "1fc00768ea9e089a65aa55788164b011455368d26ae044405776eead7f96e7f3",
+      "root_size": [
+        800,
+        600
+      ],
+      "xserver_dpi": [
+        72.05673758865248,
+        71.88679245283019
+      ],
+      "native": {
+        "size": [
+          640,
+          440
+        ],
+        "origin": [
+          80,
+          80
+        ],
+        "tk_xid": 8388650,
+        "tk_focused": true,
+        "fullscreen": false
+      },
+      "focused_xid": 8388651,
+      "capture": "Pillow full private-Xvfb root; unedited"
+    },
+    {
+      "surface": "tk-startup-fullscreen",
+      "image": "/tmp/pass12-ui/tk-startup-fullscreen-800x600-72dpi.png",
+      "sha256": "ee53c750edc1053a5884e4fa72188ee6cbafc62d1d87b7cc998fba6f186a2546",
+      "root_size": [
+        800,
+        600
+      ],
+      "xserver_dpi": [
+        72.05673758865248,
+        71.88679245283019
+      ],
+      "native": {
+        "size": [
+          800,
+          600
+        ],
+        "origin": [
+          0,
+          0
+        ],
+        "tk_xid": 8388739,
+        "tk_focused": true,
+        "fullscreen": true
+      },
+      "focused_xid": 8388740,
+      "capture": "Pillow full private-Xvfb root; unedited"
+    }
+  ],
+  "owned_teardown": true
+}

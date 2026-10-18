@@ -1,0 +1,36 @@
+{
+  "sha256": {
+    "src/beamo_wipe/ui/accessible_wizard.py": "43839785353f5f3d644112d28645a7c7c8c950e23df92323ee3b42cc894f7758",
+    "tests/test_accessible_sound_modal_pass10.py": "526853280c9c737ab84fb4735b6b122f982125b7fd7cc8a7d0e03456daab8dce"
+  },
+  "runs": {
+    "original-modal-stacking": {
+      "total": 11,
+      "unique": 11,
+      "failures": 9,
+      "errors": 0,
+      "skips": 0
+    },
+    "fixed-modal-focused": {
+      "total": 27,
+      "unique": 27,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0
+    },
+    "modal-live-parent-focus": {
+      "total": 3,
+      "unique": 3,
+      "failures": 2,
+      "errors": 0,
+      "skips": 0
+    },
+    "final-modal-adjacent": {
+      "total": 87,
+      "unique": 87,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0
+    }
+  }
+}

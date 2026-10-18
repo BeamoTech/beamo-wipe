@@ -1,0 +1,1532 @@
+diff --git a/src/beamo_wipe/audio_jobs.py b/src/beamo_wipe/audio_jobs.py
+index 9e4d70c..36c3ab0 100644
+--- a/src/beamo_wipe/audio_jobs.py
++++ b/src/beamo_wipe/audio_jobs.py
+@@ -79,11 +79,23 @@ class AudioWorker:
+                     self._pending[0].cancel()
+                 self._pending = (ticket, action)
+             if self._thread is None:
++                launch_decided = threading.Event()
++                launch_allowed = threading.Event()
++
++                def accepted_worker() -> None:
++                    # start() can raise after its OS thread exists. A rejected
++                    # worker must never consume a later launch's queue or
++                    # retire that launch's thread reference.
++                    launch_decided.wait()
++                    if launch_allowed.is_set():
++                        self._run()
++
+                 self._thread = threading.Thread(
+-                    target=self._run, name="beamo-audio", daemon=True
++                    target=accepted_worker, name="beamo-audio", daemon=True
+                 )
+                 try:
+                     self._thread.start()
++                    launch_allowed.set()
+                 except RuntimeError as exc:
+                     if protected:
+                         self._pending_outcome = None
+@@ -92,6 +104,8 @@ class AudioWorker:
+                     self._thread = None
+                     ticket._finish(exc)
+                     return ticket
++                finally:
++                    launch_decided.set()
+             self._condition.notify()
+         return ticket
+ 
+diff --git a/src/beamo_wipe/diagnostic_report.py b/src/beamo_wipe/diagnostic_report.py
+index 4c49824..47f2390 100644
+--- a/src/beamo_wipe/diagnostic_report.py
++++ b/src/beamo_wipe/diagnostic_report.py
+@@ -301,7 +301,7 @@ def validate_report(data: bytes) -> dict:
+         if p["events"][-1]["code"] != p["error_code"]:
+             raise ValueError()
+         return p
+-    except (ValueError, TypeError, KeyError, AttributeError) as exc:
++    except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+         raise SafetyError(INVALID_REPORT) from exc
+ 
+ 
+diff --git a/src/beamo_wipe/discover.py b/src/beamo_wipe/discover.py
+index 666aa94..9c69160 100644
+--- a/src/beamo_wipe/discover.py
++++ b/src/beamo_wipe/discover.py
+@@ -23,7 +23,7 @@ from beamo_wipe.models import (
+     DiskKind,
+     DiscoveryResult,
+ )
+-from beamo_wipe.safety import possible_hardware_alias
++from beamo_wipe.safety import canonical_wwn, meaningful_serial, protected_hardware_aliases
+ 
+ IDENTITY_UNAVAILABLE = "Device identity unavailable"
+ IDENTITY_UNCONFIRMED = "identity could not be confirmed"
+@@ -539,24 +539,24 @@ def _mounted_holder_hides_members(kind: str) -> bool:
+ 
+ 
+ def _cover_mounted_identifier_aliases(
+-    disks: Sequence[Disk], *, mounted_observations: Sequence[Disk] = ()
++    disks: Sequence[Disk], *, physical_observations: Sequence[Disk] = ()
+ ) -> List[Disk]:
+     """Copy a mount onto paths sharing a hardware identifier with that disk.
+ 
+     Multipath can record the mount on one path only. A repeated meaningful
+     WWN or serial makes another path ambiguous, so it must not stay selectable.
+     """
+-    mounted = [disk for disk in (*disks, *mounted_observations) if disk.mountpoints]
++    mounted = [disk for disk in (*disks, *physical_observations) if disk.mountpoints]
+     if not mounted:
+         return list(disks)
++    mounts_by_path: Dict[str, List[str]] = {}
++    observations = (*disks, *physical_observations)
++    for source in mounted:
++        for alias in protected_hardware_aliases(source, observations):
++            mounts_by_path.setdefault(os.path.realpath(alias.path), []).extend(source.mountpoints)
+     covered: List[Disk] = []
+     for disk in disks:
+-        extra = [
+-            mountpoint
+-            for source in mounted
+-            if possible_hardware_alias(source, disk)
+-            for mountpoint in source.mountpoints
+-        ]
++        extra = mounts_by_path.get(os.path.realpath(disk.path), [])
+         if not extra:
+             covered.append(disk)
+             continue
+@@ -952,13 +952,84 @@ def nesting_parent_path(
+         return ""
+ 
+ 
++def _hardware_identity_key(value: str, field: str) -> str:
++    return canonical_wwn(value) if field == "wwn" else meaningful_serial(value).casefold()
++
++
++_HardwareObservation = Tuple[str, Tuple[str, ...], Optional[str], bool]
++_PhysicalIdentityContext = Tuple[Tuple[str, ...], Tuple[str, ...], bool, bool]
++_UnresolvedPhysicalIdentity = Tuple[str, Tuple[str, ...], Tuple[str, ...], bool]
++
++
++def _descendant_hardware_observations(
++    node: Dict[str, Any], field: str
++) -> Tuple[Tuple[str, ...], Optional[str]]:
++    values: List[str] = []
++    seen: set[str] = set()
++    malformed: Optional[str] = None
++
++    def visit(parent: Dict[str, Any]) -> None:
++        nonlocal malformed
++        for child in parent.get("children") or []:
++            if not isinstance(child, dict):
++                continue
++            try:
++                value = _hardware_identity(child.get(field), field)
++            except ValueError as exc:
++                if malformed is None:
++                    malformed = str(exc)
++            else:
++                if value and value not in seen:
++                    seen.add(value)
++                    values.append(value)
++            visit(child)
++
++    visit(node)
++    return tuple(values), malformed
++
++
++def _node_hardware_observation(node: Dict[str, Any], field: str) -> _HardwareObservation:
++    malformed: Optional[str] = None
++    try:
++        reported = _hardware_identity(node.get(field), field)
++    except ValueError as exc:
++        reported, malformed = "", str(exc)
++    identity = _hardware_identity_key(reported, field)
++    if identity:
++        # A meaningful physical-parent field remains authoritative.
++        return reported, (identity,), None, False
++    values, descendant_error = _descendant_hardware_observations(node, field)
++    keys: set[str] = set()
++    meaningful = ""
++    for value in values:
++        identity = _hardware_identity_key(value, field)
++        if identity:
++            keys.add(identity)
++            if not meaningful:
++                meaningful = value
++    selected = meaningful or reported or (values[0] if values else "")
++    return (
++        selected, tuple(sorted(keys)), malformed or descendant_error,
++        len(keys) > 1,
++    )
++
++
++def _node_hardware_identity(node: Dict[str, Any], field: str) -> str:
++    selected, _keys, malformed, conflict = _node_hardware_observation(node, field)
++    if malformed is not None:
++        raise ValueError(malformed)
++    if conflict:
++        raise ValueError(f"lsblk descendant {field} identity conflicts")
++    return selected
++
++
+ def _first_descendant_field(node: Dict[str, Any], key: str) -> str:
++    if key in {"serial", "wwn"}:
++        return _node_hardware_identity({"children": node.get("children")}, key)
+     for child in node.get("children") or []:
+         if not isinstance(child, dict):
+             continue
+-        if key in {"serial", "wwn"}:
+-            got = _hardware_identity(child.get(key), key)
+-        elif key == "vendor":
++        if key == "vendor":
+             got = _bounded_identity_metadata(child.get(key), key)
+         else:
+             got = _clean(child.get(key))
+@@ -996,6 +1067,10 @@ _EFI_PARTTYPES = frozenset(
+         "ef00",
+     }
+ )
++# GPT names such as "Benefits" contain the letters "efi" without naming
++# firmware. Preserve EFI/UEFI tokens separated by spaces or punctuation;
++# underscores count as separators, while Unicode letters remain word text.
++_EFI_PARTNAME_RE = re.compile(r"(?:^|[\W_])u?efi(?:$|[\W_])")
+ _WINDOWS_OS_PARTTYPES = frozenset(
+     {
+         "de94bba4-06d1-4d40-a16a-bfd50179d6ac",  # Windows recovery
+@@ -1063,7 +1138,7 @@ def _contents_from_evidence(
+     )
+     efi = bool(
+         labels & {item.casefold() for item in FIRMWARE_LABELS}
+-        or any("efi" in name or name == "esp" for name in partnames)
++        or any(_EFI_PARTNAME_RE.search(name) or name == "esp" for name in partnames)
+         or parttypes & _EFI_PARTTYPES
+     )
+     posix = bool(fstypes & _POSIX_FS)
+@@ -1292,8 +1367,7 @@ def node_to_disk(node: Dict[str, Any], is_boot: bool) -> Disk:
+         path=path,
+         name=name,
+         model=raw_model or label or UNKNOWN_MODEL,
+-        serial=_hardware_identity(node.get("serial"), "serial")
+-        or _first_descendant_field(node, "serial"),
++        serial=_node_hardware_identity(node, "serial"),
+         size_bytes=_as_int(node.get("size")),
+         size_gb_label=size_gb_label(_as_int(node.get("size"))),
+         kind=classify_kind(name, node.get("tran"), node.get("rota")),
+@@ -1303,8 +1377,7 @@ def node_to_disk(node: Dict[str, Any], is_boot: bool) -> Disk:
+         # lsblk RO missing (older fakes) means writable: exclude only an
+         # explicit read-only flag, never on unknown.
+         read_only=_as_bool(node.get("ro")) is True,
+-        wwn=_hardware_identity(node.get("wwn"), "wwn")
+-        or _first_descendant_field(node, "wwn"),
++        wwn=_node_hardware_identity(node, "wwn"),
+         vendor=_bounded_identity_metadata(node.get("vendor"), "vendor")
+         or _first_descendant_field(node, "vendor"),
+         mountpoints=mountpoints,
+@@ -1318,6 +1391,79 @@ def node_to_disk(node: Dict[str, Any], is_boot: bool) -> Disk:
+     )
+ 
+ 
++def _physical_observation(
++    node: Dict[str, Any], mounts: Tuple[str, ...]
++) -> Tuple[Disk, Tuple[bool, bool], _PhysicalIdentityContext]:
++    """Retain safety facts without depending on display or layout metadata."""
++    name = _identity_text(node.get("name"), "name")
++    size = _as_int(node.get("size"))
++    serial_facts = _node_hardware_observation(node, "serial")
++    wwn_facts = _node_hardware_observation(node, "wwn")
++    serial_invalid = serial_facts[2] is not None or serial_facts[3]
++    wwn_invalid = wwn_facts[2] is not None or wwn_facts[3]
++    observation = Disk(
++        path=node_path(node), name=name, model="", label="",
++        serial="" if serial_invalid else serial_facts[0],
++        wwn="" if wwn_invalid else wwn_facts[0],
++        size_bytes=size, size_gb_label=size_gb_label(size),
++        kind=classify_kind(name, node.get("tran"), node.get("rota")),
++        bus=classify_bus(node.get("tran")),
++        read_only=_as_bool(node.get("ro")) is True,
++        hotplug=_as_bool(node.get("rm")) is True or _as_bool(node.get("hotplug")) is True,
++        mountpoints=mounts,
++    )
++    # Parser-local context is never a target identity or confirmation peer.
++    # Deterministic candidate keys and booleans also distinguish conflicting
++    # duplicate physical observations without comparing exception objects.
++    context = (
++        serial_facts[1], wwn_facts[1],
++        serial_facts[2] is not None, wwn_facts[2] is not None,
++    )
++    return observation, (serial_invalid, wwn_invalid), context
++
++
++def _unresolved_identity_overlaps_protected(
++    boot: Optional[Disk], disks: Sequence[Disk],
++    physical_observations: Sequence[Disk],
++    unresolved: Sequence[_UnresolvedPhysicalIdentity],
++) -> bool:
++    if not unresolved:
++        return False
++    observations = (*disks, *physical_observations)
++    anchors = [disk for disk in observations if disk.mountpoints]
++    if boot is not None:
++        anchors.append(boot)
++    for anchor in anchors:
++        component = (anchor, *protected_hardware_aliases(anchor, observations))
++        paths = {os.path.realpath(disk.path) for disk in component}
++        anchor_wwn = canonical_wwn(anchor.wwn)
++        for path, serials, wwns, wwn_unknown in unresolved:
++            # The partial projection may already connect through its valid
++            # other field; unresolved identity cannot truncate that bridge.
++            if path in paths:
++                return True
++            serial_keys, wwn_keys = set(serials), set(wwns)
++            if anchor_wwn and wwn_keys and not wwn_unknown:
++                if anchor_wwn not in wwn_keys:
++                    continue
++                wwn_keys = {anchor_wwn}
++            for current in component:
++                current_wwn = canonical_wwn(current.wwn)
++                # Same rule as possible_hardware_alias: distinct known
++                # WWNs disambiguate serial reuse, including on a bridge.
++                if current_wwn and wwn_keys:
++                    if current_wwn in wwn_keys:
++                        return True
++                    # A malformed WWN leaves an unknown alternative. One
++                    # valid contrary candidate cannot disambiguate it.
++                    if not wwn_unknown:
++                        continue
++                serial = meaningful_serial(current.serial).casefold()
++                if serial and serial in serial_keys:
++                    return True
++    return False
++
++
+ def labels_for(node: Dict[str, Any], *, exact: bool = False) -> List[str]:
+     found = []
+     # Boot identification must compare the reported label itself. Display
+@@ -1606,13 +1752,17 @@ def identify_boot_path(
+         # ambiguous, including when both paths report a small SATA disk.
+         hit = cmdline_hits[0]
+         hit_aliases = _path_aliases(hit)
++        physical_nodes = [
++            node for node, _parent in flatten_blockdevices(blockdevices)
++            if _node_type(node) in {"disk", "rom"}
++        ]
+         hit_node = None
+-        for node in disk_nodes(blockdevices):
++        for node in physical_nodes:
+             if hit_aliases & _path_aliases(node_path(node)):
+                 hit_node = node
+                 break
+         if hit_node is not None:
+-            for node in disk_nodes(blockdevices):
++            for node in physical_nodes:
+                 if hit_aliases & _path_aliases(node_path(node)):
+                     continue
+                 if _could_be_live_medium(node):
+@@ -1846,18 +1996,44 @@ def parse_lsblk_json(
+     _cover_shared_filesystem_members(flat_nodes, flat_mounts, by_name)
+     _reject_shared_device_ancestry(flat_nodes, by_name)
+ 
+-    # Mounted physical observations remain exclusion evidence even when a
+-    # device is hidden from the picker. Validate them before per-row display
+-    # filtering can discard a malformed model or another identity field.
+-    mounted_observations = []
++    # Hidden or malformed display rows can bridge a protected hardware alias,
++    # or contradict a writable same-path row. Retain their physical facts
++    # before display filtering, without turning them into picker candidates.
++    physical_observations = []
++    physical_by_path: Dict[
++        str, Tuple[Disk, Optional[bool], Tuple[bool, bool], _PhysicalIdentityContext]
++    ] = {}
++    unresolved_physical: List[_UnresolvedPhysicalIdentity] = []
++    repeated_physical_paths: set[str] = set()
+     for node, _parent in flat_nodes:
+         if _node_type(node) not in {"disk", "rom"}:
+             continue
+         name = _identity_text(node.get("name"), "name")
+         effective_mounts = tuple(dict.fromkeys((*_node_mountpoints(node), *flat_mounts.get(name, []))))
+         if effective_mounts:
+-            mounted_observations.append(replace(
+-                node_to_disk(node, is_boot=False), mountpoints=effective_mounts
++            # Keep the existing full refusal for malformed mounted metadata.
++            node_to_disk(node, is_boot=False)
++        try:
++            path = node_path(node)
++        except ValueError:
++            # An unusable physical path cannot be reconciled or repaired.
++            # Keep the direct parser API fail-closed without an escaped error.
++            return DiscoveryResult(error=_copy.IDENTIFY_ERROR, boot_identified=False)
++        if not path or path == "/dev/":
++            continue  # An isolated pathless row still cannot hide its siblings.
++        observation, invalid_ids, identity_context = _physical_observation(node, effective_mounts)
++        canonical = os.path.realpath(path)
++        signature = (observation, _as_bool(node.get("ro")), invalid_ids, identity_context)
++        previous_physical = physical_by_path.get(canonical)
++        if previous_physical is not None and previous_physical != signature:
++            raise ValueError("lsblk has conflicting physical observations for one disk")
++        if previous_physical is not None:
++            repeated_physical_paths.add(canonical)
++        physical_by_path[canonical] = signature
++        physical_observations.append(observation)
++        if any(invalid_ids):
++            unresolved_physical.append((
++                canonical, identity_context[0], identity_context[1], identity_context[3]
+             ))
+     disks: List[Disk] = []
+     identified_boot: Optional[Disk] = None
+@@ -1924,14 +2100,22 @@ def parse_lsblk_json(
+     boot = identified_boot
+     if require_boot and boot is None:
+         return DiscoveryResult(error=_copy.IDENTIFY_ERROR, boot_identified=False)
++    if _unresolved_identity_overlaps_protected(
++        boot, disks, physical_observations, unresolved_physical
++    ):
++        raise ValueError("lsblk unresolved physical identity overlaps protected storage")
+     from beamo_wipe.safety import is_wipeable_disk
+ 
+     # A distinct path sharing the boot medium's WWN, or its serial without
+     # distinct WWNs, may be an alias. Mark ambiguous paths as protected.
+     if boot is not None:
++        boot_alias_paths = {
++            os.path.realpath(d.path)
++            for d in protected_hardware_aliases(boot, (*disks, *physical_observations))
++        }
+         disks = [
+             replace(d, is_boot=True)
+-            if possible_hardware_alias(boot, d)
++            if os.path.realpath(d.path) in boot_alias_paths
+             else d
+             for d in disks
+         ]
+@@ -1948,13 +2132,16 @@ def parse_lsblk_json(
+         observed_disks[canonical] = disk
+     # A second path with a mounted disk's identifier may be the same LUN.
+     disks = _cover_mounted_identifier_aliases(
+-        disks, mounted_observations=mounted_observations
++        disks, physical_observations=physical_observations
+     )
+     if boot is not None:
+         boot = next((item for item in disks if item.path == boot.path), boot)
+     # Retain even identical rows: final identity validation requires exactly
+     # one observation and must continue refusing an ambiguous target.
+     selectable = tuple(d for d in disks if is_wipeable_disk(d))
++    for path in repeated_physical_paths:
++        if sum(os.path.realpath(d.path) == path for d in selectable) == 1:
++            raise ValueError("lsblk physical observations cannot establish a unique target")
+     # Health reporting: empty selectable while boot is identified is fail-closed
+     # but opaque. Distinguish "no disks on bus" from "all nodes hidden".
+     if boot is not None and not selectable and blockdevices:
+@@ -2009,6 +2196,7 @@ def parse_lsblk_json(
+         boot=boot,
+         error=None,
+         boot_identified=True,
++        physical_observations=tuple(physical_observations),
+     )
+ 
+ 
+diff --git a/src/beamo_wipe/engine_checks.py b/src/beamo_wipe/engine_checks.py
+index 65ceb44..a7861ba 100644
+--- a/src/beamo_wipe/engine_checks.py
++++ b/src/beamo_wipe/engine_checks.py
+@@ -41,7 +41,7 @@ _HIDDEN_DETECTED = re.compile(
+ _HIDDEN_INDETERMINATE = re.compile(
+     r"HIDDEN SECTORS INDETERMINATE!\s+on\s+(/dev/[A-Za-z0-9._+-]+)"
+ )
+-_HIDDEN_NONE = re.compile(r"No hidden sectors on\s+(/dev/[A-Za-z0-9._+-]+)")
++_HIDDEN_NONE = re.compile(r"No hidden sectors on[ \t]+(/dev/[A-Za-z0-9._+-]+)[ \t]*\Z")
+ _HPA_LINE_UNKNOWN = re.compile(
+     r"\[UNKNOWN\] We can't find the HPA line, has hdparm ouput unknown/changed\?\s+"
+     r"(/dev/[A-Za-z0-9._+-]+)"
+diff --git a/src/beamo_wipe/models.py b/src/beamo_wipe/models.py
+index 63593a6..a3c57ff 100644
+--- a/src/beamo_wipe/models.py
++++ b/src/beamo_wipe/models.py
+@@ -174,6 +174,9 @@ class DiscoveryResult:
+     # Display-only inventory. Never a source of selectable Disk objects.
+     excluded: Tuple[ExcludedDevice, ...] = ()
+     error_code: str = ""
++    # Safety-only physical facts survive display/eligibility filtering.
++    # Never a source of selectable disks or confirmation peers.
++    physical_observations: Tuple[Disk, ...] = ()
+ 
+ 
+ @dataclass(frozen=True)
+diff --git a/src/beamo_wipe/nwipe_runner.py b/src/beamo_wipe/nwipe_runner.py
+index 14374e1..93fcd3b 100644
+--- a/src/beamo_wipe/nwipe_runner.py
++++ b/src/beamo_wipe/nwipe_runner.py
+@@ -91,6 +91,14 @@ NWIPE_LOG_PREFIX_RE = re.compile(
+     r"(?:(?:debug|info|notice|warning|error|fatal|sanity):\s*)?",
+     re.I,
+ )
++# Real v0.42 records include a timestamp and severity. A device model can
++# contain an LF plus a bare skip/open/geometry sentence, but not that sentence
++# and this full prefix inside its 40-byte field.
++NWIPE_RECORD_PREFIX_RE = re.compile(
++    r"^\s*\[\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\]\s+"
++    r"(?:debug|info|notice|warning|error|fatal|sanity):\s*",
++    re.I,
++)
+ NWIPE_DIRECT_FAILURE_RE = re.compile(
+     r"^(/dev/[A-Za-z0-9._+-]+):\s*>>> FAILURE! <<<"
+ )
+@@ -134,6 +142,9 @@ NWIPE_VERSION_TIMEOUT_S = 5
+ # Drive Status is written before create_system_multi_disc_pdf()/smartctl.
+ # 64KiB from EOF can be only that tail, hiding | Erased |.
+ NWIPE_COMPLETION_LOG_BYTES = 1024 * 1024
++# Each raw byte can become at most one three-byte UTF-8 replacement character.
++# Evidence records the normalized snapshot length, not the raw capture length.
++NWIPE_LOG_SNAPSHOT_UTF8_BYTES = 3 * NWIPE_COMPLETION_LOG_BYTES
+ NWIPE_PROGRESS_LOG_BYTES = 8000
+ # Completion can be larger than the displayed/exported tail. Stream it and
+ # retain only parser-relevant lines; an oversized individual line or too much
+@@ -536,9 +547,20 @@ def _engine_log_body(line: str) -> str:
+     return NWIPE_LOG_PREFIX_RE.sub("", line, count=1)
+ 
+ 
+-def _target_has_record(log_text: str, device: str, pattern: re.Pattern[str]) -> bool:
++def _target_has_record(
++    log_text: str, device: str, pattern: re.Pattern[str], *, enforce_origin: bool = True
++) -> bool:
+     target = os.path.realpath(device)
+-    for line in (log_text or "").split("\n"):
++    lines = (log_text or "").split("\n")
++    timestamped = enforce_origin and any(
++        NWIPE_RECORD_PREFIX_RE.match(line) for line in lines
++    )
++    for line in lines:
++        # Preserve entirely bare legacy parser inputs. In an actual engine
++        # log, only another timestamped record can establish no erasure; an
++        # unprefixed continuation may still belong to device-controlled data.
++        if timestamped and not NWIPE_RECORD_PREFIX_RE.match(line):
++            continue
+         match = pattern.match(_engine_log_body(line))
+         if match is not None and any(
+             part is not None and os.path.realpath(part) == target
+@@ -677,15 +699,18 @@ def _target_error_summary_conflict(log_text: str, device: str) -> str:
+     shared = _status_column_is_shared(log_text, device)
+     in_table = False
+     for line in (log_text or "").split("\n"):
++        # Negative error evidence uses the same record body as its header.
++        # Keep raw records untouched for exact positive Drive Status proof.
++        body = _engine_log_body(line)
+         if _is_error_summary_header(line):
+             in_table = True
+             continue
+-        if in_table and line.lstrip().startswith("***"):
++        if in_table and body.lstrip().startswith("***"):
+             in_table = False
+             continue
+-        if not any(_status_column_has_name(line, n) for n in names):
++        if not any(_status_column_has_name(body, n) for n in names):
+             continue
+-        row = NWIPE_ERROR_ROW_RE.match(line)
++        row = NWIPE_ERROR_ROW_RE.match(body)
+         if not in_table:
+             # The bounded completion tail can start inside Error Summary and
+             # lose its header. A target row with nonzero counts still
+@@ -967,9 +992,15 @@ def evaluate_nwipe_outcome(
+     busy = target_skipped_busy(log_text, device)
+     open_failed = _target_open_failed(log_text, device)
+     geometry_failed = _target_geometry_failed(log_text, device)
+-    if (busy or open_failed or geometry_failed) and _target_has_erase_activity(
+-        log_text, device
+-    ):
++    # An unattributed skip sentence cannot prove nothing was erased, but it
++    # remains negative context when actual activity contradicts that sentence.
++    skip_reported = busy or open_failed or geometry_failed or any(
++        _target_has_record(log_text, device, pattern, enforce_origin=False)
++        for pattern in (
++            NWIPE_BUSY_TARGET_RE, NWIPE_OPEN_TARGET_RE, NWIPE_GEOMETRY_TARGET_RE
++        )
++    )
++    if skip_reported and _target_has_erase_activity(log_text, device):
+         return (
+             False,
+             "nwipe's erase activity contradicted its skip report",
+@@ -1502,9 +1533,12 @@ class NwipeRunner:
+                 retained: list[str] = []
+                 retained_bytes = 0
+                 last_progress = ""
++                last_progress_position = 0
++                last_progress_retained = False
+                 progress_totals: set[tuple[int, int]] = set()
+                 shared_path = ""
+                 in_error_summary = False
++                native_record_seen = False
+                 remaining = st.st_size
+                 while remaining:
+                     raw = fh.readline(
+@@ -1517,7 +1551,19 @@ class NwipeRunner:
+                         return None
+                     if not raw.endswith(b"\n"):
+                         return None
+-                    line = raw.decode("utf-8", errors="replace").rstrip("\r\n")
++                    # Remove the record delimiter only. Normalizing CR would
++                    # turn a malformed status banner into exact engine proof
++                    # that the regular, unprojected log parser rejects.
++                    line = raw[:-1].decode("utf-8", errors="replace")
++                    # Summary parsers recognize prefixed rows and separators.
++                    # Classify that same body, but retain the original record.
++                    body = _engine_log_body(line)
++                    native_context = (
++                        not native_record_seen
++                        and NWIPE_RECORD_PREFIX_RE.match(line) is not None
++                    )
++                    if native_context:
++                        native_record_seen = True
+                     for match in _LOG_DEVICE_RE.finditer(line):
+                         other = os.path.basename(os.path.realpath(match.group(0)))
+                         if (other != target_name
+@@ -1528,6 +1574,7 @@ class NwipeRunner:
+                     new_totals = False
+                     if progress is not None:
+                         last_progress = line
++                        last_progress_position = len(retained)
+                         match = progress[0]
+                         if _progress_has_method_counters(match):
+                             totals = (int(match.group(4)), int(match.group(6)))
+@@ -1536,10 +1583,14 @@ class NwipeRunner:
+                                 new_totals = True
+                     if _is_error_summary_header(line):
+                         in_error_summary = True
+-                    elif in_error_summary and line.lstrip().startswith("***"):
++                    elif in_error_summary and body.lstrip().startswith("***"):
+                         in_error_summary = False
+                     relevant = (
+-                        new_totals
++                        # Keep the first real record in its original position
++                        # and byte budget. Otherwise projection could promote
++                        # a model continuation to a trusted bare legacy log.
++                        native_context
++                        or new_totals
+                         or in_error_summary
+                         or _is_error_summary_header(line)
+                         or "Erasure Summary" in line
+@@ -1548,24 +1599,29 @@ class NwipeRunner:
+                         or "hpa_dco" in line
+                         or "hdparm" in line
+                         or "SG_IO bad/missing sense data" in line
+-                        or line.lstrip().startswith("***")
++                        or body.lstrip().startswith("***")
+                         or "Verification mismatch on" in line
+                         or any(regex.search(line) for regex in (
+                             NWIPE_BUSY_RE, NWIPE_ABORT_RE, NWIPE_OPEN_FAIL_RE,
+                             NWIPE_FAILURE_RE, NWIPE_POSSIBLE_ERASURE_STATUS_RE,
+                             NWIPE_GEOMETRY_RE,
+                         ))
+-                        or any(_status_column_has_name(line, name) for name in names)
++                        or any(_status_column_has_name(body, name) for name in names)
+                     )
+                     if relevant:
+                         retained_bytes += len(raw)
+                         if retained_bytes > NWIPE_COMPLETION_EVIDENCE_BYTES:
+                             return None
+                         retained.append(line)
++                    if progress is not None:
++                        last_progress_retained = relevant
+                 if _log_signature(os.fstat(fh.fileno())) != expected_identity:
+                     return None
+-                if last_progress:
+-                    retained.append(last_progress)
++                if last_progress and not last_progress_retained:
++                    # Keep the sample in its original table context. Appending
++                    # earlier progress after an incomplete Error Summary turns
++                    # an explicit error row into a malformed/unavailable check.
++                    retained.insert(last_progress_position, last_progress)
+                 if shared_path:
+                     retained.append(f"observed {shared_path}")
+                 return "\n".join(retained) + "\n"
+diff --git a/src/beamo_wipe/outcomes.py b/src/beamo_wipe/outcomes.py
+index fc8f004..ea50162 100644
+--- a/src/beamo_wipe/outcomes.py
++++ b/src/beamo_wipe/outcomes.py
+@@ -265,6 +265,7 @@ def present_evidence(evidence: object) -> ResultView:
+ 
+         from beamo_wipe.evidence import SUPPORTED_SCHEMA_VERSIONS
+         from beamo_wipe.privacy import is_sharing_copy
++        from beamo_wipe.nwipe_runner import NWIPE_LOG_SNAPSHOT_UTF8_BYTES
+ 
+         if (
+             type(evidence.get("schema_version")) is not int
+@@ -376,7 +377,7 @@ def present_evidence(evidence: object) -> ResultView:
+             if not sharing_copy and (
+                 not re.fullmatch(r"[0-9a-f]{64}", evidence["log_checksum_sha256"])
+                 or type(evidence["log_snapshot_size_bytes"]) is not int
+-                or not 0 < evidence["log_snapshot_size_bytes"] <= 1024 * 1024
++                or not 0 < evidence["log_snapshot_size_bytes"] <= NWIPE_LOG_SNAPSHOT_UTF8_BYTES
+             ):
+                 return unknown
+             if outcome == "verified" and spec.verify == "last" and verification["verified"]:
+diff --git a/src/beamo_wipe/safety.py b/src/beamo_wipe/safety.py
+index 5871f90..f7ddd9a 100644
+--- a/src/beamo_wipe/safety.py
++++ b/src/beamo_wipe/safety.py
+@@ -523,6 +523,31 @@ def possible_hardware_alias(left: Disk, right: Disk) -> bool:
+     return bool(left_serial and left_serial == right_serial)
+ 
+ 
++def protected_hardware_aliases(anchor: Disk, observations: Sequence[Disk]) -> Tuple[Disk, ...]:
++    """Follow ambiguous identifiers without overriding the anchor's known WWN.
++
++    A serial-only path can lead to a WWN alias with a different serial.
++    Checking only pairs against the protected path misses that later alias.
++    Distinct known WWNs still disambiguate a reused serial, including when a
++    missing-WWN observation sits between them.
++    """
++    anchor_wwn = canonical_wwn(anchor.wwn)
++    reached: set[int] = set()
++    pending = [anchor]
++    while pending:
++        current = pending.pop()
++        for index, candidate in enumerate(observations):
++            if index in reached:
++                continue
++            candidate_wwn = canonical_wwn(candidate.wwn)
++            if anchor_wwn and candidate_wwn and anchor_wwn != candidate_wwn:
++                continue
++            if possible_hardware_alias(current, candidate):
++                reached.add(index)
++                pending.append(candidate)
++    return tuple(candidate for index, candidate in enumerate(observations) if index in reached)
++
++
+ def assert_boot_excluded(discovery: DiscoveryResult) -> None:
+     if discovery.boot_identified is not True or discovery.boot is None:
+         raise SafetyError(_copy.IDENTIFY_ERROR)
+@@ -531,7 +556,12 @@ def assert_boot_excluded(discovery: DiscoveryResult) -> None:
+     selectable_paths = {os.path.realpath(s.path) for s in discovery.selectable}
+     if any(d.is_boot and os.path.realpath(d.path) in selectable_paths for d in discovery.disks):
+         raise SafetyError(BOOT_APPEARED_SELECTABLE)
+-    if any(possible_hardware_alias(discovery.boot, disk) for disk in discovery.selectable):
++    aliases = protected_hardware_aliases(
++        discovery.boot,
++        (*discovery.disks, *discovery.selectable, *discovery.physical_observations),
++    )
++    alias_paths = {os.path.realpath(disk.path) for disk in aliases}
++    if selectable_paths & alias_paths:
+         raise SafetyError(BOOT_APPEARED_ALIAS)
+ 
+ 
+diff --git a/src/beamo_wipe/startup_stages.py b/src/beamo_wipe/startup_stages.py
+index 9b12d06..61317b8 100644
+--- a/src/beamo_wipe/startup_stages.py
++++ b/src/beamo_wipe/startup_stages.py
+@@ -176,8 +176,16 @@ class StartupRun:
+             self.stages.begin(stage)
+         return self.stages.snapshot()
+ 
+-    def stalled_note(self) -> str | None:
+-        if self.stages.stalled():
++    def stalled_note(self, *, persistent: bool = False) -> str | None:
++        """One announcement, or current stall text for graphical refreshes."""
++        first_notice = self.stages.stalled()
++        still_stalled = (
++            persistent
++            and self.stages._stalled_reported
++            and not self.stages.done
++            and not self.stages.failed
++        )
++        if first_notice or still_stalled:
+             return C.STARTUP_STILL_WORKING
+         return None
+ 
+diff --git a/src/beamo_wipe/ui/accessible_wizard.py b/src/beamo_wipe/ui/accessible_wizard.py
+index beea07c..fa2ad42 100644
+--- a/src/beamo_wipe/ui/accessible_wizard.py
++++ b/src/beamo_wipe/ui/accessible_wizard.py
+@@ -75,6 +75,11 @@ class AccessibleWizard:
+             height = min(height, workarea.height)
+         self.window.set_default_size(width, height)
+         if fullscreen:
++            # Bare X11 marks fullscreen without a window manager to resize it.
++            if monitor is not None:
++                geometry = monitor.get_geometry()
++                self.window.set_default_size(geometry.width, geometry.height)
++                self.window.move(geometry.x, geometry.y)
+             self.window.fullscreen()
+         self.window.connect("delete-event", self._close)
+         self.window.connect("key-press-event", self._key_press)
+@@ -252,6 +257,7 @@ class AccessibleWizard:
+         return view
+ 
+     def render(self):
++        self._live_sound_dialog()
+         first_review_frame = (
+             self.w.screen == Screen.LAST_CHANCE and self.shown != Screen.LAST_CHANCE
+         )
+@@ -792,11 +798,9 @@ class AccessibleWizard:
+         if not self.utilities.get_children():
+             self.footer.remove(self.utilities)
+             self.utilities.destroy()
+-        self.window.present()
+-        if self.window.get_window():
+-            self.window.get_window().focus(Gdk.CURRENT_TIME)
+         self.arrival = arrival
+-        arrival.grab_focus()
++        if self._focus_active_window() is self.window:
++            arrival.grab_focus()
+         if first_review_frame:
+             # Building and showing the first review may consume its original
+             # timer. Give Orca users the full five seconds after arrival.
+@@ -828,10 +832,37 @@ class AccessibleWizard:
+     def open_sound_check(self):
+         from beamo_wipe.ui.sound_dialog import SoundDialog
+ 
+-        if self._sound_dialog is not None and self._sound_dialog.dialog is not None:
+-            self._sound_dialog.dialog.present()
++        if self._live_sound_dialog() is not None:
++            self._focus_active_window()
+             return
+         self._sound_dialog = SoundDialog(Gtk, self.window, self.w, on_stop=self.render)
++        self._sound_dialog.dialog.connect("destroy", self._sound_closed)
++        self._sound_dialog.dialog.connect("key-press-event", self._modal_key_press)
++        self._sound_dialog.dialog.connect("key-release-event", self._key_release)
++        self._focus_active_window()
++
++    def _live_sound_dialog(self):
++        controller = getattr(self, "_sound_dialog", None)
++        if controller is None or controller.dialog is None:
++            return None
++        if controller.screen != self.w.screen or controller.screen_epoch != self.w._screen_epoch:
++            controller.close()
++            return None
++        return controller.dialog
++
++    def _focus_active_window(self):
++        # Bare X11 has no window manager to keep the modal above its parent.
++        if getattr(self, "closed", False):
++            return None
++        window = self._live_sound_dialog() or self.window
++        window.present()
++        if window.get_window():
++            window.get_window().focus(Gdk.CURRENT_TIME)
++        return window
++
++    def _sound_closed(self, *_args):
++        if self._focus_active_window() is self.window:
++            self.arrival.grab_focus()
+ 
+     def _select(self, path):
+         self.w.select_disk(path)
+@@ -946,7 +977,7 @@ class AccessibleWizard:
+             self.update_status()
+         return True
+ 
+-    def _key_press(self, _window, event):
++    def _remember_key_press(self, event):
+         key = event.keyval
+         guarded = key in {
+             Gdk.KEY_Return,
+@@ -970,6 +1001,17 @@ class AccessibleWizard:
+             return True
+         self._release_times.pop(key, None)
+         self.held.add(key)
++        return False
++
++    def _modal_key_press(self, _window, event):
++        # A modal may close on key-down. Its held key still belongs to the
++        # same physical press when auto-repeat reaches the parent window.
++        return self._remember_key_press(event)
++
++    def _key_press(self, _window, event):
++        if self._remember_key_press(event):
++            return True
++        key = event.keyval
+         if key in (Gdk.KEY_l, Gdk.KEY_L) and self.w.screen == Screen.METHOD:
+             self.w.open_limits()
+             self.render()
+@@ -1202,6 +1244,12 @@ def run_accessible_startup(build, *, fullscreen: bool = False,
+     window.set_name("beamo-accessible")
+     window.set_default_size(640, 420)
+     if fullscreen:
++        display = window.get_display()
++        monitor = display.get_primary_monitor() or display.get_monitor(0)
++        if monitor is not None:
++            geometry = monitor.get_geometry()
++            window.set_default_size(geometry.width, geometry.height)
++            window.move(geometry.x, geometry.y)
+         window.fullscreen()
+     box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+     box.set_border_width(24)
+@@ -1234,7 +1282,7 @@ def run_accessible_startup(build, *, fullscreen: bool = False,
+             status.set_text(_STATUS_WORDS[row["state"]])
+             title.set_text(row["title"])
+             hint.set_text(row["hint"])
+-        note = run.stalled_note()
++        note = run.stalled_note(persistent=True)
+         stall.set_text(note or "")
+         active = [row for row in snap if row["state"] == "active"]
+         if active:
+@@ -1270,6 +1318,9 @@ def run_accessible_startup(build, *, fullscreen: bool = False,
+     window.connect("key-press-event", lambda _w, event: close()
+                    if event.keyval in (Gdk.KEY_Escape,) else None)
+     window.show_all()
++    window.present()
++    if window.get_window():
++        window.get_window().focus(Gdk.CURRENT_TIME)
+     status_line.grab_focus()
+     render()
+     try:
+diff --git a/src/beamo_wipe/ui/console_wizard.py b/src/beamo_wipe/ui/console_wizard.py
+index 3d883f6..9a5945a 100644
+--- a/src/beamo_wipe/ui/console_wizard.py
++++ b/src/beamo_wipe/ui/console_wizard.py
+@@ -583,6 +583,36 @@ def _print_operation_identity(wizard, width: int = 76) -> None:
+     _emit(getattr(wizard, "operation_method_text", "") or "", width)
+ 
+ 
++def _retire_erase_typeahead(wizard: Wizard) -> None:
++    """Require fresh terminal input after the visible final review."""
++    try:
++        terminal = sys.stdin.isatty()
++    except (OSError, ValueError, AttributeError) as exc:
++        raise EOFError from exc
++    if not terminal:
++        # Fake previews/tests may inject complete lines without a terminal.
++        # A real erase cannot establish fresh consent from a queued pipe.
++        if wizard.dry_run or wizard.preview:
++            return
++        raise EOFError
++    try:
++        import termios
++    except ImportError as exc:
++        raise EOFError from exc
++    try:
++        descriptor = sys.stdin.fileno()
++        if type(descriptor) is not int or descriptor < 0:
++            raise ValueError("Invalid console input descriptor")
++        attributes = termios.tcgetattr(descriptor)
++        if not attributes[3] & termios.ICANON:
++            raise ValueError("Canonical console input is required")
++        # Canonical reads deliver at most one line. Discard the kernel's
++        # queued complete lines and partial input before accepting Erase.
++        termios.tcflush(descriptor, termios.TCIFLUSH)
++    except (OSError, ValueError, AttributeError, termios.error) as exc:
++        raise EOFError from exc
++
++
+ def _answer(wizard: Wizard, prompt: str) -> str:
+     confirm_token = wizard.confirm if wizard.screen == Screen.CONFIRM else None
+     confirm_word = confirm_token.token.casefold() if confirm_token is not None else ""
+@@ -992,6 +1022,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
+                 wizard.tick()
+                 print(C.CON_COUNTDOWN.format(seconds=wizard.countdown_display))
+                 time.sleep(0.4)
++            _retire_erase_typeahead(wizard)
+             ans = _answer(wizard, C.CON_ERASE_PROMPT).strip()
+             if ans.upper() == "ERASE":
+                 wizard.confirm_erase()
+@@ -1704,6 +1735,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
+             continue
+         if wizard.can_open_diagnostic and ch in (ord("d"), ord("D")):
+             wizard.open_diagnostic()
++            inventory_open = False
+             continue
+         if wizard.screen == Screen.DIAGNOSTIC and ch in (ord("r"), ord("R")):
+             _confirm_diagnostic_action(stdscr, wizard)
+diff --git a/src/beamo_wipe/ui/sound_dialog.py b/src/beamo_wipe/ui/sound_dialog.py
+index 0e0cec7..4255b86 100644
+--- a/src/beamo_wipe/ui/sound_dialog.py
++++ b/src/beamo_wipe/ui/sound_dialog.py
+@@ -19,10 +19,28 @@ class SoundDialog:
+         self.dialog.set_transient_for(window)
+         self.dialog.set_modal(True)
+         self.dialog.set_destroy_with_parent(True)
+-        self.dialog.set_default_size(560, 480)
+-        box = self.dialog.get_content_area()
+-        box.set_spacing(6)
+-        box.set_border_width(16)
++        width, height = 560, 480
++        display = window.get_display()
++        monitor = (display.get_monitor_at_window(window.get_window())
++                   if window.get_window() is not None else display.get_primary_monitor())
++        monitor = monitor or display.get_monitor(0)
++        if monitor is not None:
++            area = monitor.get_workarea()
++            width, height = min(width, area.width), min(height, area.height)
++            self.dialog.set_position(gtk.WindowPosition.NONE)
++            self.dialog.move(area.x + (area.width - width) // 2,
++                             area.y + (area.height - height) // 2)
++        self.dialog.set_default_size(width, height)
++        content = self.dialog.get_content_area()
++        content.set_spacing(6)
++        content.set_border_width(16)
++        # Output lists and recovery text can exceed a small live display.
++        # Keep Close and the live Stop action outside this scrolling area.
++        scroll = gtk.ScrolledWindow()
++        scroll.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
++        content.pack_start(scroll, True, True, 0)
++        box = gtk.Box(orientation=gtk.Orientation.VERTICAL, spacing=6)
++        scroll.add(box)
+         self.status = self._label(C.SOUND_CHECKING)
+         self.status.set_can_focus(True)
+         self.status.set_selectable(True)
+@@ -34,6 +52,8 @@ class SoundDialog:
+         self.chosen = None
+         self.muted = False
+         self.radios = []
++        self._chosen_radio = None
++        self._restoring_output = False
+         self.volume_label = self._label(C.SOUND_VOLUME_UNKNOWN)
+         controls = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=8)
+         box.pack_start(controls, False, False, 4)
+@@ -61,7 +81,7 @@ class SoundDialog:
+         box.pack_start(self._label(C.SOUND_RECOVERY), False, False, 4)
+         if wizard.screen == Screen.WORKING:
+             stop_button = gtk.Button.new_with_label(C.STOP_ASK)
+-            box.pack_start(stop_button, False, False, 4)
++            content.pack_start(stop_button, False, False, 4)
+             stop_button.connect("clicked", self._request_stop)
+         self.dialog.add_button(C.SOUND_CLOSE, gtk.ResponseType.CLOSE)
+         self.dialog.connect("response", lambda *_: self.dialog.destroy())
+@@ -119,8 +139,8 @@ class SoundDialog:
+         self.ticket = None
+         done = self.done
+         self.done = None
+-        self._busy(False)
+         if value is None or isinstance(value, BaseException):
++            self._restore_output_choice()
+             try:
+                 from beamo_wipe.diagnostics import log_diag
+ 
+@@ -130,6 +150,7 @@ class SoundDialog:
+             self._announce(C.SOUND_ACTION_FAILED)
+         else:
+             done(value)
++        self._busy(False)
+ 
+     def close(self):
+         if self.dialog is not None:
+@@ -146,6 +167,7 @@ class SoundDialog:
+             self.ticket.cancel()
+             self.ticket = None
+         self.done = None
++        self._chosen_radio = None
+         self.dialog = None
+         if self.review_overlay:
+             self.w.end_review_overlay()
+@@ -179,7 +201,8 @@ class SoundDialog:
+         if not state.available:
+             self._announce(state.message)
+             return
+-        self.chosen = sound.resolve_output(self.w.sound_output, state)
++        preferred = self.w.sound_output if applied is None or applied.ok else ""
++        self.chosen = sound.resolve_output(preferred, state)
+         group = None
+         for output in state.outputs:
+             choice = self.Gtk.RadioButton.new_with_label_from_widget(group, output.label)
+@@ -190,6 +213,7 @@ class SoundDialog:
+             self.output_box.pack_start(choice, False, False, 3)
+             self.radios.append(choice)
+             if self.chosen is not None and output.id == self.chosen.id:
++                self._chosen_radio = choice
+                 choice.set_active(True)
+             choice.connect("toggled", self._output_toggled, output)
+             choice.show_all()
+@@ -197,8 +221,17 @@ class SoundDialog:
+         self._busy(False)
+         self._announce(applied.message if applied is not None and not applied.ok else C.SOUND_DIALOG_LEAD)
+ 
++    def _restore_output_choice(self):
++        if self._chosen_radio is None:
++            return
++        self._restoring_output = True
++        try:
++            self._chosen_radio.set_active(True)
++        finally:
++            self._restoring_output = False
++
+     def _output_toggled(self, choice, output):
+-        if not choice.get_active():
++        if self._restoring_output or not choice.get_active():
+             return
+         def action():
+             result = sound.set_output(output.id)
+@@ -208,9 +241,11 @@ class SoundDialog:
+             if result.ok:
+                 self.w.set_sound_output(output.id)
+                 self.chosen = output
++                self._chosen_radio = choice
+                 self._show_volume(state)
+                 self._announce(f"{output.label} {C.SOUND_SELECTED}")
+             else:
++                self._restore_output_choice()
+                 self._announce(result.message)
+         self._submit(action, done)
+ 
+diff --git a/src/beamo_wipe/ui/tk_wizard.py b/src/beamo_wipe/ui/tk_wizard.py
+index 0abc01d..879d2bc 100644
+--- a/src/beamo_wipe/ui/tk_wizard.py
++++ b/src/beamo_wipe/ui/tk_wizard.py
+@@ -1234,6 +1234,9 @@ class TkWizard:
+         self.root.bind("<KeyRelease-space>", self._on_space_release)
+         self.root.bind("<KeyRelease-F5>", self._on_f5_release)
+         self.root.bind("<Key>", self._on_key)
++        for sequence in ("<MouseWheel>", "<Button-4>", "<Button-5>"):
++            self.root.bind(sequence, self._on_body_wheel)
++        self.root.bind("<FocusIn>", self._on_body_focus)
+         self.root.protocol("WM_DELETE_WINDOW", self._close)
+         self._draw()
+         self._after_id = self.root.after(100, self._tick)
+@@ -1478,30 +1481,112 @@ class TkWizard:
+         self._body.grid_rowconfigure(0, weight=1)
+         inner = tk.Frame(canvas, bg=BG)
+         window = canvas.create_window((0, 0), window=inner, anchor="nw")
++        inner_size = (0, 0)
+ 
+         def on_inner(_event=None) -> None:
++            nonlocal inner_size
+             canvas.configure(scrollregion=canvas.bbox("all") or (0, 0, 0, 0))
++            size = (inner.winfo_width(), inner.winfo_height())
++            if size != inner_size:
++                inner_size = size
++                # Wrapping can finish after focus arrived. React to content
++                # size changes, not position changes caused by manual scroll.
++                self._schedule_body_focus_reveal(self.root.focus_get())
+ 
+         def on_canvas(event) -> None:
+             canvas.itemconfigure(window, width=max(1, event.width))
++            self._schedule_body_focus_reveal(self.root.focus_get())
+ 
+         inner.bind("<Configure>", on_inner)
+         canvas.bind("<Configure>", on_canvas)
+ 
+-        def wheel(event) -> str:
+-            steps = int(-event.delta / 120) if event.delta else 0
+-            if steps:
+-                canvas.yview_scroll(steps, "units")
+-            return "break"
+-
+-        canvas.bind("<MouseWheel>", wheel)
+-        inner.bind("<MouseWheel>", wheel)
+-        canvas.bind("<Button-4>", lambda _e: canvas.yview_scroll(-1, "units"))
+-        canvas.bind("<Button-5>", lambda _e: canvas.yview_scroll(1, "units"))
+         self._body_canvas = canvas
+         self._body_inner = inner
+ 
++    def _on_body_wheel(self, event) -> Optional[str]:
++        canvas = self._body_canvas
++        if canvas is None:
++            return None
++        widget = event.widget
++        while widget is not None and widget is not canvas:
++            # Native readers and nested scroll surfaces own their wheel.
++            # Their class bindings do not always return "break" before the
++            # toplevel bindtag, so ancestry alone would scroll both views.
++            if (widget.winfo_class() in {"Text", "Listbox", "Treeview", "Scrollbar", "TScrollbar"}
++                    or isinstance(widget, _Scrollbar)
++                    or (isinstance(widget, tk.Canvas)
++                        and widget.cget("scrollregion"))):
++                return None
++            widget = widget.master
++        if widget is not canvas:
++            return None
++        if getattr(event, "num", None) == 5:
++            steps = 1
++        elif getattr(event, "num", None) == 4:
++            steps = -1
++        else:
++            steps = int(-event.delta / 120) if event.delta else 0
++        if not steps:
++            return None
++        canvas.yview_scroll(steps, "units")
++        return "break"
++
++    def _on_body_focus(self, event) -> None:
++        self._schedule_body_focus_reveal(event.widget)
++
++    def _schedule_body_focus_reveal(self, widget: tk.Misc | None) -> None:
++        canvas = self._body_canvas
++        if canvas is None or widget is None:
++            return
++        parent: tk.Misc | None = widget
++        while parent is not None and parent is not canvas:
++            parent = parent.master
++        if parent is not canvas:
++            return
++
++        def reveal() -> None:
++            try:
++                if self._body_canvas is not canvas or self.root.focus_get() is not widget:
++                    return
++                bounds = canvas.bbox("all")
++                if not bounds:
++                    return
++                top = widget.winfo_rooty() - canvas.winfo_rooty()
++                height = widget.winfo_height()
++                viewport = canvas.winfo_height()
++                offset = top if top < 0 else max(0, top + height - viewport)
++                if offset:
++                    canvas.yview_moveto((canvas.canvasy(0) + offset) / max(1, bounds[3]))
++            except tk.TclError:
++                # A redraw can destroy the focused widget before its idle job.
++                return
++
++        canvas.after_idle(reveal)
++
++    def _cancel_widget_callbacks(self, widget: tk.Misc, *, include_self: bool = True) -> None:
++        """Retire pending Python callbacks owned by widgets being destroyed."""
++        if not isinstance(widget, tk.Misc):
++            return  # Lightweight non-Tk controllers do not own Tcl callbacks.
++        try:
++            pending = [widget] if include_self else list(widget.winfo_children())
++            owners: dict[str, tk.Misc] = {}
++            while pending:
++                owner = pending.pop()
++                owners.update((command, owner) for command in (getattr(owner, "_tclCommands", None) or ()))
++                pending.extend(owner.winfo_children())
++            for callback in widget.tk.call("after", "info"):
++                script, _kind = widget.tk.call("after", "info", callback)
++                callback_owner = owners.get(str(script))
++                if callback_owner is not None:
++                    # after_cancel also removes the Tcl command from its
++                    # owning widget's registry. Preserve other owners' jobs.
++                    callback_owner.after_cancel(callback)
++        except tk.TclError:
++            # Teardown may run again after this interpreter was destroyed.
++            pass
++
+     def _clear(self, frame: tk.Frame) -> None:
++        self._cancel_widget_callbacks(frame, include_self=False)
+         for child in frame.winfo_children():
+             child.destroy()
+ 
+@@ -1547,6 +1632,7 @@ class TkWizard:
+             except tk.TclError:
+                 pass
+             self._after_id = None
++        self._cancel_widget_callbacks(self.root)
+         try:
+             self.root.destroy()
+         except tk.TclError:
+@@ -3229,6 +3315,12 @@ class TkWizard:
+             return "break"
+ 
+         def bind_wheel(widget):
++            # Nested readers and custom scrollbars own their wheel handlers.
++            if (widget.winfo_class() in {"Text", "Listbox", "Treeview", "Scrollbar", "TScrollbar"}
++                    or isinstance(widget, _Scrollbar)
++                    or (isinstance(widget, tk.Canvas) and widget is not canvas
++                        and widget.cget("scrollregion"))):
++                return
+             for sequence in ("<MouseWheel>", "<Button-4>", "<Button-5>"):
+                 widget.bind(sequence, _wheel)
+             for child in widget.winfo_children():
+@@ -4492,6 +4584,23 @@ class TkWizard:
+             self._draw()
+ 
+     def run(self) -> int:
++        # Bare X11 has no window manager to claim input when the pointer is
++        # outside a windowed preview. Initial child focus requests made before
++        # mapping were ignored, so claim the mapped window once and let the
++        # renderer restore its intended child. Later redraws never force input.
++        def claim_input() -> None:
++            self.root.focus_force()
++            self._draw()
++
++        def mapped(event) -> None:
++            if event.widget is self.root:
++                self.root.unbind("<Map>", mapping)
++                self.root.after_idle(claim_input)
++
++        if self.root.winfo_ismapped():
++            self.root.after_idle(claim_input)
++        else:
++            mapping = self.root.bind("<Map>", mapped, add="+")
+         self.root.mainloop()
+         return 3 if self._fatal_ui else (4 if self._accessible_requested else 0)
+ 
+@@ -4563,13 +4672,17 @@ def run_tk_startup(build, *, fullscreen: bool = False,
+         root.geometry(f"{root.winfo_screenwidth()}x{root.winfo_screenheight()}+0+0")
+         root.attributes("-fullscreen", True)
+     else:
+-        root.geometry("640x440")
+-    try:
+-        root.eval("tk::PlaceWindow . center")
+-    except tk.TclError:
+-        pass
++        # PlaceWindow centers the empty widget's requested 200px size,
++        # which can move the configured startup window off a small screen.
++        width = min(640, root.winfo_screenwidth())
++        height = min(440, root.winfo_screenheight())
++        x = (root.winfo_screenwidth() - width) // 2
++        y = (root.winfo_screenheight() - height) // 2
++        root.geometry(f"{width}x{height}+{x}+{y}")
+     root.configure(bg=BG)
+     outcome: list = []
++    poll_after: Optional[str] = None
++    focus_after: Optional[str] = None
+ 
+     body = tk.Frame(root, bg=BG)
+     body.pack(fill=tk.BOTH, expand=True, padx=48, pady=36)
+@@ -4599,7 +4712,7 @@ def run_tk_startup(build, *, fullscreen: bool = False,
+             status.configure(text=_STATUS_WORDS[row["state"]])
+             title.configure(text=row["title"])
+             hint.configure(text=row["hint"])
+-        note = run.stalled_note()
++        note = run.stalled_note(persistent=True)
+         stall.configure(text=note or "")
+ 
+     def close() -> None:
+@@ -4611,6 +4724,8 @@ def run_tk_startup(build, *, fullscreen: bool = False,
+             pass
+ 
+     def poll_once() -> None:
++        nonlocal poll_after
++        poll_after = None
+         if outcome:
+             return
+         try:
+@@ -4621,7 +4736,7 @@ def run_tk_startup(build, *, fullscreen: bool = False,
+         if result is None:
+             try:
+                 if poll is not None:
+-                    root.after(100, poll)
++                    poll_after = root.after(100, poll)
+             except tk.TclError:
+                 pass
+             return
+@@ -4643,13 +4758,24 @@ def run_tk_startup(build, *, fullscreen: bool = False,
+     try:
+         render()
+         run.start()
+-        root.after(100, poll_once)
++        poll_after = root.after(100, poll_once)
++        # Bare X11 has no window manager to give this mapped startup input.
++        focus_after = root.after_idle(root.focus_force)
+         root.mainloop()
+     finally:
+         # The recursive callback otherwise retains itself and the destroyed
+         # Tcl interpreter in a cycle. Worker-thread GC can then finalize Tcl
+         # on the wrong thread and abort the process after startup completes.
+         poll = None
++        # Window destruction deletes Python's Tcl commands but does not
++        # remove pending after scripts. Retire our exact timers even when
++        # an external close already destroyed the startup widgets.
++        for callback in (poll_after, focus_after):
++            if callback is not None:
++                try:
++                    root.after_cancel(callback)
++                except tk.TclError:
++                    pass
+         try:
+             root.destroy()
+         except tk.TclError:
+diff --git a/tests/test_accessible_key_repeat.py b/tests/test_accessible_key_repeat.py
+index ebc11c4..a255715 100644
+--- a/tests/test_accessible_key_repeat.py
++++ b/tests/test_accessible_key_repeat.py
+@@ -21,7 +21,7 @@ def _key_handlers():
+         node
+         for node in wizard.body
+         if isinstance(node, ast.FunctionDef)
+-        and node.name in {"_key_press", "_key_release"}
++        and node.name in {"_key_press", "_key_release", "_remember_key_press"}
+     ]
+     gdk = SimpleNamespace(
+         KEY_Return=1,
+@@ -34,17 +34,17 @@ def _key_handlers():
+     )
+     copy = SimpleNamespace(BTN_ERASE="Erase now", BTN_BACK="Back")
+     namespace = {"Gdk": gdk, "C": copy, "Screen": Screen}
+-    # Run only the two checked-in handlers so this test works without GTK on macOS.
++    # Run only the checked-in handlers and their shared guard so this test works without GTK on macOS.
+     exec(  # noqa: S102
+         compile(ast.Module(body=methods, type_ignores=[]), str(source), "exec"),
+         namespace,
+     )
+-    return namespace["_key_press"], namespace["_key_release"], gdk, copy
++    return namespace["_key_press"], namespace["_key_release"], namespace["_remember_key_press"], gdk, copy
+ 
+ 
+ @pytest.mark.parametrize("enter_key", ["KEY_Return", "KEY_KP_Enter"])
+ def test_gtk_x11_repeat_cannot_erase_when_countdown_expires(enter_key):
+-    key_press, key_release, gdk, copy = _key_handlers()
++    key_press, key_release, remember_key_press, gdk, copy = _key_handlers()
+     clicks = []
+     button = SimpleNamespace(
+         get_sensitive=lambda: button.enabled,
+@@ -59,6 +59,7 @@ def test_gtk_x11_repeat_cannot_erase_when_countdown_expires(enter_key):
+         window=window,
+         actions={copy.BTN_ERASE: button},
+     )
++    app._remember_key_press = MethodType(remember_key_press, app)
+     app._key_press = MethodType(key_press, app)
+     app._key_release = MethodType(key_release, app)
+ 
+@@ -75,7 +76,7 @@ def test_gtk_x11_repeat_cannot_erase_when_countdown_expires(enter_key):
+ 
+ 
+ def test_gtk_x11_repeat_cannot_skip_refresh_confirmation():
+-    key_press, key_release, gdk, _ = _key_handlers()
++    key_press, key_release, remember_key_press, gdk, _ = _key_handlers()
+     scans = []
+     wizard = SimpleNamespace(screen=Screen.OWNER, can_refresh=True)
+     wizard.open_refresh_confirm = lambda: setattr(
+@@ -88,6 +89,7 @@ def test_gtk_x11_repeat_cannot_skip_refresh_confirmation():
+         render=lambda: None,
+         _begin_refresh_scan=lambda: scans.append(1),
+     )
++    app._remember_key_press = MethodType(remember_key_press, app)
+     app._key_press = MethodType(key_press, app)
+     app._key_release = MethodType(key_release, app)
+     event = SimpleNamespace(keyval=gdk.KEY_F5, time=1000)
+@@ -104,7 +106,7 @@ def test_gtk_x11_repeat_cannot_skip_refresh_confirmation():
+ 
+ 
+ def test_gtk_held_escape_keeps_stop_confirmation_open():
+-    key_press, key_release, gdk, _ = _key_handlers()
++    key_press, key_release, remember_key_press, gdk, _ = _key_handlers()
+     wizard = SimpleNamespace(screen=Screen.WORKING, stop_confirmation=None)
+     wizard.request_stop = lambda: setattr(wizard, "stop_confirmation", object())
+     wizard.keep_erasing = lambda: setattr(wizard, "stop_confirmation", None)
+@@ -114,6 +116,7 @@ def test_gtk_held_escape_keeps_stop_confirmation_open():
+         _release_times={},
+         render=lambda: None,
+     )
++    app._remember_key_press = MethodType(remember_key_press, app)
+     app._key_press = MethodType(key_press, app)
+     app._key_release = MethodType(key_release, app)
+ 
+diff --git a/tests/test_accessible_last_chance_actions_pass12_ui.py b/tests/test_accessible_last_chance_actions_pass12_ui.py
+index e400829..303c018 100644
+--- a/tests/test_accessible_last_chance_actions_pass12_ui.py
++++ b/tests/test_accessible_last_chance_actions_pass12_ui.py
+@@ -20,7 +20,7 @@ def _key_handlers():
+     methods = [
+         node for node in wizard.body
+         if isinstance(node, ast.FunctionDef)
+-        and node.name in {"_key_press", "_key_release"}
++        and node.name in {"_key_press", "_key_release", "_remember_key_press"}
+     ]
+     gdk = SimpleNamespace(
+         KEY_Return=1, KEY_KP_Enter=2, KEY_space=3, KEY_F5=4,
+@@ -31,12 +31,12 @@ def _key_handlers():
+         compile(ast.Module(body=methods, type_ignores=[]), str(source), "exec"),
+         namespace,
+     )
+-    return namespace["_key_press"], namespace["_key_release"], gdk
++    return namespace["_key_press"], namespace["_key_release"], namespace["_remember_key_press"], gdk
+ 
+ 
+ @pytest.mark.parametrize("utility", [C.KEYBOARD_UTILITY, C.BTN_REFRESH_UTILITY, C.DIAGNOSTIC_TITLE])
+ def test_enter_activates_focused_last_chance_utility_once(utility):
+-    key_press, key_release, gdk = _key_handlers()
++    key_press, key_release, remember_key_press, gdk = _key_handlers()
+     clicks = []
+     button = SimpleNamespace(
+         get_sensitive=lambda: True,
+@@ -48,6 +48,7 @@ def test_enter_activates_focused_last_chance_utility_once(utility):
+         held=set(), _release_times={}, window=window,
+         actions={C.BTN_ERASE: None, C.BTN_BACK: None, utility: button},
+     )
++    app._remember_key_press = MethodType(remember_key_press, app)
+     app._key_press = MethodType(key_press, app)
+     app._key_release = MethodType(key_release, app)
+ 
+@@ -61,7 +62,7 @@ def test_enter_activates_focused_last_chance_utility_once(utility):
+ 
+ 
+ def test_last_chance_enter_on_warning_cannot_start_erase():
+-    key_press, _key_release, gdk = _key_handlers()
++    key_press, _key_release, remember_key_press, gdk = _key_handlers()
+     clicks = []
+     erase = SimpleNamespace(get_sensitive=lambda: True, clicked=lambda: clicks.append("erase"))
+     warning = object()
+@@ -71,6 +72,7 @@ def test_last_chance_enter_on_warning_cannot_start_erase():
+         held=set(), _release_times={}, window=window,
+         actions={C.BTN_ERASE: erase},
+     )
++    app._remember_key_press = MethodType(remember_key_press, app)
+     app._key_press = MethodType(key_press, app)
+ 
+     assert app._key_press(window, SimpleNamespace(keyval=gdk.KEY_Return, time=1000))
+@@ -79,7 +81,7 @@ def test_last_chance_enter_on_warning_cannot_start_erase():
+ 
+ @pytest.mark.parametrize("focused", [None, "stale", "disabled"])
+ def test_last_chance_enter_needs_a_current_enabled_control(focused):
+-    key_press, _key_release, gdk = _key_handlers()
++    key_press, _key_release, remember_key_press, gdk = _key_handlers()
+     clicks = []
+     disabled = SimpleNamespace(
+         get_sensitive=lambda: False,
+@@ -96,6 +98,7 @@ def test_last_chance_enter_needs_a_current_enabled_control(focused):
+         held=set(), _release_times={}, window=window,
+         actions={C.BTN_ERASE: None, C.BTN_BACK: disabled},
+     )
++    app._remember_key_press = MethodType(remember_key_press, app)
+     app._key_press = MethodType(key_press, app)
+ 
+     assert app._key_press(window, SimpleNamespace(keyval=gdk.KEY_Return, time=1000))
+diff --git a/tests/test_audio_responsiveness.py b/tests/test_audio_responsiveness.py
+index 1d48183..3a9ec71 100644
+--- a/tests/test_audio_responsiveness.py
++++ b/tests/test_audio_responsiveness.py
+@@ -282,6 +282,15 @@ class FakeWidget:
+     def __getattr__(self, name):
+         def ui_method(*args, **kwargs):
+             assert threading.current_thread() is threading.main_thread(), name
++            if name == "get_display":
++                monitor = SimpleNamespace(get_workarea=lambda: SimpleNamespace(
++                    x=0, y=0, width=1600, height=1000,
++                ))
++                return SimpleNamespace(
++                    get_primary_monitor=lambda: monitor,
++                    get_monitor=lambda _index: monitor,
++                    get_monitor_at_window=lambda _window: monitor,
++                )
+             if name == "get_content_area":
+                 if self.content is None:
+                     self.content = FakeWidget()
+@@ -296,7 +305,7 @@ class FakeWidget:
+                 self.label = args[0]
+             if name == "set_sensitive":
+                 self.sensitive = args[0]
+-            if name == "pack_start":
++            if name in {"pack_start", "add"}:
+                 self.children.append(args[0])
+             if name == "connect":
+                 self.signals.setdefault(args[0], []).append((args[1], args[2:]))
+@@ -313,9 +322,14 @@ class FakeGtk:
+         VERTICAL = 1
+     class ResponseType:
+         CLOSE = 0
++    class WindowPosition:
++        NONE = 0
++    class PolicyType:
++        AUTOMATIC = 0
+     Dialog = FakeWidget
+     Label = FakeWidget
+     Box = FakeWidget
++    ScrolledWindow = FakeWidget
+     class Button:
+         @staticmethod
+         def new_with_label(label):
+diff --git a/tests/test_bug_audit_tk_gc_20260913.py b/tests/test_bug_audit_tk_gc_20260913.py
+index ded76d1..b9e69fd 100644
+--- a/tests/test_bug_audit_tk_gc_20260913.py
++++ b/tests/test_bug_audit_tk_gc_20260913.py
+@@ -92,6 +92,8 @@ def test_startup_exception_closes_its_window(monkeypatch, failed_step):
+     from beamo_wipe.ui import tk_wizard as ui
+ 
+     root = MagicMock()
++    root.winfo_screenwidth.return_value = 1600
++    root.winfo_screenheight.return_value = 1000
+     monkeypatch.setattr(ui, "_ensure_tk_display", lambda: None)
+     monkeypatch.setattr(ui.tk, "Tk", lambda: root)
+     monkeypatch.setattr(ui.tk, "Frame", MagicMock())
+diff --git a/tests/test_pick_scroll_restore.py b/tests/test_pick_scroll_restore.py
+index 1b78ca2..021dbce 100644
+--- a/tests/test_pick_scroll_restore.py
++++ b/tests/test_pick_scroll_restore.py
+@@ -24,6 +24,9 @@ class Canvas(tk.Misc):
+         self.content = 1000
+         self.top = 0.0
+ 
++    def winfo_children(self):
++        return []  # Tcl-only leaf fixture; it has no Tk widget hierarchy.
++
+     def bbox(self, _tag):
+         return (0, 0, 500, self.content)
+ 

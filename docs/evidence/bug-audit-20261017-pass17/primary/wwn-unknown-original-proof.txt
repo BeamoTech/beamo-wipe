@@ -1,0 +1,648 @@
+FFFFFFFFFFFFFFFF................................                         [100%]
+=================================== FAILURES ===================================
+_ test_malformed_wwn_retains_an_unknown_alias_candidate[protected-False-False-bad\nwwn] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x78f60d35ade0>
+bad = 'bad\nwwn', reverse = False, nested = False, mode = 'protected'
+
+    @pytest.mark.parametrize('bad', ('bad\nwwn', 'X' * 129, 7, ['FAKE-WWN']))
+    @pytest.mark.parametrize('reverse', (False, True))
+    @pytest.mark.parametrize('nested', (False, True))
+    @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+    def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+        boot = _disk('sdz', tran='usb', size=16_000_000_000,
+                     serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+        values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),
+                  ('LEAF-SERIAL', bad)]
+        if reverse:
+            values.reverse()
+        children = []
+        for index, (serial, wwn) in enumerate(values, 1):
+            part = dict(name=f'sda{index}', path=f'/dev/sda{index}', type='part',
+                        pkname='sda', size=1_000_000_000, mountpoints=[])
+            if nested:
+                part['children'] = [dict(name=f'fake_wwn_{index}', path=f'/dev/mapper/fake_wwn_{index}',
+                                         type='crypt', pkname=part['name'], mountpoints=[],
+                                         serial=serial, wwn=wwn)]
+            else:
+                part.update(serial=serial, wwn=wwn)
+            children.append(part)
+        bridge = _disk('sda', children=children)
+        if mode == 'authoritative':
+            bridge['wwn'] = '0x50014ee20aa00002'
+        leaf = _disk('sdc', serial='LEAF-SERIAL')
+        unrelated = _disk('sdb', serial='FAKE-UNRELATED')
+        result = scan_fake([boot, bridge, leaf, unrelated])
+        paths = {disk.path for disk in result.selectable}
+        if mode == 'protected':
+>           assert leaf['path'] not in paths
+E           AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}
+
+/tmp/pass17-primary/wwn-unknown-proof.py:41: AssertionError
+_ test_malformed_wwn_retains_an_unknown_alias_candidate[protected-False-False-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x78f60d35b600>
+bad = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+reverse = False, nested = False, mode = 'protected'
+
+    @pytest.mark.parametrize('bad', ('bad\nwwn', 'X' * 129, 7, ['FAKE-WWN']))
+    @pytest.mark.parametrize('reverse', (False, True))
+    @pytest.mark.parametrize('nested', (False, True))
+    @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+    def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+        boot = _disk('sdz', tran='usb', size=16_000_000_000,
+                     serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+        values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),
+                  ('LEAF-SERIAL', bad)]
+        if reverse:
+            values.reverse()
+        children = []
+        for index, (serial, wwn) in enumerate(values, 1):
+            part = dict(name=f'sda{index}', path=f'/dev/sda{index}', type='part',
+                        pkname='sda', size=1_000_000_000, mountpoints=[])
+            if nested:
+                part['children'] = [dict(name=f'fake_wwn_{index}', path=f'/dev/mapper/fake_wwn_{index}',
+                                         type='crypt', pkname=part['name'], mountpoints=[],
+                                         serial=serial, wwn=wwn)]
+            else:
+                part.update(serial=serial, wwn=wwn)
+            children.append(part)
+        bridge = _disk('sda', children=children)
+        if mode == 'authoritative':
+            bridge['wwn'] = '0x50014ee20aa00002'
+        leaf = _disk('sdc', serial='LEAF-SERIAL')
+        unrelated = _disk('sdb', serial='FAKE-UNRELATED')
+        result = scan_fake([boot, bridge, leaf, unrelated])
+        paths = {disk.path for disk in result.selectable}
+        if mode == 'protected':
+>           assert leaf['path'] not in paths
+E           AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}
+
+/tmp/pass17-primary/wwn-unknown-proof.py:41: AssertionError
+_ test_malformed_wwn_retains_an_unknown_alias_candidate[protected-False-False-7] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x78f60d35ba60>, bad = 7
+reverse = False, nested = False, mode = 'protected'
+
+    @pytest.mark.parametrize('bad', ('bad\nwwn', 'X' * 129, 7, ['FAKE-WWN']))
+    @pytest.mark.parametrize('reverse', (False, True))
+    @pytest.mark.parametrize('nested', (False, True))
+    @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+    def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+        boot = _disk('sdz', tran='usb', size=16_000_000_000,
+                     serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+        values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),
+                  ('LEAF-SERIAL', bad)]
+        if reverse:
+            values.reverse()
+        children = []
+        for index, (serial, wwn) in enumerate(values, 1):
+            part = dict(name=f'sda{index}', path=f'/dev/sda{index}', type='part',
+                        pkname='sda', size=1_000_000_000, mountpoints=[])
+            if nested:
+                part['children'] = [dict(name=f'fake_wwn_{index}', path=f'/dev/mapper/fake_wwn_{index}',
+                                         type='crypt', pkname=part['name'], mountpoints=[],
+                                         serial=serial, wwn=wwn)]
+            else:
+                part.update(serial=serial, wwn=wwn)
+            children.append(part)
+        bridge = _disk('sda', children=children)
+        if mode == 'authoritative':
+            bridge['wwn'] = '0x50014ee20aa00002'
+        leaf = _disk('sdc', serial='LEAF-SERIAL')
+        unrelated = _disk('sdb', serial='FAKE-UNRELATED')
+        result = scan_fake([boot, bridge, leaf, unrelated])
+        paths = {disk.path for disk in result.selectable}
+        if mode == 'protected':
+>           assert leaf['path'] not in paths
+E           AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}
+
+/tmp/pass17-primary/wwn-unknown-proof.py:41: AssertionError
+_ test_malformed_wwn_retains_an_unknown_alias_candidate[protected-False-False-bad3] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x78f60d35b6a0>
+bad = ['FAKE-WWN'], reverse = False, nested = False, mode = 'protected'
+
+    @pytest.mark.parametrize('bad', ('bad\nwwn', 'X' * 129, 7, ['FAKE-WWN']))
+    @pytest.mark.parametrize('reverse', (False, True))
+    @pytest.mark.parametrize('nested', (False, True))
+    @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+    def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+        boot = _disk('sdz', tran='usb', size=16_000_000_000,
+                     serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+        values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),
+                  ('LEAF-SERIAL', bad)]
+        if reverse:
+            values.reverse()
+        children = []
+        for index, (serial, wwn) in enumerate(values, 1):
+            part = dict(name=f'sda{index}', path=f'/dev/sda{index}', type='part',
+                        pkname='sda', size=1_000_000_000, mountpoints=[])
+            if nested:
+                part['children'] = [dict(name=f'fake_wwn_{index}', path=f'/dev/mapper/fake_wwn_{index}',
+                                         type='crypt', pkname=part['name'], mountpoints=[],
+                                         serial=serial, wwn=wwn)]
+            else:
+                part.update(serial=serial, wwn=wwn)
+            children.append(part)
+        bridge = _disk('sda', children=children)
+        if mode == 'authoritative':
+            bridge['wwn'] = '0x50014ee20aa00002'
+        leaf = _disk('sdc', serial='LEAF-SERIAL')
+        unrelated = _disk('sdb', serial='FAKE-UNRELATED')
+        result = scan_fake([boot, bridge, leaf, unrelated])
+        paths = {disk.path for disk in result.selectable}
+        if mode == 'protected':
+>           assert leaf['path'] not in paths
+E           AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}
+
+/tmp/pass17-primary/wwn-unknown-proof.py:41: AssertionError
+_ test_malformed_wwn_retains_an_unknown_alias_candidate[protected-False-True-bad\nwwn] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x78f60d195da0>
+bad = 'bad\nwwn', reverse = True, nested = False, mode = 'protected'
+
+    @pytest.mark.parametrize('bad', ('bad\nwwn', 'X' * 129, 7, ['FAKE-WWN']))
+    @pytest.mark.parametrize('reverse', (False, True))
+    @pytest.mark.parametrize('nested', (False, True))
+    @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+    def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+        boot = _disk('sdz', tran='usb', size=16_000_000_000,
+                     serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+        values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),
+                  ('LEAF-SERIAL', bad)]
+        if reverse:
+            values.reverse()
+        children = []
+        for index, (serial, wwn) in enumerate(values, 1):
+            part = dict(name=f'sda{index}', path=f'/dev/sda{index}', type='part',
+                        pkname='sda', size=1_000_000_000, mountpoints=[])
+            if nested:
+                part['children'] = [dict(name=f'fake_wwn_{index}', path=f'/dev/mapper/fake_wwn_{index}',
+                                         type='crypt', pkname=part['name'], mountpoints=[],
+                                         serial=serial, wwn=wwn)]
+            else:
+                part.update(serial=serial, wwn=wwn)
+            children.append(part)
+        bridge = _disk('sda', children=children)
+        if mode == 'authoritative':
+            bridge['wwn'] = '0x50014ee20aa00002'
+        leaf = _disk('sdc', serial='LEAF-SERIAL')
+        unrelated = _disk('sdb', serial='FAKE-UNRELATED')
+        result = scan_fake([boot, bridge, leaf, unrelated])
+        paths = {disk.path for disk in result.selectable}
+        if mode == 'protected':
+>           assert leaf['path'] not in paths
+E           AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}
+
+/tmp/pass17-primary/wwn-unknown-proof.py:41: AssertionError
+_ test_malformed_wwn_retains_an_unknown_alias_candidate[protected-False-True-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x78f60d1956c0>
+bad = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+reverse = True, nested = False, mode = 'protected'
+
+    @pytest.mark.parametrize('bad', ('bad\nwwn', 'X' * 129, 7, ['FAKE-WWN']))
+    @pytest.mark.parametrize('reverse', (False, True))
+    @pytest.mark.parametrize('nested', (False, True))
+    @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+    def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+        boot = _disk('sdz', tran='usb', size=16_000_000_000,
+                     serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+        values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),
+                  ('LEAF-SERIAL', bad)]
+        if reverse:
+            values.reverse()
+        children = []
+        for index, (serial, wwn) in enumerate(values, 1):
+            part = dict(name=f'sda{index}', path=f'/dev/sda{index}', type='part',
+                        pkname='sda', size=1_000_000_000, mountpoints=[])
+            if nested:
+                part['children'] = [dict(name=f'fake_wwn_{index}', path=f'/dev/mapper/fake_wwn_{index}',
+                                         type='crypt', pkname=part['name'], mountpoints=[],
+                                         serial=serial, wwn=wwn)]
+            else:
+                part.update(serial=serial, wwn=wwn)
+            children.append(part)
+        bridge = _disk('sda', children=children)
+        if mode == 'authoritative':
+            bridge['wwn'] = '0x50014ee20aa00002'
+        leaf = _disk('sdc', serial='LEAF-SERIAL')
+        unrelated = _disk('sdb', serial='FAKE-UNRELATED')
+        result = scan_fake([boot, bridge, leaf, unrelated])
+        paths = {disk.path for disk in result.selectable}
+        if mode == 'protected':
+>           assert leaf['path'] not in paths
+E           AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}
+
+/tmp/pass17-primary/wwn-unknown-proof.py:41: AssertionError
+_ test_malformed_wwn_retains_an_unknown_alias_candidate[protected-False-True-7] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x78f60d1960c0>, bad = 7
+reverse = True, nested = False, mode = 'protected'
+
+    @pytest.mark.parametrize('bad', ('bad\nwwn', 'X' * 129, 7, ['FAKE-WWN']))
+    @pytest.mark.parametrize('reverse', (False, True))
+    @pytest.mark.parametrize('nested', (False, True))
+    @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+    def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+        boot = _disk('sdz', tran='usb', size=16_000_000_000,
+                     serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+        values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),
+                  ('LEAF-SERIAL', bad)]
+        if reverse:
+            values.reverse()
+        children = []
+        for index, (serial, wwn) in enumerate(values, 1):
+            part = dict(name=f'sda{index}', path=f'/dev/sda{index}', type='part',
+                        pkname='sda', size=1_000_000_000, mountpoints=[])
+            if nested:
+                part['children'] = [dict(name=f'fake_wwn_{index}', path=f'/dev/mapper/fake_wwn_{index}',
+                                         type='crypt', pkname=part['name'], mountpoints=[],
+                                         serial=serial, wwn=wwn)]
+            else:
+                part.update(serial=serial, wwn=wwn)
+            children.append(part)
+        bridge = _disk('sda', children=children)
+        if mode == 'authoritative':
+            bridge['wwn'] = '0x50014ee20aa00002'
+        leaf = _disk('sdc', serial='LEAF-SERIAL')
+        unrelated = _disk('sdb', serial='FAKE-UNRELATED')
+        result = scan_fake([boot, bridge, leaf, unrelated])
+        paths = {disk.path for disk in result.selectable}
+        if mode == 'protected':
+>           assert leaf['path'] not in paths
+E           AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}
+
+/tmp/pass17-primary/wwn-unknown-proof.py:41: AssertionError
+_ test_malformed_wwn_retains_an_unknown_alias_candidate[protected-False-True-bad3] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x78f60d196480>
+bad = ['FAKE-WWN'], reverse = True, nested = False, mode = 'protected'
+
+    @pytest.mark.parametrize('bad', ('bad\nwwn', 'X' * 129, 7, ['FAKE-WWN']))
+    @pytest.mark.parametrize('reverse', (False, True))
+    @pytest.mark.parametrize('nested', (False, True))
+    @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+    def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+        boot = _disk('sdz', tran='usb', size=16_000_000_000,
+                     serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+        values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),
+                  ('LEAF-SERIAL', bad)]
+        if reverse:
+            values.reverse()
+        children = []
+        for index, (serial, wwn) in enumerate(values, 1):
+            part = dict(name=f'sda{index}', path=f'/dev/sda{index}', type='part',
+                        pkname='sda', size=1_000_000_000, mountpoints=[])
+            if nested:
+                part['children'] = [dict(name=f'fake_wwn_{index}', path=f'/dev/mapper/fake_wwn_{index}',
+                                         type='crypt', pkname=part['name'], mountpoints=[],
+                                         serial=serial, wwn=wwn)]
+            else:
+                part.update(serial=serial, wwn=wwn)
+            children.append(part)
+        bridge = _disk('sda', children=children)
+        if mode == 'authoritative':
+            bridge['wwn'] = '0x50014ee20aa00002'
+        leaf = _disk('sdc', serial='LEAF-SERIAL')
+        unrelated = _disk('sdb', serial='FAKE-UNRELATED')
+        result = scan_fake([boot, bridge, leaf, unrelated])
+        paths = {disk.path for disk in result.selectable}
+        if mode == 'protected':
+>           assert leaf['path'] not in paths
+E           AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}
+
+/tmp/pass17-primary/wwn-unknown-proof.py:41: AssertionError
+_ test_malformed_wwn_retains_an_unknown_alias_candidate[protected-True-False-bad\nwwn] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x78f60d1940e0>
+bad = 'bad\nwwn', reverse = False, nested = True, mode = 'protected'
+
+    @pytest.mark.parametrize('bad', ('bad\nwwn', 'X' * 129, 7, ['FAKE-WWN']))
+    @pytest.mark.parametrize('reverse', (False, True))
+    @pytest.mark.parametrize('nested', (False, True))
+    @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+    def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+        boot = _disk('sdz', tran='usb', size=16_000_000_000,
+                     serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+        values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),
+                  ('LEAF-SERIAL', bad)]
+        if reverse:
+            values.reverse()
+        children = []
+        for index, (serial, wwn) in enumerate(values, 1):
+            part = dict(name=f'sda{index}', path=f'/dev/sda{index}', type='part',
+                        pkname='sda', size=1_000_000_000, mountpoints=[])
+            if nested:
+                part['children'] = [dict(name=f'fake_wwn_{index}', path=f'/dev/mapper/fake_wwn_{index}',
+                                         type='crypt', pkname=part['name'], mountpoints=[],
+                                         serial=serial, wwn=wwn)]
+            else:
+                part.update(serial=serial, wwn=wwn)
+            children.append(part)
+        bridge = _disk('sda', children=children)
+        if mode == 'authoritative':
+            bridge['wwn'] = '0x50014ee20aa00002'
+        leaf = _disk('sdc', serial='LEAF-SERIAL')
+        unrelated = _disk('sdb', serial='FAKE-UNRELATED')
+        result = scan_fake([boot, bridge, leaf, unrelated])
+        paths = {disk.path for disk in result.selectable}
+        if mode == 'protected':
+>           assert leaf['path'] not in paths
+E           AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}
+
+/tmp/pass17-primary/wwn-unknown-proof.py:41: AssertionError
+_ test_malformed_wwn_retains_an_unknown_alias_candidate[protected-True-False-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x78f60d195f80>
+bad = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+reverse = False, nested = True, mode = 'protected'
+
+    @pytest.mark.parametrize('bad', ('bad\nwwn', 'X' * 129, 7, ['FAKE-WWN']))
+    @pytest.mark.parametrize('reverse', (False, True))
+    @pytest.mark.parametrize('nested', (False, True))
+    @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+    def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+        boot = _disk('sdz', tran='usb', size=16_000_000_000,
+                     serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+        values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),
+                  ('LEAF-SERIAL', bad)]
+        if reverse:
+            values.reverse()
+        children = []
+        for index, (serial, wwn) in enumerate(values, 1):
+            part = dict(name=f'sda{index}', path=f'/dev/sda{index}', type='part',
+                        pkname='sda', size=1_000_000_000, mountpoints=[])
+            if nested:
+                part['children'] = [dict(name=f'fake_wwn_{index}', path=f'/dev/mapper/fake_wwn_{index}',
+                                         type='crypt', pkname=part['name'], mountpoints=[],
+                                         serial=serial, wwn=wwn)]
+            else:
+                part.update(serial=serial, wwn=wwn)
+            children.append(part)
+        bridge = _disk('sda', children=children)
+        if mode == 'authoritative':
+            bridge['wwn'] = '0x50014ee20aa00002'
+        leaf = _disk('sdc', serial='LEAF-SERIAL')
+        unrelated = _disk('sdb', serial='FAKE-UNRELATED')
+        result = scan_fake([boot, bridge, leaf, unrelated])
+        paths = {disk.path for disk in result.selectable}
+        if mode == 'protected':
+>           assert leaf['path'] not in paths
+E           AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}
+
+/tmp/pass17-primary/wwn-unknown-proof.py:41: AssertionError
+_ test_malformed_wwn_retains_an_unknown_alias_candidate[protected-True-False-7] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x78f60d194180>, bad = 7
+reverse = False, nested = True, mode = 'protected'
+
+    @pytest.mark.parametrize('bad', ('bad\nwwn', 'X' * 129, 7, ['FAKE-WWN']))
+    @pytest.mark.parametrize('reverse', (False, True))
+    @pytest.mark.parametrize('nested', (False, True))
+    @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+    def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+        boot = _disk('sdz', tran='usb', size=16_000_000_000,
+                     serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+        values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),
+                  ('LEAF-SERIAL', bad)]
+        if reverse:
+            values.reverse()
+        children = []
+        for index, (serial, wwn) in enumerate(values, 1):
+            part = dict(name=f'sda{index}', path=f'/dev/sda{index}', type='part',
+                        pkname='sda', size=1_000_000_000, mountpoints=[])
+            if nested:
+                part['children'] = [dict(name=f'fake_wwn_{index}', path=f'/dev/mapper/fake_wwn_{index}',
+                                         type='crypt', pkname=part['name'], mountpoints=[],
+                                         serial=serial, wwn=wwn)]
+            else:
+                part.update(serial=serial, wwn=wwn)
+            children.append(part)
+        bridge = _disk('sda', children=children)
+        if mode == 'authoritative':
+            bridge['wwn'] = '0x50014ee20aa00002'
+        leaf = _disk('sdc', serial='LEAF-SERIAL')
+        unrelated = _disk('sdb', serial='FAKE-UNRELATED')
+        result = scan_fake([boot, bridge, leaf, unrelated])
+        paths = {disk.path for disk in result.selectable}
+        if mode == 'protected':
+>           assert leaf['path'] not in paths
+E           AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}
+
+/tmp/pass17-primary/wwn-unknown-proof.py:41: AssertionError
+_ test_malformed_wwn_retains_an_unknown_alias_candidate[protected-True-False-bad3] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x78f60d195da0>
+bad = ['FAKE-WWN'], reverse = False, nested = True, mode = 'protected'
+
+    @pytest.mark.parametrize('bad', ('bad\nwwn', 'X' * 129, 7, ['FAKE-WWN']))
+    @pytest.mark.parametrize('reverse', (False, True))
+    @pytest.mark.parametrize('nested', (False, True))
+    @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+    def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+        boot = _disk('sdz', tran='usb', size=16_000_000_000,
+                     serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+        values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),
+                  ('LEAF-SERIAL', bad)]
+        if reverse:
+            values.reverse()
+        children = []
+        for index, (serial, wwn) in enumerate(values, 1):
+            part = dict(name=f'sda{index}', path=f'/dev/sda{index}', type='part',
+                        pkname='sda', size=1_000_000_000, mountpoints=[])
+            if nested:
+                part['children'] = [dict(name=f'fake_wwn_{index}', path=f'/dev/mapper/fake_wwn_{index}',
+                                         type='crypt', pkname=part['name'], mountpoints=[],
+                                         serial=serial, wwn=wwn)]
+            else:
+                part.update(serial=serial, wwn=wwn)
+            children.append(part)
+        bridge = _disk('sda', children=children)
+        if mode == 'authoritative':
+            bridge['wwn'] = '0x50014ee20aa00002'
+        leaf = _disk('sdc', serial='LEAF-SERIAL')
+        unrelated = _disk('sdb', serial='FAKE-UNRELATED')
+        result = scan_fake([boot, bridge, leaf, unrelated])
+        paths = {disk.path for disk in result.selectable}
+        if mode == 'protected':
+>           assert leaf['path'] not in paths
+E           AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}
+
+/tmp/pass17-primary/wwn-unknown-proof.py:41: AssertionError
+_ test_malformed_wwn_retains_an_unknown_alias_candidate[protected-True-True-bad\nwwn] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x78f60d196d40>
+bad = 'bad\nwwn', reverse = True, nested = True, mode = 'protected'
+
+    @pytest.mark.parametrize('bad', ('bad\nwwn', 'X' * 129, 7, ['FAKE-WWN']))
+    @pytest.mark.parametrize('reverse', (False, True))
+    @pytest.mark.parametrize('nested', (False, True))
+    @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+    def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+        boot = _disk('sdz', tran='usb', size=16_000_000_000,
+                     serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+        values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),
+                  ('LEAF-SERIAL', bad)]
+        if reverse:
+            values.reverse()
+        children = []
+        for index, (serial, wwn) in enumerate(values, 1):
+            part = dict(name=f'sda{index}', path=f'/dev/sda{index}', type='part',
+                        pkname='sda', size=1_000_000_000, mountpoints=[])
+            if nested:
+                part['children'] = [dict(name=f'fake_wwn_{index}', path=f'/dev/mapper/fake_wwn_{index}',
+                                         type='crypt', pkname=part['name'], mountpoints=[],
+                                         serial=serial, wwn=wwn)]
+            else:
+                part.update(serial=serial, wwn=wwn)
+            children.append(part)
+        bridge = _disk('sda', children=children)
+        if mode == 'authoritative':
+            bridge['wwn'] = '0x50014ee20aa00002'
+        leaf = _disk('sdc', serial='LEAF-SERIAL')
+        unrelated = _disk('sdb', serial='FAKE-UNRELATED')
+        result = scan_fake([boot, bridge, leaf, unrelated])
+        paths = {disk.path for disk in result.selectable}
+        if mode == 'protected':
+>           assert leaf['path'] not in paths
+E           AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}
+
+/tmp/pass17-primary/wwn-unknown-proof.py:41: AssertionError
+_ test_malformed_wwn_retains_an_unknown_alias_candidate[protected-True-True-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x78f60d195580>
+bad = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+reverse = True, nested = True, mode = 'protected'
+
+    @pytest.mark.parametrize('bad', ('bad\nwwn', 'X' * 129, 7, ['FAKE-WWN']))
+    @pytest.mark.parametrize('reverse', (False, True))
+    @pytest.mark.parametrize('nested', (False, True))
+    @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+    def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+        boot = _disk('sdz', tran='usb', size=16_000_000_000,
+                     serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+        values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),
+                  ('LEAF-SERIAL', bad)]
+        if reverse:
+            values.reverse()
+        children = []
+        for index, (serial, wwn) in enumerate(values, 1):
+            part = dict(name=f'sda{index}', path=f'/dev/sda{index}', type='part',
+                        pkname='sda', size=1_000_000_000, mountpoints=[])
+            if nested:
+                part['children'] = [dict(name=f'fake_wwn_{index}', path=f'/dev/mapper/fake_wwn_{index}',
+                                         type='crypt', pkname=part['name'], mountpoints=[],
+                                         serial=serial, wwn=wwn)]
+            else:
+                part.update(serial=serial, wwn=wwn)
+            children.append(part)
+        bridge = _disk('sda', children=children)
+        if mode == 'authoritative':
+            bridge['wwn'] = '0x50014ee20aa00002'
+        leaf = _disk('sdc', serial='LEAF-SERIAL')
+        unrelated = _disk('sdb', serial='FAKE-UNRELATED')
+        result = scan_fake([boot, bridge, leaf, unrelated])
+        paths = {disk.path for disk in result.selectable}
+        if mode == 'protected':
+>           assert leaf['path'] not in paths
+E           AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}
+
+/tmp/pass17-primary/wwn-unknown-proof.py:41: AssertionError
+_ test_malformed_wwn_retains_an_unknown_alias_candidate[protected-True-True-7] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x78f60d195d00>, bad = 7
+reverse = True, nested = True, mode = 'protected'
+
+    @pytest.mark.parametrize('bad', ('bad\nwwn', 'X' * 129, 7, ['FAKE-WWN']))
+    @pytest.mark.parametrize('reverse', (False, True))
+    @pytest.mark.parametrize('nested', (False, True))
+    @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+    def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+        boot = _disk('sdz', tran='usb', size=16_000_000_000,
+                     serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+        values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),
+                  ('LEAF-SERIAL', bad)]
+        if reverse:
+            values.reverse()
+        children = []
+        for index, (serial, wwn) in enumerate(values, 1):
+            part = dict(name=f'sda{index}', path=f'/dev/sda{index}', type='part',
+                        pkname='sda', size=1_000_000_000, mountpoints=[])
+            if nested:
+                part['children'] = [dict(name=f'fake_wwn_{index}', path=f'/dev/mapper/fake_wwn_{index}',
+                                         type='crypt', pkname=part['name'], mountpoints=[],
+                                         serial=serial, wwn=wwn)]
+            else:
+                part.update(serial=serial, wwn=wwn)
+            children.append(part)
+        bridge = _disk('sda', children=children)
+        if mode == 'authoritative':
+            bridge['wwn'] = '0x50014ee20aa00002'
+        leaf = _disk('sdc', serial='LEAF-SERIAL')
+        unrelated = _disk('sdb', serial='FAKE-UNRELATED')
+        result = scan_fake([boot, bridge, leaf, unrelated])
+        paths = {disk.path for disk in result.selectable}
+        if mode == 'protected':
+>           assert leaf['path'] not in paths
+E           AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}
+
+/tmp/pass17-primary/wwn-unknown-proof.py:41: AssertionError
+_ test_malformed_wwn_retains_an_unknown_alias_candidate[protected-True-True-bad3] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x78f60d196520>
+bad = ['FAKE-WWN'], reverse = True, nested = True, mode = 'protected'
+
+    @pytest.mark.parametrize('bad', ('bad\nwwn', 'X' * 129, 7, ['FAKE-WWN']))
+    @pytest.mark.parametrize('reverse', (False, True))
+    @pytest.mark.parametrize('nested', (False, True))
+    @pytest.mark.parametrize('mode', ('protected', 'unrelated', 'authoritative'))
+    def test_malformed_wwn_retains_an_unknown_alias_candidate(scan_fake, bad, reverse, nested, mode):
+        boot = _disk('sdz', tran='usb', size=16_000_000_000,
+                     serial='ROOT-SERIAL', wwn='0x50014ee20aa00001')
+        values = [('OTHER-SERIAL' if mode == 'unrelated' else 'ROOT-SERIAL', '0x50014ee20aa00002'),
+                  ('LEAF-SERIAL', bad)]
+        if reverse:
+            values.reverse()
+        children = []
+        for index, (serial, wwn) in enumerate(values, 1):
+            part = dict(name=f'sda{index}', path=f'/dev/sda{index}', type='part',
+                        pkname='sda', size=1_000_000_000, mountpoints=[])
+            if nested:
+                part['children'] = [dict(name=f'fake_wwn_{index}', path=f'/dev/mapper/fake_wwn_{index}',
+                                         type='crypt', pkname=part['name'], mountpoints=[],
+                                         serial=serial, wwn=wwn)]
+            else:
+                part.update(serial=serial, wwn=wwn)
+            children.append(part)
+        bridge = _disk('sda', children=children)
+        if mode == 'authoritative':
+            bridge['wwn'] = '0x50014ee20aa00002'
+        leaf = _disk('sdc', serial='LEAF-SERIAL')
+        unrelated = _disk('sdb', serial='FAKE-UNRELATED')
+        result = scan_fake([boot, bridge, leaf, unrelated])
+        paths = {disk.path for disk in result.selectable}
+        if mode == 'protected':
+>           assert leaf['path'] not in paths
+E           AssertionError: assert '/dev/sdc' not in {'/dev/sdb', '/dev/sdc'}
+
+/tmp/pass17-primary/wwn-unknown-proof.py:41: AssertionError
+=========================== short test summary info ============================
+FAILED ../../../tmp/pass17-primary/wwn-unknown-proof.py::test_malformed_wwn_retains_an_unknown_alias_candidate[protected-False-False-bad\nwwn]
+FAILED ../../../tmp/pass17-primary/wwn-unknown-proof.py::test_malformed_wwn_retains_an_unknown_alias_candidate[protected-False-False-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+FAILED ../../../tmp/pass17-primary/wwn-unknown-proof.py::test_malformed_wwn_retains_an_unknown_alias_candidate[protected-False-False-7]
+FAILED ../../../tmp/pass17-primary/wwn-unknown-proof.py::test_malformed_wwn_retains_an_unknown_alias_candidate[protected-False-False-bad3]
+FAILED ../../../tmp/pass17-primary/wwn-unknown-proof.py::test_malformed_wwn_retains_an_unknown_alias_candidate[protected-False-True-bad\nwwn]
+FAILED ../../../tmp/pass17-primary/wwn-unknown-proof.py::test_malformed_wwn_retains_an_unknown_alias_candidate[protected-False-True-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+FAILED ../../../tmp/pass17-primary/wwn-unknown-proof.py::test_malformed_wwn_retains_an_unknown_alias_candidate[protected-False-True-7]
+FAILED ../../../tmp/pass17-primary/wwn-unknown-proof.py::test_malformed_wwn_retains_an_unknown_alias_candidate[protected-False-True-bad3]
+FAILED ../../../tmp/pass17-primary/wwn-unknown-proof.py::test_malformed_wwn_retains_an_unknown_alias_candidate[protected-True-False-bad\nwwn]
+FAILED ../../../tmp/pass17-primary/wwn-unknown-proof.py::test_malformed_wwn_retains_an_unknown_alias_candidate[protected-True-False-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+FAILED ../../../tmp/pass17-primary/wwn-unknown-proof.py::test_malformed_wwn_retains_an_unknown_alias_candidate[protected-True-False-7]
+FAILED ../../../tmp/pass17-primary/wwn-unknown-proof.py::test_malformed_wwn_retains_an_unknown_alias_candidate[protected-True-False-bad3]
+FAILED ../../../tmp/pass17-primary/wwn-unknown-proof.py::test_malformed_wwn_retains_an_unknown_alias_candidate[protected-True-True-bad\nwwn]
+FAILED ../../../tmp/pass17-primary/wwn-unknown-proof.py::test_malformed_wwn_retains_an_unknown_alias_candidate[protected-True-True-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+FAILED ../../../tmp/pass17-primary/wwn-unknown-proof.py::test_malformed_wwn_retains_an_unknown_alias_candidate[protected-True-True-7]
+FAILED ../../../tmp/pass17-primary/wwn-unknown-proof.py::test_malformed_wwn_retains_an_unknown_alias_candidate[protected-True-True-bad3]
+16 failed, 32 passed in 0.26s

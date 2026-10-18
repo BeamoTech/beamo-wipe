@@ -1,0 +1,1 @@
+All assertion ASTs in 5 existing fixture modules match baseline after normalizing only the genuine positive readiness prefix; expected booleans, counts, state and safety checks are unchanged.

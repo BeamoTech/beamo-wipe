@@ -1,0 +1,22 @@
+{
+  "focused": {
+    "traced_pytest_pid": 366621,
+    "first_trace_record": "366621 execve(\"/tmp/beamo-wipe-audit-python/bin/python3\", [\"python3\", \"-m\", \"pytest\", \"-vv\", \"--setup-show\", \"-p\", \"no:cacheprovider\", \"tests/test_tk_runtime.py\", \"-k\", \"evidence_failure_warning_and_ret\"..., \"--junitxml=/tmp/beamo-pass8-ui-t\"...], 0x7ffda3399c08 /* 41 vars */) = 0",
+    "current_process_metadata": "    PID    PPID    PGID     SID COMMAND\n"
+  },
+  "module": {
+    "traced_pytest_pid": 366778,
+    "first_trace_record": "366778 execve(\"/tmp/beamo-wipe-audit-python/bin/python3\", [\"python3\", \"-m\", \"pytest\", \"-vv\", \"-p\", \"no:cacheprovider\", \"tests/test_tk_runtime.py\", \"--junitxml=/tmp/beamo-pass8-ui-t\"...], 0x7ffe1c034c00 /* 41 vars */) = 0",
+    "current_process_metadata": "    PID    PPID    PGID     SID COMMAND\n 366778  366775  366758  366758 python3\n"
+  },
+  "repeat": {
+    "traced_pytest_pid": 367087,
+    "first_trace_record": "367087 execve(\"/tmp/beamo-wipe-audit-python/bin/python3\", [\"python3\", \"-m\", \"pytest\", \"--keep-duplicates\", \"-vv\", \"-p\", \"no:cacheprovider\", \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., \"tests/test_tk_runtime.py::test_r\"..., ...], 0x7ffffed0ec90 /* 41 vars */) = 0",
+    "current_process_metadata": "    PID    PPID    PGID     SID COMMAND\n"
+  },
+  "repeated-files": {
+    "traced_pytest_pid": 367174,
+    "first_trace_record": "367174 execve(\"/tmp/beamo-wipe-audit-python/bin/python3\", [\"python3\", \"-m\", \"pytest\", \"--keep-duplicates\", \"-vv\", \"-p\", \"no:cacheprovider\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", \"tests/test_tk_runtime.py\", ...], 0x7ffc1cb68f10 /* 41 vars */) = 0",
+    "current_process_metadata": "    PID    PPID    PGID     SID COMMAND\n 367174  367171  367153  367153 python3\n"
+  }
+}

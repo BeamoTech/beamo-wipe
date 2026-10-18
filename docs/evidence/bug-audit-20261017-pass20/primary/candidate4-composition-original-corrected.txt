@@ -1,0 +1,29 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_partial_native_and_row_constructor_releases_ownership[font-before-init-then-second-owner] _
+
+request = <FixtureRequest for <Function test_partial_native_and_row_constructor_releases_ownership[font-before-init-then-second-owner]>>
+case = 'font-before-init-then-second-owner'
+
+    @pytest.mark.parametrize("case", CASES)
+    def test_partial_native_and_row_constructor_releases_ownership(request, case):
+        provenance = _admit()
+        command = [sys.executable, str(Path(__file__).resolve()), "--owned-child", case]
+        try:
+            result = subprocess.run(command, env=dict(os.environ, PYTHONFAULTHANDLER="1"),
+                                    capture_output=True, text=True, timeout=8, check=False)
+            row = dict(command=command, case=case, provenance=provenance,
+                       returncode=result.returncode, stdout=result.stdout, stderr=result.stderr,
+                       timed_out=False)
+        except subprocess.TimeoutExpired as error:
+            row = dict(command=command, case=case, provenance=provenance, timed_out=True,
+                       stdout=str(error.stdout), stderr=str(error.stderr))
+        request.node.user_properties.append(("constructor_native_boundary", json.dumps(row)))
+        assert not row["timed_out"], row
+>       assert row["returncode"] == 0, row
+E       AssertionError: {'case': 'font-before-init-then-second-owner', 'command': ['/tmp/beamo-pass20-python/bin/python3', '/root/dev/Beamo Wi...ea8458aa40f8327f', 'source': '/tmp/pass20-primary/private-graph/src/beamo_wipe/ui/tk_wizard.py'}, 'returncode': 1, ...}
+E       assert 1 == 0
+
+docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v4.py:808: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass20/tk-lifetime/constructor-boundary-probe-v4.py::test_partial_native_and_row_constructor_releases_ownership[font-before-init-then-second-owner]

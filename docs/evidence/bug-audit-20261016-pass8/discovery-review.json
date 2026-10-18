@@ -1,0 +1,14 @@
+{
+  "baseline": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "cases": 542,
+  "failed": 0,
+  "errors": 0,
+  "skips": 0,
+  "case_time_seconds": 23.639,
+  "source_sha256": {
+    "src/beamo_wipe/discover.py": "6528038ba87a46e2d58957cccdbf1a7b963d77b9961b724883f7809e93e9c7a4",
+    "src/beamo_wipe/safety.py": "6b69c10e9aafcd8c11ca03563dd04ac90e3aa89fc2be3106aafe4144fb558360",
+    "src/beamo_wipe/identity.py": "4ccada033bab0c3811450cb9ab4e85c74936af56e8cd94fdf84f8d5566942050",
+    "src/beamo_wipe/inventory.py": "bd594d0f6279181bb01bfa96c07ed8041d3da09fbee9ae9baf16dba60caa6acd"
+  }
+}

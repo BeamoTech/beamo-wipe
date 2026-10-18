@@ -1,0 +1,9 @@
+{
+  "parent_sha": "4f7ee8d434497f52b58966792ed6cc28b587635e",
+  "frozen_inputs": 877,
+  "source_freeze_sha256": "6582e76ea795a1e7f4f322c5f7844f82870fd3446e1bb1915e7377119ec5d93b",
+  "tk_sha256": "028e13c7d64c230aaaabfbd806ae900c41c64acd8e07334d3d38abd8af6c901f",
+  "runtime_source_sha256": "9e2d6373ea8e6d1e8a41d0ecf59b99f0f007681b3278ccecb483234d2f23532b",
+  "version": "0.2.13",
+  "status": "local final UI repair candidate; exact commit/hosted qualification pending"
+}

@@ -1,0 +1,23 @@
+{
+  "status": "SOURCE HYPOTHESIS ONLY; awaiting completed full-suite trace before edits",
+  "observed": "Current full-run failure glyph, exact identity pending.",
+  "source_findings": [
+    {
+      "file": "tests/test_iso_dist_boundary_pass10.py",
+      "finding": "Fixture __version__0.2.12 while borrowed builder default now0.2.13; long-build boundary assertion may be preempted by correct version guard."
+    },
+    {
+      "file": "tests/test_iso_stage_parent_pass19.py",
+      "finding": "Same explicit fake wrapper0.2.12/default0.2.13 mismatch may preempt staging guard."
+    },
+    {
+      "file": "tests/test_iso_prior_bundle_pass23_build.py",
+      "finding": "Its fake wrapper/output bundle0.2.12 is not explicitly selected in subprocess environment; new builder default may preempt prior-bundle validation."
+    },
+    {
+      "file": "tests/test_manifest_verified_bytes_pass18_build.py",
+      "finding": "Finalizer uses current runtime version for manifest name, while regression path hardcodes0.2.12. Other historical0.2.12 fixtures intentionally verify old release bytes and must remain."
+    }
+  ],
+  "planned_minimal_correction_if_confirmed": "Bind the ISO shell fixtures explicitly to their existing0.2.12 fixture version; make finalizer path use the current runtime version. Preserve all existing assertion predicates and product version guard."
+}

@@ -1,0 +1,10 @@
+{
+  "cases": {
+    "mounted_target": 64,
+    "boot_resolution": 7,
+    "token_pairs": 242,
+    "argv_refusals": 51
+  },
+  "total": 364,
+  "failures": 0
+}

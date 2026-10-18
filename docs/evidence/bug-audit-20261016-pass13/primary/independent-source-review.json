@@ -1,0 +1,18 @@
+{
+  "reviewer": "primary independent source/test review",
+  "hashes": {
+    "src/beamo_wipe/discover.py": "b45a4a32953ac47d0b1b69fc98a1c8f1f2295704e15de677f5b88f3ee33d58e2",
+    "src/beamo_wipe/ui/tk_wizard.py": "9d098c65fd501cceabbfa7277037bc3c4225b685e33d3a8b12eed19e3bc05910",
+    "tests/test_contents_efi_token_pass13.py": "7e0e2fcc2504df6efa84a57453c8183e0f2c8c607e8b863a4c70f4f036338539",
+    "tests/test_tk_input_scroll_pass13.py": "726364bbe995765ce3e869fb8f48d8332b39fee831cef7691600b58406e02648"
+  },
+  "approved_subject_to_original_and_frozen_full_gate": true,
+  "source_delta_files": [
+    "src/beamo_wipe/discover.py",
+    "src/beamo_wipe/ui/tk_wizard.py"
+  ],
+  "native_focus": "Actual root Map then one idle native claim followed by existing renderer; own binding removed first, mapped branch one idle; no later focus forcing. Intendedchild/held/navigation/countdown tested.",
+  "wheel": "Current-body ancestry only; native/nested/custom scrollers retain their own class handlers; old canvas binding removed; footer and picker excluded; tiny delta policy preserved.",
+  "classifier": "EFI/UEFI name tokens only; firmware labels/types/ESP and Windows/BitLocker evidence unchanged. Every fake case retains boot exclusion, hardware identity and token128.",
+  "starting_inputs_other_than_two_authorized_sources_unchanged": true
+}

@@ -1,0 +1,347 @@
+...FFFFFFFF................FFFFFFFF.........................             [100%]
+=================================== FAILURES ===================================
+_ test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-empty-direct] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x73ac5cbc5580>
+route = 'direct', name_form = 'empty', placement = 'flat'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name_form", NAME_FORMS)
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    def test_name_gap_cannot_drop_observed_windows_and_layout_evidence(
+        fake_machine, route, name_form, placement,  # noqa: F811 - imported fixture
+    ):
+        target = _target(fake_machine, name_form, placement, route)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py:75: AssertionError
+_ test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-empty-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x73ac5cbc6200>
+route = 'injected', name_form = 'empty', placement = 'flat'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name_form", NAME_FORMS)
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    def test_name_gap_cannot_drop_observed_windows_and_layout_evidence(
+        fake_machine, route, name_form, placement,  # noqa: F811 - imported fixture
+    ):
+        target = _target(fake_machine, name_form, placement, route)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py:75: AssertionError
+_ test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-empty-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x73ac5cbc53a0>
+route = 'production-metadata-stub', name_form = 'empty', placement = 'flat'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name_form", NAME_FORMS)
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    def test_name_gap_cannot_drop_observed_windows_and_layout_evidence(
+        fake_machine, route, name_form, placement,  # noqa: F811 - imported fixture
+    ):
+        target = _target(fake_machine, name_form, placement, route)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py:75: AssertionError
+_ test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-null-direct] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x73ac5cbc5a80>
+route = 'direct', name_form = 'null', placement = 'flat'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name_form", NAME_FORMS)
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    def test_name_gap_cannot_drop_observed_windows_and_layout_evidence(
+        fake_machine, route, name_form, placement,  # noqa: F811 - imported fixture
+    ):
+        target = _target(fake_machine, name_form, placement, route)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py:75: AssertionError
+_ test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-null-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x73ac5cbc4220>
+route = 'injected', name_form = 'null', placement = 'flat'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name_form", NAME_FORMS)
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    def test_name_gap_cannot_drop_observed_windows_and_layout_evidence(
+        fake_machine, route, name_form, placement,  # noqa: F811 - imported fixture
+    ):
+        target = _target(fake_machine, name_form, placement, route)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py:75: AssertionError
+_ test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-null-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x73ac5cbc5b20>
+route = 'production-metadata-stub', name_form = 'null', placement = 'flat'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name_form", NAME_FORMS)
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    def test_name_gap_cannot_drop_observed_windows_and_layout_evidence(
+        fake_machine, route, name_form, placement,  # noqa: F811 - imported fixture
+    ):
+        target = _target(fake_machine, name_form, placement, route)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py:75: AssertionError
+_ test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-omitted-direct] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x73ac5cbc63e0>
+route = 'direct', name_form = 'omitted', placement = 'flat'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name_form", NAME_FORMS)
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    def test_name_gap_cannot_drop_observed_windows_and_layout_evidence(
+        fake_machine, route, name_form, placement,  # noqa: F811 - imported fixture
+    ):
+        target = _target(fake_machine, name_form, placement, route)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py:75: AssertionError
+_ test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-omitted-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x73ac5cbc5580>
+route = 'injected', name_form = 'omitted', placement = 'flat'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name_form", NAME_FORMS)
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    def test_name_gap_cannot_drop_observed_windows_and_layout_evidence(
+        fake_machine, route, name_form, placement,  # noqa: F811 - imported fixture
+    ):
+        target = _target(fake_machine, name_form, placement, route)
+        if target is not None:
+>           assert target.contents == CONTENTS_WINDOWS
+E           AssertionError: assert 'unknown' == 'windows'
+E             
+E             - windows
+E             + unknown
+
+docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py:75: AssertionError
+___ test_name_gap_cannot_merge_changed_partition_identity[flat-empty-direct] ___
+
+fake_machine = <function fake_machine.<locals>.scan at 0x73ac5cc25620>
+route = 'direct', name_form = 'empty', placement = 'flat'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name_form", NAME_FORMS)
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    def test_name_gap_cannot_merge_changed_partition_identity(
+        fake_machine, route, name_form, placement,  # noqa: F811 - imported fixture
+    ):
+        before = _target(fake_machine, name_form, placement, route)
+        after = _target(
+            fake_machine, name_form, placement, route, uuid="fake-partition-after",
+        )
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py:89: AssertionError
+__ test_name_gap_cannot_merge_changed_partition_identity[flat-empty-injected] __
+
+fake_machine = <function fake_machine.<locals>.scan at 0x73ac5cc27060>
+route = 'injected', name_form = 'empty', placement = 'flat'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name_form", NAME_FORMS)
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    def test_name_gap_cannot_merge_changed_partition_identity(
+        fake_machine, route, name_form, placement,  # noqa: F811 - imported fixture
+    ):
+        before = _target(fake_machine, name_form, placement, route)
+        after = _target(
+            fake_machine, name_form, placement, route, uuid="fake-partition-after",
+        )
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py:89: AssertionError
+_ test_name_gap_cannot_merge_changed_partition_identity[flat-empty-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x73ac5cc24ea0>
+route = 'production-metadata-stub', name_form = 'empty', placement = 'flat'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name_form", NAME_FORMS)
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    def test_name_gap_cannot_merge_changed_partition_identity(
+        fake_machine, route, name_form, placement,  # noqa: F811 - imported fixture
+    ):
+        before = _target(fake_machine, name_form, placement, route)
+        after = _target(
+            fake_machine, name_form, placement, route, uuid="fake-partition-after",
+        )
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py:89: AssertionError
+___ test_name_gap_cannot_merge_changed_partition_identity[flat-null-direct] ____
+
+fake_machine = <function fake_machine.<locals>.scan at 0x73ac5cbc4220>
+route = 'direct', name_form = 'null', placement = 'flat'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name_form", NAME_FORMS)
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    def test_name_gap_cannot_merge_changed_partition_identity(
+        fake_machine, route, name_form, placement,  # noqa: F811 - imported fixture
+    ):
+        before = _target(fake_machine, name_form, placement, route)
+        after = _target(
+            fake_machine, name_form, placement, route, uuid="fake-partition-after",
+        )
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py:89: AssertionError
+__ test_name_gap_cannot_merge_changed_partition_identity[flat-null-injected] ___
+
+fake_machine = <function fake_machine.<locals>.scan at 0x73ac5cc26e80>
+route = 'injected', name_form = 'null', placement = 'flat'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name_form", NAME_FORMS)
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    def test_name_gap_cannot_merge_changed_partition_identity(
+        fake_machine, route, name_form, placement,  # noqa: F811 - imported fixture
+    ):
+        before = _target(fake_machine, name_form, placement, route)
+        after = _target(
+            fake_machine, name_form, placement, route, uuid="fake-partition-after",
+        )
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py:89: AssertionError
+_ test_name_gap_cannot_merge_changed_partition_identity[flat-null-production-metadata-stub] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x73ac5cc259e0>
+route = 'production-metadata-stub', name_form = 'null', placement = 'flat'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name_form", NAME_FORMS)
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    def test_name_gap_cannot_merge_changed_partition_identity(
+        fake_machine, route, name_form, placement,  # noqa: F811 - imported fixture
+    ):
+        before = _target(fake_machine, name_form, placement, route)
+        after = _target(
+            fake_machine, name_form, placement, route, uuid="fake-partition-after",
+        )
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py:89: AssertionError
+__ test_name_gap_cannot_merge_changed_partition_identity[flat-omitted-direct] __
+
+fake_machine = <function fake_machine.<locals>.scan at 0x73ac5cc26700>
+route = 'direct', name_form = 'omitted', placement = 'flat'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name_form", NAME_FORMS)
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    def test_name_gap_cannot_merge_changed_partition_identity(
+        fake_machine, route, name_form, placement,  # noqa: F811 - imported fixture
+    ):
+        before = _target(fake_machine, name_form, placement, route)
+        after = _target(
+            fake_machine, name_form, placement, route, uuid="fake-partition-after",
+        )
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py:89: AssertionError
+_ test_name_gap_cannot_merge_changed_partition_identity[flat-omitted-injected] _
+
+fake_machine = <function fake_machine.<locals>.scan at 0x73ac5cc25620>
+route = 'injected', name_form = 'omitted', placement = 'flat'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("name_form", NAME_FORMS)
+    @pytest.mark.parametrize("placement", ("flat", "nested"))
+    def test_name_gap_cannot_merge_changed_partition_identity(
+        fake_machine, route, name_form, placement,  # noqa: F811 - imported fixture
+    ):
+        before = _target(fake_machine, name_form, placement, route)
+        after = _target(
+            fake_machine, name_form, placement, route, uuid="fake-partition-after",
+        )
+>       assert before is None or after is None or disk_identity(before) != disk_identity(after)
+E       AssertionError: assert (Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id='') is None or ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) != ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...))
+E        +  where ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+E        +  and   ('/dev/sda', 'FAKE-sda', 128000000000, 'Fake disk', '50014ee200000001', 'Fake vendor', ...) = disk_identity(Disk(path='/dev/sda', name='', model='Fake disk', serial='FAKE-sda', size_bytes=128000000000, size_gb_label='128', kin...0000001', vendor='Fake vendor', mountpoints=(), raw_model='Fake disk', contents='unknown', hotplug=False, layout_id=''))
+
+docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py:89: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py::test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-empty-direct]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py::test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-empty-injected]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py::test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-empty-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py::test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-null-direct]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py::test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-null-injected]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py::test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-null-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py::test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-omitted-direct]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py::test_name_gap_cannot_drop_observed_windows_and_layout_evidence[flat-omitted-injected]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py::test_name_gap_cannot_merge_changed_partition_identity[flat-empty-direct]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py::test_name_gap_cannot_merge_changed_partition_identity[flat-empty-injected]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py::test_name_gap_cannot_merge_changed_partition_identity[flat-empty-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py::test_name_gap_cannot_merge_changed_partition_identity[flat-null-direct]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py::test_name_gap_cannot_merge_changed_partition_identity[flat-null-injected]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py::test_name_gap_cannot_merge_changed_partition_identity[flat-null-production-metadata-stub]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py::test_name_gap_cannot_merge_changed_partition_identity[flat-omitted-direct]
+FAILED docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py::test_name_gap_cannot_merge_changed_partition_identity[flat-omitted-injected]

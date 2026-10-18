@@ -1,0 +1,12 @@
+PASS7 bounded surfaces reviewer — baseline f102dfbe5a705fda10880fecc24626c7693c10f0
+Fresh source/contract review: wizard authorization/refresh/start/stop/interface loss/shutdown/session transitions; Tk and GTK keyboard repeat/review/frame/status/close/refresh; console paging/confirmation; recovery semantics; kiosk retry and power process guard; Debian build input binding/artifact cleanup/pins/hardware claim boundaries.
+No reproducible new defect in this reviewed scope. No source or test edits by reviewer.
+Fake devices/process/power boundaries only; ordinary temporary-file fixtures. No VM/ISO/device/native-inventory/network/host power actions.
+54,000 new seeded public navigation events across180seeds PASS, no start/fabricated result.
+54language/method/review-detour combinations PASS: EN/FR/DE x3methods x6detours; full visible5s requirement; reachingzero does not launch.
+40fake concurrent start/stop sessions PASS:160simultaneous callers ->exactly40starts; running shutdown refused; stop dialog canceled safely; explicit asyncstop; terminalduplicate/retry actions refused.
+Actual ./preview launched with fake inventory in isolated1600x1000Xvfb72DPI; screenshot saved and visually inspected; owned child terminated/reaped. No clipping on shown splash.
+Boot/build/compat fixture sweep replacement487PASS/2expected generated-lb-config skips,0errors/failures (489cases,61modules,75.553s). First sweep484PASS/1setupFAIL/4SKIP retained: GTK initialization lacked DISPLAY;2browser checks lacked Chrome PATH. Full replacement private72DPI+existing Chromium PATH resolved all3setup issues. Only2documented lb-config skips remain.
+Independent receipt fix review: minimal strict per-kind count invariant appropriate; verify_gate_receipt rebuilds using same guard, so recomputed-digest tampering refused.59adjacent/new tests PASS (6modules,1.084s),2268independent kind/count combinations:63valid accepted+stored-revalidated/2205invalid refused. Approved verification_evidence.py SHA256 b76adeb6f595987863e67255c94f05ee424e8f515037b5c69c824e2f14bbb73a.
+All9reviewed UI/boot files match both exact baseline and current source; SHA256manifest surfaces-source-sha256.txt.
+UI94module suite completed1357PASS/2Chrome-PATHsetupSKIP,0fail/error,328.832s(1359cases). Both exact helper skip IDs executed and passed in build replacement above. Effective UI1359uniquePASS,0unresolvedUIskip. Combined UI/build/receipt union1862uniquePASS/2expected lb-configSKIP; overlapcounts not summed. All owned test/preview sessions finished.

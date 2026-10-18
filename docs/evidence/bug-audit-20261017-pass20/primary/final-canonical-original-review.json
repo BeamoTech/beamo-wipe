@@ -1,0 +1,34 @@
+{
+  "total": 144,
+  "failures": 83,
+  "passes": 61,
+  "errors": 0,
+  "skips": 0,
+  "failure_types": {
+    "unknown": 83
+  },
+  "xml_sha256": "c59b7d7f6dbf5cf953ee849d6135b4544e8f526a7ff226d19319800813bdaa91",
+  "original_source_sha256": "23d280b0451d3e25d64387de62d4912a8867ffbdec934244efe6a7f7a7ee0615",
+  "canonical": {
+    "tests/test_mounted_holder_type_pass20.py": "76f5b04192faf732d3dc50b07d95932f4ed5585334a318a08f8741da3e79be05",
+    "tests/test_holder_ancestor_mount_pass20.py": "19d12021905905b140a1f97820a9b0c7a02c1f9214f034f84dc82d81451adea1",
+    "tests/test_audio_launch_interruptions_pass20.py": "bb03ad8879937649b6a22a55508f9a9f7c17b0189e7e8d657f56f8a6870b2cb7",
+    "tests/test_audio_launch_acceptance_pass20.py": "1660507881ea7adef425de04b19b11429d3df0c2a8e5a6ac636ccc5b62744a42",
+    "tests/test_tk_native_boundary_pass20.py": "354136282d634b78307d053378fc27f65bb3d4f211c95be7725248c37e58fbe5",
+    "tests/test_tk_native_collector_pass20.py": "7c9b05b8f63edff831529fde0ffe9c57caeb29f3343109aec3c72eb8f1db33ad",
+    "tests/test_tk_native_constructor_pass20.py": "3e9219a82d777744600aaa3a8f3c988f8b2f26c19ee12fe2f296535c23bff0ca"
+  },
+  "canonical_inventory_including_preexisting_pass20_names": {
+    "tests/test_audio_launch_acceptance_pass20.py": "1660507881ea7adef425de04b19b11429d3df0c2a8e5a6ac636ccc5b62744a42",
+    "tests/test_audio_launch_interruptions_pass20.py": "bb03ad8879937649b6a22a55508f9a9f7c17b0189e7e8d657f56f8a6870b2cb7",
+    "tests/test_discovery_unresolved_override_pass20.py": "61d8e936b993964d1f4450b009a94c72eac926298720e2a68c2527f0213fdd7e",
+    "tests/test_holder_ancestor_mount_pass20.py": "19d12021905905b140a1f97820a9b0c7a02c1f9214f034f84dc82d81451adea1",
+    "tests/test_iso_live_assets_pass20.py": "c138f0497558f21a03e6416141ec520f3b4ac3fc18f6fee641d91f1e2d9f279c",
+    "tests/test_iso_stage_publication_pass20.py": "a1f4cc7f81bad17dd8c15c0c2ab79e747b1988d75b3039ef6abef2534cb81aab",
+    "tests/test_mounted_holder_type_pass20.py": "76f5b04192faf732d3dc50b07d95932f4ed5585334a318a08f8741da3e79be05",
+    "tests/test_tk_native_boundary_pass20.py": "354136282d634b78307d053378fc27f65bb3d4f211c95be7725248c37e58fbe5",
+    "tests/test_tk_native_collector_pass20.py": "7c9b05b8f63edff831529fde0ffe9c57caeb29f3343109aec3c72eb8f1db33ad",
+    "tests/test_tk_native_constructor_pass20.py": "3e9219a82d777744600aaa3a8f3c988f8b2f26c19ee12fe2f296535c23bff0ca"
+  },
+  "inventory_clarification": "Previous broad glob included3 existing tracked older pass20-named files. All3 are in starting771 and final778 freeze unchanged; only7 modules were replayed144cases."
+}

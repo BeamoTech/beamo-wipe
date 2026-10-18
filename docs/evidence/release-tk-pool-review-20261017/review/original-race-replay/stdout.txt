@@ -1,0 +1,797 @@
+FFFFFFFF..                                                               [100%]
+=================================== FAILURES ===================================
+________ test_foreign_drain_cannot_keep_last_record[False-False-assets] ________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x739a2eb38170>
+pool_kind = 'assets', via_gc_callback = False, worker_owns_resource = False
+
+    @pytest.mark.parametrize("pool_kind", ["assets", "interpreters"])
+    @pytest.mark.parametrize("via_gc_callback", [False, True])
+    @pytest.mark.parametrize("worker_owns_resource", [False, True])
+    def test_foreign_drain_cannot_keep_last_record(
+        monkeypatch, pool_kind, via_gc_callback, worker_owns_resource
+    ):
+        """Pause a foreign snapshot while the creator releases its own resource.
+    
+        Probe finalizers have no Tcl side effects, so a regression reports the
+        wrong thread instead of aborting or hanging the test process.
+        """
+        creator = threading.current_thread()
+        progress = threading.Event()
+        release_snapshot = threading.Event()
+        finalizers = []
+        errors = []
+    
+        class Probe(ui.tk.Variable):
+            def __init__(self, label):
+                self.label = label
+    
+            def __del__(self):
+                finalizers.append((self.label, threading.current_thread()))
+    
+        class SnapshotGate(dict):
+            def items(self):
+                snapshot = list(super().items())
+                if threading.current_thread() is not creator:
+                    progress.set()
+                    if not release_snapshot.wait(5):
+                        raise AssertionError("Creator did not release the diagnostic snapshot")
+                return snapshot
+    
+        monkeypatch.setattr(ui, "_RETIRED_NATIVE_ASSETS", SnapshotGate() if pool_kind == "assets" else {})
+        monkeypatch.setattr(ui, "_RETIRED_INTERPRETERS", SnapshotGate() if pool_kind == "interpreters" else {})
+    
+        def pin(resource):
+            if pool_kind == "assets":
+                ui._pin_retired_assets((resource,), threading.current_thread())
+            else:
+                # Only the native handle field is needed by the pin helper. This
+                # root owns no actual Tcl interpreter and opens no display.
+                root = ui.tk.Tk.__new__(ui.tk.Tk)
+                root.tk = resource
+                ui._pin_retired_interpreter(root)
+                root.tk = None
+    
+        resource = Probe("creator")
+        reference = weakref.ref(resource)
+        pin(resource)
+        del resource
+    
+        def foreign_drain():
+            try:
+                if worker_owns_resource:
+                    resource = Probe("worker")
+                    pin(resource)
+                    del resource
+                if via_gc_callback:
+                    ui._drain_retired_native_after_gc("stop", {})
+                else:
+                    ui._drain_retired_native()
+            except BaseException as error:
+                errors.append((type(error).__name__, str(error)))
+            finally:
+                progress.set()
+    
+        # Disable automatic collections only for this deterministic fixture. The
+        # callback path above is still exercised explicitly on the worker.
+        enabled = gc.isenabled()
+        gc.disable()
+        worker = threading.Thread(target=foreign_drain, name="foreign-retired-collector")
+        try:
+            worker.start()
+            assert progress.wait(5), "Worker did not reach the snapshot or finish"
+            ui._drain_retired_native()
+        finally:
+            release_snapshot.set()
+            worker.join(5)
+            if enabled:
+                gc.enable()
+        assert not worker.is_alive(), "Owned worker did not finish"
+        assert not errors, errors
+        assert reference() is None
+>       assert [(name, owner.name) for name, owner in finalizers if name == "creator"] == [
+            ("creator", creator.name)
+        ]
+E       AssertionError: assert [('creator', ...d-collector')] == [('creator', 'MainThread')]
+E         
+E         At index 0 diff: ('creator', 'foreign-retired-collector') != ('creator', 'MainThread')
+E         Use -v to get more diff
+
+/root/dev/Beamo Wipe/tests/test_tk_retired_pool_threads.py:103: AssertionError
+_____ test_foreign_drain_cannot_keep_last_record[False-False-interpreters] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x739a307c16a0>
+pool_kind = 'interpreters', via_gc_callback = False
+worker_owns_resource = False
+
+    @pytest.mark.parametrize("pool_kind", ["assets", "interpreters"])
+    @pytest.mark.parametrize("via_gc_callback", [False, True])
+    @pytest.mark.parametrize("worker_owns_resource", [False, True])
+    def test_foreign_drain_cannot_keep_last_record(
+        monkeypatch, pool_kind, via_gc_callback, worker_owns_resource
+    ):
+        """Pause a foreign snapshot while the creator releases its own resource.
+    
+        Probe finalizers have no Tcl side effects, so a regression reports the
+        wrong thread instead of aborting or hanging the test process.
+        """
+        creator = threading.current_thread()
+        progress = threading.Event()
+        release_snapshot = threading.Event()
+        finalizers = []
+        errors = []
+    
+        class Probe(ui.tk.Variable):
+            def __init__(self, label):
+                self.label = label
+    
+            def __del__(self):
+                finalizers.append((self.label, threading.current_thread()))
+    
+        class SnapshotGate(dict):
+            def items(self):
+                snapshot = list(super().items())
+                if threading.current_thread() is not creator:
+                    progress.set()
+                    if not release_snapshot.wait(5):
+                        raise AssertionError("Creator did not release the diagnostic snapshot")
+                return snapshot
+    
+        monkeypatch.setattr(ui, "_RETIRED_NATIVE_ASSETS", SnapshotGate() if pool_kind == "assets" else {})
+        monkeypatch.setattr(ui, "_RETIRED_INTERPRETERS", SnapshotGate() if pool_kind == "interpreters" else {})
+    
+        def pin(resource):
+            if pool_kind == "assets":
+                ui._pin_retired_assets((resource,), threading.current_thread())
+            else:
+                # Only the native handle field is needed by the pin helper. This
+                # root owns no actual Tcl interpreter and opens no display.
+                root = ui.tk.Tk.__new__(ui.tk.Tk)
+                root.tk = resource
+                ui._pin_retired_interpreter(root)
+                root.tk = None
+    
+        resource = Probe("creator")
+        reference = weakref.ref(resource)
+        pin(resource)
+        del resource
+    
+        def foreign_drain():
+            try:
+                if worker_owns_resource:
+                    resource = Probe("worker")
+                    pin(resource)
+                    del resource
+                if via_gc_callback:
+                    ui._drain_retired_native_after_gc("stop", {})
+                else:
+                    ui._drain_retired_native()
+            except BaseException as error:
+                errors.append((type(error).__name__, str(error)))
+            finally:
+                progress.set()
+    
+        # Disable automatic collections only for this deterministic fixture. The
+        # callback path above is still exercised explicitly on the worker.
+        enabled = gc.isenabled()
+        gc.disable()
+        worker = threading.Thread(target=foreign_drain, name="foreign-retired-collector")
+        try:
+            worker.start()
+            assert progress.wait(5), "Worker did not reach the snapshot or finish"
+            ui._drain_retired_native()
+        finally:
+            release_snapshot.set()
+            worker.join(5)
+            if enabled:
+                gc.enable()
+        assert not worker.is_alive(), "Owned worker did not finish"
+        assert not errors, errors
+        assert reference() is None
+>       assert [(name, owner.name) for name, owner in finalizers if name == "creator"] == [
+            ("creator", creator.name)
+        ]
+E       AssertionError: assert [('creator', ...d-collector')] == [('creator', 'MainThread')]
+E         
+E         At index 0 diff: ('creator', 'foreign-retired-collector') != ('creator', 'MainThread')
+E         Use -v to get more diff
+
+/root/dev/Beamo Wipe/tests/test_tk_retired_pool_threads.py:103: AssertionError
+________ test_foreign_drain_cannot_keep_last_record[False-True-assets] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x739a2eb39e50>
+pool_kind = 'assets', via_gc_callback = True, worker_owns_resource = False
+
+    @pytest.mark.parametrize("pool_kind", ["assets", "interpreters"])
+    @pytest.mark.parametrize("via_gc_callback", [False, True])
+    @pytest.mark.parametrize("worker_owns_resource", [False, True])
+    def test_foreign_drain_cannot_keep_last_record(
+        monkeypatch, pool_kind, via_gc_callback, worker_owns_resource
+    ):
+        """Pause a foreign snapshot while the creator releases its own resource.
+    
+        Probe finalizers have no Tcl side effects, so a regression reports the
+        wrong thread instead of aborting or hanging the test process.
+        """
+        creator = threading.current_thread()
+        progress = threading.Event()
+        release_snapshot = threading.Event()
+        finalizers = []
+        errors = []
+    
+        class Probe(ui.tk.Variable):
+            def __init__(self, label):
+                self.label = label
+    
+            def __del__(self):
+                finalizers.append((self.label, threading.current_thread()))
+    
+        class SnapshotGate(dict):
+            def items(self):
+                snapshot = list(super().items())
+                if threading.current_thread() is not creator:
+                    progress.set()
+                    if not release_snapshot.wait(5):
+                        raise AssertionError("Creator did not release the diagnostic snapshot")
+                return snapshot
+    
+        monkeypatch.setattr(ui, "_RETIRED_NATIVE_ASSETS", SnapshotGate() if pool_kind == "assets" else {})
+        monkeypatch.setattr(ui, "_RETIRED_INTERPRETERS", SnapshotGate() if pool_kind == "interpreters" else {})
+    
+        def pin(resource):
+            if pool_kind == "assets":
+                ui._pin_retired_assets((resource,), threading.current_thread())
+            else:
+                # Only the native handle field is needed by the pin helper. This
+                # root owns no actual Tcl interpreter and opens no display.
+                root = ui.tk.Tk.__new__(ui.tk.Tk)
+                root.tk = resource
+                ui._pin_retired_interpreter(root)
+                root.tk = None
+    
+        resource = Probe("creator")
+        reference = weakref.ref(resource)
+        pin(resource)
+        del resource
+    
+        def foreign_drain():
+            try:
+                if worker_owns_resource:
+                    resource = Probe("worker")
+                    pin(resource)
+                    del resource
+                if via_gc_callback:
+                    ui._drain_retired_native_after_gc("stop", {})
+                else:
+                    ui._drain_retired_native()
+            except BaseException as error:
+                errors.append((type(error).__name__, str(error)))
+            finally:
+                progress.set()
+    
+        # Disable automatic collections only for this deterministic fixture. The
+        # callback path above is still exercised explicitly on the worker.
+        enabled = gc.isenabled()
+        gc.disable()
+        worker = threading.Thread(target=foreign_drain, name="foreign-retired-collector")
+        try:
+            worker.start()
+            assert progress.wait(5), "Worker did not reach the snapshot or finish"
+            ui._drain_retired_native()
+        finally:
+            release_snapshot.set()
+            worker.join(5)
+            if enabled:
+                gc.enable()
+        assert not worker.is_alive(), "Owned worker did not finish"
+        assert not errors, errors
+        assert reference() is None
+>       assert [(name, owner.name) for name, owner in finalizers if name == "creator"] == [
+            ("creator", creator.name)
+        ]
+E       AssertionError: assert [('creator', ...d-collector')] == [('creator', 'MainThread')]
+E         
+E         At index 0 diff: ('creator', 'foreign-retired-collector') != ('creator', 'MainThread')
+E         Use -v to get more diff
+
+/root/dev/Beamo Wipe/tests/test_tk_retired_pool_threads.py:103: AssertionError
+_____ test_foreign_drain_cannot_keep_last_record[False-True-interpreters] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x739a2eb3b6e0>
+pool_kind = 'interpreters', via_gc_callback = True, worker_owns_resource = False
+
+    @pytest.mark.parametrize("pool_kind", ["assets", "interpreters"])
+    @pytest.mark.parametrize("via_gc_callback", [False, True])
+    @pytest.mark.parametrize("worker_owns_resource", [False, True])
+    def test_foreign_drain_cannot_keep_last_record(
+        monkeypatch, pool_kind, via_gc_callback, worker_owns_resource
+    ):
+        """Pause a foreign snapshot while the creator releases its own resource.
+    
+        Probe finalizers have no Tcl side effects, so a regression reports the
+        wrong thread instead of aborting or hanging the test process.
+        """
+        creator = threading.current_thread()
+        progress = threading.Event()
+        release_snapshot = threading.Event()
+        finalizers = []
+        errors = []
+    
+        class Probe(ui.tk.Variable):
+            def __init__(self, label):
+                self.label = label
+    
+            def __del__(self):
+                finalizers.append((self.label, threading.current_thread()))
+    
+        class SnapshotGate(dict):
+            def items(self):
+                snapshot = list(super().items())
+                if threading.current_thread() is not creator:
+                    progress.set()
+                    if not release_snapshot.wait(5):
+                        raise AssertionError("Creator did not release the diagnostic snapshot")
+                return snapshot
+    
+        monkeypatch.setattr(ui, "_RETIRED_NATIVE_ASSETS", SnapshotGate() if pool_kind == "assets" else {})
+        monkeypatch.setattr(ui, "_RETIRED_INTERPRETERS", SnapshotGate() if pool_kind == "interpreters" else {})
+    
+        def pin(resource):
+            if pool_kind == "assets":
+                ui._pin_retired_assets((resource,), threading.current_thread())
+            else:
+                # Only the native handle field is needed by the pin helper. This
+                # root owns no actual Tcl interpreter and opens no display.
+                root = ui.tk.Tk.__new__(ui.tk.Tk)
+                root.tk = resource
+                ui._pin_retired_interpreter(root)
+                root.tk = None
+    
+        resource = Probe("creator")
+        reference = weakref.ref(resource)
+        pin(resource)
+        del resource
+    
+        def foreign_drain():
+            try:
+                if worker_owns_resource:
+                    resource = Probe("worker")
+                    pin(resource)
+                    del resource
+                if via_gc_callback:
+                    ui._drain_retired_native_after_gc("stop", {})
+                else:
+                    ui._drain_retired_native()
+            except BaseException as error:
+                errors.append((type(error).__name__, str(error)))
+            finally:
+                progress.set()
+    
+        # Disable automatic collections only for this deterministic fixture. The
+        # callback path above is still exercised explicitly on the worker.
+        enabled = gc.isenabled()
+        gc.disable()
+        worker = threading.Thread(target=foreign_drain, name="foreign-retired-collector")
+        try:
+            worker.start()
+            assert progress.wait(5), "Worker did not reach the snapshot or finish"
+            ui._drain_retired_native()
+        finally:
+            release_snapshot.set()
+            worker.join(5)
+            if enabled:
+                gc.enable()
+        assert not worker.is_alive(), "Owned worker did not finish"
+        assert not errors, errors
+        assert reference() is None
+>       assert [(name, owner.name) for name, owner in finalizers if name == "creator"] == [
+            ("creator", creator.name)
+        ]
+E       AssertionError: assert [('creator', ...d-collector')] == [('creator', 'MainThread')]
+E         
+E         At index 0 diff: ('creator', 'foreign-retired-collector') != ('creator', 'MainThread')
+E         Use -v to get more diff
+
+/root/dev/Beamo Wipe/tests/test_tk_retired_pool_threads.py:103: AssertionError
+________ test_foreign_drain_cannot_keep_last_record[True-False-assets] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x739a2eb50080>
+pool_kind = 'assets', via_gc_callback = False, worker_owns_resource = True
+
+    @pytest.mark.parametrize("pool_kind", ["assets", "interpreters"])
+    @pytest.mark.parametrize("via_gc_callback", [False, True])
+    @pytest.mark.parametrize("worker_owns_resource", [False, True])
+    def test_foreign_drain_cannot_keep_last_record(
+        monkeypatch, pool_kind, via_gc_callback, worker_owns_resource
+    ):
+        """Pause a foreign snapshot while the creator releases its own resource.
+    
+        Probe finalizers have no Tcl side effects, so a regression reports the
+        wrong thread instead of aborting or hanging the test process.
+        """
+        creator = threading.current_thread()
+        progress = threading.Event()
+        release_snapshot = threading.Event()
+        finalizers = []
+        errors = []
+    
+        class Probe(ui.tk.Variable):
+            def __init__(self, label):
+                self.label = label
+    
+            def __del__(self):
+                finalizers.append((self.label, threading.current_thread()))
+    
+        class SnapshotGate(dict):
+            def items(self):
+                snapshot = list(super().items())
+                if threading.current_thread() is not creator:
+                    progress.set()
+                    if not release_snapshot.wait(5):
+                        raise AssertionError("Creator did not release the diagnostic snapshot")
+                return snapshot
+    
+        monkeypatch.setattr(ui, "_RETIRED_NATIVE_ASSETS", SnapshotGate() if pool_kind == "assets" else {})
+        monkeypatch.setattr(ui, "_RETIRED_INTERPRETERS", SnapshotGate() if pool_kind == "interpreters" else {})
+    
+        def pin(resource):
+            if pool_kind == "assets":
+                ui._pin_retired_assets((resource,), threading.current_thread())
+            else:
+                # Only the native handle field is needed by the pin helper. This
+                # root owns no actual Tcl interpreter and opens no display.
+                root = ui.tk.Tk.__new__(ui.tk.Tk)
+                root.tk = resource
+                ui._pin_retired_interpreter(root)
+                root.tk = None
+    
+        resource = Probe("creator")
+        reference = weakref.ref(resource)
+        pin(resource)
+        del resource
+    
+        def foreign_drain():
+            try:
+                if worker_owns_resource:
+                    resource = Probe("worker")
+                    pin(resource)
+                    del resource
+                if via_gc_callback:
+                    ui._drain_retired_native_after_gc("stop", {})
+                else:
+                    ui._drain_retired_native()
+            except BaseException as error:
+                errors.append((type(error).__name__, str(error)))
+            finally:
+                progress.set()
+    
+        # Disable automatic collections only for this deterministic fixture. The
+        # callback path above is still exercised explicitly on the worker.
+        enabled = gc.isenabled()
+        gc.disable()
+        worker = threading.Thread(target=foreign_drain, name="foreign-retired-collector")
+        try:
+            worker.start()
+            assert progress.wait(5), "Worker did not reach the snapshot or finish"
+            ui._drain_retired_native()
+        finally:
+            release_snapshot.set()
+            worker.join(5)
+            if enabled:
+                gc.enable()
+        assert not worker.is_alive(), "Owned worker did not finish"
+        assert not errors, errors
+        assert reference() is None
+>       assert [(name, owner.name) for name, owner in finalizers if name == "creator"] == [
+            ("creator", creator.name)
+        ]
+E       AssertionError: assert [('creator', ...d-collector')] == [('creator', 'MainThread')]
+E         
+E         At index 0 diff: ('creator', 'foreign-retired-collector') != ('creator', 'MainThread')
+E         Use -v to get more diff
+
+/root/dev/Beamo Wipe/tests/test_tk_retired_pool_threads.py:103: AssertionError
+_____ test_foreign_drain_cannot_keep_last_record[True-False-interpreters] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x739a2eb39910>
+pool_kind = 'interpreters', via_gc_callback = False, worker_owns_resource = True
+
+    @pytest.mark.parametrize("pool_kind", ["assets", "interpreters"])
+    @pytest.mark.parametrize("via_gc_callback", [False, True])
+    @pytest.mark.parametrize("worker_owns_resource", [False, True])
+    def test_foreign_drain_cannot_keep_last_record(
+        monkeypatch, pool_kind, via_gc_callback, worker_owns_resource
+    ):
+        """Pause a foreign snapshot while the creator releases its own resource.
+    
+        Probe finalizers have no Tcl side effects, so a regression reports the
+        wrong thread instead of aborting or hanging the test process.
+        """
+        creator = threading.current_thread()
+        progress = threading.Event()
+        release_snapshot = threading.Event()
+        finalizers = []
+        errors = []
+    
+        class Probe(ui.tk.Variable):
+            def __init__(self, label):
+                self.label = label
+    
+            def __del__(self):
+                finalizers.append((self.label, threading.current_thread()))
+    
+        class SnapshotGate(dict):
+            def items(self):
+                snapshot = list(super().items())
+                if threading.current_thread() is not creator:
+                    progress.set()
+                    if not release_snapshot.wait(5):
+                        raise AssertionError("Creator did not release the diagnostic snapshot")
+                return snapshot
+    
+        monkeypatch.setattr(ui, "_RETIRED_NATIVE_ASSETS", SnapshotGate() if pool_kind == "assets" else {})
+        monkeypatch.setattr(ui, "_RETIRED_INTERPRETERS", SnapshotGate() if pool_kind == "interpreters" else {})
+    
+        def pin(resource):
+            if pool_kind == "assets":
+                ui._pin_retired_assets((resource,), threading.current_thread())
+            else:
+                # Only the native handle field is needed by the pin helper. This
+                # root owns no actual Tcl interpreter and opens no display.
+                root = ui.tk.Tk.__new__(ui.tk.Tk)
+                root.tk = resource
+                ui._pin_retired_interpreter(root)
+                root.tk = None
+    
+        resource = Probe("creator")
+        reference = weakref.ref(resource)
+        pin(resource)
+        del resource
+    
+        def foreign_drain():
+            try:
+                if worker_owns_resource:
+                    resource = Probe("worker")
+                    pin(resource)
+                    del resource
+                if via_gc_callback:
+                    ui._drain_retired_native_after_gc("stop", {})
+                else:
+                    ui._drain_retired_native()
+            except BaseException as error:
+                errors.append((type(error).__name__, str(error)))
+            finally:
+                progress.set()
+    
+        # Disable automatic collections only for this deterministic fixture. The
+        # callback path above is still exercised explicitly on the worker.
+        enabled = gc.isenabled()
+        gc.disable()
+        worker = threading.Thread(target=foreign_drain, name="foreign-retired-collector")
+        try:
+            worker.start()
+            assert progress.wait(5), "Worker did not reach the snapshot or finish"
+            ui._drain_retired_native()
+        finally:
+            release_snapshot.set()
+            worker.join(5)
+            if enabled:
+                gc.enable()
+        assert not worker.is_alive(), "Owned worker did not finish"
+        assert not errors, errors
+        assert reference() is None
+>       assert [(name, owner.name) for name, owner in finalizers if name == "creator"] == [
+            ("creator", creator.name)
+        ]
+E       AssertionError: assert [('creator', ...d-collector')] == [('creator', 'MainThread')]
+E         
+E         At index 0 diff: ('creator', 'foreign-retired-collector') != ('creator', 'MainThread')
+E         Use -v to get more diff
+
+/root/dev/Beamo Wipe/tests/test_tk_retired_pool_threads.py:103: AssertionError
+_________ test_foreign_drain_cannot_keep_last_record[True-True-assets] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x739a2eb3bbf0>
+pool_kind = 'assets', via_gc_callback = True, worker_owns_resource = True
+
+    @pytest.mark.parametrize("pool_kind", ["assets", "interpreters"])
+    @pytest.mark.parametrize("via_gc_callback", [False, True])
+    @pytest.mark.parametrize("worker_owns_resource", [False, True])
+    def test_foreign_drain_cannot_keep_last_record(
+        monkeypatch, pool_kind, via_gc_callback, worker_owns_resource
+    ):
+        """Pause a foreign snapshot while the creator releases its own resource.
+    
+        Probe finalizers have no Tcl side effects, so a regression reports the
+        wrong thread instead of aborting or hanging the test process.
+        """
+        creator = threading.current_thread()
+        progress = threading.Event()
+        release_snapshot = threading.Event()
+        finalizers = []
+        errors = []
+    
+        class Probe(ui.tk.Variable):
+            def __init__(self, label):
+                self.label = label
+    
+            def __del__(self):
+                finalizers.append((self.label, threading.current_thread()))
+    
+        class SnapshotGate(dict):
+            def items(self):
+                snapshot = list(super().items())
+                if threading.current_thread() is not creator:
+                    progress.set()
+                    if not release_snapshot.wait(5):
+                        raise AssertionError("Creator did not release the diagnostic snapshot")
+                return snapshot
+    
+        monkeypatch.setattr(ui, "_RETIRED_NATIVE_ASSETS", SnapshotGate() if pool_kind == "assets" else {})
+        monkeypatch.setattr(ui, "_RETIRED_INTERPRETERS", SnapshotGate() if pool_kind == "interpreters" else {})
+    
+        def pin(resource):
+            if pool_kind == "assets":
+                ui._pin_retired_assets((resource,), threading.current_thread())
+            else:
+                # Only the native handle field is needed by the pin helper. This
+                # root owns no actual Tcl interpreter and opens no display.
+                root = ui.tk.Tk.__new__(ui.tk.Tk)
+                root.tk = resource
+                ui._pin_retired_interpreter(root)
+                root.tk = None
+    
+        resource = Probe("creator")
+        reference = weakref.ref(resource)
+        pin(resource)
+        del resource
+    
+        def foreign_drain():
+            try:
+                if worker_owns_resource:
+                    resource = Probe("worker")
+                    pin(resource)
+                    del resource
+                if via_gc_callback:
+                    ui._drain_retired_native_after_gc("stop", {})
+                else:
+                    ui._drain_retired_native()
+            except BaseException as error:
+                errors.append((type(error).__name__, str(error)))
+            finally:
+                progress.set()
+    
+        # Disable automatic collections only for this deterministic fixture. The
+        # callback path above is still exercised explicitly on the worker.
+        enabled = gc.isenabled()
+        gc.disable()
+        worker = threading.Thread(target=foreign_drain, name="foreign-retired-collector")
+        try:
+            worker.start()
+            assert progress.wait(5), "Worker did not reach the snapshot or finish"
+            ui._drain_retired_native()
+        finally:
+            release_snapshot.set()
+            worker.join(5)
+            if enabled:
+                gc.enable()
+        assert not worker.is_alive(), "Owned worker did not finish"
+        assert not errors, errors
+        assert reference() is None
+>       assert [(name, owner.name) for name, owner in finalizers if name == "creator"] == [
+            ("creator", creator.name)
+        ]
+E       AssertionError: assert [('creator', ...d-collector')] == [('creator', 'MainThread')]
+E         
+E         At index 0 diff: ('creator', 'foreign-retired-collector') != ('creator', 'MainThread')
+E         Use -v to get more diff
+
+/root/dev/Beamo Wipe/tests/test_tk_retired_pool_threads.py:103: AssertionError
+______ test_foreign_drain_cannot_keep_last_record[True-True-interpreters] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x739a2eb3a3f0>
+pool_kind = 'interpreters', via_gc_callback = True, worker_owns_resource = True
+
+    @pytest.mark.parametrize("pool_kind", ["assets", "interpreters"])
+    @pytest.mark.parametrize("via_gc_callback", [False, True])
+    @pytest.mark.parametrize("worker_owns_resource", [False, True])
+    def test_foreign_drain_cannot_keep_last_record(
+        monkeypatch, pool_kind, via_gc_callback, worker_owns_resource
+    ):
+        """Pause a foreign snapshot while the creator releases its own resource.
+    
+        Probe finalizers have no Tcl side effects, so a regression reports the
+        wrong thread instead of aborting or hanging the test process.
+        """
+        creator = threading.current_thread()
+        progress = threading.Event()
+        release_snapshot = threading.Event()
+        finalizers = []
+        errors = []
+    
+        class Probe(ui.tk.Variable):
+            def __init__(self, label):
+                self.label = label
+    
+            def __del__(self):
+                finalizers.append((self.label, threading.current_thread()))
+    
+        class SnapshotGate(dict):
+            def items(self):
+                snapshot = list(super().items())
+                if threading.current_thread() is not creator:
+                    progress.set()
+                    if not release_snapshot.wait(5):
+                        raise AssertionError("Creator did not release the diagnostic snapshot")
+                return snapshot
+    
+        monkeypatch.setattr(ui, "_RETIRED_NATIVE_ASSETS", SnapshotGate() if pool_kind == "assets" else {})
+        monkeypatch.setattr(ui, "_RETIRED_INTERPRETERS", SnapshotGate() if pool_kind == "interpreters" else {})
+    
+        def pin(resource):
+            if pool_kind == "assets":
+                ui._pin_retired_assets((resource,), threading.current_thread())
+            else:
+                # Only the native handle field is needed by the pin helper. This
+                # root owns no actual Tcl interpreter and opens no display.
+                root = ui.tk.Tk.__new__(ui.tk.Tk)
+                root.tk = resource
+                ui._pin_retired_interpreter(root)
+                root.tk = None
+    
+        resource = Probe("creator")
+        reference = weakref.ref(resource)
+        pin(resource)
+        del resource
+    
+        def foreign_drain():
+            try:
+                if worker_owns_resource:
+                    resource = Probe("worker")
+                    pin(resource)
+                    del resource
+                if via_gc_callback:
+                    ui._drain_retired_native_after_gc("stop", {})
+                else:
+                    ui._drain_retired_native()
+            except BaseException as error:
+                errors.append((type(error).__name__, str(error)))
+            finally:
+                progress.set()
+    
+        # Disable automatic collections only for this deterministic fixture. The
+        # callback path above is still exercised explicitly on the worker.
+        enabled = gc.isenabled()
+        gc.disable()
+        worker = threading.Thread(target=foreign_drain, name="foreign-retired-collector")
+        try:
+            worker.start()
+            assert progress.wait(5), "Worker did not reach the snapshot or finish"
+            ui._drain_retired_native()
+        finally:
+            release_snapshot.set()
+            worker.join(5)
+            if enabled:
+                gc.enable()
+        assert not worker.is_alive(), "Owned worker did not finish"
+        assert not errors, errors
+        assert reference() is None
+>       assert [(name, owner.name) for name, owner in finalizers if name == "creator"] == [
+            ("creator", creator.name)
+        ]
+E       AssertionError: assert [('creator', ...d-collector')] == [('creator', 'MainThread')]
+E         
+E         At index 0 diff: ('creator', 'foreign-retired-collector') != ('creator', 'MainThread')
+E         Use -v to get more diff
+
+/root/dev/Beamo Wipe/tests/test_tk_retired_pool_threads.py:103: AssertionError
+=========================== short test summary info ============================
+FAILED ::test_foreign_drain_cannot_keep_last_record[False-False-assets] - Ass...
+FAILED ::test_foreign_drain_cannot_keep_last_record[False-False-interpreters]
+FAILED ::test_foreign_drain_cannot_keep_last_record[False-True-assets] - Asse...
+FAILED ::test_foreign_drain_cannot_keep_last_record[False-True-interpreters]
+FAILED ::test_foreign_drain_cannot_keep_last_record[True-False-assets] - Asse...
+FAILED ::test_foreign_drain_cannot_keep_last_record[True-False-interpreters]
+FAILED ::test_foreign_drain_cannot_keep_last_record[True-True-assets] - Asser...
+FAILED ::test_foreign_drain_cannot_keep_last_record[True-True-interpreters]
+8 failed, 2 passed, 3 deselected in 0.24s

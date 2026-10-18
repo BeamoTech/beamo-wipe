@@ -522,7 +522,7 @@ def test_late_poll_cannot_publish_phase_into_a_new_runner_generation(
             runner.progress = 5
             runner._sigusr1_armed = False
             runner._last_sigusr1 = 0
-        return line(99, phase="verifying") + "Program options are set as follows\n"
+        return line(99, phase="verifying") + "[2026/10/16 12:00:00] info: Program options are set as follows\n"
 
     monkeypatch.setattr(runner, "_read_log_tail", read)
     request = WipeRequest("/dev/fake", MethodId.EVERYDAY, "/dev/boot", "fake-log")
@@ -596,7 +596,7 @@ def test_real_runner_fake_output_reaches_eta_at_its_signal_cadence(monkeypatch):
         runner,
         "_read_log_tail",
         lambda *_: line(10 + clock() / 2, eta=int((90 - clock() / 2) * 2))
-        + "Program options are set as follows\n",
+        + "[2026/10/16 12:00:00] info: Program options are set as follows\n",
     )
     for _ in range(31):
         w.tick()

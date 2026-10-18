@@ -1,0 +1,15 @@
+{
+  "status": "PREPARED, NOT RUN",
+  "runner_fixture_exists": false,
+  "captures": 0,
+  "files": {
+    "docs/evidence/bug-audit-20261017-pass21/runner/fresh-boundaries.py": "5da0fc135f253db47474bbc36eb6e9ae20cb2d49a40399cf1fef743ceb184c4a",
+    "docs/evidence/bug-audit-20261017-pass21/runner/cancel-boundaries.py": "66bf9bc7a23417c1d880ee130269c78ac0f04f40cf645a9f3ce95c40b4c7859a",
+    "/tmp/pass21-ui/geometry-matrix.py": "35588f0c05c28779528ed56469ef991d2df36b2bcc1acfd64c22ca4c1d0f32ed",
+    "/tmp/pass21-ui/run-geometry.py": "7ce9486e20812e3e4737433b6fd682ef01d6bcb5ea8e2aa89423382a60a3170a",
+    "/tmp/pass21-primary/report-checks-matrix.py": "ec01597d88ef1b548388dd7deffce9b18e6fb2bd0bcb761c75dfcdb34109bf1f",
+    "/tmp/pass21-primary/run-final-campaigns.py": "d2d0f4f4d8d027f72c1ac415c1ba88dc4ebffbc5b5015a69e2e70c981aa716bb",
+    "/tmp/pass21-primary/tk-pool-repeated-final.py": "3c1b85fd7b0d43a1ce55613f15ac45a4fac158f6b93ac00d6b40a778d48c770f",
+    "/tmp/pass21-primary/tk-drain-gc-pressure-observed.py": "a649ba96e07a15f42e60c5b79886ebaa1f2c9eaa90547b18eb6564269f44c73d"
+  }
+}

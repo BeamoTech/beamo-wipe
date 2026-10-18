@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="2" tests="13" time="1.774" timestamp="2026-10-16T16:02:42.699870+00:00" hostname="srv1606478"><testcase classname="tests.test_operation_identity" name="test_operation_identity_matches_request_disk" time="0.089" /><testcase classname="tests.test_operation_identity" name="test_operation_identity_ignores_tampered_selection" time="0.075" /><testcase classname="tests.test_operation_identity" name="test_operation_method_matches_request" time="0.096" /><testcase classname="tests.test_operation_identity" name="test_unresolvable_request_device_shows_path_and_note" time="0.097" /><testcase classname="tests.test_operation_identity" name="test_curses_working_shows_method" time="0.110" /><testcase classname="tests.test_operation_identity" name="test_curses_working_wraps_long_identity" time="0.109" /><testcase classname="tests.test_operation_identity" name="test_curses_stopping_shows_method" time="0.113" /><testcase classname="tests.test_operation_identity" name="test_plain_working_repeats_identity_and_method" time="0.143" /><testcase classname="tests.test_operation_identity" name="test_plain_stopping_shows_method" time="0.027" /><testcase classname="tests.test_operation_identity" name="test_accessible_stopping_shows_identity_and_method" time="0.149"><failure message="RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.">def test_accessible_stopping_shows_identity_and_method():
+        pytest.importorskip("gi")
+        from test_accessible_runtime import text, wait_for_window_size
+    
+        from beamo_wipe.ui.accessible_wizard import AccessibleWizard
+    
+        wiz = make_demo_wizard()
+        wiz.skip_intro()
+        wiz.accept_what()
+        wiz.set_owner(True)
+        wiz.continue_owner()
+        disk = sorted(wiz.selectable, key=lambda d: d.path)[0]
+        wiz.select_disk(disk.path)
+        wiz.method = MethodId.EXTRA
+        wiz.screen = Screen.STOPPING
+&gt;       app = AccessibleWizard(wiz)
+              ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_operation_identity.py:189: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/beamo_wipe/ui/accessible_wizard.py:58: in __init__
+    self.window = Gtk.Window(title=C.ACCESSIBLE_TITLE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;Gtk.Window object at 0x7d5734658bc0 (uninitialized at 0x(nil))&gt;
+args = (), kwargs = {'title': 'Beamo Wipe — screen-reader view'}
+
+    def __init__(self, *args, **kwargs):
+        if not initialized:
+&gt;           raise RuntimeError(
+                "Gtk couldn't be initialized. "
+                "Use Gtk.init_check() if you want to handle this case.")
+E           RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.
+
+/usr/lib/python3/dist-packages/gi/overrides/Gtk.py:508: RuntimeError</failure></testcase><testcase classname="tests.test_operation_identity" name="test_gallery_stop_frames_carry_method" time="0.170" /><testcase classname="tests.test_operation_identity" name="test_tk_stop_confirm_shows_method" time="0.012"><skipped type="pytest.skip" message="no display: couldn't connect to display &quot;:99&quot;">/root/dev/Beamo Wipe/tests/test_tk_runtime.py:49: no display: couldn't connect to display ":99"</skipped></testcase><testcase classname="tests.test_operation_identity" name="test_tk_stopping_shows_identity_and_method" time="0.006"><skipped type="pytest.skip" message="no display: couldn't connect to display &quot;:99&quot;">/root/dev/Beamo Wipe/tests/test_tk_runtime.py:49: no display: couldn't connect to display ":99"</skipped></testcase></testsuite></testsuites>

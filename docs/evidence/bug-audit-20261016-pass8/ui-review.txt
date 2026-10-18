@@ -1,0 +1,51 @@
+PASS8 independent UI, boot, recovery, build and diagnostic review
+Baseline: 35107a8. Branch: fix/safety-audit-20261015. Date: 2026-10-16.
+Reviewer: Codex. No source/test edits or commits by this reviewer.
+
+Read current AGENTS.md, canonical unfinished record, docs/runbook.md,
+erase-transitions.md, session-recovery.md, live-session-power.md,
+kiosk-recovery.md, storage-and-controller-limits.md and compat_story.py.
+Missing shared guide was already resolved by owner continue direction.
+No proved UI/boot defect was found in this bounded review.
+
+654 UI/state/recovery tests passed, zero skips (78.714s).
+751 adjacent async/stop/shutdown/keyboard/sound/report tests passed,
+zero skips (67.513s).
+316 build/boot fixture tests passed; two expected generated lb-config
+checks skipped (40.783s). Overlapping collections are not summed.
+
+Fresh matrix passed: 64,000 seeded public navigation events; 54 nested
+review-overlay combinations (depths 1..6, three languages, three methods);
+40 fake refresh sessions, each with eight concurrent duplicate completions,
+five malformed/interrupted retries and a final valid retry.
+240 fully stubbed kiosk combinations passed: graphical/console exit statuses,
+engine-check statuses, exact/invalid power tokens and restart/shutdown.
+No unexpected host action occurred; all commands in the harness were fake.
+
+Actual ./preview launched on private Xvfb at 1600x1000, 72 DPI. Screenshot
+inspected: branding, preview warning, primary button and content visible
+without clipping. Owned child PID 344126 retired (return code -15).
+No external browser was used.
+
+Primary diagnostic change independently approved: the existing malformed-
+report SafetyError boundary now includes numeric OverflowError and decoder
+RecursionError. No schema, identity, build or privacy acceptance expanded.
+140 diagnostic/entrypoint adjacent tests passed, zero skips (6.126s).
+Independent baseline harness reproduced three unhandled exceptions: two
+actual oversized signed integers and one injected decoder recursion.
+Corrected source returned three SafetyErrors; six finite controls and
+11 malformed controls retained intended behavior.
+
+Current CPython 3.12 C decoder accepts byte-bounded depth 7500, then the
+schema safely rejects it. Two initial harness assumptions about natural
+parser depth were false; traces retained. Corrected matrix explicitly
+labels decoder recursion as injected. No Python 3.11 runtime was available.
+An initial navigation harness used an unsupported preview constructor
+keyword and failed before product execution. Corrected dry_run=True run
+passed. Original setup trace retained.
+
+Reviewed source hashes match final bytes in reviewed-sha256.json.
+No actual nwipe, native lsblk, physical disk/USB operation, guest, ISO/QEMU,
+host power action, hosted CI, network request, Companion/USB Easy Use edit
+or commit occurred. ISO/QEMU, native Windows and physical-media acceptance
+remain unrun and outside this review's scope.

@@ -1,0 +1,9 @@
+{
+  "passed": 329,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "frozen_inputs_unchanged": 771,
+  "native_guard_scope_fixed": true,
+  "original_assertions_preserved": true
+}

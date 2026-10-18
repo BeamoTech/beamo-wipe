@@ -1,0 +1,15 @@
+
+==================================== ERRORS ====================================
+_ ERROR collecting docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py _
+ImportError while importing test module '/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py:5: in <module>
+    from test_physical_observation_context_pass15 import (
+E   ModuleNotFoundError: No module named 'test_physical_observation_context_pass15'
+=========================== short test summary info ============================
+ERROR docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!

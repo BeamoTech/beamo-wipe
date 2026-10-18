@@ -1,0 +1,7 @@
+{
+  "tests/test_console_inventory_diagnostic_pass10.py": "019443d03deccdd21fbb87ed9b94c97d25909d7d39528c9afa44c8b9a995600f",
+  "tests/test_diagnostic_malformed_bounds_pass8.py": "e052a9d54dbd9c13156d9590ce2b94a014b7a2e5507d355305a49ddbf63787a6",
+  "tests/test_runner_projection_progress_order_pass8.py": "59eecdf582771001ae2dad8c51a20a312e4a58b27f05a5b270e895e37bd59a9b",
+  "tests/test_runner_projection_record_endings_pass10.py": "f49f2c78ce2a04e531d2d86de08d91b6af03b2714209efc179a9a770b92cb6c0",
+  "tests/test_sound_output_selection_pass10.py": "3cdbf1ea3b99d3cdf59dc813812c46ec4207ed4673f2d7876bdd8fe0a46ae63a"
+}

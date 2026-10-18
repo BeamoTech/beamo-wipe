@@ -1,0 +1,157 @@
+{
+  "cases": 8,
+  "assertion_failures": 2,
+  "passing_controls": 6,
+  "errors": 0,
+  "skips": 0,
+  "parent_timeouts": 0,
+  "unretained_normal_and_exception_fail": true,
+  "owned_font_origin_confirmed": true,
+  "exact_native_abort_cause": "Not established; owned proof children exit91 after2s stuck collection",
+  "source_fix": "PENDING; no speculative native-asset correction",
+  "rows": [
+    {
+      "name": "test_teardown_structure_keeps_outer_owner_boundary_explicit[False-False]",
+      "failed": false,
+      "errored": false,
+      "skipped": false
+    },
+    {
+      "name": "test_teardown_structure_keeps_outer_owner_boundary_explicit[False-True]",
+      "failed": false,
+      "errored": false,
+      "skipped": false
+    },
+    {
+      "name": "test_teardown_structure_keeps_outer_owner_boundary_explicit[True-False]",
+      "failed": false,
+      "errored": false,
+      "skipped": false
+    },
+    {
+      "name": "test_teardown_structure_keeps_outer_owner_boundary_explicit[True-True]",
+      "failed": false,
+      "errored": false,
+      "skipped": false
+    },
+    {
+      "name": "test_full_supported_run_releases_assets_before_later_worker_collection[return-False]",
+      "failed": true,
+      "errored": false,
+      "skipped": false,
+      "retained": false,
+      "route": "return",
+      "child_exit": 91,
+      "parent_timeout": false,
+      "owned_font_ids_confirmed": true,
+      "wrong_thread_font_entries": 2,
+      "timeout_stacks": [
+        [
+          {
+            "file": "/usr/lib/python3.12/threading.py",
+            "line": 1030,
+            "function": "_bootstrap"
+          },
+          {
+            "file": "/usr/lib/python3.12/threading.py",
+            "line": 1073,
+            "function": "_bootstrap_inner"
+          },
+          {
+            "file": "/usr/lib/python3.12/threading.py",
+            "line": 1010,
+            "function": "run"
+          },
+          {
+            "file": "/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py",
+            "line": 211,
+            "function": "collect_later"
+          },
+          {
+            "file": "/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py",
+            "line": 159,
+            "function": "observed_font_del"
+          },
+          {
+            "file": "/usr/lib/python3.12/tkinter/font.py",
+            "line": 121,
+            "function": "__del__"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "test_full_supported_run_releases_assets_before_later_worker_collection[return-True]",
+      "failed": false,
+      "errored": false,
+      "skipped": false,
+      "retained": true,
+      "route": "return",
+      "child_exit": 0,
+      "parent_timeout": false,
+      "owned_font_ids_confirmed": true,
+      "wrong_thread_font_entries": 0,
+      "timeout_stacks": []
+    },
+    {
+      "name": "test_full_supported_run_releases_assets_before_later_worker_collection[raise-False]",
+      "failed": true,
+      "errored": false,
+      "skipped": false,
+      "retained": false,
+      "route": "raise",
+      "child_exit": 91,
+      "parent_timeout": false,
+      "owned_font_ids_confirmed": true,
+      "wrong_thread_font_entries": 2,
+      "timeout_stacks": [
+        [
+          {
+            "file": "/usr/lib/python3.12/threading.py",
+            "line": 1030,
+            "function": "_bootstrap"
+          },
+          {
+            "file": "/usr/lib/python3.12/threading.py",
+            "line": 1073,
+            "function": "_bootstrap_inner"
+          },
+          {
+            "file": "/usr/lib/python3.12/threading.py",
+            "line": 1010,
+            "function": "run"
+          },
+          {
+            "file": "/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py",
+            "line": 211,
+            "function": "collect_later"
+          },
+          {
+            "file": "/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-native-asset-lifetime-probe.py",
+            "line": 159,
+            "function": "observed_font_del"
+          },
+          {
+            "file": "/usr/lib/python3.12/tkinter/font.py",
+            "line": 121,
+            "function": "__del__"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "test_full_supported_run_releases_assets_before_later_worker_collection[raise-True]",
+      "failed": false,
+      "errored": false,
+      "skipped": false,
+      "retained": true,
+      "route": "raise",
+      "child_exit": 0,
+      "parent_timeout": false,
+      "owned_font_ids_confirmed": true,
+      "wrong_thread_font_entries": 0,
+      "timeout_stacks": []
+    }
+  ],
+  "probe_sha256": "af53119543e98b51fa64a75615dc7c1256a1cbb045a7a4201b35a147314a3cdd"
+}

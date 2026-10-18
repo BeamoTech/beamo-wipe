@@ -1,0 +1,14 @@
+{
+  "base": "/tmp/pass20-primary/private-graph-candidate3.py",
+  "base_sha256": "b3d66bdb83213000c9623a2a48c25cf39b089289a388aba67507f117b4a59546",
+  "candidate": "/tmp/pass20-primary/private-candidate4-agent.py",
+  "candidate_sha256": "68b25648c658e5dc9de1e9f7edf3663c90f4dc52520852a8ea8458aa40f8327f",
+  "ast_parse": "PASS",
+  "runtime": "NOT RUN by author; no product imports/threads/tests",
+  "shared_source_unchanged_by_author": true,
+  "active_private_graph_unchanged_by_author": true,
+  "owned_native_factory_calls": 25,
+  "source_only_corrections": [
+    "Renamed helper first parameter native_root to preserve forwarded Font root keyword without duplicate binding."
+  ]
+}

@@ -1,0 +1,1552 @@
+{
+  "status": "SOURCE ONLY; no product imports, Tk, tests, collectors, or threads executed",
+  "source": "src/beamo_wipe/ui/tk_wizard.py",
+  "source_sha256": "23d280b0451d3e25d64387de62d4912a8867ffbdec934244efe6a7f7a7ee0615",
+  "groups": {
+    "fonts": [
+      "font_hero",
+      "font_h",
+      "font_lead",
+      "font_b",
+      "font_bold",
+      "font_size_big",
+      "font_s",
+      "font_s_bold",
+      "font_tiny",
+      "font_meta",
+      "font_btn",
+      "font_mono",
+      "font_mono_bold",
+      "font_mono_sm",
+      "font_entry",
+      "font_stat",
+      "font_brand"
+    ],
+    "images": [
+      "_logo_header",
+      "_logo_splash",
+      "_support_qr"
+    ],
+    "persistent_variables": [
+      "_confirm_var",
+      "_typing_var",
+      "_owner_var"
+    ],
+    "widgets": [
+      "_body",
+      "_footer",
+      "_header",
+      "_strip",
+      "_hint",
+      "_primary",
+      "_countdown_ring",
+      "_countdown_num",
+      "_countdown_label",
+      "_progress_label",
+      "_progress_pct",
+      "_progress_bar",
+      "_match_label",
+      "_match_icon",
+      "_match_pill",
+      "_pick_canvas",
+      "_body_inner",
+      "_body_canvas",
+      "_support_lead",
+      "_more_button",
+      "_power_label"
+    ],
+    "widget_containers": [
+      "_pick_cards",
+      "_keyboard_layout_cards",
+      "_keyboard_language_cards"
+    ],
+    "root": [
+      "root"
+    ],
+    "worker_containers_optional_under_lock": [
+      "_refresh_results",
+      "_refresh_threads"
+    ]
+  },
+  "native_and_widget_field_count_including_root": 48,
+  "field_locations": {
+    "font_hero": [
+      {
+        "method": "__init__",
+        "line": 1149,
+        "value": "tkfont.Font(root=self.root, family=family, size=-52, weight='bold')",
+        "operation": "Assign"
+      }
+    ],
+    "font_h": [
+      {
+        "method": "__init__",
+        "line": 1150,
+        "value": "tkfont.Font(root=self.root, family=family, size=-30, weight='bold')",
+        "operation": "Assign"
+      }
+    ],
+    "font_lead": [
+      {
+        "method": "__init__",
+        "line": 1151,
+        "value": "tkfont.Font(root=self.root, family=family, size=-18)",
+        "operation": "Assign"
+      }
+    ],
+    "font_b": [
+      {
+        "method": "__init__",
+        "line": 1152,
+        "value": "tkfont.Font(root=self.root, family=family, size=-16)",
+        "operation": "Assign"
+      }
+    ],
+    "font_bold": [
+      {
+        "method": "__init__",
+        "line": 1153,
+        "value": "tkfont.Font(root=self.root, family=family, size=-16, weight='bold')",
+        "operation": "Assign"
+      }
+    ],
+    "font_size_big": [
+      {
+        "method": "__init__",
+        "line": 1154,
+        "value": "tkfont.Font(root=self.root, family=family, size=-20, weight='bold')",
+        "operation": "Assign"
+      }
+    ],
+    "font_s": [
+      {
+        "method": "__init__",
+        "line": 1155,
+        "value": "tkfont.Font(root=self.root, family=family, size=-14)",
+        "operation": "Assign"
+      }
+    ],
+    "font_s_bold": [
+      {
+        "method": "__init__",
+        "line": 1156,
+        "value": "tkfont.Font(root=self.root, family=family, size=-14, weight='bold')",
+        "operation": "Assign"
+      }
+    ],
+    "font_tiny": [
+      {
+        "method": "__init__",
+        "line": 1157,
+        "value": "tkfont.Font(root=self.root, family=family, size=-12, weight='bold')",
+        "operation": "Assign"
+      }
+    ],
+    "font_meta": [
+      {
+        "method": "__init__",
+        "line": 1158,
+        "value": "tkfont.Font(root=self.root, family=family, size=-12)",
+        "operation": "Assign"
+      }
+    ],
+    "font_btn": [
+      {
+        "method": "__init__",
+        "line": 1159,
+        "value": "tkfont.Font(root=self.root, family=family, size=-16, weight='bold')",
+        "operation": "Assign"
+      }
+    ],
+    "font_mono": [
+      {
+        "method": "__init__",
+        "line": 1160,
+        "value": "tkfont.Font(root=self.root, family=mono, size=-14)",
+        "operation": "Assign"
+      }
+    ],
+    "font_mono_bold": [
+      {
+        "method": "__init__",
+        "line": 1161,
+        "value": "tkfont.Font(root=self.root, family=mono, size=-14, weight='bold')",
+        "operation": "Assign"
+      }
+    ],
+    "font_mono_sm": [
+      {
+        "method": "__init__",
+        "line": 1162,
+        "value": "tkfont.Font(root=self.root, family=mono, size=-13)",
+        "operation": "Assign"
+      }
+    ],
+    "font_entry": [
+      {
+        "method": "__init__",
+        "line": 1163,
+        "value": "tkfont.Font(root=self.root, family=mono, size=-26, weight='bold')",
+        "operation": "Assign"
+      }
+    ],
+    "font_stat": [
+      {
+        "method": "__init__",
+        "line": 1164,
+        "value": "tkfont.Font(root=self.root, family=family, size=-56, weight='bold')",
+        "operation": "Assign"
+      }
+    ],
+    "font_brand": [
+      {
+        "method": "__init__",
+        "line": 1165,
+        "value": "tkfont.Font(root=self.root, family=family, size=-16, weight='bold')",
+        "operation": "Assign"
+      }
+    ],
+    "_logo_header": [
+      {
+        "method": "__init__",
+        "line": 1170,
+        "value": "self._load_image('logo-header.png')",
+        "operation": "Assign"
+      }
+    ],
+    "_logo_splash": [
+      {
+        "method": "__init__",
+        "line": 1171,
+        "value": "self._load_image('logo-splash.png')",
+        "operation": "Assign"
+      }
+    ],
+    "_support_qr": [
+      {
+        "method": "__init__",
+        "line": 1172,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_support_block",
+        "line": 3230,
+        "value": "image",
+        "operation": "Assign"
+      }
+    ],
+    "_confirm_var": [
+      {
+        "method": "__init__",
+        "line": 1175,
+        "value": "tk.StringVar()",
+        "operation": "Assign"
+      }
+    ],
+    "_typing_var": [
+      {
+        "method": "__init__",
+        "line": 1176,
+        "value": "tk.StringVar()",
+        "operation": "Assign"
+      }
+    ],
+    "_owner_var": [
+      {
+        "method": "__init__",
+        "line": 1177,
+        "value": "tk.IntVar(value=0)",
+        "operation": "Assign"
+      }
+    ],
+    "_body": [
+      {
+        "method": "__init__",
+        "line": 1178,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_build_chrome",
+        "line": 1286,
+        "value": "tk.Frame(self.root, bg=BG)",
+        "operation": "Assign"
+      }
+    ],
+    "_footer": [
+      {
+        "method": "__init__",
+        "line": 1179,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_build_chrome",
+        "line": 1284,
+        "value": "tk.Frame(self.root, bg=BG)",
+        "operation": "Assign"
+      }
+    ],
+    "_header": [
+      {
+        "method": "__init__",
+        "line": 1180,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_build_chrome",
+        "line": 1273,
+        "value": "tk.Canvas(self.root, height=self.lay.header_h, bg=BG, highlightthickness=0, bd=0)",
+        "operation": "Assign"
+      }
+    ],
+    "_strip": [
+      {
+        "method": "__init__",
+        "line": 1181,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_build_chrome",
+        "line": 1278,
+        "value": "tk.Canvas(self.root, height=2, bg=TRACK, highlightthickness=0)",
+        "operation": "Assign"
+      }
+    ],
+    "_hint": [
+      {
+        "method": "__init__",
+        "line": 1182,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_footer_shell",
+        "line": 2312,
+        "value": "self._p(assist, hint, font=self.font_s, fg=MUTED, wraplength=self.lay.content_w - 8)",
+        "operation": "Assign"
+      },
+      {
+        "method": "_footer_shell",
+        "line": 2316,
+        "value": "self._hint_bar(assist, hint)",
+        "operation": "Assign"
+      }
+    ],
+    "_primary": [
+      {
+        "method": "__init__",
+        "line": 1183,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_draw",
+        "line": 1747,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_primary_btn",
+        "line": 2407,
+        "value": "btn",
+        "operation": "Assign"
+      },
+      {
+        "method": "_splash",
+        "line": 2454,
+        "value": "hero",
+        "operation": "Assign"
+      }
+    ],
+    "_countdown_ring": [
+      {
+        "method": "__init__",
+        "line": 1187,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_draw",
+        "line": 1748,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_last",
+        "line": 3827,
+        "value": "ring",
+        "operation": "Assign"
+      }
+    ],
+    "_countdown_num": [
+      {
+        "method": "__init__",
+        "line": 1188,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_draw",
+        "line": 1749,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_last",
+        "line": 3828,
+        "value": "tk.Label(ring, text='', font=self.font_bold, fg=INK, bg=BG, anchor='center')",
+        "operation": "Assign"
+      }
+    ],
+    "_countdown_label": [
+      {
+        "method": "__init__",
+        "line": 1189,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_draw",
+        "line": 1750,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_last",
+        "line": 3832,
+        "value": "tk.Label(zone, text='', font=self.font_b, fg=MUTED, bg=BG, anchor='center', justify=tk.CENTER, wraplength=max(120, ring_px + 40))",
+        "operation": "Assign"
+      }
+    ],
+    "_progress_label": [
+      {
+        "method": "__init__",
+        "line": 1190,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_draw",
+        "line": 1751,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_status_screen",
+        "line": 3278,
+        "value": "self._p(col, self.w.progress_view.timing_text, fg=MUTED)",
+        "operation": "Assign"
+      },
+      {
+        "method": "_working",
+        "line": 3938,
+        "value": "self._p(zone, C.WORKING_PULSE, fg=MUTED, font=self.font_b, bg=SURFACE_ALT)",
+        "operation": "Assign"
+      }
+    ],
+    "_progress_pct": [
+      {
+        "method": "__init__",
+        "line": 1191,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_draw",
+        "line": 1752,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_working",
+        "line": 3930,
+        "value": "tk.Label(zone, text='', font=self.font_stat, fg=INK, bg=SURFACE_ALT, anchor='w')",
+        "operation": "Assign"
+      }
+    ],
+    "_progress_bar": [
+      {
+        "method": "__init__",
+        "line": 1192,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_draw",
+        "line": 1753,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_working",
+        "line": 3937,
+        "value": "bar",
+        "operation": "Assign"
+      }
+    ],
+    "_match_label": [
+      {
+        "method": "__init__",
+        "line": 1194,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_draw",
+        "line": 1754,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_confirm",
+        "line": 3463,
+        "value": "tk.Label(pill.inner, text='', font=self.font_s_bold, fg=MUTED, bg=SURFACE_ALT, anchor='w')",
+        "operation": "Assign"
+      }
+    ],
+    "_match_icon": [
+      {
+        "method": "__init__",
+        "line": 1195,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_draw",
+        "line": 1755,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_confirm",
+        "line": 3459,
+        "value": "tk.Canvas(pill.inner, width=22, height=22, highlightthickness=0, bg=SURFACE_ALT)",
+        "operation": "Assign"
+      }
+    ],
+    "_match_pill": [
+      {
+        "method": "__init__",
+        "line": 1196,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_draw",
+        "line": 1756,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_confirm",
+        "line": 3458,
+        "value": "pill",
+        "operation": "Assign"
+      }
+    ],
+    "_pick_canvas": [
+      {
+        "method": "__init__",
+        "line": 1204,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_draw",
+        "line": 1735,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_pick",
+        "line": 2904,
+        "value": "canvas",
+        "operation": "Assign"
+      }
+    ],
+    "_body_inner": [
+      {
+        "method": "__init__",
+        "line": 1234,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_prepare_body_host",
+        "line": 1470,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_prepare_body_host",
+        "line": 1518,
+        "value": "inner",
+        "operation": "Assign"
+      }
+    ],
+    "_body_canvas": [
+      {
+        "method": "__init__",
+        "line": 1235,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_prepare_body_host",
+        "line": 1471,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_prepare_body_host",
+        "line": 1517,
+        "value": "canvas",
+        "operation": "Assign"
+      }
+    ],
+    "_support_lead": [
+      {
+        "method": "__init__",
+        "line": 1173,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_draw",
+        "line": 1740,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_support_block",
+        "line": 3251,
+        "value": "lead",
+        "operation": "Assign"
+      }
+    ],
+    "_more_button": [
+      {
+        "method": "_more_link",
+        "line": 2143,
+        "value": "_Button(parent, text=C.BTN_LESS if open_ else C.BTN_MORE, command=toggle, font=self.font_s_bold, variant='ghost', compact=True)",
+        "operation": "Assign"
+      }
+    ],
+    "_power_label": [
+      {
+        "method": "_draw",
+        "line": 1757,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_power_notice",
+        "line": 2630,
+        "value": "label",
+        "operation": "Assign"
+      }
+    ],
+    "_pick_cards": [
+      {
+        "method": "__init__",
+        "line": 1205,
+        "value": "{}",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_draw",
+        "line": 1736,
+        "value": "{}",
+        "operation": "Assign"
+      }
+    ],
+    "_keyboard_layout_cards": [
+      {
+        "method": "_keyboard",
+        "line": 2460,
+        "value": "{}",
+        "operation": "Assign"
+      }
+    ],
+    "_keyboard_language_cards": [
+      {
+        "method": "_keyboard",
+        "line": 2461,
+        "value": "{}",
+        "operation": "Assign"
+      }
+    ],
+    "root": [
+      {
+        "method": "__init__",
+        "line": 1110,
+        "value": "tk.Tk()",
+        "operation": "Assign"
+      }
+    ],
+    "_refresh_results": [
+      {
+        "method": "__init__",
+        "line": 1214,
+        "value": "{}",
+        "operation": "AnnAssign"
+      }
+    ],
+    "_refresh_threads": [
+      {
+        "method": "__init__",
+        "line": 1215,
+        "value": "{}",
+        "operation": "AnnAssign"
+      }
+    ]
+  },
+  "all_unclassified_self_assignments": {
+    "_accessible_requested": [
+      {
+        "method": "__init__",
+        "line": 1230,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_open_reader_after_refresh",
+        "line": 4503,
+        "value": "True",
+        "operation": "Assign"
+      }
+    ],
+    "_after_id": [
+      {
+        "method": "__init__",
+        "line": 1200,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "__init__",
+        "line": 1256,
+        "value": "self.root.after(100, self._tick)",
+        "operation": "Assign"
+      },
+      {
+        "method": "_teardown",
+        "line": 1664,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_tick",
+        "line": 1695,
+        "value": "self.root.after(100, self._tick)",
+        "operation": "Assign"
+      },
+      {
+        "method": "_tick",
+        "line": 1699,
+        "value": "None",
+        "operation": "Assign"
+      }
+    ],
+    "_chrome_shown": [
+      {
+        "method": "__init__",
+        "line": 1186,
+        "value": "True",
+        "operation": "Assign"
+      },
+      {
+        "method": "_sync_chrome",
+        "line": 1451,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_sync_chrome",
+        "line": 1455,
+        "value": "True",
+        "operation": "Assign"
+      }
+    ],
+    "_confirm_var_trace": [
+      {
+        "method": "__init__",
+        "line": 1240,
+        "value": "self._confirm_var.trace_add('write', self._confirm_var_written)",
+        "operation": "AnnAssign"
+      }
+    ],
+    "_draw_generation": [
+      {
+        "method": "_draw",
+        "line": 1722,
+        "value": "getattr(self, '_draw_generation', 0) + 1",
+        "operation": "Assign"
+      }
+    ],
+    "_escape_held": [
+      {
+        "method": "__init__",
+        "line": 1227,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_on_escape",
+        "line": 4167,
+        "value": "True",
+        "operation": "Assign"
+      },
+      {
+        "method": "_on_escape",
+        "line": 4165,
+        "value": "True",
+        "operation": "Assign"
+      },
+      {
+        "method": "_on_escape_release",
+        "line": 4186,
+        "value": "False",
+        "operation": "Assign"
+      }
+    ],
+    "_escape_release_time": [
+      {
+        "method": "__init__",
+        "line": 1228,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_on_escape",
+        "line": 4168,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_on_escape_release",
+        "line": 4187,
+        "value": "self._key_event_time(_event)",
+        "operation": "Assign"
+      }
+    ],
+    "_f5_held": [
+      {
+        "method": "__init__",
+        "line": 1225,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_on_f5_release",
+        "line": 4529,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_on_key",
+        "line": 4545,
+        "value": "True",
+        "operation": "Assign"
+      },
+      {
+        "method": "_on_key",
+        "line": 4543,
+        "value": "True",
+        "operation": "Assign"
+      }
+    ],
+    "_f5_release_time": [
+      {
+        "method": "__init__",
+        "line": 1226,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_on_f5_release",
+        "line": 4530,
+        "value": "self._key_event_time(_event)",
+        "operation": "Assign"
+      },
+      {
+        "method": "_on_key",
+        "line": 4546,
+        "value": "None",
+        "operation": "Assign"
+      }
+    ],
+    "_fatal_ui": [
+      {
+        "method": "__init__",
+        "line": 1229,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_tick",
+        "line": 1700,
+        "value": "True",
+        "operation": "Assign"
+      }
+    ],
+    "_indet": [
+      {
+        "method": "__init__",
+        "line": 1193,
+        "value": "0.0",
+        "operation": "Assign"
+      },
+      {
+        "method": "_refresh_working",
+        "line": 3979,
+        "value": "(self._indet + 0.045) % 2.0",
+        "operation": "Assign"
+      }
+    ],
+    "_layout_drawing": [
+      {
+        "method": "__init__",
+        "line": 1237,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_on_root_configure",
+        "line": 1354,
+        "value": "True",
+        "operation": "Assign"
+      },
+      {
+        "method": "_on_root_configure",
+        "line": 1358,
+        "value": "False",
+        "operation": "Assign"
+      }
+    ],
+    "_pick_after_ids": [
+      {
+        "method": "__init__",
+        "line": 1211,
+        "value": "[]",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_pick",
+        "line": 2916,
+        "value": "[canvas.after_idle(lambda: self._pick_restore_tick(gen)), canvas.after(30, lambda: self._pick_restore_tick(gen)), canvas.after(90, lambda: self._pick_restore_tick(gen)), canvas.after(180, lambda: self._pick_restore_tick(gen, final=True))]",
+        "operation": "Assign"
+      },
+      {
+        "method": "_cancel_pick_restore",
+        "line": 3044,
+        "value": "[]",
+        "operation": "Assign"
+      }
+    ],
+    "_pick_applied": [
+      {
+        "method": "__init__",
+        "line": 1209,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_pick",
+        "line": 2912,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_pick",
+        "line": 2830,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_cancel_pick_restore",
+        "line": 3046,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_pick_restore_scroll",
+        "line": 3101,
+        "value": "canvas.yview()[0] * content_h",
+        "operation": "Assign"
+      },
+      {
+        "method": "_pick_restore_scroll",
+        "line": 3081,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_pick_restore_tick",
+        "line": 3118,
+        "value": "None",
+        "operation": "Assign"
+      }
+    ],
+    "_pick_applied_geometry": [
+      {
+        "method": "__init__",
+        "line": 1210,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_pick",
+        "line": 2913,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_cancel_pick_restore",
+        "line": 3047,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_pick_restore_scroll",
+        "line": 3102,
+        "value": "geometry",
+        "operation": "Assign"
+      }
+    ],
+    "_pick_ensure_visible": [
+      {
+        "method": "__init__",
+        "line": 1207,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_pick",
+        "line": 2829,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_click_disk",
+        "line": 3144,
+        "value": "visible and old_limits != new_limits",
+        "operation": "Assign"
+      },
+      {
+        "method": "_on_key",
+        "line": 4570,
+        "value": "True",
+        "operation": "Assign"
+      }
+    ],
+    "_pick_gen": [
+      {
+        "method": "__init__",
+        "line": 1212,
+        "value": "0",
+        "operation": "Assign"
+      },
+      {
+        "method": "_pick",
+        "line": 2914,
+        "value": "1",
+        "operation": "AugAssign"
+      }
+    ],
+    "_pick_restore_pending": [
+      {
+        "method": "__init__",
+        "line": 1208,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_draw",
+        "line": 1737,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_pick",
+        "line": 2911,
+        "value": "True",
+        "operation": "Assign"
+      },
+      {
+        "method": "_pick",
+        "line": 2828,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_pick",
+        "line": 2819,
+        "value": "True",
+        "operation": "Assign"
+      },
+      {
+        "method": "_comparison",
+        "line": 2988,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_cancel_pick_restore",
+        "line": 3045,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_pick_restore_scroll",
+        "line": 3080,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_pick_restore_tick",
+        "line": 3117,
+        "value": "False",
+        "operation": "Assign"
+      }
+    ],
+    "_pick_scroll": [
+      {
+        "method": "__init__",
+        "line": 1206,
+        "value": "0.0",
+        "operation": "Assign"
+      },
+      {
+        "method": "_draw",
+        "line": 1731,
+        "value": "self._pick_canvas.yview()[0] * max(1.0, content_h)",
+        "operation": "Assign"
+      },
+      {
+        "method": "_click_refresh",
+        "line": 4526,
+        "value": "0.0",
+        "operation": "Assign"
+      }
+    ],
+    "_refresh_lock": [
+      {
+        "method": "__init__",
+        "line": 1213,
+        "value": "threading.Lock()",
+        "operation": "Assign"
+      }
+    ],
+    "_report_space_release_pending": [
+      {
+        "method": "__init__",
+        "line": 1224,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_release_space",
+        "line": 4250,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_click_save_report",
+        "line": 4281,
+        "value": "keyboard_space",
+        "operation": "Assign"
+      }
+    ],
+    "_return_held": [
+      {
+        "method": "__init__",
+        "line": 1217,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_release_return",
+        "line": 4210,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_claim_return_press",
+        "line": 4312,
+        "value": "True",
+        "operation": "Assign"
+      },
+      {
+        "method": "_claim_return_press",
+        "line": 4310,
+        "value": "True",
+        "operation": "Assign"
+      }
+    ],
+    "_return_release_after": [
+      {
+        "method": "__init__",
+        "line": 1218,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_on_return_release",
+        "line": 4205,
+        "value": "self.root.after_idle(self._release_return)",
+        "operation": "Assign"
+      },
+      {
+        "method": "_release_return",
+        "line": 4209,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_claim_return_press",
+        "line": 4302,
+        "value": "None",
+        "operation": "Assign"
+      }
+    ],
+    "_return_release_time": [
+      {
+        "method": "__init__",
+        "line": 1219,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_on_return_release",
+        "line": 4204,
+        "value": "self._key_event_time(_event)",
+        "operation": "Assign"
+      },
+      {
+        "method": "_claim_return_press",
+        "line": 4313,
+        "value": "None",
+        "operation": "Assign"
+      }
+    ],
+    "_ring_px": [
+      {
+        "method": "__init__",
+        "line": 1236,
+        "value": "self.lay.ring",
+        "operation": "Assign"
+      },
+      {
+        "method": "_last",
+        "line": 3822,
+        "value": "ring_px",
+        "operation": "Assign"
+      }
+    ],
+    "_show_more": [
+      {
+        "method": "__init__",
+        "line": 1233,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_more_link",
+        "line": 2137,
+        "value": "not self._show_more",
+        "operation": "Assign"
+      },
+      {
+        "method": "_click_refresh",
+        "line": 4525,
+        "value": "False",
+        "operation": "Assign"
+      }
+    ],
+    "_shown": [
+      {
+        "method": "__init__",
+        "line": 1197,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_draw",
+        "line": 1805,
+        "value": "screen",
+        "operation": "Assign"
+      }
+    ],
+    "_shown_report_revision": [
+      {
+        "method": "__init__",
+        "line": 1198,
+        "value": "-1",
+        "operation": "Assign"
+      },
+      {
+        "method": "_draw",
+        "line": 1808,
+        "value": "working_revision",
+        "operation": "Assign"
+      },
+      {
+        "method": "_draw",
+        "line": 1810,
+        "value": "diagnostic_view.revision",
+        "operation": "Assign"
+      },
+      {
+        "method": "_draw",
+        "line": 1814,
+        "value": "report_view.revision",
+        "operation": "Assign"
+      },
+      {
+        "method": "_working",
+        "line": 3888,
+        "value": "self.w.report_view.revision",
+        "operation": "Assign"
+      }
+    ],
+    "_shown_sound_revision": [
+      {
+        "method": "__init__",
+        "line": 1199,
+        "value": "-1",
+        "operation": "Assign"
+      },
+      {
+        "method": "_draw",
+        "line": 1806,
+        "value": "getattr(self.w, 'sound_revision', 0)",
+        "operation": "Assign"
+      }
+    ],
+    "_space_action_active": [
+      {
+        "method": "__init__",
+        "line": 1223,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_owner_key",
+        "line": 2722,
+        "value": "True",
+        "operation": "Assign"
+      },
+      {
+        "method": "_owner_key",
+        "line": 2726,
+        "value": "False",
+        "operation": "Assign"
+      }
+    ],
+    "_space_held": [
+      {
+        "method": "__init__",
+        "line": 1220,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_claim_space_press",
+        "line": 4227,
+        "value": "True",
+        "operation": "Assign"
+      },
+      {
+        "method": "_claim_space_press",
+        "line": 4225,
+        "value": "True",
+        "operation": "Assign"
+      },
+      {
+        "method": "_release_space",
+        "line": 4248,
+        "value": "False",
+        "operation": "Assign"
+      }
+    ],
+    "_space_release_after": [
+      {
+        "method": "__init__",
+        "line": 1221,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_claim_space_press",
+        "line": 4221,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_on_space_release",
+        "line": 4243,
+        "value": "self.root.after(0, self._release_space)",
+        "operation": "Assign"
+      },
+      {
+        "method": "_release_space",
+        "line": 4247,
+        "value": "None",
+        "operation": "Assign"
+      }
+    ],
+    "_space_release_time": [
+      {
+        "method": "__init__",
+        "line": 1222,
+        "value": "None",
+        "operation": "AnnAssign"
+      },
+      {
+        "method": "_claim_space_press",
+        "line": 4228,
+        "value": "None",
+        "operation": "Assign"
+      },
+      {
+        "method": "_on_space_release",
+        "line": 4241,
+        "value": "self._key_event_time(_event)",
+        "operation": "Assign"
+      }
+    ],
+    "_support_copy_bound": [
+      {
+        "method": "__init__",
+        "line": 1174,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_unbind_support_copy",
+        "line": 3152,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_support_block",
+        "line": 3254,
+        "value": "True",
+        "operation": "Assign"
+      }
+    ],
+    "_typing_var_trace": [
+      {
+        "method": "__init__",
+        "line": 1241,
+        "value": "self._typing_var.trace_add('write', self._typing_var_written)",
+        "operation": "AnnAssign"
+      }
+    ],
+    "_ui_dead": [
+      {
+        "method": "__init__",
+        "line": 1216,
+        "value": "False",
+        "operation": "Assign"
+      },
+      {
+        "method": "_teardown",
+        "line": 1632,
+        "value": "True",
+        "operation": "Assign"
+      }
+    ],
+    "lay": [
+      {
+        "method": "__init__",
+        "line": 1148,
+        "value": "layout_for(*DEFAULT_SIZE, getattr(wizard, 'text_size', 'standard'))",
+        "operation": "Assign"
+      },
+      {
+        "method": "_sync_layout",
+        "line": 1337,
+        "value": "new",
+        "operation": "Assign"
+      },
+      {
+        "method": "_sync_layout",
+        "line": 1335,
+        "value": "new",
+        "operation": "Assign"
+      },
+      {
+        "method": "_sync_layout",
+        "line": 1324,
+        "value": "layout_for(*DEFAULT_SIZE, getattr(self.w, 'text_size', 'standard'))",
+        "operation": "Assign"
+      }
+    ],
+    "w": [
+      {
+        "method": "__init__",
+        "line": 1109,
+        "value": "wizard",
+        "operation": "Assign"
+      }
+    ]
+  },
+  "all_container_item_assignments": [
+    {
+      "field": "_keyboard_layout_cards",
+      "method": "_keyboard",
+      "line": 2519,
+      "value": "card"
+    },
+    {
+      "field": "_keyboard_language_cards",
+      "method": "_keyboard",
+      "line": 2561,
+      "value": "chip"
+    },
+    {
+      "field": "_pick_cards",
+      "method": "_pick",
+      "line": 2895,
+      "value": "card"
+    },
+    {
+      "field": "_refresh_threads",
+      "method": "_start_refresh_scan",
+      "line": 4426,
+      "value": "worker"
+    },
+    {
+      "field": "_refresh_results",
+      "method": "_refresh_worker",
+      "line": 4453,
+      "value": "outcome"
+    }
+  ],
+  "all_dynamic_setattr_calls": [
+    {
+      "method": "_teardown",
+      "line": 1640,
+      "call": "setattr(self, token_name, None)"
+    },
+    {
+      "method": "_teardown",
+      "line": 1658,
+      "call": "setattr(self, attr, None)"
+    }
+  ],
+  "external_owner_boundary": [
+    "Do not modify externally retained Variable._tk, Variable._root, peer trace tokens or peer callbacks.",
+    "Preserved Tkinter traceback raw tkapp locals and deliberately retained native roots are not claimed reclaimed.",
+    "Finite field clearing does not neutralize native wrapper destructors."
+  ],
+  "race_prevention": "Pin exact fonts/images/variables and root before unlink; also pin row local variables before their destruction. Keep pins through owner-thread cycle collection, then release pins on owner thread.",
+  "worker_note": "After _ui_dead=True under original protocol, late refresh outcomes are discarded. Retained worker self must contain no native graph; outcome/Thread dictionaries can be cleared under _refresh_lock without joining the worker.",
+  "fixture_cycle_note": "Prepared prior probe mainloop_and_raise closes over original_mainloop, creating a fixture-owned root->function->boundroot cycle. It is distinct from a root-free product frame. Retain original evidence; do not add production cleanup of fixture-owned attrs to satisfy it."
+}

@@ -1,0 +1,711 @@
+F..F..FFFFFFFFFFFF                                                       [100%]
+=================================== FAILURES ===================================
+_ test_rejected_launch_releases_ticket_and_allows_retry[RuntimeError-False-construct] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71f819ba9700>
+stage = 'construct', protected = False, failure = <class 'RuntimeError'>
+
+    @pytest.mark.parametrize("stage", ("construct", "start-before", "start-after"))
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_rejected_launch_releases_ticket_and_allows_retry(monkeypatch, stage, protected, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+                if self.first and stage == "construct":
+                    raise failure("controlled launch rejection")
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = stage == "start-after"
+                    raise failure("controlled launch rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+>               rejected = worker.submit(lambda: actions.append("rejected"), protected=protected)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/beamo_wipe/audio_jobs.py:93: in submit
+    self._thread = threading.Thread(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <audio_launch_complete_candidate.test_rejected_launch_releases_ticket_and_allows_retry.<locals>.FakeThread object at 0x71f819ba9a90>
+
+    def __init__(self, *, target, name, daemon):
+        assert name == "beamo-audio" and daemon is True
+        self.target = target
+        self.first = not constructed
+        self.handed_off = False
+        constructed.append(self)
+        if self.first and stage == "construct":
+>           raise failure("controlled launch rejection")
+E           RuntimeError: controlled launch rejection
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py:21: RuntimeError
+_ test_rejected_launch_releases_ticket_and_allows_retry[RuntimeError-True-construct] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71f819bab170>
+stage = 'construct', protected = True, failure = <class 'RuntimeError'>
+
+    @pytest.mark.parametrize("stage", ("construct", "start-before", "start-after"))
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_rejected_launch_releases_ticket_and_allows_retry(monkeypatch, stage, protected, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+                if self.first and stage == "construct":
+                    raise failure("controlled launch rejection")
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = stage == "start-after"
+                    raise failure("controlled launch rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+>               rejected = worker.submit(lambda: actions.append("rejected"), protected=protected)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/beamo_wipe/audio_jobs.py:93: in submit
+    self._thread = threading.Thread(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <audio_launch_complete_candidate.test_rejected_launch_releases_ticket_and_allows_retry.<locals>.FakeThread object at 0x71f819bab530>
+
+    def __init__(self, *, target, name, daemon):
+        assert name == "beamo-audio" and daemon is True
+        self.target = target
+        self.first = not constructed
+        self.handed_off = False
+        constructed.append(self)
+        if self.first and stage == "construct":
+>           raise failure("controlled launch rejection")
+E           RuntimeError: controlled launch rejection
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py:21: RuntimeError
+_ test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-False-construct] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71f819babfb0>
+stage = 'construct', protected = False, failure = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("stage", ("construct", "start-before", "start-after"))
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_rejected_launch_releases_ticket_and_allows_retry(monkeypatch, stage, protected, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+                if self.first and stage == "construct":
+                    raise failure("controlled launch rejection")
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = stage == "start-after"
+                    raise failure("controlled launch rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+                rejected = worker.submit(lambda: actions.append("rejected"), protected=protected)
+                ready, value = rejected.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled launch rejection"):
+                    worker.submit(lambda: actions.append("rejected"), protected=protected)
+            if constructed[0].handed_off:
+                constructed[0].target()
+            assert actions == []
+>           assert worker._pending is None and worker._pending_outcome is None
+E           assert ((<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819c18260>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819b67920>) is None)
+E            +  where (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819c18260>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819b67920>) = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819c18110>._pending
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py:44: AssertionError
+_ test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-False-start-before] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71f819baa5d0>
+stage = 'start-before', protected = False, failure = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("stage", ("construct", "start-before", "start-after"))
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_rejected_launch_releases_ticket_and_allows_retry(monkeypatch, stage, protected, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+                if self.first and stage == "construct":
+                    raise failure("controlled launch rejection")
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = stage == "start-after"
+                    raise failure("controlled launch rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+                rejected = worker.submit(lambda: actions.append("rejected"), protected=protected)
+                ready, value = rejected.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled launch rejection"):
+                    worker.submit(lambda: actions.append("rejected"), protected=protected)
+            if constructed[0].handed_off:
+                constructed[0].target()
+            assert actions == []
+>           assert worker._pending is None and worker._pending_outcome is None
+E           assert ((<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819babd40>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819b668e0>) is None)
+E            +  where (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819babd40>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819b668e0>) = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819ba9730>._pending
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py:44: AssertionError
+_ test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-False-start-after] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71f819c18050>
+stage = 'start-after', protected = False, failure = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("stage", ("construct", "start-before", "start-after"))
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_rejected_launch_releases_ticket_and_allows_retry(monkeypatch, stage, protected, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+                if self.first and stage == "construct":
+                    raise failure("controlled launch rejection")
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = stage == "start-after"
+                    raise failure("controlled launch rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+                rejected = worker.submit(lambda: actions.append("rejected"), protected=protected)
+                ready, value = rejected.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled launch rejection"):
+                    worker.submit(lambda: actions.append("rejected"), protected=protected)
+            if constructed[0].handed_off:
+                constructed[0].target()
+            assert actions == []
+>           assert worker._pending is None and worker._pending_outcome is None
+E           assert ((<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819c18920>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819b66840>) is None)
+E            +  where (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819c18920>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819b66840>) = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819c18080>._pending
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py:44: AssertionError
+_ test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-True-construct] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71f819c19160>
+stage = 'construct', protected = True, failure = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("stage", ("construct", "start-before", "start-after"))
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_rejected_launch_releases_ticket_and_allows_retry(monkeypatch, stage, protected, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+                if self.first and stage == "construct":
+                    raise failure("controlled launch rejection")
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = stage == "start-after"
+                    raise failure("controlled launch rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+                rejected = worker.submit(lambda: actions.append("rejected"), protected=protected)
+                ready, value = rejected.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled launch rejection"):
+                    worker.submit(lambda: actions.append("rejected"), protected=protected)
+            if constructed[0].handed_off:
+                constructed[0].target()
+            assert actions == []
+>           assert worker._pending is None and worker._pending_outcome is None
+E           assert (None is None and (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819c19520>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819bd82c0>) is None)
+E            +  where None = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819c19280>._pending
+E            +  and   (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819c19520>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819bd82c0>) = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819c19280>._pending_outcome
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py:44: AssertionError
+_ test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-True-start-before] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71f819c19d00>
+stage = 'start-before', protected = True, failure = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("stage", ("construct", "start-before", "start-after"))
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_rejected_launch_releases_ticket_and_allows_retry(monkeypatch, stage, protected, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+                if self.first and stage == "construct":
+                    raise failure("controlled launch rejection")
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = stage == "start-after"
+                    raise failure("controlled launch rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+                rejected = worker.submit(lambda: actions.append("rejected"), protected=protected)
+                ready, value = rejected.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled launch rejection"):
+                    worker.submit(lambda: actions.append("rejected"), protected=protected)
+            if constructed[0].handed_off:
+                constructed[0].target()
+            assert actions == []
+>           assert worker._pending is None and worker._pending_outcome is None
+E           assert (None is None and (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819c1a0c0>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819bd89a0>) is None)
+E            +  where None = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819c19e20>._pending
+E            +  and   (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819c1a0c0>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819bd89a0>) = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819c19e20>._pending_outcome
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py:44: AssertionError
+_ test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-True-start-after] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71f819ba9730>
+stage = 'start-after', protected = True, failure = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("stage", ("construct", "start-before", "start-after"))
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_rejected_launch_releases_ticket_and_allows_retry(monkeypatch, stage, protected, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+                if self.first and stage == "construct":
+                    raise failure("controlled launch rejection")
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = stage == "start-after"
+                    raise failure("controlled launch rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+                rejected = worker.submit(lambda: actions.append("rejected"), protected=protected)
+                ready, value = rejected.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled launch rejection"):
+                    worker.submit(lambda: actions.append("rejected"), protected=protected)
+            if constructed[0].handed_off:
+                constructed[0].target()
+            assert actions == []
+>           assert worker._pending is None and worker._pending_outcome is None
+E           assert (None is None and (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819babdd0>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819b668e0>) is None)
+E            +  where None = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819baa240>._pending
+E            +  and   (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819babdd0>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819b668e0>) = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819baa240>._pending_outcome
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py:44: AssertionError
+_ test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-False-construct] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71f819bab620>
+stage = 'construct', protected = False, failure = <class 'SystemExit'>
+
+    @pytest.mark.parametrize("stage", ("construct", "start-before", "start-after"))
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_rejected_launch_releases_ticket_and_allows_retry(monkeypatch, stage, protected, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+                if self.first and stage == "construct":
+                    raise failure("controlled launch rejection")
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = stage == "start-after"
+                    raise failure("controlled launch rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+                rejected = worker.submit(lambda: actions.append("rejected"), protected=protected)
+                ready, value = rejected.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled launch rejection"):
+                    worker.submit(lambda: actions.append("rejected"), protected=protected)
+            if constructed[0].handed_off:
+                constructed[0].target()
+            assert actions == []
+>           assert worker._pending is None and worker._pending_outcome is None
+E           assert ((<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819bab800>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819b66520>) is None)
+E            +  where (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819bab800>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819b66520>) = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819bab080>._pending
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py:44: AssertionError
+_ test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-False-start-before] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71f819ba9c10>
+stage = 'start-before', protected = False, failure = <class 'SystemExit'>
+
+    @pytest.mark.parametrize("stage", ("construct", "start-before", "start-after"))
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_rejected_launch_releases_ticket_and_allows_retry(monkeypatch, stage, protected, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+                if self.first and stage == "construct":
+                    raise failure("controlled launch rejection")
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = stage == "start-after"
+                    raise failure("controlled launch rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+                rejected = worker.submit(lambda: actions.append("rejected"), protected=protected)
+                ready, value = rejected.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled launch rejection"):
+                    worker.submit(lambda: actions.append("rejected"), protected=protected)
+            if constructed[0].handed_off:
+                constructed[0].target()
+            assert actions == []
+>           assert worker._pending is None and worker._pending_outcome is None
+E           assert ((<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819ba9910>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819b65260>) is None)
+E            +  where (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819ba9910>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819b65260>) = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819ba9d60>._pending
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py:44: AssertionError
+_ test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-False-start-after] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71f819c18f20>
+stage = 'start-after', protected = False, failure = <class 'SystemExit'>
+
+    @pytest.mark.parametrize("stage", ("construct", "start-before", "start-after"))
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_rejected_launch_releases_ticket_and_allows_retry(monkeypatch, stage, protected, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+                if self.first and stage == "construct":
+                    raise failure("controlled launch rejection")
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = stage == "start-after"
+                    raise failure("controlled launch rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+                rejected = worker.submit(lambda: actions.append("rejected"), protected=protected)
+                ready, value = rejected.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled launch rejection"):
+                    worker.submit(lambda: actions.append("rejected"), protected=protected)
+            if constructed[0].handed_off:
+                constructed[0].target()
+            assert actions == []
+>           assert worker._pending is None and worker._pending_outcome is None
+E           assert ((<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819c19670>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819b67740>) is None)
+E            +  where (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819c19670>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819b67740>) = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819c19010>._pending
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py:44: AssertionError
+_ test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-True-construct] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71f819c18d70>
+stage = 'construct', protected = True, failure = <class 'SystemExit'>
+
+    @pytest.mark.parametrize("stage", ("construct", "start-before", "start-after"))
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_rejected_launch_releases_ticket_and_allows_retry(monkeypatch, stage, protected, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+                if self.first and stage == "construct":
+                    raise failure("controlled launch rejection")
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = stage == "start-after"
+                    raise failure("controlled launch rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+                rejected = worker.submit(lambda: actions.append("rejected"), protected=protected)
+                ready, value = rejected.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled launch rejection"):
+                    worker.submit(lambda: actions.append("rejected"), protected=protected)
+            if constructed[0].handed_off:
+                constructed[0].target()
+            assert actions == []
+>           assert worker._pending is None and worker._pending_outcome is None
+E           assert (None is None and (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819c18560>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819bd8680>) is None)
+E            +  where None = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819c188f0>._pending
+E            +  and   (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819c18560>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819bd8680>) = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819c188f0>._pending_outcome
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py:44: AssertionError
+_ test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-True-start-before] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71f819c1aa20>
+stage = 'start-before', protected = True, failure = <class 'SystemExit'>
+
+    @pytest.mark.parametrize("stage", ("construct", "start-before", "start-after"))
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_rejected_launch_releases_ticket_and_allows_retry(monkeypatch, stage, protected, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+                if self.first and stage == "construct":
+                    raise failure("controlled launch rejection")
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = stage == "start-after"
+                    raise failure("controlled launch rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+                rejected = worker.submit(lambda: actions.append("rejected"), protected=protected)
+                ready, value = rejected.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled launch rejection"):
+                    worker.submit(lambda: actions.append("rejected"), protected=protected)
+            if constructed[0].handed_off:
+                constructed[0].target()
+            assert actions == []
+>           assert worker._pending is None and worker._pending_outcome is None
+E           assert (None is None and (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819c1ade0>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819bd8fe0>) is None)
+E            +  where None = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819c1ab10>._pending
+E            +  and   (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819c1ade0>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819bd8fe0>) = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819c1ab10>._pending_outcome
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py:44: AssertionError
+_ test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-True-start-after] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71f819c1b7a0>
+stage = 'start-after', protected = True, failure = <class 'SystemExit'>
+
+    @pytest.mark.parametrize("stage", ("construct", "start-before", "start-after"))
+    @pytest.mark.parametrize("protected", (False, True))
+    @pytest.mark.parametrize("failure", (RuntimeError, KeyboardInterrupt, SystemExit))
+    def test_rejected_launch_releases_ticket_and_allows_retry(monkeypatch, stage, protected, failure):
+        constructed = []
+        actions = []
+    
+        class FakeThread:
+            def __init__(self, *, target, name, daemon):
+                assert name == "beamo-audio" and daemon is True
+                self.target = target
+                self.first = not constructed
+                self.handed_off = False
+                constructed.append(self)
+                if self.first and stage == "construct":
+                    raise failure("controlled launch rejection")
+    
+            def start(self):
+                if self.first:
+                    self.handed_off = stage == "start-after"
+                    raise failure("controlled launch rejection")
+    
+            def join(self, timeout):
+                assert timeout == 0.6
+    
+        monkeypatch.setattr(audio_jobs.threading, "Thread", FakeThread)
+        worker = audio_jobs.AudioWorker()
+        try:
+            if failure is RuntimeError:
+                rejected = worker.submit(lambda: actions.append("rejected"), protected=protected)
+                ready, value = rejected.poll()
+                assert ready and isinstance(value, RuntimeError)
+            else:
+                with pytest.raises(failure, match="controlled launch rejection"):
+                    worker.submit(lambda: actions.append("rejected"), protected=protected)
+            if constructed[0].handed_off:
+                constructed[0].target()
+            assert actions == []
+>           assert worker._pending is None and worker._pending_outcome is None
+E           assert (None is None and (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819c1bb90>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819bd9760>) is None)
+E            +  where None = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819c1b890>._pending
+E            +  and   (<beamo_wipe.audio_jobs.AudioTicket object at 0x71f819c1bb90>, <function test_rejected_launch_releases_ticket_and_allows_retry.<locals>.<lambda> at 0x71f819bd9760>) = <beamo_wipe.audio_jobs.AudioWorker object at 0x71f819c1b890>._pending_outcome
+
+docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py:44: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py::test_rejected_launch_releases_ticket_and_allows_retry[RuntimeError-False-construct]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py::test_rejected_launch_releases_ticket_and_allows_retry[RuntimeError-True-construct]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py::test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-False-construct]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py::test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-False-start-before]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py::test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-False-start-after]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py::test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-True-construct]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py::test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-True-start-before]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py::test_rejected_launch_releases_ticket_and_allows_retry[KeyboardInterrupt-True-start-after]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py::test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-False-construct]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py::test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-False-start-before]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py::test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-False-start-after]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py::test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-True-construct]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py::test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-True-start-before]
+FAILED docs/evidence/bug-audit-20261017-pass20/runner-boot/audio_launch_complete_candidate.py::test_rejected_launch_releases_ticket_and_allows_retry[SystemExit-True-start-after]

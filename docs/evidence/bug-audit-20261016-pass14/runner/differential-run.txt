@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/tmp/pass14-runner/differential-matrix.py", line 108, in <module>
+    assert (result.ok, result.reason) == (expected[0], expected[2])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

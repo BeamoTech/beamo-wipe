@@ -1,0 +1,12 @@
+{
+  "changed_helpers": [
+    "_pin_retired_interpreter",
+    "_pin_retired_assets",
+    "_drain_retired_assets",
+    "_drain_retired_interpreters"
+  ],
+  "unchanged_top_level_definitions": 34,
+  "wizard_class_ast_unchanged": true,
+  "tk_sha256": "f43af23bfb37ca184a3a85c316c5f6235c528a102fd4a98493f9df9452db740b",
+  "dummy_thread_creation_avoided": "GC reads creator-only thread-local metadata; no current_thread call in drains"
+}

@@ -1,0 +1,172 @@
+[
+  {
+    "name": "plain-shortfall",
+    "large": false,
+    "bytes": 375,
+    "direct": {
+      "hidden_capacity": "warning",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "assessment": {
+      "hidden_capacity": "warning",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "result": "completed",
+    "assessment_text": "same-as-input"
+  },
+  {
+    "name": "plain-shortfall",
+    "large": true,
+    "bytes": 1260375,
+    "direct": {
+      "hidden_capacity": "warning",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "assessment": {
+      "hidden_capacity": "warning",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "result": "completed",
+    "assessment_text": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda\n******************************* Erasure Summary ********************************\n sda | 1 | 2 | 50.00%\n********************************************************************************\n********************************* Drive Status *********************************\n      sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "name": "prefixed-shortfall",
+    "large": false,
+    "bytes": 404,
+    "direct": {
+      "hidden_capacity": "warning",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "assessment": {
+      "hidden_capacity": "warning",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "result": "completed",
+    "assessment_text": "same-as-input"
+  },
+  {
+    "name": "prefixed-shortfall",
+    "large": true,
+    "bytes": 1260404,
+    "direct": {
+      "hidden_capacity": "warning",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "assessment": {
+      "hidden_capacity": "pass",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "result": "completed",
+    "assessment_text": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda\n******************************* Erasure Summary ********************************\n********************************************************************************\n********************************* Drive Status *********************************\n      sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "name": "prefixed-malformed",
+    "large": false,
+    "bytes": 410,
+    "direct": {
+      "hidden_capacity": "unavailable",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "assessment": {
+      "hidden_capacity": "unavailable",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "result": "completed",
+    "assessment_text": "same-as-input"
+  },
+  {
+    "name": "prefixed-malformed",
+    "large": true,
+    "bytes": 1260410,
+    "direct": {
+      "hidden_capacity": "unavailable",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "assessment": {
+      "hidden_capacity": "pass",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "result": "completed",
+    "assessment_text": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda\n******************************* Erasure Summary ********************************\n********************************************************************************\n********************************* Drive Status *********************************\n      sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "name": "prefixed-complete",
+    "large": false,
+    "bytes": 405,
+    "direct": {
+      "hidden_capacity": "pass",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "assessment": {
+      "hidden_capacity": "pass",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "result": "completed",
+    "assessment_text": "same-as-input"
+  },
+  {
+    "name": "prefixed-complete",
+    "large": true,
+    "bytes": 1260405,
+    "direct": {
+      "hidden_capacity": "pass",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "assessment": {
+      "hidden_capacity": "pass",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "result": "completed",
+    "assessment_text": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda\n******************************* Erasure Summary ********************************\n********************************************************************************\n********************************* Drive Status *********************************\n      sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  },
+  {
+    "name": "prefixed-close",
+    "large": false,
+    "bytes": 426,
+    "direct": {
+      "hidden_capacity": "pass",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "assessment": {
+      "hidden_capacity": "pass",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "result": "completed",
+    "assessment_text": "same-as-input"
+  },
+  {
+    "name": "prefixed-close",
+    "large": true,
+    "bytes": 1260426,
+    "direct": {
+      "hidden_capacity": "pass",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "assessment": {
+      "hidden_capacity": "unavailable",
+      "io_media": "unavailable",
+      "coverage": "warning"
+    },
+    "result": "completed",
+    "assessment_text": "[2026/10/16 12:00:00] info: No hidden sectors on /dev/sda\n******************************* Erasure Summary ********************************\n sda | 2 | 2 | 100.00%\n sda | 1 | 2 | 50.00%\n********************************* Drive Status *********************************\n      sda | Erased | 120MB/s | 00:01:00 | FAKE/DISK\n"
+  }
+]

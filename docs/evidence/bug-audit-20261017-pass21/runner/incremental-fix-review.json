@@ -1,0 +1,89 @@
+{
+  "app_imports_or_runtime": false,
+  "authenticated_starting_inputs": 779,
+  "branch": "fix/safety-audit-20261015",
+  "changed_starting_inputs": {
+    "src/beamo_wipe/diagnostics.py": {
+      "after_sha256": "3d58f52c4315db73ec5537c962c15370666f7dd598defd0e2cc7fefb7bc9b4d6",
+      "before_sha256": "274af6f2c094f2a2320cf26025f6fde4de463e47324aba8298ea1e96da8f9963"
+    },
+    "src/beamo_wipe/discover.py": {
+      "after_sha256": "504315316ded12cf11502614d067139be25908418851895053339fde7bc38067",
+      "before_sha256": "9f5a5a36ddf9dad77c7195920ed6290ed745d4684d63beeac103882fb6198f65"
+    },
+    "src/beamo_wipe/ui/accessible_wizard.py": {
+      "after_sha256": "dd2484ff669d1d08f4fa7927200517de07b420708094cd3249af5406fd0aac97",
+      "before_sha256": "2179d1be8dfa960266e611eb0429b1a33670c3ca25111a899355e39a8ca35fed"
+    },
+    "src/beamo_wipe/ui/tk_wizard.py": {
+      "after_sha256": "5b1fc0e16f95176ae706a9677d082d2daae7eb3d70a43ce244ce77363e35f9f5",
+      "before_sha256": "3f702e1ac6c3564372f9b633a2dcf0ea3e9d46553e29ceaf4cfa781e181e8ea7"
+    }
+  },
+  "commit": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "diff_sha256": "398f5da95fa0155fcb404139f9d889dce490870995482c7adb752661f381829f",
+  "limits": [
+    "No delegate app imports, tests or native/runtime actions.",
+    "Final canonical tests and exact frozen source are not yet reviewed.",
+    "Bounded injected constructor/trace-return/Event.set failures do not prove arbitrary interpreter-bytecode interruption.",
+    "No historical incident attribution or unavailable platform qualification inferred."
+  ],
+  "reviewed_utc": "2026-10-17T21:02:00.041462+00:00",
+  "reviewer": "Codex /root/pass21_runner_reports",
+  "runtime_receipt_readback": {
+    "command_status": {
+      "command": [
+        "dbus-run-session",
+        "--",
+        "xvfb-run",
+        "-a",
+        "-n",
+        "160",
+        "-s",
+        "-screen 0 1600x1000x24 -dpi 72",
+        "/tmp/beamo-pass21-python/bin/python3",
+        "-m",
+        "pytest",
+        "-q",
+        "-o",
+        "pythonpath=src",
+        "docs/evidence/bug-audit-20261017-pass21/discovery/missing-physical-name-probe.py",
+        "docs/evidence/bug-audit-20261017-pass21/discovery/noncanonical-physical-name-probe.py",
+        "docs/evidence/bug-audit-20261017-pass21/discovery/nonfinite-size-probe.py",
+        "docs/evidence/bug-audit-20261017-pass21/runner/diagnostics-unicode-boundary-probe.py",
+        "docs/evidence/bug-audit-20261017-pass21/ui/tk-variable-root-proof-v3.py",
+        "docs/evidence/bug-audit-20261017-pass21/ui/refresh-acceptance-proof.py",
+        "docs/evidence/bug-audit-20261017-pass21/ui/gtk-close-cleanup-proof.py",
+        "docs/evidence/bug-audit-20261017-pass21/ui/tk-trace-adoption-proof-v2.py",
+        "tests/test_discover.py",
+        "tests/test_safety.py",
+        "tests/test_tk_native_constructor_pass20.py",
+        "tests/test_tk_owner_trace_lifetime_pass19.py",
+        "tests/test_checkrow_trace_lifetime_pass18.py",
+        "--junitxml=/tmp/pass21-primary/fixes-focused.xml"
+      ],
+      "ended_utc": "2026-10-17T20:59:55.879530+00:00",
+      "exit_code": 0,
+      "started_utc": "2026-10-17T20:59:40.245724+00:00"
+    },
+    "junit_suites": [
+      {
+        "errors": "0",
+        "failures": "0",
+        "hostname": "srv1606478",
+        "name": "pytest",
+        "skipped": "0",
+        "tests": "338",
+        "time": "15.243",
+        "timestamp": "2026-10-17T20:59:40.524713+00:00"
+      }
+    ],
+    "owned_by": "root"
+  },
+  "source_only": true,
+  "starting_archive_sha256": "aba21de5157b329b61c7490cff9ecb183fdcf6da14883672b906c3f17d38d25d",
+  "starting_freeze_sha256": "bc83136ee6bd52c8ef4c80206c9b80b958845f839546eb57d8d518263d59ca04",
+  "unchanged_starting_inputs": 775,
+  "verdict": "PASS source review for proved bounded changes; final canonical modules/freeze/gates pending",
+  "worktree": "/root/dev/Beamo Wipe"
+}

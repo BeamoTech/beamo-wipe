@@ -1,0 +1,25 @@
+--- pass21-start/src/beamo_wipe/discover.py
++++ reviewed-current/src/beamo_wipe/discover.py
+@@ -185,7 +185,10 @@
+     if isinstance(value, int):
+         return value
+     if isinstance(value, float):
+-        return int(value)
++        try:
++            return int(value)
++        except OverflowError as exc:
++            raise ValueError("lsblk size is not finite") from exc
+     text = str(value).strip()
+     if not text:
+         return 0
+@@ -1371,6 +1374,10 @@
+         # Callers skip the node (per-node, so one bad node cannot hide the
+         # whole bus) with a diagnostic for maintainer triage.
+         raise ValueError("lsblk node has no usable device path")
++    if _node_type(node) == "disk" and (not name or "/" in name):
++        # Flat PKNAME ancestry uses the kernel name, not a path alias. Do not
++        # mint a target whose partition evidence cannot bind to that name.
++        raise ValueError("lsblk disk has no canonical kernel name")
+     label = _volume_label(node)
+     raw_model = _bounded_identity_metadata(node.get("model"), "model")
+     mountpoints = tuple(mp for mp in _node_mountpoints(node) if mp)

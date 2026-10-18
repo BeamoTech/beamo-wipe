@@ -1,0 +1,8 @@
+{
+  "frozen_input_files": 735,
+  "changed_after_freeze": [],
+  "runtime_source_sha256": "c0196a53381b5d3235b5f7cdd764d47b5ee074c2f684d18a26bb7c8183e8efcd",
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "branch": "fix/safety-audit-20261015",
+  "source_diff_sha256": "c6460cfdfff97b3801a3f9ad48af6909e0aa505f8822c979b01d536c8463cfb3"
+}

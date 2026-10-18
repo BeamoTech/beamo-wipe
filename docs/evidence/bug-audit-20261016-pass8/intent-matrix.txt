@@ -1,0 +1,10 @@
+{
+  "result": "PASS",
+  "observations": 96,
+  "corrupt_and_valid_values": 10,
+  "unsafe_modes": 3,
+  "replacement_refusal": 1,
+  "I/O_failure_then_retry": 2,
+  "concurrent_atomic_writes": 80,
+  "regular_files_only": true
+}

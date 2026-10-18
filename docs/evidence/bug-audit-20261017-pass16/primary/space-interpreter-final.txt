@@ -1,0 +1,1589 @@
+[ci-hosted] orca on a dedicated Xvfb 1600x1000 @ 72 DPI
+[ci-hosted] pytest under a separate Xvfb 1600x1000 @ 72 DPI
+dbus-daemon[24299]: [session uid=0 pid=24299] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=24328 comm="python3 -m pytest -p no:cacheprovider tests/test_a" label="unconfined")
+dbus-daemon[24299]: [session uid=0 pid=24299] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[24300]: [session uid=0 pid=24300] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=24327 comm="python3 -m pytest --deselect=tests/test_accessible" label="unconfined")
+dbus-daemon[24300]: [session uid=0 pid=24300] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[24337]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=24328 comm="python3 -m pytest -p no:cacheprovider tests/test_a" label="unconfined")
+dbus-daemon[24337]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+........................................................................ [  0%]
+....dbus-daemon[24347]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=24327 comm="python3 -m pytest --deselect=tests/test_accessible" label="unconfined")
+dbus-daemon[24347]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+.................................................................... [  1%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+........................................................................ [  4%]
+....                                                                        [100%]
+1 passed in 68.16s (0:01:08)
+..................................................................... [  5%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+...........................FFFFFF.FFFFF.........FFFFFF.................. [  9%]
+........................................................................ [  9%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 12%]
+........................................................................ [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 17%]
+........................................................................ [ 18%]
+........................................................................ [ 18%]
+........................................................................ [ 19%]
+........................................................................ [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 24%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................................ [ 32%]
+........................................................................ [ 33%]
+........................................................................ [ 34%]
+........................................................................ [ 35%]
+........................................................................ [ 36%]
+........................................................................ [ 36%]
+........................................................................ [ 37%]
+........................................................................ [ 38%]
+........................................................................ [ 39%]
+........................................................................ [ 40%]
+........................................................................ [ 41%]
+........................................................................ [ 42%]
+........................................................................ [ 43%]
+.....s..s............................................................... [ 44%]
+........................................................................ [ 45%]
+........................................................................ [ 46%]
+........................................................................ [ 46%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+........................................................................ [ 49%]
+........................................................................ [ 50%]
+........................................................................ [ 51%]
+........................................................................ [ 52%]
+........................................................................ [ 53%]
+........................................................................ [ 54%]
+..........F............................................................. [ 55%]
+........................................................................ [ 55%]
+........................................................................ [ 56%]
+........................................................................ [ 57%]
+........................................................................ [ 58%]
+........................................................................ [ 59%]
+............................................F........................... [ 60%]
+........................................................................ [ 61%]
+........................................................................ [ 62%]
+....................................................................sss. [ 63%]
+.s.ssssssss............................................................. [ 64%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 75%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 78%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+........................................................................ [ 81%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 83%]
+........................................................................ [ 84%]
+........................................................................ [ 85%]
+........................................................................ [ 86%]
+........................................................................ [ 87%]
+........................................................................ [ 88%]
+........................................................................ [ 89%]
+........................................................................ [ 90%]
+........................................................................ [ 91%]
+........................................................................ [ 92%]
+........................................................................ [ 92%]
+........................................................................ [ 93%]
+............................FF....FF.................................... [ 94%]
+........................................................................ [ 95%]
+........................................................................ [ 96%]
+........................................................................ [ 97%]
+........................................................................ [ 98%]
+........................................................................ [ 99%]
+...........................................................              [100%]
+=================================== FAILURES ===================================
+_____ test_parallel_sources_waits_for_every_gate_and_propagates_failure[] ______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo0')
+failed_gate = ''
+
+    @pytest.mark.parametrize("failed_gate", ["", "lint", "tests", "desktop-launchers", "negative", "preview"])
+    def test_parallel_sources_waits_for_every_gate_and_propagates_failure(tmp_path, failed_gate):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        uname = tools / "uname"
+        uname.write_text("#!/bin/sh\necho 'Linux x86_64'\n")
+        uname.chmod(0o755)
+        docker = tools / "docker"
+        docker.write_text(f"#!{sys.executable}\n" + '''
+    import json, os, pathlib, sys, time
+    root = pathlib.Path(os.environ['FAKE_OUTPUT'])
+    gate = sys.argv[-1]
+    (root / (gate + '.json')).write_text(json.dumps(sys.argv[1:]))
+    deadline = time.monotonic() + 10
+    while len(list(root.glob('*.json'))) != 5:
+        if time.monotonic() > deadline:
+            raise SystemExit('source gates did not start in parallel')
+        time.sleep(.01)
+    (root / (gate + '.done')).touch()
+    raise SystemExit(7 if gate == os.environ['FAILED_GATE'] else 0)
+    ''')
+        docker.chmod(0o755)
+        output = tmp_path / "output"
+        output.mkdir()
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts/ci-blacksmith.sh"), "sources"],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     GITHUB_ACTIONS="true", RUNNER_ENVIRONMENT="self-hosted",
+                     GITHUB_RUN_ID="123", GITHUB_RUN_ATTEMPT="2", GITHUB_REPOSITORY="fixture/repo",
+                     FAKE_OUTPUT=str(output), FAILED_GATE=failed_gate),
+            capture_output=True, text=True, timeout=30,
+        )
+>       assert result.returncode == int(bool(failed_gate)), result.stderr
+E       AssertionError: /root/dev/Beamo Wipe/scripts/ci-blacksmith.sh: line 34: /tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo0/bin/docker: cannot execute: required file not found
+E         /root/dev/Beamo Wipe/scripts/ci-blacksmith.sh: line 34: /tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo0/bin/docker: cannot execute: required file not found
+E         /root/dev/Beamo Wipe/scripts/ci-blacksmith.sh: line 34: /tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo0/bin/docker: cannot execute: required file not found
+E         /root/dev/Beamo Wipe/scripts/ci-blacksmith.sh: line 34: /tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo0/bin/docker: cannot execute: required file not found
+E         /root/dev/Beamo Wipe/scripts/ci-blacksmith.sh: line 34: /tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo0/bin/docker: cannot execute: required file not found
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['bash', '/root/dev/Beamo Wipe/scripts/ci-blacksmith.sh', 'sources'], returncode=1, stdout='', s...4: /tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo0/bin/docker: cannot execute: required file not found\n').returncode
+E        +  and   0 = int(False)
+E        +    where False = bool('')
+
+tests/test_blacksmith_ci.py:46: AssertionError
+___ test_parallel_sources_waits_for_every_gate_and_propagates_failure[lint] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo1')
+failed_gate = 'lint'
+
+    @pytest.mark.parametrize("failed_gate", ["", "lint", "tests", "desktop-launchers", "negative", "preview"])
+    def test_parallel_sources_waits_for_every_gate_and_propagates_failure(tmp_path, failed_gate):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        uname = tools / "uname"
+        uname.write_text("#!/bin/sh\necho 'Linux x86_64'\n")
+        uname.chmod(0o755)
+        docker = tools / "docker"
+        docker.write_text(f"#!{sys.executable}\n" + '''
+    import json, os, pathlib, sys, time
+    root = pathlib.Path(os.environ['FAKE_OUTPUT'])
+    gate = sys.argv[-1]
+    (root / (gate + '.json')).write_text(json.dumps(sys.argv[1:]))
+    deadline = time.monotonic() + 10
+    while len(list(root.glob('*.json'))) != 5:
+        if time.monotonic() > deadline:
+            raise SystemExit('source gates did not start in parallel')
+        time.sleep(.01)
+    (root / (gate + '.done')).touch()
+    raise SystemExit(7 if gate == os.environ['FAILED_GATE'] else 0)
+    ''')
+        docker.chmod(0o755)
+        output = tmp_path / "output"
+        output.mkdir()
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts/ci-blacksmith.sh"), "sources"],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     GITHUB_ACTIONS="true", RUNNER_ENVIRONMENT="self-hosted",
+                     GITHUB_RUN_ID="123", GITHUB_RUN_ATTEMPT="2", GITHUB_REPOSITORY="fixture/repo",
+                     FAKE_OUTPUT=str(output), FAILED_GATE=failed_gate),
+            capture_output=True, text=True, timeout=30,
+        )
+        assert result.returncode == int(bool(failed_gate)), result.stderr
+>       assert len(list(output.glob("*.done"))) == 5
+E       AssertionError: assert 0 == 5
+E        +  where 0 = len([])
+E        +    where [] = list(<generator object Path.glob at 0x7406094cfef0>)
+E        +      where <generator object Path.glob at 0x7406094cfef0> = glob('*.done')
+E        +        where glob = PosixPath('/tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo1/output').glob
+
+tests/test_blacksmith_ci.py:47: AssertionError
+___ test_parallel_sources_waits_for_every_gate_and_propagates_failure[tests] ___
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo2')
+failed_gate = 'tests'
+
+    @pytest.mark.parametrize("failed_gate", ["", "lint", "tests", "desktop-launchers", "negative", "preview"])
+    def test_parallel_sources_waits_for_every_gate_and_propagates_failure(tmp_path, failed_gate):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        uname = tools / "uname"
+        uname.write_text("#!/bin/sh\necho 'Linux x86_64'\n")
+        uname.chmod(0o755)
+        docker = tools / "docker"
+        docker.write_text(f"#!{sys.executable}\n" + '''
+    import json, os, pathlib, sys, time
+    root = pathlib.Path(os.environ['FAKE_OUTPUT'])
+    gate = sys.argv[-1]
+    (root / (gate + '.json')).write_text(json.dumps(sys.argv[1:]))
+    deadline = time.monotonic() + 10
+    while len(list(root.glob('*.json'))) != 5:
+        if time.monotonic() > deadline:
+            raise SystemExit('source gates did not start in parallel')
+        time.sleep(.01)
+    (root / (gate + '.done')).touch()
+    raise SystemExit(7 if gate == os.environ['FAILED_GATE'] else 0)
+    ''')
+        docker.chmod(0o755)
+        output = tmp_path / "output"
+        output.mkdir()
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts/ci-blacksmith.sh"), "sources"],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     GITHUB_ACTIONS="true", RUNNER_ENVIRONMENT="self-hosted",
+                     GITHUB_RUN_ID="123", GITHUB_RUN_ATTEMPT="2", GITHUB_REPOSITORY="fixture/repo",
+                     FAKE_OUTPUT=str(output), FAILED_GATE=failed_gate),
+            capture_output=True, text=True, timeout=30,
+        )
+        assert result.returncode == int(bool(failed_gate)), result.stderr
+>       assert len(list(output.glob("*.done"))) == 5
+E       AssertionError: assert 0 == 5
+E        +  where 0 = len([])
+E        +    where [] = list(<generator object Path.glob at 0x7406094cfbc0>)
+E        +      where <generator object Path.glob at 0x7406094cfbc0> = glob('*.done')
+E        +        where glob = PosixPath('/tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo2/output').glob
+
+tests/test_blacksmith_ci.py:47: AssertionError
+_ test_parallel_sources_waits_for_every_gate_and_propagates_failure[desktop-launchers] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo3')
+failed_gate = 'desktop-launchers'
+
+    @pytest.mark.parametrize("failed_gate", ["", "lint", "tests", "desktop-launchers", "negative", "preview"])
+    def test_parallel_sources_waits_for_every_gate_and_propagates_failure(tmp_path, failed_gate):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        uname = tools / "uname"
+        uname.write_text("#!/bin/sh\necho 'Linux x86_64'\n")
+        uname.chmod(0o755)
+        docker = tools / "docker"
+        docker.write_text(f"#!{sys.executable}\n" + '''
+    import json, os, pathlib, sys, time
+    root = pathlib.Path(os.environ['FAKE_OUTPUT'])
+    gate = sys.argv[-1]
+    (root / (gate + '.json')).write_text(json.dumps(sys.argv[1:]))
+    deadline = time.monotonic() + 10
+    while len(list(root.glob('*.json'))) != 5:
+        if time.monotonic() > deadline:
+            raise SystemExit('source gates did not start in parallel')
+        time.sleep(.01)
+    (root / (gate + '.done')).touch()
+    raise SystemExit(7 if gate == os.environ['FAILED_GATE'] else 0)
+    ''')
+        docker.chmod(0o755)
+        output = tmp_path / "output"
+        output.mkdir()
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts/ci-blacksmith.sh"), "sources"],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     GITHUB_ACTIONS="true", RUNNER_ENVIRONMENT="self-hosted",
+                     GITHUB_RUN_ID="123", GITHUB_RUN_ATTEMPT="2", GITHUB_REPOSITORY="fixture/repo",
+                     FAKE_OUTPUT=str(output), FAILED_GATE=failed_gate),
+            capture_output=True, text=True, timeout=30,
+        )
+        assert result.returncode == int(bool(failed_gate)), result.stderr
+>       assert len(list(output.glob("*.done"))) == 5
+E       AssertionError: assert 0 == 5
+E        +  where 0 = len([])
+E        +    where [] = list(<generator object Path.glob at 0x7406094ceac0>)
+E        +      where <generator object Path.glob at 0x7406094ceac0> = glob('*.done')
+E        +        where glob = PosixPath('/tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo3/output').glob
+
+tests/test_blacksmith_ci.py:47: AssertionError
+_ test_parallel_sources_waits_for_every_gate_and_propagates_failure[negative] __
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo4')
+failed_gate = 'negative'
+
+    @pytest.mark.parametrize("failed_gate", ["", "lint", "tests", "desktop-launchers", "negative", "preview"])
+    def test_parallel_sources_waits_for_every_gate_and_propagates_failure(tmp_path, failed_gate):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        uname = tools / "uname"
+        uname.write_text("#!/bin/sh\necho 'Linux x86_64'\n")
+        uname.chmod(0o755)
+        docker = tools / "docker"
+        docker.write_text(f"#!{sys.executable}\n" + '''
+    import json, os, pathlib, sys, time
+    root = pathlib.Path(os.environ['FAKE_OUTPUT'])
+    gate = sys.argv[-1]
+    (root / (gate + '.json')).write_text(json.dumps(sys.argv[1:]))
+    deadline = time.monotonic() + 10
+    while len(list(root.glob('*.json'))) != 5:
+        if time.monotonic() > deadline:
+            raise SystemExit('source gates did not start in parallel')
+        time.sleep(.01)
+    (root / (gate + '.done')).touch()
+    raise SystemExit(7 if gate == os.environ['FAILED_GATE'] else 0)
+    ''')
+        docker.chmod(0o755)
+        output = tmp_path / "output"
+        output.mkdir()
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts/ci-blacksmith.sh"), "sources"],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     GITHUB_ACTIONS="true", RUNNER_ENVIRONMENT="self-hosted",
+                     GITHUB_RUN_ID="123", GITHUB_RUN_ATTEMPT="2", GITHUB_REPOSITORY="fixture/repo",
+                     FAKE_OUTPUT=str(output), FAILED_GATE=failed_gate),
+            capture_output=True, text=True, timeout=30,
+        )
+        assert result.returncode == int(bool(failed_gate)), result.stderr
+>       assert len(list(output.glob("*.done"))) == 5
+E       AssertionError: assert 0 == 5
+E        +  where 0 = len([])
+E        +    where [] = list(<generator object Path.glob at 0x740608f706a0>)
+E        +      where <generator object Path.glob at 0x740608f706a0> = glob('*.done')
+E        +        where glob = PosixPath('/tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo4/output').glob
+
+tests/test_blacksmith_ci.py:47: AssertionError
+__ test_parallel_sources_waits_for_every_gate_and_propagates_failure[preview] __
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo5')
+failed_gate = 'preview'
+
+    @pytest.mark.parametrize("failed_gate", ["", "lint", "tests", "desktop-launchers", "negative", "preview"])
+    def test_parallel_sources_waits_for_every_gate_and_propagates_failure(tmp_path, failed_gate):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        uname = tools / "uname"
+        uname.write_text("#!/bin/sh\necho 'Linux x86_64'\n")
+        uname.chmod(0o755)
+        docker = tools / "docker"
+        docker.write_text(f"#!{sys.executable}\n" + '''
+    import json, os, pathlib, sys, time
+    root = pathlib.Path(os.environ['FAKE_OUTPUT'])
+    gate = sys.argv[-1]
+    (root / (gate + '.json')).write_text(json.dumps(sys.argv[1:]))
+    deadline = time.monotonic() + 10
+    while len(list(root.glob('*.json'))) != 5:
+        if time.monotonic() > deadline:
+            raise SystemExit('source gates did not start in parallel')
+        time.sleep(.01)
+    (root / (gate + '.done')).touch()
+    raise SystemExit(7 if gate == os.environ['FAILED_GATE'] else 0)
+    ''')
+        docker.chmod(0o755)
+        output = tmp_path / "output"
+        output.mkdir()
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts/ci-blacksmith.sh"), "sources"],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     GITHUB_ACTIONS="true", RUNNER_ENVIRONMENT="self-hosted",
+                     GITHUB_RUN_ID="123", GITHUB_RUN_ATTEMPT="2", GITHUB_REPOSITORY="fixture/repo",
+                     FAKE_OUTPUT=str(output), FAILED_GATE=failed_gate),
+            capture_output=True, text=True, timeout=30,
+        )
+        assert result.returncode == int(bool(failed_gate)), result.stderr
+>       assert len(list(output.glob("*.done"))) == 5
+E       AssertionError: assert 0 == 5
+E        +  where 0 = len([])
+E        +    where [] = list(<generator object Path.glob at 0x740608f709d0>)
+E        +      where <generator object Path.glob at 0x740608f709d0> = glob('*.done')
+E        +        where glob = PosixPath('/tmp/pytest-of-root/pytest-4/test_parallel_sources_waits_fo5/output').glob
+
+tests/test_blacksmith_ci.py:47: AssertionError
+______ test_kvm_preflight_checks_privileged_api_not_runner_permissions[0] ______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_kvm_preflight_checks_priv0')
+probe_code = 0
+
+    @pytest.mark.parametrize("probe_code", [0, 1])
+    def test_kvm_preflight_checks_privileged_api_not_runner_permissions(tmp_path, probe_code):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        (tools / "uname").write_text("#!/bin/sh\necho 'Linux x86_64'\n")
+        (tools / "grep").write_text("#!/bin/sh\nexit 0\n")
+        # No KVM device exists on this fixture host. sudo represents the isolated
+        # worker's privileged view, where the device exists but its API may fail.
+        (tools / "sudo").write_text(f"#!{sys.executable}\n" + '''
+    import os, pathlib, sys
+    if sys.argv[1:] in (['test', '-c', '/dev/kvm'], ['test', '-c', '/dev/loop-control']):
+        raise SystemExit(0)
+    assert sys.argv[1:] == ['python3', '-']
+    with pathlib.Path(os.environ['PROBE_OUTPUT']).open('a') as output:
+        output.write(sys.stdin.read())
+    raise SystemExit(int(os.environ['PROBE_CODE']))
+    ''')
+        for tool in tools.iterdir():
+            tool.chmod(0o755)
+        probe = tmp_path / "probe.py"
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts/check-ci-kvm.sh")],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     GITHUB_ACTIONS="true", PROBE_OUTPUT=str(probe), PROBE_CODE=str(probe_code)),
+            capture_output=True, text=True, timeout=10,
+        )
+>       assert result.returncode == probe_code, result.stderr
+E       AssertionError: /root/dev/Beamo Wipe/scripts/check-ci-kvm.sh: line 11: /tmp/pytest-of-root/pytest-4/test_kvm_preflight_checks_priv0/bin/sudo: cannot execute: required file not found
+E         /root/dev/Beamo Wipe/scripts/check-ci-kvm.sh: line 13: /tmp/pytest-of-root/pytest-4/test_kvm_preflight_checks_priv0/bin/sudo: cannot execute: required file not found
+E         
+E       assert 127 == 0
+E        +  where 127 = CompletedProcess(args=['bash', '/root/dev/Beamo Wipe/scripts/check-ci-kvm.sh'], returncode=127, stdout='', stderr='/ro... 13: /tmp/pytest-of-root/pytest-4/test_kvm_preflight_checks_priv0/bin/sudo: cannot execute: required file not found\n').returncode
+
+tests/test_blacksmith_ci.py:92: AssertionError
+______ test_kvm_preflight_checks_privileged_api_not_runner_permissions[1] ______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_kvm_preflight_checks_priv1')
+probe_code = 1
+
+    @pytest.mark.parametrize("probe_code", [0, 1])
+    def test_kvm_preflight_checks_privileged_api_not_runner_permissions(tmp_path, probe_code):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        (tools / "uname").write_text("#!/bin/sh\necho 'Linux x86_64'\n")
+        (tools / "grep").write_text("#!/bin/sh\nexit 0\n")
+        # No KVM device exists on this fixture host. sudo represents the isolated
+        # worker's privileged view, where the device exists but its API may fail.
+        (tools / "sudo").write_text(f"#!{sys.executable}\n" + '''
+    import os, pathlib, sys
+    if sys.argv[1:] in (['test', '-c', '/dev/kvm'], ['test', '-c', '/dev/loop-control']):
+        raise SystemExit(0)
+    assert sys.argv[1:] == ['python3', '-']
+    with pathlib.Path(os.environ['PROBE_OUTPUT']).open('a') as output:
+        output.write(sys.stdin.read())
+    raise SystemExit(int(os.environ['PROBE_CODE']))
+    ''')
+        for tool in tools.iterdir():
+            tool.chmod(0o755)
+        probe = tmp_path / "probe.py"
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts/check-ci-kvm.sh")],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     GITHUB_ACTIONS="true", PROBE_OUTPUT=str(probe), PROBE_CODE=str(probe_code)),
+            capture_output=True, text=True, timeout=10,
+        )
+>       assert result.returncode == probe_code, result.stderr
+E       AssertionError: /root/dev/Beamo Wipe/scripts/check-ci-kvm.sh: line 11: /tmp/pytest-of-root/pytest-4/test_kvm_preflight_checks_priv1/bin/sudo: cannot execute: required file not found
+E         /root/dev/Beamo Wipe/scripts/check-ci-kvm.sh: line 13: /tmp/pytest-of-root/pytest-4/test_kvm_preflight_checks_priv1/bin/sudo: cannot execute: required file not found
+E         
+E       assert 127 == 1
+E        +  where 127 = CompletedProcess(args=['bash', '/root/dev/Beamo Wipe/scripts/check-ci-kvm.sh'], returncode=127, stdout='', stderr='/ro... 13: /tmp/pytest-of-root/pytest-4/test_kvm_preflight_checks_priv1/bin/sudo: cannot execute: required file not found\n').returncode
+
+tests/test_blacksmith_ci.py:92: AssertionError
+____ test_loop_pool_prepares_concurrent_nodes_and_cleans_only_owned_files[] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_loop_pool_prepares_concur0')
+failure = ''
+
+    @pytest.mark.parametrize("failure", ["", "attach", "ownership"])
+    def test_loop_pool_prepares_concurrent_nodes_and_cleans_only_owned_files(tmp_path, failure):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        state = tmp_path / "loops.json"
+        state.write_text(json.dumps({"loops": {}, "peak": 0, "files": []}))
+        command = tools / "losetup"
+        command.write_text(f"#!{sys.executable}\n" + '''
+    import json, os, pathlib, sys
+    path = pathlib.Path(os.environ['LOOP_STATE'])
+    state = json.loads(path.read_text())
+    args = sys.argv[1:]
+    failure = os.environ['LOOP_FAILURE']
+    if args[:3] == ['--find', '--show', '--read-only']:
+        if failure == 'attach' and len(state['loops']) == 3:
+            raise SystemExit(1)
+        source = pathlib.Path(args[3])
+        assert source.is_file() and source.stat().st_size == 1024 * 1024
+        device = '/dev/loop' + str(len(state['loops']))
+        state['loops'][device] = str(source)
+        state['files'].append(str(source))
+        state['peak'] = max(state['peak'], len(state['loops']))
+        print(device)
+    elif args[:5] == ['--list', '--noheadings', '--raw', '--output', 'BACK-FILE']:
+        print('another-owner' if failure == 'ownership' and args[5] == '/dev/loop0'
+              else state['loops'][args[5]])
+    elif args[0] == '--detach':
+        assert not (failure == 'ownership' and args[1] == '/dev/loop0')
+        del state['loops'][args[1]]
+    else:
+        raise AssertionError(args)
+    path.write_text(json.dumps(state))
+    ''')
+        command.chmod(0o755)
+        shell = (ROOT / "scripts/check-ci-kvm.sh").read_text()
+        code = shell.split("sudo python3 - <<'PY'\n")[2].split("\nPY", 1)[0]
+        result = subprocess.run(
+            [sys.executable, "-c", code],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     TMPDIR=str(tmp_path), LOOP_STATE=str(state), LOOP_FAILURE=failure),
+            capture_output=True, text=True, timeout=15,
+        )
+        recorded = json.loads(state.read_text())
+        assert (result.returncode == 0) == (failure == ""), result.stderr
+>       assert recorded['peak'] == (3 if failure == 'attach' else 8)
+E       assert 0 == 8
+
+tests/test_blacksmith_ci.py:141: AssertionError
+_ test_loop_pool_prepares_concurrent_nodes_and_cleans_only_owned_files[attach] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_loop_pool_prepares_concur1')
+failure = 'attach'
+
+    @pytest.mark.parametrize("failure", ["", "attach", "ownership"])
+    def test_loop_pool_prepares_concurrent_nodes_and_cleans_only_owned_files(tmp_path, failure):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        state = tmp_path / "loops.json"
+        state.write_text(json.dumps({"loops": {}, "peak": 0, "files": []}))
+        command = tools / "losetup"
+        command.write_text(f"#!{sys.executable}\n" + '''
+    import json, os, pathlib, sys
+    path = pathlib.Path(os.environ['LOOP_STATE'])
+    state = json.loads(path.read_text())
+    args = sys.argv[1:]
+    failure = os.environ['LOOP_FAILURE']
+    if args[:3] == ['--find', '--show', '--read-only']:
+        if failure == 'attach' and len(state['loops']) == 3:
+            raise SystemExit(1)
+        source = pathlib.Path(args[3])
+        assert source.is_file() and source.stat().st_size == 1024 * 1024
+        device = '/dev/loop' + str(len(state['loops']))
+        state['loops'][device] = str(source)
+        state['files'].append(str(source))
+        state['peak'] = max(state['peak'], len(state['loops']))
+        print(device)
+    elif args[:5] == ['--list', '--noheadings', '--raw', '--output', 'BACK-FILE']:
+        print('another-owner' if failure == 'ownership' and args[5] == '/dev/loop0'
+              else state['loops'][args[5]])
+    elif args[0] == '--detach':
+        assert not (failure == 'ownership' and args[1] == '/dev/loop0')
+        del state['loops'][args[1]]
+    else:
+        raise AssertionError(args)
+    path.write_text(json.dumps(state))
+    ''')
+        command.chmod(0o755)
+        shell = (ROOT / "scripts/check-ci-kvm.sh").read_text()
+        code = shell.split("sudo python3 - <<'PY'\n")[2].split("\nPY", 1)[0]
+        result = subprocess.run(
+            [sys.executable, "-c", code],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     TMPDIR=str(tmp_path), LOOP_STATE=str(state), LOOP_FAILURE=failure),
+            capture_output=True, text=True, timeout=15,
+        )
+        recorded = json.loads(state.read_text())
+>       assert (result.returncode == 0) == (failure == ""), result.stderr
+E       AssertionError: 
+E       assert (0 == 0) == ('attach' == ''
+E        +  where 0 = CompletedProcess(args=['/root/dev/Beamo Wipe/.venv-linux/bin/python3', '-c', "import os\nfrom pathlib import Path\nimp...ttachments succeeded.\nPrivate loop probes detached and removed; squashfs and FAT support are available.\n', stderr='').returncode
+E         
+E         + attach)
+
+tests/test_blacksmith_ci.py:140: AssertionError
+_ test_loop_pool_prepares_concurrent_nodes_and_cleans_only_owned_files[ownership] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_loop_pool_prepares_concur2')
+failure = 'ownership'
+
+    @pytest.mark.parametrize("failure", ["", "attach", "ownership"])
+    def test_loop_pool_prepares_concurrent_nodes_and_cleans_only_owned_files(tmp_path, failure):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        state = tmp_path / "loops.json"
+        state.write_text(json.dumps({"loops": {}, "peak": 0, "files": []}))
+        command = tools / "losetup"
+        command.write_text(f"#!{sys.executable}\n" + '''
+    import json, os, pathlib, sys
+    path = pathlib.Path(os.environ['LOOP_STATE'])
+    state = json.loads(path.read_text())
+    args = sys.argv[1:]
+    failure = os.environ['LOOP_FAILURE']
+    if args[:3] == ['--find', '--show', '--read-only']:
+        if failure == 'attach' and len(state['loops']) == 3:
+            raise SystemExit(1)
+        source = pathlib.Path(args[3])
+        assert source.is_file() and source.stat().st_size == 1024 * 1024
+        device = '/dev/loop' + str(len(state['loops']))
+        state['loops'][device] = str(source)
+        state['files'].append(str(source))
+        state['peak'] = max(state['peak'], len(state['loops']))
+        print(device)
+    elif args[:5] == ['--list', '--noheadings', '--raw', '--output', 'BACK-FILE']:
+        print('another-owner' if failure == 'ownership' and args[5] == '/dev/loop0'
+              else state['loops'][args[5]])
+    elif args[0] == '--detach':
+        assert not (failure == 'ownership' and args[1] == '/dev/loop0')
+        del state['loops'][args[1]]
+    else:
+        raise AssertionError(args)
+    path.write_text(json.dumps(state))
+    ''')
+        command.chmod(0o755)
+        shell = (ROOT / "scripts/check-ci-kvm.sh").read_text()
+        code = shell.split("sudo python3 - <<'PY'\n")[2].split("\nPY", 1)[0]
+        result = subprocess.run(
+            [sys.executable, "-c", code],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     TMPDIR=str(tmp_path), LOOP_STATE=str(state), LOOP_FAILURE=failure),
+            capture_output=True, text=True, timeout=15,
+        )
+        recorded = json.loads(state.read_text())
+>       assert (result.returncode == 0) == (failure == ""), result.stderr
+E       AssertionError: 
+E       assert (0 == 0) == ('ownership' == ''
+E        +  where 0 = CompletedProcess(args=['/root/dev/Beamo Wipe/.venv-linux/bin/python3', '-c', "import os\nfrom pathlib import Path\nimp...ttachments succeeded.\nPrivate loop probes detached and removed; squashfs and FAT support are available.\n', stderr='').returncode
+E         
+E         + ownership)
+
+tests/test_blacksmith_ci.py:140: AssertionError
+________ test_pytest_groups_overlap_isolate_runtime_and_wait_for_both[] ________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_pytest_groups_overlap_iso0')
+failed_group = ''
+
+    @pytest.mark.parametrize("failed_group", ["", "orca", "suite", "both", "gtk-skipped", "gtk-missing"])
+    def test_pytest_groups_overlap_isolate_runtime_and_wait_for_both(tmp_path, failed_group):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        # Only this shell fixture sees fake bindings; real hosted preflight is intact.
+        gi = tools / "gi"
+        gi.mkdir()
+        (gi / "__init__.py").write_text(
+            'def require_version(name, version):\n'
+            '    assert (name, version) in (("Gtk", "3.0"), ("Atk", "1.0"))\n'
+        )
+        (gi / "repository.py").write_text('Gtk = object()\nAtk = object()\n')
+        output = tmp_path / "output"
+        output.mkdir()
+        session = tools / "dbus-run-session"
+        session.write_text(f"#!{sys.executable}\n" + '''
+    import json, os, pathlib, sys, time
+    import xml.etree.ElementTree as ET
+    out = pathlib.Path(os.environ['FAKE_OUTPUT'])
+    runtime = pathlib.Path(os.environ['XDG_RUNTIME_DIR'])
+    group = runtime.name
+    assert runtime.stat().st_mode & 0o777 == 0o700
+    assert os.environ['PULSE_RUNTIME_PATH'] == str(runtime / 'pulse')
+    assert 'AT_SPI_BUS_ADDRESS' not in os.environ and 'PULSE_SERVER' not in os.environ
+    args = sys.argv[1:]
+    assert args[:2] == ['--', 'xvfb-run']
+    assert '-screen 0 1600x1000x24 -dpi 72' in args
+    if group == 'orca':
+        assert 'BEAMO_TEST_ORCA_CHILD=1' in args and 'no:cacheprovider' in args
+    else:
+        assert os.environ['BEAMO_HOSTED_ORCA_SEPARATE'] == '1'
+        assert any(arg.startswith('--deselect=') for arg in args)
+    (out / (group + '.json')).write_text(json.dumps({'runtime': str(runtime), 'args': args}))
+    deadline = time.monotonic() + 5
+    while len(list(out.glob('*.json'))) != 2:
+        if time.monotonic() > deadline:
+            raise SystemExit('test groups did not overlap')
+        time.sleep(.01)
+    failed = os.environ['FAILED_GROUP'] in (group, 'both')
+    # Make the successful peer finish later to prove failure still waits for it.
+    if not failed:
+        time.sleep(.1)
+    report = pathlib.Path(next(arg.split('=', 1)[1] for arg in args if arg.startswith('--junitxml=')))
+    suite = ET.Element('testsuite', failures=str(int(failed)))
+    if group == 'suite' and os.environ['FAILED_GROUP'] != 'gtk-missing':
+        for module, name in (
+            ('test_compat_story', 'test_what_screen_keeps_title_and_shows_this_usb_line'),
+            ('test_separate_footer_actions', 'test_assist_nav_names_do_not_rewrite_result_heading'),
+        ):
+            case = ET.SubElement(suite, 'testcase', classname='tests.' + module, name=name)
+            if os.environ['FAILED_GROUP'] == 'gtk-skipped':
+                ET.SubElement(case, 'skipped', message='simulated missing bindings')
+    ET.ElementTree(suite).write(report)
+    (out / (group + '.done')).touch()
+    raise SystemExit(9 if failed else 0)
+    ''')
+        session.chmod(0o755)
+        source = (ROOT / "scripts/ci-hosted.sh").read_text()
+        function = "run_pytest() (" + source.split("run_pytest() (", 1)[1].split("\nrun_preview()", 1)[0]
+        report = tmp_path / "tests.xml"
+        result = subprocess.run(
+            ["bash", "-ceu", 'log() { :; }\n' + function + '\nrun_pytest'],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     PYTHONPATH=str(tools) + os.pathsep + os.environ.get("PYTHONPATH", ""),
+                     TMPDIR=str(tmp_path), FAKE_OUTPUT=str(output), FAILED_GROUP=failed_group,
+                     BEAMO_GATE_JUNIT=str(report), AT_SPI_BUS_ADDRESS="inherited",
+                     PULSE_SERVER="inherited"),
+            cwd=ROOT, capture_output=True, text=True, timeout=15,
+        )
+>       assert result.returncode == int(bool(failed_group)), result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "/root/dev/Beamo Wipe/scripts/check-gtk-test-results.py", line 29, in <module>
+E             check(Path(sys.argv[1]))
+E           File "/root/dev/Beamo Wipe/scripts/check-gtk-test-results.py", line 25, in check
+E             raise RuntimeError(f"Mandatory GTK test must execute and pass exactly once: {module}::{name}")
+E         RuntimeError: Mandatory GTK test must execute and pass exactly once: test_compat_story::test_what_screen_keeps_title_and_shows_this_usb_line
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['bash', '-ceu', 'log() { :; }\nrun_pytest() (\n  export BEAMO_ISOLATED_X11_TEST=1\n  # GTK is o...TK test must execute and pass exactly once: test_compat_story::test_what_screen_keeps_title_and_shows_this_usb_line\n').returncode
+E        +  and   0 = int(False)
+E        +    where False = bool('')
+
+tests/test_blacksmith_ci.py:295: AssertionError
+______ test_pytest_groups_overlap_isolate_runtime_and_wait_for_both[orca] ______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_pytest_groups_overlap_iso1')
+failed_group = 'orca'
+
+    @pytest.mark.parametrize("failed_group", ["", "orca", "suite", "both", "gtk-skipped", "gtk-missing"])
+    def test_pytest_groups_overlap_isolate_runtime_and_wait_for_both(tmp_path, failed_group):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        # Only this shell fixture sees fake bindings; real hosted preflight is intact.
+        gi = tools / "gi"
+        gi.mkdir()
+        (gi / "__init__.py").write_text(
+            'def require_version(name, version):\n'
+            '    assert (name, version) in (("Gtk", "3.0"), ("Atk", "1.0"))\n'
+        )
+        (gi / "repository.py").write_text('Gtk = object()\nAtk = object()\n')
+        output = tmp_path / "output"
+        output.mkdir()
+        session = tools / "dbus-run-session"
+        session.write_text(f"#!{sys.executable}\n" + '''
+    import json, os, pathlib, sys, time
+    import xml.etree.ElementTree as ET
+    out = pathlib.Path(os.environ['FAKE_OUTPUT'])
+    runtime = pathlib.Path(os.environ['XDG_RUNTIME_DIR'])
+    group = runtime.name
+    assert runtime.stat().st_mode & 0o777 == 0o700
+    assert os.environ['PULSE_RUNTIME_PATH'] == str(runtime / 'pulse')
+    assert 'AT_SPI_BUS_ADDRESS' not in os.environ and 'PULSE_SERVER' not in os.environ
+    args = sys.argv[1:]
+    assert args[:2] == ['--', 'xvfb-run']
+    assert '-screen 0 1600x1000x24 -dpi 72' in args
+    if group == 'orca':
+        assert 'BEAMO_TEST_ORCA_CHILD=1' in args and 'no:cacheprovider' in args
+    else:
+        assert os.environ['BEAMO_HOSTED_ORCA_SEPARATE'] == '1'
+        assert any(arg.startswith('--deselect=') for arg in args)
+    (out / (group + '.json')).write_text(json.dumps({'runtime': str(runtime), 'args': args}))
+    deadline = time.monotonic() + 5
+    while len(list(out.glob('*.json'))) != 2:
+        if time.monotonic() > deadline:
+            raise SystemExit('test groups did not overlap')
+        time.sleep(.01)
+    failed = os.environ['FAILED_GROUP'] in (group, 'both')
+    # Make the successful peer finish later to prove failure still waits for it.
+    if not failed:
+        time.sleep(.1)
+    report = pathlib.Path(next(arg.split('=', 1)[1] for arg in args if arg.startswith('--junitxml=')))
+    suite = ET.Element('testsuite', failures=str(int(failed)))
+    if group == 'suite' and os.environ['FAILED_GROUP'] != 'gtk-missing':
+        for module, name in (
+            ('test_compat_story', 'test_what_screen_keeps_title_and_shows_this_usb_line'),
+            ('test_separate_footer_actions', 'test_assist_nav_names_do_not_rewrite_result_heading'),
+        ):
+            case = ET.SubElement(suite, 'testcase', classname='tests.' + module, name=name)
+            if os.environ['FAILED_GROUP'] == 'gtk-skipped':
+                ET.SubElement(case, 'skipped', message='simulated missing bindings')
+    ET.ElementTree(suite).write(report)
+    (out / (group + '.done')).touch()
+    raise SystemExit(9 if failed else 0)
+    ''')
+        session.chmod(0o755)
+        source = (ROOT / "scripts/ci-hosted.sh").read_text()
+        function = "run_pytest() (" + source.split("run_pytest() (", 1)[1].split("\nrun_preview()", 1)[0]
+        report = tmp_path / "tests.xml"
+        result = subprocess.run(
+            ["bash", "-ceu", 'log() { :; }\n' + function + '\nrun_pytest'],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     PYTHONPATH=str(tools) + os.pathsep + os.environ.get("PYTHONPATH", ""),
+                     TMPDIR=str(tmp_path), FAKE_OUTPUT=str(output), FAILED_GROUP=failed_group,
+                     BEAMO_GATE_JUNIT=str(report), AT_SPI_BUS_ADDRESS="inherited",
+                     PULSE_SERVER="inherited"),
+            cwd=ROOT, capture_output=True, text=True, timeout=15,
+        )
+        assert result.returncode == int(bool(failed_group)), result.stderr
+>       assert {path.stem for path in output.glob("*.done")} == {"orca", "suite"}
+E       AssertionError: assert set() == {'orca', 'suite'}
+E         
+E         Extra items in the right set:
+E         'orca'
+E         'suite'
+E         Use -v to get more diff
+
+tests/test_blacksmith_ci.py:296: AssertionError
+_____ test_pytest_groups_overlap_isolate_runtime_and_wait_for_both[suite] ______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_pytest_groups_overlap_iso2')
+failed_group = 'suite'
+
+    @pytest.mark.parametrize("failed_group", ["", "orca", "suite", "both", "gtk-skipped", "gtk-missing"])
+    def test_pytest_groups_overlap_isolate_runtime_and_wait_for_both(tmp_path, failed_group):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        # Only this shell fixture sees fake bindings; real hosted preflight is intact.
+        gi = tools / "gi"
+        gi.mkdir()
+        (gi / "__init__.py").write_text(
+            'def require_version(name, version):\n'
+            '    assert (name, version) in (("Gtk", "3.0"), ("Atk", "1.0"))\n'
+        )
+        (gi / "repository.py").write_text('Gtk = object()\nAtk = object()\n')
+        output = tmp_path / "output"
+        output.mkdir()
+        session = tools / "dbus-run-session"
+        session.write_text(f"#!{sys.executable}\n" + '''
+    import json, os, pathlib, sys, time
+    import xml.etree.ElementTree as ET
+    out = pathlib.Path(os.environ['FAKE_OUTPUT'])
+    runtime = pathlib.Path(os.environ['XDG_RUNTIME_DIR'])
+    group = runtime.name
+    assert runtime.stat().st_mode & 0o777 == 0o700
+    assert os.environ['PULSE_RUNTIME_PATH'] == str(runtime / 'pulse')
+    assert 'AT_SPI_BUS_ADDRESS' not in os.environ and 'PULSE_SERVER' not in os.environ
+    args = sys.argv[1:]
+    assert args[:2] == ['--', 'xvfb-run']
+    assert '-screen 0 1600x1000x24 -dpi 72' in args
+    if group == 'orca':
+        assert 'BEAMO_TEST_ORCA_CHILD=1' in args and 'no:cacheprovider' in args
+    else:
+        assert os.environ['BEAMO_HOSTED_ORCA_SEPARATE'] == '1'
+        assert any(arg.startswith('--deselect=') for arg in args)
+    (out / (group + '.json')).write_text(json.dumps({'runtime': str(runtime), 'args': args}))
+    deadline = time.monotonic() + 5
+    while len(list(out.glob('*.json'))) != 2:
+        if time.monotonic() > deadline:
+            raise SystemExit('test groups did not overlap')
+        time.sleep(.01)
+    failed = os.environ['FAILED_GROUP'] in (group, 'both')
+    # Make the successful peer finish later to prove failure still waits for it.
+    if not failed:
+        time.sleep(.1)
+    report = pathlib.Path(next(arg.split('=', 1)[1] for arg in args if arg.startswith('--junitxml=')))
+    suite = ET.Element('testsuite', failures=str(int(failed)))
+    if group == 'suite' and os.environ['FAILED_GROUP'] != 'gtk-missing':
+        for module, name in (
+            ('test_compat_story', 'test_what_screen_keeps_title_and_shows_this_usb_line'),
+            ('test_separate_footer_actions', 'test_assist_nav_names_do_not_rewrite_result_heading'),
+        ):
+            case = ET.SubElement(suite, 'testcase', classname='tests.' + module, name=name)
+            if os.environ['FAILED_GROUP'] == 'gtk-skipped':
+                ET.SubElement(case, 'skipped', message='simulated missing bindings')
+    ET.ElementTree(suite).write(report)
+    (out / (group + '.done')).touch()
+    raise SystemExit(9 if failed else 0)
+    ''')
+        session.chmod(0o755)
+        source = (ROOT / "scripts/ci-hosted.sh").read_text()
+        function = "run_pytest() (" + source.split("run_pytest() (", 1)[1].split("\nrun_preview()", 1)[0]
+        report = tmp_path / "tests.xml"
+        result = subprocess.run(
+            ["bash", "-ceu", 'log() { :; }\n' + function + '\nrun_pytest'],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     PYTHONPATH=str(tools) + os.pathsep + os.environ.get("PYTHONPATH", ""),
+                     TMPDIR=str(tmp_path), FAKE_OUTPUT=str(output), FAILED_GROUP=failed_group,
+                     BEAMO_GATE_JUNIT=str(report), AT_SPI_BUS_ADDRESS="inherited",
+                     PULSE_SERVER="inherited"),
+            cwd=ROOT, capture_output=True, text=True, timeout=15,
+        )
+        assert result.returncode == int(bool(failed_group)), result.stderr
+>       assert {path.stem for path in output.glob("*.done")} == {"orca", "suite"}
+E       AssertionError: assert set() == {'orca', 'suite'}
+E         
+E         Extra items in the right set:
+E         'orca'
+E         'suite'
+E         Use -v to get more diff
+
+tests/test_blacksmith_ci.py:296: AssertionError
+______ test_pytest_groups_overlap_isolate_runtime_and_wait_for_both[both] ______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_pytest_groups_overlap_iso3')
+failed_group = 'both'
+
+    @pytest.mark.parametrize("failed_group", ["", "orca", "suite", "both", "gtk-skipped", "gtk-missing"])
+    def test_pytest_groups_overlap_isolate_runtime_and_wait_for_both(tmp_path, failed_group):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        # Only this shell fixture sees fake bindings; real hosted preflight is intact.
+        gi = tools / "gi"
+        gi.mkdir()
+        (gi / "__init__.py").write_text(
+            'def require_version(name, version):\n'
+            '    assert (name, version) in (("Gtk", "3.0"), ("Atk", "1.0"))\n'
+        )
+        (gi / "repository.py").write_text('Gtk = object()\nAtk = object()\n')
+        output = tmp_path / "output"
+        output.mkdir()
+        session = tools / "dbus-run-session"
+        session.write_text(f"#!{sys.executable}\n" + '''
+    import json, os, pathlib, sys, time
+    import xml.etree.ElementTree as ET
+    out = pathlib.Path(os.environ['FAKE_OUTPUT'])
+    runtime = pathlib.Path(os.environ['XDG_RUNTIME_DIR'])
+    group = runtime.name
+    assert runtime.stat().st_mode & 0o777 == 0o700
+    assert os.environ['PULSE_RUNTIME_PATH'] == str(runtime / 'pulse')
+    assert 'AT_SPI_BUS_ADDRESS' not in os.environ and 'PULSE_SERVER' not in os.environ
+    args = sys.argv[1:]
+    assert args[:2] == ['--', 'xvfb-run']
+    assert '-screen 0 1600x1000x24 -dpi 72' in args
+    if group == 'orca':
+        assert 'BEAMO_TEST_ORCA_CHILD=1' in args and 'no:cacheprovider' in args
+    else:
+        assert os.environ['BEAMO_HOSTED_ORCA_SEPARATE'] == '1'
+        assert any(arg.startswith('--deselect=') for arg in args)
+    (out / (group + '.json')).write_text(json.dumps({'runtime': str(runtime), 'args': args}))
+    deadline = time.monotonic() + 5
+    while len(list(out.glob('*.json'))) != 2:
+        if time.monotonic() > deadline:
+            raise SystemExit('test groups did not overlap')
+        time.sleep(.01)
+    failed = os.environ['FAILED_GROUP'] in (group, 'both')
+    # Make the successful peer finish later to prove failure still waits for it.
+    if not failed:
+        time.sleep(.1)
+    report = pathlib.Path(next(arg.split('=', 1)[1] for arg in args if arg.startswith('--junitxml=')))
+    suite = ET.Element('testsuite', failures=str(int(failed)))
+    if group == 'suite' and os.environ['FAILED_GROUP'] != 'gtk-missing':
+        for module, name in (
+            ('test_compat_story', 'test_what_screen_keeps_title_and_shows_this_usb_line'),
+            ('test_separate_footer_actions', 'test_assist_nav_names_do_not_rewrite_result_heading'),
+        ):
+            case = ET.SubElement(suite, 'testcase', classname='tests.' + module, name=name)
+            if os.environ['FAILED_GROUP'] == 'gtk-skipped':
+                ET.SubElement(case, 'skipped', message='simulated missing bindings')
+    ET.ElementTree(suite).write(report)
+    (out / (group + '.done')).touch()
+    raise SystemExit(9 if failed else 0)
+    ''')
+        session.chmod(0o755)
+        source = (ROOT / "scripts/ci-hosted.sh").read_text()
+        function = "run_pytest() (" + source.split("run_pytest() (", 1)[1].split("\nrun_preview()", 1)[0]
+        report = tmp_path / "tests.xml"
+        result = subprocess.run(
+            ["bash", "-ceu", 'log() { :; }\n' + function + '\nrun_pytest'],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     PYTHONPATH=str(tools) + os.pathsep + os.environ.get("PYTHONPATH", ""),
+                     TMPDIR=str(tmp_path), FAKE_OUTPUT=str(output), FAILED_GROUP=failed_group,
+                     BEAMO_GATE_JUNIT=str(report), AT_SPI_BUS_ADDRESS="inherited",
+                     PULSE_SERVER="inherited"),
+            cwd=ROOT, capture_output=True, text=True, timeout=15,
+        )
+        assert result.returncode == int(bool(failed_group)), result.stderr
+>       assert {path.stem for path in output.glob("*.done")} == {"orca", "suite"}
+E       AssertionError: assert set() == {'orca', 'suite'}
+E         
+E         Extra items in the right set:
+E         'orca'
+E         'suite'
+E         Use -v to get more diff
+
+tests/test_blacksmith_ci.py:296: AssertionError
+__ test_pytest_groups_overlap_isolate_runtime_and_wait_for_both[gtk-skipped] ___
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_pytest_groups_overlap_iso4')
+failed_group = 'gtk-skipped'
+
+    @pytest.mark.parametrize("failed_group", ["", "orca", "suite", "both", "gtk-skipped", "gtk-missing"])
+    def test_pytest_groups_overlap_isolate_runtime_and_wait_for_both(tmp_path, failed_group):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        # Only this shell fixture sees fake bindings; real hosted preflight is intact.
+        gi = tools / "gi"
+        gi.mkdir()
+        (gi / "__init__.py").write_text(
+            'def require_version(name, version):\n'
+            '    assert (name, version) in (("Gtk", "3.0"), ("Atk", "1.0"))\n'
+        )
+        (gi / "repository.py").write_text('Gtk = object()\nAtk = object()\n')
+        output = tmp_path / "output"
+        output.mkdir()
+        session = tools / "dbus-run-session"
+        session.write_text(f"#!{sys.executable}\n" + '''
+    import json, os, pathlib, sys, time
+    import xml.etree.ElementTree as ET
+    out = pathlib.Path(os.environ['FAKE_OUTPUT'])
+    runtime = pathlib.Path(os.environ['XDG_RUNTIME_DIR'])
+    group = runtime.name
+    assert runtime.stat().st_mode & 0o777 == 0o700
+    assert os.environ['PULSE_RUNTIME_PATH'] == str(runtime / 'pulse')
+    assert 'AT_SPI_BUS_ADDRESS' not in os.environ and 'PULSE_SERVER' not in os.environ
+    args = sys.argv[1:]
+    assert args[:2] == ['--', 'xvfb-run']
+    assert '-screen 0 1600x1000x24 -dpi 72' in args
+    if group == 'orca':
+        assert 'BEAMO_TEST_ORCA_CHILD=1' in args and 'no:cacheprovider' in args
+    else:
+        assert os.environ['BEAMO_HOSTED_ORCA_SEPARATE'] == '1'
+        assert any(arg.startswith('--deselect=') for arg in args)
+    (out / (group + '.json')).write_text(json.dumps({'runtime': str(runtime), 'args': args}))
+    deadline = time.monotonic() + 5
+    while len(list(out.glob('*.json'))) != 2:
+        if time.monotonic() > deadline:
+            raise SystemExit('test groups did not overlap')
+        time.sleep(.01)
+    failed = os.environ['FAILED_GROUP'] in (group, 'both')
+    # Make the successful peer finish later to prove failure still waits for it.
+    if not failed:
+        time.sleep(.1)
+    report = pathlib.Path(next(arg.split('=', 1)[1] for arg in args if arg.startswith('--junitxml=')))
+    suite = ET.Element('testsuite', failures=str(int(failed)))
+    if group == 'suite' and os.environ['FAILED_GROUP'] != 'gtk-missing':
+        for module, name in (
+            ('test_compat_story', 'test_what_screen_keeps_title_and_shows_this_usb_line'),
+            ('test_separate_footer_actions', 'test_assist_nav_names_do_not_rewrite_result_heading'),
+        ):
+            case = ET.SubElement(suite, 'testcase', classname='tests.' + module, name=name)
+            if os.environ['FAILED_GROUP'] == 'gtk-skipped':
+                ET.SubElement(case, 'skipped', message='simulated missing bindings')
+    ET.ElementTree(suite).write(report)
+    (out / (group + '.done')).touch()
+    raise SystemExit(9 if failed else 0)
+    ''')
+        session.chmod(0o755)
+        source = (ROOT / "scripts/ci-hosted.sh").read_text()
+        function = "run_pytest() (" + source.split("run_pytest() (", 1)[1].split("\nrun_preview()", 1)[0]
+        report = tmp_path / "tests.xml"
+        result = subprocess.run(
+            ["bash", "-ceu", 'log() { :; }\n' + function + '\nrun_pytest'],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     PYTHONPATH=str(tools) + os.pathsep + os.environ.get("PYTHONPATH", ""),
+                     TMPDIR=str(tmp_path), FAKE_OUTPUT=str(output), FAILED_GROUP=failed_group,
+                     BEAMO_GATE_JUNIT=str(report), AT_SPI_BUS_ADDRESS="inherited",
+                     PULSE_SERVER="inherited"),
+            cwd=ROOT, capture_output=True, text=True, timeout=15,
+        )
+        assert result.returncode == int(bool(failed_group)), result.stderr
+>       assert {path.stem for path in output.glob("*.done")} == {"orca", "suite"}
+E       AssertionError: assert set() == {'orca', 'suite'}
+E         
+E         Extra items in the right set:
+E         'orca'
+E         'suite'
+E         Use -v to get more diff
+
+tests/test_blacksmith_ci.py:296: AssertionError
+__ test_pytest_groups_overlap_isolate_runtime_and_wait_for_both[gtk-missing] ___
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_pytest_groups_overlap_iso5')
+failed_group = 'gtk-missing'
+
+    @pytest.mark.parametrize("failed_group", ["", "orca", "suite", "both", "gtk-skipped", "gtk-missing"])
+    def test_pytest_groups_overlap_isolate_runtime_and_wait_for_both(tmp_path, failed_group):
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        # Only this shell fixture sees fake bindings; real hosted preflight is intact.
+        gi = tools / "gi"
+        gi.mkdir()
+        (gi / "__init__.py").write_text(
+            'def require_version(name, version):\n'
+            '    assert (name, version) in (("Gtk", "3.0"), ("Atk", "1.0"))\n'
+        )
+        (gi / "repository.py").write_text('Gtk = object()\nAtk = object()\n')
+        output = tmp_path / "output"
+        output.mkdir()
+        session = tools / "dbus-run-session"
+        session.write_text(f"#!{sys.executable}\n" + '''
+    import json, os, pathlib, sys, time
+    import xml.etree.ElementTree as ET
+    out = pathlib.Path(os.environ['FAKE_OUTPUT'])
+    runtime = pathlib.Path(os.environ['XDG_RUNTIME_DIR'])
+    group = runtime.name
+    assert runtime.stat().st_mode & 0o777 == 0o700
+    assert os.environ['PULSE_RUNTIME_PATH'] == str(runtime / 'pulse')
+    assert 'AT_SPI_BUS_ADDRESS' not in os.environ and 'PULSE_SERVER' not in os.environ
+    args = sys.argv[1:]
+    assert args[:2] == ['--', 'xvfb-run']
+    assert '-screen 0 1600x1000x24 -dpi 72' in args
+    if group == 'orca':
+        assert 'BEAMO_TEST_ORCA_CHILD=1' in args and 'no:cacheprovider' in args
+    else:
+        assert os.environ['BEAMO_HOSTED_ORCA_SEPARATE'] == '1'
+        assert any(arg.startswith('--deselect=') for arg in args)
+    (out / (group + '.json')).write_text(json.dumps({'runtime': str(runtime), 'args': args}))
+    deadline = time.monotonic() + 5
+    while len(list(out.glob('*.json'))) != 2:
+        if time.monotonic() > deadline:
+            raise SystemExit('test groups did not overlap')
+        time.sleep(.01)
+    failed = os.environ['FAILED_GROUP'] in (group, 'both')
+    # Make the successful peer finish later to prove failure still waits for it.
+    if not failed:
+        time.sleep(.1)
+    report = pathlib.Path(next(arg.split('=', 1)[1] for arg in args if arg.startswith('--junitxml=')))
+    suite = ET.Element('testsuite', failures=str(int(failed)))
+    if group == 'suite' and os.environ['FAILED_GROUP'] != 'gtk-missing':
+        for module, name in (
+            ('test_compat_story', 'test_what_screen_keeps_title_and_shows_this_usb_line'),
+            ('test_separate_footer_actions', 'test_assist_nav_names_do_not_rewrite_result_heading'),
+        ):
+            case = ET.SubElement(suite, 'testcase', classname='tests.' + module, name=name)
+            if os.environ['FAILED_GROUP'] == 'gtk-skipped':
+                ET.SubElement(case, 'skipped', message='simulated missing bindings')
+    ET.ElementTree(suite).write(report)
+    (out / (group + '.done')).touch()
+    raise SystemExit(9 if failed else 0)
+    ''')
+        session.chmod(0o755)
+        source = (ROOT / "scripts/ci-hosted.sh").read_text()
+        function = "run_pytest() (" + source.split("run_pytest() (", 1)[1].split("\nrun_preview()", 1)[0]
+        report = tmp_path / "tests.xml"
+        result = subprocess.run(
+            ["bash", "-ceu", 'log() { :; }\n' + function + '\nrun_pytest'],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     PYTHONPATH=str(tools) + os.pathsep + os.environ.get("PYTHONPATH", ""),
+                     TMPDIR=str(tmp_path), FAKE_OUTPUT=str(output), FAILED_GROUP=failed_group,
+                     BEAMO_GATE_JUNIT=str(report), AT_SPI_BUS_ADDRESS="inherited",
+                     PULSE_SERVER="inherited"),
+            cwd=ROOT, capture_output=True, text=True, timeout=15,
+        )
+        assert result.returncode == int(bool(failed_group)), result.stderr
+>       assert {path.stem for path in output.glob("*.done")} == {"orca", "suite"}
+E       AssertionError: assert set() == {'orca', 'suite'}
+E         
+E         Extra items in the right set:
+E         'orca'
+E         'suite'
+E         Use -v to get more diff
+
+tests/test_blacksmith_ci.py:296: AssertionError
+______ test_teardown_cancels_canvas_timers_before_destroying_tcl_commands ______
+
+    def test_teardown_cancels_canvas_timers_before_destroying_tcl_commands():
+        app, canvas, _card = picker()
+        errors = []
+        canvas.tk.createcommand("bgerror", errors.append)
+        app._pick_after_ids = [canvas.after(0, lambda: app._pick_restore_tick(1))]
+        app.root = canvas
+        app._return_release_after = None
+        app._space_release_after = None
+        app._after_id = None
+>       app._teardown()
+
+tests/test_pick_scroll_restore.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/beamo_wipe/ui/tk_wizard.py:1635: in _teardown
+    self._cancel_widget_callbacks(self.root)
+src/beamo_wipe/ui/tk_wizard.py:1576: in _cancel_widget_callbacks
+    pending.extend(owner.winfo_children())
+                   ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <[AttributeError("'Canvas' object has no attribute '_w'") raised in repr()] Canvas object at 0x7405f217c2f0>
+
+    def winfo_children(self):
+        """Return a list of all widgets which are children of this widget."""
+        result = []
+        for child in self.tk.splitlist(
+>           self.tk.call('winfo', 'children', self._w)):
+                                              ^^^^^^^
+E           AttributeError: 'Canvas' object has no attribute '_w'
+
+/usr/lib/python3.12/tkinter/__init__.py:1106: AttributeError
+_______ test_iso_inspection_uses_only_verified_regular_snapshot[regular] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_iso_inspection_uses_only_0')
+source_kind = 'regular'
+
+    @pytest.mark.parametrize("source_kind", ["regular", "changed", "symlink", "fifo"])
+    def test_iso_inspection_uses_only_verified_regular_snapshot(tmp_path, source_kind):
+        source = tmp_path / "source.iso"
+        payload = b"verified ISO fixture"
+        source.write_bytes(payload)
+        if source_kind == "changed":
+            source.write_bytes(b"changed after manifest verification")
+        elif source_kind == "symlink":
+            original = tmp_path / "original.iso"
+            source.rename(original)
+            source.symlink_to(original)
+        elif source_kind == "fifo":
+            source.unlink()
+            os.mkfifo(source)
+        tools = tmp_path / "bin"
+        tools.mkdir()
+        extractor = tools / "xorriso"
+        extractor.write_text(f"#!{sys.executable}\n" + '''
+    import os, pathlib, sys
+    args = sys.argv[1:]
+    assert args[:3] == ['-osirrox', 'on', '-indev']
+    snapshot = pathlib.Path(args[3])
+    assert snapshot.name == 'inspection.iso'
+    # A source change during extraction must not affect the inspected bytes.
+    pathlib.Path(os.environ['SOURCE_ISO']).write_bytes(b'later source change')
+    for index in range(4, len(args), 3):
+        assert args[index] == '-extract'
+        assert args[index + 1] in ('/live/filesystem.squashfs', '/isolinux/live.cfg', '/boot/grub/grub.cfg')
+        pathlib.Path(args[index + 2]).write_bytes(snapshot.read_bytes())
+    ''')
+        extractor.chmod(0o755)
+        snapshot = tmp_path / "inspection.iso"
+        destination = tmp_path / "extracted"
+        destination.mkdir()
+        shell = (ROOT / "scripts/qemu-verify.sh").read_text()
+        code = shell.split("<<'PYISO'\n", 1)[1].split("\nPYISO", 1)[0]
+        result = subprocess.run(
+            [sys.executable, "-c", code, str(source), str(snapshot), str(destination),
+             hashlib.sha256(payload).hexdigest()],
+            env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+                     SOURCE_ISO=str(source)),
+            capture_output=True, text=True, timeout=10,
+        )
+        if source_kind != "regular":
+            assert result.returncode != 0
+            assert list(destination.iterdir()) == []
+            return
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: xorriso 1.5.6 : RockRidge filesystem manipulator, libburnia project.
+E         
+E         Copying of file objects from ISO image to disk filesystem is: Enabled
+E         xorriso : NOTE : Loading ISO image tree from LBA 0
+E         libisoburn: WARNING : No ISO 9660 image at LBA 0.
+E         libisoburn: WARNING : Creating blank image.
+E         Drive current: -indev '/tmp/pytest-of-root/pytest-4/test_iso_inspection_uses_only_0/inspection.iso'
+E         Media current: stdio file, overwriteable
+E         Media status : is written , is closed
+E         Media summary: 1 session, 1 data blocks,  2048 data,     0 free
+E         Volume id    : 'ISOIMAGE'
+E         xorriso : FAILURE : Cannot determine attributes of (ISO) source file '/live/filesystem.squashfs' : No such file or directory
+E         xorriso : aborting : -abort_on 'FAILURE' encountered 'FAILURE'
+E         Traceback (most recent call last):
+E           File "<string>", line 28, in <module>
+E           File "/usr/lib/python3.12/subprocess.py", line 571, in run
+E             raise CalledProcessError(retcode, process.args,
+E         subprocess.CalledProcessError: Command '['xorriso', '-osirrox', 'on', '-indev', '/tmp/pytest-of-root/pytest-4/test_iso_inspection_uses_only_0/inspection.iso', '-extract', '/live/filesystem.squashfs', '/tmp/pytest-of-root/pytest-4/test_iso_inspection_uses_only_0/extracted/live/filesystem.squashfs', '-extract', '/isolinux/live.cfg', '/tmp/pytest-of-root/pytest-4/test_iso_inspection_uses_only_0/extracted/isolinux/live.cfg', '-extract', '/boot/grub/grub.cfg', '/tmp/pytest-of-root/pytest-4/test_iso_inspection_uses_only_0/extracted/boot/grub/grub.cfg']' returned non-zero exit status 5.
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/root/dev/Beamo Wipe/.venv-linux/bin/python3', '-c', "import hashlib\nimport os\nfrom pathlib ...of-root/pytest-4/test_iso_inspection_uses_only_0/extracted/boot/grub/grub.cfg\']\' returned non-zero exit status 5.\n').returncode
+
+tests/test_qemu_iso_inspection.py:63: AssertionError
+_______ test_copyable_document_block_with_fixture_downloads[None-Linux] ________
+
+release = (PosixPath('/tmp/pytest-of-root/pytest-4/test_copyable_document_block_w0/release with spaces'), PosixPath('/tmp/pytest...bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb', 'schema_version': 1, ...}, <function release.<locals>.resign at 0x7405ef96a7a0>, ...)
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_copyable_document_block_w0')
+download_fault = None, shell_platform = 'Linux'
+
+    @pytest.mark.parametrize("shell_platform", ["Linux", "Darwin"])
+    @pytest.mark.parametrize("download_fault", [None, "inventory-tamper", "compressed-tamper", "download-error", "missing-verifier-python"])
+    def test_copyable_document_block_with_fixture_downloads(release, tmp_path, download_fault, shell_platform):
+        directory, registry, raw, *_rest, args = release
+        trusted = tmp_path / "trusted checkout"
+        (trusted / "scripts").mkdir(parents=True)
+        (trusted / "packaging/release-keys").mkdir(parents=True)
+        shutil.copy2(ROOT / "scripts/verify-usb-download.py", trusted / "scripts")
+        shutil.copy2(registry, trusted / "packaging/release-keys/keys.json")
+        (trusted / "src").symlink_to(ROOT / "src", target_is_directory=True)
+        selected_python = trusted / (".venv-" + shell_platform.lower()) / "bin/python"
+        selected_python.parent.mkdir(parents=True)
+        if download_fault != "missing-verifier-python":
+            selected_python.write_text("#!/bin/sh\nexec " + shlex.quote(sys.executable) + ' "$@"\n')
+            selected_python.chmod(0o755)
+        tools = tmp_path / "tools"
+        tools.mkdir()
+        # Simulate the documented environment-name selection, not macOS execution.
+        uname = tools / "uname"
+        uname.write_text("#!/bin/sh\nprintf '%s\\n' " + shlex.quote(shell_platform) + "\n")
+        uname.chmod(0o755)
+        default_python = tools / "python3"
+        default_python.write_text("#!/bin/sh\necho 'unselected default Python was invoked' >&2\nexit 91\n")
+        default_python.chmod(0o755)
+        curl = tools / "curl"
+        curl.write_text(f"#!{sys.executable}\n" +
+                       "import os,pathlib,sys\n"
+                       "name=sys.argv[-1].rsplit('/',1)[-1]\n"
+                       "data=(pathlib.Path(os.environ['FIXTURE_RELEASE'])/name).read_bytes()\n"
+                       "fault=os.environ['FIXTURE_DOWNLOAD_FAULT']\n"
+                       "if fault=='inventory-tamper' and name=='release-downloads.json': data+=b' '\n"
+                       "if fault=='compressed-tamper' and name.endswith('.img.gz'): data=b'X'+data[1:]\n"
+                       "if fault=='download-error' and name.endswith('.img.gz'):\n"
+                       " sys.stdout.buffer.write(data[:len(data)//2]); sys.stdout.buffer.flush()\n"
+                       " sys.stderr.write('fixture transfer failed\\n'); sys.exit(22)\n"
+                       "sys.stdout.buffer.write(data)\n")
+        curl.chmod(0o755)
+        doc = (ROOT / "docs/release-verification.md").read_text()
+        block = doc.split("<!-- USB-VERIFY-WALKTHROUGH-BEGIN -->", 1)[1].split("<!-- USB-VERIFY-WALKTHROUGH-END -->", 1)[0]
+        block = block.split("```sh\n", 1)[1].split("```", 1)[0]
+        block = block.replace("/absolute/path/to/trusted/beamo-wipe", str(trusted))
+        block = block.replace("93caaf7ca93eff4d7fa1c16e360f9d6aa17ced0155a56d4cf89d8f6d429e66f7", args[5])
+        result = subprocess.run(  # noqa: S603
+            ["/bin/sh", "-c", block], cwd=tmp_path,
+            env=dict(os.environ, TMPDIR=str(tmp_path), FIXTURE_RELEASE=str(directory),
+                     FIXTURE_DOWNLOAD_FAULT=download_fault or "",
+                     PATH=str(tools) + os.pathsep + os.environ["PATH"]),
+            capture_output=True, text=True, timeout=30,
+        )
+        assert "unselected default Python was invoked" not in result.stderr
+        if download_fault == "missing-verifier-python":
+            assert result.returncode != 0
+            assert "STOP: run the trusted checkout development setup first" in result.stderr
+            assert "Private verification directory:" not in result.stdout
+            return
+        work = Path(next(line.split(": ", 1)[1] for line in result.stdout.splitlines()
+                         if line.startswith("Private verification directory:")))
+        if download_fault is None:
+>           assert result.returncode == 0, result.stdout + result.stderr
+E           AssertionError: Private verification directory: /tmp/pytest-of-root/pytest-4/test_copyable_document_block_w0/beamo-usb-verify.Evw4nDbW
+E             STOP: USB verification failed: signature key '93caaf7ca93eff4d' is not a known publisher key
+E             
+E           assert 1 == 0
+E            +  where 1 = CompletedProcess(args=['/bin/sh', '-c', '(\nset -euC\nBEAMO_SOURCE=\'/tmp/pytest-of-root/pytest-4/test_copyable_docume...y.Evw4nDbW\n', stderr="STOP: USB verification failed: signature key '93caaf7ca93eff4d' is not a known publisher key\n").returncode
+
+tests/test_usb_download_verification.py:229: AssertionError
+_______ test_copyable_document_block_with_fixture_downloads[None-Darwin] _______
+
+release = (PosixPath('/tmp/pytest-of-root/pytest-4/test_copyable_document_block_w1/release with spaces'), PosixPath('/tmp/pytest...bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb', 'schema_version': 1, ...}, <function release.<locals>.resign at 0x7405ef96a2a0>, ...)
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_copyable_document_block_w1')
+download_fault = None, shell_platform = 'Darwin'
+
+    @pytest.mark.parametrize("shell_platform", ["Linux", "Darwin"])
+    @pytest.mark.parametrize("download_fault", [None, "inventory-tamper", "compressed-tamper", "download-error", "missing-verifier-python"])
+    def test_copyable_document_block_with_fixture_downloads(release, tmp_path, download_fault, shell_platform):
+        directory, registry, raw, *_rest, args = release
+        trusted = tmp_path / "trusted checkout"
+        (trusted / "scripts").mkdir(parents=True)
+        (trusted / "packaging/release-keys").mkdir(parents=True)
+        shutil.copy2(ROOT / "scripts/verify-usb-download.py", trusted / "scripts")
+        shutil.copy2(registry, trusted / "packaging/release-keys/keys.json")
+        (trusted / "src").symlink_to(ROOT / "src", target_is_directory=True)
+        selected_python = trusted / (".venv-" + shell_platform.lower()) / "bin/python"
+        selected_python.parent.mkdir(parents=True)
+        if download_fault != "missing-verifier-python":
+            selected_python.write_text("#!/bin/sh\nexec " + shlex.quote(sys.executable) + ' "$@"\n')
+            selected_python.chmod(0o755)
+        tools = tmp_path / "tools"
+        tools.mkdir()
+        # Simulate the documented environment-name selection, not macOS execution.
+        uname = tools / "uname"
+        uname.write_text("#!/bin/sh\nprintf '%s\\n' " + shlex.quote(shell_platform) + "\n")
+        uname.chmod(0o755)
+        default_python = tools / "python3"
+        default_python.write_text("#!/bin/sh\necho 'unselected default Python was invoked' >&2\nexit 91\n")
+        default_python.chmod(0o755)
+        curl = tools / "curl"
+        curl.write_text(f"#!{sys.executable}\n" +
+                       "import os,pathlib,sys\n"
+                       "name=sys.argv[-1].rsplit('/',1)[-1]\n"
+                       "data=(pathlib.Path(os.environ['FIXTURE_RELEASE'])/name).read_bytes()\n"
+                       "fault=os.environ['FIXTURE_DOWNLOAD_FAULT']\n"
+                       "if fault=='inventory-tamper' and name=='release-downloads.json': data+=b' '\n"
+                       "if fault=='compressed-tamper' and name.endswith('.img.gz'): data=b'X'+data[1:]\n"
+                       "if fault=='download-error' and name.endswith('.img.gz'):\n"
+                       " sys.stdout.buffer.write(data[:len(data)//2]); sys.stdout.buffer.flush()\n"
+                       " sys.stderr.write('fixture transfer failed\\n'); sys.exit(22)\n"
+                       "sys.stdout.buffer.write(data)\n")
+        curl.chmod(0o755)
+        doc = (ROOT / "docs/release-verification.md").read_text()
+        block = doc.split("<!-- USB-VERIFY-WALKTHROUGH-BEGIN -->", 1)[1].split("<!-- USB-VERIFY-WALKTHROUGH-END -->", 1)[0]
+        block = block.split("```sh\n", 1)[1].split("```", 1)[0]
+        block = block.replace("/absolute/path/to/trusted/beamo-wipe", str(trusted))
+        block = block.replace("93caaf7ca93eff4d7fa1c16e360f9d6aa17ced0155a56d4cf89d8f6d429e66f7", args[5])
+        result = subprocess.run(  # noqa: S603
+            ["/bin/sh", "-c", block], cwd=tmp_path,
+            env=dict(os.environ, TMPDIR=str(tmp_path), FIXTURE_RELEASE=str(directory),
+                     FIXTURE_DOWNLOAD_FAULT=download_fault or "",
+                     PATH=str(tools) + os.pathsep + os.environ["PATH"]),
+            capture_output=True, text=True, timeout=30,
+        )
+        assert "unselected default Python was invoked" not in result.stderr
+        if download_fault == "missing-verifier-python":
+            assert result.returncode != 0
+            assert "STOP: run the trusted checkout development setup first" in result.stderr
+            assert "Private verification directory:" not in result.stdout
+            return
+        work = Path(next(line.split(": ", 1)[1] for line in result.stdout.splitlines()
+                         if line.startswith("Private verification directory:")))
+        if download_fault is None:
+>           assert result.returncode == 0, result.stdout + result.stderr
+E           AssertionError: Private verification directory: /tmp/pytest-of-root/pytest-4/test_copyable_document_block_w1/beamo-usb-verify.bMHv63zb
+E             STOP: USB verification failed: signature key '93caaf7ca93eff4d' is not a known publisher key
+E             
+E           assert 1 == 0
+E            +  where 1 = CompletedProcess(args=['/bin/sh', '-c', '(\nset -euC\nBEAMO_SOURCE=\'/tmp/pytest-of-root/pytest-4/test_copyable_docume...y.bMHv63zb\n', stderr="STOP: USB verification failed: signature key '93caaf7ca93eff4d' is not a known publisher key\n").returncode
+
+tests/test_usb_download_verification.py:229: AssertionError
+__ test_copyable_document_block_with_fixture_downloads[download-error-Linux] ___
+
+release = (PosixPath('/tmp/pytest-of-root/pytest-4/test_copyable_document_block_w6/release with spaces'), PosixPath('/tmp/pytest...bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb', 'schema_version': 1, ...}, <function release.<locals>.resign at 0x7405ef96a020>, ...)
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_copyable_document_block_w6')
+download_fault = 'download-error', shell_platform = 'Linux'
+
+    @pytest.mark.parametrize("shell_platform", ["Linux", "Darwin"])
+    @pytest.mark.parametrize("download_fault", [None, "inventory-tamper", "compressed-tamper", "download-error", "missing-verifier-python"])
+    def test_copyable_document_block_with_fixture_downloads(release, tmp_path, download_fault, shell_platform):
+        directory, registry, raw, *_rest, args = release
+        trusted = tmp_path / "trusted checkout"
+        (trusted / "scripts").mkdir(parents=True)
+        (trusted / "packaging/release-keys").mkdir(parents=True)
+        shutil.copy2(ROOT / "scripts/verify-usb-download.py", trusted / "scripts")
+        shutil.copy2(registry, trusted / "packaging/release-keys/keys.json")
+        (trusted / "src").symlink_to(ROOT / "src", target_is_directory=True)
+        selected_python = trusted / (".venv-" + shell_platform.lower()) / "bin/python"
+        selected_python.parent.mkdir(parents=True)
+        if download_fault != "missing-verifier-python":
+            selected_python.write_text("#!/bin/sh\nexec " + shlex.quote(sys.executable) + ' "$@"\n')
+            selected_python.chmod(0o755)
+        tools = tmp_path / "tools"
+        tools.mkdir()
+        # Simulate the documented environment-name selection, not macOS execution.
+        uname = tools / "uname"
+        uname.write_text("#!/bin/sh\nprintf '%s\\n' " + shlex.quote(shell_platform) + "\n")
+        uname.chmod(0o755)
+        default_python = tools / "python3"
+        default_python.write_text("#!/bin/sh\necho 'unselected default Python was invoked' >&2\nexit 91\n")
+        default_python.chmod(0o755)
+        curl = tools / "curl"
+        curl.write_text(f"#!{sys.executable}\n" +
+                       "import os,pathlib,sys\n"
+                       "name=sys.argv[-1].rsplit('/',1)[-1]\n"
+                       "data=(pathlib.Path(os.environ['FIXTURE_RELEASE'])/name).read_bytes()\n"
+                       "fault=os.environ['FIXTURE_DOWNLOAD_FAULT']\n"
+                       "if fault=='inventory-tamper' and name=='release-downloads.json': data+=b' '\n"
+                       "if fault=='compressed-tamper' and name.endswith('.img.gz'): data=b'X'+data[1:]\n"
+                       "if fault=='download-error' and name.endswith('.img.gz'):\n"
+                       " sys.stdout.buffer.write(data[:len(data)//2]); sys.stdout.buffer.flush()\n"
+                       " sys.stderr.write('fixture transfer failed\\n'); sys.exit(22)\n"
+                       "sys.stdout.buffer.write(data)\n")
+        curl.chmod(0o755)
+        doc = (ROOT / "docs/release-verification.md").read_text()
+        block = doc.split("<!-- USB-VERIFY-WALKTHROUGH-BEGIN -->", 1)[1].split("<!-- USB-VERIFY-WALKTHROUGH-END -->", 1)[0]
+        block = block.split("```sh\n", 1)[1].split("```", 1)[0]
+        block = block.replace("/absolute/path/to/trusted/beamo-wipe", str(trusted))
+        block = block.replace("93caaf7ca93eff4d7fa1c16e360f9d6aa17ced0155a56d4cf89d8f6d429e66f7", args[5])
+        result = subprocess.run(  # noqa: S603
+            ["/bin/sh", "-c", block], cwd=tmp_path,
+            env=dict(os.environ, TMPDIR=str(tmp_path), FIXTURE_RELEASE=str(directory),
+                     FIXTURE_DOWNLOAD_FAULT=download_fault or "",
+                     PATH=str(tools) + os.pathsep + os.environ["PATH"]),
+            capture_output=True, text=True, timeout=30,
+        )
+        assert "unselected default Python was invoked" not in result.stderr
+        if download_fault == "missing-verifier-python":
+            assert result.returncode != 0
+            assert "STOP: run the trusted checkout development setup first" in result.stderr
+            assert "Private verification directory:" not in result.stdout
+            return
+        work = Path(next(line.split(": ", 1)[1] for line in result.stdout.splitlines()
+                         if line.startswith("Private verification directory:")))
+        if download_fault is None:
+            assert result.returncode == 0, result.stdout + result.stderr
+            assert (work / (STEM + ".img")).read_bytes() == raw
+            assert result.stdout.count("VERIFIED raw USB image") == 2
+        else:
+            assert result.returncode != 0
+            assert not (work / (STEM + ".img")).exists()
+            assert "VERIFIED raw USB image" not in result.stdout
+            if download_fault == "download-error":
+>               assert result.returncode == 22
+E               assert 1 == 22
+E                +  where 1 = CompletedProcess(args=['/bin/sh', '-c', '(\nset -euC\nBEAMO_SOURCE=\'/tmp/pytest-of-root/pytest-4/test_copyable_docume...y.8c6i1Gum\n', stderr="STOP: USB verification failed: signature key '93caaf7ca93eff4d' is not a known publisher key\n").returncode
+
+tests/test_usb_download_verification.py:237: AssertionError
+__ test_copyable_document_block_with_fixture_downloads[download-error-Darwin] __
+
+release = (PosixPath('/tmp/pytest-of-root/pytest-4/test_copyable_document_block_w7/release with spaces'), PosixPath('/tmp/pytest...bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb', 'schema_version': 1, ...}, <function release.<locals>.resign at 0x7405ef99fba0>, ...)
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-4/test_copyable_document_block_w7')
+download_fault = 'download-error', shell_platform = 'Darwin'
+
+    @pytest.mark.parametrize("shell_platform", ["Linux", "Darwin"])
+    @pytest.mark.parametrize("download_fault", [None, "inventory-tamper", "compressed-tamper", "download-error", "missing-verifier-python"])
+    def test_copyable_document_block_with_fixture_downloads(release, tmp_path, download_fault, shell_platform):
+        directory, registry, raw, *_rest, args = release
+        trusted = tmp_path / "trusted checkout"
+        (trusted / "scripts").mkdir(parents=True)
+        (trusted / "packaging/release-keys").mkdir(parents=True)
+        shutil.copy2(ROOT / "scripts/verify-usb-download.py", trusted / "scripts")
+        shutil.copy2(registry, trusted / "packaging/release-keys/keys.json")
+        (trusted / "src").symlink_to(ROOT / "src", target_is_directory=True)
+        selected_python = trusted / (".venv-" + shell_platform.lower()) / "bin/python"
+        selected_python.parent.mkdir(parents=True)
+        if download_fault != "missing-verifier-python":
+            selected_python.write_text("#!/bin/sh\nexec " + shlex.quote(sys.executable) + ' "$@"\n')
+            selected_python.chmod(0o755)
+        tools = tmp_path / "tools"
+        tools.mkdir()
+        # Simulate the documented environment-name selection, not macOS execution.
+        uname = tools / "uname"
+        uname.write_text("#!/bin/sh\nprintf '%s\\n' " + shlex.quote(shell_platform) + "\n")
+        uname.chmod(0o755)
+        default_python = tools / "python3"
+        default_python.write_text("#!/bin/sh\necho 'unselected default Python was invoked' >&2\nexit 91\n")
+        default_python.chmod(0o755)
+        curl = tools / "curl"
+        curl.write_text(f"#!{sys.executable}\n" +
+                       "import os,pathlib,sys\n"
+                       "name=sys.argv[-1].rsplit('/',1)[-1]\n"
+                       "data=(pathlib.Path(os.environ['FIXTURE_RELEASE'])/name).read_bytes()\n"
+                       "fault=os.environ['FIXTURE_DOWNLOAD_FAULT']\n"
+                       "if fault=='inventory-tamper' and name=='release-downloads.json': data+=b' '\n"
+                       "if fault=='compressed-tamper' and name.endswith('.img.gz'): data=b'X'+data[1:]\n"
+                       "if fault=='download-error' and name.endswith('.img.gz'):\n"
+                       " sys.stdout.buffer.write(data[:len(data)//2]); sys.stdout.buffer.flush()\n"
+                       " sys.stderr.write('fixture transfer failed\\n'); sys.exit(22)\n"
+                       "sys.stdout.buffer.write(data)\n")
+        curl.chmod(0o755)
+        doc = (ROOT / "docs/release-verification.md").read_text()
+        block = doc.split("<!-- USB-VERIFY-WALKTHROUGH-BEGIN -->", 1)[1].split("<!-- USB-VERIFY-WALKTHROUGH-END -->", 1)[0]
+        block = block.split("```sh\n", 1)[1].split("```", 1)[0]
+        block = block.replace("/absolute/path/to/trusted/beamo-wipe", str(trusted))
+        block = block.replace("93caaf7ca93eff4d7fa1c16e360f9d6aa17ced0155a56d4cf89d8f6d429e66f7", args[5])
+        result = subprocess.run(  # noqa: S603
+            ["/bin/sh", "-c", block], cwd=tmp_path,
+            env=dict(os.environ, TMPDIR=str(tmp_path), FIXTURE_RELEASE=str(directory),
+                     FIXTURE_DOWNLOAD_FAULT=download_fault or "",
+                     PATH=str(tools) + os.pathsep + os.environ["PATH"]),
+            capture_output=True, text=True, timeout=30,
+        )
+        assert "unselected default Python was invoked" not in result.stderr
+        if download_fault == "missing-verifier-python":
+            assert result.returncode != 0
+            assert "STOP: run the trusted checkout development setup first" in result.stderr
+            assert "Private verification directory:" not in result.stdout
+            return
+        work = Path(next(line.split(": ", 1)[1] for line in result.stdout.splitlines()
+                         if line.startswith("Private verification directory:")))
+        if download_fault is None:
+            assert result.returncode == 0, result.stdout + result.stderr
+            assert (work / (STEM + ".img")).read_bytes() == raw
+            assert result.stdout.count("VERIFIED raw USB image") == 2
+        else:
+            assert result.returncode != 0
+            assert not (work / (STEM + ".img")).exists()
+            assert "VERIFIED raw USB image" not in result.stdout
+            if download_fault == "download-error":
+>               assert result.returncode == 22
+E               assert 1 == 22
+E                +  where 1 = CompletedProcess(args=['/bin/sh', '-c', '(\nset -euC\nBEAMO_SOURCE=\'/tmp/pytest-of-root/pytest-4/test_copyable_docume...y.n1IV254j\n', stderr="STOP: USB verification failed: signature key '93caaf7ca93eff4d' is not a known publisher key\n").returncode
+
+tests/test_usb_download_verification.py:237: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_blacksmith_ci.py::test_parallel_sources_waits_for_every_gate_and_propagates_failure[]
+FAILED tests/test_blacksmith_ci.py::test_parallel_sources_waits_for_every_gate_and_propagates_failure[lint]
+FAILED tests/test_blacksmith_ci.py::test_parallel_sources_waits_for_every_gate_and_propagates_failure[tests]
+FAILED tests/test_blacksmith_ci.py::test_parallel_sources_waits_for_every_gate_and_propagates_failure[desktop-launchers]
+FAILED tests/test_blacksmith_ci.py::test_parallel_sources_waits_for_every_gate_and_propagates_failure[negative]
+FAILED tests/test_blacksmith_ci.py::test_parallel_sources_waits_for_every_gate_and_propagates_failure[preview]
+FAILED tests/test_blacksmith_ci.py::test_kvm_preflight_checks_privileged_api_not_runner_permissions[0]
+FAILED tests/test_blacksmith_ci.py::test_kvm_preflight_checks_privileged_api_not_runner_permissions[1]
+FAILED tests/test_blacksmith_ci.py::test_loop_pool_prepares_concurrent_nodes_and_cleans_only_owned_files[]
+FAILED tests/test_blacksmith_ci.py::test_loop_pool_prepares_concurrent_nodes_and_cleans_only_owned_files[attach]
+FAILED tests/test_blacksmith_ci.py::test_loop_pool_prepares_concurrent_nodes_and_cleans_only_owned_files[ownership]
+FAILED tests/test_blacksmith_ci.py::test_pytest_groups_overlap_isolate_runtime_and_wait_for_both[]
+FAILED tests/test_blacksmith_ci.py::test_pytest_groups_overlap_isolate_runtime_and_wait_for_both[orca]
+FAILED tests/test_blacksmith_ci.py::test_pytest_groups_overlap_isolate_runtime_and_wait_for_both[suite]
+FAILED tests/test_blacksmith_ci.py::test_pytest_groups_overlap_isolate_runtime_and_wait_for_both[both]
+FAILED tests/test_blacksmith_ci.py::test_pytest_groups_overlap_isolate_runtime_and_wait_for_both[gtk-skipped]
+FAILED tests/test_blacksmith_ci.py::test_pytest_groups_overlap_isolate_runtime_and_wait_for_both[gtk-missing]
+FAILED tests/test_pick_scroll_restore.py::test_teardown_cancels_canvas_timers_before_destroying_tcl_commands
+FAILED tests/test_qemu_iso_inspection.py::test_iso_inspection_uses_only_verified_regular_snapshot[regular]
+FAILED tests/test_usb_download_verification.py::test_copyable_document_block_with_fixture_downloads[None-Linux]
+FAILED tests/test_usb_download_verification.py::test_copyable_document_block_with_fixture_downloads[None-Darwin]
+FAILED tests/test_usb_download_verification.py::test_copyable_document_block_with_fixture_downloads[download-error-Linux]
+FAILED tests/test_usb_download_verification.py::test_copyable_document_block_with_fixture_downloads[download-error-Darwin]
+23 failed, 7942 passed, 14 skipped in 735.11s (0:12:15)

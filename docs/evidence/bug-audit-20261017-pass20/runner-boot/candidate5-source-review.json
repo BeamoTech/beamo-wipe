@@ -1,0 +1,84 @@
+{
+  "branch": "fix/safety-audit-20261015",
+  "candidate4_asset_identity_proof": {
+    "error_type": "AttributeError",
+    "exact_candidate_sha256": "68b25648c658e5dc9de1e9f7edf3663c90f4dc52520852a8ea8458aa40f8327f",
+    "installed_font_eq_invoked": true,
+    "passed": false
+  },
+  "candidate4_constructor_proof": {
+    "cases": 19,
+    "errors": 0,
+    "failed_ids": [
+      "test_partial_native_and_row_constructor_releases_ownership[tk-init-before]",
+      "test_partial_native_and_row_constructor_releases_ownership[startup-load-before]",
+      "test_partial_native_and_row_constructor_releases_ownership[startup-load-after]",
+      "test_partial_native_and_row_constructor_releases_ownership[startup-frame]",
+      "test_partial_native_and_row_constructor_releases_ownership[startup-label]"
+    ],
+    "failures": 5,
+    "passing_controls": 14,
+    "skipped": 0
+  },
+  "candidate4_proof_hashes": {
+    "asset-identity-counterexample.py": "2f8e6e815bf7a680ffa478c7245c3d3ff938e7aa1c40beccd655288ebf0146d7",
+    "candidate4-asset-identity-counterexample-status.json": "13ddf3360fc39427a1de0d8fa75b841a2905c79f321b827fd2b365b082e0fd8d",
+    "candidate4-asset-identity-counterexample.txt": "570cb751454b3372bb62e97df0423ae1e9f20bfa48a012019b24d176f8b5956e",
+    "constructor-v3-candidate4-review.json": "2c243337efca249591dbf17e3660ac0b7645b5fe966afedd3edc62263157486f",
+    "constructor-v3-candidate4-status.json": "a3443568a9fd7b6c045ca7f2a53eb7170067fdd67f593dc08cbd39e65b03fc99",
+    "constructor-v3-candidate4.txt": "bad809c7283e286741e6fca643b0d20218d01b27118e59bc15211f953101ae20",
+    "constructor-v3-candidate4.xml": "6316a2abd887c3cacec075b5a1b0e2c377441e6b62685c996a0c2b792b0f6db8"
+  },
+  "changed_class_methods_vs_candidate4": [
+    "('TkWizard', 'run')"
+  ],
+  "changed_top_level_functions_vs_candidate4": [
+    "_pin_retired_interpreter",
+    "_pin_retired_assets",
+    "_drain_retired_assets",
+    "_drain_retired_interpreters",
+    "_new_owned_root",
+    "_close_owned_startup_root",
+    "run_tk_startup",
+    "_run_tk_startup_window"
+  ],
+  "document_sha256": "935bb0d59d93fcec7198478bb098d7f4b6d86b235c6e588a677d27a10b731d19",
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "inputs": {
+    "/root/dev/Beamo Wipe/src/beamo_wipe/app.py": "30e005d148b07415b57fa293762f142a491fa1ec012661cf02ed2739bfb261e5",
+    "/root/dev/Beamo Wipe/src/beamo_wipe/startup_stages.py": "131d5966f9e45505e248e8192d33a1eb39be135246d1a7191ef82b6dba832477",
+    "/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py": "23d280b0451d3e25d64387de62d4912a8867ffbdec934244efe6a7f7a7ee0615",
+    "/tmp/pass20-primary/private-candidate4-agent.py": "68b25648c658e5dc9de1e9f7edf3663c90f4dc52520852a8ea8458aa40f8327f",
+    "/tmp/pass20-primary/private-candidate5-agent.json": "1ca81e073c88d524c130a3fa7ec8e1420d0ac81d4af326e9be17c3e891539c54",
+    "/tmp/pass20-primary/private-candidate5-agent.patch": "23902f7c0352a65afde83d9d0626f4db4dc7a37a5a40974c3f123d38bc101d80",
+    "/tmp/pass20-primary/private-candidate5-agent.py": "6b5be8d70416318a83b24e3ce6bc9dc212ab63293d2498889810401ecccbfdbe"
+  },
+  "limits": [
+    "No candidate5 runtime pass claimed by this source review.",
+    "Full local/main-Orca/artifact qualification and independent selected-source review remain root-owned.",
+    "No attribution of previous full native abort, latency or SIGTERM.",
+    "Ordinary native classes/callable lightweight mocks are inspected factory scope; arbitrary custom metaclass behavior remains outside it.",
+    "Creator-thread pools deliberately defer release while external peers/tracebacks retain assets."
+  ],
+  "mode": "source-only and existing evidence readback; no product imports/runtime/tests/shared source edits",
+  "native_factory_call_sites": 25,
+  "provided_patch_matches_exactly": true,
+  "repo": "BeamoTech/beamo-wipe",
+  "reviewed_at_utc": "2026-10-17T18:47:38.415729+00:00",
+  "reviewed_resolutions": {
+    "P20-C4-ASSET-RECORD-EQUALITY": "integer-id keyed dicts and exact record is checks; no native asset equality used",
+    "P20-C4-EARLY-TK-LOOKUP": "nondelegating instance-dictionary tk lookup; absent pre-init attribute does not invoke Misc.__getattr__",
+    "direct_run_setup": "mapped/focus setup now shares run cleanup try",
+    "startup_scope": "outer owned-root guard spans configuration/widgets/callback setup and mainloop; real factory constructor cleanup and original TclError translation retained"
+  },
+  "reviewer": "Codex /root/pass20_runner_boot",
+  "schema": 1,
+  "starting_archive_authenticated": true,
+  "startup_callback_asts_equal_original": {
+    "close": true,
+    "poll_once": true,
+    "render": true
+  },
+  "superseded_objection_receipt_sha256": "cddb29c2bf6f773dfbe6bd89dd3cd05f8b7aa3fb3b1ad408100cf7affc534a47",
+  "verdict": "No additional source objection remains for exact candidate5 bytes; root proof/final gates still required"
+}

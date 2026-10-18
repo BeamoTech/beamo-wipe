@@ -19,10 +19,28 @@ class SoundDialog:
         self.dialog.set_transient_for(window)
         self.dialog.set_modal(True)
         self.dialog.set_destroy_with_parent(True)
-        self.dialog.set_default_size(560, 480)
-        box = self.dialog.get_content_area()
-        box.set_spacing(6)
-        box.set_border_width(16)
+        width, height = 560, 480
+        display = window.get_display()
+        monitor = (display.get_monitor_at_window(window.get_window())
+                   if window.get_window() is not None else display.get_primary_monitor())
+        monitor = monitor or display.get_monitor(0)
+        if monitor is not None:
+            area = monitor.get_workarea()
+            width, height = min(width, area.width), min(height, area.height)
+            self.dialog.set_position(gtk.WindowPosition.NONE)
+            self.dialog.move(area.x + (area.width - width) // 2,
+                             area.y + (area.height - height) // 2)
+        self.dialog.set_default_size(width, height)
+        content = self.dialog.get_content_area()
+        content.set_spacing(6)
+        content.set_border_width(16)
+        # Output lists and recovery text can exceed a small live display.
+        # Keep Close and the live Stop action outside this scrolling area.
+        scroll = gtk.ScrolledWindow()
+        scroll.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
+        content.pack_start(scroll, True, True, 0)
+        box = gtk.Box(orientation=gtk.Orientation.VERTICAL, spacing=6)
+        scroll.add(box)
         self.status = self._label(C.SOUND_CHECKING)
         self.status.set_can_focus(True)
         self.status.set_selectable(True)
@@ -34,6 +52,8 @@ class SoundDialog:
         self.chosen = None
         self.muted = False
         self.radios = []
+        self._chosen_radio = None
+        self._restoring_output = False
         self.volume_label = self._label(C.SOUND_VOLUME_UNKNOWN)
         controls = gtk.Box(orientation=gtk.Orientation.HORIZONTAL, spacing=8)
         box.pack_start(controls, False, False, 4)
@@ -61,7 +81,7 @@ class SoundDialog:
         box.pack_start(self._label(C.SOUND_RECOVERY), False, False, 4)
         if wizard.screen == Screen.WORKING:
             stop_button = gtk.Button.new_with_label(C.STOP_ASK)
-            box.pack_start(stop_button, False, False, 4)
+            content.pack_start(stop_button, False, False, 4)
             stop_button.connect("clicked", self._request_stop)
         self.dialog.add_button(C.SOUND_CLOSE, gtk.ResponseType.CLOSE)
         self.dialog.connect("response", lambda *_: self.dialog.destroy())
@@ -119,8 +139,8 @@ class SoundDialog:
         self.ticket = None
         done = self.done
         self.done = None
-        self._busy(False)
         if value is None or isinstance(value, BaseException):
+            self._restore_output_choice()
             try:
                 from beamo_wipe.diagnostics import log_diag
 
@@ -130,6 +150,7 @@ class SoundDialog:
             self._announce(C.SOUND_ACTION_FAILED)
         else:
             done(value)
+        self._busy(False)
 
     def close(self):
         if self.dialog is not None:
@@ -146,6 +167,7 @@ class SoundDialog:
             self.ticket.cancel()
             self.ticket = None
         self.done = None
+        self._chosen_radio = None
         self.dialog = None
         if self.review_overlay:
             self.w.end_review_overlay()
@@ -179,7 +201,8 @@ class SoundDialog:
         if not state.available:
             self._announce(state.message)
             return
-        self.chosen = sound.resolve_output(self.w.sound_output, state)
+        preferred = self.w.sound_output if applied is None or applied.ok else ""
+        self.chosen = sound.resolve_output(preferred, state)
         group = None
         for output in state.outputs:
             choice = self.Gtk.RadioButton.new_with_label_from_widget(group, output.label)
@@ -190,6 +213,7 @@ class SoundDialog:
             self.output_box.pack_start(choice, False, False, 3)
             self.radios.append(choice)
             if self.chosen is not None and output.id == self.chosen.id:
+                self._chosen_radio = choice
                 choice.set_active(True)
             choice.connect("toggled", self._output_toggled, output)
             choice.show_all()
@@ -197,8 +221,17 @@ class SoundDialog:
         self._busy(False)
         self._announce(applied.message if applied is not None and not applied.ok else C.SOUND_DIALOG_LEAD)
 
+    def _restore_output_choice(self):
+        if self._chosen_radio is None:
+            return
+        self._restoring_output = True
+        try:
+            self._chosen_radio.set_active(True)
+        finally:
+            self._restoring_output = False
+
     def _output_toggled(self, choice, output):
-        if not choice.get_active():
+        if self._restoring_output or not choice.get_active():
             return
         def action():
             result = sound.set_output(output.id)
@@ -208,9 +241,11 @@ class SoundDialog:
             if result.ok:
                 self.w.set_sound_output(output.id)
                 self.chosen = output
+                self._chosen_radio = choice
                 self._show_volume(state)
                 self._announce(f"{output.label} {C.SOUND_SELECTED}")
             else:
+                self._restore_output_choice()
                 self._announce(result.message)
         self._submit(action, done)
 

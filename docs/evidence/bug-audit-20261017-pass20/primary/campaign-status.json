@@ -1,0 +1,50 @@
+[
+  {
+    "phase": "runner-fresh",
+    "command": [
+      "/tmp/beamo-pass20-python/bin/python3",
+      "/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/runner/fresh-boundaries.py"
+    ],
+    "script_sha256": "33673e8f5d745c9fc5dcba0bc8abcacae992577e1b5b94d70f0a8995f7e5a5bf",
+    "started_utc": "2026-10-17T19:41:13.560130+00:00",
+    "ended_utc": "2026-10-17T19:41:19.354414+00:00",
+    "exit_code": 0,
+    "output": "runner-fresh.txt"
+  },
+  {
+    "phase": "runner-cancel",
+    "command": [
+      "/tmp/beamo-pass20-python/bin/python3",
+      "/root/dev/Beamo Wipe/docs/evidence/bug-audit-20261017-pass20/runner/cancel-boundaries.py"
+    ],
+    "script_sha256": "0a18a8d2c38cd9b10135ea08b15a8fadabe0a3032da571f2d98e54d81667ce87",
+    "started_utc": "2026-10-17T19:41:19.354750+00:00",
+    "ended_utc": "2026-10-17T19:41:19.500387+00:00",
+    "exit_code": 0,
+    "output": "runner-cancel.txt"
+  },
+  {
+    "phase": "geometry",
+    "command": [
+      "/tmp/beamo-pass20-python/bin/python3",
+      "/tmp/pass20-ui/run-geometry.py"
+    ],
+    "script_sha256": "747c05bfedb33a5ca9503efca4ed16fd3c94e933d363716562e44086b8e84f91",
+    "started_utc": "2026-10-17T19:41:19.500840+00:00",
+    "ended_utc": "2026-10-17T19:42:06.663720+00:00",
+    "exit_code": 0,
+    "output": "geometry.txt"
+  },
+  {
+    "phase": "reports",
+    "command": [
+      "/tmp/beamo-pass20-python/bin/python3",
+      "/tmp/pass20-primary/report-checks-matrix.py"
+    ],
+    "script_sha256": "d93ca2bec4a35abf344c2e269751c4b0d05348179a042b193d726722852e9c83",
+    "started_utc": "2026-10-17T19:42:06.664039+00:00",
+    "ended_utc": "2026-10-17T19:42:10.730507+00:00",
+    "exit_code": 0,
+    "output": "report-checks-matrix-artifacts.json"
+  }
+]

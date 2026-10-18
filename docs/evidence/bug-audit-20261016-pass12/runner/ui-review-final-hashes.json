@@ -1,0 +1,10 @@
+{
+  "src/beamo_wipe/ui/sound_dialog.py": "9165731d320e6f19de3e6632a7b0c43a4c688a72dbd6558b39ba46c0052aed9e",
+  "src/beamo_wipe/ui/accessible_wizard.py": "bb96f185dd93c55066706379b59c7c4221e1f69d6121a0d4e7e99065d033ce38",
+  "src/beamo_wipe/ui/tk_wizard.py": "892d9dc27082c84ca5bfa06dc09dc36c90b7b19e23ff402e22c89a861c855fee",
+  "src/beamo_wipe/startup_stages.py": "131d5966f9e45505e248e8192d33a1eb39be135246d1a7191ef82b6dba832477",
+  "tests/test_sound_dialog_state_pass12.py": "0d95acf5ab97f63a4bc730d821da3c9de848dce935be99c3c8cfb5ae0f9277cf",
+  "tests/test_startup_notice_state_pass12.py": "a4ae9c7ca00c23972e6b27591cb3a891602d1382491b423b3038315ac07e5fef",
+  "tests/test_tk_startup_focus_geometry_pass12.py": "0cf3cd0eefa1598064f50d8988cdff96f279b7375b6c7cdbe048d6206b40e64b",
+  "tests/test_bug_audit_tk_gc_20260913.py": "57c074b2e2855ae789b6eebf9c68ed0b85813b6d9f12a2156f7d2d0747f458ab"
+}

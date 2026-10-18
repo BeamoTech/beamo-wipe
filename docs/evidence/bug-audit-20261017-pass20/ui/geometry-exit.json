@@ -1,0 +1,1 @@
+{"command": ["dbus-run-session", "--", "xvfb-run", "-a", "-n", "150", "-s", "-screen 0 800x600x24 -dpi 72 -nolisten tcp", "/tmp/beamo-pass20-python/bin/python3", "/tmp/pass20-ui/geometry-matrix.py"], "exit_code": 0, "private_display": true, "native_inventory": false, "engine": false, "hardware": false}

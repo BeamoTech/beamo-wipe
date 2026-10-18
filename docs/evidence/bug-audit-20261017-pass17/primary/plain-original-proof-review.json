@@ -1,0 +1,27 @@
+{
+  "reports": {
+    "plain-original-proof": {
+      "cases": 18,
+      "counts": {
+        "fail": 15,
+        "pass": 3
+      },
+      "sample_trace": {
+        "pty_typeahead_trace": "{\"arrival\": \"early\", \"method\": \"everyday\", \"inputs\": [{\"at\": 0.0, \"bytes\": \"b'ERASE\\\\n'\", \"enabled\": false}, {\"at\": 5.2, \"bytes\": \"b'BACK\\\\n'\", \"enabled\": true}], \"answers\": [{\"at\": 5.2, \"value\": \"ERASE\"}], \"fake_engine_starts\": [{\"at\": 5.2, \"method\": \"everyday\"}]}"
+      }
+    },
+    "plain-original-corrected": {
+      "cases": 18,
+      "counts": {
+        "fail": 9,
+        "pass": 9
+      },
+      "sample_trace": {
+        "pty_typeahead_trace": "{\"arrival\": \"early\", \"method\": \"everyday\", \"inputs\": [{\"at\": 0.0, \"bytes\": \"b'ERASE\\\\n'\", \"enabled\": false}, {\"at\": 5.2, \"bytes\": \"b'BACK\\\\n'\", \"enabled\": true}], \"answers\": [{\"at\": 5.2, \"value\": \"ERASE\"}], \"fake_engine_starts\": [{\"at\": 5.2, \"method\": \"everyday\"}]}"
+      }
+    }
+  },
+  "source_sha256": "794525a0185cd652d977b84cd1cd318c07c90dcf8dcaad20c730260ef4f1cc1c",
+  "test_sha256": "d1021d2e3d8ec39f8572106661a8eae3c808a9e405be9c1660b71502da62d772",
+  "correction": "Initial fixture failed to reauthorize changed method in12cases. Corrected using full token flow, no assertion removed. First observer wrongly expected9fail, its assert failed; retained raw15fail/3pass. Corrected stable proof9 intendedfail/9 controls."
+}

@@ -1,0 +1,17 @@
+{
+  "src/beamo_wipe/wizard.py": "be375a0861ec569a652e15f9f572bfa689f40048d736c5bedef641453d464bbb",
+  "src/beamo_wipe/app.py": "30e005d148b07415b57fa293762f142a491fa1ec012661cf02ed2739bfb261e5",
+  "src/beamo_wipe/recovery.py": "2c9d7994872173b92225efb953d48ad25e3a77c4824632530b400d86005f5aa7",
+  "src/beamo_wipe/session_recovery.py": "128c5daa4c53197437682c637d3078917a79037a9edf5d1796fc9916cdd4ba53",
+  "src/beamo_wipe/ui/__init__.py": "0de0337e4e6993b390c0b6316f230d3d719d5f19c2a41aae50623cd371aa98d0",
+  "src/beamo_wipe/ui/accessible_wizard.py": "bdc7c83dba46ab9d35f87c8f68a6e201409d22bbd261de1206d719eb8c9363f2",
+  "src/beamo_wipe/ui/console_wizard.py": "d51205949422ef5695ae3edcbae71655786f00bcb3655c74bcf5a1786e5b5597",
+  "src/beamo_wipe/ui/layout.py": "31dbf17a973a0f48f7b1cc17d07d2552cd65207dfa4c8fd1f2d02a18ee1ef758",
+  "src/beamo_wipe/ui/sound_dialog.py": "e847d67c57c078021db32822e95992fd14aa1be6721874b1d520f01b72e0a1cf",
+  "src/beamo_wipe/ui/tk_wizard.py": "66f7e6449f5524c629d84b53cda2cc0fd794c8d994b07e730a6e3bde147437a9",
+  "src/beamo_wipe/compat_story.py": "b2a5f36279a507a7c65dfb65f8b772c5dcc79b2a531d805716ddc06066e9a816",
+  "scripts/build-iso.sh": "e5fc440e065fbb33ea1d6a580584aa0537390ba92e60e3cd331e9622cfb48a00",
+  "packaging/live/config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk": "5532b8e162621be12b284c5a01eb4e1817b5b19bd242c3ad9ac50452c5c5e9a4",
+  "packaging/live/config/includes.chroot/usr/local/bin/beamo-wipe": "0a45eb29375be43b6d776d31d6dd3c22a52ab9a03fce493a9aa3c4b403b1a4ee",
+  "src/beamo_wipe/diagnostic_report.py": "fc01e84c6f917d679ea743bc104c5c5d6031de34bd9d68b6f6ee43f63986a1dd"
+}

@@ -1,0 +1,6 @@
+{
+  "source": "src/beamo_wipe/nwipe_runner.py",
+  "source_sha256": "2979312e1b415b9d3e367133817d46d4e1650b33c82ba03f082a02045efa37c5",
+  "matrix_cases": 1176,
+  "failures": 0
+}

@@ -301,7 +301,7 @@ def validate_report(data: bytes) -> dict:
         if p["events"][-1]["code"] != p["error_code"]:
             raise ValueError()
         return p
-    except (ValueError, TypeError, KeyError, AttributeError) as exc:
+    except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
         raise SafetyError(INVALID_REPORT) from exc
 
 

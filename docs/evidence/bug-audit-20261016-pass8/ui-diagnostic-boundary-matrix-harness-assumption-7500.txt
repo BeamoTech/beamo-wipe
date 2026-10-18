@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "baseline-diagnostic", line 197, in validate_report
+TypeError: unhashable type: 'list'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/tmp/beamo-pass8-ui-diagnostic-boundary-matrix.py", line 20, in <module>
+    try:old.validate_report(raw)
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "baseline-diagnostic", line 305, in validate_report
+beamo_wipe.safety.SafetyError: Invalid or unsanitized diagnostic report.

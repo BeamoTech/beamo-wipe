@@ -1,0 +1,11 @@
+# Independent PASS8 runner projection safety review
+
+Reviewed the isolated diff in nwipe_runner.py. Approved. Tracking the most recent sample's retained-list index preserves its rank among every retained observation. The retained boolean avoids duplicating progress which was itself relevant (new totals or inside a summary); inserting the latest unretained sample at its original rank preserves table context. Counter-total contradiction observations remain retained, and completion/evidence rules remain unchanged. No other source edited by reviewer.
+
+Independently reproduced exact35107a8 original:10new tests give5 intended assertion failures/5 controls,0errors/skips. Isolated package module path printed in original log. A preliminary attempt imported current runner because pytest's configured pythonpath reordered imports; retained original-import-setup.* is superseded and not original proof. Corrected explicit preimport verifies original source without altering checkout.
+
+Corrected adjacent suite:259tests/19modules PASS,0failures/errors/skips, private72DPI D-Bus. Fake wrapper records zero fallback native acquisition calls. Includes all10newregressions plus completion method/percentage/phase, provenance/spoof/incomplete engine checks, timing/scope, scan growth/truncation/linebound, concurrent and stale/partial progress.
+
+Fresh independent fake regular-file matrix:600combinations full text vs projection equality for check_payloads and all3method completion verdicts. Includes0/nonzero/malformed error counts, open/closed/repeated tables, changed/same counters, non-target/invalid >100% samples, progress in/before/after tables, terminal Erased summaries. Explicit dedup/order assertions PASS;4unterminated/overlong malformed records refused;6retained-evidence-cap boundaries PASS. File signature/regular-file restrictions unchanged. Resource bounds remain finite and counters preserve existing rules.
+
+Evidence under /tmp/beamo-pass8-discovery-projection-*: exact-source original JUnit/log and harness; corrected suite JUnit/log/harness; matrix script/log; final hash/count summary. No actual engine/process/device or inventory operation performed. Final runner hash in summary.json.

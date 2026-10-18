@@ -1,0 +1,64 @@
+{
+  "runtime_source_sha256": "9f34e674c64184b4a7d36fb77498d8dee7ad71321bb979c1616b7cc1772be43a",
+  "final_inputs": 751,
+  "changed_starting_paths": [
+    "src/beamo_wipe/discover.py",
+    "src/beamo_wipe/engine_checks.py",
+    "src/beamo_wipe/models.py",
+    "src/beamo_wipe/nwipe_runner.py",
+    "src/beamo_wipe/outcomes.py",
+    "src/beamo_wipe/safety.py",
+    "src/beamo_wipe/ui/tk_wizard.py"
+  ],
+  "unchanged_starting_inputs": 740,
+  "new_modules": [
+    "tests/test_empty_inventory_wheel_pass15.py",
+    "tests/test_hidden_positive_record_pass15.py",
+    "tests/test_physical_observation_context_pass15.py",
+    "tests/test_utf8_log_snapshot_bounds_pass15.py"
+  ],
+  "retained_untracked_test_modules": 22,
+  "source_and_fixture_patch_exact": true,
+  "starting_source_archive_members": 58,
+  "independent_peer_approval_for_all_changed_source": true,
+  "exact_peer_review_records": {
+    "src/beamo_wipe/discover.py": {
+      "sha256": "b08767b2e921779f53e62de67ac4c3fbaa281ea6ab90f9f6c682e3be96f9991e",
+      "review": "discovery/final-source-review-path-api.md"
+    },
+    "src/beamo_wipe/models.py": {
+      "sha256": "9fb0bcb97d35b1ee0f041f8ccb728fe8a2b9f173242a904bf2af6f7b5f42b95c",
+      "review": "discovery/final-source-review-path-api.md"
+    },
+    "src/beamo_wipe/safety.py": {
+      "sha256": "ba07089fa9ed77e3616af67147201a16b15b8c8582ca0ca9724e58ef980ecd9b",
+      "review": "discovery/final-source-review-path-api.md"
+    },
+    "tests/test_physical_observation_context_pass15.py": {
+      "sha256": "319d7195e4a80be9c77ee00d5829da28d6680401352dc4dff6457b7ee3742323",
+      "review": "discovery/final-source-review-path-api.md"
+    },
+    "src/beamo_wipe/ui/tk_wizard.py": {
+      "sha256": "06cfd5488624c78c98d2b2cabf33256ae81403587065d8a72814ef77f8eb13bd",
+      "review": "ui/exact-tk-review.md"
+    },
+    "tests/test_empty_inventory_wheel_pass15.py": {
+      "sha256": "9e1dd204f39e96c7a6943783687481056caff0dffff3b0b520d206666c069138",
+      "review": "ui/exact-tk-review.md"
+    },
+    "src/beamo_wipe/nwipe_runner.py": {
+      "sha256": "cd49b65a607f152bd53675dafef80777d49b2fc02afd54f545605b3ccf958175",
+      "review": "runner/patch-review.md and .json"
+    },
+    "src/beamo_wipe/outcomes.py": {
+      "sha256": "4af35b516e728d1b46fd8b242346c7ded29e61a0bbb9e827a617d155267bd8ba",
+      "review": "runner/patch-review.md and .json"
+    },
+    "src/beamo_wipe/engine_checks.py": {
+      "sha256": "858da2ba9ac347df0b4a92bc196e90949d4279f155e21c98f0ac01b8caa743f3",
+      "review": "runner/patch-review.md and .json"
+    }
+  },
+  "git_index_empty": true,
+  "primary_review": "Complete accumulated/incremental source diff, tracked fixtures, four new modules, exact peer reviews and all relevant adjacent safety contracts read. No source objection remains; final gates required."
+}

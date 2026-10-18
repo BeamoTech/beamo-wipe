@@ -1,0 +1,96 @@
+{
+  "accepted_bounded_arguments": [
+    "Stop/empty-pool filtering; no direct collection, mode or threshold mutation.",
+    "Stored creator Thread identity prevents foreign worker stop callbacks from retiring another creator resources.",
+    "Exact record identity and asset-helper-before-raw-helper return preserve accepted refcount ordering.",
+    "Original native destructors/peer observations/tracebacks remain untouched."
+  ],
+  "all_class_method_asts_equal_candidate5": true,
+  "branch": "fix/safety-audit-20261015",
+  "callback_registration_sites": 1,
+  "completed_candidate5_evidence": {
+    "cases": 486,
+    "errors": 0,
+    "exit_code": 1,
+    "failures": [
+      {
+        "module": "tests.test_tk_owner_trace_lifetime_pass19",
+        "name": "test_destroyed_app_and_local_variables_can_be_collected[confirm]"
+      },
+      {
+        "module": "tests.test_tk_owner_trace_lifetime_pass19",
+        "name": "test_destroyed_app_and_local_variables_can_be_collected[typing]"
+      },
+      {
+        "module": "tests.test_checkrow_trace_lifetime_pass18",
+        "name": "test_destroyed_local_row_and_variable_are_collectable[row-boolean]"
+      },
+      {
+        "module": "tests.test_checkrow_trace_lifetime_pass18",
+        "name": "test_destroyed_local_row_and_variable_are_collectable[row-integer]"
+      },
+      {
+        "module": "tests.test_checkrow_trace_lifetime_pass18",
+        "name": "test_destroyed_local_row_and_variable_are_collectable[parent-boolean]"
+      },
+      {
+        "module": "tests.test_checkrow_trace_lifetime_pass18",
+        "name": "test_destroyed_local_row_and_variable_are_collectable[parent-integer]"
+      },
+      {
+        "module": "tests.test_checkrow_trace_lifetime_pass18",
+        "name": "test_destroyed_local_row_and_variable_are_collectable[redraw-clear-boolean]"
+      },
+      {
+        "module": "tests.test_checkrow_trace_lifetime_pass18",
+        "name": "test_destroyed_local_row_and_variable_are_collectable[redraw-clear-integer]"
+      }
+    ],
+    "hashes": {
+      "private-candidate5-final-focused-review.json": "1da908434b5600363133e5b4c79e374d5631f2c00c0a763c79aafe047cd2f921",
+      "private-candidate5-final-focused-status.json": "c852c676720f6a97a21868c8595d9c1043ed0df8dcba5c2ffa675c40170fc792",
+      "private-candidate5-final-focused.txt": "16ea7bd0aef97686067401af14283138e77455d946a36495c1b4bad8300f1c9f",
+      "private-candidate5-final-focused.xml": "3cc0f20e0c51af8d0393409fc30e1e11a1c78c378d49cf58792edaff1f3c40f6"
+    },
+    "passed": 478,
+    "skipped": 0
+  },
+  "document_sha256": "f22aef7657540a1cf65dc2b18f81b67e46419c050c27a5f9e37bc5ec24cba22a",
+  "head": "35107a8d1a701093eac876a58ab4efd50e291673",
+  "hook_direct_calls": [
+    "_drain_retired_native"
+  ],
+  "inputs": {
+    "/root/dev/Beamo Wipe/src/beamo_wipe/ui/tk_wizard.py": "23d280b0451d3e25d64387de62d4912a8867ffbdec934244efe6a7f7a7ee0615",
+    "/root/dev/Beamo Wipe/tests/test_checkrow_trace_lifetime_pass18.py": "ecaccbf8efcde94b4bff69c902a6ac5f2917bc7207434324b2dafe826524e1c5",
+    "/root/dev/Beamo Wipe/tests/test_tk_owner_trace_lifetime_pass19.py": "dfa703b52c8f404771131afdd5a80235670bba31f87b747a7b6a414401d20d98",
+    "/tmp/pass20-primary/private-candidate5-agent.py": "6b5be8d70416318a83b24e3ce6bc9dc212ab63293d2498889810401ecccbfdbe",
+    "/tmp/pass20-primary/private-candidate6-agent.json": "aa479412431953b17c27b11e4ebde7cead3060f05294e30e1d1f18d0f9b5e0ec",
+    "/tmp/pass20-primary/private-candidate6-agent.patch": "acc967bc7edfc855da409cbead76bf0296d34584394e74297afacb96c0426e39",
+    "/tmp/pass20-primary/private-candidate6-agent.py": "d639822ca03fccc2f9be78c476fc4b594118ac2b9195d2a2979b3c8f9a6e7cf8"
+  },
+  "limits": [
+    "Candidate6 in-flight campaigns not treated as completed here.",
+    "Normal owned-child shutdown, unraisable stderr, single registration and callback/reentry behavior require actual root evidence.",
+    "No complete platform/physical acceptance or earlier abort/signal attribution."
+  ],
+  "mode": "source-only and completed candidate5 evidence readback; no imports/runtime/tests/shared edits",
+  "only_changed_top_level_function": "_drain_retired_native_after_gc",
+  "open_verification_question": {
+    "id": "P20-C6-SNAPSHOT-REENTRY",
+    "root_planned_admission": "isolated actual-native Font/real-dict pool, fixture thresholds(1,1,1) restored after, preserve all callback/exception traces",
+    "scope": "automatic GC stop hook could reenter an explicit drain while real list(pool.items()) snapshot allocation is in progress",
+    "status": "source-supported, unproved; no speculative correction authorized by this receipt"
+  },
+  "provided_patch_matches_exactly": true,
+  "repo": "BeamoTech/beamo-wipe",
+  "reviewed_at_utc": "2026-10-17T18:53:28.537816+00:00",
+  "reviewer": "Codex /root/pass20_runner_boot",
+  "schema": 1,
+  "shared_tk_and_original_failed_modules_equal_frozen_start": {
+    "src/beamo_wipe/ui/tk_wizard.py": true,
+    "tests/test_checkrow_trace_lifetime_pass18.py": true,
+    "tests/test_tk_owner_trace_lifetime_pass19.py": true
+  },
+  "source_verdict": "conditional: no proved new defect, but explicit-drain snapshot-construction GC reentry admission remains pending"
+}

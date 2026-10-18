@@ -1,0 +1,513 @@
+FF.FFFFFFFFFFFFFFFFFFFFFFFFFF                                            [100%]
+=================================== FAILURES ===================================
+____ test_initial_typing_and_consent_focus_is_visible[standard-en-keyboard] ____
+
+screen = <Screen.KEYBOARD: 'keyboard'>, language = 'en', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f61fc7d0>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+_____ test_initial_typing_and_consent_focus_is_visible[standard-en-owner] ______
+
+screen = <Screen.OWNER: 'owner'>, language = 'en', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f6025670>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+____ test_initial_typing_and_consent_focus_is_visible[standard-fr-keyboard] ____
+
+screen = <Screen.KEYBOARD: 'keyboard'>, language = 'fr', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f61a6750>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+----------------------------- Captured stderr call -----------------------------
+bgerror failed to handle background error.
+    Original error: invalid command name "133680689484224<lambda>"
+    Error in bgerror: can't invoke "tk" command: application has been destroyed
+_____ test_initial_typing_and_consent_focus_is_visible[standard-fr-owner] ______
+
+screen = <Screen.OWNER: 'owner'>, language = 'fr', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f61ffb90>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+____ test_initial_typing_and_consent_focus_is_visible[standard-fr-confirm] _____
+
+screen = <Screen.CONFIRM: 'confirm'>, language = 'fr', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f6026330>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+____ test_initial_typing_and_consent_focus_is_visible[standard-de-keyboard] ____
+
+screen = <Screen.KEYBOARD: 'keyboard'>, language = 'de', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f6031af0>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+----------------------------- Captured stderr call -----------------------------
+bgerror failed to handle background error.
+    Original error: invalid command name "133680710630912<lambda>"
+    Error in bgerror: can't invoke "tk" command: application has been destroyed
+_____ test_initial_typing_and_consent_focus_is_visible[standard-de-owner] ______
+
+screen = <Screen.OWNER: 'owner'>, language = 'de', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f6095250>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+____ test_initial_typing_and_consent_focus_is_visible[standard-de-confirm] _____
+
+screen = <Screen.CONFIRM: 'confirm'>, language = 'de', size = 'standard'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f608b020>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+_____ test_initial_typing_and_consent_focus_is_visible[large-en-keyboard] ______
+
+screen = <Screen.KEYBOARD: 'keyboard'>, language = 'en', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f60da3f0>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+----------------------------- Captured stderr call -----------------------------
+bgerror failed to handle background error.
+    Original error: invalid command name "133680678626880<lambda>"
+    Error in bgerror: can't invoke "tk" command: application has been destroyed
+_______ test_initial_typing_and_consent_focus_is_visible[large-en-owner] _______
+
+screen = <Screen.OWNER: 'owner'>, language = 'en', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f60d88f0>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+______ test_initial_typing_and_consent_focus_is_visible[large-en-confirm] ______
+
+screen = <Screen.CONFIRM: 'confirm'>, language = 'en', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f60d88c0>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+_____ test_initial_typing_and_consent_focus_is_visible[large-fr-keyboard] ______
+
+screen = <Screen.KEYBOARD: 'keyboard'>, language = 'fr', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f60dbc80>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+----------------------------- Captured stderr call -----------------------------
+bgerror failed to handle background error.
+    Original error: invalid command name "133680709924416<lambda>"
+    Error in bgerror: can't invoke "tk" command: application has been destroyed
+_______ test_initial_typing_and_consent_focus_is_visible[large-fr-owner] _______
+
+screen = <Screen.OWNER: 'owner'>, language = 'fr', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f71796a0>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+______ test_initial_typing_and_consent_focus_is_visible[large-fr-confirm] ______
+
+screen = <Screen.CONFIRM: 'confirm'>, language = 'fr', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f6095970>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+_____ test_initial_typing_and_consent_focus_is_visible[large-de-keyboard] ______
+
+screen = <Screen.KEYBOARD: 'keyboard'>, language = 'de', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f60b7680>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+----------------------------- Captured stderr call -----------------------------
+bgerror failed to handle background error.
+    Original error: invalid command name "133680707972352<lambda>"
+    Error in bgerror: can't invoke "tk" command: application has been destroyed
+_______ test_initial_typing_and_consent_focus_is_visible[large-de-owner] _______
+
+screen = <Screen.OWNER: 'owner'>, language = 'de', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f703b590>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+______ test_initial_typing_and_consent_focus_is_visible[large-de-confirm] ______
+
+screen = <Screen.CONFIRM: 'confirm'>, language = 'de', size = 'large'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f6096a50>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+_____ test_initial_typing_and_consent_focus_is_visible[extra-en-keyboard] ______
+
+screen = <Screen.KEYBOARD: 'keyboard'>, language = 'en', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f738bd10>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+----------------------------- Captured stderr call -----------------------------
+bgerror failed to handle background error.
+    Original error: invalid command name "133680707583424<lambda>"
+    Error in bgerror: can't invoke "tk" command: application has been destroyed
+_______ test_initial_typing_and_consent_focus_is_visible[extra-en-owner] _______
+
+screen = <Screen.OWNER: 'owner'>, language = 'en', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f55e8c20>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+______ test_initial_typing_and_consent_focus_is_visible[extra-en-confirm] ______
+
+screen = <Screen.CONFIRM: 'confirm'>, language = 'en', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f55acdd0>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+_____ test_initial_typing_and_consent_focus_is_visible[extra-fr-keyboard] ______
+
+screen = <Screen.KEYBOARD: 'keyboard'>, language = 'fr', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f55e8530>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+----------------------------- Captured stderr call -----------------------------
+bgerror failed to handle background error.
+    Original error: invalid command name "133680689901824<lambda>"
+    Error in bgerror: can't invoke "tk" command: application has been destroyed
+_______ test_initial_typing_and_consent_focus_is_visible[extra-fr-owner] _______
+
+screen = <Screen.OWNER: 'owner'>, language = 'fr', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f7190530>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+______ test_initial_typing_and_consent_focus_is_visible[extra-fr-confirm] ______
+
+screen = <Screen.CONFIRM: 'confirm'>, language = 'fr', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f7125c70>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+_____ test_initial_typing_and_consent_focus_is_visible[extra-de-keyboard] ______
+
+screen = <Screen.KEYBOARD: 'keyboard'>, language = 'de', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f55d75f0>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+----------------------------- Captured stderr call -----------------------------
+bgerror failed to handle background error.
+    Original error: invalid command name "133680707502784<lambda>"
+    Error in bgerror: can't invoke "tk" command: application has been destroyed
+_______ test_initial_typing_and_consent_focus_is_visible[extra-de-owner] _______
+
+screen = <Screen.OWNER: 'owner'>, language = 'de', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f60db080>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+______ test_initial_typing_and_consent_focus_is_visible[extra-de-confirm] ______
+
+screen = <Screen.CONFIRM: 'confirm'>, language = 'de', size = 'extra'
+
+    @pytest.mark.parametrize('screen', [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM])
+    @pytest.mark.parametrize('language', ['en', 'fr', 'de'])
+    @pytest.mark.parametrize('size', ['standard', 'large', 'extra'])
+    def test_initial_typing_and_consent_focus_is_visible(screen, language, size):
+        app = _app(screen, language, size)
+        before = _state(app.w)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f60b58e0>)
+
+tests/test_tk_focus_reveal_pass14.py:71: AssertionError
+_____________ test_manual_scroll_is_preserved_until_focus_changes ______________
+
+    def test_manual_scroll_is_preserved_until_focus_changes():
+        app = _app(Screen.OWNER)
+        try:
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f560e480>)
+
+tests/test_tk_focus_reveal_pass14.py:83: AssertionError
+----------------------------- Captured stderr call -----------------------------
+bgerror failed to handle background error.
+    Original error: invalid command name "133680690139840<lambda>"
+    Error in bgerror: can't invoke "tk" command: application has been destroyed
+__________ test_stale_focus_callback_cannot_scroll_replacement_screen __________
+
+    def test_stale_focus_callback_cannot_scroll_replacement_screen():
+        app = _app(Screen.OWNER)
+        errors = []
+        app.root.report_callback_exception = lambda *args: errors.append(args)
+        try:
+            focus = app.root.focus_get()
+            app._primary.focus_set()
+            app.root.update()
+            focus.focus_set()
+            app.w.back()
+            app._draw()
+            app.root.update()
+            assert app.w.screen is Screen.KEYBOARD
+>           assert _visible(app)
+E           assert False
+E            +  where False = _visible(<beamo_wipe.ui.tk_wizard.TkWizard object at 0x7994f560e7e0>)
+
+tests/test_tk_focus_reveal_pass14.py:121: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-en-keyboard]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-en-owner]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-fr-keyboard]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-fr-owner]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-fr-confirm]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-de-keyboard]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-de-owner]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[standard-de-confirm]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-en-keyboard]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-en-owner]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-en-confirm]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-fr-keyboard]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-fr-owner]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-fr-confirm]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-de-keyboard]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-de-owner]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[large-de-confirm]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-en-keyboard]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-en-owner]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-en-confirm]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-fr-keyboard]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-fr-owner]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-fr-confirm]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-de-keyboard]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-de-owner]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_initial_typing_and_consent_focus_is_visible[extra-de-confirm]
+FAILED tests/test_tk_focus_reveal_pass14.py::test_manual_scroll_is_preserved_until_focus_changes
+FAILED tests/test_tk_focus_reveal_pass14.py::test_stale_focus_callback_cannot_scroll_replacement_screen

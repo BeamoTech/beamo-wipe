@@ -1,0 +1,96 @@
+FFFF....FF                                                               [100%]
+=================================== FAILURES ===================================
+___ test_gate_rejects_skip_kind_counts_that_only_match_in_total[1-0-kinds0] ____
+
+skipped = 1, xfailed = 0, kinds = ['xfail']
+
+    @pytest.mark.parametrize(
+        ('skipped', 'xfailed', 'kinds'),
+        [(1, 0, ['xfail']), (0, 1, ['skip']), (2, 0, ['skip', 'xfail']),
+         (0, 2, ['xfail', 'skip'])],
+    )
+    def test_gate_rejects_skip_kind_counts_that_only_match_in_total(skipped, xfailed, kinds):
+>       with pytest.raises(RuntimeError, match='skip list does not match its counts'):
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests/test_gate_receipt_skip_kind_counts_pass7.py:16: Failed
+___ test_gate_rejects_skip_kind_counts_that_only_match_in_total[0-1-kinds1] ____
+
+skipped = 0, xfailed = 1, kinds = ['skip']
+
+    @pytest.mark.parametrize(
+        ('skipped', 'xfailed', 'kinds'),
+        [(1, 0, ['xfail']), (0, 1, ['skip']), (2, 0, ['skip', 'xfail']),
+         (0, 2, ['xfail', 'skip'])],
+    )
+    def test_gate_rejects_skip_kind_counts_that_only_match_in_total(skipped, xfailed, kinds):
+>       with pytest.raises(RuntimeError, match='skip list does not match its counts'):
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests/test_gate_receipt_skip_kind_counts_pass7.py:16: Failed
+___ test_gate_rejects_skip_kind_counts_that_only_match_in_total[2-0-kinds2] ____
+
+skipped = 2, xfailed = 0, kinds = ['skip', 'xfail']
+
+    @pytest.mark.parametrize(
+        ('skipped', 'xfailed', 'kinds'),
+        [(1, 0, ['xfail']), (0, 1, ['skip']), (2, 0, ['skip', 'xfail']),
+         (0, 2, ['xfail', 'skip'])],
+    )
+    def test_gate_rejects_skip_kind_counts_that_only_match_in_total(skipped, xfailed, kinds):
+>       with pytest.raises(RuntimeError, match='skip list does not match its counts'):
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests/test_gate_receipt_skip_kind_counts_pass7.py:16: Failed
+___ test_gate_rejects_skip_kind_counts_that_only_match_in_total[0-2-kinds3] ____
+
+skipped = 0, xfailed = 2, kinds = ['xfail', 'skip']
+
+    @pytest.mark.parametrize(
+        ('skipped', 'xfailed', 'kinds'),
+        [(1, 0, ['xfail']), (0, 1, ['skip']), (2, 0, ['skip', 'xfail']),
+         (0, 2, ['xfail', 'skip'])],
+    )
+    def test_gate_rejects_skip_kind_counts_that_only_match_in_total(skipped, xfailed, kinds):
+>       with pytest.raises(RuntimeError, match='skip list does not match its counts'):
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests/test_gate_receipt_skip_kind_counts_pass7.py:16: Failed
+_ test_stored_gate_rejects_misclassified_skip_records_even_with_valid_digest[skip] _
+
+kind = 'skip'
+
+    @pytest.mark.parametrize('kind', ['skip', 'xfail'])
+    def test_stored_gate_rejects_misclassified_skip_records_even_with_valid_digest(kind):
+        receipt = _receipt(int(kind == 'skip'), int(kind == 'xfail'), [kind])
+        receipt['skips'][0]['kind'] = 'xfail' if kind == 'skip' else 'skip'
+        receipt['receipt_sha256'] = canonical_digest(
+            {key: value for key, value in receipt.items() if key != 'receipt_sha256'}
+        )
+>       with pytest.raises(RuntimeError, match='skip list does not match its counts'):
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests/test_gate_receipt_skip_kind_counts_pass7.py:48: Failed
+_ test_stored_gate_rejects_misclassified_skip_records_even_with_valid_digest[xfail] _
+
+kind = 'xfail'
+
+    @pytest.mark.parametrize('kind', ['skip', 'xfail'])
+    def test_stored_gate_rejects_misclassified_skip_records_even_with_valid_digest(kind):
+        receipt = _receipt(int(kind == 'skip'), int(kind == 'xfail'), [kind])
+        receipt['skips'][0]['kind'] = 'xfail' if kind == 'skip' else 'skip'
+        receipt['receipt_sha256'] = canonical_digest(
+            {key: value for key, value in receipt.items() if key != 'receipt_sha256'}
+        )
+>       with pytest.raises(RuntimeError, match='skip list does not match its counts'):
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests/test_gate_receipt_skip_kind_counts_pass7.py:48: Failed
+=========================== short test summary info ============================
+FAILED tests/test_gate_receipt_skip_kind_counts_pass7.py::test_gate_rejects_skip_kind_counts_that_only_match_in_total[1-0-kinds0]
+FAILED tests/test_gate_receipt_skip_kind_counts_pass7.py::test_gate_rejects_skip_kind_counts_that_only_match_in_total[0-1-kinds1]
+FAILED tests/test_gate_receipt_skip_kind_counts_pass7.py::test_gate_rejects_skip_kind_counts_that_only_match_in_total[2-0-kinds2]
+FAILED tests/test_gate_receipt_skip_kind_counts_pass7.py::test_gate_rejects_skip_kind_counts_that_only_match_in_total[0-2-kinds3]
+FAILED tests/test_gate_receipt_skip_kind_counts_pass7.py::test_stored_gate_rejects_misclassified_skip_records_even_with_valid_digest[skip]
+FAILED tests/test_gate_receipt_skip_kind_counts_pass7.py::test_stored_gate_rejects_misclassified_skip_records_even_with_valid_digest[xfail]
+6 failed, 4 passed in 0.34s

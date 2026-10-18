@@ -1,0 +1,653 @@
+{
+  "cases": 72,
+  "rows": [
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "shortfall",
+      "large": false,
+      "hidden_capacity": "warning",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "shortfall",
+      "large": true,
+      "hidden_capacity": "warning",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "malformed",
+      "large": false,
+      "hidden_capacity": "unavailable",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "malformed",
+      "large": true,
+      "hidden_capacity": "unavailable",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "complete",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "complete",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "close-boundary",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "everyday",
+      "case": "close-boundary",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "shortfall",
+      "large": false,
+      "hidden_capacity": "warning",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "shortfall",
+      "large": true,
+      "hidden_capacity": "warning",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "malformed",
+      "large": false,
+      "hidden_capacity": "unavailable",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "malformed",
+      "large": true,
+      "hidden_capacity": "unavailable",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "complete",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "complete",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "close-boundary",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "extra",
+      "case": "close-boundary",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "shortfall",
+      "large": false,
+      "hidden_capacity": "warning",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "shortfall",
+      "large": true,
+      "hidden_capacity": "warning",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "malformed",
+      "large": false,
+      "hidden_capacity": "unavailable",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "malformed",
+      "large": true,
+      "hidden_capacity": "unavailable",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "complete",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "complete",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "close-boundary",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "en",
+      "method": "quick_zero",
+      "case": "close-boundary",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "shortfall",
+      "large": false,
+      "hidden_capacity": "warning",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "shortfall",
+      "large": true,
+      "hidden_capacity": "warning",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "malformed",
+      "large": false,
+      "hidden_capacity": "unavailable",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "malformed",
+      "large": true,
+      "hidden_capacity": "unavailable",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "complete",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "complete",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "close-boundary",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "everyday",
+      "case": "close-boundary",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "shortfall",
+      "large": false,
+      "hidden_capacity": "warning",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "shortfall",
+      "large": true,
+      "hidden_capacity": "warning",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "malformed",
+      "large": false,
+      "hidden_capacity": "unavailable",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "malformed",
+      "large": true,
+      "hidden_capacity": "unavailable",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "complete",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "complete",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "close-boundary",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "extra",
+      "case": "close-boundary",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "shortfall",
+      "large": false,
+      "hidden_capacity": "warning",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "shortfall",
+      "large": true,
+      "hidden_capacity": "warning",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "malformed",
+      "large": false,
+      "hidden_capacity": "unavailable",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "malformed",
+      "large": true,
+      "hidden_capacity": "unavailable",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "complete",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "complete",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "close-boundary",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "fr",
+      "method": "quick_zero",
+      "case": "close-boundary",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "shortfall",
+      "large": false,
+      "hidden_capacity": "warning",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "shortfall",
+      "large": true,
+      "hidden_capacity": "warning",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "malformed",
+      "large": false,
+      "hidden_capacity": "unavailable",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "malformed",
+      "large": true,
+      "hidden_capacity": "unavailable",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "complete",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "complete",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "close-boundary",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "everyday",
+      "case": "close-boundary",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "shortfall",
+      "large": false,
+      "hidden_capacity": "warning",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "shortfall",
+      "large": true,
+      "hidden_capacity": "warning",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "malformed",
+      "large": false,
+      "hidden_capacity": "unavailable",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "malformed",
+      "large": true,
+      "hidden_capacity": "unavailable",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "complete",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "complete",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "close-boundary",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "extra",
+      "case": "close-boundary",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "verified",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "shortfall",
+      "large": false,
+      "hidden_capacity": "warning",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "shortfall",
+      "large": true,
+      "hidden_capacity": "warning",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "malformed",
+      "large": false,
+      "hidden_capacity": "unavailable",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "malformed",
+      "large": true,
+      "hidden_capacity": "unavailable",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "complete",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "complete",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "close-boundary",
+      "large": false,
+      "hidden_capacity": "pass",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    },
+    {
+      "language": "de",
+      "method": "quick_zero",
+      "case": "close-boundary",
+      "large": true,
+      "hidden_capacity": "pass",
+      "outcome": "completed",
+      "checks_and_log_bytes_match": true
+    }
+  ]
+}

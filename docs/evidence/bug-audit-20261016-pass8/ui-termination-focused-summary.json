@@ -1,0 +1,26 @@
+{
+  "focused": {
+    "testcases": 16,
+    "failures": 0,
+    "skips": 0,
+    "signal_send_records": [],
+    "SIGTERM_delivery_records": [],
+    "pytest_exit_zero": true
+  },
+  "repeat": {
+    "testcases": 1,
+    "failures": 0,
+    "skips": 0,
+    "signal_send_records": [],
+    "SIGTERM_delivery_records": [],
+    "pytest_exit_zero": true
+  },
+  "repeated-files": {
+    "testcases": 40,
+    "failures": 0,
+    "skips": 0,
+    "signal_send_records": [],
+    "SIGTERM_delivery_records": [],
+    "pytest_exit_zero": true
+  }
+}

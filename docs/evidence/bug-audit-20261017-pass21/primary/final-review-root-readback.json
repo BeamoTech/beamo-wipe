@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-17T21:32:10.860743+00:00",
+  "delegate_json_sha256": "f1513a4088c5216d79b6068e268cee855a678eec5d618bf341ce8bcd3a9cc8af",
+  "independently_reread_file_hashes": 1463,
+  "all_match": true,
+  "frozen_inputs": 788,
+  "index_empty": true,
+  "diff_check_passed": true,
+  "retention": "PENDING; this receipt authenticates the independent pre-retention review only"
+}

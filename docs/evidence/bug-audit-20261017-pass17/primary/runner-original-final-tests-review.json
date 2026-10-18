@@ -1,0 +1,10 @@
+{
+  "cases": 448,
+  "counts": {
+    "fail": 250,
+    "pass": 198
+  },
+  "test_sha256": "076ddb3f20082deb045c747e28853c828ca15a42091211e833e4d71701d959cf",
+  "starting_inputs_unchanged": 754,
+  "notes": "Earlier central run collected 396 cases before test controls expanded. This stable448-case replay supersedes its runner proof, preserves original results."
+}

@@ -1,0 +1,327 @@
+....FFFF....FFFF................                                         [100%]
+=================================== FAILURES ===================================
+_ test_duplicate_invalid_observations_keep_candidate_context[False-False-True-conflict-serial] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x7d9ec00fd300>
+field = 'serial', kind = 'conflict', different = True, reverse = False
+parent = False
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("kind", ("conflict", "malformed"))
+    @pytest.mark.parametrize("different", (False, True))
+    @pytest.mark.parametrize("reverse", (False, True))
+    @pytest.mark.parametrize("parent", (False, True))
+    def test_duplicate_invalid_observations_keep_candidate_context(
+        scan_fake, field, kind, different, reverse, parent,
+    ):
+        values = ["SIDE-A", "SIDE-B"] if kind == "conflict" else ["SIDE-A", "bad\nidentity"]
+        rows, _source, original, target = _rows(
+            "boot", field, values, False, protected="UNRELATED-PROTECTED", leaf="FAKE-LEAF",
+        )
+        changed_values = (
+            ["SIDE-C", "SIDE-D"] if kind == "conflict" else ["SIDE-C", "bad\nidentity"]
+        ) if different else values
+        # Repeating physical sda rows makes a partition's physical owner ambiguous.
+        # A partition always contributes layout evidence, even without filesystem
+        # metadata; that independent refusal must not be mistaken for this proof.
+        # Identity-only crypt descendants have unique names and no content/layout
+        # fields, so parent-authoritative copies keep identical empty layouts.
+        first = _identity_only_copy(original, field, values, "first")
+        second = _identity_only_copy(original, field, changed_values, "second")
+        if parent:
+            first[field] = second[field] = "AUTHORITATIVE-PARENT"
+        copies = [second, first] if reverse else [first, second]
+        rows = [row for row in rows if row is not original]
+        rows[1:1] = copies
+        result = scan_fake(rows)
+        if different and not parent:
+>           assert result.error
+E           AssertionError: assert None
+E            +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='UNRELATED-PROTECTED', size_bytes=1... read_only=False, wwn='', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py:49: AssertionError
+_ test_duplicate_invalid_observations_keep_candidate_context[False-False-True-conflict-wwn] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x7d9ec00feca0>, field = 'wwn'
+kind = 'conflict', different = True, reverse = False, parent = False
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("kind", ("conflict", "malformed"))
+    @pytest.mark.parametrize("different", (False, True))
+    @pytest.mark.parametrize("reverse", (False, True))
+    @pytest.mark.parametrize("parent", (False, True))
+    def test_duplicate_invalid_observations_keep_candidate_context(
+        scan_fake, field, kind, different, reverse, parent,
+    ):
+        values = ["SIDE-A", "SIDE-B"] if kind == "conflict" else ["SIDE-A", "bad\nidentity"]
+        rows, _source, original, target = _rows(
+            "boot", field, values, False, protected="UNRELATED-PROTECTED", leaf="FAKE-LEAF",
+        )
+        changed_values = (
+            ["SIDE-C", "SIDE-D"] if kind == "conflict" else ["SIDE-C", "bad\nidentity"]
+        ) if different else values
+        # Repeating physical sda rows makes a partition's physical owner ambiguous.
+        # A partition always contributes layout evidence, even without filesystem
+        # metadata; that independent refusal must not be mistaken for this proof.
+        # Identity-only crypt descendants have unique names and no content/layout
+        # fields, so parent-authoritative copies keep identical empty layouts.
+        first = _identity_only_copy(original, field, values, "first")
+        second = _identity_only_copy(original, field, changed_values, "second")
+        if parent:
+            first[field] = second[field] = "AUTHORITATIVE-PARENT"
+        copies = [second, first] if reverse else [first, second]
+        rows = [row for row in rows if row is not original]
+        rows[1:1] = copies
+        result = scan_fake(rows)
+        if different and not parent:
+>           assert result.error
+E           AssertionError: assert None
+E            +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-BOOT', size_bytes=16000000000... read_only=False, wwn='', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py:49: AssertionError
+_ test_duplicate_invalid_observations_keep_candidate_context[False-False-True-malformed-serial] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x7d9ec00fc860>
+field = 'serial', kind = 'malformed', different = True, reverse = False
+parent = False
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("kind", ("conflict", "malformed"))
+    @pytest.mark.parametrize("different", (False, True))
+    @pytest.mark.parametrize("reverse", (False, True))
+    @pytest.mark.parametrize("parent", (False, True))
+    def test_duplicate_invalid_observations_keep_candidate_context(
+        scan_fake, field, kind, different, reverse, parent,
+    ):
+        values = ["SIDE-A", "SIDE-B"] if kind == "conflict" else ["SIDE-A", "bad\nidentity"]
+        rows, _source, original, target = _rows(
+            "boot", field, values, False, protected="UNRELATED-PROTECTED", leaf="FAKE-LEAF",
+        )
+        changed_values = (
+            ["SIDE-C", "SIDE-D"] if kind == "conflict" else ["SIDE-C", "bad\nidentity"]
+        ) if different else values
+        # Repeating physical sda rows makes a partition's physical owner ambiguous.
+        # A partition always contributes layout evidence, even without filesystem
+        # metadata; that independent refusal must not be mistaken for this proof.
+        # Identity-only crypt descendants have unique names and no content/layout
+        # fields, so parent-authoritative copies keep identical empty layouts.
+        first = _identity_only_copy(original, field, values, "first")
+        second = _identity_only_copy(original, field, changed_values, "second")
+        if parent:
+            first[field] = second[field] = "AUTHORITATIVE-PARENT"
+        copies = [second, first] if reverse else [first, second]
+        rows = [row for row in rows if row is not original]
+        rows[1:1] = copies
+        result = scan_fake(rows)
+        if different and not parent:
+>           assert result.error
+E           AssertionError: assert None
+E            +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='UNRELATED-PROTECTED', size_bytes=1... read_only=False, wwn='', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py:49: AssertionError
+_ test_duplicate_invalid_observations_keep_candidate_context[False-False-True-malformed-wwn] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x7d9ec00fe840>, field = 'wwn'
+kind = 'malformed', different = True, reverse = False, parent = False
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("kind", ("conflict", "malformed"))
+    @pytest.mark.parametrize("different", (False, True))
+    @pytest.mark.parametrize("reverse", (False, True))
+    @pytest.mark.parametrize("parent", (False, True))
+    def test_duplicate_invalid_observations_keep_candidate_context(
+        scan_fake, field, kind, different, reverse, parent,
+    ):
+        values = ["SIDE-A", "SIDE-B"] if kind == "conflict" else ["SIDE-A", "bad\nidentity"]
+        rows, _source, original, target = _rows(
+            "boot", field, values, False, protected="UNRELATED-PROTECTED", leaf="FAKE-LEAF",
+        )
+        changed_values = (
+            ["SIDE-C", "SIDE-D"] if kind == "conflict" else ["SIDE-C", "bad\nidentity"]
+        ) if different else values
+        # Repeating physical sda rows makes a partition's physical owner ambiguous.
+        # A partition always contributes layout evidence, even without filesystem
+        # metadata; that independent refusal must not be mistaken for this proof.
+        # Identity-only crypt descendants have unique names and no content/layout
+        # fields, so parent-authoritative copies keep identical empty layouts.
+        first = _identity_only_copy(original, field, values, "first")
+        second = _identity_only_copy(original, field, changed_values, "second")
+        if parent:
+            first[field] = second[field] = "AUTHORITATIVE-PARENT"
+        copies = [second, first] if reverse else [first, second]
+        rows = [row for row in rows if row is not original]
+        rows[1:1] = copies
+        result = scan_fake(rows)
+        if different and not parent:
+>           assert result.error
+E           AssertionError: assert None
+E            +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-BOOT', size_bytes=16000000000... read_only=False, wwn='', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py:49: AssertionError
+_ test_duplicate_invalid_observations_keep_candidate_context[False-True-True-conflict-serial] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x7d9ec00fec00>
+field = 'serial', kind = 'conflict', different = True, reverse = True
+parent = False
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("kind", ("conflict", "malformed"))
+    @pytest.mark.parametrize("different", (False, True))
+    @pytest.mark.parametrize("reverse", (False, True))
+    @pytest.mark.parametrize("parent", (False, True))
+    def test_duplicate_invalid_observations_keep_candidate_context(
+        scan_fake, field, kind, different, reverse, parent,
+    ):
+        values = ["SIDE-A", "SIDE-B"] if kind == "conflict" else ["SIDE-A", "bad\nidentity"]
+        rows, _source, original, target = _rows(
+            "boot", field, values, False, protected="UNRELATED-PROTECTED", leaf="FAKE-LEAF",
+        )
+        changed_values = (
+            ["SIDE-C", "SIDE-D"] if kind == "conflict" else ["SIDE-C", "bad\nidentity"]
+        ) if different else values
+        # Repeating physical sda rows makes a partition's physical owner ambiguous.
+        # A partition always contributes layout evidence, even without filesystem
+        # metadata; that independent refusal must not be mistaken for this proof.
+        # Identity-only crypt descendants have unique names and no content/layout
+        # fields, so parent-authoritative copies keep identical empty layouts.
+        first = _identity_only_copy(original, field, values, "first")
+        second = _identity_only_copy(original, field, changed_values, "second")
+        if parent:
+            first[field] = second[field] = "AUTHORITATIVE-PARENT"
+        copies = [second, first] if reverse else [first, second]
+        rows = [row for row in rows if row is not original]
+        rows[1:1] = copies
+        result = scan_fake(rows)
+        if different and not parent:
+>           assert result.error
+E           AssertionError: assert None
+E            +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='UNRELATED-PROTECTED', size_bytes=1... read_only=False, wwn='', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py:49: AssertionError
+_ test_duplicate_invalid_observations_keep_candidate_context[False-True-True-conflict-wwn] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x7d9ec00ffe20>, field = 'wwn'
+kind = 'conflict', different = True, reverse = True, parent = False
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("kind", ("conflict", "malformed"))
+    @pytest.mark.parametrize("different", (False, True))
+    @pytest.mark.parametrize("reverse", (False, True))
+    @pytest.mark.parametrize("parent", (False, True))
+    def test_duplicate_invalid_observations_keep_candidate_context(
+        scan_fake, field, kind, different, reverse, parent,
+    ):
+        values = ["SIDE-A", "SIDE-B"] if kind == "conflict" else ["SIDE-A", "bad\nidentity"]
+        rows, _source, original, target = _rows(
+            "boot", field, values, False, protected="UNRELATED-PROTECTED", leaf="FAKE-LEAF",
+        )
+        changed_values = (
+            ["SIDE-C", "SIDE-D"] if kind == "conflict" else ["SIDE-C", "bad\nidentity"]
+        ) if different else values
+        # Repeating physical sda rows makes a partition's physical owner ambiguous.
+        # A partition always contributes layout evidence, even without filesystem
+        # metadata; that independent refusal must not be mistaken for this proof.
+        # Identity-only crypt descendants have unique names and no content/layout
+        # fields, so parent-authoritative copies keep identical empty layouts.
+        first = _identity_only_copy(original, field, values, "first")
+        second = _identity_only_copy(original, field, changed_values, "second")
+        if parent:
+            first[field] = second[field] = "AUTHORITATIVE-PARENT"
+        copies = [second, first] if reverse else [first, second]
+        rows = [row for row in rows if row is not original]
+        rows[1:1] = copies
+        result = scan_fake(rows)
+        if different and not parent:
+>           assert result.error
+E           AssertionError: assert None
+E            +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-BOOT', size_bytes=16000000000... read_only=False, wwn='', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py:49: AssertionError
+_ test_duplicate_invalid_observations_keep_candidate_context[False-True-True-malformed-serial] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x7d9ec00fdbc0>
+field = 'serial', kind = 'malformed', different = True, reverse = True
+parent = False
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("kind", ("conflict", "malformed"))
+    @pytest.mark.parametrize("different", (False, True))
+    @pytest.mark.parametrize("reverse", (False, True))
+    @pytest.mark.parametrize("parent", (False, True))
+    def test_duplicate_invalid_observations_keep_candidate_context(
+        scan_fake, field, kind, different, reverse, parent,
+    ):
+        values = ["SIDE-A", "SIDE-B"] if kind == "conflict" else ["SIDE-A", "bad\nidentity"]
+        rows, _source, original, target = _rows(
+            "boot", field, values, False, protected="UNRELATED-PROTECTED", leaf="FAKE-LEAF",
+        )
+        changed_values = (
+            ["SIDE-C", "SIDE-D"] if kind == "conflict" else ["SIDE-C", "bad\nidentity"]
+        ) if different else values
+        # Repeating physical sda rows makes a partition's physical owner ambiguous.
+        # A partition always contributes layout evidence, even without filesystem
+        # metadata; that independent refusal must not be mistaken for this proof.
+        # Identity-only crypt descendants have unique names and no content/layout
+        # fields, so parent-authoritative copies keep identical empty layouts.
+        first = _identity_only_copy(original, field, values, "first")
+        second = _identity_only_copy(original, field, changed_values, "second")
+        if parent:
+            first[field] = second[field] = "AUTHORITATIVE-PARENT"
+        copies = [second, first] if reverse else [first, second]
+        rows = [row for row in rows if row is not original]
+        rows[1:1] = copies
+        result = scan_fake(rows)
+        if different and not parent:
+>           assert result.error
+E           AssertionError: assert None
+E            +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='UNRELATED-PROTECTED', size_bytes=1... read_only=False, wwn='', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py:49: AssertionError
+_ test_duplicate_invalid_observations_keep_candidate_context[False-True-True-malformed-wwn] _
+
+scan_fake = <function scan_fake.<locals>.scan at 0x7d9ec00fdc60>, field = 'wwn'
+kind = 'malformed', different = True, reverse = True, parent = False
+
+    @pytest.mark.parametrize("field", ("serial", "wwn"))
+    @pytest.mark.parametrize("kind", ("conflict", "malformed"))
+    @pytest.mark.parametrize("different", (False, True))
+    @pytest.mark.parametrize("reverse", (False, True))
+    @pytest.mark.parametrize("parent", (False, True))
+    def test_duplicate_invalid_observations_keep_candidate_context(
+        scan_fake, field, kind, different, reverse, parent,
+    ):
+        values = ["SIDE-A", "SIDE-B"] if kind == "conflict" else ["SIDE-A", "bad\nidentity"]
+        rows, _source, original, target = _rows(
+            "boot", field, values, False, protected="UNRELATED-PROTECTED", leaf="FAKE-LEAF",
+        )
+        changed_values = (
+            ["SIDE-C", "SIDE-D"] if kind == "conflict" else ["SIDE-C", "bad\nidentity"]
+        ) if different else values
+        # Repeating physical sda rows makes a partition's physical owner ambiguous.
+        # A partition always contributes layout evidence, even without filesystem
+        # metadata; that independent refusal must not be mistaken for this proof.
+        # Identity-only crypt descendants have unique names and no content/layout
+        # fields, so parent-authoritative copies keep identical empty layouts.
+        first = _identity_only_copy(original, field, values, "first")
+        second = _identity_only_copy(original, field, changed_values, "second")
+        if parent:
+            first[field] = second[field] = "AUTHORITATIVE-PARENT"
+        copies = [second, first] if reverse else [first, second]
+        rows = [row for row in rows if row is not original]
+        rows[1:1] = copies
+        result = scan_fake(rows)
+        if different and not parent:
+>           assert result.error
+E           AssertionError: assert None
+E            +  where None = DiscoveryResult(disks=(Disk(path='/dev/sdz', name='sdz', model='Fake disk', serial='FAKE-BOOT', size_bytes=16000000000... read_only=False, wwn='', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).error
+
+docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py:49: AssertionError
+=========================== short test summary info ============================
+FAILED docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py::test_duplicate_invalid_observations_keep_candidate_context[False-False-True-conflict-serial]
+FAILED docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py::test_duplicate_invalid_observations_keep_candidate_context[False-False-True-conflict-wwn]
+FAILED docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py::test_duplicate_invalid_observations_keep_candidate_context[False-False-True-malformed-serial]
+FAILED docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py::test_duplicate_invalid_observations_keep_candidate_context[False-False-True-malformed-wwn]
+FAILED docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py::test_duplicate_invalid_observations_keep_candidate_context[False-True-True-conflict-serial]
+FAILED docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py::test_duplicate_invalid_observations_keep_candidate_context[False-True-True-conflict-wwn]
+FAILED docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py::test_duplicate_invalid_observations_keep_candidate_context[False-True-True-malformed-serial]
+FAILED docs/evidence/bug-audit-20261017-pass17/discovery/bridge_duplicate_probe.py::test_duplicate_invalid_observations_keep_candidate_context[False-True-True-malformed-wwn]

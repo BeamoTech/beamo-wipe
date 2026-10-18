@@ -1,0 +1,587 @@
+FFFFFFFFFFFF..FF                                                         [100%]
+=================================== FAILURES ===================================
+_ test_audio_fixture_releases_its_controlled_worker_on_first_failure[slow-click] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70b044968c20>
+failure = 'slow-click'
+
+    @pytest.mark.parametrize("failure", ["slow-click", "click-exception"])
+    def test_audio_fixture_releases_its_controlled_worker_on_first_failure(monkeypatch, failure):
+        from beamo_wipe import sound
+    
+        source = Path("tests/test_accessible_runtime.py").read_text()
+        node = next(n for n in ast.parse(source).body if isinstance(n, ast.FunctionDef)
+                    and n.name == "test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog")
+        namespace = dict(C=SimpleNamespace(SOUND_CHECK_BUTTON="sound"),
+                         _canned_sound=lambda *_: object(),
+                         time=SimpleNamespace(perf_counter=iter((0.0, 0.075)).__next__))
+        exec(compile(ast.Module(body=[node], type_ignores=[]), "actual_fixture_body", "exec"), namespace)
+        original_event = threading.Event
+        barriers = []
+        threads = []
+    
+        def event_factory():
+            event = original_event()
+            if len(barriers) < 2:
+                barriers.append(event)
+            return event
+    
+        monkeypatch.setattr(threading, "Event", event_factory)
+    
+        def clicked():
+            thread = threading.Thread(target=sound.list_outputs)
+            threads.append(thread)
+            thread.start()
+            assert barriers[0].wait(timeout=1)
+            if failure == "click-exception":
+                raise RuntimeError("injected click failure")
+    
+        app = SimpleNamespace(actions={"sound": SimpleNamespace(clicked=clicked)})
+        expected = RuntimeError if failure == "click-exception" else AssertionError
+        try:
+            with pytest.raises(expected):
+                namespace[node.name](lambda: app, monkeypatch)
+            # Original first-assertion failure must not strand the controlled job.
+            assert len(barriers) == 2
+>           assert barriers[1].is_set(), "fixture returned with its release barrier unset"
+E           AssertionError: fixture returned with its release barrier unset
+E           assert False
+E            +  where False = is_set()
+E            +    where is_set = <threading.Event at 0x70b0448739e0: unset>.is_set
+
+/tmp/pass19-primary/fixture_release_probe.py:63: AssertionError
+_ test_audio_fixture_releases_its_controlled_worker_on_first_failure[click-exception] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70b044873d70>
+failure = 'click-exception'
+
+    @pytest.mark.parametrize("failure", ["slow-click", "click-exception"])
+    def test_audio_fixture_releases_its_controlled_worker_on_first_failure(monkeypatch, failure):
+        from beamo_wipe import sound
+    
+        source = Path("tests/test_accessible_runtime.py").read_text()
+        node = next(n for n in ast.parse(source).body if isinstance(n, ast.FunctionDef)
+                    and n.name == "test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog")
+        namespace = dict(C=SimpleNamespace(SOUND_CHECK_BUTTON="sound"),
+                         _canned_sound=lambda *_: object(),
+                         time=SimpleNamespace(perf_counter=iter((0.0, 0.075)).__next__))
+        exec(compile(ast.Module(body=[node], type_ignores=[]), "actual_fixture_body", "exec"), namespace)
+        original_event = threading.Event
+        barriers = []
+        threads = []
+    
+        def event_factory():
+            event = original_event()
+            if len(barriers) < 2:
+                barriers.append(event)
+            return event
+    
+        monkeypatch.setattr(threading, "Event", event_factory)
+    
+        def clicked():
+            thread = threading.Thread(target=sound.list_outputs)
+            threads.append(thread)
+            thread.start()
+            assert barriers[0].wait(timeout=1)
+            if failure == "click-exception":
+                raise RuntimeError("injected click failure")
+    
+        app = SimpleNamespace(actions={"sound": SimpleNamespace(clicked=clicked)})
+        expected = RuntimeError if failure == "click-exception" else AssertionError
+        try:
+            with pytest.raises(expected):
+                namespace[node.name](lambda: app, monkeypatch)
+            # Original first-assertion failure must not strand the controlled job.
+            assert len(barriers) == 2
+>           assert barriers[1].is_set(), "fixture returned with its release barrier unset"
+E           AssertionError: fixture returned with its release barrier unset
+E           assert False
+E            +  where False = is_set()
+E            +    where is_set = <threading.Event at 0x70b044872b70: unset>.is_set
+
+/tmp/pass19-primary/fixture_release_probe.py:63: AssertionError
+_____ test_native_trace_fixture_releases_its_independent_peer[row-boolean] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70b0448b18e0>
+kind = 'boolean', lifecycle = 'row'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_native_trace_fixture_releases_its_independent_peer(monkeypatch, kind, lifecycle):
+        import test_checkrow_trace_lifetime_pass18 as case
+    
+        root = tk.Tk()
+        root.withdraw()
+        root.tk.call("tk", "scaling", 1.0)
+        errors = []
+        root.report_callback_exception = lambda kind, error, _tb: errors.append((kind.__name__, str(error)))
+        root.tk.eval("set pass18_trace_bgerrors {}; proc bgerror {message} {lappend ::pass18_trace_bgerrors $message}")
+        font = tkfont.Font(root=root, family="DejaVu Sans", size=-14)
+        captured = []
+        original_trace = tk.Variable.trace_add
+    
+        def trace_add(variable, mode, callback):
+            token = original_trace(variable, mode, callback)
+            if getattr(callback, "__name__", None) == "<lambda>":
+                captured.append((weakref.ref(variable), token))
+            return token
+    
+        monkeypatch.setattr(tk.Variable, "trace_add", trace_add)
+        request = SimpleNamespace(node=SimpleNamespace(user_properties=[]))
+        try:
+            case.test_retained_variable_does_not_call_a_destroyed_row((root, font, errors), request, kind, lifecycle)
+            assert len(captured) == 1
+            for callback in root.tk.call("after", "info"):
+                root.tk.call("after", "cancel", callback)
+            root.destroy()
+            gc.collect()
+>           assert captured[0][0]() is None, "fixture peer trace retained its captured Variable"
+E           AssertionError: fixture peer trace retained its captured Variable
+E           assert <tkinter.BooleanVar object at 0x70b0448b0890> is None
+E            +  where <tkinter.BooleanVar object at 0x70b0448b0890> = <weakref at 0x70b0441fe930; to 'BooleanVar' at 0x70b0448b0890>()
+
+/tmp/pass19-primary/fixture_release_probe.py:103: AssertionError
+_____ test_native_trace_fixture_releases_its_independent_peer[row-integer] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70b0451d9100>
+kind = 'integer', lifecycle = 'row'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_native_trace_fixture_releases_its_independent_peer(monkeypatch, kind, lifecycle):
+        import test_checkrow_trace_lifetime_pass18 as case
+    
+        root = tk.Tk()
+        root.withdraw()
+        root.tk.call("tk", "scaling", 1.0)
+        errors = []
+        root.report_callback_exception = lambda kind, error, _tb: errors.append((kind.__name__, str(error)))
+        root.tk.eval("set pass18_trace_bgerrors {}; proc bgerror {message} {lappend ::pass18_trace_bgerrors $message}")
+        font = tkfont.Font(root=root, family="DejaVu Sans", size=-14)
+        captured = []
+        original_trace = tk.Variable.trace_add
+    
+        def trace_add(variable, mode, callback):
+            token = original_trace(variable, mode, callback)
+            if getattr(callback, "__name__", None) == "<lambda>":
+                captured.append((weakref.ref(variable), token))
+            return token
+    
+        monkeypatch.setattr(tk.Variable, "trace_add", trace_add)
+        request = SimpleNamespace(node=SimpleNamespace(user_properties=[]))
+        try:
+            case.test_retained_variable_does_not_call_a_destroyed_row((root, font, errors), request, kind, lifecycle)
+            assert len(captured) == 1
+            for callback in root.tk.call("after", "info"):
+                root.tk.call("after", "cancel", callback)
+            root.destroy()
+            gc.collect()
+>           assert captured[0][0]() is None, "fixture peer trace retained its captured Variable"
+E           AssertionError: fixture peer trace retained its captured Variable
+E           assert <tkinter.IntVar object at 0x70b0451d8890> is None
+E            +  where <tkinter.IntVar object at 0x70b0451d8890> = <weakref at 0x70b0451ce480; to 'IntVar' at 0x70b0451d8890>()
+
+/tmp/pass19-primary/fixture_release_probe.py:103: AssertionError
+___ test_native_trace_fixture_releases_its_independent_peer[parent-boolean] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70b0451d8bf0>
+kind = 'boolean', lifecycle = 'parent'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_native_trace_fixture_releases_its_independent_peer(monkeypatch, kind, lifecycle):
+        import test_checkrow_trace_lifetime_pass18 as case
+    
+        root = tk.Tk()
+        root.withdraw()
+        root.tk.call("tk", "scaling", 1.0)
+        errors = []
+        root.report_callback_exception = lambda kind, error, _tb: errors.append((kind.__name__, str(error)))
+        root.tk.eval("set pass18_trace_bgerrors {}; proc bgerror {message} {lappend ::pass18_trace_bgerrors $message}")
+        font = tkfont.Font(root=root, family="DejaVu Sans", size=-14)
+        captured = []
+        original_trace = tk.Variable.trace_add
+    
+        def trace_add(variable, mode, callback):
+            token = original_trace(variable, mode, callback)
+            if getattr(callback, "__name__", None) == "<lambda>":
+                captured.append((weakref.ref(variable), token))
+            return token
+    
+        monkeypatch.setattr(tk.Variable, "trace_add", trace_add)
+        request = SimpleNamespace(node=SimpleNamespace(user_properties=[]))
+        try:
+            case.test_retained_variable_does_not_call_a_destroyed_row((root, font, errors), request, kind, lifecycle)
+            assert len(captured) == 1
+            for callback in root.tk.call("after", "info"):
+                root.tk.call("after", "cancel", callback)
+            root.destroy()
+            gc.collect()
+>           assert captured[0][0]() is None, "fixture peer trace retained its captured Variable"
+E           AssertionError: fixture peer trace retained its captured Variable
+E           assert <tkinter.BooleanVar object at 0x70b0451d8530> is None
+E            +  where <tkinter.BooleanVar object at 0x70b0451d8530> = <weakref at 0x70b0451cc450; to 'BooleanVar' at 0x70b0451d8530>()
+
+/tmp/pass19-primary/fixture_release_probe.py:103: AssertionError
+___ test_native_trace_fixture_releases_its_independent_peer[parent-integer] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70b0451d82c0>
+kind = 'integer', lifecycle = 'parent'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_native_trace_fixture_releases_its_independent_peer(monkeypatch, kind, lifecycle):
+        import test_checkrow_trace_lifetime_pass18 as case
+    
+        root = tk.Tk()
+        root.withdraw()
+        root.tk.call("tk", "scaling", 1.0)
+        errors = []
+        root.report_callback_exception = lambda kind, error, _tb: errors.append((kind.__name__, str(error)))
+        root.tk.eval("set pass18_trace_bgerrors {}; proc bgerror {message} {lappend ::pass18_trace_bgerrors $message}")
+        font = tkfont.Font(root=root, family="DejaVu Sans", size=-14)
+        captured = []
+        original_trace = tk.Variable.trace_add
+    
+        def trace_add(variable, mode, callback):
+            token = original_trace(variable, mode, callback)
+            if getattr(callback, "__name__", None) == "<lambda>":
+                captured.append((weakref.ref(variable), token))
+            return token
+    
+        monkeypatch.setattr(tk.Variable, "trace_add", trace_add)
+        request = SimpleNamespace(node=SimpleNamespace(user_properties=[]))
+        try:
+            case.test_retained_variable_does_not_call_a_destroyed_row((root, font, errors), request, kind, lifecycle)
+            assert len(captured) == 1
+            for callback in root.tk.call("after", "info"):
+                root.tk.call("after", "cancel", callback)
+            root.destroy()
+            gc.collect()
+>           assert captured[0][0]() is None, "fixture peer trace retained its captured Variable"
+E           AssertionError: fixture peer trace retained its captured Variable
+E           assert <tkinter.IntVar object at 0x70b04539e870> is None
+E            +  where <tkinter.IntVar object at 0x70b04539e870> = <weakref at 0x70b0451cc180; to 'IntVar' at 0x70b04539e870>()
+
+/tmp/pass19-primary/fixture_release_probe.py:103: AssertionError
+_ test_native_trace_fixture_releases_its_independent_peer[redraw-clear-boolean] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70b0451d85f0>
+kind = 'boolean', lifecycle = 'redraw-clear'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_native_trace_fixture_releases_its_independent_peer(monkeypatch, kind, lifecycle):
+        import test_checkrow_trace_lifetime_pass18 as case
+    
+        root = tk.Tk()
+        root.withdraw()
+        root.tk.call("tk", "scaling", 1.0)
+        errors = []
+        root.report_callback_exception = lambda kind, error, _tb: errors.append((kind.__name__, str(error)))
+        root.tk.eval("set pass18_trace_bgerrors {}; proc bgerror {message} {lappend ::pass18_trace_bgerrors $message}")
+        font = tkfont.Font(root=root, family="DejaVu Sans", size=-14)
+        captured = []
+        original_trace = tk.Variable.trace_add
+    
+        def trace_add(variable, mode, callback):
+            token = original_trace(variable, mode, callback)
+            if getattr(callback, "__name__", None) == "<lambda>":
+                captured.append((weakref.ref(variable), token))
+            return token
+    
+        monkeypatch.setattr(tk.Variable, "trace_add", trace_add)
+        request = SimpleNamespace(node=SimpleNamespace(user_properties=[]))
+        try:
+            case.test_retained_variable_does_not_call_a_destroyed_row((root, font, errors), request, kind, lifecycle)
+            assert len(captured) == 1
+            for callback in root.tk.call("after", "info"):
+                root.tk.call("after", "cancel", callback)
+            root.destroy()
+            gc.collect()
+>           assert captured[0][0]() is None, "fixture peer trace retained its captured Variable"
+E           AssertionError: fixture peer trace retained its captured Variable
+E           assert <tkinter.BooleanVar object at 0x70b04539e9c0> is None
+E            +  where <tkinter.BooleanVar object at 0x70b04539e9c0> = <weakref at 0x70b0451cc900; to 'BooleanVar' at 0x70b04539e9c0>()
+
+/tmp/pass19-primary/fixture_release_probe.py:103: AssertionError
+_ test_native_trace_fixture_releases_its_independent_peer[redraw-clear-integer] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70b0451d8da0>
+kind = 'integer', lifecycle = 'redraw-clear'
+
+    @pytest.mark.parametrize("kind", ["boolean", "integer"])
+    @pytest.mark.parametrize("lifecycle", ["row", "parent", "redraw-clear"])
+    def test_native_trace_fixture_releases_its_independent_peer(monkeypatch, kind, lifecycle):
+        import test_checkrow_trace_lifetime_pass18 as case
+    
+        root = tk.Tk()
+        root.withdraw()
+        root.tk.call("tk", "scaling", 1.0)
+        errors = []
+        root.report_callback_exception = lambda kind, error, _tb: errors.append((kind.__name__, str(error)))
+        root.tk.eval("set pass18_trace_bgerrors {}; proc bgerror {message} {lappend ::pass18_trace_bgerrors $message}")
+        font = tkfont.Font(root=root, family="DejaVu Sans", size=-14)
+        captured = []
+        original_trace = tk.Variable.trace_add
+    
+        def trace_add(variable, mode, callback):
+            token = original_trace(variable, mode, callback)
+            if getattr(callback, "__name__", None) == "<lambda>":
+                captured.append((weakref.ref(variable), token))
+            return token
+    
+        monkeypatch.setattr(tk.Variable, "trace_add", trace_add)
+        request = SimpleNamespace(node=SimpleNamespace(user_properties=[]))
+        try:
+            case.test_retained_variable_does_not_call_a_destroyed_row((root, font, errors), request, kind, lifecycle)
+            assert len(captured) == 1
+            for callback in root.tk.call("after", "info"):
+                root.tk.call("after", "cancel", callback)
+            root.destroy()
+            gc.collect()
+>           assert captured[0][0]() is None, "fixture peer trace retained its captured Variable"
+E           AssertionError: fixture peer trace retained its captured Variable
+E           assert <tkinter.IntVar object at 0x70b04539e240> is None
+E            +  where <tkinter.IntVar object at 0x70b04539e240> = <weakref at 0x70b0451cc2c0; to 'IntVar' at 0x70b04539e240>()
+
+/tmp/pass19-primary/fixture_release_probe.py:103: AssertionError
+__ test_teardown_retires_owned_traces_preserves_peer_and_state[False-confirm] __
+
+request = <FixtureRequest for <Function test_teardown_retires_owned_traces_preserves_peer_and_state[False-confirm]>>
+kind = 'confirm', repeated = False
+
+    @pytest.mark.parametrize("kind", ["confirm", "typing"])
+    @pytest.mark.parametrize("repeated", [False, True])
+    def test_teardown_retires_owned_traces_preserves_peer_and_state(request, kind, repeated):
+        app, errors = _app(kind)
+        variables = [app._confirm_var, app._typing_var]
+        owned = [(variable, _tokens(variable)) for variable in variables]
+        assert all(len(tokens) == 1 for _variable, tokens in owned)
+        peer_calls = [[], []]
+        peers = []
+        for index, variable in enumerate(variables):
+            calls = peer_calls[index]
+            token = variable.trace_add("write", lambda *_args, calls=calls: calls.append("observed"))
+            peers.append((variable, token))
+        before = (app.w.confirm_input, app.w.typing_check)
+        try:
+            app._teardown()
+            if repeated:
+                app._teardown()
+            variables[0].set("post-teardown-confirm")
+            variables[1].set("post-teardown-typing")
+            after = (app.w.confirm_input, app.w.typing_check)
+            remaining = [sorted(_tokens(variable)) for variable in variables]
+            request.node.user_properties.append(("owner_trace_retirement", json.dumps({
+                "kind": kind, "repeated": repeated,
+                "owned_before": [sorted(tokens) for _variable, tokens in owned],
+                "after": remaining, "peer_tokens": [token for _variable, token in peers],
+                "state_before": before, "state_after": after,
+                "errors": errors, "peer_calls": peer_calls,
+            })))
+>           assert after == before
+E           AssertionError: assert ('post-teardown-confirm', '') == ('', '')
+E             
+E             At index 0 diff: 'post-teardown-confirm' != ''
+E             Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-owner-trace-probe.py:117: AssertionError
+__ test_teardown_retires_owned_traces_preserves_peer_and_state[False-typing] ___
+
+request = <FixtureRequest for <Function test_teardown_retires_owned_traces_preserves_peer_and_state[False-typing]>>
+kind = 'typing', repeated = False
+
+    @pytest.mark.parametrize("kind", ["confirm", "typing"])
+    @pytest.mark.parametrize("repeated", [False, True])
+    def test_teardown_retires_owned_traces_preserves_peer_and_state(request, kind, repeated):
+        app, errors = _app(kind)
+        variables = [app._confirm_var, app._typing_var]
+        owned = [(variable, _tokens(variable)) for variable in variables]
+        assert all(len(tokens) == 1 for _variable, tokens in owned)
+        peer_calls = [[], []]
+        peers = []
+        for index, variable in enumerate(variables):
+            calls = peer_calls[index]
+            token = variable.trace_add("write", lambda *_args, calls=calls: calls.append("observed"))
+            peers.append((variable, token))
+        before = (app.w.confirm_input, app.w.typing_check)
+        try:
+            app._teardown()
+            if repeated:
+                app._teardown()
+            variables[0].set("post-teardown-confirm")
+            variables[1].set("post-teardown-typing")
+            after = (app.w.confirm_input, app.w.typing_check)
+            remaining = [sorted(_tokens(variable)) for variable in variables]
+            request.node.user_properties.append(("owner_trace_retirement", json.dumps({
+                "kind": kind, "repeated": repeated,
+                "owned_before": [sorted(tokens) for _variable, tokens in owned],
+                "after": remaining, "peer_tokens": [token for _variable, token in peers],
+                "state_before": before, "state_after": after,
+                "errors": errors, "peer_calls": peer_calls,
+            })))
+>           assert after == before
+E           AssertionError: assert ('', 'post-teardown-typing') == ('', '')
+E             
+E             At index 1 diff: 'post-teardown-typing' != ''
+E             Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-owner-trace-probe.py:117: AssertionError
+__ test_teardown_retires_owned_traces_preserves_peer_and_state[True-confirm] ___
+
+request = <FixtureRequest for <Function test_teardown_retires_owned_traces_preserves_peer_and_state[True-confirm]>>
+kind = 'confirm', repeated = True
+
+    @pytest.mark.parametrize("kind", ["confirm", "typing"])
+    @pytest.mark.parametrize("repeated", [False, True])
+    def test_teardown_retires_owned_traces_preserves_peer_and_state(request, kind, repeated):
+        app, errors = _app(kind)
+        variables = [app._confirm_var, app._typing_var]
+        owned = [(variable, _tokens(variable)) for variable in variables]
+        assert all(len(tokens) == 1 for _variable, tokens in owned)
+        peer_calls = [[], []]
+        peers = []
+        for index, variable in enumerate(variables):
+            calls = peer_calls[index]
+            token = variable.trace_add("write", lambda *_args, calls=calls: calls.append("observed"))
+            peers.append((variable, token))
+        before = (app.w.confirm_input, app.w.typing_check)
+        try:
+            app._teardown()
+            if repeated:
+                app._teardown()
+            variables[0].set("post-teardown-confirm")
+            variables[1].set("post-teardown-typing")
+            after = (app.w.confirm_input, app.w.typing_check)
+            remaining = [sorted(_tokens(variable)) for variable in variables]
+            request.node.user_properties.append(("owner_trace_retirement", json.dumps({
+                "kind": kind, "repeated": repeated,
+                "owned_before": [sorted(tokens) for _variable, tokens in owned],
+                "after": remaining, "peer_tokens": [token for _variable, token in peers],
+                "state_before": before, "state_after": after,
+                "errors": errors, "peer_calls": peer_calls,
+            })))
+>           assert after == before
+E           AssertionError: assert ('post-teardown-confirm', '') == ('', '')
+E             
+E             At index 0 diff: 'post-teardown-confirm' != ''
+E             Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-owner-trace-probe.py:117: AssertionError
+___ test_teardown_retires_owned_traces_preserves_peer_and_state[True-typing] ___
+
+request = <FixtureRequest for <Function test_teardown_retires_owned_traces_preserves_peer_and_state[True-typing]>>
+kind = 'typing', repeated = True
+
+    @pytest.mark.parametrize("kind", ["confirm", "typing"])
+    @pytest.mark.parametrize("repeated", [False, True])
+    def test_teardown_retires_owned_traces_preserves_peer_and_state(request, kind, repeated):
+        app, errors = _app(kind)
+        variables = [app._confirm_var, app._typing_var]
+        owned = [(variable, _tokens(variable)) for variable in variables]
+        assert all(len(tokens) == 1 for _variable, tokens in owned)
+        peer_calls = [[], []]
+        peers = []
+        for index, variable in enumerate(variables):
+            calls = peer_calls[index]
+            token = variable.trace_add("write", lambda *_args, calls=calls: calls.append("observed"))
+            peers.append((variable, token))
+        before = (app.w.confirm_input, app.w.typing_check)
+        try:
+            app._teardown()
+            if repeated:
+                app._teardown()
+            variables[0].set("post-teardown-confirm")
+            variables[1].set("post-teardown-typing")
+            after = (app.w.confirm_input, app.w.typing_check)
+            remaining = [sorted(_tokens(variable)) for variable in variables]
+            request.node.user_properties.append(("owner_trace_retirement", json.dumps({
+                "kind": kind, "repeated": repeated,
+                "owned_before": [sorted(tokens) for _variable, tokens in owned],
+                "after": remaining, "peer_tokens": [token for _variable, token in peers],
+                "state_before": before, "state_after": after,
+                "errors": errors, "peer_calls": peer_calls,
+            })))
+>           assert after == before
+E           AssertionError: assert ('', 'post-teardown-typing') == ('', '')
+E             
+E             At index 1 diff: 'post-teardown-typing' != ''
+E             Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-owner-trace-probe.py:117: AssertionError
+_______ test_destroyed_app_and_local_variables_can_be_collected[confirm] _______
+
+request = <FixtureRequest for <Function test_destroyed_app_and_local_variables_can_be_collected[confirm]>>
+kind = 'confirm'
+
+    @pytest.mark.parametrize("kind", ["confirm", "typing"])
+    def test_destroyed_app_and_local_variables_can_be_collected(request, kind):
+        def build_and_destroy():
+            app, errors = _app(kind)
+            variables = (app._confirm_var, app._typing_var)
+            refs = (weakref.ref(app), weakref.ref(app.root), *(weakref.ref(variable) for variable in variables))
+            tokens = [_tokens(variable) for variable in variables]
+            app._teardown()
+            return refs, tokens, errors
+    
+        refs, tokens, errors = build_and_destroy()
+        try:
+            gc.collect()
+            alive = [reference() is not None for reference in refs]
+            request.node.user_properties.append(("owner_trace_collection", json.dumps({
+                "kind": kind, "app_root_confirm_typing_alive": alive,
+                "owned_tokens": [sorted(value) for value in tokens], "errors": errors,
+            })))
+>           assert alive == [False, False, False, False]
+E           assert [True, True, True, True] == [False, False, False, False]
+E             
+E             At index 0 diff: True != False
+E             Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-owner-trace-probe.py:163: AssertionError
+_______ test_destroyed_app_and_local_variables_can_be_collected[typing] ________
+
+request = <FixtureRequest for <Function test_destroyed_app_and_local_variables_can_be_collected[typing]>>
+kind = 'typing'
+
+    @pytest.mark.parametrize("kind", ["confirm", "typing"])
+    def test_destroyed_app_and_local_variables_can_be_collected(request, kind):
+        def build_and_destroy():
+            app, errors = _app(kind)
+            variables = (app._confirm_var, app._typing_var)
+            refs = (weakref.ref(app), weakref.ref(app.root), *(weakref.ref(variable) for variable in variables))
+            tokens = [_tokens(variable) for variable in variables]
+            app._teardown()
+            return refs, tokens, errors
+    
+        refs, tokens, errors = build_and_destroy()
+        try:
+            gc.collect()
+            alive = [reference() is not None for reference in refs]
+            request.node.user_properties.append(("owner_trace_collection", json.dumps({
+                "kind": kind, "app_root_confirm_typing_alive": alive,
+                "owned_tokens": [sorted(value) for value in tokens], "errors": errors,
+            })))
+>           assert alive == [False, False, False, False]
+E           assert [True, True, True, True] == [False, False, False, False]
+E             
+E             At index 0 diff: True != False
+E             Use -v to get more diff
+
+docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-owner-trace-probe.py:163: AssertionError
+=========================== short test summary info ============================
+FAILED ::test_audio_fixture_releases_its_controlled_worker_on_first_failure[slow-click]
+FAILED ::test_audio_fixture_releases_its_controlled_worker_on_first_failure[click-exception]
+FAILED ::test_native_trace_fixture_releases_its_independent_peer[row-boolean]
+FAILED ::test_native_trace_fixture_releases_its_independent_peer[row-integer]
+FAILED ::test_native_trace_fixture_releases_its_independent_peer[parent-boolean]
+FAILED ::test_native_trace_fixture_releases_its_independent_peer[parent-integer]
+FAILED ::test_native_trace_fixture_releases_its_independent_peer[redraw-clear-boolean]
+FAILED ::test_native_trace_fixture_releases_its_independent_peer[redraw-clear-integer]
+FAILED docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-owner-trace-probe.py::test_teardown_retires_owned_traces_preserves_peer_and_state[False-confirm]
+FAILED docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-owner-trace-probe.py::test_teardown_retires_owned_traces_preserves_peer_and_state[False-typing]
+FAILED docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-owner-trace-probe.py::test_teardown_retires_owned_traces_preserves_peer_and_state[True-confirm]
+FAILED docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-owner-trace-probe.py::test_teardown_retires_owned_traces_preserves_peer_and_state[True-typing]
+FAILED docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-owner-trace-probe.py::test_destroyed_app_and_local_variables_can_be_collected[confirm]
+FAILED docs/evidence/bug-audit-20261017-pass19/ui-boot/tk-owner-trace-probe.py::test_destroyed_app_and_local_variables_can_be_collected[typing]

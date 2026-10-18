@@ -1,0 +1,54 @@
+diff --git a/src/beamo_wipe/support_export.py b/src/beamo_wipe/support_export.py
+index 29b78ae..28fabba 100644
+--- a/src/beamo_wipe/support_export.py
++++ b/src/beamo_wipe/support_export.py
+@@ -25,7 +25,7 @@ from dataclasses import asdict, dataclass
+ from pathlib import Path
+ from typing import TypeGuard, Any, Callable, Iterable, Mapping, Optional, Sequence
+
+-from beamo_wipe.discover import run_lsblk
++from beamo_wipe.discover import _hardware_identity, run_lsblk
+ from beamo_wipe.evidence import _verified_evidence_bytes
+ from beamo_wipe.models import Disk, DiscoveryResult
+ from beamo_wipe.nwipe_runner import NWIPE_COMPLETION_LOG_BYTES, NWIPE_PROGRESS_LOG_BYTES
+@@ -727,12 +727,21 @@ def _fingerprint_node(
+     path_pattern = DISK_PATH_RE if export_parent else ROOT_PATH_RE
+     if not path_pattern.fullmatch(path):
+         raise SafetyError(USB_DEVICE_PATH_UNSUPPORTED)
++    try:
++        # Discovery trims hardware padding before recording the baseline.
++        # Reuse its bounded parser; paths and volume metadata stay exact.
++        hardware = {
++            key: _hardware_identity(node.get(key), key)
++            for key in ("model", "serial", "wwn")
++        }
++    except ValueError as exc:
++        raise SafetyError(USB_META_MALFORMED) from exc
+     return DeviceFingerprint(
+         path=path,
+         size_bytes=_strict_int(node, "size"),
+-        model=_strict_text(node, "model"),
+-        serial=_strict_text(node, "serial"),
+-        wwn=_strict_text(node, "wwn"),
++        model=hardware["model"],
++        serial=hardware["serial"],
++        wwn=hardware["wwn"],
+     )
+
+
+diff --git a/src/beamo_wipe/verification_evidence.py b/src/beamo_wipe/verification_evidence.py
+index 2e1a416..acd6202 100644
+--- a/src/beamo_wipe/verification_evidence.py
++++ b/src/beamo_wipe/verification_evidence.py
+@@ -431,7 +431,10 @@ def build_gate_receipt(
+         raise RuntimeError(f"gate {gate} is missing its build identity")
+     counts = _check_measured(measured, what=f"gate {gate}")
+     skip_list = _check_skips(list(skips), what=f"gate {gate}")
+-    if counts["skipped"] + counts["xfailed"] != len(skip_list):
++    if (
++        counts["skipped"] != sum(entry["kind"] == "skip" for entry in skip_list)
++        or counts["xfailed"] != sum(entry["kind"] == "xfail" for entry in skip_list)
++    ):
+         raise RuntimeError(f"gate {gate} skip list does not match its counts")
+     if status == "skip":
+         if not isinstance(reason, str) or not reason.strip():

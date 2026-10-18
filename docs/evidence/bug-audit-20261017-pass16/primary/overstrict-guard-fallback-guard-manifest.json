@@ -1,0 +1,10 @@
+{
+  "/tmp/beamo-pass16-fallback-guard/aws": "8f0cee76eb36b50ed623d59610eeda9b3091a2eb6a241cee84fbefec4bb6d40a",
+  "/tmp/beamo-pass16-fallback-guard/sudo": "8f0cee76eb36b50ed623d59610eeda9b3091a2eb6a241cee84fbefec4bb6d40a",
+  "/tmp/beamo-pass16-fallback-guard/docker": "8f0cee76eb36b50ed623d59610eeda9b3091a2eb6a241cee84fbefec4bb6d40a",
+  "/tmp/beamo-pass16-fallback-guard/qemu-system-x86_64": "8f0cee76eb36b50ed623d59610eeda9b3091a2eb6a241cee84fbefec4bb6d40a",
+  "/tmp/beamo-pass16-fallback-guard/gcloud": "8f0cee76eb36b50ed623d59610eeda9b3091a2eb6a241cee84fbefec4bb6d40a",
+  "/tmp/beamo-pass16-fallback-guard/losetup": "8f0cee76eb36b50ed623d59610eeda9b3091a2eb6a241cee84fbefec4bb6d40a",
+  "/tmp/beamo-pass16-fallback-guard/gh": "8f0cee76eb36b50ed623d59610eeda9b3091a2eb6a241cee84fbefec4bb6d40a",
+  "/tmp/beamo-pass16-fallback-guard/curl": "8f0cee76eb36b50ed623d59610eeda9b3091a2eb6a241cee84fbefec4bb6d40a"
+}

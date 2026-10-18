@@ -1,0 +1,14 @@
+[
+  {
+    "plugin_in_environment": true,
+    "exit_code": 1,
+    "child_report": false,
+    "import_error": true
+  },
+  {
+    "plugin_in_environment": false,
+    "exit_code": 0,
+    "child_report": true,
+    "import_error": false
+  }
+]

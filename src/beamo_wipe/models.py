@@ -174,6 +174,9 @@ class DiscoveryResult:
     # Display-only inventory. Never a source of selectable Disk objects.
     excluded: Tuple[ExcludedDevice, ...] = ()
     error_code: str = ""
+    # Safety-only physical facts survive display/eligibility filtering.
+    # Never a source of selectable disks or confirmation peers.
+    physical_observations: Tuple[Disk, ...] = ()
 
 
 @dataclass(frozen=True)

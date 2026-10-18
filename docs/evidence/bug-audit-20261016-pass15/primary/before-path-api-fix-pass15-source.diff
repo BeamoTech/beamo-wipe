@@ -1,0 +1,207 @@
+--- starting/src/beamo_wipe/discover.py
++++ final/src/beamo_wipe/discover.py
+@@ -539,18 +539,18 @@
+ 
+ 
+ def _cover_mounted_identifier_aliases(
+-    disks: Sequence[Disk], *, mounted_observations: Sequence[Disk] = ()
++    disks: Sequence[Disk], *, physical_observations: Sequence[Disk] = ()
+ ) -> List[Disk]:
+     """Copy a mount onto paths sharing a hardware identifier with that disk.
+ 
+     Multipath can record the mount on one path only. A repeated meaningful
+     WWN or serial makes another path ambiguous, so it must not stay selectable.
+     """
+-    mounted = [disk for disk in (*disks, *mounted_observations) if disk.mountpoints]
++    mounted = [disk for disk in (*disks, *physical_observations) if disk.mountpoints]
+     if not mounted:
+         return list(disks)
+     mounts_by_path: Dict[str, List[str]] = {}
+-    observations = (*disks, *mounted_observations)
++    observations = (*disks, *physical_observations)
+     for source in mounted:
+         for alias in protected_hardware_aliases(source, observations):
+             mounts_by_path.setdefault(os.path.realpath(alias.path), []).extend(source.mountpoints)
+@@ -1320,6 +1320,37 @@
+         ),
+         layout_id=_layout_id(node),
+     )
++
++
++def _physical_observation(
++    node: Dict[str, Any], mounts: Tuple[str, ...]
++) -> Tuple[Disk, Tuple[bool, bool]]:
++    """Retain safety facts without depending on display or layout metadata."""
++    def hardware(field: str) -> Tuple[str, bool]:
++        try:
++            return (_hardware_identity(node.get(field), field)
++                    or _first_descendant_field(node, field)), False
++        except ValueError:
++            # This projection never supplies target identity. Keep a valid
++            # other ID without repairing the unusable field; duplicate rows
++            # must retain the invalidity rather than compare it to missing.
++            return "", True
++
++    name = _identity_text(node.get("name"), "name")
++    size = _as_int(node.get("size"))
++    serial, serial_invalid = hardware("serial")
++    wwn, wwn_invalid = hardware("wwn")
++    observation = Disk(
++        path=node_path(node), name=name, model="", label="",
++        serial=serial, wwn=wwn,
++        size_bytes=size, size_gb_label=size_gb_label(size),
++        kind=classify_kind(name, node.get("tran"), node.get("rota")),
++        bus=classify_bus(node.get("tran")),
++        read_only=_as_bool(node.get("ro")) is True,
++        hotplug=_as_bool(node.get("rm")) is True or _as_bool(node.get("hotplug")) is True,
++        mountpoints=mounts,
++    )
++    return observation, (serial_invalid, wwn_invalid)
+ 
+ 
+ def labels_for(node: Dict[str, Any], *, exact: bool = False) -> List[str]:
+@@ -1850,19 +1881,30 @@
+     _cover_shared_filesystem_members(flat_nodes, flat_mounts, by_name)
+     _reject_shared_device_ancestry(flat_nodes, by_name)
+ 
+-    # Mounted physical observations remain exclusion evidence even when a
+-    # device is hidden from the picker. Validate them before per-row display
+-    # filtering can discard a malformed model or another identity field.
+-    mounted_observations = []
++    # Hidden or malformed display rows can bridge a protected hardware alias,
++    # or contradict a writable same-path row. Retain their physical facts
++    # before display filtering, without turning them into picker candidates.
++    physical_observations = []
++    physical_by_path: Dict[str, Tuple[Disk, Optional[bool], Tuple[bool, bool]]] = {}
+     for node, _parent in flat_nodes:
+         if _node_type(node) not in {"disk", "rom"}:
+             continue
+         name = _identity_text(node.get("name"), "name")
+         effective_mounts = tuple(dict.fromkeys((*_node_mountpoints(node), *flat_mounts.get(name, []))))
+         if effective_mounts:
+-            mounted_observations.append(replace(
+-                node_to_disk(node, is_boot=False), mountpoints=effective_mounts
+-            ))
++            # Keep the existing full refusal for malformed mounted metadata.
++            node_to_disk(node, is_boot=False)
++        path = node_path(node)
++        if not path or path == "/dev/":
++            continue  # An isolated pathless row still cannot hide its siblings.
++        observation, invalid_ids = _physical_observation(node, effective_mounts)
++        canonical = os.path.realpath(path)
++        signature = (observation, _as_bool(node.get("ro")), invalid_ids)
++        previous_physical = physical_by_path.get(canonical)
++        if previous_physical is not None and previous_physical != signature:
++            raise ValueError("lsblk has conflicting physical observations for one disk")
++        physical_by_path[canonical] = signature
++        physical_observations.append(observation)
+     disks: List[Disk] = []
+     identified_boot: Optional[Disk] = None
+     for node in disk_nodes(blockdevices):
+@@ -1935,7 +1977,7 @@
+     if boot is not None:
+         boot_alias_paths = {
+             os.path.realpath(d.path)
+-            for d in protected_hardware_aliases(boot, (*disks, *mounted_observations))
++            for d in protected_hardware_aliases(boot, (*disks, *physical_observations))
+         }
+         disks = [
+             replace(d, is_boot=True)
+@@ -1956,7 +1998,7 @@
+         observed_disks[canonical] = disk
+     # A second path with a mounted disk's identifier may be the same LUN.
+     disks = _cover_mounted_identifier_aliases(
+-        disks, mounted_observations=mounted_observations
++        disks, physical_observations=physical_observations
+     )
+     if boot is not None:
+         boot = next((item for item in disks if item.path == boot.path), boot)
+@@ -2017,6 +2059,7 @@
+         boot=boot,
+         error=None,
+         boot_identified=True,
++        physical_observations=tuple(physical_observations),
+     )
+ 
+ 
+--- starting/src/beamo_wipe/engine_checks.py
++++ final/src/beamo_wipe/engine_checks.py
+@@ -41,7 +41,7 @@
+ _HIDDEN_INDETERMINATE = re.compile(
+     r"HIDDEN SECTORS INDETERMINATE!\s+on\s+(/dev/[A-Za-z0-9._+-]+)"
+ )
+-_HIDDEN_NONE = re.compile(r"No hidden sectors on\s+(/dev/[A-Za-z0-9._+-]+)")
++_HIDDEN_NONE = re.compile(r"No hidden sectors on[ \t]+(/dev/[A-Za-z0-9._+-]+)[ \t]*\Z")
+ _HPA_LINE_UNKNOWN = re.compile(
+     r"\[UNKNOWN\] We can't find the HPA line, has hdparm ouput unknown/changed\?\s+"
+     r"(/dev/[A-Za-z0-9._+-]+)"
+--- starting/src/beamo_wipe/models.py
++++ final/src/beamo_wipe/models.py
+@@ -174,6 +174,9 @@
+     # Display-only inventory. Never a source of selectable Disk objects.
+     excluded: Tuple[ExcludedDevice, ...] = ()
+     error_code: str = ""
++    # Safety-only physical facts survive display/eligibility filtering.
++    # Never a source of selectable disks or confirmation peers.
++    physical_observations: Tuple[Disk, ...] = ()
+ 
+ 
+ @dataclass(frozen=True)
+--- starting/src/beamo_wipe/nwipe_runner.py
++++ final/src/beamo_wipe/nwipe_runner.py
+@@ -134,6 +134,9 @@
+ # Drive Status is written before create_system_multi_disc_pdf()/smartctl.
+ # 64KiB from EOF can be only that tail, hiding | Erased |.
+ NWIPE_COMPLETION_LOG_BYTES = 1024 * 1024
++# Each raw byte can become at most one three-byte UTF-8 replacement character.
++# Evidence records the normalized snapshot length, not the raw capture length.
++NWIPE_LOG_SNAPSHOT_UTF8_BYTES = 3 * NWIPE_COMPLETION_LOG_BYTES
+ NWIPE_PROGRESS_LOG_BYTES = 8000
+ # Completion can be larger than the displayed/exported tail. Stream it and
+ # retain only parser-relevant lines; an oversized individual line or too much
+--- starting/src/beamo_wipe/outcomes.py
++++ final/src/beamo_wipe/outcomes.py
+@@ -265,6 +265,7 @@
+ 
+         from beamo_wipe.evidence import SUPPORTED_SCHEMA_VERSIONS
+         from beamo_wipe.privacy import is_sharing_copy
++        from beamo_wipe.nwipe_runner import NWIPE_LOG_SNAPSHOT_UTF8_BYTES
+ 
+         if (
+             type(evidence.get("schema_version")) is not int
+@@ -376,7 +377,7 @@
+             if not sharing_copy and (
+                 not re.fullmatch(r"[0-9a-f]{64}", evidence["log_checksum_sha256"])
+                 or type(evidence["log_snapshot_size_bytes"]) is not int
+-                or not 0 < evidence["log_snapshot_size_bytes"] <= 1024 * 1024
++                or not 0 < evidence["log_snapshot_size_bytes"] <= NWIPE_LOG_SNAPSHOT_UTF8_BYTES
+             ):
+                 return unknown
+             if outcome == "verified" and spec.verify == "last" and verification["verified"]:
+--- starting/src/beamo_wipe/safety.py
++++ final/src/beamo_wipe/safety.py
+@@ -557,7 +557,8 @@
+     if any(d.is_boot and os.path.realpath(d.path) in selectable_paths for d in discovery.disks):
+         raise SafetyError(BOOT_APPEARED_SELECTABLE)
+     aliases = protected_hardware_aliases(
+-        discovery.boot, (*discovery.disks, *discovery.selectable)
++        discovery.boot,
++        (*discovery.disks, *discovery.selectable, *discovery.physical_observations),
+     )
+     alias_paths = {os.path.realpath(disk.path) for disk in aliases}
+     if selectable_paths & alias_paths:
+--- starting/src/beamo_wipe/ui/tk_wizard.py
++++ final/src/beamo_wipe/ui/tk_wizard.py
+@@ -3291,6 +3291,12 @@
+             return "break"
+ 
+         def bind_wheel(widget):
++            # Nested readers and custom scrollbars own their wheel handlers.
++            if (widget.winfo_class() in {"Text", "Listbox", "Treeview", "Scrollbar", "TScrollbar"}
++                    or isinstance(widget, _Scrollbar)
++                    or (isinstance(widget, tk.Canvas) and widget is not canvas
++                        and widget.cget("scrollregion"))):
++                return
+             for sequence in ("<MouseWheel>", "<Button-4>", "<Button-5>"):
+                 widget.bind(sequence, _wheel)
+             for child in widget.winfo_children():

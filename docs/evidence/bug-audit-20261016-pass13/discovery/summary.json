@@ -1,0 +1,46 @@
+{
+  "original-proof": {
+    "total": 104,
+    "failures": 32,
+    "errors": 0,
+    "skips": 0,
+    "case_seconds": 0.459,
+    "suite_seconds": 0.698,
+    "passes": 72
+  },
+  "fixed": {
+    "total": 104,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "case_seconds": 0.297,
+    "suite_seconds": 0.452,
+    "passes": 104
+  },
+  "focused": {
+    "total": 644,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "case_seconds": 5.025,
+    "suite_seconds": 9.846,
+    "passes": 644
+  },
+  "namespace-matrix": {
+    "cases": 156,
+    "native_attempts": [],
+    "observations_sha256": "daeced50d90a19e1b682661ecac3bd9538bb690fa68bb63f02e90de5a5e438e5"
+  },
+  "final_discover_sha256": "b45a4a32953ac47d0b1b69fc98a1c8f1f2295704e15de677f5b88f3ee33d58e2",
+  "test_sha256": "7e0e2fcc2504df6efa84a57453c8183e0f2c8c607e8b863a4c70f4f036338539",
+  "selected_module_count": 54,
+  "exit_codes": {
+    "candidate_trace": 0,
+    "nested_trace": 0,
+    "original_proof_wrapper": 0,
+    "original_pytest_expected_failure": 1,
+    "fixed": 0,
+    "namespace_matrix": 0,
+    "focused": 0
+  }
+}

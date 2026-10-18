@@ -1,0 +1,12 @@
+[
+  "tests/test_mounted_holder_type_pass20.py",
+  "tests/test_holder_ancestor_mount_pass20.py",
+  "tests/test_audio_launch_interruptions_pass20.py",
+  "tests/test_audio_launch_ownership_pass14.py",
+  "tests/test_discovery_observation_fallback_pass16.py",
+  "tests/test_unbound_bcache_filesystem_pass19.py",
+  "tests/test_descendant_holder_filesystem_pass19.py",
+  "tests/test_duplicate_bcache_filesystem_pass19.py",
+  "tests/test_holder_ancestor_contradiction_pass19.py",
+  "tests/test_audio_launch_acceptance_pass20.py"
+]

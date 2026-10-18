@@ -1,0 +1,42 @@
+.........F.ss                                                            [100%]
+=================================== FAILURES ===================================
+______________ test_accessible_stopping_shows_identity_and_method ______________
+
+    def test_accessible_stopping_shows_identity_and_method():
+        pytest.importorskip("gi")
+        from test_accessible_runtime import text, wait_for_window_size
+
+        from beamo_wipe.ui.accessible_wizard import AccessibleWizard
+
+        wiz = make_demo_wizard()
+        wiz.skip_intro()
+        wiz.accept_what()
+        wiz.set_owner(True)
+        wiz.continue_owner()
+        disk = sorted(wiz.selectable, key=lambda d: d.path)[0]
+        wiz.select_disk(disk.path)
+        wiz.method = MethodId.EXTRA
+        wiz.screen = Screen.STOPPING
+>       app = AccessibleWizard(wiz)
+              ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_operation_identity.py:189:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/beamo_wipe/ui/accessible_wizard.py:58: in __init__
+    self.window = Gtk.Window(title=C.ACCESSIBLE_TITLE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Gtk.Window object at 0x7d5734658bc0 (uninitialized at 0x(nil))>
+args = (), kwargs = {'title': 'Beamo Wipe — screen-reader view'}
+
+    def __init__(self, *args, **kwargs):
+        if not initialized:
+>           raise RuntimeError(
+                "Gtk couldn't be initialized. "
+                "Use Gtk.init_check() if you want to handle this case.")
+E           RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.
+
+/usr/lib/python3/dist-packages/gi/overrides/Gtk.py:508: RuntimeError
+=========================== short test summary info ============================
+FAILED tests/test_operation_identity.py::test_accessible_stopping_shows_identity_and_method

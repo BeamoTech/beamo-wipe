@@ -1,0 +1,268 @@
+FFFFFFFF....                                                             [100%]
+=================================== FAILURES ===================================
+____ test_model_continuation_cannot_arm_or_signal_engine[Using direct I/O-] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7855c83dcb60>
+prefix = '', phrase = 'Using direct I/O'
+
+    @pytest.mark.parametrize("prefix", ["", "info:"])
+    @pytest.mark.parametrize("phrase", PHRASES)
+    def test_model_continuation_cannot_arm_or_signal_engine(monkeypatch, prefix, phrase):
+        model = "\n" + prefix + phrase
+        assert len(model.encode("ascii")) <= 40
+        text = f"[2026/10/16 12:00:00] info: /dev/sda, ATA, {model}, serial FAKE\n"
+        # A period/space after the readiness phrase is accepted by the old parser;
+        # the real suffix from the enclosing device-info record must not arm it.
+        signals = []
+
+        class Process:
+            def poll(self):
+                return None
+
+            def send_signal(self, value):
+                signals.append(value)
+
+        runner = NwipeRunner()
+        runner._proc = Process()
+        monkeypatch.setattr(runner, "_read_log_tail", lambda *_args: text)
+        request = WipeRequest("/dev/sda", MethodId.EVERYDAY, "/dev/sdb", "fake-log")
+        assert runner.poll(request) is None
+>       assert signal.SIGUSR1 not in signals
+E       assert <Signals.SIGUSR1: 10> not in [<Signals.SIGUSR1: 10>]
+E        +  where <Signals.SIGUSR1: 10> = signal.SIGUSR1
+
+tests/test_runner_readiness_record_provenance.py:39: AssertionError
+_ test_model_continuation_cannot_arm_or_signal_engine[Using direct I/O-info:] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7855c83c9700>
+prefix = 'info:', phrase = 'Using direct I/O'
+
+    @pytest.mark.parametrize("prefix", ["", "info:"])
+    @pytest.mark.parametrize("phrase", PHRASES)
+    def test_model_continuation_cannot_arm_or_signal_engine(monkeypatch, prefix, phrase):
+        model = "\n" + prefix + phrase
+        assert len(model.encode("ascii")) <= 40
+        text = f"[2026/10/16 12:00:00] info: /dev/sda, ATA, {model}, serial FAKE\n"
+        # A period/space after the readiness phrase is accepted by the old parser;
+        # the real suffix from the enclosing device-info record must not arm it.
+        signals = []
+
+        class Process:
+            def poll(self):
+                return None
+
+            def send_signal(self, value):
+                signals.append(value)
+
+        runner = NwipeRunner()
+        runner._proc = Process()
+        monkeypatch.setattr(runner, "_read_log_tail", lambda *_args: text)
+        request = WipeRequest("/dev/sda", MethodId.EVERYDAY, "/dev/sdb", "fake-log")
+        assert runner.poll(request) is None
+>       assert signal.SIGUSR1 not in signals
+E       assert <Signals.SIGUSR1: 10> not in [<Signals.SIGUSR1: 10>]
+E        +  where <Signals.SIGUSR1: 10> = signal.SIGUSR1
+
+tests/test_runner_readiness_record_provenance.py:39: AssertionError
+____ test_model_continuation_cannot_arm_or_signal_engine[Using cached I/O-] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7855c841e750>
+prefix = '', phrase = 'Using cached I/O'
+
+    @pytest.mark.parametrize("prefix", ["", "info:"])
+    @pytest.mark.parametrize("phrase", PHRASES)
+    def test_model_continuation_cannot_arm_or_signal_engine(monkeypatch, prefix, phrase):
+        model = "\n" + prefix + phrase
+        assert len(model.encode("ascii")) <= 40
+        text = f"[2026/10/16 12:00:00] info: /dev/sda, ATA, {model}, serial FAKE\n"
+        # A period/space after the readiness phrase is accepted by the old parser;
+        # the real suffix from the enclosing device-info record must not arm it.
+        signals = []
+
+        class Process:
+            def poll(self):
+                return None
+
+            def send_signal(self, value):
+                signals.append(value)
+
+        runner = NwipeRunner()
+        runner._proc = Process()
+        monkeypatch.setattr(runner, "_read_log_tail", lambda *_args: text)
+        request = WipeRequest("/dev/sda", MethodId.EVERYDAY, "/dev/sdb", "fake-log")
+        assert runner.poll(request) is None
+>       assert signal.SIGUSR1 not in signals
+E       assert <Signals.SIGUSR1: 10> not in [<Signals.SIGUSR1: 10>]
+E        +  where <Signals.SIGUSR1: 10> = signal.SIGUSR1
+
+tests/test_runner_readiness_record_provenance.py:39: AssertionError
+_ test_model_continuation_cannot_arm_or_signal_engine[Using cached I/O-info:] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7855c7b16600>
+prefix = 'info:', phrase = 'Using cached I/O'
+
+    @pytest.mark.parametrize("prefix", ["", "info:"])
+    @pytest.mark.parametrize("phrase", PHRASES)
+    def test_model_continuation_cannot_arm_or_signal_engine(monkeypatch, prefix, phrase):
+        model = "\n" + prefix + phrase
+        assert len(model.encode("ascii")) <= 40
+        text = f"[2026/10/16 12:00:00] info: /dev/sda, ATA, {model}, serial FAKE\n"
+        # A period/space after the readiness phrase is accepted by the old parser;
+        # the real suffix from the enclosing device-info record must not arm it.
+        signals = []
+
+        class Process:
+            def poll(self):
+                return None
+
+            def send_signal(self, value):
+                signals.append(value)
+
+        runner = NwipeRunner()
+        runner._proc = Process()
+        monkeypatch.setattr(runner, "_read_log_tail", lambda *_args: text)
+        request = WipeRequest("/dev/sda", MethodId.EVERYDAY, "/dev/sdb", "fake-log")
+        assert runner.poll(request) is None
+>       assert signal.SIGUSR1 not in signals
+E       assert <Signals.SIGUSR1: 10> not in [<Signals.SIGUSR1: 10>]
+E        +  where <Signals.SIGUSR1: 10> = signal.SIGUSR1
+
+tests/test_runner_readiness_record_provenance.py:39: AssertionError
+_ test_model_continuation_cannot_arm_or_signal_engine[do not show GUI interface-] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7855c7b164e0>
+prefix = '', phrase = 'do not show GUI interface'
+
+    @pytest.mark.parametrize("prefix", ["", "info:"])
+    @pytest.mark.parametrize("phrase", PHRASES)
+    def test_model_continuation_cannot_arm_or_signal_engine(monkeypatch, prefix, phrase):
+        model = "\n" + prefix + phrase
+        assert len(model.encode("ascii")) <= 40
+        text = f"[2026/10/16 12:00:00] info: /dev/sda, ATA, {model}, serial FAKE\n"
+        # A period/space after the readiness phrase is accepted by the old parser;
+        # the real suffix from the enclosing device-info record must not arm it.
+        signals = []
+
+        class Process:
+            def poll(self):
+                return None
+
+            def send_signal(self, value):
+                signals.append(value)
+
+        runner = NwipeRunner()
+        runner._proc = Process()
+        monkeypatch.setattr(runner, "_read_log_tail", lambda *_args: text)
+        request = WipeRequest("/dev/sda", MethodId.EVERYDAY, "/dev/sdb", "fake-log")
+        assert runner.poll(request) is None
+>       assert signal.SIGUSR1 not in signals
+E       assert <Signals.SIGUSR1: 10> not in [<Signals.SIGUSR1: 10>]
+E        +  where <Signals.SIGUSR1: 10> = signal.SIGUSR1
+
+tests/test_runner_readiness_record_provenance.py:39: AssertionError
+_ test_model_continuation_cannot_arm_or_signal_engine[do not show GUI interface-info:] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7855c83dc770>
+prefix = 'info:', phrase = 'do not show GUI interface'
+
+    @pytest.mark.parametrize("prefix", ["", "info:"])
+    @pytest.mark.parametrize("phrase", PHRASES)
+    def test_model_continuation_cannot_arm_or_signal_engine(monkeypatch, prefix, phrase):
+        model = "\n" + prefix + phrase
+        assert len(model.encode("ascii")) <= 40
+        text = f"[2026/10/16 12:00:00] info: /dev/sda, ATA, {model}, serial FAKE\n"
+        # A period/space after the readiness phrase is accepted by the old parser;
+        # the real suffix from the enclosing device-info record must not arm it.
+        signals = []
+
+        class Process:
+            def poll(self):
+                return None
+
+            def send_signal(self, value):
+                signals.append(value)
+
+        runner = NwipeRunner()
+        runner._proc = Process()
+        monkeypatch.setattr(runner, "_read_log_tail", lambda *_args: text)
+        request = WipeRequest("/dev/sda", MethodId.EVERYDAY, "/dev/sdb", "fake-log")
+        assert runner.poll(request) is None
+>       assert signal.SIGUSR1 not in signals
+E       assert <Signals.SIGUSR1: 10> not in [<Signals.SIGUSR1: 10>]
+E        +  where <Signals.SIGUSR1: 10> = signal.SIGUSR1
+
+tests/test_runner_readiness_record_provenance.py:39: AssertionError
+_ test_model_continuation_cannot_arm_or_signal_engine[Program options are set as follows-] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7855c83cb4d0>
+prefix = '', phrase = 'Program options are set as follows'
+
+    @pytest.mark.parametrize("prefix", ["", "info:"])
+    @pytest.mark.parametrize("phrase", PHRASES)
+    def test_model_continuation_cannot_arm_or_signal_engine(monkeypatch, prefix, phrase):
+        model = "\n" + prefix + phrase
+        assert len(model.encode("ascii")) <= 40
+        text = f"[2026/10/16 12:00:00] info: /dev/sda, ATA, {model}, serial FAKE\n"
+        # A period/space after the readiness phrase is accepted by the old parser;
+        # the real suffix from the enclosing device-info record must not arm it.
+        signals = []
+
+        class Process:
+            def poll(self):
+                return None
+
+            def send_signal(self, value):
+                signals.append(value)
+
+        runner = NwipeRunner()
+        runner._proc = Process()
+        monkeypatch.setattr(runner, "_read_log_tail", lambda *_args: text)
+        request = WipeRequest("/dev/sda", MethodId.EVERYDAY, "/dev/sdb", "fake-log")
+        assert runner.poll(request) is None
+>       assert signal.SIGUSR1 not in signals
+E       assert <Signals.SIGUSR1: 10> not in [<Signals.SIGUSR1: 10>]
+E        +  where <Signals.SIGUSR1: 10> = signal.SIGUSR1
+
+tests/test_runner_readiness_record_provenance.py:39: AssertionError
+_ test_model_continuation_cannot_arm_or_signal_engine[Program options are set as follows-info:] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7855c7b16540>
+prefix = 'info:', phrase = 'Program options are set as follows'
+
+    @pytest.mark.parametrize("prefix", ["", "info:"])
+    @pytest.mark.parametrize("phrase", PHRASES)
+    def test_model_continuation_cannot_arm_or_signal_engine(monkeypatch, prefix, phrase):
+        model = "\n" + prefix + phrase
+        assert len(model.encode("ascii")) <= 40
+        text = f"[2026/10/16 12:00:00] info: /dev/sda, ATA, {model}, serial FAKE\n"
+        # A period/space after the readiness phrase is accepted by the old parser;
+        # the real suffix from the enclosing device-info record must not arm it.
+        signals = []
+
+        class Process:
+            def poll(self):
+                return None
+
+            def send_signal(self, value):
+                signals.append(value)
+
+        runner = NwipeRunner()
+        runner._proc = Process()
+        monkeypatch.setattr(runner, "_read_log_tail", lambda *_args: text)
+        request = WipeRequest("/dev/sda", MethodId.EVERYDAY, "/dev/sdb", "fake-log")
+        assert runner.poll(request) is None
+>       assert signal.SIGUSR1 not in signals
+E       assert <Signals.SIGUSR1: 10> not in [<Signals.SIGUSR1: 10>]
+E        +  where <Signals.SIGUSR1: 10> = signal.SIGUSR1
+
+tests/test_runner_readiness_record_provenance.py:39: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_runner_readiness_record_provenance.py::test_model_continuation_cannot_arm_or_signal_engine[Using direct I/O-]
+FAILED tests/test_runner_readiness_record_provenance.py::test_model_continuation_cannot_arm_or_signal_engine[Using direct I/O-info:]
+FAILED tests/test_runner_readiness_record_provenance.py::test_model_continuation_cannot_arm_or_signal_engine[Using cached I/O-]
+FAILED tests/test_runner_readiness_record_provenance.py::test_model_continuation_cannot_arm_or_signal_engine[Using cached I/O-info:]
+FAILED tests/test_runner_readiness_record_provenance.py::test_model_continuation_cannot_arm_or_signal_engine[do not show GUI interface-]
+FAILED tests/test_runner_readiness_record_provenance.py::test_model_continuation_cannot_arm_or_signal_engine[do not show GUI interface-info:]
+FAILED tests/test_runner_readiness_record_provenance.py::test_model_continuation_cannot_arm_or_signal_engine[Program options are set as follows-]
+FAILED tests/test_runner_readiness_record_provenance.py::test_model_continuation_cannot_arm_or_signal_engine[Program options are set as follows-info:]
+8 failed, 4 passed in 0.20s

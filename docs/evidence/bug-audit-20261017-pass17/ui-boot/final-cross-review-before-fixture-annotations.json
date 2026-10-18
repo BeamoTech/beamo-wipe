@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-17",
+  "author": "Codex pass17_ui_boot peer",
+  "scope": "Updated source-only cross-review; no runtime/source edits by peer",
+  "supersedes": "final-cross-review-before-wwn-unknown.json; prior review missed the malformed-WWN unknown-alternative defect caught by root",
+  "runtime": {
+    "src/beamo_wipe/discover.py": {
+      "starting_sha256": "0e77fcf0fa626e945c40fae8c8e5f544b735490f4acf8c718260abbabb20197f",
+      "reviewed_sha256": "a2fa08ce083d8b99403473ab8646a6b19f01157d1c2fd9df73e8469c92836bc4"
+    },
+    "src/beamo_wipe/nwipe_runner.py": {
+      "starting_sha256": "cd49b65a607f152bd53675dafef80777d49b2fc02afd54f545605b3ccf958175",
+      "reviewed_sha256": "465d3495bd36b3be2507798ad3b57930645c165ba025a2afbe2ea0ca6c45e39d"
+    },
+    "src/beamo_wipe/ui/tk_wizard.py": {
+      "starting_sha256": "9764924b29c3c491a6acde0ca0853135e1e9eccf71bd77cbeb7c90b35534b29f",
+      "reviewed_sha256": "bb64632df587965f41afc70efe2201d3b776579038d680c3a2405319764f170d"
+    },
+    "src/beamo_wipe/ui/console_wizard.py": {
+      "starting_sha256": "794525a0185cd652d977b84cd1cd318c07c90dcf8dcaad20c730260ef4f1cc1c",
+      "reviewed_sha256": "1c3dc2f6839b7a4b1c7d43225b2175b7bc8b5f5d2b5af63aa17725c417c5ded5"
+    }
+  },
+  "tests": {
+    "tests/test_descendant_hardware_ambiguity_pass17.py": "55c79450a3dd7676876ae5896569653d5bb913f962e92cc3e0fd17ddfc25900f",
+    "tests/test_plain_erase_typeahead_pass17.py": "671fe42ce50ee56fa1be19331aa989c2191709d761afb857e5054ccffb77d012",
+    "tests/test_runner_mixed_log_origin_pass17.py": "6319d6c5daadeb269be9a9747a8966b40985eb05b845918e1ffdf733c1fcf097",
+    "tests/test_runner_model_lf_noerase_pass17.py": "076ddb3f20082deb045c747e28853c828ca15a42091211e833e4d71701d959cf",
+    "tests/test_startup_callback_retirement_pass17.py": "b008493fee9540ca0f659a54aaca491b4197f93566e5a4fff29d03d6369bc65c",
+    "tests/test_unresolved_physical_bridge_pass17.py": "d6a5f74f9fdcf3983f8cf9024f8acb192bf18b6dd5305589bcbcb7f8206b95d4",
+    "tests/test_unresolved_physical_duplicates_pass17.py": "17bdd85deaf35580aae49a836593ab03409d5b96e650d6ef91df759a0e0df65a",
+    "tests/test_unresolved_wwn_uncertainty_pass17.py": "9e429f02502d8f1d122dd5b4a90c2b8c156ecfb3c8f869084063c9c8ae7434dc"
+  },
+  "changes_authenticated": "Only expected five malformed-WWN uncertainty edits relative to previous reviewed discover hash; two old test changes are first-line docstrings only; runner/UI/five other prior test bytes unchanged",
+  "conclusion": "No source objection to exact revised bytes; retained unknown-WWN flag blocks exhaustive contrary-key assumptions while preserving explicit parent authority and unrelated-skip controls",
+  "runtime_acceptance": "Root owns 48-case failing proof, focused and final gates; no peer runtime pass claimed"
+}

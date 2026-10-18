@@ -1,0 +1,29 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass20-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "-o",
+    "pythonpath=src",
+    "tests/test_tk_native_constructor_pass20.py",
+    "tests/test_tk_native_image_pass20.py",
+    "tests/test_tk_native_boundary_pass20.py",
+    "tests/test_tk_native_collector_pass20.py",
+    "tests/test_busy_transitions.py",
+    "tests/test_tk_owner_trace_lifetime_pass19.py",
+    "tests/test_checkrow_trace_lifetime_pass18.py",
+    "--junitxml=/tmp/pass20-primary/candidate8-constructors.xml"
+  ],
+  "exit_code": 0,
+  "started_utc": "2026-10-17T19:19:19.658509+00:00",
+  "ended_utc": "2026-10-17T19:19:42.698229+00:00"
+}

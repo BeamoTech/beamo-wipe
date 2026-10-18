@@ -20,7 +20,7 @@ def _key_handlers():
     methods = [
         node for node in wizard.body
         if isinstance(node, ast.FunctionDef)
-        and node.name in {"_key_press", "_key_release"}
+        and node.name in {"_key_press", "_key_release", "_remember_key_press"}
     ]
     gdk = SimpleNamespace(
         KEY_Return=1, KEY_KP_Enter=2, KEY_space=3, KEY_F5=4,
@@ -31,12 +31,12 @@ def _key_handlers():
         compile(ast.Module(body=methods, type_ignores=[]), str(source), "exec"),
         namespace,
     )
-    return namespace["_key_press"], namespace["_key_release"], gdk
+    return namespace["_key_press"], namespace["_key_release"], namespace["_remember_key_press"], gdk
 
 
 @pytest.mark.parametrize("utility", [C.KEYBOARD_UTILITY, C.BTN_REFRESH_UTILITY, C.DIAGNOSTIC_TITLE])
 def test_enter_activates_focused_last_chance_utility_once(utility):
-    key_press, key_release, gdk = _key_handlers()
+    key_press, key_release, remember_key_press, gdk = _key_handlers()
     clicks = []
     button = SimpleNamespace(
         get_sensitive=lambda: True,
@@ -48,6 +48,7 @@ def test_enter_activates_focused_last_chance_utility_once(utility):
         held=set(), _release_times={}, window=window,
         actions={C.BTN_ERASE: None, C.BTN_BACK: None, utility: button},
     )
+    app._remember_key_press = MethodType(remember_key_press, app)
     app._key_press = MethodType(key_press, app)
     app._key_release = MethodType(key_release, app)
 
@@ -61,7 +62,7 @@ def test_enter_activates_focused_last_chance_utility_once(utility):
 
 
 def test_last_chance_enter_on_warning_cannot_start_erase():
-    key_press, _key_release, gdk = _key_handlers()
+    key_press, _key_release, remember_key_press, gdk = _key_handlers()
     clicks = []
     erase = SimpleNamespace(get_sensitive=lambda: True, clicked=lambda: clicks.append("erase"))
     warning = object()
@@ -71,6 +72,7 @@ def test_last_chance_enter_on_warning_cannot_start_erase():
         held=set(), _release_times={}, window=window,
         actions={C.BTN_ERASE: erase},
     )
+    app._remember_key_press = MethodType(remember_key_press, app)
     app._key_press = MethodType(key_press, app)
 
     assert app._key_press(window, SimpleNamespace(keyval=gdk.KEY_Return, time=1000))
@@ -79,7 +81,7 @@ def test_last_chance_enter_on_warning_cannot_start_erase():
 
 @pytest.mark.parametrize("focused", [None, "stale", "disabled"])
 def test_last_chance_enter_needs_a_current_enabled_control(focused):
-    key_press, _key_release, gdk = _key_handlers()
+    key_press, _key_release, remember_key_press, gdk = _key_handlers()
     clicks = []
     disabled = SimpleNamespace(
         get_sensitive=lambda: False,
@@ -96,6 +98,7 @@ def test_last_chance_enter_needs_a_current_enabled_control(focused):
         held=set(), _release_times={}, window=window,
         actions={C.BTN_ERASE: None, C.BTN_BACK: disabled},
     )
+    app._remember_key_press = MethodType(remember_key_press, app)
     app._key_press = MethodType(key_press, app)
 
     assert app._key_press(window, SimpleNamespace(keyval=gdk.KEY_Return, time=1000))

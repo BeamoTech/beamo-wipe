@@ -1,0 +1,402 @@
+dbus-daemon[6141]: [session uid=0 pid=6141] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=0 pid=6155 comm="/root/dev/Beamo Wipe/.venv-linux/bin/python3 -m py" label="unconfined")
+dbus-daemon[6141]: [session uid=0 pid=6141] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[7096]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=0 pid=6155 comm="/root/dev/Beamo Wipe/.venv-linux/bin/python3 -m py" label="unconfined")
+dbus-daemon[7096]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+........................................................................ [  4%]
+........................................................................ [  8%]
+........................................................................ [ 12%]
+........................................................................ [ 17%]
+........................................................................ [ 21%]
+........................................................................ [ 25%]
+........................................................................ [ 29%]
+........................................................................ [ 34%]
+........................................................................ [ 38%]
+........................................................................ [ 42%]
+........................................................................ [ 47%]
+........................................................................ [ 51%]
+........................................................................ [ 55%]
+........................................................................ [ 59%]
+........................................................................ [ 64%]
+........................................................................ [ 68%]
+........................................................................ [ 72%]
+........................................................................ [ 77%]
+........................................................................ [ 81%]
+........................................................................ [ 85%]
+........................................................................ [ 89%]
+........................................................................ [ 94%]
+.......FFFFFFF.......................................................... [ 98%]
+...........................                                              [100%]
+=================================== FAILURES ===================================
+_ test_first_run_restores_each_screen_focus_without_changing_state[keyboard-False] _
+
+native = <class 'test_accessible_focus_input_pass11.native.<locals>.Input'>
+screen = <Screen.KEYBOARD: 'keyboard'>, mapped = False
+
+    @pytest.mark.parametrize("mapped", [False, True])
+    @pytest.mark.parametrize("screen", [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM, Screen.LAST_CHANCE])
+    def test_first_run_restores_each_screen_focus_without_changing_state(native, screen, mapped):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard, clock = _review()
+        if screen is Screen.KEYBOARD:
+            wizard.open_keyboard()
+        else:
+            while wizard.screen is not screen:
+                wizard.back()
+        app = TkWizard(wizard)
+        if mapped:
+            app.root.update()
+            native.root_focus()
+        clock.value = 2
+        before = (wizard.screen, wizard.owner_ok, wizard.selected, wizard.confirm_input,
+                  wizard.method, wizard._erase_until, wizard._authorized_operation)
+        seen, errors = [], []
+    
+        def inspect():
+            try:
+                focus = app.root.focus_get()
+                if screen in {Screen.KEYBOARD, Screen.CONFIRM}:
+                    variable = app._typing_var if screen is Screen.KEYBOARD else app._confirm_var
+                    seen.append(isinstance(focus, tk.Entry) and focus.cget("textvariable") == str(variable))
+                elif screen is Screen.OWNER:
+                    seen.append(isinstance(focus, _Box) and "owner_key" in focus.bind("<space>"))
+                else:
+                    seen.append(isinstance(focus, _Button) and focus.itemcget(focus._label, "text") == C.BTN_BACK)
+                    seen.append(wizard.countdown_left == 3 and not wizard.erase_enabled)
+            except BaseException as error:
+                errors.append(error)
+            finally:
+                app._teardown()
+    
+        app.root.after(140, inspect)
+        try:
+            assert app.run() == 0
+            assert not errors
+>           assert seen and all(seen)
+E           assert ([False] and False)
+E            +  where False = all([False])
+
+tests/test_tk_input_scroll_pass13.py:200: AssertionError
+_ test_first_run_restores_each_screen_focus_without_changing_state[keyboard-True] _
+
+native = <class 'test_accessible_focus_input_pass11.native.<locals>.Input'>
+screen = <Screen.KEYBOARD: 'keyboard'>, mapped = True
+
+    @pytest.mark.parametrize("mapped", [False, True])
+    @pytest.mark.parametrize("screen", [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM, Screen.LAST_CHANCE])
+    def test_first_run_restores_each_screen_focus_without_changing_state(native, screen, mapped):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard, clock = _review()
+        if screen is Screen.KEYBOARD:
+            wizard.open_keyboard()
+        else:
+            while wizard.screen is not screen:
+                wizard.back()
+        app = TkWizard(wizard)
+        if mapped:
+            app.root.update()
+            native.root_focus()
+        clock.value = 2
+        before = (wizard.screen, wizard.owner_ok, wizard.selected, wizard.confirm_input,
+                  wizard.method, wizard._erase_until, wizard._authorized_operation)
+        seen, errors = [], []
+    
+        def inspect():
+            try:
+                focus = app.root.focus_get()
+                if screen in {Screen.KEYBOARD, Screen.CONFIRM}:
+                    variable = app._typing_var if screen is Screen.KEYBOARD else app._confirm_var
+                    seen.append(isinstance(focus, tk.Entry) and focus.cget("textvariable") == str(variable))
+                elif screen is Screen.OWNER:
+                    seen.append(isinstance(focus, _Box) and "owner_key" in focus.bind("<space>"))
+                else:
+                    seen.append(isinstance(focus, _Button) and focus.itemcget(focus._label, "text") == C.BTN_BACK)
+                    seen.append(wizard.countdown_left == 3 and not wizard.erase_enabled)
+            except BaseException as error:
+                errors.append(error)
+            finally:
+                app._teardown()
+    
+        app.root.after(140, inspect)
+        try:
+            assert app.run() == 0
+            assert not errors
+>           assert seen and all(seen)
+E           assert ([False] and False)
+E            +  where False = all([False])
+
+tests/test_tk_input_scroll_pass13.py:200: AssertionError
+_ test_first_run_restores_each_screen_focus_without_changing_state[owner-False] _
+
+native = <class 'test_accessible_focus_input_pass11.native.<locals>.Input'>
+screen = <Screen.OWNER: 'owner'>, mapped = False
+
+    @pytest.mark.parametrize("mapped", [False, True])
+    @pytest.mark.parametrize("screen", [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM, Screen.LAST_CHANCE])
+    def test_first_run_restores_each_screen_focus_without_changing_state(native, screen, mapped):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard, clock = _review()
+        if screen is Screen.KEYBOARD:
+            wizard.open_keyboard()
+        else:
+            while wizard.screen is not screen:
+                wizard.back()
+        app = TkWizard(wizard)
+        if mapped:
+            app.root.update()
+            native.root_focus()
+        clock.value = 2
+        before = (wizard.screen, wizard.owner_ok, wizard.selected, wizard.confirm_input,
+                  wizard.method, wizard._erase_until, wizard._authorized_operation)
+        seen, errors = [], []
+    
+        def inspect():
+            try:
+                focus = app.root.focus_get()
+                if screen in {Screen.KEYBOARD, Screen.CONFIRM}:
+                    variable = app._typing_var if screen is Screen.KEYBOARD else app._confirm_var
+                    seen.append(isinstance(focus, tk.Entry) and focus.cget("textvariable") == str(variable))
+                elif screen is Screen.OWNER:
+                    seen.append(isinstance(focus, _Box) and "owner_key" in focus.bind("<space>"))
+                else:
+                    seen.append(isinstance(focus, _Button) and focus.itemcget(focus._label, "text") == C.BTN_BACK)
+                    seen.append(wizard.countdown_left == 3 and not wizard.erase_enabled)
+            except BaseException as error:
+                errors.append(error)
+            finally:
+                app._teardown()
+    
+        app.root.after(140, inspect)
+        try:
+            assert app.run() == 0
+            assert not errors
+>           assert seen and all(seen)
+E           assert ([False] and False)
+E            +  where False = all([False])
+
+tests/test_tk_input_scroll_pass13.py:200: AssertionError
+_ test_first_run_restores_each_screen_focus_without_changing_state[owner-True] _
+
+native = <class 'test_accessible_focus_input_pass11.native.<locals>.Input'>
+screen = <Screen.OWNER: 'owner'>, mapped = True
+
+    @pytest.mark.parametrize("mapped", [False, True])
+    @pytest.mark.parametrize("screen", [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM, Screen.LAST_CHANCE])
+    def test_first_run_restores_each_screen_focus_without_changing_state(native, screen, mapped):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard, clock = _review()
+        if screen is Screen.KEYBOARD:
+            wizard.open_keyboard()
+        else:
+            while wizard.screen is not screen:
+                wizard.back()
+        app = TkWizard(wizard)
+        if mapped:
+            app.root.update()
+            native.root_focus()
+        clock.value = 2
+        before = (wizard.screen, wizard.owner_ok, wizard.selected, wizard.confirm_input,
+                  wizard.method, wizard._erase_until, wizard._authorized_operation)
+        seen, errors = [], []
+    
+        def inspect():
+            try:
+                focus = app.root.focus_get()
+                if screen in {Screen.KEYBOARD, Screen.CONFIRM}:
+                    variable = app._typing_var if screen is Screen.KEYBOARD else app._confirm_var
+                    seen.append(isinstance(focus, tk.Entry) and focus.cget("textvariable") == str(variable))
+                elif screen is Screen.OWNER:
+                    seen.append(isinstance(focus, _Box) and "owner_key" in focus.bind("<space>"))
+                else:
+                    seen.append(isinstance(focus, _Button) and focus.itemcget(focus._label, "text") == C.BTN_BACK)
+                    seen.append(wizard.countdown_left == 3 and not wizard.erase_enabled)
+            except BaseException as error:
+                errors.append(error)
+            finally:
+                app._teardown()
+    
+        app.root.after(140, inspect)
+        try:
+            assert app.run() == 0
+            assert not errors
+>           assert seen and all(seen)
+E           assert ([False] and False)
+E            +  where False = all([False])
+
+tests/test_tk_input_scroll_pass13.py:200: AssertionError
+_ test_first_run_restores_each_screen_focus_without_changing_state[confirm-False] _
+
+native = <class 'test_accessible_focus_input_pass11.native.<locals>.Input'>
+screen = <Screen.CONFIRM: 'confirm'>, mapped = False
+
+    @pytest.mark.parametrize("mapped", [False, True])
+    @pytest.mark.parametrize("screen", [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM, Screen.LAST_CHANCE])
+    def test_first_run_restores_each_screen_focus_without_changing_state(native, screen, mapped):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard, clock = _review()
+        if screen is Screen.KEYBOARD:
+            wizard.open_keyboard()
+        else:
+            while wizard.screen is not screen:
+                wizard.back()
+        app = TkWizard(wizard)
+        if mapped:
+            app.root.update()
+            native.root_focus()
+        clock.value = 2
+        before = (wizard.screen, wizard.owner_ok, wizard.selected, wizard.confirm_input,
+                  wizard.method, wizard._erase_until, wizard._authorized_operation)
+        seen, errors = [], []
+    
+        def inspect():
+            try:
+                focus = app.root.focus_get()
+                if screen in {Screen.KEYBOARD, Screen.CONFIRM}:
+                    variable = app._typing_var if screen is Screen.KEYBOARD else app._confirm_var
+                    seen.append(isinstance(focus, tk.Entry) and focus.cget("textvariable") == str(variable))
+                elif screen is Screen.OWNER:
+                    seen.append(isinstance(focus, _Box) and "owner_key" in focus.bind("<space>"))
+                else:
+                    seen.append(isinstance(focus, _Button) and focus.itemcget(focus._label, "text") == C.BTN_BACK)
+                    seen.append(wizard.countdown_left == 3 and not wizard.erase_enabled)
+            except BaseException as error:
+                errors.append(error)
+            finally:
+                app._teardown()
+    
+        app.root.after(140, inspect)
+        try:
+            assert app.run() == 0
+            assert not errors
+>           assert seen and all(seen)
+E           assert ([False] and False)
+E            +  where False = all([False])
+
+tests/test_tk_input_scroll_pass13.py:200: AssertionError
+_ test_first_run_restores_each_screen_focus_without_changing_state[confirm-True] _
+
+native = <class 'test_accessible_focus_input_pass11.native.<locals>.Input'>
+screen = <Screen.CONFIRM: 'confirm'>, mapped = True
+
+    @pytest.mark.parametrize("mapped", [False, True])
+    @pytest.mark.parametrize("screen", [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM, Screen.LAST_CHANCE])
+    def test_first_run_restores_each_screen_focus_without_changing_state(native, screen, mapped):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard, clock = _review()
+        if screen is Screen.KEYBOARD:
+            wizard.open_keyboard()
+        else:
+            while wizard.screen is not screen:
+                wizard.back()
+        app = TkWizard(wizard)
+        if mapped:
+            app.root.update()
+            native.root_focus()
+        clock.value = 2
+        before = (wizard.screen, wizard.owner_ok, wizard.selected, wizard.confirm_input,
+                  wizard.method, wizard._erase_until, wizard._authorized_operation)
+        seen, errors = [], []
+    
+        def inspect():
+            try:
+                focus = app.root.focus_get()
+                if screen in {Screen.KEYBOARD, Screen.CONFIRM}:
+                    variable = app._typing_var if screen is Screen.KEYBOARD else app._confirm_var
+                    seen.append(isinstance(focus, tk.Entry) and focus.cget("textvariable") == str(variable))
+                elif screen is Screen.OWNER:
+                    seen.append(isinstance(focus, _Box) and "owner_key" in focus.bind("<space>"))
+                else:
+                    seen.append(isinstance(focus, _Button) and focus.itemcget(focus._label, "text") == C.BTN_BACK)
+                    seen.append(wizard.countdown_left == 3 and not wizard.erase_enabled)
+            except BaseException as error:
+                errors.append(error)
+            finally:
+                app._teardown()
+    
+        app.root.after(140, inspect)
+        try:
+            assert app.run() == 0
+            assert not errors
+>           assert seen and all(seen)
+E           assert ([False] and False)
+E            +  where False = all([False])
+
+tests/test_tk_input_scroll_pass13.py:200: AssertionError
+----------------------------- Captured stderr call -----------------------------
+invalid command name "131572699220608<lambda>"
+    while executing
+"131572699220608<lambda>"
+    ("after" script)
+invalid command name "131572699225600<lambda>"
+    while executing
+"131572699225600<lambda>"
+    ("after" script)
+_ test_first_run_restores_each_screen_focus_without_changing_state[last_chance-False] _
+
+native = <class 'test_accessible_focus_input_pass11.native.<locals>.Input'>
+screen = <Screen.LAST_CHANCE: 'last_chance'>, mapped = False
+
+    @pytest.mark.parametrize("mapped", [False, True])
+    @pytest.mark.parametrize("screen", [Screen.KEYBOARD, Screen.OWNER, Screen.CONFIRM, Screen.LAST_CHANCE])
+    def test_first_run_restores_each_screen_focus_without_changing_state(native, screen, mapped):  # noqa: F811
+        native.root_focus()
+        native.pointer(*_corner())
+        wizard, clock = _review()
+        if screen is Screen.KEYBOARD:
+            wizard.open_keyboard()
+        else:
+            while wizard.screen is not screen:
+                wizard.back()
+        app = TkWizard(wizard)
+        if mapped:
+            app.root.update()
+            native.root_focus()
+        clock.value = 2
+        before = (wizard.screen, wizard.owner_ok, wizard.selected, wizard.confirm_input,
+                  wizard.method, wizard._erase_until, wizard._authorized_operation)
+        seen, errors = [], []
+    
+        def inspect():
+            try:
+                focus = app.root.focus_get()
+                if screen in {Screen.KEYBOARD, Screen.CONFIRM}:
+                    variable = app._typing_var if screen is Screen.KEYBOARD else app._confirm_var
+                    seen.append(isinstance(focus, tk.Entry) and focus.cget("textvariable") == str(variable))
+                elif screen is Screen.OWNER:
+                    seen.append(isinstance(focus, _Box) and "owner_key" in focus.bind("<space>"))
+                else:
+                    seen.append(isinstance(focus, _Button) and focus.itemcget(focus._label, "text") == C.BTN_BACK)
+                    seen.append(wizard.countdown_left == 3 and not wizard.erase_enabled)
+            except BaseException as error:
+                errors.append(error)
+            finally:
+                app._teardown()
+    
+        app.root.after(140, inspect)
+        try:
+            assert app.run() == 0
+            assert not errors
+>           assert seen and all(seen)
+E           assert ([False, True] and False)
+E            +  where False = all([False, True])
+
+tests/test_tk_input_scroll_pass13.py:200: AssertionError
+----------------------------- Captured stderr call -----------------------------
+invalid command name "131572698473856<lambda>"
+    while executing
+"131572698473856<lambda>"
+    ("after" script)
+=========================== short test summary info ============================
+FAILED tests/test_tk_input_scroll_pass13.py::test_first_run_restores_each_screen_focus_without_changing_state[keyboard-False]
+FAILED tests/test_tk_input_scroll_pass13.py::test_first_run_restores_each_screen_focus_without_changing_state[keyboard-True]
+FAILED tests/test_tk_input_scroll_pass13.py::test_first_run_restores_each_screen_focus_without_changing_state[owner-False]
+FAILED tests/test_tk_input_scroll_pass13.py::test_first_run_restores_each_screen_focus_without_changing_state[owner-True]
+FAILED tests/test_tk_input_scroll_pass13.py::test_first_run_restores_each_screen_focus_without_changing_state[confirm-False]
+FAILED tests/test_tk_input_scroll_pass13.py::test_first_run_restores_each_screen_focus_without_changing_state[confirm-True]
+FAILED tests/test_tk_input_scroll_pass13.py::test_first_run_restores_each_screen_focus_without_changing_state[last_chance-False]

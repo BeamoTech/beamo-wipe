@@ -1,0 +1,17 @@
+{
+  "cases": 52,
+  "failures": 32,
+  "controls": 20,
+  "errors": 0,
+  "skips": 0,
+  "modules": {
+    "docs.evidence.bug-audit-20261017-pass18.discovery.malformed_pathless_probe": {
+      "fail": 16,
+      "pass": 16
+    },
+    "tests.test_checkrow_trace_lifetime_pass18": {
+      "fail": 16,
+      "pass": 4
+    }
+  }
+}

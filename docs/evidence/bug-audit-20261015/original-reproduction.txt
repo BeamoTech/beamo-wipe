@@ -1,0 +1,122 @@
+FFFFFFFF...FFFFF.F                                                       [100%]
+=================================== FAILURES ===================================
+____ test_job_percentage_is_never_described_as_within_step[en-40% overall] _____
+tests/test_progress_scope_regression.py:20: in test_job_percentage_is_never_described_as_within_step
+    assert label in text
+E   AssertionError: assert '40% overall' in 'Progress not reported. Writing · Elapsed: less than 1 minute\nEstimated time remaining: Estimating after more progres...e 2 of 3 (40% of this step)\nOverwrite 1 of 3 (done)\nOverwrite 2 of 3 (now)\nOverwrite 3 of 3\nRead-back verification'
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+____ test_job_percentage_is_never_described_as_within_step[fr-40% au total] ____
+tests/test_progress_scope_regression.py:20: in test_job_percentage_is_never_described_as_within_step
+    assert label in text
+E   AssertionError: assert '40% au total' in 'Progression non signalée. Écriture · Écoulé : moins de 1 minute\nTemps restant estimé : calculé après plus de progres...te étape)\nÉcrasement 1 sur 3 (terminé)\nÉcrasement 2 sur 3 (en cours)\nÉcrasement 3 sur 3\nVérification par relecture'
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+___ test_job_percentage_is_never_described_as_within_step[de-40% insgesamt] ____
+tests/test_progress_scope_regression.py:20: in test_job_percentage_is_never_described_as_within_step
+    assert label in text
+E   AssertionError: assert '40% insgesamt' in 'Fortschritt nicht gemeldet. Schreiben · Verstrichen: weniger als 1 Minute\nGeschätzte Restzeit: wird nach weiterem Fo...ieses Schritts)\nÜberschreiben 1 von 3 (fertig)\nÜberschreiben 2 von 3 (läuft)\nÜberschreiben 3 von 3\nRückleseprüfung'
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+____________ test_job_percentage_cannot_show_100_before_completion _____________
+tests/test_progress_scope_regression.py:32: in test_job_percentage_cannot_show_100_before_completion
+    assert "100%" not in wiz.progress_view.status_text
+E   AssertionError: assert '100%' not in '99%. Verify...cation (now)'
+E
+E     '100%' is contained here:
+E       fication (100% of this step)
+E     ?           ++++
+E       Checking the last overwrite. The erase is not done until the result screen.
+E       Overwrite 1 of 3 (done)
+E       Overwrite 2 of 3 (done)
+E       Overwrite 3 of 3 (done)
+E       Read-back verification (now)
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+__ test_step_overall_percentage_shares_throttled_monotonic_headline[45-1-40] ___
+tests/test_progress_scope_regression.py:58: in test_step_overall_percentage_shares_throttled_monotonic_headline
+    assert f"({expected}% overall)" in view.status_text
+E   AssertionError: assert '(40% overall)' in '40%. Writing · Elapsed: less than 1 minute\nEstimated time remaining: Estimating after more progress.\nStep 2 of 4: O...e 2 of 3 (45% of this step)\nOverwrite 1 of 3 (done)\nOverwrite 2 of 3 (now)\nOverwrite 3 of 3\nRead-back verification'
+E    +  where '40%. Writing · Elapsed: less than 1 minute\nEstimated time remaining: Estimating after more progress.\nStep 2 of 4: O...e 2 of 3 (45% of this step)\nOverwrite 1 of 3 (done)\nOverwrite 2 of 3 (now)\nOverwrite 3 of 3\nRead-back verification' = ProgressView(phase='Writing', percent=40.0, elapsed=1.0, remaining=None, stale_for=None, percent_is_old=False, stages=...', index=1, total=0)), position=1, mismatch=False, step_percent=45.0, estimate_state='Estimating after more progress.').status_text
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+__ test_step_overall_percentage_shares_throttled_monotonic_headline[35-6-40] ___
+tests/test_progress_scope_regression.py:58: in test_step_overall_percentage_shares_throttled_monotonic_headline
+    assert f"({expected}% overall)" in view.status_text
+E   AssertionError: assert '(40% overall)' in '40%. Writing · Elapsed: less than 1 minute\nEstimated time remaining: Estimating after more progress.\nStep 2 of 4: O...e 2 of 3 (35% of this step)\nOverwrite 1 of 3 (done)\nOverwrite 2 of 3 (now)\nOverwrite 3 of 3\nRead-back verification'
+E    +  where '40%. Writing · Elapsed: less than 1 minute\nEstimated time remaining: Estimating after more progress.\nStep 2 of 4: O...e 2 of 3 (35% of this step)\nOverwrite 1 of 3 (done)\nOverwrite 2 of 3 (now)\nOverwrite 3 of 3\nRead-back verification' = ProgressView(phase='Writing', percent=40.0, elapsed=6.0, remaining=None, stale_for=None, percent_is_old=False, stages=...', index=1, total=0)), position=1, mismatch=False, step_percent=35.0, estimate_state='Estimating after more progress.').status_text
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+_ test_unterminated_positive_record_is_unavailable[No hidden sectors on /dev/sda-hidden_capacity] _
+tests/test_engine_checks_incomplete_records.py:17: in test_unterminated_positive_record_is_unavailable
+    assert checks[check_id].status == "unavailable"
+E   AssertionError: assert 'pass' == 'unavailable'
+E
+E     - unavailable
+E     + pass
+_ test_unterminated_positive_record_is_unavailable[Error Summary\n  sda | 0 | 0 | 0-io_media] _
+tests/test_engine_checks_incomplete_records.py:17: in test_unterminated_positive_record_is_unavailable
+    assert checks[check_id].status == "unavailable"
+E   AssertionError: assert 'pass' == 'unavailable'
+E
+E     - unavailable
+E     + pass
+____ test_recovery_rejects_lock_replaced_during_acquisition[interface.lock] ____
+tests/test_recovery_lock_identity_regression.py:34: in test_recovery_rejects_lock_replaced_during_acquisition
+    with pytest.raises(SafetyError):
+E   Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+______ test_recovery_rejects_lock_replaced_during_acquisition[wipe.lock] _______
+tests/test_recovery_lock_identity_regression.py:34: in test_recovery_rejects_lock_replaced_during_acquisition
+    with pytest.raises(SafetyError):
+E   Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+______________ test_cached_quiescence_does_not_outlive_named_lock ______________
+tests/test_recovery_lock_identity_regression.py:52: in test_cached_quiescence_does_not_outlive_named_lock
+    with pytest.raises(SafetyError):
+E   Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+______________ test_replaced_interface_lock_blocks_journal_writes ______________
+tests/test_recovery_lock_identity_regression.py:64: in test_replaced_interface_lock_blocks_journal_writes
+    with pytest.raises(SafetyError):
+E   Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+____________ test_wipe_lock_replaced_during_acquisition_is_refused _____________
+tests/test_runner_lock_replacement.py:30: in test_wipe_lock_replaced_during_acquisition_is_refused
+    with pytest.raises(SafetyError, match="changed"):
+E   Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+_________ test_interrupted_wipe_lock_acquisition_closes_unpublished_fd _________
+tests/test_runner_lock_replacement.py:70: in test_interrupted_wipe_lock_acquisition_closes_unpublished_fd
+    with pytest.raises(OSError):
+E   Failed: DID NOT RAISE <class 'OSError'>
+=========================== short test summary info ============================
+FAILED tests/test_progress_scope_regression.py::test_job_percentage_is_never_described_as_within_step[en-40% overall]
+FAILED tests/test_progress_scope_regression.py::test_job_percentage_is_never_described_as_within_step[fr-40% au total]
+FAILED tests/test_progress_scope_regression.py::test_job_percentage_is_never_described_as_within_step[de-40% insgesamt]
+FAILED tests/test_progress_scope_regression.py::test_job_percentage_cannot_show_100_before_completion
+FAILED tests/test_progress_scope_regression.py::test_step_overall_percentage_shares_throttled_monotonic_headline[45-1-40]
+FAILED tests/test_progress_scope_regression.py::test_step_overall_percentage_shares_throttled_monotonic_headline[35-6-40]
+FAILED tests/test_engine_checks_incomplete_records.py::test_unterminated_positive_record_is_unavailable[No hidden sectors on /dev/sda-hidden_capacity]
+FAILED tests/test_engine_checks_incomplete_records.py::test_unterminated_positive_record_is_unavailable[Error Summary\n  sda | 0 | 0 | 0-io_media]
+FAILED tests/test_recovery_lock_identity_regression.py::test_recovery_rejects_lock_replaced_during_acquisition[interface.lock]
+FAILED tests/test_recovery_lock_identity_regression.py::test_recovery_rejects_lock_replaced_during_acquisition[wipe.lock]
+FAILED tests/test_recovery_lock_identity_regression.py::test_cached_quiescence_does_not_outlive_named_lock
+FAILED tests/test_recovery_lock_identity_regression.py::test_replaced_interface_lock_blocks_journal_writes
+FAILED tests/test_runner_lock_replacement.py::test_wipe_lock_replaced_during_acquisition_is_refused
+FAILED tests/test_runner_lock_replacement.py::test_interrupted_wipe_lock_acquisition_closes_unpublished_fd
+14 failed, 4 passed in 1.48s
+original_source_exit= 1

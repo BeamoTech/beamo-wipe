@@ -1,0 +1,64 @@
+{
+  "runtime_source_sha256": "9f34e674c64184b4a7d36fb77498d8dee7ad71321bb979c1616b7cc1772be43a",
+  "fresh_phases_validated": 7,
+  "adjacent_cases_passed": 2275,
+  "alias_cases_passed": 288,
+  "duplicate_cases_passed": 36,
+  "wheel_cases_passed": 8,
+  "valid_utf8_roundtrips": 30,
+  "valid_utf8_fixtures_authenticated": 10,
+  "short_full_projection_cases": 432,
+  "actual_large_poll_stop_cases": 324,
+  "large_fixtures_authenticated": 108,
+  "native_layout_cases": 270,
+  "critical_tk_focus_fully_visible": 27,
+  "native_application_effects": 0,
+  "callback_errors": 0,
+  "native_captures": {
+    "/tmp/pass15-primary/empty-wheel-empty.png": {
+      "size_bytes": 28898,
+      "sha256": "5703690d2bf0ac7bd282156baa813d335526f81fb74246e37171a55d8fc40cf6",
+      "dimensions": [
+        800,
+        600
+      ],
+      "independently_viewed": true
+    },
+    "/tmp/pass15-primary/empty-wheel-happy.png": {
+      "size_bytes": 42534,
+      "sha256": "7eec9a430fed0aa69496c03046b9a3dc8a9bf0cee08eb8b10ccf702831045249",
+      "dimensions": [
+        800,
+        600
+      ],
+      "independently_viewed": true
+    },
+    "/tmp/pass15-ui/fixed-geometry-tk-en-standard-OWNER.png": {
+      "size_bytes": 66907,
+      "sha256": "23d39d387cb1f32e00d8610950e9ca5235f0a5cebc072fb62b7539816a333354",
+      "dimensions": [
+        800,
+        600
+      ],
+      "independently_viewed": true
+    },
+    "/tmp/pass15-ui/fixed-geometry-tk-en-extra-KEYBOARD.png": {
+      "size_bytes": 65753,
+      "sha256": "0bf869dc96abcadc3fa60bebb8a2b78c6156de58cc380bfd7f72b848c59fbe69",
+      "dimensions": [
+        800,
+        600
+      ],
+      "independently_viewed": true
+    },
+    "/tmp/pass15-ui/fixed-geometry-tk-en-large-CONFIRM.png": {
+      "size_bytes": 67984,
+      "sha256": "114121a896ef7b420552f3eb3cbdfb74439f5b27eb964e937667c7ed2372ed63",
+      "dimensions": [
+        800,
+        600
+      ],
+      "independently_viewed": true
+    }
+  }
+}

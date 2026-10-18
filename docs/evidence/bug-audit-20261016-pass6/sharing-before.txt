@@ -1,0 +1,2858 @@
+FFFFFFFFFFFFFF.........FFFFFFFFFFFFFF.FFFFFFFFF.F.FFFFFFFFF.F.FFFFFFFFFF [ 42%]
+FF.........F......F.....FFFFFFFFFFFF.FFF.FFF.FFF......F.FFFFFFFFFFFFFFFF [ 85%]
+FFFFFFFF............FFFF                                                 [100%]
+=================================== FAILURES ===================================
+_ test_structural_collisions_preserve_original_result_and_policy[sharing-verified-everyday] _
+
+case = ('verified', <MethodId.EVERYDAY: 'everyday'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'sharing'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unavailable', 'completion': {'reason': 'completed', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[sharing-unverified-quick_zero] _
+
+case = ('unverified', <MethodId.QUICK_ZERO: 'quick_zero'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'sharing'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unavailable', 'completion': {'reason': 'completed', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[sharing-occupied-everyday] _
+
+case = ('occupied', <MethodId.EVERYDAY: 'everyday'>, 0, '{path} is reported as IN USE', False, False)
+secret = 'sharing'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unavailable', 'completion': {'reason': 'occupied', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[sharing-open_failed-everyday] _
+
+case = ('open_failed', <MethodId.EVERYDAY: 'everyday'>, 0, "Unable to open device '{path}'.", False, False)
+secret = 'sharing'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unavailable', 'completion': {'reason': 'open_failed', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[sharing-geometry_unusable-everyday] _
+
+case = ('geometry_unusable', <MethodId.EVERYDAY: 'everyday'>, 0, "No sane device geometry for '{path}'.", False, False)
+secret = 'sharing'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unavailable', 'completion': {'reason': 'geometry_unusable', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[sharing-interrupted-everyday] _
+
+case = ('interrupted', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, False)
+secret = 'sharing'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unavailable', 'completion': {'reason': 'interrupted', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[sharing-cancelled-everyday] _
+
+case = ('cancelled', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, True)
+secret = 'sharing'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unavailable', 'completion': {'reason': 'cancelled', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[sharing-completion_missing-everyday] _
+
+case = ('completion_missing', <MethodId.EVERYDAY: 'everyday'>, 0, '', False, False)
+secret = 'sharing'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unavailable', 'completion': {'reason': 'completion_missing', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[sharing-verification_failed-everyday] _
+
+case = ('verification_failed', <MethodId.EVERYDAY: 'everyday'>, 1, "Verification mismatch on '{path}' at offset 4096", False, False)
+secret = 'sharing'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unavailable', 'completion': {'reason': 'verification_failed', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[sharing-process_failed-everyday] _
+
+case = ('process_failed', <MethodId.EVERYDAY: 'everyday'>, 2, '', False, False)
+secret = 'sharing'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unavailable', 'completion': {'reason': 'process_failed', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[sharing-engine_failed-everyday] _
+
+case = ('engine_failed', <MethodId.EVERYDAY: 'everyday'>, 0, '{path}: >>> FAILURE! <<<', False, False)
+secret = 'sharing'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unavailable', 'completion': {'reason': 'engine_failed', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[sharing-verified-extra] _
+
+case = ('verified', <MethodId.EXTRA: 'extra'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'sharing'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unavailable', 'completion': {'reason': 'completed', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[verified-verified-everyday] _
+
+case = ('verified', <MethodId.EVERYDAY: 'everyday'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'verified'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+>       assert shared["outcome"] == evidence["outcome"]
+E       AssertionError: assert 'withheld' == 'verified'
+E
+E         - verified
+E         + withheld
+
+tests/test_sharing_semantic_collision_regression.py:37: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[verified-unverified-quick_zero] _
+
+case = ('unverified', <MethodId.QUICK_ZERO: 'quick_zero'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'verified'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+                assert shared["method"][key] == value
+        assert shared["locale"] == evidence["locale"]
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'unverified'
+E
+E         - unverified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:47: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[verified-verified-extra] _
+
+case = ('verified', <MethodId.EXTRA: 'extra'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'verified'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+>       assert shared["outcome"] == evidence["outcome"]
+E       AssertionError: assert 'withheld' == 'verified'
+E
+E         - verified
+E         + withheld
+
+tests/test_sharing_semantic_collision_regression.py:37: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[a-verified-everyday] _
+
+case = ('verified', <MethodId.EVERYDAY: 'everyday'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'a'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unwithheldvwithheldilwithheldble', 'completion': {'reason': 'completed', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[a-unverified-quick_zero] _
+
+case = ('unverified', <MethodId.QUICK_ZERO: 'quick_zero'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'a'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unwithheldvwithheldilwithheldble', 'completion': {'reason': 'completed', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[a-occupied-everyday] _
+
+case = ('occupied', <MethodId.EVERYDAY: 'everyday'>, 0, '{path} is reported as IN USE', False, False)
+secret = 'a'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unwithheldvwithheldilwithheldble', 'completion': {'reason': 'occupied', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[a-open_failed-everyday] _
+
+case = ('open_failed', <MethodId.EVERYDAY: 'everyday'>, 0, "Unable to open device '{path}'.", False, False)
+secret = 'a'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unwithheldvwithheldilwithheldble', 'completion': {'reason': 'open_fwithheldiled', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[a-geometry_unusable-everyday] _
+
+case = ('geometry_unusable', <MethodId.EVERYDAY: 'everyday'>, 0, "No sane device geometry for '{path}'.", False, False)
+secret = 'a'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unwithheldvwithheldilwithheldble', 'completion': {'reason': 'geometry_unuswithheldble', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[a-interrupted-everyday] _
+
+case = ('interrupted', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, False)
+secret = 'a'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unwithheldvwithheldilwithheldble', 'completion': {'reason': 'interrupted', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[a-cancelled-everyday] _
+
+case = ('cancelled', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, True)
+secret = 'a'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unwithheldvwithheldilwithheldble', 'completion': {'reason': 'cwithheldncelled', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[a-completion_missing-everyday] _
+
+case = ('completion_missing', <MethodId.EVERYDAY: 'everyday'>, 0, '', False, False)
+secret = 'a'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unwithheldvwithheldilwithheldble', 'completion': {'reason': 'completion_missing', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[a-verification_failed-everyday] _
+
+case = ('verification_failed', <MethodId.EVERYDAY: 'everyday'>, 1, "Verification mismatch on '{path}' at offset 4096", False, False)
+secret = 'a'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unwithheldvwithheldilwithheldble', 'completion': {'reason': 'verificwithheldtion_fwithheldiled', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[a-process_failed-everyday] _
+
+case = ('process_failed', <MethodId.EVERYDAY: 'everyday'>, 2, '', False, False)
+secret = 'a'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unwithheldvwithheldilwithheldble', 'completion': {'reason': 'process_fwithheldiled', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[a-engine_failed-everyday] _
+
+case = ('engine_failed', <MethodId.EVERYDAY: 'everyday'>, 0, '{path}: >>> FAILURE! <<<', False, False)
+secret = 'a'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unwithheldvwithheldilwithheldble', 'completion': {'reason': 'engine_fwithheldiled', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[a-verified-extra] _
+
+case = ('verified', <MethodId.EXTRA: 'extra'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'a'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+>       assert privacy.is_sharing_copy(shared)
+E       AssertionError: assert False
+E        +  where False = <function is_sharing_copy at 0x7a1ff1db8860>({'beamo_wipe_version': '0.2.12', 'build_id': '', 'build_status': 'unwithheldvwithheldilwithheldble', 'completion': {'reason': 'completed', 'validated': True}, ...})
+E        +    where <function is_sharing_copy at 0x7a1ff1db8860> = privacy.is_sharing_copy
+
+tests/test_sharing_semantic_collision_regression.py:34: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[everyday-verified-everyday] _
+
+case = ('verified', <MethodId.EVERYDAY: 'everyday'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'everyday'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'everyday'
+E
+E                 - everyday
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[everyday-occupied-everyday] _
+
+case = ('occupied', <MethodId.EVERYDAY: 'everyday'>, 0, '{path} is reported as IN USE', False, False)
+secret = 'everyday'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'everyday'
+E
+E                 - everyday
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[everyday-open_failed-everyday] _
+
+case = ('open_failed', <MethodId.EVERYDAY: 'everyday'>, 0, "Unable to open device '{path}'.", False, False)
+secret = 'everyday'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'everyday'
+E
+E                 - everyday
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[everyday-geometry_unusable-everyday] _
+
+case = ('geometry_unusable', <MethodId.EVERYDAY: 'everyday'>, 0, "No sane device geometry for '{path}'.", False, False)
+secret = 'everyday'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'everyday'
+E
+E                 - everyday
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[everyday-interrupted-everyday] _
+
+case = ('interrupted', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, False)
+secret = 'everyday'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'everyday'
+E
+E                 - everyday
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[everyday-cancelled-everyday] _
+
+case = ('cancelled', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, True)
+secret = 'everyday'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'everyday'
+E
+E                 - everyday
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[everyday-completion_missing-everyday] _
+
+case = ('completion_missing', <MethodId.EVERYDAY: 'everyday'>, 0, '', False, False)
+secret = 'everyday'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'everyday'
+E
+E                 - everyday
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[everyday-verification_failed-everyday] _
+
+case = ('verification_failed', <MethodId.EVERYDAY: 'everyday'>, 1, "Verification mismatch on '{path}' at offset 4096", False, False)
+secret = 'everyday'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'everyday'
+E
+E                 - everyday
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[everyday-process_failed-everyday] _
+
+case = ('process_failed', <MethodId.EVERYDAY: 'everyday'>, 2, '', False, False)
+secret = 'everyday'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'everyday'
+E
+E                 - everyday
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[everyday-engine_failed-everyday] _
+
+case = ('engine_failed', <MethodId.EVERYDAY: 'everyday'>, 0, '{path}: >>> FAILURE! <<<', False, False)
+secret = 'everyday'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'everyday'
+E
+E                 - everyday
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[prng-verified-everyday] _
+
+case = ('verified', <MethodId.EVERYDAY: 'everyday'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'prng'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'prng'
+E
+E                 - prng
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[prng-occupied-everyday] _
+
+case = ('occupied', <MethodId.EVERYDAY: 'everyday'>, 0, '{path} is reported as IN USE', False, False)
+secret = 'prng'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'prng'
+E
+E                 - prng
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[prng-open_failed-everyday] _
+
+case = ('open_failed', <MethodId.EVERYDAY: 'everyday'>, 0, "Unable to open device '{path}'.", False, False)
+secret = 'prng'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'prng'
+E
+E                 - prng
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[prng-geometry_unusable-everyday] _
+
+case = ('geometry_unusable', <MethodId.EVERYDAY: 'everyday'>, 0, "No sane device geometry for '{path}'.", False, False)
+secret = 'prng'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'prng'
+E
+E                 - prng
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[prng-interrupted-everyday] _
+
+case = ('interrupted', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, False)
+secret = 'prng'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'prng'
+E
+E                 - prng
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[prng-cancelled-everyday] _
+
+case = ('cancelled', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, True)
+secret = 'prng'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'prng'
+E
+E                 - prng
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[prng-completion_missing-everyday] _
+
+case = ('completion_missing', <MethodId.EVERYDAY: 'everyday'>, 0, '', False, False)
+secret = 'prng'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'prng'
+E
+E                 - prng
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[prng-verification_failed-everyday] _
+
+case = ('verification_failed', <MethodId.EVERYDAY: 'everyday'>, 1, "Verification mismatch on '{path}' at offset 4096", False, False)
+secret = 'prng'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'prng'
+E
+E                 - prng
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[prng-process_failed-everyday] _
+
+case = ('process_failed', <MethodId.EVERYDAY: 'everyday'>, 2, '', False, False)
+secret = 'prng'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'prng'
+E
+E                 - prng
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[prng-engine_failed-everyday] _
+
+case = ('engine_failed', <MethodId.EVERYDAY: 'everyday'>, 0, '{path}: >>> FAILURE! <<<', False, False)
+secret = 'prng'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'prng'
+E
+E                 - prng
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[last-verified-everyday] _
+
+case = ('verified', <MethodId.EVERYDAY: 'everyday'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'last'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'last'
+E
+E                 - last
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[last-occupied-everyday] _
+
+case = ('occupied', <MethodId.EVERYDAY: 'everyday'>, 0, '{path} is reported as IN USE', False, False)
+secret = 'last'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'last'
+E
+E                 - last
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[last-open_failed-everyday] _
+
+case = ('open_failed', <MethodId.EVERYDAY: 'everyday'>, 0, "Unable to open device '{path}'.", False, False)
+secret = 'last'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'last'
+E
+E                 - last
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[last-geometry_unusable-everyday] _
+
+case = ('geometry_unusable', <MethodId.EVERYDAY: 'everyday'>, 0, "No sane device geometry for '{path}'.", False, False)
+secret = 'last'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'last'
+E
+E                 - last
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[last-interrupted-everyday] _
+
+case = ('interrupted', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, False)
+secret = 'last'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'last'
+E
+E                 - last
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[last-cancelled-everyday] _
+
+case = ('cancelled', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, True)
+secret = 'last'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'last'
+E
+E                 - last
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[last-completion_missing-everyday] _
+
+case = ('completion_missing', <MethodId.EVERYDAY: 'everyday'>, 0, '', False, False)
+secret = 'last'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'last'
+E
+E                 - last
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[last-verification_failed-everyday] _
+
+case = ('verification_failed', <MethodId.EVERYDAY: 'everyday'>, 1, "Verification mismatch on '{path}' at offset 4096", False, False)
+secret = 'last'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'last'
+E
+E                 - last
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[last-process_failed-everyday] _
+
+case = ('process_failed', <MethodId.EVERYDAY: 'everyday'>, 2, '', False, False)
+secret = 'last'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'last'
+E
+E                 - last
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[last-engine_failed-everyday] _
+
+case = ('engine_failed', <MethodId.EVERYDAY: 'everyday'>, 0, '{path}: >>> FAILURE! <<<', False, False)
+secret = 'last'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'last'
+E
+E                 - last
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[last-verified-extra] _
+
+case = ('verified', <MethodId.EXTRA: 'extra'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'last'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+>               assert shared["method"][key] == value
+E               AssertionError: assert 'withheld' == 'last'
+E
+E                 - last
+E                 + withheld
+
+tests/test_sharing_semantic_collision_regression.py:45: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[completed-verified-everyday] _
+
+case = ('verified', <MethodId.EVERYDAY: 'everyday'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'completed'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+                assert shared["method"][key] == value
+        assert shared["locale"] == evidence["locale"]
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:47: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[completed-unverified-quick_zero] _
+
+case = ('unverified', <MethodId.QUICK_ZERO: 'quick_zero'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'completed'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+>       assert shared["outcome"] == evidence["outcome"]
+E       AssertionError: assert 'withheld' == 'completed'
+E
+E         - completed
+E         + withheld
+
+tests/test_sharing_semantic_collision_regression.py:37: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[completed-verified-extra] _
+
+case = ('verified', <MethodId.EXTRA: 'extra'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'completed'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+                assert shared["method"][key] == value
+        assert shared["locale"] == evidence["locale"]
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:47: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[cancelled-cancelled-everyday] _
+
+case = ('cancelled', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, True)
+secret = 'cancelled'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+        assert shared["privacy"]["notice"] == privacy.NOTICE
+        assert shared["outcome"] == evidence["outcome"]
+        prose_fields = {"title", "description", "docs_name", "operation_summary"}
+        for key, value in evidence["method"].items():
+            if key in prose_fields:
+                assert outcomes._method_copy_field_matches(
+                    shared["method"][key], value, sharing=True
+                )
+            else:
+                assert shared["method"][key] == value
+        assert shared["locale"] == evidence["locale"]
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'cancelled'
+E
+E         - cancelled
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:47: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[en-verified-everyday] _
+
+case = ('verified', <MethodId.EVERYDAY: 'everyday'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'en'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+>       assert shared["privacy"]["notice"] == privacy.NOTICE
+E       AssertionError: assert 'Privacy-redu... is required.' == 'Privacy-redu... is required.'
+E
+E         - Privacy-reduced sharing copy. Not identity evidence. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                      ^          ^
+E         + Privacy-reduced sharing copy. Not idwithheldtity evidwithheldce. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                     +++++ ^^         +++++ ^^
+
+tests/test_sharing_semantic_collision_regression.py:36: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[en-unverified-quick_zero] _
+
+case = ('unverified', <MethodId.QUICK_ZERO: 'quick_zero'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'en'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+>       assert shared["privacy"]["notice"] == privacy.NOTICE
+E       AssertionError: assert 'Privacy-redu... is required.' == 'Privacy-redu... is required.'
+E
+E         - Privacy-reduced sharing copy. Not identity evidence. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                      ^          ^
+E         + Privacy-reduced sharing copy. Not idwithheldtity evidwithheldce. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                     +++++ ^^         +++++ ^^
+
+tests/test_sharing_semantic_collision_regression.py:36: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[en-occupied-everyday] _
+
+case = ('occupied', <MethodId.EVERYDAY: 'everyday'>, 0, '{path} is reported as IN USE', False, False)
+secret = 'en'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+>       assert shared["privacy"]["notice"] == privacy.NOTICE
+E       AssertionError: assert 'Privacy-redu... is required.' == 'Privacy-redu... is required.'
+E
+E         - Privacy-reduced sharing copy. Not identity evidence. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                      ^          ^
+E         + Privacy-reduced sharing copy. Not idwithheldtity evidwithheldce. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                     +++++ ^^         +++++ ^^
+
+tests/test_sharing_semantic_collision_regression.py:36: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[en-open_failed-everyday] _
+
+case = ('open_failed', <MethodId.EVERYDAY: 'everyday'>, 0, "Unable to open device '{path}'.", False, False)
+secret = 'en'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+>       assert shared["privacy"]["notice"] == privacy.NOTICE
+E       AssertionError: assert 'Privacy-redu... is required.' == 'Privacy-redu... is required.'
+E
+E         - Privacy-reduced sharing copy. Not identity evidence. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                      ^          ^
+E         + Privacy-reduced sharing copy. Not idwithheldtity evidwithheldce. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                     +++++ ^^         +++++ ^^
+
+tests/test_sharing_semantic_collision_regression.py:36: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[en-geometry_unusable-everyday] _
+
+case = ('geometry_unusable', <MethodId.EVERYDAY: 'everyday'>, 0, "No sane device geometry for '{path}'.", False, False)
+secret = 'en'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+>       assert shared["privacy"]["notice"] == privacy.NOTICE
+E       AssertionError: assert 'Privacy-redu... is required.' == 'Privacy-redu... is required.'
+E
+E         - Privacy-reduced sharing copy. Not identity evidence. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                      ^          ^
+E         + Privacy-reduced sharing copy. Not idwithheldtity evidwithheldce. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                     +++++ ^^         +++++ ^^
+
+tests/test_sharing_semantic_collision_regression.py:36: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[en-interrupted-everyday] _
+
+case = ('interrupted', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, False)
+secret = 'en'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+>       assert shared["privacy"]["notice"] == privacy.NOTICE
+E       AssertionError: assert 'Privacy-redu... is required.' == 'Privacy-redu... is required.'
+E
+E         - Privacy-reduced sharing copy. Not identity evidence. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                      ^          ^
+E         + Privacy-reduced sharing copy. Not idwithheldtity evidwithheldce. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                     +++++ ^^         +++++ ^^
+
+tests/test_sharing_semantic_collision_regression.py:36: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[en-cancelled-everyday] _
+
+case = ('cancelled', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, True)
+secret = 'en'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+>       assert shared["privacy"]["notice"] == privacy.NOTICE
+E       AssertionError: assert 'Privacy-redu... is required.' == 'Privacy-redu... is required.'
+E
+E         - Privacy-reduced sharing copy. Not identity evidence. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                      ^          ^
+E         + Privacy-reduced sharing copy. Not idwithheldtity evidwithheldce. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                     +++++ ^^         +++++ ^^
+
+tests/test_sharing_semantic_collision_regression.py:36: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[en-completion_missing-everyday] _
+
+case = ('completion_missing', <MethodId.EVERYDAY: 'everyday'>, 0, '', False, False)
+secret = 'en'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+>       assert shared["privacy"]["notice"] == privacy.NOTICE
+E       AssertionError: assert 'Privacy-redu... is required.' == 'Privacy-redu... is required.'
+E
+E         - Privacy-reduced sharing copy. Not identity evidence. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                      ^          ^
+E         + Privacy-reduced sharing copy. Not idwithheldtity evidwithheldce. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                     +++++ ^^         +++++ ^^
+
+tests/test_sharing_semantic_collision_regression.py:36: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[en-verification_failed-everyday] _
+
+case = ('verification_failed', <MethodId.EVERYDAY: 'everyday'>, 1, "Verification mismatch on '{path}' at offset 4096", False, False)
+secret = 'en'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+>       assert shared["privacy"]["notice"] == privacy.NOTICE
+E       AssertionError: assert 'Privacy-redu... is required.' == 'Privacy-redu... is required.'
+E
+E         - Privacy-reduced sharing copy. Not identity evidence. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                      ^          ^
+E         + Privacy-reduced sharing copy. Not idwithheldtity evidwithheldce. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                     +++++ ^^         +++++ ^^
+
+tests/test_sharing_semantic_collision_regression.py:36: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[en-process_failed-everyday] _
+
+case = ('process_failed', <MethodId.EVERYDAY: 'everyday'>, 2, '', False, False)
+secret = 'en'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+>       assert shared["privacy"]["notice"] == privacy.NOTICE
+E       AssertionError: assert 'Privacy-redu... is required.' == 'Privacy-redu... is required.'
+E
+E         - Privacy-reduced sharing copy. Not identity evidence. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                      ^          ^
+E         + Privacy-reduced sharing copy. Not idwithheldtity evidwithheldce. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                     +++++ ^^         +++++ ^^
+
+tests/test_sharing_semantic_collision_regression.py:36: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[en-engine_failed-everyday] _
+
+case = ('engine_failed', <MethodId.EVERYDAY: 'everyday'>, 0, '{path}: >>> FAILURE! <<<', False, False)
+secret = 'en'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+>       assert shared["privacy"]["notice"] == privacy.NOTICE
+E       AssertionError: assert 'Privacy-redu... is required.' == 'Privacy-redu... is required.'
+E
+E         - Privacy-reduced sharing copy. Not identity evidence. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                      ^          ^
+E         + Privacy-reduced sharing copy. Not idwithheldtity evidwithheldce. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                     +++++ ^^         +++++ ^^
+
+tests/test_sharing_semantic_collision_regression.py:36: AssertionError
+_ test_structural_collisions_preserve_original_result_and_policy[en-verified-extra] _
+
+case = ('verified', <MethodId.EXTRA: 'extra'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+secret = 'en'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("secret", COLLISIONS)
+    def test_structural_collisions_preserve_original_result_and_policy(case, secret):
+        evidence, _ = _collision(case, secret)
+        before = copy.deepcopy(evidence)
+        assert outcomes.present_evidence(evidence).code == case[0]
+        shared = privacy.make_sharing_copy(evidence)
+        assert evidence == before
+        assert privacy.is_sharing_copy(shared)
+        assert shared["privacy"]["policy"] == privacy.POLICY_ID
+>       assert shared["privacy"]["notice"] == privacy.NOTICE
+E       AssertionError: assert 'Privacy-redu... is required.' == 'Privacy-redu... is required.'
+E
+E         - Privacy-reduced sharing copy. Not identity evidence. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                      ^          ^
+E         + Privacy-reduced sharing copy. Not idwithheldtity evidwithheldce. Do not use this copy where a serial, hardware ID, or device path is required.
+E         ?                                     +++++ ^^         +++++ ^^
+
+tests/test_sharing_semantic_collision_regression.py:36: AssertionError
+____ test_sharing_after_language_restart_preserves_validated_result[en-fr] _____
+
+source_language = 'fr', display_language = 'en'
+
+    @pytest.mark.parametrize("source_language", lang.LANGUAGE_ORDER)
+    @pytest.mark.parametrize("display_language", lang.LANGUAGE_ORDER)
+    def test_sharing_after_language_restart_preserves_validated_result(source_language, display_language):
+        lang.set_language(source_language)
+        _, evidence, _ = case_evidence(CASES[0])
+        before = copy.deepcopy(evidence)
+        lang.set_language(display_language)
+        assert outcomes.present_evidence(evidence).code == "verified"
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == "verified"
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:62: AssertionError
+____ test_sharing_after_language_restart_preserves_validated_result[en-de] _____
+
+source_language = 'de', display_language = 'en'
+
+    @pytest.mark.parametrize("source_language", lang.LANGUAGE_ORDER)
+    @pytest.mark.parametrize("display_language", lang.LANGUAGE_ORDER)
+    def test_sharing_after_language_restart_preserves_validated_result(source_language, display_language):
+        lang.set_language(source_language)
+        _, evidence, _ = case_evidence(CASES[0])
+        before = copy.deepcopy(evidence)
+        lang.set_language(display_language)
+        assert outcomes.present_evidence(evidence).code == "verified"
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == "verified"
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:62: AssertionError
+____ test_sharing_after_language_restart_preserves_validated_result[fr-en] _____
+
+source_language = 'en', display_language = 'fr'
+
+    @pytest.mark.parametrize("source_language", lang.LANGUAGE_ORDER)
+    @pytest.mark.parametrize("display_language", lang.LANGUAGE_ORDER)
+    def test_sharing_after_language_restart_preserves_validated_result(source_language, display_language):
+        lang.set_language(source_language)
+        _, evidence, _ = case_evidence(CASES[0])
+        before = copy.deepcopy(evidence)
+        lang.set_language(display_language)
+        assert outcomes.present_evidence(evidence).code == "verified"
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == "verified"
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:62: AssertionError
+____ test_sharing_after_language_restart_preserves_validated_result[fr-de] _____
+
+source_language = 'de', display_language = 'fr'
+
+    @pytest.mark.parametrize("source_language", lang.LANGUAGE_ORDER)
+    @pytest.mark.parametrize("display_language", lang.LANGUAGE_ORDER)
+    def test_sharing_after_language_restart_preserves_validated_result(source_language, display_language):
+        lang.set_language(source_language)
+        _, evidence, _ = case_evidence(CASES[0])
+        before = copy.deepcopy(evidence)
+        lang.set_language(display_language)
+        assert outcomes.present_evidence(evidence).code == "verified"
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == "verified"
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:62: AssertionError
+____ test_sharing_after_language_restart_preserves_validated_result[de-en] _____
+
+source_language = 'en', display_language = 'de'
+
+    @pytest.mark.parametrize("source_language", lang.LANGUAGE_ORDER)
+    @pytest.mark.parametrize("display_language", lang.LANGUAGE_ORDER)
+    def test_sharing_after_language_restart_preserves_validated_result(source_language, display_language):
+        lang.set_language(source_language)
+        _, evidence, _ = case_evidence(CASES[0])
+        before = copy.deepcopy(evidence)
+        lang.set_language(display_language)
+        assert outcomes.present_evidence(evidence).code == "verified"
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == "verified"
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:62: AssertionError
+____ test_sharing_after_language_restart_preserves_validated_result[de-fr] _____
+
+source_language = 'fr', display_language = 'de'
+
+    @pytest.mark.parametrize("source_language", lang.LANGUAGE_ORDER)
+    @pytest.mark.parametrize("display_language", lang.LANGUAGE_ORDER)
+    def test_sharing_after_language_restart_preserves_validated_result(source_language, display_language):
+        lang.set_language(source_language)
+        _, evidence, _ = case_evidence(CASES[0])
+        before = copy.deepcopy(evidence)
+        lang.set_language(display_language)
+        assert outcomes.present_evidence(evidence).code == "verified"
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == "verified"
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:62: AssertionError
+_ test_exported_sharing_summary_keeps_success_quickzero_and_cancel_outcomes[case0] _
+
+case = ('verified', <MethodId.EVERYDAY: 'everyday'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+
+    @pytest.mark.parametrize("case", [CASES[0], CASES[1], CASES[6]])
+    def test_exported_sharing_summary_keeps_success_quickzero_and_cancel_outcomes(case):
+        evidence, log = _collision(case, "sharing")
+        raw = json.dumps(evidence).encode()
+        bundle = _bundle_files(raw, log.encode(), "complete", privacy_reduced=True)
+        shared = json.loads(bundle[privacy.SHARE_JSON])
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:73: AssertionError
+_ test_exported_sharing_summary_keeps_success_quickzero_and_cancel_outcomes[case1] _
+
+case = ('unverified', <MethodId.QUICK_ZERO: 'quick_zero'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+
+    @pytest.mark.parametrize("case", [CASES[0], CASES[1], CASES[6]])
+    def test_exported_sharing_summary_keeps_success_quickzero_and_cancel_outcomes(case):
+        evidence, log = _collision(case, "sharing")
+        raw = json.dumps(evidence).encode()
+        bundle = _bundle_files(raw, log.encode(), "complete", privacy_reduced=True)
+        shared = json.loads(bundle[privacy.SHARE_JSON])
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'unverified'
+E
+E         - unverified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:73: AssertionError
+_ test_exported_sharing_summary_keeps_success_quickzero_and_cancel_outcomes[case2] _
+
+case = ('cancelled', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, True)
+
+    @pytest.mark.parametrize("case", [CASES[0], CASES[1], CASES[6]])
+    def test_exported_sharing_summary_keeps_success_quickzero_and_cancel_outcomes(case):
+        evidence, log = _collision(case, "sharing")
+        raw = json.dumps(evidence).encode()
+        bundle = _bundle_files(raw, log.encode(), "complete", privacy_reduced=True)
+        shared = json.loads(bundle[privacy.SHARE_JSON])
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'cancelled'
+E
+E         - cancelled
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:73: AssertionError
+___ test_validated_build_and_clock_values_survive_short_identifier_collision ___
+
+    def test_validated_build_and_clock_values_survive_short_identifier_collision():
+        evidence, _ = _collision(CASES[0], "1")
+        evidence["source_commit"] = "1" * 40
+        evidence["build_id"] = "12345678-1234-1234-1234-123456789abc"
+        evidence["build_status"] = "production"
+        evidence["timestamps"]["started_at_wall"] = "2026-10-16T10:00:00Z"
+        evidence["timestamps"]["ended_at_wall"] = "2026-10-16T10:00:01Z"
+        evidence["timestamps"]["wall_confidence"] = "unverified"
+        evidence["timestamps"]["wall_provenance"] = "os_utc"
+        shared = privacy.make_sharing_copy(evidence)
+        for key in ("source_commit", "build_id", "build_status", "beamo_wipe_version", "nwipe_version", "nwipe_commit"):
+>           assert shared[key] == evidence[key]
+E           AssertionError: assert 'withheldwith...hheldwithheld' == '111111111111...1111111111111'
+E
+E             - 1111111111111111111111111111111111111111
+E             + withheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheldwithheld
+
+tests/test_sharing_semantic_collision_regression.py:105: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-verified-everyday] _
+
+case = ('verified', <MethodId.EVERYDAY: 'everyday'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-unverified-quick_zero] _
+
+case = ('unverified', <MethodId.QUICK_ZERO: 'quick_zero'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'unverified'
+E
+E         - unverified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-occupied-everyday] _
+
+case = ('occupied', <MethodId.EVERYDAY: 'everyday'>, 0, '{path} is reported as IN USE', False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'occupied'
+E
+E         - occupied
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-open_failed-everyday] _
+
+case = ('open_failed', <MethodId.EVERYDAY: 'everyday'>, 0, "Unable to open device '{path}'.", False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'open_failed'
+E
+E         - open_failed
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-geometry_unusable-everyday] _
+
+case = ('geometry_unusable', <MethodId.EVERYDAY: 'everyday'>, 0, "No sane device geometry for '{path}'.", False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'geometry_unusable'
+E
+E         - geometry_unusable
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-interrupted-everyday] _
+
+case = ('interrupted', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'interrupted'
+E
+E         - interrupted
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-cancelled-everyday] _
+
+case = ('cancelled', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, True)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'cancelled'
+E
+E         - cancelled
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-completion_missing-everyday] _
+
+case = ('completion_missing', <MethodId.EVERYDAY: 'everyday'>, 0, '', False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'completion_missing'
+E
+E         - completion_missing
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-verification_failed-everyday] _
+
+case = ('verification_failed', <MethodId.EVERYDAY: 'everyday'>, 1, "Verification mismatch on '{path}' at offset 4096", False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'verification_failed'
+E
+E         - verification_failed
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-process_failed-everyday] _
+
+case = ('process_failed', <MethodId.EVERYDAY: 'everyday'>, 2, '', False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'process_failed'
+E
+E         - process_failed
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-engine_failed-everyday] _
+
+case = ('engine_failed', <MethodId.EVERYDAY: 'everyday'>, 0, '{path}: >>> FAILURE! <<<', False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'engine_failed'
+E
+E         - engine_failed
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-verified-extra] _
+
+case = ('verified', <MethodId.EXTRA: 'extra'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+short_identifier = 'd'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-verified-everyday] _
+
+case = ('verified', <MethodId.EVERYDAY: 'everyday'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-unverified-quick_zero] _
+
+case = ('unverified', <MethodId.QUICK_ZERO: 'quick_zero'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'unverified'
+E
+E         - unverified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-occupied-everyday] _
+
+case = ('occupied', <MethodId.EVERYDAY: 'everyday'>, 0, '{path} is reported as IN USE', False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'occupied'
+E
+E         - occupied
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-open_failed-everyday] _
+
+case = ('open_failed', <MethodId.EVERYDAY: 'everyday'>, 0, "Unable to open device '{path}'.", False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'open_failed'
+E
+E         - open_failed
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-geometry_unusable-everyday] _
+
+case = ('geometry_unusable', <MethodId.EVERYDAY: 'everyday'>, 0, "No sane device geometry for '{path}'.", False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'geometry_unusable'
+E
+E         - geometry_unusable
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-interrupted-everyday] _
+
+case = ('interrupted', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'interrupted'
+E
+E         - interrupted
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-cancelled-everyday] _
+
+case = ('cancelled', <MethodId.EVERYDAY: 'everyday'>, 143, '', True, True)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'cancelled'
+E
+E         - cancelled
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-completion_missing-everyday] _
+
+case = ('completion_missing', <MethodId.EVERYDAY: 'everyday'>, 0, '', False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'completion_missing'
+E
+E         - completion_missing
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-verification_failed-everyday] _
+
+case = ('verification_failed', <MethodId.EVERYDAY: 'everyday'>, 1, "Verification mismatch on '{path}' at offset 4096", False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'verification_failed'
+E
+E         - verification_failed
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-process_failed-everyday] _
+
+case = ('process_failed', <MethodId.EVERYDAY: 'everyday'>, 2, '', False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'process_failed'
+E
+E         - process_failed
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-engine_failed-everyday] _
+
+case = ('engine_failed', <MethodId.EVERYDAY: 'everyday'>, 0, '{path}: >>> FAILURE! <<<', False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'engine_failed'
+E
+E         - engine_failed
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-verified-extra] _
+
+case = ('verified', <MethodId.EXTRA: 'extra'>, 0, '********************************* Drive Status *********************************\n{name} | Erased |  120MB/s | 01:25:04 | QEMU/DISK', False, False)
+short_identifier = 'h'
+
+    @pytest.mark.parametrize("case", [*CASES, EXTRA], ids=lambda case: case[0] + "-" + case[1].value)
+    @pytest.mark.parametrize("short_identifier", ["d", "h", "withheld"])
+    def test_multiple_identifiers_cannot_scrub_inserted_placeholders(case, short_identifier):
+        evidence, _ = _collision(case, "overwrite")
+        evidence["device"]["wwn"] = short_identifier
+        evidence["device"]["label"] = "private-label"
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert outcomes.present_evidence(shared).code == case[0]
+E       AssertionError: assert 'indeterminate' == 'verified'
+E
+E         - verified
+E         + indeterminate
+
+tests/test_sharing_semantic_collision_regression.py:129: AssertionError
+_ test_malformed_container_keys_never_export_private_identifiers[warnings_dict] _
+
+placement = 'warnings_dict'
+
+    @pytest.mark.parametrize("placement", ["warnings_dict", "warnings_list", "root_scalar", "section_scalar"])
+    def test_malformed_container_keys_never_export_private_identifiers(placement):
+        secret = "PRIVATE-CUSTOMER-SERIAL"
+        evidence, _ = _collision(CASES[0], secret)
+        if placement == "warnings_dict":
+            evidence["warnings"] = {secret: "malformed warning"}
+        elif placement == "warnings_list":
+            evidence["warnings"] = ["ordinary warning", {secret: "malformed warning"}]
+        elif placement == "root_scalar":
+            evidence["beamo_wipe_version"] = {secret: "malformed version"}
+        else:
+            evidence["method"]["id"] = {secret: "malformed method"}
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert secret not in privacy.encode_sharing_copy(shared).decode()
+E       assert 'PRIVATE-CUSTOMER-SERIAL' not in '{"beamo_wip...warning"}}\n'
+E
+E         'PRIVATE-CUSTOMER-SERIAL' is contained here:
+E           rnings":{"PRIVATE-CUSTOMER-SERIAL":"malformed warning"}}
+
+tests/test_sharing_semantic_collision_regression.py:154: AssertionError
+_ test_malformed_container_keys_never_export_private_identifiers[warnings_list] _
+
+placement = 'warnings_list'
+
+    @pytest.mark.parametrize("placement", ["warnings_dict", "warnings_list", "root_scalar", "section_scalar"])
+    def test_malformed_container_keys_never_export_private_identifiers(placement):
+        secret = "PRIVATE-CUSTOMER-SERIAL"
+        evidence, _ = _collision(CASES[0], secret)
+        if placement == "warnings_dict":
+            evidence["warnings"] = {secret: "malformed warning"}
+        elif placement == "warnings_list":
+            evidence["warnings"] = ["ordinary warning", {secret: "malformed warning"}]
+        elif placement == "root_scalar":
+            evidence["beamo_wipe_version"] = {secret: "malformed version"}
+        else:
+            evidence["method"]["id"] = {secret: "malformed method"}
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert secret not in privacy.encode_sharing_copy(shared).decode()
+E       assert 'PRIVATE-CUSTOMER-SERIAL' not in '{"beamo_wip...arning"}]}\n'
+E
+E         'PRIVATE-CUSTOMER-SERIAL' is contained here:
+E           arning",{"PRIVATE-CUSTOMER-SERIAL":"malformed warning"}]}
+E         ?           +++++++++++++++++++++++
+
+tests/test_sharing_semantic_collision_regression.py:154: AssertionError
+_ test_malformed_container_keys_never_export_private_identifiers[root_scalar] __
+
+placement = 'root_scalar'
+
+    @pytest.mark.parametrize("placement", ["warnings_dict", "warnings_list", "root_scalar", "section_scalar"])
+    def test_malformed_container_keys_never_export_private_identifiers(placement):
+        secret = "PRIVATE-CUSTOMER-SERIAL"
+        evidence, _ = _collision(CASES[0], secret)
+        if placement == "warnings_dict":
+            evidence["warnings"] = {secret: "malformed warning"}
+        elif placement == "warnings_list":
+            evidence["warnings"] = ["ordinary warning", {secret: "malformed warning"}]
+        elif placement == "root_scalar":
+            evidence["beamo_wipe_version"] = {secret: "malformed version"}
+        else:
+            evidence["method"]["id"] = {secret: "malformed method"}
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert secret not in privacy.encode_sharing_copy(shared).decode()
+E       assert 'PRIVATE-CUSTOMER-SERIAL' not in '{"beamo_wip...ithheld"]}\n'
+E
+E         'PRIVATE-CUSTOMER-SERIAL' is contained here:
+E           {"beamo_wipe_version":{"PRIVATE-CUSTOMER-SERIAL":"malformed version"},"build_id":"","build_status":"unavailable","completion":{"reason":"completed","validated":true},"device":{"bus":"NVMe","kind":"NVMe","model":"private-model-withheld","size_bytes":256060514304,"size_gb_label":"256"},"device_presentation":{"capacity":"256 GB","connection":"NVMe","kind":"SSD","title":"Samsung SSD 970 EVO"},"exit_evidence":{"exit_code":0,"signal":null},"failure_reason":null,"interruption":{"cancelled":false,"interrupted":false,"origin":"none"},"l...
+E
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_sharing_semantic_collision_regression.py:154: AssertionError
+_ test_malformed_container_keys_never_export_private_identifiers[section_scalar] _
+
+placement = 'section_scalar'
+
+    @pytest.mark.parametrize("placement", ["warnings_dict", "warnings_list", "root_scalar", "section_scalar"])
+    def test_malformed_container_keys_never_export_private_identifiers(placement):
+        secret = "PRIVATE-CUSTOMER-SERIAL"
+        evidence, _ = _collision(CASES[0], secret)
+        if placement == "warnings_dict":
+            evidence["warnings"] = {secret: "malformed warning"}
+        elif placement == "warnings_list":
+            evidence["warnings"] = ["ordinary warning", {secret: "malformed warning"}]
+        elif placement == "root_scalar":
+            evidence["beamo_wipe_version"] = {secret: "malformed version"}
+        else:
+            evidence["method"]["id"] = {secret: "malformed method"}
+        before = copy.deepcopy(evidence)
+        shared = privacy.make_sharing_copy(evidence)
+>       assert secret not in privacy.encode_sharing_copy(shared).decode()
+E       assert 'PRIVATE-CUSTOMER-SERIAL' not in '{"beamo_wip...ithheld"]}\n'
+E
+E         'PRIVATE-CUSTOMER-SERIAL' is contained here:
+E         ?           ^^^^^^^^^^^^
+E           .","id":{"PRIVATE-CUSTOMER-SERIAL":"malformed method"},"noblank":true,"nwipe_method":"prng","operation_summary":"One overwrite, followed by verification.","overwrite_passes":1,"rounds":1,"title":"Everyday","verification_passes":1,"verify":"last"},"nwipe":{"version":"0.42"},"nwipe_commit":"6082bde060091e66365d852a1877f2ee80c67105","nwipe_version":"0.42","outcome":"verified","presentation":{"code":"verified","icon":"check","message":"Erase completed; verification passed","next_step":"Read-back checked expo...
+E
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_sharing_semantic_collision_regression.py:154: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-cancelled-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-verified-extra]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-verified-extra]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-cancelled-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-verified-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-verified-extra]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[en-en]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[fr-fr]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[de-de]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_unknown_control_values_are_still_scrubbed_and_never_upgraded[None-outcome]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_unknown_control_values_are_still_scrubbed_and_never_upgraded[method-id]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_unknown_control_values_are_still_scrubbed_and_never_upgraded[completion-reason]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_unknown_control_values_are_still_scrubbed_and_never_upgraded[locale-language]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_unknown_control_values_are_still_scrubbed_and_never_upgraded[None-build_id]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_unknown_control_values_are_still_scrubbed_and_never_upgraded[None-source_commit]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_verification_scope_keeps_identifier_redaction
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-verified-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-unverified-quick_zero]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-occupied-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-open_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-geometry_unusable-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-interrupted-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-cancelled-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-completion_missing-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-verification_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-process_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-engine_failed-everyday]
+PASSED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[withheld-verified-extra]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-verified-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-unverified-quick_zero]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-occupied-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-open_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-geometry_unusable-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-interrupted-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-cancelled-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-completion_missing-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-verification_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-process_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-engine_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[sharing-verified-extra]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-verified-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-unverified-quick_zero]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[verified-verified-extra]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-verified-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-unverified-quick_zero]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-occupied-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-open_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-geometry_unusable-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-interrupted-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-cancelled-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-completion_missing-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-verification_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-process_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-engine_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[a-verified-extra]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-verified-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-occupied-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-open_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-geometry_unusable-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-interrupted-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-cancelled-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-completion_missing-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-verification_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-process_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[everyday-engine_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-verified-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-occupied-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-open_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-geometry_unusable-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-interrupted-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-cancelled-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-completion_missing-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-verification_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-process_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[prng-engine_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-verified-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-occupied-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-open_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-geometry_unusable-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-interrupted-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-cancelled-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-completion_missing-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-verification_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-process_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-engine_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[last-verified-extra]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-verified-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-unverified-quick_zero]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[completed-verified-extra]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[cancelled-cancelled-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-verified-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-unverified-quick_zero]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-occupied-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-open_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-geometry_unusable-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-interrupted-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-cancelled-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-completion_missing-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-verification_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-process_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-engine_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_structural_collisions_preserve_original_result_and_policy[en-verified-extra]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[en-fr]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[en-de]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[fr-en]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[fr-de]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[de-en]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_sharing_after_language_restart_preserves_validated_result[de-fr]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_exported_sharing_summary_keeps_success_quickzero_and_cancel_outcomes[case0]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_exported_sharing_summary_keeps_success_quickzero_and_cancel_outcomes[case1]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_exported_sharing_summary_keeps_success_quickzero_and_cancel_outcomes[case2]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_validated_build_and_clock_values_survive_short_identifier_collision
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-verified-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-unverified-quick_zero]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-occupied-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-open_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-geometry_unusable-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-interrupted-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-cancelled-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-completion_missing-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-verification_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-process_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-engine_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[d-verified-extra]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-verified-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-unverified-quick_zero]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-occupied-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-open_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-geometry_unusable-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-interrupted-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-cancelled-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-completion_missing-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-verification_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-process_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-engine_failed-everyday]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_multiple_identifiers_cannot_scrub_inserted_placeholders[h-verified-extra]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_malformed_container_keys_never_export_private_identifiers[warnings_dict]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_malformed_container_keys_never_export_private_identifiers[warnings_list]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_malformed_container_keys_never_export_private_identifiers[root_scalar]
+FAILED tests/test_sharing_semantic_collision_regression.py::test_malformed_container_keys_never_export_private_identifiers[section_scalar]
+112 failed, 56 passed in 5.04s

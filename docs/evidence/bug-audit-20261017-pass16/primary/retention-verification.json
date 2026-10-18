@@ -1,0 +1,14 @@
+{
+  "frozen_inputs_match": 754,
+  "new_test_modules_exact": 25,
+  "exact_original_artifacts": 268,
+  "final_runner_fixture_files": 333,
+  "original_runner_fixture_files": 333,
+  "source_patch_matches": true,
+  "tracked_fixture_patch_matches": true,
+  "fallback_guard_attempts": 0,
+  "git_index_empty": true,
+  "diff_check": "passed",
+  "all_retained_hashes_index": "artifacts-sha256.txt",
+  "derived_receipt_in_exact_archive": true
+}

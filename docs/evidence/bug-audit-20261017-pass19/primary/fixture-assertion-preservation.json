@@ -1,0 +1,12 @@
+{
+  "tests/test_accessible_runtime.py": {
+    "before_assertions": 301,
+    "after_assertions": 302,
+    "all_original_assertions_preserved": true
+  },
+  "tests/test_checkrow_trace_lifetime_pass18.py": {
+    "before_assertions": 24,
+    "after_assertions": 24,
+    "all_original_assertions_preserved": true
+  }
+}

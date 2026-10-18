@@ -79,19 +79,39 @@ class AudioWorker:
                     self._pending[0].cancel()
                 self._pending = (ticket, action)
             if self._thread is None:
-                self._thread = threading.Thread(
-                    target=self._run, name="beamo-audio", daemon=True
-                )
+                launch_decided = threading.Event()
+                launch_allowed = threading.Event()
+
+                def accepted_worker() -> None:
+                    # start() can raise after its OS thread exists. A rejected
+                    # worker must never consume a later launch's queue or
+                    # retire that launch's thread reference.
+                    launch_decided.wait()
+                    if launch_allowed.is_set():
+                        self._run()
+
                 try:
+                    self._thread = threading.Thread(
+                        target=accepted_worker, name="beamo-audio", daemon=True
+                    )
                     self._thread.start()
-                except RuntimeError as exc:
+                    launch_allowed.set()
+                except BaseException as exc:
+                    # An interrupted set() may have published acceptance
+                    # before raising. Revoke it before waking the target.
+                    launch_allowed.clear()
                     if protected:
                         self._pending_outcome = None
                     else:
                         self._pending = None
                     self._thread = None
+                    if not isinstance(exc, RuntimeError):
+                        ticket.cancel()
+                        raise
                     ticket._finish(exc)
                     return ticket
+                finally:
+                    launch_decided.set()
             self._condition.notify()
         return ticket
 

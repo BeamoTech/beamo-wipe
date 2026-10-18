@@ -1,0 +1,9 @@
+{
+  "total": 24,
+  "failures": 24,
+  "errors": 0,
+  "skips": 0,
+  "all_assertions": true,
+  "source_sha256": "23d280b0451d3e25d64387de62d4912a8867ffbdec934244efe6a7f7a7ee0615",
+  "xml_sha256": "81ff7db8a27f69317d96797426c629dcd579449b90bd915a6d1c7a43a8c45df4"
+}

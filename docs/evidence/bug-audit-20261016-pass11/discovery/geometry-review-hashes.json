@@ -1,0 +1,34 @@
+{
+  "before_geometry": {
+    "path": "/tmp/pass11-ui/accessible_wizard-before-geometry.py",
+    "sha256": "9243f5f2dcb011419542bf67f7dda3d028f15eea3c3d7dcea3b6dc54a1fdcc46"
+  },
+  "after_geometry": {
+    "path": "src/beamo_wipe/ui/accessible_wizard.py",
+    "sha256": "d36f63ec32016334c0d4936bc29ac406c166f4622905c80ca3e1719f2a342f15"
+  },
+  "tests": {
+    "path": "tests/test_accessible_fullscreen_geometry_pass11.py",
+    "sha256": "1d6463763ad5e94e73873452ed9c050abce7176c13f16e56a49e5bc290110e8b"
+  },
+  "before_matches_prior_approved_ui": true,
+  "runner_matches_prior_approved_source": true,
+  "reviewed_pngs": {
+    "/tmp/pass11-ui/wizard-fullscreen-1600x1000-72dpi.png": {
+      "sha256": "a82f352b39f893876cb5c82aec3931ed9b2f3ab1052205dd316fb4c38c826d4e",
+      "matches_capture_receipt": true
+    },
+    "/tmp/pass11-ui/startup-fullscreen-1600x1000-72dpi.png": {
+      "sha256": "4c63cbfc8c20d29647eb634304ed06c1539849f597204cd3210eda4c81555592",
+      "matches_capture_receipt": true
+    },
+    "/tmp/pass11-ui/wizard-fullscreen-800x600-72dpi.png": {
+      "sha256": "25d325dd2ed219823c244de8300a46f259b0f34711edac2de279de0f3a2e8d4f",
+      "matches_capture_receipt": true
+    },
+    "/tmp/pass11-ui/startup-fullscreen-800x600-72dpi.png": {
+      "sha256": "727d629a8cacf0421e61e3b0f7c7f07a4f2e5d5fd132013293e1cc0901b8771a",
+      "matches_capture_receipt": true
+    }
+  }
+}

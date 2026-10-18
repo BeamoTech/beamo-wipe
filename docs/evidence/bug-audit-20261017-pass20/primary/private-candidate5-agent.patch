@@ -1,0 +1,192 @@
+--- candidate4/tk_wizard.py
++++ candidate5/tk_wizard.py
+@@ -1134,35 +1134,42 @@
+ # native resources until the creating thread can release the final reference.
+ _TK_ROOT_CLASS = tk.Tk
+ _TK_ASSET_CLASSES = (tkfont.Font, tk.Variable, tk.Image)
+-_RETIRED_INTERPRETERS: list[tuple[threading.Thread, object]] = []
+-_RETIRED_NATIVE_ASSETS: list[tuple[threading.Thread, object]] = []
++_RETIRED_INTERPRETERS: dict[int, tuple[threading.Thread, object]] = {}
++_RETIRED_NATIVE_ASSETS: dict[int, tuple[threading.Thread, object]] = {}
+ 
+ 
+ def _pin_retired_interpreter(root: tk.Misc, owner: threading.Thread | None = None) -> None:
+-    interpreter = getattr(root, "tk", None)
+-    if interpreter is not None and not any(record[1] is interpreter for record in _RETIRED_INTERPRETERS):
+-        _RETIRED_INTERPRETERS.append((owner or threading.current_thread(), interpreter))
++    if not isinstance(root, tk.Misc):
++        return  # Callable lightweight roots do not own a native Tk interpreter.
++    # Tk.__getattr__ delegates through self.tk, which does not exist yet when
++    # the real initializer fails before its first statement.
++    interpreter = root.__dict__.get("tk")
++    if interpreter is not None:
++        _RETIRED_INTERPRETERS.setdefault(id(interpreter), (owner or threading.current_thread(), interpreter))
+ 
+ 
+ def _pin_retired_assets(assets, owner: threading.Thread) -> None:
+     for asset in assets:
+-        if isinstance(asset, _TK_ASSET_CLASSES) and not any(record[1] is asset for record in _RETIRED_NATIVE_ASSETS):
+-            _RETIRED_NATIVE_ASSETS.append((owner, asset))
++        if isinstance(asset, _TK_ASSET_CLASSES):
++            _RETIRED_NATIVE_ASSETS.setdefault(id(asset), (owner, asset))
+ 
+ 
+ def _drain_retired_assets() -> None:
+     owner = threading.current_thread()
+-    for record in _RETIRED_NATIVE_ASSETS[:]:
+-        # The tuple owns one asset reference; getrefcount adds its argument.
++    for identity, record in list(_RETIRED_NATIVE_ASSETS.items()):
++        # Dict/snapshot/loop references own the same record tuple. The tuple
++        # owns one asset reference; getrefcount adds only its argument.
+         if record[0] is owner and sys.getrefcount(record[1]) == 2:
+-            _RETIRED_NATIVE_ASSETS.remove(record)
++            if _RETIRED_NATIVE_ASSETS.get(identity) is record:
++                del _RETIRED_NATIVE_ASSETS[identity]
+ 
+ 
+ def _drain_retired_interpreters() -> None:
+     owner = threading.current_thread()
+-    for record in _RETIRED_INTERPRETERS[:]:
++    for identity, record in list(_RETIRED_INTERPRETERS.items()):
+         if record[0] is owner and sys.getrefcount(record[1]) == 2:
+-            _RETIRED_INTERPRETERS.remove(record)
++            if _RETIRED_INTERPRETERS.get(identity) is record:
++                del _RETIRED_INTERPRETERS[identity]
+ 
+ 
+ def _drain_retired_native() -> None:
+@@ -1209,7 +1216,7 @@
+         factory.__init__(root)
+     except BaseException as original:
+         _pin_retired_interpreter(root, owner)
+-        if getattr(root, "tk", None) is not None:
++        if root.__dict__.get("tk") is not None:
+             try:
+                 root.destroy()
+             except tk.TclError:
+@@ -4804,11 +4811,11 @@
+                 self.root.unbind("<Map>", mapping)
+                 self.root.after_idle(claim_input)
+ 
+-        if self.root.winfo_ismapped():
+-            self.root.after_idle(claim_input)
+-        else:
+-            mapping = self.root.bind("<Map>", mapped, add="+")
+         try:
++            if self.root.winfo_ismapped():
++                self.root.after_idle(claim_input)
++            else:
++                mapping = self.root.bind("<Map>", mapped, add="+")
+             self.root.mainloop()
+         except BaseException as original:
+             _retire_tk_owner(self, original)
+@@ -4871,28 +4878,57 @@
+         raise StartupDisplayUnavailable("no graphical display for startup stages")
+ 
+ 
++def _close_owned_startup_root(root, owner: threading.Thread,
++                              original: BaseException | None = None) -> None:
++    _pin_retired_interpreter(root, owner)
++    try:
++        root.destroy()
++    except tk.TclError:
++        pass
++    except BaseException as cleanup:
++        if original is None:
++            raise
++        _note_tk_cleanup_failure(original, cleanup)
++
++
+ def run_tk_startup(build, *, fullscreen: bool = False,
+                    stall_after_s: float | None = None) -> tuple:
+-    """Show startup stages while ``build()`` runs on a worker thread.
+-
+-    ``build`` receives a worker-safe ``report(stage_key)`` callback and
+-    returns the built wizard; anything it raises becomes the failure
+-    outcome. Returns ("wizard", wizard), ("failed", exc), or
+-    ("abandoned", None) when the owner closes the splash (Escape or window
+-    close), mirroring the wizard's close-means-stop contract. Raises
+-    RuntimeError (never aborts) when no display is reachable.
++    """Show staged startup on Tk while one worker builds the wizard.
++
++    Returns ("wizard", wizard), ("failed", exc), or ("abandoned", None).
++    Native display construction errors retain StartupDisplayUnavailable and
++    their original TclError cause. Every owned window closes on setup failure,
++    normal return, or propagated interruption.
+     """
+     from beamo_wipe.startup_stages import STALL_AFTER_S, StartupRun
+ 
++    _collect_retired_interpreters()
+     _ensure_tk_display()
+     run = StartupRun(
+         build,
+         stall_after_s=STALL_AFTER_S if stall_after_s is None else stall_after_s,
+     )
++    owner = threading.current_thread()
+     try:
+-        root = tk.Tk()
++        root = _new_owned_root(owner)
+     except tk.TclError as exc:
+         raise StartupDisplayUnavailable(f"no graphical display for startup stages: {exc}") from exc
++    _pin_retired_interpreter(root, owner)
++    original = None
++    try:
++        return _run_tk_startup_window(root, run, fullscreen=fullscreen)
++    except BaseException as error:
++        original = error
++        raise
++    finally:
++        try:
++            _close_owned_startup_root(root, owner, original)
++        finally:
++            root = None
++            _collect_retired_interpreters()
++
++
++def _run_tk_startup_window(root, run, *, fullscreen: bool) -> tuple:
+     root.title("Beamo Wipe")
+     if fullscreen:
+         root.geometry(f"{root.winfo_screenwidth()}x{root.winfo_screenheight()}+0+0")
+@@ -4981,6 +5017,7 @@
+     poll: Optional[Callable[[], None]] = poll_once
+     root.protocol("WM_DELETE_WINDOW", close)
+     root.bind("<Escape>", lambda _event: close())
++    original = None
+     try:
+         render()
+         run.start()
+@@ -4988,6 +5025,9 @@
+         # Bare X11 has no window manager to give this mapped startup input.
+         focus_after = root.after_idle(root.focus_force)
+         root.mainloop()
++    except BaseException as error:
++        original = error
++        raise
+     finally:
+         # The recursive callback otherwise retains itself and the destroyed
+         # Tcl interpreter in a cycle. Worker-thread GC can then finalize Tcl
+@@ -4996,16 +5036,20 @@
+         # Window destruction deletes Python's Tcl commands but does not
+         # remove pending after scripts. Retire our exact timers even when
+         # an external close already destroyed the startup widgets.
++        cleanup_error = None
+         for callback in (poll_after, focus_after):
+             if callback is not None:
+                 try:
+                     root.after_cancel(callback)
+                 except tk.TclError:
+                     pass
+-        try:
+-            root.destroy()
+-        except tk.TclError:
+-            pass
++                except BaseException as cleanup:
++                    if original is not None:
++                        _note_tk_cleanup_failure(original, cleanup)
++                    elif cleanup_error is None:
++                        cleanup_error = cleanup
++        if cleanup_error is not None:
++            raise cleanup_error
+     if outcome:
+         return outcome[0]
+     return ("abandoned", None)

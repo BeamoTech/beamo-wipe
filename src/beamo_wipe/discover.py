@@ -23,7 +23,7 @@ from beamo_wipe.models import (
     DiskKind,
     DiscoveryResult,
 )
-from beamo_wipe.safety import possible_hardware_alias
+from beamo_wipe.safety import canonical_wwn, meaningful_serial, protected_hardware_aliases
 
 IDENTITY_UNAVAILABLE = "Device identity unavailable"
 IDENTITY_UNCONFIRMED = "identity could not be confirmed"
@@ -185,7 +185,10 @@ def _as_int(value: Any) -> int:
     if isinstance(value, int):
         return value
     if isinstance(value, float):
-        return int(value)
+        try:
+            return int(value)
+        except OverflowError as exc:
+            raise ValueError("lsblk size is not finite") from exc
     text = str(value).strip()
     if not text:
         return 0
@@ -290,20 +293,30 @@ def _hardware_identity(value: Any, field: str) -> str:
 
 def _node_mountpoints(node: Dict[str, Any]) -> List[str]:
     found: List[str] = []
+
+    def add(value: Any) -> None:
+        if value is None or value == "":
+            return
+        if not isinstance(value, str):
+            raise ValueError("lsblk mountpoint has invalid shape")
+        cleaned = _clean(value)
+        if not cleaned:
+            # Display cleanup must not turn an observed mount into evidence
+            # that a disk is unmounted.
+            raise ValueError("lsblk mountpoint is malformed")
+        found.append(cleaned)
+
     mps = node.get("mountpoints")
     if isinstance(mps, list):
-        found.extend(_clean(x) for x in mps if x)
+        for value in mps:
+            add(value)
     elif mps is not None:
         # Some util-linux/schema variants emit a scalar. Treat it as mounted,
         # never as an empty list; malformed containers are rejected below.
         if not isinstance(mps, str):
             raise ValueError("lsblk mountpoints has invalid shape")
-        mp = _clean(mps)
-        if mp:
-            found.append(mp)
-    mp = _clean(node.get("mountpoint"))
-    if mp:
-        found.append(mp)
+        add(mps)
+    add(node.get("mountpoint"))
     for child in node.get("children") or []:
         found.extend(_node_mountpoints(child))
     return list(dict.fromkeys(x for x in found if x))
@@ -324,8 +337,10 @@ def flatten_blockdevices(
         if not isinstance(node, dict):
             raise ValueError("lsblk JSON node must be an object")
         yield node, parent
-        children = node.get("children") or []
-        if children and not isinstance(children, (list, tuple)):
+        children = node.get("children")
+        if children is None:
+            children = []
+        if not isinstance(children, (list, tuple)):
             raise ValueError("lsblk JSON children must be a list")
         for child_pair in flatten_blockdevices(children, node):
             yield child_pair
@@ -341,7 +356,7 @@ def paths_under(node: Dict[str, Any]) -> List[str]:
 def disk_nodes(blockdevices: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
     disks = []
     for node, _parent in flatten_blockdevices(blockdevices):
-        if (node.get("type") or "") == "disk":
+        if _node_type(node) == "disk":
             disks.append(node)
     return disks
 
@@ -387,6 +402,14 @@ def _disk_identity_contradicts(blockdevices: Sequence[Dict[str, Any]]) -> bool:
             continue
         if resolved:
             canonical = os.path.realpath(resolved)
+            if (
+                kind in {"loop", "ram"}
+                and canonical.startswith("/dev/")
+                and KERNEL_NAME_RE.fullmatch(canonical[5:])
+            ):
+                # A false virtual type would bypass physical mount/alias
+                # reconciliation for a kernel disk or partition path.
+                return True
             by_path.setdefault(canonical, set()).add((name, kind))
             if kind in {"disk", "rom"}:
                 physical_paths.add(canonical)
@@ -448,6 +471,20 @@ def normalize_mount_source(raw: str) -> str:
         KERNEL_NAME_RE.fullmatch(bare)
         or (bare.startswith("/dev/") and KERNEL_NAME_RE.fullmatch(bare[5:]))
     ):
+        # An actual alias wins over an annotation guess, even when its name
+        # begins with a kernel node. Resolution failures must not shorten it
+        # into a different disk's identity.
+        if src.startswith("/dev/"):
+            try:
+                os.lstat(src)
+            except FileNotFoundError:
+                pass
+            else:
+                return src
+            if os.path.realpath(src) != src:
+                return src
+        if not src.endswith("]") or len(src) <= len(bare) + 2:
+            return src  # Incomplete/empty annotations prove no kernel source.
         src = bare
     if src.startswith("/dev/"):
         return src
@@ -484,7 +521,7 @@ def _could_be_live_medium(node: Dict[str, Any]) -> bool:
 
 
 def _node_type(node: Mapping[str, Any]) -> str:
-    return (node.get("type") or "").lower()
+    return (node.get("type") or "").strip().lower()
 
 
 # lsblk hangs a mounted RAID or multipath volume off one member. The other
@@ -495,7 +532,7 @@ def _node_type(node: Mapping[str, Any]) -> str:
 # so DMRAID- is ``dmraid`` and md levels ``faulty`` / ``multipath`` do not
 # start with ``raid``. One PKNAME still hides the other member.
 _UNRESOLVED_HOLDER_TYPES = frozenset({
-    "mpath", "md", "dmraid", "faulty", "multipath",
+    "mpath", "md", "dmraid", "faulty", "multipath", "dm",
 })
 _STACKED_HOLDER_TYPES = frozenset({"lvm", "linear"})
 
@@ -504,23 +541,25 @@ def _mounted_holder_hides_members(kind: str) -> bool:
     return kind.startswith("raid") or kind in _UNRESOLVED_HOLDER_TYPES
 
 
-def _cover_mounted_identifier_aliases(disks: Sequence[Disk]) -> List[Disk]:
+def _cover_mounted_identifier_aliases(
+    disks: Sequence[Disk], *, physical_observations: Sequence[Disk] = ()
+) -> List[Disk]:
     """Copy a mount onto paths sharing a hardware identifier with that disk.
 
     Multipath can record the mount on one path only. A repeated meaningful
     WWN or serial makes another path ambiguous, so it must not stay selectable.
     """
-    mounted = [disk for disk in disks if disk.mountpoints]
+    mounted = [disk for disk in (*disks, *physical_observations) if disk.mountpoints]
     if not mounted:
         return list(disks)
+    mounts_by_path: Dict[str, List[str]] = {}
+    observations = (*disks, *physical_observations)
+    for source in mounted:
+        for alias in protected_hardware_aliases(source, observations):
+            mounts_by_path.setdefault(os.path.realpath(alias.path), []).extend(source.mountpoints)
     covered: List[Disk] = []
     for disk in disks:
-        extra = [
-            mountpoint
-            for source in mounted
-            if possible_hardware_alias(source, disk)
-            for mountpoint in source.mountpoints
-        ]
+        extra = mounts_by_path.get(os.path.realpath(disk.path), [])
         if not extra:
             covered.append(disk)
             continue
@@ -545,7 +584,11 @@ def _resolve_owner_disk(
     own_pk = ""
     if node.get("pkname") is not None:
         own_pk = _identity_text(node.get("pkname"), "pkname")
-    if _node_type(node) in {"disk", "rom"} and not own_pk:
+    if own_pk and parent is not None:
+        tree_name = _identity_text(parent.get("name"), "name")
+        if own_pk != tree_name:
+            return "", True
+    if _node_type(node) in {"disk", "rom"} and not own_pk and not _is_stacked_holder(node):
         if node.get("name") is None:
             return "", False
         return _identity_text(node.get("name"), "name"), False
@@ -566,7 +609,15 @@ def _resolve_owner_disk(
         ancestor_pk = ""
         if ancestor.get("pkname") is not None:
             ancestor_pk = _identity_text(ancestor.get("pkname"), "pkname")
-        if _node_type(ancestor) in {"disk", "rom"} and not ancestor_pk:
+        if ancestor_pk and tree_parent is not None:
+            tree_name = _identity_text(tree_parent.get("name"), "name")
+            if ancestor_pk != tree_name:
+                return "", True
+        if (
+            _node_type(ancestor) in {"disk", "rom"}
+            and not ancestor_pk
+            and not _is_stacked_holder(ancestor)
+        ):
             return current, False
         if ancestor_pk:
             current = ancestor_pk
@@ -599,7 +650,10 @@ def _reject_shared_device_ancestry(
     """
     groups: Dict[Tuple[str, str], List[Tuple[Dict[str, Any], Optional[Dict[str, Any]]]]] = {}
     for node, parent in flat_nodes:
-        if _node_type(node) in {"disk", "rom", "part", "loop", "ram"}:
+        kind = _node_type(node)
+        if kind in {"rom", "part", "loop", "ram"} or (
+            kind == "disk" and not _is_stacked_holder(node)
+        ):
             continue
         name = _identity_text(node.get("name"), "name")
         path = node_path(node)
@@ -916,13 +970,84 @@ def nesting_parent_path(
         return ""
 
 
+def _hardware_identity_key(value: str, field: str) -> str:
+    return canonical_wwn(value) if field == "wwn" else meaningful_serial(value).casefold()
+
+
+_HardwareObservation = Tuple[str, Tuple[str, ...], Optional[str], bool]
+_PhysicalIdentityContext = Tuple[Tuple[str, ...], Tuple[str, ...], bool, bool]
+_UnresolvedPhysicalIdentity = Tuple[str, Tuple[str, ...], Tuple[str, ...], bool]
+
+
+def _descendant_hardware_observations(
+    node: Dict[str, Any], field: str
+) -> Tuple[Tuple[str, ...], Optional[str]]:
+    values: List[str] = []
+    seen: set[str] = set()
+    malformed: Optional[str] = None
+
+    def visit(parent: Dict[str, Any]) -> None:
+        nonlocal malformed
+        for child in parent.get("children") or []:
+            if not isinstance(child, dict):
+                continue
+            try:
+                value = _hardware_identity(child.get(field), field)
+            except ValueError as exc:
+                if malformed is None:
+                    malformed = str(exc)
+            else:
+                if value and value not in seen:
+                    seen.add(value)
+                    values.append(value)
+            visit(child)
+
+    visit(node)
+    return tuple(values), malformed
+
+
+def _node_hardware_observation(node: Dict[str, Any], field: str) -> _HardwareObservation:
+    malformed: Optional[str] = None
+    try:
+        reported = _hardware_identity(node.get(field), field)
+    except ValueError as exc:
+        reported, malformed = "", str(exc)
+    identity = _hardware_identity_key(reported, field)
+    if identity:
+        # A meaningful physical-parent field remains authoritative.
+        return reported, (identity,), None, False
+    values, descendant_error = _descendant_hardware_observations(node, field)
+    keys: set[str] = set()
+    meaningful = ""
+    for value in values:
+        identity = _hardware_identity_key(value, field)
+        if identity:
+            keys.add(identity)
+            if not meaningful:
+                meaningful = value
+    selected = meaningful or reported or (values[0] if values else "")
+    return (
+        selected, tuple(sorted(keys)), malformed or descendant_error,
+        len(keys) > 1,
+    )
+
+
+def _node_hardware_identity(node: Dict[str, Any], field: str) -> str:
+    selected, _keys, malformed, conflict = _node_hardware_observation(node, field)
+    if malformed is not None:
+        raise ValueError(malformed)
+    if conflict:
+        raise ValueError(f"lsblk descendant {field} identity conflicts")
+    return selected
+
+
 def _first_descendant_field(node: Dict[str, Any], key: str) -> str:
+    if key in {"serial", "wwn"}:
+        return _node_hardware_identity({"children": node.get("children")}, key)
     for child in node.get("children") or []:
         if not isinstance(child, dict):
             continue
-        if key in {"serial", "wwn"}:
-            got = _hardware_identity(child.get(key), key)
-        elif key == "vendor":
+        if key == "vendor":
             got = _bounded_identity_metadata(child.get(key), key)
         else:
             got = _clean(child.get(key))
@@ -960,6 +1085,10 @@ _EFI_PARTTYPES = frozenset(
         "ef00",
     }
 )
+# GPT names such as "Benefits" contain the letters "efi" without naming
+# firmware. Preserve EFI/UEFI tokens separated by spaces or punctuation;
+# underscores count as separators, while Unicode letters remain word text.
+_EFI_PARTNAME_RE = re.compile(r"(?:^|[\W_])u?efi(?:$|[\W_])")
 _WINDOWS_OS_PARTTYPES = frozenset(
     {
         "de94bba4-06d1-4d40-a16a-bfd50179d6ac",  # Windows recovery
@@ -1027,7 +1156,7 @@ def _contents_from_evidence(
     )
     efi = bool(
         labels & {item.casefold() for item in FIRMWARE_LABELS}
-        or any("efi" in name or name == "esp" for name in partnames)
+        or any(_EFI_PARTNAME_RE.search(name) or name == "esp" for name in partnames)
         or parttypes & _EFI_PARTTYPES
     )
     posix = bool(fstypes & _POSIX_FS)
@@ -1245,6 +1374,10 @@ def node_to_disk(node: Dict[str, Any], is_boot: bool) -> Disk:
         # Callers skip the node (per-node, so one bad node cannot hide the
         # whole bus) with a diagnostic for maintainer triage.
         raise ValueError("lsblk node has no usable device path")
+    if _node_type(node) == "disk" and (not name or "/" in name):
+        # Flat PKNAME ancestry uses the kernel name, not a path alias. Do not
+        # mint a target whose partition evidence cannot bind to that name.
+        raise ValueError("lsblk disk has no canonical kernel name")
     label = _volume_label(node)
     raw_model = _bounded_identity_metadata(node.get("model"), "model")
     mountpoints = tuple(mp for mp in _node_mountpoints(node) if mp)
@@ -1256,8 +1389,7 @@ def node_to_disk(node: Dict[str, Any], is_boot: bool) -> Disk:
         path=path,
         name=name,
         model=raw_model or label or UNKNOWN_MODEL,
-        serial=_hardware_identity(node.get("serial"), "serial")
-        or _first_descendant_field(node, "serial"),
+        serial=_node_hardware_identity(node, "serial"),
         size_bytes=_as_int(node.get("size")),
         size_gb_label=size_gb_label(_as_int(node.get("size"))),
         kind=classify_kind(name, node.get("tran"), node.get("rota")),
@@ -1267,8 +1399,7 @@ def node_to_disk(node: Dict[str, Any], is_boot: bool) -> Disk:
         # lsblk RO missing (older fakes) means writable: exclude only an
         # explicit read-only flag, never on unknown.
         read_only=_as_bool(node.get("ro")) is True,
-        wwn=_hardware_identity(node.get("wwn"), "wwn")
-        or _first_descendant_field(node, "wwn"),
+        wwn=_node_hardware_identity(node, "wwn"),
         vendor=_bounded_identity_metadata(node.get("vendor"), "vendor")
         or _first_descendant_field(node, "vendor"),
         mountpoints=mountpoints,
@@ -1280,6 +1411,82 @@ def node_to_disk(node: Dict[str, Any], is_boot: bool) -> Disk:
         ),
         layout_id=_layout_id(node),
     )
+
+
+def _physical_observation(
+    node: Dict[str, Any], mounts: Tuple[str, ...]
+) -> Tuple[Disk, Tuple[bool, bool], _PhysicalIdentityContext]:
+    """Retain safety facts without depending on display or layout metadata."""
+    name = _identity_text(node.get("name"), "name")
+    size = _as_int(node.get("size"))
+    serial_facts = _node_hardware_observation(node, "serial")
+    wwn_facts = _node_hardware_observation(node, "wwn")
+    serial_invalid = serial_facts[2] is not None or serial_facts[3]
+    wwn_invalid = wwn_facts[2] is not None or wwn_facts[3]
+    observation = Disk(
+        path=node_path(node), name=name, model="", label="",
+        serial="" if serial_invalid else serial_facts[0],
+        wwn="" if wwn_invalid else wwn_facts[0],
+        size_bytes=size, size_gb_label=size_gb_label(size),
+        kind=classify_kind(name, node.get("tran"), node.get("rota")),
+        bus=classify_bus(node.get("tran")),
+        read_only=_as_bool(node.get("ro")) is True,
+        hotplug=_as_bool(node.get("rm")) is True or _as_bool(node.get("hotplug")) is True,
+        mountpoints=mounts,
+    )
+    # Parser-local context is never a target identity or confirmation peer.
+    # Deterministic candidate keys and booleans also distinguish conflicting
+    # duplicate physical observations without comparing exception objects.
+    context = (
+        serial_facts[1], wwn_facts[1],
+        serial_facts[2] is not None, wwn_facts[2] is not None,
+    )
+    return observation, (serial_invalid, wwn_invalid), context
+
+
+def _unresolved_identity_overlaps_protected(
+    boot: Optional[Disk], disks: Sequence[Disk],
+    physical_observations: Sequence[Disk],
+    unresolved: Sequence[_UnresolvedPhysicalIdentity],
+) -> bool:
+    if not unresolved:
+        return False
+    observations = (*disks, *physical_observations)
+    anchors = [disk for disk in observations if disk.mountpoints]
+    if boot is not None:
+        anchors.append(boot)
+    for anchor in anchors:
+        component = (anchor, *protected_hardware_aliases(anchor, observations))
+        paths = {
+            os.path.realpath(disk.path) for disk in component
+            if disk.path and disk.path != "/dev/"
+        }
+        anchor_wwn = canonical_wwn(anchor.wwn)
+        for path, serials, wwns, wwn_unknown in unresolved:
+            # The partial projection may already connect through its valid
+            # other field; unresolved identity cannot truncate that bridge.
+            if path and path in paths:
+                return True
+            serial_keys, wwn_keys = set(serials), set(wwns)
+            if anchor_wwn and wwn_keys and not wwn_unknown:
+                if anchor_wwn not in wwn_keys:
+                    continue
+                wwn_keys = {anchor_wwn}
+            for current in component:
+                current_wwn = canonical_wwn(current.wwn)
+                # Same rule as possible_hardware_alias: distinct known
+                # WWNs disambiguate serial reuse, including on a bridge.
+                if current_wwn and wwn_keys:
+                    if current_wwn in wwn_keys:
+                        return True
+                    # A malformed WWN leaves an unknown alternative. One
+                    # valid contrary candidate cannot disambiguate it.
+                    if not wwn_unknown:
+                        continue
+                serial = meaningful_serial(current.serial).casefold()
+                if serial and serial in serial_keys:
+                    return True
+    return False
 
 
 def labels_for(node: Dict[str, Any], *, exact: bool = False) -> List[str]:
@@ -1570,13 +1777,17 @@ def identify_boot_path(
         # ambiguous, including when both paths report a small SATA disk.
         hit = cmdline_hits[0]
         hit_aliases = _path_aliases(hit)
+        physical_nodes = [
+            node for node, _parent in flatten_blockdevices(blockdevices)
+            if _node_type(node) in {"disk", "rom"}
+        ]
         hit_node = None
-        for node in disk_nodes(blockdevices):
+        for node in physical_nodes:
             if hit_aliases & _path_aliases(node_path(node)):
                 hit_node = node
                 break
         if hit_node is not None:
-            for node in disk_nodes(blockdevices):
+            for node in physical_nodes:
                 if hit_aliases & _path_aliases(node_path(node)):
                     continue
                 if _could_be_live_medium(node):
@@ -1689,7 +1900,7 @@ def parse_lsblk_json(
                 raise ValueError("lsblk mounted ancestry contradicts PKNAME")
         if (
             kind in _UNRESOLVED_HOLDER_TYPES
-            or kind in _STACKED_HOLDER_TYPES
+            or _has_stacked_holder(candidate, parent, by_name)
             or kind in {"crypt", "dm", "bcache"}
             or kind.startswith("raid")
         ) and (
@@ -1712,6 +1923,8 @@ def parse_lsblk_json(
                 # An opened filesystem with no physical ancestry can belong
                 # to any candidate disk. Omitting it would hide contents and
                 # weaken the layout identity presented for confirmation.
+                if mounts:
+                    raise ValueError("lsblk mounted ancestry is unresolved")
                 raise ValueError("lsblk filesystem ancestry is unresolved")
         if mounts and _clean(candidate.get("fstype")).casefold() == "btrfs":
             # lsblk may show a mount on only one Btrfs member. A second
@@ -1810,6 +2023,61 @@ def parse_lsblk_json(
     _cover_shared_filesystem_members(flat_nodes, flat_mounts, by_name)
     _reject_shared_device_ancestry(flat_nodes, by_name)
 
+    # Hidden or malformed display rows can bridge a protected hardware alias,
+    # or contradict a writable same-path row. Retain their physical facts
+    # before display filtering, without turning them into picker candidates.
+    physical_observations = []
+    physical_by_path: Dict[
+        str, Tuple[Disk, Optional[bool], Tuple[bool, bool], _PhysicalIdentityContext]
+    ] = {}
+    unresolved_physical: List[_UnresolvedPhysicalIdentity] = []
+    repeated_physical_paths: set[str] = set()
+    for node, _parent in flat_nodes:
+        if _node_type(node) not in {"disk", "rom"}:
+            continue
+        name = _identity_text(node.get("name"), "name")
+        effective_mounts = tuple(dict.fromkeys((*_node_mountpoints(node), *flat_mounts.get(name, []))))
+        if effective_mounts:
+            # Keep the existing full refusal for malformed mounted metadata.
+            node_to_disk(node, is_boot=False)
+        try:
+            path = node_path(node)
+        except ValueError:
+            # An unusable physical path cannot be reconciled or repaired.
+            # Keep the direct parser API fail-closed without an escaped error.
+            return DiscoveryResult(error=_copy.IDENTIFY_ERROR, boot_identified=False)
+        if not path or path == "/dev/":
+            # Preserve hardware facts without repairing a path or validating
+            # unrelated display/size/transport data from this excluded row.
+            identity_node = {
+                "name": "", "path": path,
+                "serial": node.get("serial"), "wwn": node.get("wwn"),
+                "children": node.get("children"),
+            }
+            observation, invalid_ids, identity_context = _physical_observation(
+                identity_node, ()
+            )
+            physical_observations.append(observation)
+            if any(invalid_ids):
+                # Empty path means unknown, never a shared device identity.
+                unresolved_physical.append((
+                    "", identity_context[0], identity_context[1], identity_context[3]
+                ))
+            continue
+        observation, invalid_ids, identity_context = _physical_observation(node, effective_mounts)
+        canonical = os.path.realpath(path)
+        signature = (observation, _as_bool(node.get("ro")), invalid_ids, identity_context)
+        previous_physical = physical_by_path.get(canonical)
+        if previous_physical is not None and previous_physical != signature:
+            raise ValueError("lsblk has conflicting physical observations for one disk")
+        if previous_physical is not None:
+            repeated_physical_paths.add(canonical)
+        physical_by_path[canonical] = signature
+        physical_observations.append(observation)
+        if any(invalid_ids):
+            unresolved_physical.append((
+                canonical, identity_context[0], identity_context[1], identity_context[3]
+            ))
     disks: List[Disk] = []
     identified_boot: Optional[Disk] = None
     for node in disk_nodes(blockdevices):
@@ -1875,14 +2143,22 @@ def parse_lsblk_json(
     boot = identified_boot
     if require_boot and boot is None:
         return DiscoveryResult(error=_copy.IDENTIFY_ERROR, boot_identified=False)
+    if _unresolved_identity_overlaps_protected(
+        boot, disks, physical_observations, unresolved_physical
+    ):
+        raise ValueError("lsblk unresolved physical identity overlaps protected storage")
     from beamo_wipe.safety import is_wipeable_disk
 
     # A distinct path sharing the boot medium's WWN, or its serial without
     # distinct WWNs, may be an alias. Mark ambiguous paths as protected.
     if boot is not None:
+        boot_alias_paths = {
+            os.path.realpath(d.path)
+            for d in protected_hardware_aliases(boot, (*disks, *physical_observations))
+        }
         disks = [
             replace(d, is_boot=True)
-            if possible_hardware_alias(boot, d)
+            if os.path.realpath(d.path) in boot_alias_paths
             else d
             for d in disks
         ]
@@ -1898,12 +2174,17 @@ def parse_lsblk_json(
             raise ValueError("lsblk has conflicting observations for one disk")
         observed_disks[canonical] = disk
     # A second path with a mounted disk's identifier may be the same LUN.
-    disks = _cover_mounted_identifier_aliases(disks)
+    disks = _cover_mounted_identifier_aliases(
+        disks, physical_observations=physical_observations
+    )
     if boot is not None:
         boot = next((item for item in disks if item.path == boot.path), boot)
     # Retain even identical rows: final identity validation requires exactly
     # one observation and must continue refusing an ambiguous target.
     selectable = tuple(d for d in disks if is_wipeable_disk(d))
+    for path in repeated_physical_paths:
+        if sum(os.path.realpath(d.path) == path for d in selectable) == 1:
+            raise ValueError("lsblk physical observations cannot establish a unique target")
     # Health reporting: empty selectable while boot is identified is fail-closed
     # but opaque. Distinguish "no disks on bus" from "all nodes hidden".
     if boot is not None and not selectable and blockdevices:
@@ -1958,6 +2239,7 @@ def parse_lsblk_json(
         boot=boot,
         error=None,
         boot_identified=True,
+        physical_observations=tuple(physical_observations),
     )
 
 

@@ -15,7 +15,8 @@ def _io_status(log: str) -> str:
 
 def test_failure_phrase_in_erased_disk_model_does_not_override_status():
     log = (
-        "Error Summary\n sda | 0 | 0 | 0\n***\n"
+        "******************************** Error Summary *********************************\n"
+        " sda | 0 | 0 | 0\n***\n"
         + STATUS + " sda | Erased | 120MB/s | 01:00:00 | model >>> FAILURE! <<<\n"
     )
 
@@ -25,7 +26,8 @@ def test_failure_phrase_in_erased_disk_model_does_not_override_status():
 
 def test_foreign_failed_row_with_target_name_in_model_is_not_target_failure():
     log = (
-        "Error Summary\n sda | 0 | 0 | 0\n***\n"
+        "******************************** Error Summary *********************************\n"
+        " sda | 0 | 0 | 0\n***\n"
         + STATUS
         + " sdb |-FAILED-| 120MB/s | 01:00:00 | model /dev/sda\n"
         " sda | Erased | 120MB/s | 01:00:00 | model\n"

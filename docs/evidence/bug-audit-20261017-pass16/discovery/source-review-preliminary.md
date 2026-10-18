@@ -1,0 +1,36 @@
+# Pass16 discovery/safety bounded source review (2026-10-17)
+
+Scope: discover.py, safety.py, models.py, identity.py, methods.py, wizard.py authorization/rediscovery path; related existing discovery/duplicate/boot competition fixtures and pass15 evidence. Source reads only so far. No product edits or runtime tests before root admission.
+
+Prepared original probes:
+
+- `candidate-probe.py`: numerical size malformed/public/direct/native-metadata-stub routes, plus same-path full rediscovery identity observations hidden behind malformed display/layout metadata. Loader permits standard JSON numeric exponent overflow (1e999 becomes an infinite float), plus Python decoder's nonstandard Infinity constants; `_as_int` directly int-converts float before its catches, public discover does not catch OverflowError. Ordinary integer/zero/negative/floating/string/null controls prepared. Actual util-linux emits integer byte sizes; this is malformed-input robustness, not a claim that normal lsblk produces Infinity.
+- `optical-cmdline-probe.py`: stale optical cmdline hit bypasses competing physical-medium check because hit lookup uses disk_nodes() which excludes rom. Label fallback already scans both disk/rom, and mounted authoritative sources intentionally return before fallback. Public fake discovery matrix: 144 total,72 absent-mount candidates and72 authoritative mount controls. Real boot-USB reachability requires missing/transiently unavailable discovery mount evidence and a stale optical cmdline source; no normal engine invocation or real environment is alleged.
+
+Source dispositions pending runtime proof:
+
+- Existing boot uncertainty, duplicate JSON, strict type/name/path contradiction, loop/ram spoof, partition ancestry, shared-filesystem/mapper ancestry, Btrfs/RAID/LVM/bcache mounted membership, serial/WWN closure and pass15 safety-only physical context were read. No extra candidate is asserted from these paths yet.
+- Current final guard includes safety-only observations without supplying selectable/token peers. Invalid serial or WWN field retains a valid other field; same-path invalid flags distinguish missing vs malformed. This pass will not remove these fail-closed laws.
+- Owner checkbox strict `is True`, exact current token through shared confirmation specification, separate final action after countdown, operation-key identity/method/listed-peer binding, fresh live rediscovery and unique target identity, and explicit request method mapping read. No supported new defect identified in the reviewed authorization path.
+- Current whole-disk regex, target/boot block-node/size/local-transport checks, one-target autonuke/exclude construction boundary and conservative transport restrictions remain in place. No engine/method/countdown/pin/claim change proposed.
+- `json.loads`/tree recursion resource bounds and untrusted schema container errors were considered, but no broad speculative rewrite is proposed. Proven cases only should drive edits.
+
+Historical pass8/pass9 attribution blockers remain; no commit/push/PR/release/hosted/native/hardware acceptance is authorized by this note.
+
+Narrow repair options to assess only after original proofs:
+
+- Optical competition: `_resolve_boot_path` already returns a known physical disk/rom owner; scan every flattened physical disk/rom for `_could_be_live_medium` rather than gating competition on a type=disk hit. No need to change picker disk_nodes semantics. Preserve zero-size noncompeting rows and authoritative mount precedence.
+- Numeric: make finite/unparseable values reach the existing safe-zero result or reject malformed sizes before conversion; do not merely add an unbounded catch around arbitrary code. Preserve actual integer bytes and ordinary supported number-string controls. Public native-metadata-stub and injected paths must agree without calling native tools.
+- Same-path contradictions: reconcile the full rediscovery identity observation (including invalid-vs-valid metadata) before per-row display filtering, while retaining valid unrelated standalone rows and safety alias context. Avoid using presentation placeholders as equality evidence. A strict duplicate-only refusal must not turn every malformed standalone target into a whole-inventory failure; preserve pass15 per-row skip contract and mounted full refusal.
+
+## Original proof disposition after admitted runtime lane
+
+Both prepared probes ran sequentially under root admission, normal exit0; exact commands, timings, hashes and independent assertions are in `original-proof-receipt.json`. Lane released immediately after the two commands. No native effects or product/test edits.
+
+**Numeric candidate rejected/nonfinding.** The final broad `except Exception` in discover was missed in the first truncated source read. All24public-route cases return normally, including10closed nonfinite cases. Five direct-parser nonfinite cases raise four OverflowError/one ValueError; parser already permits malformed input exceptions and there is no established direct nonfinite-totality contract. No change is warranted from this trace.
+
+**Same-path observation loss proved.**64cases:16normal fully valid conflicting duplicates refuse;48malformed duplicates leave a single selectable `/dev/sda`, token128 and accepted assert_disk_identity/assert_boot_excluded.42cases preserve a separately valid changed vendor/model/layout field while another field is malformed. Remaining six are valid-vs-invalid same-path identity observations without an independently valid changed field. Either way omitted rows must not manufacture uniqueness. Actual core IDs,size,bus,RO remain identical; this proves the remaining gap beyond pass15 physical-fact contradiction checks. Strong representative: different whole-disk UUID plus overlong model in the second canonical-path row; independent row order does not change outcome.
+
+**Optical cmdline competition proved.**144cases:72missing-mount candidates all wrongly identify `/dev/sr0`;60actually list/confirm `/dev/sda`,12empty-bus controls remain unselectable through the separate unproven-transport gate.72authoritative live-optical mount controls correctly identify that medium (60targets selectable,12empty-bus excluded). Direct device, LABEL and UUID source forms share the omission. Zero/nonzero optical and reversed inventory order do not alter it. Real-device/native or engine reachability was not exercised.
+
+Preferred duplicate-only repair: do not blanket reject physical duplicates. Existing `test_audit_20260907_discovery_duplicates.py` contracts retain identical duplicated targets as two rows so final identity refuses, and retain duplicate boot/RO observations without sacrificing an unrelated target. At the point initial selectable candidates are known, a path with one surviving candidate but more than one physical observation is not unique. Refuse that inventory/path before returning it. This preserves malformed standalone skips and complete identical duplicates, and avoids counting the special optical boot fallback which is never a candidate. Consider shared physical multiplicity enforcement in both final identity APIs only if needed for independently constructed discovery results; normal discovery can enforce the invariant once.

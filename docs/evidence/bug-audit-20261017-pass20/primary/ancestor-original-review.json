@@ -1,0 +1,11 @@
+{
+  "cases": 44,
+  "assertion_failures": 4,
+  "passing_controls": 40,
+  "failed_ids": [
+    "test_opened_mount_preserves_ancestor_member_uncertainty[injected-flat-dm]",
+    "test_opened_mount_preserves_ancestor_member_uncertainty[injected-nested-dm]",
+    "test_opened_mount_preserves_ancestor_member_uncertainty[production-metadata-stub-flat-dm]",
+    "test_opened_mount_preserves_ancestor_member_uncertainty[production-metadata-stub-nested-dm]"
+  ]
+}

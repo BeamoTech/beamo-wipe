@@ -1,0 +1,26 @@
+{
+  "private-graph/src/beamo_wipe.egg-info/PKG-INFO": {
+    "retained_path": "private-graph/src/beamo_wipe.egg-info/PKG-INFO",
+    "sha256": "d4311ff70633b70d7eb83fb4f7164974d461752119d5d7ea62d94ec361c80c97"
+  },
+  "private-graph/src/beamo_wipe.egg-info/SOURCES.txt": {
+    "retained_path": "private-graph/src/beamo_wipe.egg-info/SOURCES.txt",
+    "sha256": "da62212d3d0cc4449e44c09bb237cbd5c6854feac42a3385f9b9b1e5aae14099"
+  },
+  "private-graph/src/beamo_wipe.egg-info/dependency_links.txt": {
+    "retained_path": "private-graph/src/beamo_wipe.egg-info/dependency_links.txt",
+    "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  "private-graph/src/beamo_wipe.egg-info/entry_points.txt": {
+    "retained_path": "private-graph/src/beamo_wipe.egg-info/entry_points.txt",
+    "sha256": "5a4e5e66d094dd199a3b8d5bcbdc1fe0fb77c5676d8611fc55f81584fce3af6e"
+  },
+  "private-graph/src/beamo_wipe.egg-info/requires.txt": {
+    "retained_path": "private-graph/src/beamo_wipe.egg-info/requires.txt",
+    "sha256": "9b1fa6eb811ee0ce2fce357ace6a1c1bd1a5dceed234658f0a53ce417d970234"
+  },
+  "private-graph/src/beamo_wipe.egg-info/top_level.txt": {
+    "retained_path": "private-graph/src/beamo_wipe.egg-info/top_level.txt",
+    "sha256": "4c5f7f6e30338f2a586e994ef9cb328a5824a098aa32242f23e8bda596ca58b5"
+  }
+}

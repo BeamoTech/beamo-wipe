@@ -1,0 +1,1234 @@
+{
+  "cases": 578,
+  "intended_failures": 298,
+  "passing_controls": 280,
+  "errors": 0,
+  "skips": 0,
+  "exact_missing_SafetyError_failures": 60,
+  "intended_AssertionErrors": 238,
+  "per_module": {
+    "tests.test_empty_inventory_wheel_pass15": {
+      "failed": 32,
+      "passed": 32
+    },
+    "tests.test_hidden_positive_record_pass15": {
+      "passed": 32,
+      "failed": 40
+    },
+    "tests.test_physical_observation_context_pass15": {
+      "passed": 199,
+      "failed": 205
+    },
+    "tests.test_utf8_log_snapshot_bounds_pass15": {
+      "passed": 17,
+      "failed": 21
+    }
+  },
+  "per_function": {
+    "test_inventory_wheel_scrolls_only_its_reader": 24,
+    "test_empty_inventory_scrollbar_keeps_its_own_wheel_command": 8,
+    "test_hidden_positive_requires_complete_target_record": 22,
+    "test_malformed_positive_is_unavailable_in_runner_evidence": 18,
+    "test_omitted_physical_bridge_keeps_boot_and_mount_protection": 120,
+    "test_final_boot_guard_rechecks_retained_physical_evidence": 60,
+    "test_display_error_cannot_hide_conflicting_physical_observation": 20,
+    "test_conflicting_observation_refusal_can_recover_on_clean_retry": 1,
+    "test_unusable_duplicate_id_cannot_compare_equal_to_missing": 4,
+    "test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip": 18,
+    "test_bounded_invalid_utf8_capture_preserves_terminal_roundtrip": 3
+  },
+  "reviewed_failures": [
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[button-down-False-empty-small-standard]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[button-down-False-empty-small-extra]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[button-down-False-empty-wide-large]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[button-down-True-empty-small-standard]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[button-down-True-empty-small-extra]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[button-down-True-empty-wide-large]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[button-up-False-empty-small-standard]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[button-up-False-empty-small-extra]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[button-up-False-empty-wide-large]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[button-up-True-empty-small-standard]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[button-up-True-empty-small-extra]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[button-up-True-empty-wide-large]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[wheel-down-False-empty-small-standard]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[wheel-down-False-empty-small-extra]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[wheel-down-False-empty-wide-large]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[wheel-down-True-empty-small-standard]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[wheel-down-True-empty-small-extra]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[wheel-down-True-empty-wide-large]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[wheel-up-False-empty-small-standard]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[wheel-up-False-empty-small-extra]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[wheel-up-False-empty-wide-large]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[wheel-up-True-empty-small-standard]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[wheel-up-True-empty-small-extra]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_inventory_wheel_scrolls_only_its_reader[wheel-up-True-empty-wide-large]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_empty_inventory_scrollbar_keeps_its_own_wheel_command[button-down-False]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_empty_inventory_scrollbar_keeps_its_own_wheel_command[button-down-True]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_empty_inventory_scrollbar_keeps_its_own_wheel_command[button-up-False]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_empty_inventory_scrollbar_keeps_its_own_wheel_command[button-up-True]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_empty_inventory_scrollbar_keeps_its_own_wheel_command[wheel-down-False]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_empty_inventory_scrollbar_keeps_its_own_wheel_command[wheel-down-True]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_empty_inventory_scrollbar_keeps_its_own_wheel_command[wheel-up-False]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_empty_inventory_wheel_pass15::test_empty_inventory_scrollbar_keeps_its_own_wheel_command[wheel-up-True]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[ uncertain-/dev/sda]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[ uncertain-/dev/nvme0n1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[ uncertain-/dev/mmcblk0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[ (indeterminate)-/dev/sda]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[ (indeterminate)-/dev/nvme0n1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[ (indeterminate)-/dev/mmcblk0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[: unknown-/dev/sda]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[: unknown-/dev/nvme0n1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[: unknown-/dev/mmcblk0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[\\x00-/dev/sda]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[\\x00-/dev/nvme0n1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[\\x00-/dev/mmcblk0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[\\u2028foreign-/dev/sda]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[\\u2028foreign-/dev/nvme0n1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[\\u2028foreign-/dev/mmcblk0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[/part mentions /dev/sda-/dev/sda]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[ -- HIDDEN SECTORS INDETERMINATE!-/dev/sda]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[ -- HIDDEN SECTORS INDETERMINATE!-/dev/nvme0n1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[ -- HIDDEN SECTORS INDETERMINATE!-/dev/mmcblk0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[, except an unknown HPA-/dev/sda]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[, except an unknown HPA-/dev/nvme0n1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_hidden_positive_requires_complete_target_record[, except an unknown HPA-/dev/mmcblk0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[False-everyday-/dev/sda]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[False-everyday-/dev/nvme0n1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[False-everyday-/dev/mmcblk0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[False-extra-/dev/sda]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[False-extra-/dev/nvme0n1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[False-extra-/dev/mmcblk0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[False-quick_zero-/dev/sda]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[False-quick_zero-/dev/nvme0n1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[False-quick_zero-/dev/mmcblk0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[True-everyday-/dev/sda]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[True-everyday-/dev/nvme0n1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[True-everyday-/dev/mmcblk0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[True-extra-/dev/sda]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[True-extra-/dev/nvme0n1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[True-extra-/dev/mmcblk0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[True-quick_zero-/dev/sda]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[True-quick_zero-/dev/nvme0n1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_hidden_positive_record_pass15::test_malformed_positive_is_unavailable_in_runner_evidence[True-quick_zero-/dev/mmcblk0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-rom-root_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-rom-root_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-rom-root_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-rom-root_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-rom-root_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-rom-root_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-rom-leaf_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-rom-leaf_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-rom-leaf_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-rom-leaf_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-rom-leaf_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-rom-leaf_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-emmc_boot-root_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-emmc_boot-root_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-emmc_boot-root_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-emmc_boot-root_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-emmc_boot-root_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-emmc_boot-root_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-emmc_boot-leaf_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-emmc_boot-leaf_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-emmc_boot-leaf_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-emmc_boot-leaf_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-emmc_boot-leaf_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-emmc_boot-leaf_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-hidden_name-root_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-hidden_name-root_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-hidden_name-root_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-hidden_name-root_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-hidden_name-root_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-hidden_name-root_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-hidden_name-leaf_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-hidden_name-leaf_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-hidden_name-leaf_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-hidden_name-leaf_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-hidden_name-leaf_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-hidden_name-leaf_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_model-root_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_model-root_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_model-root_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_model-root_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_model-root_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_model-root_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_model-leaf_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_model-leaf_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_model-leaf_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_model-leaf_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_model-leaf_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_model-leaf_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_layout_label-root_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_layout_label-root_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_layout_label-root_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_layout_label-root_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_layout_label-root_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_layout_label-root_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_layout_label-leaf_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_layout_label-leaf_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_layout_label-leaf_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_layout_label-leaf_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_layout_label-leaf_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[boot-overlong_layout_label-leaf_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-rom-root_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-rom-root_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-rom-root_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-rom-root_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-rom-root_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-rom-root_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-rom-leaf_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-rom-leaf_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-rom-leaf_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-rom-leaf_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-rom-leaf_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-rom-leaf_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-emmc_boot-root_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-emmc_boot-root_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-emmc_boot-root_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-emmc_boot-root_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-emmc_boot-root_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-emmc_boot-root_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-emmc_boot-leaf_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-emmc_boot-leaf_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-emmc_boot-leaf_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-emmc_boot-leaf_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-emmc_boot-leaf_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-emmc_boot-leaf_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-hidden_name-root_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-hidden_name-root_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-hidden_name-root_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-hidden_name-root_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-hidden_name-root_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-hidden_name-root_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-hidden_name-leaf_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-hidden_name-leaf_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-hidden_name-leaf_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-hidden_name-leaf_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-hidden_name-leaf_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-hidden_name-leaf_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_model-root_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_model-root_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_model-root_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_model-root_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_model-root_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_model-root_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_model-leaf_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_model-leaf_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_model-leaf_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_model-leaf_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_model-leaf_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_model-leaf_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_layout_label-root_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_layout_label-root_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_layout_label-root_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_layout_label-root_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_layout_label-root_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_layout_label-root_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_layout_label-leaf_missing-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_layout_label-leaf_missing-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_layout_label-leaf_missing-order2]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_layout_label-leaf_missing-order3]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_layout_label-leaf_missing-order4]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_omitted_physical_bridge_keeps_boot_and_mount_protection[mounted-overlong_layout_label-leaf_missing-order5]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[rom-root_missing-order0]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[rom-root_missing-order1]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[rom-root_missing-order2]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[rom-root_missing-order3]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[rom-root_missing-order4]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[rom-root_missing-order5]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[rom-leaf_missing-order0]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[rom-leaf_missing-order1]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[rom-leaf_missing-order2]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[rom-leaf_missing-order3]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[rom-leaf_missing-order4]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[rom-leaf_missing-order5]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[emmc_boot-root_missing-order0]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[emmc_boot-root_missing-order1]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[emmc_boot-root_missing-order2]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[emmc_boot-root_missing-order3]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[emmc_boot-root_missing-order4]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[emmc_boot-root_missing-order5]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[emmc_boot-leaf_missing-order0]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[emmc_boot-leaf_missing-order1]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[emmc_boot-leaf_missing-order2]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[emmc_boot-leaf_missing-order3]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[emmc_boot-leaf_missing-order4]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[emmc_boot-leaf_missing-order5]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[hidden_name-root_missing-order0]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[hidden_name-root_missing-order1]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[hidden_name-root_missing-order2]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[hidden_name-root_missing-order3]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[hidden_name-root_missing-order4]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[hidden_name-root_missing-order5]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[hidden_name-leaf_missing-order0]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[hidden_name-leaf_missing-order1]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[hidden_name-leaf_missing-order2]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[hidden_name-leaf_missing-order3]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[hidden_name-leaf_missing-order4]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[hidden_name-leaf_missing-order5]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_model-root_missing-order0]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_model-root_missing-order1]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_model-root_missing-order2]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_model-root_missing-order3]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_model-root_missing-order4]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_model-root_missing-order5]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_model-leaf_missing-order0]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_model-leaf_missing-order1]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_model-leaf_missing-order2]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_model-leaf_missing-order3]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_model-leaf_missing-order4]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_model-leaf_missing-order5]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_layout_label-root_missing-order0]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_layout_label-root_missing-order1]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_layout_label-root_missing-order2]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_layout_label-root_missing-order3]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_layout_label-root_missing-order4]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_layout_label-root_missing-order5]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_layout_label-leaf_missing-order0]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_layout_label-leaf_missing-order1]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_layout_label-leaf_missing-order2]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_layout_label-leaf_missing-order3]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_layout_label-leaf_missing-order4]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_final_boot_guard_rechecks_retained_physical_evidence[overlong_layout_label-leaf_missing-order5]",
+      "kind": "expected missing SafetyError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[read_only-overlong_model-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[read_only-overlong_model-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[read_only-overlong_layout_label-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[read_only-overlong_layout_label-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[serial-overlong_model-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[serial-overlong_model-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[serial-overlong_layout_label-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[serial-overlong_layout_label-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[wwn-overlong_model-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[wwn-overlong_model-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[wwn-overlong_layout_label-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[wwn-overlong_layout_label-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[size-overlong_model-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[size-overlong_model-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[size-overlong_layout_label-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[size-overlong_layout_label-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[bus-overlong_model-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[bus-overlong_model-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[bus-overlong_layout_label-order0]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_display_error_cannot_hide_conflicting_physical_observation[bus-overlong_layout_label-order1]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_conflicting_observation_refusal_can_recover_on_clean_retry",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_unusable_duplicate_id_cannot_compare_equal_to_missing[order0-serial]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_unusable_duplicate_id_cannot_compare_equal_to_missing[order0-wwn]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_unusable_duplicate_id_cannot_compare_equal_to_missing[order1-serial]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_physical_observation_context_pass15::test_unusable_duplicate_id_cannot_compare_equal_to_missing[order1-wwn]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U00E9-cut1-everyday]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U00E9-cut1-extra]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U00E9-cut1-quick_zero]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U20AC-cut1-everyday]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U20AC-cut1-extra]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U20AC-cut1-quick_zero]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U20AC-cut2-everyday]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U20AC-cut2-extra]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U20AC-cut2-quick_zero]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U1F600-cut1-everyday]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U1F600-cut1-extra]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U1F600-cut1-quick_zero]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U1F600-cut2-everyday]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U1F600-cut2-extra]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U1F600-cut2-quick_zero]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U1F600-cut3-everyday]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U1F600-cut3-extra]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_valid_utf8_tail_boundaries_preserve_terminal_roundtrip[U1F600-cut3-quick_zero]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_bounded_invalid_utf8_capture_preserves_terminal_roundtrip[everyday]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_bounded_invalid_utf8_capture_preserves_terminal_roundtrip[extra]",
+      "kind": "intended AssertionError"
+    },
+    {
+      "id": "tests.test_utf8_log_snapshot_bounds_pass15::test_bounded_invalid_utf8_capture_preserves_terminal_roundtrip[quick_zero]",
+      "kind": "intended AssertionError"
+    }
+  ]
+}

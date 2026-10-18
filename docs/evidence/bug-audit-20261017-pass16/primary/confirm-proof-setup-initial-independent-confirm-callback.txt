@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/tmp/pass16-primary/independent-confirm-callback.py", line 48, in <module>
+    entry = next(widget for widget in descendants(app.root) if isinstance(widget, tk.Entry))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+StopIteration

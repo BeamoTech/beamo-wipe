@@ -1,0 +1,21 @@
+{
+  "command": [
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "160",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "/tmp/beamo-pass18-python/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "docs/evidence/bug-audit-20261017-pass18/discovery/malformed_pathless_probe.py",
+    "--junitxml=/tmp/pass18-primary/malformed-pathless-proof.xml"
+  ],
+  "exit_code": 2,
+  "started_utc": "2026-10-17T06:46:57.937230+00:00",
+  "ended_utc": "2026-10-17T06:46:58.425714+00:00"
+}

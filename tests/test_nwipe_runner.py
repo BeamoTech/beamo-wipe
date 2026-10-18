@@ -633,7 +633,7 @@ def test_evaluate_nwipe_sigusr1_success_before_thread_is_not_finished():
     from beamo_wipe.nwipe_runner import evaluate_nwipe_completion
 
     log = (
-        "Program options are set as follows\n"
+        "[2026/10/16 12:00:00] info: Program options are set as follows\n"
         "/dev/vda: Success\n"
         "Nwipe successfully completed. See summary table for details.\n"
     )
@@ -647,7 +647,7 @@ def test_evaluate_nwipe_geometry_fail_with_sigusr1_success_is_not_finished():
     from beamo_wipe.nwipe_runner import evaluate_nwipe_completion
 
     log = (
-        "Program options are set as follows\n"
+        "[2026/10/16 12:00:00] info: Program options are set as follows\n"
         "/dev/vda: Success\n"
         "No sane device geometry for '/dev/vda'.\n"
         "      vda |INSANITY|        0 | 00:00:00 | QEMU/HARDDISK\n"
@@ -704,8 +704,8 @@ def test_nwipe_accepts_sigusr1_only_after_options_log():
 
     assert not nwipe_accepts_sigusr1("")
     assert not nwipe_accepts_sigusr1("nwipe version 0.42\nAuto-selected fastest PRNG: AES\n")
-    assert nwipe_accepts_sigusr1("Program options are set as follows...\n")
-    assert nwipe_accepts_sigusr1("Using cached I/O on device '/dev/vda'.\n")
+    assert nwipe_accepts_sigusr1("[2026/10/16 12:00:00] info: Program options are set as follows...\n")
+    assert nwipe_accepts_sigusr1("[2026/10/16 12:00:00] info: Using cached I/O on device '/dev/vda'.\n")
 
 
 def test_sigusr1_not_sent_during_startup_before_nwipe_masks_it(tmp_path, monkeypatch):
@@ -782,7 +782,7 @@ def test_sigusr1_sent_after_nwipe_ready_marker(tmp_path, monkeypatch):
     try:
         runner.poll(req)
         assert not runner._sigusr1_armed and not signals
-        (tmp_path / "nwipe-vda.log").write_text("Program options are set as follows...\n")
+        (tmp_path / "nwipe-vda.log").write_text("[2026/10/16 12:00:00] info: Program options are set as follows...\n")
         runner.poll(req)
         assert runner._sigusr1_armed
         assert runner._last_sigusr1 == 3.0

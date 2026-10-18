@@ -1,0 +1,32 @@
+{
+  "finding": "prefixed summary record/context dropped only in large-log projection",
+  "original_proof": {
+    "name": "original-summary-context",
+    "tests": 81,
+    "failures": 25,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 3.338
+  },
+  "fixed_adjacent": {
+    "name": "fixed-adjacent",
+    "tests": 268,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 60.177
+  },
+  "source": {
+    "src/beamo_wipe/nwipe_runner.py": "10dddb6380568da269e2a773f0c2250e947d206985ac6cbb275456ef6c587943",
+    "tests/test_runner_projection_summary_context_pass11.py": "6d96aea29951521b15725119a3d0107fab502886b0ee002096382ed937071173"
+  },
+  "no_additional_proved_finding": true,
+  "test_slot": "retired",
+  "unrun": [
+    "parent independent review",
+    "full project gate",
+    "fixed repeat of10case original trace",
+    "ISO/native/physical qualification"
+  ],
+  "historical_attribution": "SIGTERM and timing causes remain unknown"
+}

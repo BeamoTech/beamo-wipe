@@ -1,0 +1,165 @@
+FF...                                                                    [100%]
+=================================== FAILURES ===================================
+_________ test_usb_model_cannot_add_a_line_to_success_receipt[\u2028] __________
+
+node = {'children': [{'children': [], 'fstype': 'vfat', 'fsver': 'FAT32', 'model': None, ...}], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+
+    def _fingerprint_node(
+        node: Mapping[str, Any], *, export_parent: bool = False
+    ) -> DeviceFingerprint:
+        path = _strict_text(node, "path", required=True)
+        path_pattern = DISK_PATH_RE if export_parent else ROOT_PATH_RE
+        if not path_pattern.fullmatch(path):
+            raise SafetyError(USB_DEVICE_PATH_UNSUPPORTED)
+        try:
+            # Discovery trims hardware padding before recording the baseline.
+            # Reuse its bounded parser; paths and volume metadata stay exact.
+            hardware = {
+>               key: _hardware_identity(node.get(key), key)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                for key in ("model", "serial", "wwn")
+            }
+
+src/beamo_wipe/support_export.py:734:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+value = 'USB\u2028Safe to remove the target disk', field = 'model'
+
+    def _hardware_identity(value: Any, field: str) -> str:
+        """Keep a hardware ID intact or refuse it; an abbreviated ID is unsafe."""
+        if value is None:
+            return ""
+        if not isinstance(value, str):
+            raise ValueError(f"lsblk {field} must be text")
+        if any(_unsafe_text_character(ch) for ch in value):
+>           raise ValueError(f"lsblk {field} contains control characters")
+E           ValueError: lsblk model contains control characters
+
+src/beamo_wipe/discover.py:284: ValueError
+
+The above exception was the direct cause of the following exception:
+
+separator = '\u2028'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    def test_usb_model_cannot_add_a_line_to_success_receipt(separator):
+        payload, disks = _payload()
+        payload["blockdevices"][2]["model"] = (
+            "USB" + separator + "Safe to remove the target disk"
+        )
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_report_destination_unicode_pass29.py:28:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/beamo_wipe/support_export.py:987: in select_export_volume
+    _require_baseline_present(roots, baseline)
+src/beamo_wipe/support_export.py:960: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [{'children': [], 'fstype': 'vfat', 'fsver': 'FAT32', 'model': None, ...}], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+
+    def _fingerprint_node(
+        node: Mapping[str, Any], *, export_parent: bool = False
+    ) -> DeviceFingerprint:
+        path = _strict_text(node, "path", required=True)
+        path_pattern = DISK_PATH_RE if export_parent else ROOT_PATH_RE
+        if not path_pattern.fullmatch(path):
+            raise SafetyError(USB_DEVICE_PATH_UNSUPPORTED)
+        try:
+            # Discovery trims hardware padding before recording the baseline.
+            # Reuse its bounded parser; paths and volume metadata stay exact.
+            hardware = {
+                key: _hardware_identity(node.get(key), key)
+                for key in ("model", "serial", "wwn")
+            }
+        except ValueError as exc:
+>           raise SafetyError(USB_META_MALFORMED) from exc
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+src/beamo_wipe/support_export.py:738: SafetyError
+_________ test_usb_model_cannot_add_a_line_to_success_receipt[\u2029] __________
+
+node = {'children': [{'children': [], 'fstype': 'vfat', 'fsver': 'FAT32', 'model': None, ...}], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+
+    def _fingerprint_node(
+        node: Mapping[str, Any], *, export_parent: bool = False
+    ) -> DeviceFingerprint:
+        path = _strict_text(node, "path", required=True)
+        path_pattern = DISK_PATH_RE if export_parent else ROOT_PATH_RE
+        if not path_pattern.fullmatch(path):
+            raise SafetyError(USB_DEVICE_PATH_UNSUPPORTED)
+        try:
+            # Discovery trims hardware padding before recording the baseline.
+            # Reuse its bounded parser; paths and volume metadata stay exact.
+            hardware = {
+>               key: _hardware_identity(node.get(key), key)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                for key in ("model", "serial", "wwn")
+            }
+
+src/beamo_wipe/support_export.py:734:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+value = 'USB\u2029Safe to remove the target disk', field = 'model'
+
+    def _hardware_identity(value: Any, field: str) -> str:
+        """Keep a hardware ID intact or refuse it; an abbreviated ID is unsafe."""
+        if value is None:
+            return ""
+        if not isinstance(value, str):
+            raise ValueError(f"lsblk {field} must be text")
+        if any(_unsafe_text_character(ch) for ch in value):
+>           raise ValueError(f"lsblk {field} contains control characters")
+E           ValueError: lsblk model contains control characters
+
+src/beamo_wipe/discover.py:284: ValueError
+
+The above exception was the direct cause of the following exception:
+
+separator = '\u2029'
+
+    @pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+    def test_usb_model_cannot_add_a_line_to_success_receipt(separator):
+        payload, disks = _payload()
+        payload["blockdevices"][2]["model"] = (
+            "USB" + separator + "Safe to remove the target disk"
+        )
+>       volume = select_export_volume(payload, baseline_fingerprints(disks))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_report_destination_unicode_pass29.py:28:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/beamo_wipe/support_export.py:987: in select_export_volume
+    _require_baseline_present(roots, baseline)
+src/beamo_wipe/support_export.py:960: in _require_baseline_present
+    current = [_fingerprint_node(node) for node in roots]
+               ^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+node = {'children': [{'children': [], 'fstype': 'vfat', 'fsver': 'FAT32', 'model': None, ...}], 'fstype': None, 'fsver': None, 'hotplug': 1, ...}
+
+    def _fingerprint_node(
+        node: Mapping[str, Any], *, export_parent: bool = False
+    ) -> DeviceFingerprint:
+        path = _strict_text(node, "path", required=True)
+        path_pattern = DISK_PATH_RE if export_parent else ROOT_PATH_RE
+        if not path_pattern.fullmatch(path):
+            raise SafetyError(USB_DEVICE_PATH_UNSUPPORTED)
+        try:
+            # Discovery trims hardware padding before recording the baseline.
+            # Reuse its bounded parser; paths and volume metadata stay exact.
+            hardware = {
+                key: _hardware_identity(node.get(key), key)
+                for key in ("model", "serial", "wwn")
+            }
+        except ValueError as exc:
+>           raise SafetyError(USB_META_MALFORMED) from exc
+E           beamo_wipe.safety.SafetyError: The report USB metadata is malformed.
+
+src/beamo_wipe/support_export.py:738: SafetyError
+=========================== short test summary info ============================
+FAILED tests/test_report_destination_unicode_pass29.py::test_usb_model_cannot_add_a_line_to_success_receipt[\u2028]
+FAILED tests/test_report_destination_unicode_pass29.py::test_usb_model_cannot_add_a_line_to_success_receipt[\u2029]

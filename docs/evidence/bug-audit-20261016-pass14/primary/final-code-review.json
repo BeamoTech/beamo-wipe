@@ -1,0 +1,29 @@
+{
+  "fixture_assertions_before": 38,
+  "fixture_assertions_after": 38,
+  "only_replaced_assertion": "yview last fraction < 1 replaced with last-first < 1; overflow remains required at any scroll offset",
+  "wheel_focus_selection_consent_assertions_preserved": true,
+  "fixture_setup_leaks_repaired": true,
+  "source_review_scope": [
+    "complete current src and tracked fixture diff",
+    "incremental four-source pass14 delta",
+    "three new regression modules and old native wheel fixture",
+    "protected anchor WWN and order independence",
+    "audio launch decision under existing condition lock",
+    "current focus/canvas and minimal scroll, geometry settling, stale callbacks",
+    "preserved safety gates, argv/method/pins/claims/launchers/build boundaries"
+  ],
+  "independent_final_peer_review": false,
+  "peer_limit": "Three reviewers hit provider usage cap after proofs/source reviews; primary independently reproduced and validated; final patch not peer approved.",
+  "runtime_source_sha256": "ebe614cd285be76d948e81c7f8a04be48240ba4a95a4baab9e3ba9e040197dbb",
+  "reviewed_final_files": {
+    "src/beamo_wipe/audio_jobs.py": "26cf096f25c911530233b8c0c37e4ad0285ceb6fdbac7d4c7ecb2ce6f5b966d6",
+    "src/beamo_wipe/discover.py": "9a95b24403dad52c2ca4212a25ccc069ac7c55eafc3a4cb366a0bf62fdbefd92",
+    "src/beamo_wipe/safety.py": "f0ad1dc5d32d5f71aa8d27c7172634ace061111a47f5135d4df55021121be818",
+    "src/beamo_wipe/ui/tk_wizard.py": "9abb3cf1800a04d8f094c030b2b7a2052d8da3b608389dc95bbfb07b0454a8ea",
+    "tests/test_audio_launch_ownership_pass14.py": "a4a20e416ba3f16f22ef252797ccdf8e147a321ac1403a49966e59eec6efd1d1",
+    "tests/test_protected_alias_chains_pass14.py": "f59bc0b6b6bfc9f5b63f113fdd33a95b9b4be6e23e02cf2f884ebf88272417a3",
+    "tests/test_tk_focus_reveal_pass14.py": "b50846f1db65a8f63cbcaac02eda0d79c9f0be2c799bfdf74a17f6213ef7c469",
+    "tests/test_tk_input_scroll_pass13.py": "9538ac0d4e3a0e7a41ac0d658d02a54799648f97b4f85bda43b09e1f1e3e55b3"
+  }
+}

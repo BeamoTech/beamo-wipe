@@ -1,0 +1,6 @@
+{
+  "old_sha256": "d639822ca03fccc2f9be78c476fc4b594118ac2b9195d2a2979b3c8f9a6e7cf8",
+  "new_sha256": "b436a56dbf5a61d9471f51f24767a0adf535925e3720938fb5ca1b27427ff296",
+  "reason": "Retain/narrow exact canvas through cancellation loop",
+  "test_bytes_unchanged": true
+}

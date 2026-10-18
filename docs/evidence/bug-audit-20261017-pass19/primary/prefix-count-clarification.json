@@ -1,0 +1,21 @@
+{
+  "prefix_counts": [
+    {
+      "run": "bounded-prefix-diagnostic",
+      "junit_cases": 1061,
+      "passed": 1061,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "run": "canonical-prefix",
+      "junit_cases": 1061,
+      "passed": 1061,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "clarification": "Selection retained1062 before separate Orca exclusion; actual JUnit has1061 passing cases. Earlier1062PASS prose was a count error, not an extra passing test."
+}

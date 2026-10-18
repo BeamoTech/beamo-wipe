@@ -21,7 +21,7 @@ def _key_handlers():
         node
         for node in wizard.body
         if isinstance(node, ast.FunctionDef)
-        and node.name in {"_key_press", "_key_release"}
+        and node.name in {"_key_press", "_key_release", "_remember_key_press"}
     ]
     gdk = SimpleNamespace(
         KEY_Return=1,
@@ -34,17 +34,17 @@ def _key_handlers():
     )
     copy = SimpleNamespace(BTN_ERASE="Erase now", BTN_BACK="Back")
     namespace = {"Gdk": gdk, "C": copy, "Screen": Screen}
-    # Run only the two checked-in handlers so this test works without GTK on macOS.
+    # Run only the checked-in handlers and their shared guard so this test works without GTK on macOS.
     exec(  # noqa: S102
         compile(ast.Module(body=methods, type_ignores=[]), str(source), "exec"),
         namespace,
     )
-    return namespace["_key_press"], namespace["_key_release"], gdk, copy
+    return namespace["_key_press"], namespace["_key_release"], namespace["_remember_key_press"], gdk, copy
 
 
 @pytest.mark.parametrize("enter_key", ["KEY_Return", "KEY_KP_Enter"])
 def test_gtk_x11_repeat_cannot_erase_when_countdown_expires(enter_key):
-    key_press, key_release, gdk, copy = _key_handlers()
+    key_press, key_release, remember_key_press, gdk, copy = _key_handlers()
     clicks = []
     button = SimpleNamespace(
         get_sensitive=lambda: button.enabled,
@@ -59,6 +59,7 @@ def test_gtk_x11_repeat_cannot_erase_when_countdown_expires(enter_key):
         window=window,
         actions={copy.BTN_ERASE: button},
     )
+    app._remember_key_press = MethodType(remember_key_press, app)
     app._key_press = MethodType(key_press, app)
     app._key_release = MethodType(key_release, app)
 
@@ -75,7 +76,7 @@ def test_gtk_x11_repeat_cannot_erase_when_countdown_expires(enter_key):
 
 
 def test_gtk_x11_repeat_cannot_skip_refresh_confirmation():
-    key_press, key_release, gdk, _ = _key_handlers()
+    key_press, key_release, remember_key_press, gdk, _ = _key_handlers()
     scans = []
     wizard = SimpleNamespace(screen=Screen.OWNER, can_refresh=True)
     wizard.open_refresh_confirm = lambda: setattr(
@@ -88,6 +89,7 @@ def test_gtk_x11_repeat_cannot_skip_refresh_confirmation():
         render=lambda: None,
         _begin_refresh_scan=lambda: scans.append(1),
     )
+    app._remember_key_press = MethodType(remember_key_press, app)
     app._key_press = MethodType(key_press, app)
     app._key_release = MethodType(key_release, app)
     event = SimpleNamespace(keyval=gdk.KEY_F5, time=1000)
@@ -104,7 +106,7 @@ def test_gtk_x11_repeat_cannot_skip_refresh_confirmation():
 
 
 def test_gtk_held_escape_keeps_stop_confirmation_open():
-    key_press, key_release, gdk, _ = _key_handlers()
+    key_press, key_release, remember_key_press, gdk, _ = _key_handlers()
     wizard = SimpleNamespace(screen=Screen.WORKING, stop_confirmation=None)
     wizard.request_stop = lambda: setattr(wizard, "stop_confirmation", object())
     wizard.keep_erasing = lambda: setattr(wizard, "stop_confirmation", None)
@@ -114,6 +116,7 @@ def test_gtk_held_escape_keeps_stop_confirmation_open():
         _release_times={},
         render=lambda: None,
     )
+    app._remember_key_press = MethodType(remember_key_press, app)
     app._key_press = MethodType(key_press, app)
     app._key_release = MethodType(key_release, app)
 
