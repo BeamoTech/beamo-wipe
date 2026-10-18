@@ -1,0 +1,32 @@
+{
+  "build_id": "41e55573-f2c8-5494-8cea-1d70b67e2968",
+  "command": "bash scripts/ci-hosted.sh negative",
+  "ended_at": "2026-10-17T23:31:55Z",
+  "environment": {
+    "arch": "x86_64",
+    "github_repository": "BeamoTech/beamo-wipe",
+    "github_run_attempt": "1",
+    "github_run_id": "39079362211",
+    "platform": "linux",
+    "python": "3.11.2",
+    "runner": "blacksmith"
+  },
+  "gate": "negative",
+  "log_sha256": "7e991981d3a34347547271f4fd997ab61205c73bc78ff687659522988e995e0f",
+  "measured": {
+    "deselected": 0,
+    "errors": 0,
+    "failed": 0,
+    "passed": 1,
+    "skipped": 0,
+    "total": 1,
+    "xfailed": 0
+  },
+  "reason": "",
+  "receipt_sha256": "abe5a7fde450e8d0fe3b7539d6a19977c6c4ae1de79360b2b8fb6e5929ab3248",
+  "schema": "beamo-wipe-gate-receipt/1",
+  "skips": [],
+  "source_commit": "a77fbd94a7ce4d9079f7da0125a428ea4c94e30d",
+  "started_at": "2026-10-17T23:31:55Z",
+  "status": "pass"
+}

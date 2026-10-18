@@ -1,0 +1,32 @@
+{
+  "build_id": "41e55573-f2c8-5494-8cea-1d70b67e2968",
+  "command": "bash scripts/ci-hosted.sh desktop-launchers",
+  "ended_at": "2026-10-17T23:32:43Z",
+  "environment": {
+    "arch": "x86_64",
+    "github_repository": "BeamoTech/beamo-wipe",
+    "github_run_attempt": "1",
+    "github_run_id": "39079362211",
+    "platform": "linux",
+    "python": "3.11.2",
+    "runner": "blacksmith"
+  },
+  "gate": "desktop-launchers",
+  "log_sha256": "a2248017045dccd2305afceb1aff03eab001ae92d1b29b84539f01af86b8cf9a",
+  "measured": {
+    "deselected": 0,
+    "errors": 0,
+    "failed": 0,
+    "passed": 1,
+    "skipped": 0,
+    "total": 1,
+    "xfailed": 0
+  },
+  "reason": "",
+  "receipt_sha256": "cb3bac2983462c73459489435ba7262a52227f63ea0a83866eaf7a4d15ef3c0f",
+  "schema": "beamo-wipe-gate-receipt/1",
+  "skips": [],
+  "source_commit": "a77fbd94a7ce4d9079f7da0125a428ea4c94e30d",
+  "started_at": "2026-10-17T23:31:55Z",
+  "status": "pass"
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "label": "original-race",
+    "source_sha256": "5b1fc0e16f95176ae706a9677d082d2daae7eb3d70a43ce244ce77363e35f9f5",
+    "test_sha256": "9ad54014ba5db3af9c609539a4badfe3c290fc6d8099be896bc45c113cb58909",
+    "failed": 8,
+    "controls_passed": 2,
+    "exit_code": 1,
+    "stderr_bytes": 0,
+    "selection": "test_foreign_drain_cannot_keep_last_record or test_drain_preserves_external_reference_until_creator_releases_it"
+  },
+  {
+    "label": "original-warning",
+    "source_sha256": "fefdc9963a92c7150d794392c337bf660134d683090d083a4c5d2d945575d43b",
+    "test_sha256": "9ad54014ba5db3af9c609539a4badfe3c290fc6d8099be896bc45c113cb58909",
+    "failed": 2,
+    "controls_passed": 0,
+    "exit_code": 1,
+    "stderr_bytes": 0,
+    "selection": "test_unregistered_thread_drain_does_not_construct_dummy_thread"
+  }
+]

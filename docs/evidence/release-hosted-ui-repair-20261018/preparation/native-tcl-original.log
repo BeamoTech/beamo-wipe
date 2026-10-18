@@ -1,0 +1,164 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+___ test_closed_root_retires_native_tcl_work_and_preserves_peer[idle-wizard] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x77412f068770>
+route = 'wizard', kind = 'idle'
+
+    @pytest.mark.parametrize("route", ["wizard", "startup"])
+    @pytest.mark.parametrize("kind", ["idle", "timer"])
+    def test_closed_root_retires_native_tcl_work_and_preserves_peer(monkeypatch, route, kind):
+        _admit()
+        effects = _guard(monkeypatch)
+        app = None
+        if route == "wizard":
+            wizard, _clock = _review()
+            app = ui.TkWizard(wizard)
+            root = app.root
+        else:
+            root = ui.tk.Tk()
+        root.withdraw()
+        peer = ui.tk.Tk()
+        peer.withdraw()
+        root.tk.eval('set closed_errors {}; proc bgerror {message} {lappend ::closed_errors $message}')
+        root.tk.eval('proc beamo_native_timer {} {event generate . <<BeamoTest>>}')
+        peer.tk.eval('set peer_calls 0; proc beamo_native_timer {} {incr ::peer_calls}')
+        delay = "idle" if kind == "idle" else 0
+        own_timer = root.tk.call("after", delay, "beamo_native_timer")
+        peer_timer = peer.tk.call("after", delay, "beamo_native_timer")
+        try:
+            assert own_timer in root.tk.call("after", "info")
+            assert peer_timer in peer.tk.call("after", "info")
+            if app is not None:
+                app._teardown()
+            else:
+                ui._close_owned_startup_root(root, threading.current_thread())
+            pending = root.tk.call("after", "info")
+>           assert not pending, pending
+E           AssertionError: ('after#1',)
+E           assert not ('after#1',)
+
+tests/test_tk_interpreter_callback_retirement.py:42: AssertionError
+__ test_closed_root_retires_native_tcl_work_and_preserves_peer[idle-startup] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x77412efa4ad0>
+route = 'startup', kind = 'idle'
+
+    @pytest.mark.parametrize("route", ["wizard", "startup"])
+    @pytest.mark.parametrize("kind", ["idle", "timer"])
+    def test_closed_root_retires_native_tcl_work_and_preserves_peer(monkeypatch, route, kind):
+        _admit()
+        effects = _guard(monkeypatch)
+        app = None
+        if route == "wizard":
+            wizard, _clock = _review()
+            app = ui.TkWizard(wizard)
+            root = app.root
+        else:
+            root = ui.tk.Tk()
+        root.withdraw()
+        peer = ui.tk.Tk()
+        peer.withdraw()
+        root.tk.eval('set closed_errors {}; proc bgerror {message} {lappend ::closed_errors $message}')
+        root.tk.eval('proc beamo_native_timer {} {event generate . <<BeamoTest>>}')
+        peer.tk.eval('set peer_calls 0; proc beamo_native_timer {} {incr ::peer_calls}')
+        delay = "idle" if kind == "idle" else 0
+        own_timer = root.tk.call("after", delay, "beamo_native_timer")
+        peer_timer = peer.tk.call("after", delay, "beamo_native_timer")
+        try:
+            assert own_timer in root.tk.call("after", "info")
+            assert peer_timer in peer.tk.call("after", "info")
+            if app is not None:
+                app._teardown()
+            else:
+                ui._close_owned_startup_root(root, threading.current_thread())
+            pending = root.tk.call("after", "info")
+>           assert not pending, pending
+E           AssertionError: ('after#3',)
+E           assert not ('after#3',)
+
+tests/test_tk_interpreter_callback_retirement.py:42: AssertionError
+__ test_closed_root_retires_native_tcl_work_and_preserves_peer[timer-wizard] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x77412efa4c80>
+route = 'wizard', kind = 'timer'
+
+    @pytest.mark.parametrize("route", ["wizard", "startup"])
+    @pytest.mark.parametrize("kind", ["idle", "timer"])
+    def test_closed_root_retires_native_tcl_work_and_preserves_peer(monkeypatch, route, kind):
+        _admit()
+        effects = _guard(monkeypatch)
+        app = None
+        if route == "wizard":
+            wizard, _clock = _review()
+            app = ui.TkWizard(wizard)
+            root = app.root
+        else:
+            root = ui.tk.Tk()
+        root.withdraw()
+        peer = ui.tk.Tk()
+        peer.withdraw()
+        root.tk.eval('set closed_errors {}; proc bgerror {message} {lappend ::closed_errors $message}')
+        root.tk.eval('proc beamo_native_timer {} {event generate . <<BeamoTest>>}')
+        peer.tk.eval('set peer_calls 0; proc beamo_native_timer {} {incr ::peer_calls}')
+        delay = "idle" if kind == "idle" else 0
+        own_timer = root.tk.call("after", delay, "beamo_native_timer")
+        peer_timer = peer.tk.call("after", delay, "beamo_native_timer")
+        try:
+            assert own_timer in root.tk.call("after", "info")
+            assert peer_timer in peer.tk.call("after", "info")
+            if app is not None:
+                app._teardown()
+            else:
+                ui._close_owned_startup_root(root, threading.current_thread())
+            pending = root.tk.call("after", "info")
+>           assert not pending, pending
+E           AssertionError: ('after#6',)
+E           assert not ('after#6',)
+
+tests/test_tk_interpreter_callback_retirement.py:42: AssertionError
+__ test_closed_root_retires_native_tcl_work_and_preserves_peer[timer-startup] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x77412f101790>
+route = 'startup', kind = 'timer'
+
+    @pytest.mark.parametrize("route", ["wizard", "startup"])
+    @pytest.mark.parametrize("kind", ["idle", "timer"])
+    def test_closed_root_retires_native_tcl_work_and_preserves_peer(monkeypatch, route, kind):
+        _admit()
+        effects = _guard(monkeypatch)
+        app = None
+        if route == "wizard":
+            wizard, _clock = _review()
+            app = ui.TkWizard(wizard)
+            root = app.root
+        else:
+            root = ui.tk.Tk()
+        root.withdraw()
+        peer = ui.tk.Tk()
+        peer.withdraw()
+        root.tk.eval('set closed_errors {}; proc bgerror {message} {lappend ::closed_errors $message}')
+        root.tk.eval('proc beamo_native_timer {} {event generate . <<BeamoTest>>}')
+        peer.tk.eval('set peer_calls 0; proc beamo_native_timer {} {incr ::peer_calls}')
+        delay = "idle" if kind == "idle" else 0
+        own_timer = root.tk.call("after", delay, "beamo_native_timer")
+        peer_timer = peer.tk.call("after", delay, "beamo_native_timer")
+        try:
+            assert own_timer in root.tk.call("after", "info")
+            assert peer_timer in peer.tk.call("after", "info")
+            if app is not None:
+                app._teardown()
+            else:
+                ui._close_owned_startup_root(root, threading.current_thread())
+            pending = root.tk.call("after", "info")
+>           assert not pending, pending
+E           AssertionError: ('after#8',)
+E           assert not ('after#8',)
+
+tests/test_tk_interpreter_callback_retirement.py:42: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_tk_interpreter_callback_retirement.py::test_closed_root_retires_native_tcl_work_and_preserves_peer[idle-wizard]
+FAILED tests/test_tk_interpreter_callback_retirement.py::test_closed_root_retires_native_tcl_work_and_preserves_peer[idle-startup]
+FAILED tests/test_tk_interpreter_callback_retirement.py::test_closed_root_retires_native_tcl_work_and_preserves_peer[timer-wizard]
+FAILED tests/test_tk_interpreter_callback_retirement.py::test_closed_root_retires_native_tcl_work_and_preserves_peer[timer-startup]
+4 failed in 0.59s

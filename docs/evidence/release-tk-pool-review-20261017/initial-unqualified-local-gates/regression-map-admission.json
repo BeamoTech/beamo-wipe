@@ -1,0 +1,9 @@
+{
+  "note": "Refresh candidate2 pre-EOF hash to already committed 4f7ee8d source before reading the new run; no test content or assertions change.",
+  "changed": {
+    "tests/test_pathless_physical_bridge_pass18.py": {
+      "prior_run": "04eec1aa841a1b30d65acd3bcdac5d61b0ef794940e03e78010acd7fe8ee1ef7",
+      "current_frozen": "26fc12c4a476686da24ffda5164d23dc31dec107276ee63b1c4b0d68aedd61fb"
+    }
+  }
+}

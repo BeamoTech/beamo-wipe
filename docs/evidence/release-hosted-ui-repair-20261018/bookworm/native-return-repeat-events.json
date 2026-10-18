@@ -1,0 +1,1602 @@
+[
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[0]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84388603,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84388936,
+        "previous_release": 84388934,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[1]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84389093,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84389425,
+        "previous_release": 84389423,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[2]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84389573,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84389903,
+        "previous_release": 84389901,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[3]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84390059,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84390410,
+        "previous_release": 84390408,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[4]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84390595,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84390931,
+        "previous_release": 84390930,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[5]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84391100,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84391438,
+        "previous_release": 84391437,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[6]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84391600,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84391953,
+        "previous_release": 84391951,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[7]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84392119,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84392443,
+        "previous_release": 84392442,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[8]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84392600,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84392932,
+        "previous_release": 84392930,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[9]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84393103,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84393434,
+        "previous_release": 84393432,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[10]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84393581,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84393909,
+        "previous_release": 84393907,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[11]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84394060,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84394397,
+        "previous_release": 84394395,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[12]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84394551,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84394910,
+        "previous_release": 84394908,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[13]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84395070,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84395412,
+        "previous_release": 84395410,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[14]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84395574,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84395906,
+        "previous_release": 84395904,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[15]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84396063,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84396418,
+        "previous_release": 84396416,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[16]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84396569,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84396914,
+        "previous_release": 84396912,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[17]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84397096,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84397437,
+        "previous_release": 84397435,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[18]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84397606,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84397944,
+        "previous_release": 84397943,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[19]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84398114,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84398453,
+        "previous_release": 84398450,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[20]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84398630,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84398969,
+        "previous_release": 84398967,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[21]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84399132,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84399493,
+        "previous_release": 84399490,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[22]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84399645,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84399977,
+        "previous_release": 84399976,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[23]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84400116,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84400476,
+        "previous_release": 84400474,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[24]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84400653,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84400982,
+        "previous_release": 84400981,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[25]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84401134,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84401471,
+        "previous_release": 84401469,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[26]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84401635,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84401976,
+        "previous_release": 84401974,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[27]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84402147,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84402479,
+        "previous_release": 84402477,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[28]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84402636,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84402963,
+        "previous_release": 84402961,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[29]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84403118,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84403447,
+        "previous_release": 84403445,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[30]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84403601,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84403945,
+        "previous_release": 84403944,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[31]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84404132,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84404470,
+        "previous_release": 84404468,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[32]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84404635,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84404970,
+        "previous_release": 84404968,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[33]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84405147,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84405486,
+        "previous_release": 84405484,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[34]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84405652,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84405990,
+        "previous_release": 84405989,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[35]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84406143,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84406488,
+        "previous_release": 84406486,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[36]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84406659,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84406996,
+        "previous_release": 84406994,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[37]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84407145,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84407487,
+        "previous_release": 84407484,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[38]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84407689,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84408032,
+        "previous_release": 84408027,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[39]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84408199,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84408539,
+        "previous_release": 84408537,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[40]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84408729,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84409084,
+        "previous_release": 84409083,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[41]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84409273,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84409608,
+        "previous_release": 84409606,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[42]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84409785,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84410119,
+        "previous_release": 84410117,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[43]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84410285,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84410634,
+        "previous_release": 84410632,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[44]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84410801,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84411133,
+        "previous_release": 84411130,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[45]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84411290,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84411616,
+        "previous_release": 84411614,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[46]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84411777,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84412128,
+        "previous_release": 84412126,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[47]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84412292,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84412633,
+        "previous_release": 84412630,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[48]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84412807,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84413141,
+        "previous_release": 84413140,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[49]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84413317,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84413653,
+        "previous_release": 84413650,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[50]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84413805,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84414150,
+        "previous_release": 84414147,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[51]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84414319,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84414648,
+        "previous_release": 84414646,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[52]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84414805,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84415137,
+        "previous_release": 84415135,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[53]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84415286,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84415613,
+        "previous_release": 84415611,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[54]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84415805,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84416137,
+        "previous_release": 84416135,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[55]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84416316,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84416647,
+        "previous_release": 84416645,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[56]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84416826,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84417168,
+        "previous_release": 84417165,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[57]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84417331,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84417669,
+        "previous_release": 84417667,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[58]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84417821,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84418150,
+        "previous_release": 84418149,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[59]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84418295,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84418625,
+        "previous_release": 84418623,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[60]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84418785,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84419137,
+        "previous_release": 84419135,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[61]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84419305,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84419637,
+        "previous_release": 84419635,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[62]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84419777,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84420111,
+        "previous_release": 84420110,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[63]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84420270,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84420604,
+        "previous_release": 84420602,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[64]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84420749,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84421088,
+        "previous_release": 84421086,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[65]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84421235,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84421561,
+        "previous_release": 84421559,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[66]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84421714,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84422043,
+        "previous_release": 84422041,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[67]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84422217,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84422573,
+        "previous_release": 84422571,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[68]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84422737,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84423073,
+        "previous_release": 84423071,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[69]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84423229,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84423569,
+        "previous_release": 84423567,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[70]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84423733,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84424070,
+        "previous_release": 84424067,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[71]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84424278,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84424620,
+        "previous_release": 84424618,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[72]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84424778,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84425120,
+        "previous_release": 84425118,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[73]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84425279,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84425611,
+        "previous_release": 84425609,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[74]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84425753,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84426090,
+        "previous_release": 84426088,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[75]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84426250,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84426579,
+        "previous_release": 84426578,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[76]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84426725,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84427054,
+        "previous_release": 84427053,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[77]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84427206,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84427544,
+        "previous_release": 84427542,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[78]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84427699,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84428043,
+        "previous_release": 84428042,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  },
+  {
+    "case": "test_first_fresh_native_activation_after_sound_close_iteration[79]",
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84428189,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84428526,
+        "previous_release": 84428524,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  }
+]

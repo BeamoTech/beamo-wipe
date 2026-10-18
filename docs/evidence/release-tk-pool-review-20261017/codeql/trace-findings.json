@@ -1,0 +1,161 @@
+{
+  "head": "4f7ee8d434497f52b58966792ed6cc28b587635e",
+  "findings": [
+    {
+      "alert": 32,
+      "file": "docs/evidence/bug-audit-20261016-pass13/primary/review-artifacts.py",
+      "line": 29,
+      "script_sha256": "36aa8c7c8456ab01836d507b872d410b0af05249129af6d983d94851afa86f3d",
+      "committed_bytes_unchanged": true,
+      "authenticated_artifacts": 70,
+      "failed_reports": [
+        {
+          "case": "unknown-count",
+          "visible_support_text": [
+            "For help, visit beamosupport.com or scan the code with your phone."
+          ],
+          "url_attributes": []
+        },
+        {
+          "case": "write-error",
+          "visible_support_text": [
+            "For help, visit beamosupport.com or scan the code with your phone."
+          ],
+          "url_attributes": []
+        },
+        {
+          "case": "read-error",
+          "visible_support_text": [
+            "For help, visit beamosupport.com or scan the code with your phone."
+          ],
+          "url_attributes": []
+        },
+        {
+          "case": "verify-error",
+          "visible_support_text": [
+            "For help, visit beamosupport.com or scan the code with your phone."
+          ],
+          "url_attributes": []
+        }
+      ],
+      "assessment": "false positive: HTML content assertion; no URL input, parsing, allowlist, redirection or network sink"
+    },
+    {
+      "alert": 35,
+      "file": "docs/evidence/bug-audit-20261016-pass14/primary/review-artifacts.py",
+      "line": 29,
+      "script_sha256": "e963801c39acce38018326d54545e5708d40f5a9f922e4d0eb15e3d2d91e237d",
+      "committed_bytes_unchanged": true,
+      "authenticated_artifacts": 70,
+      "failed_reports": [
+        {
+          "case": "unknown-count",
+          "visible_support_text": [
+            "For help, visit beamosupport.com or scan the code with your phone."
+          ],
+          "url_attributes": []
+        },
+        {
+          "case": "write-error",
+          "visible_support_text": [
+            "For help, visit beamosupport.com or scan the code with your phone."
+          ],
+          "url_attributes": []
+        },
+        {
+          "case": "read-error",
+          "visible_support_text": [
+            "For help, visit beamosupport.com or scan the code with your phone."
+          ],
+          "url_attributes": []
+        },
+        {
+          "case": "verify-error",
+          "visible_support_text": [
+            "For help, visit beamosupport.com or scan the code with your phone."
+          ],
+          "url_attributes": []
+        }
+      ],
+      "assessment": "false positive: HTML content assertion; no URL input, parsing, allowlist, redirection or network sink"
+    },
+    {
+      "alert": 34,
+      "file": "docs/evidence/bug-audit-20261016-pass15/primary/review-artifacts.py",
+      "line": 29,
+      "script_sha256": "79214f951f8df50728629e9791eae88907555bc662f790b7d9a50a66bd7167e8",
+      "committed_bytes_unchanged": true,
+      "authenticated_artifacts": 70,
+      "failed_reports": [
+        {
+          "case": "unknown-count",
+          "visible_support_text": [
+            "For help, visit beamosupport.com or scan the code with your phone."
+          ],
+          "url_attributes": []
+        },
+        {
+          "case": "write-error",
+          "visible_support_text": [
+            "For help, visit beamosupport.com or scan the code with your phone."
+          ],
+          "url_attributes": []
+        },
+        {
+          "case": "read-error",
+          "visible_support_text": [
+            "For help, visit beamosupport.com or scan the code with your phone."
+          ],
+          "url_attributes": []
+        },
+        {
+          "case": "verify-error",
+          "visible_support_text": [
+            "For help, visit beamosupport.com or scan the code with your phone."
+          ],
+          "url_attributes": []
+        }
+      ],
+      "assessment": "false positive: HTML content assertion; no URL input, parsing, allowlist, redirection or network sink"
+    },
+    {
+      "alert": 33,
+      "file": "docs/evidence/bug-audit-20261017-pass16/primary/review-artifacts.py",
+      "line": 33,
+      "script_sha256": "4a5410aab70abcd2e90da8f0e420f6494790e59144170b259a6c463bbc509587",
+      "committed_bytes_unchanged": true,
+      "authenticated_artifacts": 70,
+      "failed_reports": [
+        {
+          "case": "unknown-count",
+          "visible_support_text": [
+            "For help, visit beamosupport.com or scan the code with your phone."
+          ],
+          "url_attributes": []
+        },
+        {
+          "case": "write-error",
+          "visible_support_text": [
+            "For help, visit beamosupport.com or scan the code with your phone."
+          ],
+          "url_attributes": []
+        },
+        {
+          "case": "read-error",
+          "visible_support_text": [
+            "For help, visit beamosupport.com or scan the code with your phone."
+          ],
+          "url_attributes": []
+        },
+        {
+          "case": "verify-error",
+          "visible_support_text": [
+            "For help, visit beamosupport.com or scan the code with your phone."
+          ],
+          "url_attributes": []
+        }
+      ],
+      "assessment": "false positive: HTML content assertion; no URL input, parsing, allowlist, redirection or network sink"
+    }
+  ]
+}

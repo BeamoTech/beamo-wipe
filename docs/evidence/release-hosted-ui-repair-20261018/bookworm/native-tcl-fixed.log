@@ -1,0 +1,991 @@
+FF..FF..FFFF.............................FFFFF                           [100%]
+=================================== FAILURES ===================================
+_ test_startup_retires_callbacks_before_its_window_is_destroyed[close-early-False] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x76b04aec9c10>
+request = <FixtureRequest for <Function test_startup_retires_callbacks_before_its_window_is_destroyed[close-early-False]>>
+fullscreen = False, ending = 'close-early'
+
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("ending", ["close-early", "close-poll", "destroy-early", "destroy-poll",
+                                        "start-failed", "loop-failed", "wizard", "failed"])
+    def test_startup_retires_callbacks_before_its_window_is_destroyed(monkeypatch, request, fullscreen, ending):
+        real_tk = tk_wizard.tk.Tk
+        real_start = StartupRun.start
+        release = threading.Event()
+        roots, runs, errors, snapshots = [], [], [], []
+    
+        def factory():
+            root = real_tk()
+            roots.append(root)
+            # Tcl bgerror runs outside Tkinter.report_callback_exception. Keep the
+            # observer in the Tcl interpreter so it also survives window destruction.
+            root.tk.eval("set pass17_bgerrors {}; proc bgerror {message} {lappend ::pass17_bgerrors [list $message $::errorInfo]}")
+            root.report_callback_exception = lambda kind, value, _tb: errors.append([kind.__name__, str(value)])
+            real_destroy = root.destroy
+    
+            def destroy():
+                pending = []
+                for callback in root.tk.call("after", "info"):
+                    script, kind = root.tk.call("after", "info", callback)
+                    pending.append({"id": str(callback), "script": str(script), "kind": str(kind),
+                                    "exists": bool(root.tk.call("info", "commands", str(script)))})
+                snapshots.append(pending)
+                return real_destroy()
+    
+            root.destroy = destroy
+            if ending.startswith("close-"):
+                root.after(0 if ending.endswith("early") else 30,
+                           lambda: root.tk.call(root.protocol("WM_DELETE_WINDOW")))
+            elif ending.startswith("destroy-"):
+                root.after(0 if ending.endswith("early") else 30, root.destroy)
+            elif ending == "loop-failed":
+                def fail_loop():
+                    raise RuntimeError("fake startup mainloop failure")
+                root.mainloop = fail_loop
+            return root
+    
+        def start(run):
+            runs.append(run)
+            if ending == "start-failed":
+                raise RuntimeError("fake startup thread start failure")
+            return real_start(run)
+    
+        def build(_report):
+            if ending not in {"wizard", "failed"}:
+                assert release.wait(3), "fixture startup worker was not released"
+            if ending == "failed":
+                raise OSError("fake discovery failure")
+            return "fake wizard"
+    
+        monkeypatch.setattr(tk_wizard.tk, "Tk", factory)
+        monkeypatch.setattr(StartupRun, "start", start)
+        try:
+            if ending in {"start-failed", "loop-failed"}:
+                with pytest.raises(RuntimeError, match="fake startup"):
+                    tk_wizard.run_tk_startup(build, fullscreen=fullscreen)
+            else:
+                result = tk_wizard.run_tk_startup(build, fullscreen=fullscreen)
+                expected = "wizard" if ending == "wizard" else "failed" if ending == "failed" else "abandoned"
+                assert result[0] == expected
+            release.set()
+            for run in runs:
+                if run.thread.ident is not None:
+                    run.thread.join(1)
+                    assert not run.thread.is_alive()
+            root = roots[0]
+            until = time.monotonic() + 0.15
+            while time.monotonic() < until:
+                root.tk.call("update")
+                time.sleep(0.003)
+            raw = root.tk.call("set", "pass17_bgerrors")
+            native_errors = list(raw) if isinstance(raw, tuple) else root.tk.splitlist(raw)
+            request.node.user_properties.append(("retirement_trace", json.dumps({
+                "ending": ending, "fullscreen": fullscreen, "before_destroy": snapshots,
+                "tcl_bgerrors": [str(item) for item in native_errors], "python_errors": errors,
+            })))
+            assert not errors
+>           assert not native_errors, native_errors
+E           AssertionError: [('can\'t invoke "event" command: application has been destroyed', 'can\'t invoke "event" command: application has bee...erate $w <<ThemeChanged>>"
+E                 (procedure "ttk::ThemeChanged" line 6)
+E                 invoked from within
+E             "ttk::ThemeChanged"')]
+E           assert not [('can\'t invoke "event" command: application has been destroyed', 'can\'t invoke "event" command: application has bee...erate $w <<ThemeChanged>>"\n    (procedure "ttk::ThemeChanged" line 6)\n    invoked from within\n"ttk::ThemeChanged"')]
+
+tests/test_startup_callback_retirement_pass17.py:118: AssertionError
+_ test_startup_retires_callbacks_before_its_window_is_destroyed[close-early-True] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x76b04aeca290>
+request = <FixtureRequest for <Function test_startup_retires_callbacks_before_its_window_is_destroyed[close-early-True]>>
+fullscreen = True, ending = 'close-early'
+
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("ending", ["close-early", "close-poll", "destroy-early", "destroy-poll",
+                                        "start-failed", "loop-failed", "wizard", "failed"])
+    def test_startup_retires_callbacks_before_its_window_is_destroyed(monkeypatch, request, fullscreen, ending):
+        real_tk = tk_wizard.tk.Tk
+        real_start = StartupRun.start
+        release = threading.Event()
+        roots, runs, errors, snapshots = [], [], [], []
+    
+        def factory():
+            root = real_tk()
+            roots.append(root)
+            # Tcl bgerror runs outside Tkinter.report_callback_exception. Keep the
+            # observer in the Tcl interpreter so it also survives window destruction.
+            root.tk.eval("set pass17_bgerrors {}; proc bgerror {message} {lappend ::pass17_bgerrors [list $message $::errorInfo]}")
+            root.report_callback_exception = lambda kind, value, _tb: errors.append([kind.__name__, str(value)])
+            real_destroy = root.destroy
+    
+            def destroy():
+                pending = []
+                for callback in root.tk.call("after", "info"):
+                    script, kind = root.tk.call("after", "info", callback)
+                    pending.append({"id": str(callback), "script": str(script), "kind": str(kind),
+                                    "exists": bool(root.tk.call("info", "commands", str(script)))})
+                snapshots.append(pending)
+                return real_destroy()
+    
+            root.destroy = destroy
+            if ending.startswith("close-"):
+                root.after(0 if ending.endswith("early") else 30,
+                           lambda: root.tk.call(root.protocol("WM_DELETE_WINDOW")))
+            elif ending.startswith("destroy-"):
+                root.after(0 if ending.endswith("early") else 30, root.destroy)
+            elif ending == "loop-failed":
+                def fail_loop():
+                    raise RuntimeError("fake startup mainloop failure")
+                root.mainloop = fail_loop
+            return root
+    
+        def start(run):
+            runs.append(run)
+            if ending == "start-failed":
+                raise RuntimeError("fake startup thread start failure")
+            return real_start(run)
+    
+        def build(_report):
+            if ending not in {"wizard", "failed"}:
+                assert release.wait(3), "fixture startup worker was not released"
+            if ending == "failed":
+                raise OSError("fake discovery failure")
+            return "fake wizard"
+    
+        monkeypatch.setattr(tk_wizard.tk, "Tk", factory)
+        monkeypatch.setattr(StartupRun, "start", start)
+        try:
+            if ending in {"start-failed", "loop-failed"}:
+                with pytest.raises(RuntimeError, match="fake startup"):
+                    tk_wizard.run_tk_startup(build, fullscreen=fullscreen)
+            else:
+                result = tk_wizard.run_tk_startup(build, fullscreen=fullscreen)
+                expected = "wizard" if ending == "wizard" else "failed" if ending == "failed" else "abandoned"
+                assert result[0] == expected
+            release.set()
+            for run in runs:
+                if run.thread.ident is not None:
+                    run.thread.join(1)
+                    assert not run.thread.is_alive()
+            root = roots[0]
+            until = time.monotonic() + 0.15
+            while time.monotonic() < until:
+                root.tk.call("update")
+                time.sleep(0.003)
+            raw = root.tk.call("set", "pass17_bgerrors")
+            native_errors = list(raw) if isinstance(raw, tuple) else root.tk.splitlist(raw)
+            request.node.user_properties.append(("retirement_trace", json.dumps({
+                "ending": ending, "fullscreen": fullscreen, "before_destroy": snapshots,
+                "tcl_bgerrors": [str(item) for item in native_errors], "python_errors": errors,
+            })))
+            assert not errors
+>           assert not native_errors, native_errors
+E           AssertionError: [('can\'t invoke "event" command: application has been destroyed', 'can\'t invoke "event" command: application has bee...erate $w <<ThemeChanged>>"
+E                 (procedure "ttk::ThemeChanged" line 6)
+E                 invoked from within
+E             "ttk::ThemeChanged"')]
+E           assert not [('can\'t invoke "event" command: application has been destroyed', 'can\'t invoke "event" command: application has bee...erate $w <<ThemeChanged>>"\n    (procedure "ttk::ThemeChanged" line 6)\n    invoked from within\n"ttk::ThemeChanged"')]
+
+tests/test_startup_callback_retirement_pass17.py:118: AssertionError
+_ test_startup_retires_callbacks_before_its_window_is_destroyed[destroy-early-False] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x76b04aee5390>
+request = <FixtureRequest for <Function test_startup_retires_callbacks_before_its_window_is_destroyed[destroy-early-False]>>
+fullscreen = False, ending = 'destroy-early'
+
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("ending", ["close-early", "close-poll", "destroy-early", "destroy-poll",
+                                        "start-failed", "loop-failed", "wizard", "failed"])
+    def test_startup_retires_callbacks_before_its_window_is_destroyed(monkeypatch, request, fullscreen, ending):
+        real_tk = tk_wizard.tk.Tk
+        real_start = StartupRun.start
+        release = threading.Event()
+        roots, runs, errors, snapshots = [], [], [], []
+    
+        def factory():
+            root = real_tk()
+            roots.append(root)
+            # Tcl bgerror runs outside Tkinter.report_callback_exception. Keep the
+            # observer in the Tcl interpreter so it also survives window destruction.
+            root.tk.eval("set pass17_bgerrors {}; proc bgerror {message} {lappend ::pass17_bgerrors [list $message $::errorInfo]}")
+            root.report_callback_exception = lambda kind, value, _tb: errors.append([kind.__name__, str(value)])
+            real_destroy = root.destroy
+    
+            def destroy():
+                pending = []
+                for callback in root.tk.call("after", "info"):
+                    script, kind = root.tk.call("after", "info", callback)
+                    pending.append({"id": str(callback), "script": str(script), "kind": str(kind),
+                                    "exists": bool(root.tk.call("info", "commands", str(script)))})
+                snapshots.append(pending)
+                return real_destroy()
+    
+            root.destroy = destroy
+            if ending.startswith("close-"):
+                root.after(0 if ending.endswith("early") else 30,
+                           lambda: root.tk.call(root.protocol("WM_DELETE_WINDOW")))
+            elif ending.startswith("destroy-"):
+                root.after(0 if ending.endswith("early") else 30, root.destroy)
+            elif ending == "loop-failed":
+                def fail_loop():
+                    raise RuntimeError("fake startup mainloop failure")
+                root.mainloop = fail_loop
+            return root
+    
+        def start(run):
+            runs.append(run)
+            if ending == "start-failed":
+                raise RuntimeError("fake startup thread start failure")
+            return real_start(run)
+    
+        def build(_report):
+            if ending not in {"wizard", "failed"}:
+                assert release.wait(3), "fixture startup worker was not released"
+            if ending == "failed":
+                raise OSError("fake discovery failure")
+            return "fake wizard"
+    
+        monkeypatch.setattr(tk_wizard.tk, "Tk", factory)
+        monkeypatch.setattr(StartupRun, "start", start)
+        try:
+            if ending in {"start-failed", "loop-failed"}:
+                with pytest.raises(RuntimeError, match="fake startup"):
+                    tk_wizard.run_tk_startup(build, fullscreen=fullscreen)
+            else:
+                result = tk_wizard.run_tk_startup(build, fullscreen=fullscreen)
+                expected = "wizard" if ending == "wizard" else "failed" if ending == "failed" else "abandoned"
+                assert result[0] == expected
+            release.set()
+            for run in runs:
+                if run.thread.ident is not None:
+                    run.thread.join(1)
+                    assert not run.thread.is_alive()
+            root = roots[0]
+            until = time.monotonic() + 0.15
+            while time.monotonic() < until:
+                root.tk.call("update")
+                time.sleep(0.003)
+            raw = root.tk.call("set", "pass17_bgerrors")
+            native_errors = list(raw) if isinstance(raw, tuple) else root.tk.splitlist(raw)
+            request.node.user_properties.append(("retirement_trace", json.dumps({
+                "ending": ending, "fullscreen": fullscreen, "before_destroy": snapshots,
+                "tcl_bgerrors": [str(item) for item in native_errors], "python_errors": errors,
+            })))
+            assert not errors
+>           assert not native_errors, native_errors
+E           AssertionError: [('can\'t invoke "event" command: application has been destroyed', 'can\'t invoke "event" command: application has bee...erate $w <<ThemeChanged>>"
+E                 (procedure "ttk::ThemeChanged" line 6)
+E                 invoked from within
+E             "ttk::ThemeChanged"')]
+E           assert not [('can\'t invoke "event" command: application has been destroyed', 'can\'t invoke "event" command: application has bee...erate $w <<ThemeChanged>>"\n    (procedure "ttk::ThemeChanged" line 6)\n    invoked from within\n"ttk::ThemeChanged"')]
+
+tests/test_startup_callback_retirement_pass17.py:118: AssertionError
+_ test_startup_retires_callbacks_before_its_window_is_destroyed[destroy-early-True] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x76b04bf89210>
+request = <FixtureRequest for <Function test_startup_retires_callbacks_before_its_window_is_destroyed[destroy-early-True]>>
+fullscreen = True, ending = 'destroy-early'
+
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("ending", ["close-early", "close-poll", "destroy-early", "destroy-poll",
+                                        "start-failed", "loop-failed", "wizard", "failed"])
+    def test_startup_retires_callbacks_before_its_window_is_destroyed(monkeypatch, request, fullscreen, ending):
+        real_tk = tk_wizard.tk.Tk
+        real_start = StartupRun.start
+        release = threading.Event()
+        roots, runs, errors, snapshots = [], [], [], []
+    
+        def factory():
+            root = real_tk()
+            roots.append(root)
+            # Tcl bgerror runs outside Tkinter.report_callback_exception. Keep the
+            # observer in the Tcl interpreter so it also survives window destruction.
+            root.tk.eval("set pass17_bgerrors {}; proc bgerror {message} {lappend ::pass17_bgerrors [list $message $::errorInfo]}")
+            root.report_callback_exception = lambda kind, value, _tb: errors.append([kind.__name__, str(value)])
+            real_destroy = root.destroy
+    
+            def destroy():
+                pending = []
+                for callback in root.tk.call("after", "info"):
+                    script, kind = root.tk.call("after", "info", callback)
+                    pending.append({"id": str(callback), "script": str(script), "kind": str(kind),
+                                    "exists": bool(root.tk.call("info", "commands", str(script)))})
+                snapshots.append(pending)
+                return real_destroy()
+    
+            root.destroy = destroy
+            if ending.startswith("close-"):
+                root.after(0 if ending.endswith("early") else 30,
+                           lambda: root.tk.call(root.protocol("WM_DELETE_WINDOW")))
+            elif ending.startswith("destroy-"):
+                root.after(0 if ending.endswith("early") else 30, root.destroy)
+            elif ending == "loop-failed":
+                def fail_loop():
+                    raise RuntimeError("fake startup mainloop failure")
+                root.mainloop = fail_loop
+            return root
+    
+        def start(run):
+            runs.append(run)
+            if ending == "start-failed":
+                raise RuntimeError("fake startup thread start failure")
+            return real_start(run)
+    
+        def build(_report):
+            if ending not in {"wizard", "failed"}:
+                assert release.wait(3), "fixture startup worker was not released"
+            if ending == "failed":
+                raise OSError("fake discovery failure")
+            return "fake wizard"
+    
+        monkeypatch.setattr(tk_wizard.tk, "Tk", factory)
+        monkeypatch.setattr(StartupRun, "start", start)
+        try:
+            if ending in {"start-failed", "loop-failed"}:
+                with pytest.raises(RuntimeError, match="fake startup"):
+                    tk_wizard.run_tk_startup(build, fullscreen=fullscreen)
+            else:
+                result = tk_wizard.run_tk_startup(build, fullscreen=fullscreen)
+                expected = "wizard" if ending == "wizard" else "failed" if ending == "failed" else "abandoned"
+                assert result[0] == expected
+            release.set()
+            for run in runs:
+                if run.thread.ident is not None:
+                    run.thread.join(1)
+                    assert not run.thread.is_alive()
+            root = roots[0]
+            until = time.monotonic() + 0.15
+            while time.monotonic() < until:
+                root.tk.call("update")
+                time.sleep(0.003)
+            raw = root.tk.call("set", "pass17_bgerrors")
+            native_errors = list(raw) if isinstance(raw, tuple) else root.tk.splitlist(raw)
+            request.node.user_properties.append(("retirement_trace", json.dumps({
+                "ending": ending, "fullscreen": fullscreen, "before_destroy": snapshots,
+                "tcl_bgerrors": [str(item) for item in native_errors], "python_errors": errors,
+            })))
+            assert not errors
+>           assert not native_errors, native_errors
+E           AssertionError: [('can\'t invoke "event" command: application has been destroyed', 'can\'t invoke "event" command: application has bee...erate $w <<ThemeChanged>>"
+E                 (procedure "ttk::ThemeChanged" line 6)
+E                 invoked from within
+E             "ttk::ThemeChanged"')]
+E           assert not [('can\'t invoke "event" command: application has been destroyed', 'can\'t invoke "event" command: application has bee...erate $w <<ThemeChanged>>"\n    (procedure "ttk::ThemeChanged" line 6)\n    invoked from within\n"ttk::ThemeChanged"')]
+
+tests/test_startup_callback_retirement_pass17.py:118: AssertionError
+_ test_startup_retires_callbacks_before_its_window_is_destroyed[start-failed-False] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x76b04bfaeb90>
+request = <FixtureRequest for <Function test_startup_retires_callbacks_before_its_window_is_destroyed[start-failed-False]>>
+fullscreen = False, ending = 'start-failed'
+
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("ending", ["close-early", "close-poll", "destroy-early", "destroy-poll",
+                                        "start-failed", "loop-failed", "wizard", "failed"])
+    def test_startup_retires_callbacks_before_its_window_is_destroyed(monkeypatch, request, fullscreen, ending):
+        real_tk = tk_wizard.tk.Tk
+        real_start = StartupRun.start
+        release = threading.Event()
+        roots, runs, errors, snapshots = [], [], [], []
+    
+        def factory():
+            root = real_tk()
+            roots.append(root)
+            # Tcl bgerror runs outside Tkinter.report_callback_exception. Keep the
+            # observer in the Tcl interpreter so it also survives window destruction.
+            root.tk.eval("set pass17_bgerrors {}; proc bgerror {message} {lappend ::pass17_bgerrors [list $message $::errorInfo]}")
+            root.report_callback_exception = lambda kind, value, _tb: errors.append([kind.__name__, str(value)])
+            real_destroy = root.destroy
+    
+            def destroy():
+                pending = []
+                for callback in root.tk.call("after", "info"):
+                    script, kind = root.tk.call("after", "info", callback)
+                    pending.append({"id": str(callback), "script": str(script), "kind": str(kind),
+                                    "exists": bool(root.tk.call("info", "commands", str(script)))})
+                snapshots.append(pending)
+                return real_destroy()
+    
+            root.destroy = destroy
+            if ending.startswith("close-"):
+                root.after(0 if ending.endswith("early") else 30,
+                           lambda: root.tk.call(root.protocol("WM_DELETE_WINDOW")))
+            elif ending.startswith("destroy-"):
+                root.after(0 if ending.endswith("early") else 30, root.destroy)
+            elif ending == "loop-failed":
+                def fail_loop():
+                    raise RuntimeError("fake startup mainloop failure")
+                root.mainloop = fail_loop
+            return root
+    
+        def start(run):
+            runs.append(run)
+            if ending == "start-failed":
+                raise RuntimeError("fake startup thread start failure")
+            return real_start(run)
+    
+        def build(_report):
+            if ending not in {"wizard", "failed"}:
+                assert release.wait(3), "fixture startup worker was not released"
+            if ending == "failed":
+                raise OSError("fake discovery failure")
+            return "fake wizard"
+    
+        monkeypatch.setattr(tk_wizard.tk, "Tk", factory)
+        monkeypatch.setattr(StartupRun, "start", start)
+        try:
+            if ending in {"start-failed", "loop-failed"}:
+                with pytest.raises(RuntimeError, match="fake startup"):
+                    tk_wizard.run_tk_startup(build, fullscreen=fullscreen)
+            else:
+                result = tk_wizard.run_tk_startup(build, fullscreen=fullscreen)
+                expected = "wizard" if ending == "wizard" else "failed" if ending == "failed" else "abandoned"
+                assert result[0] == expected
+            release.set()
+            for run in runs:
+                if run.thread.ident is not None:
+                    run.thread.join(1)
+                    assert not run.thread.is_alive()
+            root = roots[0]
+            until = time.monotonic() + 0.15
+            while time.monotonic() < until:
+                root.tk.call("update")
+                time.sleep(0.003)
+            raw = root.tk.call("set", "pass17_bgerrors")
+            native_errors = list(raw) if isinstance(raw, tuple) else root.tk.splitlist(raw)
+            request.node.user_properties.append(("retirement_trace", json.dumps({
+                "ending": ending, "fullscreen": fullscreen, "before_destroy": snapshots,
+                "tcl_bgerrors": [str(item) for item in native_errors], "python_errors": errors,
+            })))
+            assert not errors
+>           assert not native_errors, native_errors
+E           AssertionError: [('can\'t invoke "event" command: application has been destroyed', 'can\'t invoke "event" command: application has bee...erate $w <<ThemeChanged>>"
+E                 (procedure "ttk::ThemeChanged" line 6)
+E                 invoked from within
+E             "ttk::ThemeChanged"')]
+E           assert not [('can\'t invoke "event" command: application has been destroyed', 'can\'t invoke "event" command: application has bee...erate $w <<ThemeChanged>>"\n    (procedure "ttk::ThemeChanged" line 6)\n    invoked from within\n"ttk::ThemeChanged"')]
+
+tests/test_startup_callback_retirement_pass17.py:118: AssertionError
+_ test_startup_retires_callbacks_before_its_window_is_destroyed[start-failed-True] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x76b04bfad650>
+request = <FixtureRequest for <Function test_startup_retires_callbacks_before_its_window_is_destroyed[start-failed-True]>>
+fullscreen = True, ending = 'start-failed'
+
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("ending", ["close-early", "close-poll", "destroy-early", "destroy-poll",
+                                        "start-failed", "loop-failed", "wizard", "failed"])
+    def test_startup_retires_callbacks_before_its_window_is_destroyed(monkeypatch, request, fullscreen, ending):
+        real_tk = tk_wizard.tk.Tk
+        real_start = StartupRun.start
+        release = threading.Event()
+        roots, runs, errors, snapshots = [], [], [], []
+    
+        def factory():
+            root = real_tk()
+            roots.append(root)
+            # Tcl bgerror runs outside Tkinter.report_callback_exception. Keep the
+            # observer in the Tcl interpreter so it also survives window destruction.
+            root.tk.eval("set pass17_bgerrors {}; proc bgerror {message} {lappend ::pass17_bgerrors [list $message $::errorInfo]}")
+            root.report_callback_exception = lambda kind, value, _tb: errors.append([kind.__name__, str(value)])
+            real_destroy = root.destroy
+    
+            def destroy():
+                pending = []
+                for callback in root.tk.call("after", "info"):
+                    script, kind = root.tk.call("after", "info", callback)
+                    pending.append({"id": str(callback), "script": str(script), "kind": str(kind),
+                                    "exists": bool(root.tk.call("info", "commands", str(script)))})
+                snapshots.append(pending)
+                return real_destroy()
+    
+            root.destroy = destroy
+            if ending.startswith("close-"):
+                root.after(0 if ending.endswith("early") else 30,
+                           lambda: root.tk.call(root.protocol("WM_DELETE_WINDOW")))
+            elif ending.startswith("destroy-"):
+                root.after(0 if ending.endswith("early") else 30, root.destroy)
+            elif ending == "loop-failed":
+                def fail_loop():
+                    raise RuntimeError("fake startup mainloop failure")
+                root.mainloop = fail_loop
+            return root
+    
+        def start(run):
+            runs.append(run)
+            if ending == "start-failed":
+                raise RuntimeError("fake startup thread start failure")
+            return real_start(run)
+    
+        def build(_report):
+            if ending not in {"wizard", "failed"}:
+                assert release.wait(3), "fixture startup worker was not released"
+            if ending == "failed":
+                raise OSError("fake discovery failure")
+            return "fake wizard"
+    
+        monkeypatch.setattr(tk_wizard.tk, "Tk", factory)
+        monkeypatch.setattr(StartupRun, "start", start)
+        try:
+            if ending in {"start-failed", "loop-failed"}:
+                with pytest.raises(RuntimeError, match="fake startup"):
+                    tk_wizard.run_tk_startup(build, fullscreen=fullscreen)
+            else:
+                result = tk_wizard.run_tk_startup(build, fullscreen=fullscreen)
+                expected = "wizard" if ending == "wizard" else "failed" if ending == "failed" else "abandoned"
+                assert result[0] == expected
+            release.set()
+            for run in runs:
+                if run.thread.ident is not None:
+                    run.thread.join(1)
+                    assert not run.thread.is_alive()
+            root = roots[0]
+            until = time.monotonic() + 0.15
+            while time.monotonic() < until:
+                root.tk.call("update")
+                time.sleep(0.003)
+            raw = root.tk.call("set", "pass17_bgerrors")
+            native_errors = list(raw) if isinstance(raw, tuple) else root.tk.splitlist(raw)
+            request.node.user_properties.append(("retirement_trace", json.dumps({
+                "ending": ending, "fullscreen": fullscreen, "before_destroy": snapshots,
+                "tcl_bgerrors": [str(item) for item in native_errors], "python_errors": errors,
+            })))
+            assert not errors
+>           assert not native_errors, native_errors
+E           AssertionError: [('can\'t invoke "event" command: application has been destroyed', 'can\'t invoke "event" command: application has bee...erate $w <<ThemeChanged>>"
+E                 (procedure "ttk::ThemeChanged" line 6)
+E                 invoked from within
+E             "ttk::ThemeChanged"')]
+E           assert not [('can\'t invoke "event" command: application has been destroyed', 'can\'t invoke "event" command: application has bee...erate $w <<ThemeChanged>>"\n    (procedure "ttk::ThemeChanged" line 6)\n    invoked from within\n"ttk::ThemeChanged"')]
+
+tests/test_startup_callback_retirement_pass17.py:118: AssertionError
+_ test_startup_retires_callbacks_before_its_window_is_destroyed[loop-failed-False] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x76b04aec8390>
+request = <FixtureRequest for <Function test_startup_retires_callbacks_before_its_window_is_destroyed[loop-failed-False]>>
+fullscreen = False, ending = 'loop-failed'
+
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("ending", ["close-early", "close-poll", "destroy-early", "destroy-poll",
+                                        "start-failed", "loop-failed", "wizard", "failed"])
+    def test_startup_retires_callbacks_before_its_window_is_destroyed(monkeypatch, request, fullscreen, ending):
+        real_tk = tk_wizard.tk.Tk
+        real_start = StartupRun.start
+        release = threading.Event()
+        roots, runs, errors, snapshots = [], [], [], []
+    
+        def factory():
+            root = real_tk()
+            roots.append(root)
+            # Tcl bgerror runs outside Tkinter.report_callback_exception. Keep the
+            # observer in the Tcl interpreter so it also survives window destruction.
+            root.tk.eval("set pass17_bgerrors {}; proc bgerror {message} {lappend ::pass17_bgerrors [list $message $::errorInfo]}")
+            root.report_callback_exception = lambda kind, value, _tb: errors.append([kind.__name__, str(value)])
+            real_destroy = root.destroy
+    
+            def destroy():
+                pending = []
+                for callback in root.tk.call("after", "info"):
+                    script, kind = root.tk.call("after", "info", callback)
+                    pending.append({"id": str(callback), "script": str(script), "kind": str(kind),
+                                    "exists": bool(root.tk.call("info", "commands", str(script)))})
+                snapshots.append(pending)
+                return real_destroy()
+    
+            root.destroy = destroy
+            if ending.startswith("close-"):
+                root.after(0 if ending.endswith("early") else 30,
+                           lambda: root.tk.call(root.protocol("WM_DELETE_WINDOW")))
+            elif ending.startswith("destroy-"):
+                root.after(0 if ending.endswith("early") else 30, root.destroy)
+            elif ending == "loop-failed":
+                def fail_loop():
+                    raise RuntimeError("fake startup mainloop failure")
+                root.mainloop = fail_loop
+            return root
+    
+        def start(run):
+            runs.append(run)
+            if ending == "start-failed":
+                raise RuntimeError("fake startup thread start failure")
+            return real_start(run)
+    
+        def build(_report):
+            if ending not in {"wizard", "failed"}:
+                assert release.wait(3), "fixture startup worker was not released"
+            if ending == "failed":
+                raise OSError("fake discovery failure")
+            return "fake wizard"
+    
+        monkeypatch.setattr(tk_wizard.tk, "Tk", factory)
+        monkeypatch.setattr(StartupRun, "start", start)
+        try:
+            if ending in {"start-failed", "loop-failed"}:
+                with pytest.raises(RuntimeError, match="fake startup"):
+                    tk_wizard.run_tk_startup(build, fullscreen=fullscreen)
+            else:
+                result = tk_wizard.run_tk_startup(build, fullscreen=fullscreen)
+                expected = "wizard" if ending == "wizard" else "failed" if ending == "failed" else "abandoned"
+                assert result[0] == expected
+            release.set()
+            for run in runs:
+                if run.thread.ident is not None:
+                    run.thread.join(1)
+                    assert not run.thread.is_alive()
+            root = roots[0]
+            until = time.monotonic() + 0.15
+            while time.monotonic() < until:
+                root.tk.call("update")
+                time.sleep(0.003)
+            raw = root.tk.call("set", "pass17_bgerrors")
+            native_errors = list(raw) if isinstance(raw, tuple) else root.tk.splitlist(raw)
+            request.node.user_properties.append(("retirement_trace", json.dumps({
+                "ending": ending, "fullscreen": fullscreen, "before_destroy": snapshots,
+                "tcl_bgerrors": [str(item) for item in native_errors], "python_errors": errors,
+            })))
+            assert not errors
+>           assert not native_errors, native_errors
+E           AssertionError: [('can\'t invoke "event" command: application has been destroyed', 'can\'t invoke "event" command: application has bee...erate $w <<ThemeChanged>>"
+E                 (procedure "ttk::ThemeChanged" line 6)
+E                 invoked from within
+E             "ttk::ThemeChanged"')]
+E           assert not [('can\'t invoke "event" command: application has been destroyed', 'can\'t invoke "event" command: application has bee...erate $w <<ThemeChanged>>"\n    (procedure "ttk::ThemeChanged" line 6)\n    invoked from within\n"ttk::ThemeChanged"')]
+
+tests/test_startup_callback_retirement_pass17.py:118: AssertionError
+_ test_startup_retires_callbacks_before_its_window_is_destroyed[loop-failed-True] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x76b04c06d410>
+request = <FixtureRequest for <Function test_startup_retires_callbacks_before_its_window_is_destroyed[loop-failed-True]>>
+fullscreen = True, ending = 'loop-failed'
+
+    @pytest.mark.parametrize("fullscreen", [False, True])
+    @pytest.mark.parametrize("ending", ["close-early", "close-poll", "destroy-early", "destroy-poll",
+                                        "start-failed", "loop-failed", "wizard", "failed"])
+    def test_startup_retires_callbacks_before_its_window_is_destroyed(monkeypatch, request, fullscreen, ending):
+        real_tk = tk_wizard.tk.Tk
+        real_start = StartupRun.start
+        release = threading.Event()
+        roots, runs, errors, snapshots = [], [], [], []
+    
+        def factory():
+            root = real_tk()
+            roots.append(root)
+            # Tcl bgerror runs outside Tkinter.report_callback_exception. Keep the
+            # observer in the Tcl interpreter so it also survives window destruction.
+            root.tk.eval("set pass17_bgerrors {}; proc bgerror {message} {lappend ::pass17_bgerrors [list $message $::errorInfo]}")
+            root.report_callback_exception = lambda kind, value, _tb: errors.append([kind.__name__, str(value)])
+            real_destroy = root.destroy
+    
+            def destroy():
+                pending = []
+                for callback in root.tk.call("after", "info"):
+                    script, kind = root.tk.call("after", "info", callback)
+                    pending.append({"id": str(callback), "script": str(script), "kind": str(kind),
+                                    "exists": bool(root.tk.call("info", "commands", str(script)))})
+                snapshots.append(pending)
+                return real_destroy()
+    
+            root.destroy = destroy
+            if ending.startswith("close-"):
+                root.after(0 if ending.endswith("early") else 30,
+                           lambda: root.tk.call(root.protocol("WM_DELETE_WINDOW")))
+            elif ending.startswith("destroy-"):
+                root.after(0 if ending.endswith("early") else 30, root.destroy)
+            elif ending == "loop-failed":
+                def fail_loop():
+                    raise RuntimeError("fake startup mainloop failure")
+                root.mainloop = fail_loop
+            return root
+    
+        def start(run):
+            runs.append(run)
+            if ending == "start-failed":
+                raise RuntimeError("fake startup thread start failure")
+            return real_start(run)
+    
+        def build(_report):
+            if ending not in {"wizard", "failed"}:
+                assert release.wait(3), "fixture startup worker was not released"
+            if ending == "failed":
+                raise OSError("fake discovery failure")
+            return "fake wizard"
+    
+        monkeypatch.setattr(tk_wizard.tk, "Tk", factory)
+        monkeypatch.setattr(StartupRun, "start", start)
+        try:
+            if ending in {"start-failed", "loop-failed"}:
+                with pytest.raises(RuntimeError, match="fake startup"):
+                    tk_wizard.run_tk_startup(build, fullscreen=fullscreen)
+            else:
+                result = tk_wizard.run_tk_startup(build, fullscreen=fullscreen)
+                expected = "wizard" if ending == "wizard" else "failed" if ending == "failed" else "abandoned"
+                assert result[0] == expected
+            release.set()
+            for run in runs:
+                if run.thread.ident is not None:
+                    run.thread.join(1)
+                    assert not run.thread.is_alive()
+            root = roots[0]
+            until = time.monotonic() + 0.15
+            while time.monotonic() < until:
+                root.tk.call("update")
+                time.sleep(0.003)
+            raw = root.tk.call("set", "pass17_bgerrors")
+            native_errors = list(raw) if isinstance(raw, tuple) else root.tk.splitlist(raw)
+            request.node.user_properties.append(("retirement_trace", json.dumps({
+                "ending": ending, "fullscreen": fullscreen, "before_destroy": snapshots,
+                "tcl_bgerrors": [str(item) for item in native_errors], "python_errors": errors,
+            })))
+            assert not errors
+>           assert not native_errors, native_errors
+E           AssertionError: [('can\'t invoke "event" command: application has been destroyed', 'can\'t invoke "event" command: application has bee...erate $w <<ThemeChanged>>"
+E                 (procedure "ttk::ThemeChanged" line 6)
+E                 invoked from within
+E             "ttk::ThemeChanged"')]
+E           assert not [('can\'t invoke "event" command: application has been destroyed', 'can\'t invoke "event" command: application has bee...erate $w <<ThemeChanged>>"\n    (procedure "ttk::ThemeChanged" line 6)\n    invoked from within\n"ttk::ThemeChanged"')]
+
+tests/test_startup_callback_retirement_pass17.py:118: AssertionError
+______ test_teardown_retires_root_and_descendant_work_but_keeps_peer_work ______
+
+ui = <function ui.<locals>.build at 0x76b04c0fc9a0>
+
+    def test_teardown_retires_root_and_descendant_work_but_keeps_peer_work(ui):
+        app, _clock, errors = ui("standard")
+        peer = tk.Tk()
+        peer.withdraw()
+        peer_errors = []
+        peer.report_callback_exception = lambda kind, error, _trace: peer_errors.append((kind.__name__, str(error)))
+        peer.createcommand("pass16_peer_bgerror", lambda message: peer_errors.append(("Tcl bgerror", message)))
+        peer.tk.eval("proc bgerror {message} {pass16_peer_bgerror $message}")
+        retired_root, retired_child, other_interpreter = [], [], []
+        before = _authority(app.w)
+        try:
+            app.root.after(0, lambda: retired_root.append("retired root"))
+            _entry(app).after(0, lambda: retired_child.append("retired child"))
+            peer.after(0, lambda: other_interpreter.append("peer"))
+            app._teardown()
+            _pump(peer)
+            assert retired_root == [] and retired_child == []
+            assert other_interpreter == ["peer"]
+>           assert not errors and not peer_errors
+E           assert (not [('Tcl bgerror', 'can\'t invoke "event" command: application has been destroyed')])
+
+tests/test_confirm_focus_callback_lifetime_pass16.py:241: AssertionError
+___ test_closed_root_retires_native_tcl_work_and_preserves_peer[idle-wizard] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x76b04c0a9910>
+route = 'wizard', kind = 'idle'
+
+    @pytest.mark.parametrize("route", ["wizard", "startup"])
+    @pytest.mark.parametrize("kind", ["idle", "timer"])
+    def test_closed_root_retires_native_tcl_work_and_preserves_peer(monkeypatch, route, kind):
+        _admit()
+        effects = _guard(monkeypatch)
+        app = None
+        if route == "wizard":
+            wizard, _clock = _review()
+            app = ui.TkWizard(wizard)
+            root = app.root
+        else:
+            root = ui.tk.Tk()
+        root.withdraw()
+        peer = ui.tk.Tk()
+        peer.withdraw()
+        root.tk.eval('set closed_errors {}; proc bgerror {message} {lappend ::closed_errors $message}')
+        root.tk.eval('proc beamo_native_timer {} {event generate . <<BeamoTest>>}')
+        peer.tk.eval('set peer_calls 0; proc beamo_native_timer {} {incr ::peer_calls}')
+        delay = "idle" if kind == "idle" else 0
+        own_timer = root.tk.call("after", delay, "beamo_native_timer")
+        peer_timer = peer.tk.call("after", delay, "beamo_native_timer")
+        try:
+            assert own_timer in root.tk.call("after", "info")
+            assert peer_timer in peer.tk.call("after", "info")
+            if app is not None:
+                app._teardown()
+            else:
+                ui._close_owned_startup_root(root, threading.current_thread())
+            pending = root.tk.call("after", "info")
+            assert not pending, pending
+            # Tcl procedures have their own ownership. Cancelling a native timer
+            # must not delete its command as Tkinter.after_cancel would do.
+            assert root.tk.call("info", "commands", "beamo_native_timer")
+            assert peer_timer in peer.tk.call("after", "info")
+            until = time.monotonic() + 0.1
+            while time.monotonic() < until:
+                peer.tk.call("update")
+                time.sleep(0.003)
+            assert peer.tk.call("set", "peer_calls") == 1
+>           assert not root.tk.call("set", "closed_errors")
+E           assert not ('can\'t invoke "event" command: application has been destroyed',)
+E            +  where ('can\'t invoke "event" command: application has been destroyed',) = <built-in method call of _tkinter.tkapp object at 0x76b04adc1830>('set', 'closed_errors')
+E            +    where <built-in method call of _tkinter.tkapp object at 0x76b04adc1830> = <_tkinter.tkapp object at 0x76b04adc1830>.call
+E            +      where <_tkinter.tkapp object at 0x76b04adc1830> = <tkinter.Tk object .>.tk
+
+tests/test_tk_interpreter_callback_retirement.py:52: AssertionError
+__ test_closed_root_retires_native_tcl_work_and_preserves_peer[idle-startup] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x76b04c0aa810>
+route = 'startup', kind = 'idle'
+
+    @pytest.mark.parametrize("route", ["wizard", "startup"])
+    @pytest.mark.parametrize("kind", ["idle", "timer"])
+    def test_closed_root_retires_native_tcl_work_and_preserves_peer(monkeypatch, route, kind):
+        _admit()
+        effects = _guard(monkeypatch)
+        app = None
+        if route == "wizard":
+            wizard, _clock = _review()
+            app = ui.TkWizard(wizard)
+            root = app.root
+        else:
+            root = ui.tk.Tk()
+        root.withdraw()
+        peer = ui.tk.Tk()
+        peer.withdraw()
+        root.tk.eval('set closed_errors {}; proc bgerror {message} {lappend ::closed_errors $message}')
+        root.tk.eval('proc beamo_native_timer {} {event generate . <<BeamoTest>>}')
+        peer.tk.eval('set peer_calls 0; proc beamo_native_timer {} {incr ::peer_calls}')
+        delay = "idle" if kind == "idle" else 0
+        own_timer = root.tk.call("after", delay, "beamo_native_timer")
+        peer_timer = peer.tk.call("after", delay, "beamo_native_timer")
+        try:
+            assert own_timer in root.tk.call("after", "info")
+            assert peer_timer in peer.tk.call("after", "info")
+            if app is not None:
+                app._teardown()
+            else:
+                ui._close_owned_startup_root(root, threading.current_thread())
+            pending = root.tk.call("after", "info")
+            assert not pending, pending
+            # Tcl procedures have their own ownership. Cancelling a native timer
+            # must not delete its command as Tkinter.after_cancel would do.
+            assert root.tk.call("info", "commands", "beamo_native_timer")
+            assert peer_timer in peer.tk.call("after", "info")
+            until = time.monotonic() + 0.1
+            while time.monotonic() < until:
+                peer.tk.call("update")
+                time.sleep(0.003)
+            assert peer.tk.call("set", "peer_calls") == 1
+>           assert not root.tk.call("set", "closed_errors")
+E           assert not ('can\'t invoke "event" command: application has been destroyed',)
+E            +  where ('can\'t invoke "event" command: application has been destroyed',) = <built-in method call of _tkinter.tkapp object at 0x76b04bf778b0>('set', 'closed_errors')
+E            +    where <built-in method call of _tkinter.tkapp object at 0x76b04bf778b0> = <_tkinter.tkapp object at 0x76b04bf778b0>.call
+E            +      where <_tkinter.tkapp object at 0x76b04bf778b0> = <tkinter.Tk object .>.tk
+
+tests/test_tk_interpreter_callback_retirement.py:52: AssertionError
+__ test_closed_root_retires_native_tcl_work_and_preserves_peer[timer-wizard] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x76b04af5a050>
+route = 'wizard', kind = 'timer'
+
+    @pytest.mark.parametrize("route", ["wizard", "startup"])
+    @pytest.mark.parametrize("kind", ["idle", "timer"])
+    def test_closed_root_retires_native_tcl_work_and_preserves_peer(monkeypatch, route, kind):
+        _admit()
+        effects = _guard(monkeypatch)
+        app = None
+        if route == "wizard":
+            wizard, _clock = _review()
+            app = ui.TkWizard(wizard)
+            root = app.root
+        else:
+            root = ui.tk.Tk()
+        root.withdraw()
+        peer = ui.tk.Tk()
+        peer.withdraw()
+        root.tk.eval('set closed_errors {}; proc bgerror {message} {lappend ::closed_errors $message}')
+        root.tk.eval('proc beamo_native_timer {} {event generate . <<BeamoTest>>}')
+        peer.tk.eval('set peer_calls 0; proc beamo_native_timer {} {incr ::peer_calls}')
+        delay = "idle" if kind == "idle" else 0
+        own_timer = root.tk.call("after", delay, "beamo_native_timer")
+        peer_timer = peer.tk.call("after", delay, "beamo_native_timer")
+        try:
+            assert own_timer in root.tk.call("after", "info")
+            assert peer_timer in peer.tk.call("after", "info")
+            if app is not None:
+                app._teardown()
+            else:
+                ui._close_owned_startup_root(root, threading.current_thread())
+            pending = root.tk.call("after", "info")
+            assert not pending, pending
+            # Tcl procedures have their own ownership. Cancelling a native timer
+            # must not delete its command as Tkinter.after_cancel would do.
+            assert root.tk.call("info", "commands", "beamo_native_timer")
+            assert peer_timer in peer.tk.call("after", "info")
+            until = time.monotonic() + 0.1
+            while time.monotonic() < until:
+                peer.tk.call("update")
+                time.sleep(0.003)
+            assert peer.tk.call("set", "peer_calls") == 1
+>           assert not root.tk.call("set", "closed_errors")
+E           assert not ('can\'t invoke "event" command: application has been destroyed',)
+E            +  where ('can\'t invoke "event" command: application has been destroyed',) = <built-in method call of _tkinter.tkapp object at 0x76b04af2d7b0>('set', 'closed_errors')
+E            +    where <built-in method call of _tkinter.tkapp object at 0x76b04af2d7b0> = <_tkinter.tkapp object at 0x76b04af2d7b0>.call
+E            +      where <_tkinter.tkapp object at 0x76b04af2d7b0> = <tkinter.Tk object .>.tk
+
+tests/test_tk_interpreter_callback_retirement.py:52: AssertionError
+__ test_closed_root_retires_native_tcl_work_and_preserves_peer[timer-startup] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x76b04b1d8450>
+route = 'startup', kind = 'timer'
+
+    @pytest.mark.parametrize("route", ["wizard", "startup"])
+    @pytest.mark.parametrize("kind", ["idle", "timer"])
+    def test_closed_root_retires_native_tcl_work_and_preserves_peer(monkeypatch, route, kind):
+        _admit()
+        effects = _guard(monkeypatch)
+        app = None
+        if route == "wizard":
+            wizard, _clock = _review()
+            app = ui.TkWizard(wizard)
+            root = app.root
+        else:
+            root = ui.tk.Tk()
+        root.withdraw()
+        peer = ui.tk.Tk()
+        peer.withdraw()
+        root.tk.eval('set closed_errors {}; proc bgerror {message} {lappend ::closed_errors $message}')
+        root.tk.eval('proc beamo_native_timer {} {event generate . <<BeamoTest>>}')
+        peer.tk.eval('set peer_calls 0; proc beamo_native_timer {} {incr ::peer_calls}')
+        delay = "idle" if kind == "idle" else 0
+        own_timer = root.tk.call("after", delay, "beamo_native_timer")
+        peer_timer = peer.tk.call("after", delay, "beamo_native_timer")
+        try:
+            assert own_timer in root.tk.call("after", "info")
+            assert peer_timer in peer.tk.call("after", "info")
+            if app is not None:
+                app._teardown()
+            else:
+                ui._close_owned_startup_root(root, threading.current_thread())
+            pending = root.tk.call("after", "info")
+            assert not pending, pending
+            # Tcl procedures have their own ownership. Cancelling a native timer
+            # must not delete its command as Tkinter.after_cancel would do.
+            assert root.tk.call("info", "commands", "beamo_native_timer")
+            assert peer_timer in peer.tk.call("after", "info")
+            until = time.monotonic() + 0.1
+            while time.monotonic() < until:
+                peer.tk.call("update")
+                time.sleep(0.003)
+            assert peer.tk.call("set", "peer_calls") == 1
+>           assert not root.tk.call("set", "closed_errors")
+E           assert not ('can\'t invoke "event" command: application has been destroyed',)
+E            +  where ('can\'t invoke "event" command: application has been destroyed',) = <built-in method call of _tkinter.tkapp object at 0x76b04bf779b0>('set', 'closed_errors')
+E            +    where <built-in method call of _tkinter.tkapp object at 0x76b04bf779b0> = <_tkinter.tkapp object at 0x76b04bf779b0>.call
+E            +      where <_tkinter.tkapp object at 0x76b04bf779b0> = <tkinter.Tk object .>.tk
+
+tests/test_tk_interpreter_callback_retirement.py:52: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_startup_callback_retirement_pass17.py::test_startup_retires_callbacks_before_its_window_is_destroyed[close-early-False]
+FAILED tests/test_startup_callback_retirement_pass17.py::test_startup_retires_callbacks_before_its_window_is_destroyed[close-early-True]
+FAILED tests/test_startup_callback_retirement_pass17.py::test_startup_retires_callbacks_before_its_window_is_destroyed[destroy-early-False]
+FAILED tests/test_startup_callback_retirement_pass17.py::test_startup_retires_callbacks_before_its_window_is_destroyed[destroy-early-True]
+FAILED tests/test_startup_callback_retirement_pass17.py::test_startup_retires_callbacks_before_its_window_is_destroyed[start-failed-False]
+FAILED tests/test_startup_callback_retirement_pass17.py::test_startup_retires_callbacks_before_its_window_is_destroyed[start-failed-True]
+FAILED tests/test_startup_callback_retirement_pass17.py::test_startup_retires_callbacks_before_its_window_is_destroyed[loop-failed-False]
+FAILED tests/test_startup_callback_retirement_pass17.py::test_startup_retires_callbacks_before_its_window_is_destroyed[loop-failed-True]
+FAILED tests/test_confirm_focus_callback_lifetime_pass16.py::test_teardown_retires_root_and_descendant_work_but_keeps_peer_work
+FAILED tests/test_tk_interpreter_callback_retirement.py::test_closed_root_retires_native_tcl_work_and_preserves_peer[idle-wizard]
+FAILED tests/test_tk_interpreter_callback_retirement.py::test_closed_root_retires_native_tcl_work_and_preserves_peer[idle-startup]
+FAILED tests/test_tk_interpreter_callback_retirement.py::test_closed_root_retires_native_tcl_work_and_preserves_peer[timer-wizard]
+FAILED tests/test_tk_interpreter_callback_retirement.py::test_closed_root_retires_native_tcl_work_and_preserves_peer[timer-startup]
+13 failed, 33 passed in 13.48s

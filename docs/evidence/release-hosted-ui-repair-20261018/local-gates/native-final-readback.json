@@ -1,0 +1,542 @@
+{
+  "source_sha256": "028e13c7d64c230aaaabfbd806ae900c41c64acd8e07334d3d38abd8af6c901f",
+  "final_junit_sha256": "d0f78ae15922d2f7deca572efa141a203acef6c274c577650a2a70d9cd9f5433",
+  "canonical_child_results": 65,
+  "direct_child_source_provenance": 37,
+  "other_children_source": "Canonical source/runtime inherited from admitted full-gate environment; no per-child hash emitted",
+  "all_zero_exit": true,
+  "all_empty_stderr": true,
+  "parent_timeouts": 0,
+  "nonempty_unraisables": 0,
+  "modules": {
+    "tests.test_tk_native_boundary_pass20": 24,
+    "tests.test_tk_native_collector_pass20": 4,
+    "tests.test_tk_native_constructor_pass20": 22,
+    "tests.test_tk_native_image_pass20": 3,
+    "tests.test_tk_retired_pool_threads": 1,
+    "tests.test_tk_trace_adoption_pass21": 4,
+    "tests.test_tk_variable_interpreter_pass21": 7
+  },
+  "rows": [
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[False-False-return]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "fd036e68271ed90cfbd68a5d14884d7b3132a093a52ee18d81e148695860a08d"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[False-False-raise]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "ce840f39ed71c72a7b555d07be657fb7290d9a78b301dac9feb9a532cff7b3ae"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[False-False-quit]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "5779291cda66032cbe084564ccf5780320ad283450a0c75a45038986f8b421fe"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[False-False-raw-destroy]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "0663a1c4b0e891311c02fe87c51aa80370e7621e14f0b5fc954c8aa5ddd8467a"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[False-False-constructor-raise]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "b5e96fe4052ba3caf88ad2043ef1646cf41f52ee6f17eab5a3095a8cbb785652"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[False-False-redraw]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "8a60df20c689f8e9ccd3b0dae46b58580bff4e292ba3d9e958df8db7d5ff21bb"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[False-True-return]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "b6500934d57499dbddf6b36f2e4d2d0e30c65250a6da47e536ce75ad319ab4a8"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[False-True-raise]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "b30be3ccd57b3996c2f294a743f4c7963f927e7b44dbfee970e5b0dd81d92a81"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[False-True-quit]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "776d847dbcec678c62ae91881c5cc2cfe49498d18426a2af3967e3f2e516a96e"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[False-True-raw-destroy]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "5064f3777577bf25b5e61e88fc5f5228d77c5ad17f74348ad9b52da6ed209966"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[False-True-constructor-raise]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "6fe1c8e551433090929f6ab8b2feacbd6196e7c7e112ce4b3dc13c9c66d12d80"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[False-True-redraw]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "c24912a5ab982de9c16bcb09df43558e73fb0b5f1c3b8df5e33e6269bcb46b12"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[True-False-return]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "d7f99ef21ce09f2d6a163206ba2fd769cc041c6e6bd70841aa500f79173f40bf"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[True-False-raise]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "13c06a31772901f9326610f8331f0b1103101c4bdf5c2bbcb0c0f97766a1b056"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[True-False-quit]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "5b7c3b321b8123bbf9f2b9145393530a49d2cc3e184fc7efc44a4762fce69f21"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[True-False-raw-destroy]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "314777c77fef87afc25abbed461e7ef4fdee7d8f2751368088690bc528c98e3b"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[True-False-constructor-raise]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "a5f531becfae493e1a2d7cdf4eac6387df997e77325d487a82213180e19e9a1f"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[True-False-redraw]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "760d279495f339f1960a3ce70b47a508fdcd2b1244fef368a0b942c6a3b26017"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[True-True-return]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "b794f77e0b45f9e9e4b742996a6fdf7f53ee6c2cd8cbe7cd9753f76de9723bd5"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[True-True-raise]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "7c4ed2e720890728d06d4cb03eb8ec570f56462c00adfe497555d25336f821e7"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[True-True-quit]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "b7eaf629ec953ffc10918eaa75d93f0d9c6b53e67e6b55b33805de952022b7ca"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[True-True-raw-destroy]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "7a6133d7fa1e1d1dcefad95816e5c0bac3bde20da0cb72624c67936bda6feae7"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[True-True-constructor-raise]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "e1f89ab118b149bc744cefbb68dae904e568076cb4d9eb518446d4a79266012e"
+    },
+    {
+      "module": "tests.test_tk_native_boundary_pass20",
+      "name": "test_supported_boundary_releases_owned_native_wrappers[True-True-redraw]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "b49eb52ab1926bba6686d0ef8fcbbaa07af47567fa8fd20d94967b2d6a3a921b"
+    },
+    {
+      "module": "tests.test_tk_native_collector_pass20",
+      "name": "test_full_supported_run_releases_assets_before_later_worker_collection[return-False]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "da98211d5c604e49dceb1718763af4c3a18f564cbdeb1fa66c8714ee93a8f851"
+    },
+    {
+      "module": "tests.test_tk_native_collector_pass20",
+      "name": "test_full_supported_run_releases_assets_before_later_worker_collection[return-True]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "69643cc9dfb79c8cd35c5bb02a24a2200f3dc16ee8c6b7c9b360fafd6aa768a8"
+    },
+    {
+      "module": "tests.test_tk_native_collector_pass20",
+      "name": "test_full_supported_run_releases_assets_before_later_worker_collection[raise-False]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "40b5e1231100250aed1b8aaf75c9e83a1e1ab12f2bd8bbb8118471d5c55a3720"
+    },
+    {
+      "module": "tests.test_tk_native_collector_pass20",
+      "name": "test_full_supported_run_releases_assets_before_later_worker_collection[raise-True]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "af626d4a6fac76e8469e2c55a682bbd004872983bc9f15c7fbfedd9dc02b0627"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[tk-load-before]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "590aeb2e9b12c7e7dd298e6bcc37f5d6dc3a706146cf5708e98834e93e628637"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[tk-load-after]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "ab73d8e66f8aaa02751abbb65eb4035f07a421bbf1a75cf7354c2e67aed12e57"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[row-label]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "1050bd7a6000fce9d3341961661fead878e881baf8ae8053aa34aeecf7126543"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[row-sync]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "b3c16642d5a23396b846ab23a74557cf154b2db5c3dffa2cf67a16037bf258d6"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[row-trace]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "99bce913af9f3e95929f710916e24126dcc385fb7d06fdb1dae22a621896b2f2"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[cleanup-error]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "06f58f53dce59aae730f62a655547dcba2ad85e2b1317d8fdb1dd29bc30e177d"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[tk-init-before]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "f7a0ca80cc06b2e25d4ee50901e8fe4ac09ad912de6346c9e1f81402661b6827"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[font-after-init]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "3e74bb5ccdf98509926ef4a5e50aaa5c4cd03d0e1ccae4379f330580664a9c45"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[variable-after-init]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "bfaf5da09c2ca32bef02cba2a85fcec64e66d728e4c44a2f6a23400d63f85335"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[local-variable-after-init]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "7601f986e1510a628ae87e7227891829c76aa2b2a60531ca9a3c560728d4c211"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[image-after-init]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "8ecb091fbdeecd1a76214a610aa463e6d75ae6df23b93d1eb8c42778b058c83b"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[root-control]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "6c6643d3a392f53fc1df474bdafebc17f6125edbf6fb4a6d78c95997f1212555"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[row-control]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "00063091181df4dfb6e3261360ccc45557643ea44196963505c1d9ef274a5f9e"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[startup-init-before]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "45f0e0b4c7a7aaa80e05c1ee62816486138e8f5bff43dc4454f68118efef27ff"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[startup-load-before]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "c5ffc566e3203b095eea5018620097aaf5751af05d8ea66e78c127f06e4cc65c"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[startup-load-after]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "fd97db28a90d6243306eb435dba8854c35483de5b6945b919b141c55190b27d3"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[startup-frame]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "801bfdc6b8d89df2984cf93ea1d7269ee3570c0726f813c0840f4db933252340"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[startup-label]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "671180762b6ea1247d0542e584db055e0cfbccc24529f38b33b07180ef54e1f3"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[startup-control]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "57b1c6716fb2b8acd58956be82948d6f29f1f2db04d7b76e77f6284f45ec4697"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[font-before-init-then-second-owner]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "5810a4243d438aaea143adb340dc88e61b419eae513fcb97fbd5fc876a75e968"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[row-frame-before]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "f6b864810d6e4c9415c2197b9c34a8eb32f4a8b38d3c829b0e47c3f3bbd14e80"
+    },
+    {
+      "module": "tests.test_tk_native_constructor_pass20",
+      "name": "test_partial_native_and_row_constructor_releases_ownership[row-frame-after]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "0883080e079ade7db5511c7acae9f75379dcdacc9f2f76aef6a4bf0303ee4707"
+    },
+    {
+      "module": "tests.test_tk_native_image_pass20",
+      "name": "test_owned_image_initializer_preserves_safe_original_finalization[before-init]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "5cf6877a99b1bdb8243d8cbc76e0805105ae82142bb5e0da00dc10689ae6d08a"
+    },
+    {
+      "module": "tests.test_tk_native_image_pass20",
+      "name": "test_owned_image_initializer_preserves_safe_original_finalization[after-init]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "b71921316d232071b73829c883d6673e75a6d1cf327358e143c57415a4a3720a"
+    },
+    {
+      "module": "tests.test_tk_native_image_pass20",
+      "name": "test_owned_image_initializer_preserves_safe_original_finalization[live-control]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "73e43e3bcc61db7292b18c308444e707f8c4ae37e33ed660804413de9222f1a5"
+    },
+    {
+      "module": "tests.test_tk_retired_pool_threads",
+      "name": "test_native_finalizers_stay_on_creator_during_foreign_gc",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "f8885bc66131a81789503bcc34a61d20c7c2e234bd96eb357ddd8c7b1778748e"
+    },
+    {
+      "module": "tests.test_tk_trace_adoption_pass21",
+      "name": "test_interrupted_owned_trace_is_retired[row-after]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "c866a68fd8e557af6d672cfd31ad4b1ea9248ade8d0e82b5e219d7bb7a548988"
+    },
+    {
+      "module": "tests.test_tk_trace_adoption_pass21",
+      "name": "test_interrupted_owned_trace_is_retired[typing-after]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "ab34a06d347ffe5d6ec087e01b62cd807bffd2628b6bf5e6f083c8379e341750"
+    },
+    {
+      "module": "tests.test_tk_trace_adoption_pass21",
+      "name": "test_interrupted_owned_trace_is_retired[confirm-after]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "16b60d256e6ec9809eac93ed5470a2c580c2aa1b178a345f1d6ca0423cacda1e"
+    },
+    {
+      "module": "tests.test_tk_trace_adoption_pass21",
+      "name": "test_interrupted_owned_trace_is_retired[row-control]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "c23b460f3a2f485daae5e2e09fa937ba18cb8625647b3d7a2976573f4cca8c2c"
+    },
+    {
+      "module": "tests.test_tk_variable_interpreter_pass21",
+      "name": "test_native_variables_use_the_owned_root[ordinary-control]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "328a4264433b55f56604b74bf7e0e8aa9f3ee6d9caa5cae426b1bf84efc2fe13"
+    },
+    {
+      "module": "tests.test_tk_variable_interpreter_pass21",
+      "name": "test_native_variables_use_the_owned_root[peer-persistent]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "a43038d368b654fdbb8f163a7f2a44f834851b002b6650d5b392a93f6904c47b"
+    },
+    {
+      "module": "tests.test_tk_variable_interpreter_pass21",
+      "name": "test_native_variables_use_the_owned_root[peer-comparison]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "ef2e59e76e0bea6196d740cb4ff2c1a2c568dfe0d9ca2844892945c09c3e0d02"
+    },
+    {
+      "module": "tests.test_tk_variable_interpreter_pass21",
+      "name": "test_native_variables_use_the_owned_root[no-default-persistent]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "5b9a9bacf9421ba1cc56d3550b8906e54131f65ab2e4f73726b1e4698c27397f"
+    },
+    {
+      "module": "tests.test_tk_variable_interpreter_pass21",
+      "name": "test_native_variables_use_the_owned_root[no-default-comparison]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "dc27ac77ef567e4cc5c5952620eef28322b21bb1cf39929a82c2ac4af89e1f4f"
+    },
+    {
+      "module": "tests.test_tk_variable_interpreter_pass21",
+      "name": "test_native_variables_use_the_owned_root[ordinary-confirm]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "387f1308f838ad825e540553fc598af96ab7860b01d8d0e96e5e6542e47ca503"
+    },
+    {
+      "module": "tests.test_tk_variable_interpreter_pass21",
+      "name": "test_native_variables_use_the_owned_root[peer-confirm]",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "timed_out": false,
+      "stdout_sha256": "dc272f3d8667fca1c8bf92a05d1df16bffd2a4dc5a3c50285230037f6ff5f452"
+    }
+  ]
+}

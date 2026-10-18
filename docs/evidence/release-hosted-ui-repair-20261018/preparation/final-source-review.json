@@ -1,0 +1,21 @@
+{
+  "parent_commit": "4f7ee8d434497f52b58966792ed6cc28b587635e",
+  "changed_definitions": [
+    "_pin_retired_interpreter",
+    "_pin_retired_assets",
+    "_drain_retired_assets",
+    "_drain_retired_interpreters",
+    "_new_owned_root",
+    "TkWizard",
+    "_close_owned_startup_root",
+    "_run_tk_startup_window"
+  ],
+  "added_definitions": [
+    "_retire_interpreter_callbacks"
+  ],
+  "wizard_methods_changed": [
+    "_teardown"
+  ],
+  "production_gtk_input_and_core_safety_bytes_unchanged": true,
+  "tk_sha256": "028e13c7d64c230aaaabfbd806ae900c41c64acd8e07334d3d38abd8af6c901f"
+}

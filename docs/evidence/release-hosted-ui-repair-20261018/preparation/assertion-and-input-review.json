@@ -1,0 +1,9 @@
+{
+  "original_test_functions": 5,
+  "original_parametrized_cases": 14,
+  "original_assertion_predicates_preserved": 16,
+  "new_native_fixture_case": 1,
+  "production_accessible_source_unchanged": true,
+  "timeout_bound_seconds": 2,
+  "fixture_press_delay_ms": 1
+}

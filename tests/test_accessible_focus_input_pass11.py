@@ -1,9 +1,11 @@
 """Native GTK input must survive sound-modal and startup focus changes."""
 
 import ctypes
+import json
 import os
 import threading
 import time
+from types import SimpleNamespace
 
 import pytest
 
@@ -45,7 +47,11 @@ def native():
         def key(keyval, pressed):
             code = x11.XKeysymToKeycode(connection, keyval)
             assert code
-            assert xtst.XTestFakeKeyEvent(connection, code, int(pressed), 0)
+            # A fresh physical press has a distinct server timestamp. Zero
+            # delay can synthesize it in the previous release's millisecond,
+            # which correctly matches the product's auto-repeat guard.
+            delay_ms = 1 if pressed else 0
+            assert xtst.XTestFakeKeyEvent(connection, code, int(pressed), delay_ms)
             if pressed:
                 down.add(code)
             else:
@@ -147,6 +153,41 @@ def test_first_fresh_native_activation_after_sound_close_is_not_lost(ui, native,
     native.key(keyval, False)
     _wait(lambda: _opened(app))
     assert app._sound_dialog is not controller
+
+
+def test_native_fixture_separates_fresh_presses_from_repeat_timestamps(native, request):
+    state = SimpleNamespace(held=set(), _release_times={})
+    events = []
+    window = Gtk.Window()
+    window.add(Gtk.Entry())
+
+    def press(_window, event):
+        row = {"time": event.time, "previous_release": state._release_times.get(event.keyval),
+               "held_before": event.keyval in state.held}
+        result = accessible_wizard.AccessibleWizard._remember_key_press(state, event)
+        row["blocked"] = result
+        events.append(row)
+        return result
+
+    window.connect("key-press-event", press)
+    window.connect("key-release-event", lambda owner, event:
+                   accessible_wizard.AccessibleWizard._key_release(state, owner, event))
+    try:
+        window.show_all()
+        window.present()
+        window.get_window().focus(Gdk.CURRENT_TIME)
+        window.get_child().grab_focus()
+        drain()
+        for _ in range(256):
+            native.key(Gdk.KEY_Return, True)
+            native.key(Gdk.KEY_Return, False)
+    finally:
+        window.destroy()
+        drain()
+        request.node.user_properties.append(("native_fresh_events", json.dumps(events)))
+    assert len(events) == 256
+    assert not any(event["blocked"] for event in events), events
+    assert all(event["time"] != event["previous_release"] for event in events)
 
 
 @pytest.mark.parametrize("keyval", [Gdk.KEY_Return, Gdk.KEY_KP_Enter])

@@ -1,0 +1,9 @@
+{
+  "desktop-windows.test.exe": {
+    "sha256": "d05ac4db6463aa6d7f51188f3bcfcfb4891aeab549ab481843538114904a76d9",
+    "bytes": 9021440,
+    "canonical_archive": "../bug-audit-20261017-pass21/primary/raw-evidence.tar.gz",
+    "member": "desktop-windows.test.exe",
+    "meaning": "Identical bytes only; current compile execution remains independently recorded."
+  }
+}

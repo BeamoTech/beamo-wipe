@@ -1,0 +1,70 @@
+[
+  {
+    "number": 32,
+    "url": "https://github.com/BeamoTech/beamo-wipe/security/code-scanning/32",
+    "rule": "py/incomplete-url-substring-sanitization",
+    "location": {
+      "path": "docs/evidence/bug-audit-20261016-pass13/primary/review-artifacts.py",
+      "start_line": 29,
+      "end_line": 29,
+      "start_column": 20,
+      "end_column": 46
+    },
+    "source_commit": "4f7ee8d434497f52b58966792ed6cc28b587635e",
+    "state": "dismissed",
+    "reason": "false positive",
+    "rationale": "False positive: this checks visible support text in locally generated REPORT.html, not a URL. Artifacts authenticate by SHA-256; four failure reports contain plain text and no URL attributes. There is no URL validation, request or redirect.",
+    "dismissed_at": "2026-10-17T23:38:13Z"
+  },
+  {
+    "number": 33,
+    "url": "https://github.com/BeamoTech/beamo-wipe/security/code-scanning/33",
+    "rule": "py/incomplete-url-substring-sanitization",
+    "location": {
+      "path": "docs/evidence/bug-audit-20261017-pass16/primary/review-artifacts.py",
+      "start_line": 33,
+      "end_line": 33,
+      "start_column": 20,
+      "end_column": 46
+    },
+    "source_commit": "4f7ee8d434497f52b58966792ed6cc28b587635e",
+    "state": "dismissed",
+    "reason": "false positive",
+    "rationale": "False positive: this checks visible support text in locally generated REPORT.html, not a URL. Artifacts authenticate by SHA-256; four failure reports contain plain text and no URL attributes. There is no URL validation, request or redirect.",
+    "dismissed_at": "2026-10-17T23:38:20Z"
+  },
+  {
+    "number": 34,
+    "url": "https://github.com/BeamoTech/beamo-wipe/security/code-scanning/34",
+    "rule": "py/incomplete-url-substring-sanitization",
+    "location": {
+      "path": "docs/evidence/bug-audit-20261016-pass15/primary/review-artifacts.py",
+      "start_line": 29,
+      "end_line": 29,
+      "start_column": 20,
+      "end_column": 46
+    },
+    "source_commit": "4f7ee8d434497f52b58966792ed6cc28b587635e",
+    "state": "dismissed",
+    "reason": "false positive",
+    "rationale": "False positive: this checks visible support text in locally generated REPORT.html, not a URL. Artifacts authenticate by SHA-256; four failure reports contain plain text and no URL attributes. There is no URL validation, request or redirect.",
+    "dismissed_at": "2026-10-17T23:38:21Z"
+  },
+  {
+    "number": 35,
+    "url": "https://github.com/BeamoTech/beamo-wipe/security/code-scanning/35",
+    "rule": "py/incomplete-url-substring-sanitization",
+    "location": {
+      "path": "docs/evidence/bug-audit-20261016-pass14/primary/review-artifacts.py",
+      "start_line": 29,
+      "end_line": 29,
+      "start_column": 20,
+      "end_column": 46
+    },
+    "source_commit": "4f7ee8d434497f52b58966792ed6cc28b587635e",
+    "state": "dismissed",
+    "reason": "false positive",
+    "rationale": "False positive: this checks visible support text in locally generated REPORT.html, not a URL. Artifacts authenticate by SHA-256; four failure reports contain plain text and no URL attributes. There is no URL validation, request or redirect.",
+    "dismissed_at": "2026-10-17T23:38:22Z"
+  }
+]

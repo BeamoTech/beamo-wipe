@@ -1,0 +1,21 @@
+[
+  {
+    "failed": false,
+    "events": [
+      {
+        "key": 65293,
+        "time": 84310944,
+        "previous_release": null,
+        "held_before": false,
+        "blocked": false
+      },
+      {
+        "key": 65293,
+        "time": 84311299,
+        "previous_release": 84311297,
+        "held_before": false,
+        "blocked": false
+      }
+    ]
+  }
+]

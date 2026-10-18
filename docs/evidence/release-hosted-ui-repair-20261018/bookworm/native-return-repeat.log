@@ -1,0 +1,10 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.2, pytest-9.0.3, pluggy-1.7.0
+rootdir: /evidence
+collected 80 items
+
+../evidence/repeat_native.py ........................................... [ 53%]
+.....................................                                    [100%]
+
+------------ generated xml file: /evidence/native-return-repeat.xml ------------
+============================= 80 passed in 40.66s ==============================

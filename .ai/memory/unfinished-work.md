@@ -1,76 +1,255 @@
 # Unfinished work
 
-## BW-RELEASE-20261017-ALL — IN PROGRESS
+## BW-RELEASE-20261017-ALL — IN PROGRESS / FINAL LOCAL QUALIFIED, PUSH PENDING
 
-- Date/author: 2026-10-17 / Codex. BeamoTech/beamo-wipe, worktree
-  `/root/dev/Beamo Wipe`, branch `fix/safety-audit-20261015`, starting HEAD
-  35107a8d1a701093eac876a58ab4efd50e291673; main cad8ed397818bca09634be57cd8a46e0195690c2.
-- Current user explicitly authorizes committing/pushing all project work to main
-  and publishing the latest complete release. This supersedes the prior audit's
-  no-push/no-publication scope; existing protected checks, publisher verification,
-  isolated-worker and unattended-host device restrictions remain intact.
-- Intended candidate: next patch0.2.13 (current latest public v0.2.12). Keep
-  nwipe0.42, Go1.26.8, existing rollback pins and approved claims unchanged.
-- BW-REL-SOURCE — IN PROGRESS: inventory all2698 current modified/untracked
-  audit paths (154706812bytes), preserve all historical receipts and failures,
-  inspect archives for disallowed media/secrets, prepare version/release notes,
-  rerun applicable local checks for final source, commit explicit paths with
-  safety: prefix. Version0.2.13 aligned in21existing files plus release notes;
-  wrapperversion is the only runtime delta from authenticated pass21. All59
-  retained regression modules unchanged. Version-focused40PASS. Content scan
-  passes2698files/104archives/15631members, zero secret-pattern matches or media
-  members; original64MiB helper-bound failure preserved, corrected scan streams
-  the111553533-byte original font trace instead of dropping it. Final875-input
-  source frozen; first8local phasesPASS; full main/Orca running since22:41UTC.
-  One failureglyph observed44% at22:49UTC; exactcase/finalcounts pending, no
-  cancellation or source edits. Preserve candidate1 snapshot/logs; diagnose
-  actual trace before fixes and rerun affected/full gates. No commit/push yet.
-  Inventory working
-  /tmp/beamo-release-20261017/starting-worktree-inventory.json.
-- BW-REL-LOCAL-GATES — PASS (candidate2): candidate1 completes10103PASS/23FAIL/
-  14artifactskips; separateOrca1PASS. All23 failures are version-dependent test
-  data:9ISO shell fixture mismatches,1current finalizer filename,13report goldens.
-  All candidate1 source875/logs/XML/failures preserved at
-  docs/evidence/release-0.2.13-20261017/candidate1/ and /tmp/beamo-release-20261017/local-gates/.
-  Focused original43 gives23FAIL20controls; corrected expanded125PASS, all23
-  exact failed IDs present/pass. Three shell fixtures explicitly own their
-  existing0.2.12 version; finalizer filename uses currentversion. Original Python
-  assertion predicates unchanged.13goldens change only application version and
-  derived SHARE checksum; replacing newversion recovers exact prior checksum.
-  No product guard or runtime code changed. Candidate2 re-freezes875 inputs;
-  runtimeSHA781dc5f3dab8c8a07f799b17fd25583fe19c47267d22bcfbebfc2156520e8ea9,
-  freezeSHAf6b944b3e7f4d8c286cbfae80ececbd6cdec9bef10ca546acfd6ae241c9bf605.
-  Fresh9 phasesPASS; main10126PASS14exactartifactskips in1160.83s andOrca1PASS
-  59.91s. Combined10127PASS0fail/error/duplicates; all59modules3924casespass.
-  Native64zero/emptystderr/noTimeout/unraisables;36directsource hashes.
-  Source875unchanged; no forbidden fallback. Next retain/readback local evidence,
-  commit explicit paths and push/open final qualification PR. No hosted job,
-  PR, tag or publication yet. Candidate evidence docs/evidence/release-0.2.13-20261017/.
-- BW-REL-STAGING — READY: all2837 initial intended paths have exact raw-byte
-  index/worktree equality. Staged whitespace check flags6441archival diagnostics
-  plus one redundant test EOF line. docs/evidence/.gitattributes preserves raw
-  records/whitespace without changing source/test checks. EOF-only cleanup has
-  identical AST/marshaled compiled code and focused casesPASS; no runtime bytes,
-  assertions, case counts or bounds change. Original full gate remains tied to
-  f6b944; final875 input map and correction proof under
-  docs/evidence/release-staging-0.2.13-20261017/. Fresh hosted CI must validate
-  exact committed source before merge/release. Next explicit-path stage/check,
-  commit and push qualification branch; all source/publication gates retained.
-- BW-REL-QUALIFY — PENDING: GitHub main protection requires strict CI gate and
-  applies to admins. Complete final hosted Blacksmith Linux/ISO/QEMU and native
-  Windows checks; use exact source receipts. No skipped/failed check is a pass.
-  Next action open the final-candidate PR after local gates; no bypass.
-- BW-REL-PUBLISH — PENDING: main push CI success, exact version tag on main,
-  manual release.yml version0.2.13, complete credential-free verification and
-  protected OIDC publisher, then independently verify public metadata/signatures
-  and asset identities. Production environment permits protected branches and
-  currently has no required-review protection rule. No release dispatched yet.
-- Historical incident attribution and physical/firmware acceptance stay explicitly
-  unproved; current release authorization does not permit physical-device work
-  or mislabel those limits. Preserve old audit histories as historical facts.
-- Blockers: none in GitHub access; auth account jallieson has repository admin/push.
-  Missing shared /root/dev/AGENTS.md/runtime-status tool recorded. No credentials
-  read or logged. Next action prepare and qualify concrete candidate as above.
+- Date/author:2026-10-17–18 / Codex; checkpoint01:12UTC. BeamoTech/beamo-wipe,
+  worktree `/root/dev/Beamo Wipe`, branch `fix/safety-audit-20261015`.
+- User explicitly authorized committing/pushing all work to protected main and
+  publishing the latest complete release. Merge and publication are authorized
+  after verification; do not ask the same permission again. Preserve required
+  CI/statuses, branch protection and protected publisher. Physical host/device,
+  firmware/security/remote-access restrictions remain; no physical work authorized.
+- BW-REL-SOURCE — COMMITTED/PUSHED:4f7ee8d434497f52b58966792ed6cc28b587635e,
+  safety: ship audited disk and UI reliability fixes in0.2.13. All2849 reviewed
+  paths committed; all commit blobs independently match reviewed raw bytes;
+  index/worktree were clean after commit. Remote feature branch verifiedpushed.
+  Includes all pre-existing audit work, version alignment, regression/evidence
+  and raw-archive Git policy. Nwipe0.42,Go1.26.8,claims and rollback unchanged.
+- BW-REL-LOCAL — PASS with explicit provenance: corrected candidate2 fresh9
+  local phases pass. Main10126PASS14artifactskips in1160.83s; Orca1PASS59.91s.
+  Combined10127PASS0fail/error/duplicates; all59 auditmodules3924cases pass.
+  All64native children zeroexit/emptystderr/noTimeout/unraisables,36directhashes.
+  RuntimeSHA781dc5f3dab8c8a07f799b17fd25583fe19c47267d22bcfbebfc2156520e8ea9.
+  Candidate2 source875 freezeSHAf6b944b3e7f4d8c286cbfae80ececbd6cdec9bef10ca546acfd6ae241c9bf605.
+  After the full gate, one regression EOF blank line was removed: AST and
+  marshaled compiled code identical,208focusedPASS. No runtime/assertion/case/
+  timing changes. Final875 source map is under release-staging evidence;
+  exact committed final bytes must receive hosted CI before merge/release.
+- Failed history preserved: candidate1 main10103PASS23FAIL14skips/Orca1PASS.
+  All23 are old version-dependent fixtures/goldens. Originalfocused43 gives
+  23FAIL20controls; fixedexpanded125PASS includes every original failedID.
+  Shell fixtures explicitly select fake0.2.12; finalizer path follows version;
+  13goldens change only version plus derived sharechecksum. All37 original
+  Python assertion predicates in4fixture modules unchanged. No guard weakened.
+  Initial scan/helper count/archival-whitespace failures and corrections are
+  preserved. All2617 original evidence files unchanged; five existing manifests
+  authenticate1106 entries; nine older audit dirs retain their legacy formats.
+- Evidence: docs/evidence/release-0.2.13-20261017/ (99retainedfiles,
+  manifest991841fac716dee69b2c724f545a648425d28fefaf7750e4ce1b8222f180b9cb),
+  docs/evidence/release-staging-0.2.13-20261017/, and all prior audit directories.
+  Content scans cover initial2698files/104archives/15631members plus final deltas;
+  zero matching secret patterns or disk-image members. Commit data166MB approx.
+- BW-REL-PR — OLD CANDIDATE FAILED / CORRECTED CANDIDATE LOCAL: https://github.com/BeamoTech/beamo-wipe/pull/90,
+  head4f7ee8d434497f52b58966792ed6cc28b587635e, base main. Registered with T3.
+  Hosted run39079362211 failed source tests; original source not qualified:
+  https://github.com/BeamoTech/beamo-wipe/actions/runs/39079362211.
+  Exact run/PR state saved in working PRJSON.
+  Required strict CI gate applies to admins; no separate non-author approval
+  required. Use T3 watch_pull_request and end the turn while CI runs; do not
+  poll or run a PR watcher. On wake inspect actual required checks, all comments,
+  current head/base and readiness. Fix real failures without weakening checks.
+  Once qualified, merge normally with --match-head-commit; no --admin/force.
+- BW-REL-CODEQL — REVIEWED/PASS: T3 wake reported four high findings on
+  archived review-artifacts.py support-copy assertions: alert32/pass13,
+  alert35/pass14, alert34/pass15 (line29), alert33/pass16 (line33). Individually
+  traced every operand to generated REPORT.html, not a URL. All four scripts
+  match committed bytes; all280 archived bundle files authenticate;16 failure
+  reports parse with visible plain support text and zero URL attributes. No
+  URL validation, request, redirect or authorization sink. Product report
+  escapes copy/metadata; QR accepts only exact constant support URL. Dismissed
+  these four false positives with recorded rationale, preserving all archives
+  and CodeQL rules/configuration. GitHub confirmed all dismissals23:38UTC;
+  subsequent PR snapshot CodeQLSUCCESS. Initial long-comment dismissal request
+  exited1 (stderr not retained); concise request accepted. No source fix/retry
+  of hosted CI was needed. Focused23 tests at72DPI allPASS; initial no-display
+  attempt22PASS/1TkSKIP is retained separately, not called full acceptance.
+  Raw API/trace/JUnit receipts in /tmp/beamo-release-20261017/codeql-review/.
+  PR snapshot still head4f7ee8d, mergeable butBLOCKED: Linux image gate and
+  Greptile review running; Windows launcher and all4CodeQL languagesPASS.
+- BW-REL-MAIN-CI — PENDING: after merge record actual merge/mainSHA; wait for
+  successful ci.yml eventpush for that exactSHA (Linux/ISO/QEMU plus native
+  Windows). PR qualification does not replace this. Do not duplicate existing
+  equivalent hosted runs. Main starts cad8ed397818bca09634be57cd8a46e0195690c2.
+- BW-REL-TK-REVIEW — FIXED LOCALLY / REQUALIFICATION PENDING: Greptile summary
+  issuecomment6243204273 and discussion4304997909 identify one genuine P1 race
+  in both retired native pools. Worker snapshots retain the record tuple,
+  so the creator's resource-only refcount check can remove its entry; the last
+  tuple then releases the native resource on the worker. Deterministic original
+  regression proves8FAIL/2normal controls, including both pools, direct/GC
+  callback drains, and worker with/without its own resources. Initial testv1
+  paused the empty asset pool before reaching interpreter records:4FAIL/6PASS;
+  preserved and corrected to select the affected pool before product edits.
+  Fix partitions records by creating Thread before any snapshot, retains empty
+  metadata buckets for reentrant pin safety, and preserves existing refcount,
+  finalizer and explicit-owner rules. No disk/auth/nwipe changes. New regression
+  tests/test_tk_retired_pool_threads.py includes an isolated real-native child
+  with actual worker GC and original Font/Variable/Image destructors. Focused
+  fake/private72DPI checks75PASS, all65 native children zeroexit/empty stderr/
+  noTimeout/unraisables;10 deterministic fixedPASS. Full local gate and exact new hosted SHA remain
+  required before merge. Prior4f7ee8d CI cannot qualify changed runtime. Evidence
+  /tmp/beamo-release-20261017/tk-pool-review/. Next: fresh full local gate, retain
+  proofs, commit explicit fix/test/evidence paths, push existing PR90, watch new
+  hosted verification/review, then resume already-authorized merge/release.
+  First fresh9-phase runner session16706 completed all0exits: main10137PASS,
+  14skips/1182.67s; separateOrca1PASS59.96s. NOT QUALIFIED: one material
+  PytestUnraisableExceptionWarning from GC on an unregistered/retiring thread
+  calling current_thread -> DummyThread while audio fixture replaces
+  Thread.__init__. Exact warning/trace retained; no publication or push.
+  Freeze876inputs SHAe123a59f19dcb0027685e54087f5022e485cda79a6a86a948e7f338546dc5fcc;
+  runtime dbd1ae3746527a5c2a555528433b82d075449068ebb2c56477eb89b07bd15e7e;
+  Tk fefdc9963a92c7150d794392c337bf660134d683090d083a4c5d2d945575d43b.
+  That candidate/source remains archived under tk-pool-review/local-gates/;
+  partition-v1 source/test snapshots and unqualified-warning.json preserve it.
+  Two new deterministic raw-thread regressions fail with the same KeyError
+  before the next edit. Corrected code tags actual Tk owners in thread-local
+  metadata during pinning; GC drains read that tag, avoiding current_thread
+  and DummyThread construction for unrelated/unregistered callers. Actual
+  Thread identity still selects the isolated bucket, avoiding reused IDs.
+  Corrected focused/native/audio87PASS with unraisables treated as errors;
+  all65 native child results clean. New full9-phase runner session53265:
+  first8 phasesPASS, Python/Orca started00:08:34UTC. New876freeze
+  fd1496381d10cd93169f56b276260d8aa5cbe7badf3976f18f4e7d2a8e3891a5;
+  runtime d8f527df821941d73332ae365b98f45ac289848bd9e535838e006c958e14e08a;
+  Tk f43af23bfb37ca184a3a85c316c5f6235c528a102fd4a98493f9df9452db740b.
+  Working logs under tk-pool-review/local-gates-v2/;13new module cases now
+  included in60auditmodules3937cases. First-run artifacts untouched; second
+  verifier rejects unraisable warnings and warning summaries. Indexempty;
+  Corrected full gate now PASS: main10139PASS14existing artifactskips1177.27s,
+  separateOrca1PASS59.42s; combined10140PASS0fail/error/duplicates/warnings.
+  All60auditmodules3937casesPASS; native65children0exit/emptystderr/noTimeout,
+  37directsourcehashes. Source876freeze/runtime above unchanged. Native-output
+  reviewer initially classified all13 mixed module cases as children; preserved
+  failed helper, selected exactly its one native subprocess case, retained all
+  65 native predicates/counts. Full audit classifier independently requires all
+  13 module cases. Clean corrected readbackPASS. Final regression bytes replay
+  archived original sources:8ownershipFAIL/2controls and2callbackFAIL, stderr0.
+  Sealed111 evidencefiles11936862B under docs/evidence/release-tk-pool-review-20261017/;
+  manifest a7e5be59dadce315ca9afa0c5baa92e592e925e3173c3fb88c070ca26f7977bd.
+  Content scan111inputs/2archives/1752members26255212B:0secretpatterns/media.
+  P1 fix still local, no commit/push/release since4f7ee8d.
+  Retention helper must use the clean second-run receipts and preserve the
+  first run as unqualified. Next exact action remains qualify, commit/push
+  existing PR90, then new hosted checks and already-authorized merge/release.
+- BW-REL-HOSTED-FAILURES — INVESTIGATING / RELEASE HELD: final pre-push
+  inspection finds original4f7ee8d run39079362211 failed Linux source tests;
+  Windows/Greptile/CodeQL passed, CI gate failed; ISO/QEMU not qualified. Ten
+  failures: one GTK first fresh Return after sound close (test_accessible_focus_input_pass11.py)
+  and nine Tk callback-lifetime failures (eight early/start/loop variants in
+  test_startup_callback_retirement_pass17.py plus peer-preserving teardown in
+  test_confirm_focus_callback_lifetime_pass16.py). Tk traces show pending
+  ttk::ThemeChanged after root.destroy: event command/application destroyed.
+  GTK second-open predicate did not settle within unchanged2s. Negative mutant
+  failure earlier in log is EXPECTED, not an extra failing source check.
+  Raw ci-initial-failed.log and ci-failure-comment.json in workingbase. Current
+  new local Ubuntu runtime passes, so reproduce exact hosted Debian Bookworm
+  Tcl/GTK in an unprivileged container before any further edit/push. No physical
+  devices, Docker socket, privileged flags, ISO/QEMU or host network passthrough.
+  Managed local Docker socket healthy; approved Debian digest6ebd97fa...1443
+  pull session66597/log bookworm-pull.log. Use source read-only and owned temp
+  output mounts, proxy/CA guidance. Root cloud skill/network/docker refs read;
+  environment_status tool and network-policy file absent. Do not claim policy
+  readiness or bypass denials. Next: finish local Debian setup/reproduce/fix
+  proven callback/input issues, focused regressions, fresh full relevant gates,
+  retain new independent evidence, then commit/push current PR90 and qualify.
+  Matching Bookworm container now owned/running: beamo-pr90-bookworm-20261018,
+  ID/mounts/labels in bookworm-runtime/container-identity.json. Image digest
+  matches CI; Python3.11.2, Tk8.6.13-2/Tcl8.6.13+dfsg-2,
+  GTK3.24.38-2~deb12u3/GI3.42.2-3+b1 exactly match failed hosted install logs.
+  Read-only source, owned evidence RW/public CA RO; no devices/socket/privilege/
+  host networking. Setup exec session99440 runs sleep infinity until owned
+  teardown; stop/remove only this label+ID after tests. Do not leave it behind.
+  Reproduction56 gives9TkFAIL/47controls. Explicit new native-timer regression
+  gives4FAIL before source edit on Ubuntu as well. Timer-only cancellation
+  fixes those4 on Ubuntu but Bookworm still13FAIL: ttk schedules a C-level
+  idle notification absent from `after info`. That attempt/source are retained.
+  Current fix cancels interpreter timers and guards only obsolete ThemeChanged
+  notifications when root no longer exists, retaining the original procedure
+  body/live behavior and ordinary Tcl error propagation. No global bgerror
+  suppression, peer work or Tk destructors changed. Applied to owned-root init
+  failure, wizard teardown and all startup close paths. Five-case regression
+  includes destroy failure/retry, real live theme dispatch and deliberate Tcl
+  errors. Its first control had Tcl string/int comparison TypeError; snapshot
+  preserved, int conversion corrected, no product change for that fixture.
+  Current focused62 BookwormPASS,20 UbuntuPASS; original9 all pass. New test
+  tests/test_tk_interpreter_callback_retirement.py; source tk_wizard.py only.
+  GTK investigation: first requested40 identical node IDs ran only1 due pytest
+  de-duplication; corrected diagnostic80 iterations allPASS. Separate real
+  native256 press/release probe proves215 false repeat classifications from
+  zero-delay XTest reusing previous release timestamp while heldFalse. Native
+  fixture now requests1ms server delay for fresh presses and has a256-event
+  regression; source GTK repeat guard, exact same-time unit tests, assertions
+  in all14 old test cases and original2s bound remain. Old CI had no event timestamps:
+  exact original GTK failure attribution remains an inference, not a claimed
+  trace. Proven fixture defect corrected; current Bookworm original case and
+  strict fresh/repeat controls pass. No production GTK input code changed.
+  Matching Debian native lifetime run77PASS/65childresults0exit/emptystderr/
+  noTimeout, direct source hashes match final028e13... source. Positively
+  identified container stopped/removed after every test exec completed; receipt
+  bookworm-runtime/owned-cleanup.json. Setup-only sleep session99440 ended137
+  by intentional owned Docker stop; NO test process was terminated. Do not
+  attribute it to any earlier unexplained signal. Native readback is retained.
+  Final877-input9-phase local runner session72338: first8 phasesPASS; full
+  Python/Orca started00:50:52UTC. Sourcefreeze6582e76ea795a1e7f4f322c5f7844f82870fd3446e1bb1915e7377119ec5d93b;
+  runtime9e2d6373ea8e6d1e8a41d0ecf59b99f0f007681b3278ccecb483234d2f23532b;
+  Tk028e13c7d64c230aaaabfbd806ae900c41c64acd8e07334d3d38abd8af6c901f.
+  Logs/helpers hosted-ui-repair/local-gates/.61auditmodules3943cases expected,
+  native65 child classification preserved. Current tests15GTK/5newTcl plus
+  newP1 thirteen all retained. All16 original assertion predicates in5GTK
+  functions/14parameterized cases unchanged; exact2s timeout unchanged. Prior
+  P1 sealed evidence is immutable and qualifies its
+  d8f527... snapshot only, not these later callback/fixture edits. Root-owned
+  logs/scripts in hosted-ui-repair/ and bookworm-runtime/. Final overall source
+  has not been committed/pushed; current HEAD/PR head still4f7ee8d.
+- BW-REL-FINAL-LOCAL — PASS / COMMIT-PUSH NEXT: final877 source inputs remain
+  exactly frozen through all9 fresh phases. Main10145PASS14artifactskips1173.36s;
+  separateOrca1PASS66.68s; combined10146PASS0fail/error/duplicate/warnings.
+  All61auditmodules3943casesPASS. All65canonical native children0exit/empty
+  stderr/noTimeout/unraisables,37directsourcehashes. One owned offline SDK
+  fixture call,0forbidden fallbacks. Windows crossbuild9021440B unchanged
+  d05ac4db...76d9, independently rerun; not native Windows acceptance.
+  Finalsource/runtime/Tk hashes are6582e76e...93b/9e2d6373...32b/028e13c7...01f
+  as above. Independent diff review: only production tk_wizard.py changes;
+  within TkWizard only_teardown changes. GTK input/core safety files matchHEAD.
+  Sealed docs/evidence/release-hosted-ui-repair-20261018/:107files10286305B,
+  manifest802f4cb03539453faf90df7bfa3db10263780a1ab3df3f54ea211a75dbc13254.
+  Content scan108inputs/1archive877members17781392B:0secretpatterns/media.
+  Both new evidence directories independently read back:218files authenticate,
+  both source archives876/877inputs authenticate; final877current bytes match.
+  Failed hosted source receipts/JUnit retained, including exact15skipIDs; its
+  additional skip is test_ci_hosted::test_cloud_upload_excludes_local_captures_and_env_files
+  because gcloud is unavailable in that legacy test. No current ISO/QEMU pass
+  claimed. Upstream Tk8.6.13 source independently confirms C idle notification.
+  Next: stage only explicit own src/tests/two evidence dirs/this record,
+  verify raw staged bytes and content, commit/push existing branch/PR90; update
+  PR description and resolve addressed review, then T3 watch exact new checks.
+  Main merge, exact-main pushCI, tagv0.2.13, protected release.yml and actual
+  public signed byte verification remain authorized/pending. Never reuse old
+  failed4f7ee8d/a77fbd94 CI or stale local runtime evidence for final source.
+- BW-REL-PUBLISH — PENDING/AUTHORIZED: once exact main pushCI passes, create
+  new annotated v0.2.13 tag at that main commit (never replace an existing tag),
+  push tag, dispatch release.yml on main with version0.2.13 exactly once.
+  Existing production env allows protected branches, no reviewer rule; existing
+  OIDC publisher last succeeded forv0.2.12. Never invoke legacy GCP CI or request
+  login. Release verifies/rebuilds7Linuxgates in credential-free worker, transfers
+  measured bytes then protected publisher signs/uploads/verifies and promotes.
+  Preserve all statuses and production controls; no bypass on a failure.
+- BW-REL-PUBLIC-VERIFY — PENDING: verify actual publishedv0.2.13 metadata,
+  signed inventory/manifest, expected mainSHA/build, all16server asset digests,
+  actual downloaded ISO/compressedUSB and extracted regular-file image, strict
+  manifest evidence/package checks, and latest-release designation. No media
+  writes. Prepared verifier is retained in release evidence/preparation/
+  post-publish-verification.py, working /tmp/beamo-release-20261017/. It takes
+  exact mainSHA as sole argument and uses approved fingerprint93caaf7c...66f7,
+  floor0.2.13, currenttrusted registry. Inspect/copy as needed; it is NOT RUN.
+- Working artifacts/helper/status/commit proof and PR JSONs remain in
+  /tmp/beamo-release-20261017/. This new operational checkpoint is local after
+  the candidate commit; it is not a new runtime change or publication proof.
+  Keep recording source/build/run/asset identity and remaining items before
+  handoff. Physical/firmware acceptance and historical incident attribution
+  stay explicitly unproved; release qualification is software/isolated-worker.
+- Next exact action: retain T3 watch PR90; on required-check success recheck readiness,
+  merge, qualify exact main, tag/publish and perform public-byte verification.
+
 
 ## BW-BUG-AUDIT-20261017-PASS21 — LOCAL VERIFIED / QUALIFICATION BLOCKED
 

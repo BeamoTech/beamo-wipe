@@ -1134,8 +1134,15 @@ class _CheckRow(tk.Frame):
 # native resources until the creating thread can release the final reference.
 _TK_ROOT_CLASS = tk.Tk
 _TK_ASSET_CLASSES = (tkfont.Font, tk.Variable, tk.Image)
-_RETIRED_INTERPRETERS: dict[int, tuple[threading.Thread, object]] = {}
-_RETIRED_NATIVE_ASSETS: dict[int, tuple[threading.Thread, object]] = {}
+# Select the creating thread's bucket before taking any record references.
+# A foreign snapshot of a record tuple can become its last owner even when the
+# resource itself has no extra references. Keep empty buckets: a reentrant GC
+# callback must not detach a bucket while a pin operation is populating it.
+_RETIRED_INTERPRETERS: dict[threading.Thread, dict[int, tuple[threading.Thread, object]]] = {}
+_RETIRED_NATIVE_ASSETS: dict[threading.Thread, dict[int, tuple[threading.Thread, object]]] = {}
+# GC may run on an unregistered native thread, including during Thread teardown.
+# Only actual Tk owners need a drain; do not create a DummyThread for GC callers.
+_RETIRED_THREAD = threading.local()
 
 
 
@@ -1176,31 +1183,46 @@ def _pin_retired_interpreter(root: tk.Misc, owner: threading.Thread | None = Non
     # the real initializer fails before its first statement.
     interpreter = root.__dict__.get("tk")
     if interpreter is not None:
-        _RETIRED_INTERPRETERS.setdefault(id(interpreter), (owner or threading.current_thread(), interpreter))
+        owner = owner or threading.current_thread()
+        if owner is threading.current_thread():
+            _RETIRED_THREAD.owner = owner
+        _RETIRED_INTERPRETERS.setdefault(owner, {}).setdefault(id(interpreter), (owner, interpreter))
 
 
 def _pin_retired_assets(assets, owner: threading.Thread) -> None:
     for asset in assets:
         if isinstance(asset, _TK_ASSET_CLASSES):
-            _RETIRED_NATIVE_ASSETS.setdefault(id(asset), (owner, asset))
+            if owner is threading.current_thread():
+                _RETIRED_THREAD.owner = owner
+            _RETIRED_NATIVE_ASSETS.setdefault(owner, {}).setdefault(id(asset), (owner, asset))
 
 
 def _drain_retired_assets() -> None:
-    owner = threading.current_thread()
-    for identity, record in list(_RETIRED_NATIVE_ASSETS.items()):
+    owner = getattr(_RETIRED_THREAD, "owner", None)
+    if owner is None:
+        return
+    assets = _RETIRED_NATIVE_ASSETS.get(owner)
+    if assets is None:
+        return
+    for identity, record in list(assets.items()):
         # Dict/snapshot/loop references own the same record tuple. The tuple
         # owns one asset reference; getrefcount adds only its argument.
         if record[0] is owner and sys.getrefcount(record[1]) == 2:
-            if _RETIRED_NATIVE_ASSETS.get(identity) is record:
-                del _RETIRED_NATIVE_ASSETS[identity]
+            if assets.get(identity) is record:
+                del assets[identity]
 
 
 def _drain_retired_interpreters() -> None:
-    owner = threading.current_thread()
-    for identity, record in list(_RETIRED_INTERPRETERS.items()):
+    owner = getattr(_RETIRED_THREAD, "owner", None)
+    if owner is None:
+        return
+    interpreters = _RETIRED_INTERPRETERS.get(owner)
+    if interpreters is None:
+        return
+    for identity, record in list(interpreters.items()):
         if record[0] is owner and sys.getrefcount(record[1]) == 2:
-            if _RETIRED_INTERPRETERS.get(identity) is record:
-                del _RETIRED_INTERPRETERS[identity]
+            if interpreters.get(identity) is record:
+                del interpreters[identity]
 
 
 def _drain_retired_native() -> None:
@@ -1223,6 +1245,30 @@ gc.callbacks.append(_drain_retired_native_after_gc)
 def _collect_retired_interpreters() -> None:
     gc.collect()
     _drain_retired_native()
+
+
+def _retire_interpreter_callbacks(root) -> None:
+    """Retire an owned root's timers and obsolete native theme notifications."""
+    if not isinstance(root, _TK_ROOT_CLASS) or root.__dict__.get("tk") is None:
+        return
+    try:
+        # Raw cancellation preserves Tcl procedures and affects only this
+        # interpreter, never a peer Tk root's pending work.
+        for callback in root.tk.call("after", "info"):
+            root.tk.call("after", "cancel", callback)
+        # Bookworm's Tk 8.6.13 also schedules a C-level idle notification that
+        # is absent from `after info`. Its interpreter can outlive the window
+        # while external frames/variables remain. Keep the original procedure
+        # active for a live root (including a failed-destroy retry), but let
+        # an obsolete notification return before it touches destroyed widgets.
+        command = "::ttk::ThemeChanged"
+        if root.tk.call("info", "procs", command) and not root.tk.call("info", "args", command):
+            body = str(root.tk.call("info", "body", command))
+            guard = "if {[catch {winfo exists .} beamo_root_exists] || !$beamo_root_exists} {return}\n"
+            if not body.startswith(guard):
+                root.tk.call("proc", command, (), guard + body)
+    except tk.TclError:
+        pass
 
 
 def _note_tk_cleanup_failure(original: BaseException, cleanup: BaseException) -> None:
@@ -1259,6 +1305,7 @@ def _new_owned_root(owner: threading.Thread):
         _pin_retired_interpreter(root, owner)
         if root.__dict__.get("tk") is not None:
             try:
+                _retire_interpreter_callbacks(root)
                 root.destroy()
             except tk.TclError:
                 pass
@@ -1872,6 +1919,7 @@ class TkWizard:
             if root is not None:
                 self._cancel_widget_callbacks(root)
                 try:
+                    _retire_interpreter_callbacks(root)
                     root.destroy()
                 except tk.TclError:
                     pass
@@ -4934,6 +4982,7 @@ def _close_owned_startup_root(root, owner: threading.Thread,
                               original: BaseException | None = None) -> None:
     _pin_retired_interpreter(root, owner)
     try:
+        _retire_interpreter_callbacks(root)
         root.destroy()
     except tk.TclError:
         pass
@@ -5033,6 +5082,7 @@ def _run_tk_startup_window(root, run, *, fullscreen: bool) -> tuple:
         if not outcome:
             outcome.append(("abandoned", None))
         try:
+            _retire_interpreter_callbacks(root)
             root.destroy()
         except tk.TclError:
             pass
@@ -5062,6 +5112,7 @@ def _run_tk_startup_window(root, run, *, fullscreen: bool) -> tuple:
             pass
         outcome.append(result)
         try:
+            _retire_interpreter_callbacks(root)
             root.destroy()
         except tk.TclError:
             pass

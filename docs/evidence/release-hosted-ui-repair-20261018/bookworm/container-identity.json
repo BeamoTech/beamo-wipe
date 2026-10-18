@@ -1,0 +1,25 @@
+{
+  "id": "f900c915a4ce58567b4f8282fc149a46561824c6d66f61756fac04f2037be0b8",
+  "name": "beamo-pr90-bookworm-20261018",
+  "image": "sha256:6ebd97fa83deb272194a2cf015b3d26a4d538e9ad3a7a79d544c8af5b0a01443",
+  "privileged": false,
+  "devices": [],
+  "network_mode": "bridge",
+  "mounts": [
+    {
+      "Source": "/tmp/beamo-release-20261017/bookworm-runtime",
+      "Destination": "/evidence",
+      "RW": true
+    },
+    {
+      "Source": "/root/dev/Beamo Wipe",
+      "Destination": "/workspace",
+      "RW": false
+    },
+    {
+      "Source": "/etc/ssl/certs/ca-certificates.crt",
+      "Destination": "/run/beamo-ca-bundle.crt",
+      "RW": false
+    }
+  ]
+}
