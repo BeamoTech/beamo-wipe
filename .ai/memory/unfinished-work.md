@@ -221,6 +221,23 @@
   physical USB/disk/reconnect acceptance remain unrun. No release is authorized.
   No further verified defect or incomplete implementation remains in this bounded
   local audit. Source changes are committed/pushed, not deployed or released.
+- Owner-approved follow-up (2026-10-19 / Codex): the owner explicitly said
+  "I give full permission now finish that up" after the screenshot-export block.
+  The inspected fake-preview PNG and evidence were then published in commit
+  `d8d130d4120e20542ed073cc72e46c68d6d49c41` on the same feature branch;
+  its remote ref and exact image blob were independently verified. The image is
+  34807 bytes, 1600x1000, SHA256
+  `922c213939cba144951d70292b63b29baea8fe7d43e4a5f4e7f1e1adc378e5a8`,
+  Git blob `947e180daafc43e211898f7a66ace9fcc8e24d0a`. It shows only the fake
+  preview introduction, with no customer/device data or unrelated desktop content.
+  Automatic approval review still blocked the accompanying backlog annotation;
+  that note was retained locally and the block was reported to the owner.
+  The owner now explicitly says "I give full permission now continue", resolving
+  authorization to publish this follow-up in the existing public backlog.
+  This evidence-only checkpoint preserves prior history and all 787 frozen source
+  inputs; retained proof remains 10,408 unique PASS / 28 unchanged unverified SKIP,
+  including 276 new regressions. See `docs/evidence/bug-audit-20261019/delivery.json`.
+  Image/native/physical qualification remains open; no release is authorized.
 
 ## BW-DEV-ENV-20261017 — LOCAL DEVELOPMENT VERIFIED / NETWORK AND QUALIFICATION GAPS OPEN
 

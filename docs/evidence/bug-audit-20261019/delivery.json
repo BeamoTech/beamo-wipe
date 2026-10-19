@@ -46,5 +46,17 @@
     "release_authorized": false
   },
   "local_follow_up_note": "/workspace/beamo-tools/audit-20261019/root/screenshot-follow-up.md",
-  "backlog_publication": "Existing public backlog left unchanged after automatic approval review rejected its broader update; follow-up note retained locally"
+  "prior_backlog_publication": "Existing public backlog left unchanged after automatic approval review rejected its broader update; follow-up note retained locally",
+  "backlog_publication": "Approval and screenshot-delivery follow-up included in the existing public backlog in this owner-authorized evidence checkpoint",
+  "backlog_approval": {
+    "owner_instruction": "I give full permission now continue",
+    "context": "Explicit permission follows the reported automatic approval review block on publishing the backlog follow-up",
+    "repository": "BeamoTech/beamo-wipe",
+    "branch": "fix/safety-audit-20261019",
+    "parent_commit": "d8d130d4120e20542ed073cc72e46c68d6d49c41",
+    "path": ".ai/memory/unfinished-work.md",
+    "scope": "Publish the audit/screenshot follow-up while preserving existing backlog history",
+    "runtime_source_changed": false,
+    "release_authorized": false
+  }
 }

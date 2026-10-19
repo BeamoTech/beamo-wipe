@@ -104,8 +104,8 @@
     "sha256": "0623171a9771835f21cf323b3009d7c58150ca302f5fd28c05c398d1514977e6"
   },
   "delivery.json": {
-    "bytes": 2707,
-    "sha256": "0e86d858142e44445df4ee5da7766158ba45cae416bcc4c93294857c6f1a7307"
+    "bytes": 3450,
+    "sha256": "b6118dfb7cb6f4c674f7c1d1946aabc9e74de5ebacbc61e5ca972e85fa1afac7"
   },
   "development/activation.sh": {
     "bytes": 1120,
