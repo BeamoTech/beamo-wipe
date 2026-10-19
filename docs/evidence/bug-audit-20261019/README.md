@@ -81,13 +81,15 @@ a proof that every possible defect is absent.
   using explicitly selected system Chromium 155.0.8059.79 and unchanged test
   assertions. This does not qualify the missing Playwright-pinned browser.
 - Actual `./preview` inspected on private Xvfb at 72 DPI:
-  [capture receipt](preview/capture.json). The unaltered image remains local at
-  `/workspace/beamo-tools/audit-20261019/root/tk-preview-72dpi.png`.
+  [unaltered screenshot](preview/tk-preview-72dpi.png),
+  [capture receipt](preview/capture.json).
   Text and buttons are visible without clipping. The owned preview child was
   terminated after capture; normal-close acceptance is not inferred.
-  Automatic approval review rejected the optional screenshot export because it
-  considered that image export and external destination unverified. The image
-  is omitted from the published tree; code and text evidence continue normally.
+  Automatic approval review initially rejected screenshot export. The owner's
+  subsequent explicit permission authorizes this follow-up publication to the
+  same feature branch. The exact inspected image is included without editing;
+  approval context and image hashes are recorded in delivery.json. This
+  evidence-only follow-up leaves all 787 tested source inputs unchanged.
 - A deterministic 1,500-case [projection comparison](review/projection-differential.json)
   found no difference in outcome or advisory-check statuses between complete
   logs and bounded streaming assessment. Original log bytes remain unchanged.

@@ -1,7 +1,7 @@
 {
   "README.md": {
-    "bytes": 11280,
-    "sha256": "6e711f23b7cd14da8315159a873e9720124f572892ba7db5992c2fe0fdfeae26"
+    "bytes": 11372,
+    "sha256": "5cfbb9856d98c685f3b98c47df8ad48b4d174ab812e1a01ab9a94e818f23444b"
   },
   "artifact-review.json": {
     "bytes": 2110,
@@ -104,8 +104,8 @@
     "sha256": "0623171a9771835f21cf323b3009d7c58150ca302f5fd28c05c398d1514977e6"
   },
   "delivery.json": {
-    "bytes": 1644,
-    "sha256": "51ef2f4148067e2fa389539ea297b0298b6dd44b28d2e0e9c793a75470a5bb94"
+    "bytes": 2707,
+    "sha256": "0e86d858142e44445df4ee5da7766158ba45cae416bcc4c93294857c6f1a7307"
   },
   "development/activation.sh": {
     "bytes": 1120,
@@ -158,6 +158,10 @@
   "preview/inspect_preview.py": {
     "bytes": 1345,
     "sha256": "5d5a48ead45b28378da191c0e93f0b286320b83a41b23050f9dac53a5594a34a"
+  },
+  "preview/tk-preview-72dpi.png": {
+    "bytes": 34807,
+    "sha256": "922c213939cba144951d70292b63b29baea8fe7d43e4a5f4e7f1e1adc378e5a8"
   },
   "proofs/copied-modes-before.json": {
     "bytes": 760,

@@ -24,6 +24,27 @@
   "pull_request_created": false,
   "release_performed": false,
   "push_transport": "Connected GitHub app; every Git blob and tree hash verified against the reviewed local index",
-  "screenshot_export": "Excluded after automatic approval review rejection; inspected original retained only in the local workspace",
-  "source_upload_review": "Resolved after checking the user's uploaded commit/push instruction, public repository identity and push permission, and byte-identical public baseline provenance; same upload tool then approved the source"
+  "screenshot_export": "Exact inspected PNG included in this owner-authorized evidence follow-up",
+  "source_upload_review": "Resolved after checking the user's uploaded commit/push instruction, public repository identity and push permission, and byte-identical public baseline provenance; same upload tool then approved the source",
+  "prior_screenshot_export": "Excluded after automatic approval review rejection; inspected original retained only in the local workspace",
+  "screenshot_approval": {
+    "owner_instruction": "I give full permission now finish that up",
+    "context": "Explicit permission follows the screenshot-export rejection reported in the previous answer",
+    "repository": "BeamoTech/beamo-wipe",
+    "branch": "fix/safety-audit-20261019",
+    "parent_commit": "c10de12a6ec8dc2259326b31cb013b4261d0f6a9",
+    "path": "preview/tk-preview-72dpi.png",
+    "bytes": 34807,
+    "sha256": "922c213939cba144951d70292b63b29baea8fe7d43e4a5f4e7f1e1adc378e5a8",
+    "git_blob": "947e180daafc43e211898f7a66ace9fcc8e24d0a",
+    "dimensions": [
+      1600,
+      1000
+    ],
+    "fake_preview_only": true,
+    "edited": false,
+    "release_authorized": false
+  },
+  "local_follow_up_note": "/workspace/beamo-tools/audit-20261019/root/screenshot-follow-up.md",
+  "backlog_publication": "Existing public backlog left unchanged after automatic approval review rejected its broader update; follow-up note retained locally"
 }
