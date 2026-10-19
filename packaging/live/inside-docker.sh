@@ -72,6 +72,17 @@ inventory = release_manifest.live_build_inputs()
 raw = json.dumps(inventory, sort_keys=True, separators=(',', ':')).encode('ascii')
 if hashlib.sha256(raw).hexdigest() != expected:
     raise SystemExit('copied live inputs differ from the staged checkout')
+# The byte inventory cannot detect lost executable bits. Use the trusted
+# source helper, never an implementation from the copied build tree.
+sys.path.insert(0, str(Path(release_manifest.__file__).resolve().parents[2] / 'scripts'))
+from stage_wrapper_sources import require_executable
+
+for relative in (
+    'includes.chroot/usr/local/bin/beamo-wipe',
+    'includes.chroot/usr/local/sbin/beamo-wipe-kiosk',
+    'hooks/normal/0500-build-nwipe.hook.chroot',
+):
+    require_executable(Path(copied_root) / 'packaging/live/config' / relative)
 PYCHECK
 # END LIVE INPUT COPY CHECK
 

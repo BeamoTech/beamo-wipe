@@ -1,0 +1,41 @@
+{
+  "repo": "/workspace/beamo-wipe",
+  "base_head": "29bd8059947ecdaf2a1d61726b8f75b1f82cebed",
+  "finding": "Raw MODEL changes can be hidden by an unchanged presentation fallback, allowing target/boot final revalidation and production runner launch branch to accept changed source metadata.",
+  "final_fix": "Preserve original 9 fingerprint fields and append raw MODEL, with model fallback only for legacy raw_model=None.",
+  "reports": {
+    "adjacent-baseline": {
+      "tests": 590,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "regression-before": {
+      "tests": 57,
+      "failures": 28,
+      "errors": 0,
+      "skipped": 0
+    },
+    "regression-after": {
+      "tests": 733,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    "final-focused": {
+      "tests": 733,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "regression_before_expected_failures": 28,
+  "first_candidate_issue": "Replacement of presentation model with raw_model hid display-model mutations; existing test_toctou_wwn_vendor_model_change_fails_closed failed. Archived under first-candidate/ and regression-after.{xml,log}. Final fix retains both checks; existing tests unchanged.",
+  "lint": "ruff check safety.py + new regression PASS; mypy safety.py PASS; git diff --check PASS",
+  "native_scope": "No native device access, firmware changes, real engine or process launch. Tests use existing native-acquisition guards and Popen spy; real temporary regular log/lock files only.",
+  "edited_files": {
+    "src/beamo_wipe/safety.py": "4cdf2c6cf8d2ea14b3c4a95868c990885232e1590669383b548a165ec2a27490",
+    "tests/test_raw_model_revalidation_20261019.py": "57d5e155330a6f3a54fa4d30a735edaef54650064977ae15ac04d1ab4fc3e6ed"
+  },
+  "coverage": "Read discovery, hardware classification, boot identification/exclusion, authorization/revalidation, methods and argv validation. One proven bug; no second verified finding."
+}

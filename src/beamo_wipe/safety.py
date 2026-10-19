@@ -641,7 +641,10 @@ def normalize_whole_disk(path: str, *, allow_optical: bool = False) -> str:
     return real
 
 
-def disk_identity(disk: Disk) -> Tuple[str, str, int, str, str, str, str, str, str]:
+def disk_identity(disk: Disk) -> Tuple[str, str, int, str, str, str, str, str, str, str]:
+    # Discovery keeps MODEL separate from its label/"Unknown model" fallback.
+    # Legacy callers without raw metadata still identify by their model field.
+    model = disk.model if disk.raw_model is None else disk.raw_model
     return (
         os.path.realpath(disk.path),
         (disk.serial or "").strip(),
@@ -652,6 +655,7 @@ def disk_identity(disk: Disk) -> Tuple[str, str, int, str, str, str, str, str, s
         (disk.bus or "").strip(),
         disk.kind.value if hasattr(disk.kind, "value") else str(disk.kind),
         (disk.layout_id or "").strip(),
+        (model or "").strip(),
     )
 
 

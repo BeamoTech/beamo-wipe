@@ -1,0 +1,52 @@
+Beamo Wipe runner/recovery audit
+Source: /workspace/beamo-wipe, HEAD 29bd8059947ecdaf2a1d61726b8f75b1f82cebed
+Auditor: runner_audit, 2026-10-19 UTC
+State: application and repository tests read only; no commit, push or publication.
+
+Verified candidate: model LF continuations falsely attribute negative records.
+- nwipe_runner.py:573-576 accepts an unprefixed model continuation as a user abort.
+- nwipe_runner.py:655-674 and 1017-1023 accept model continuations as engine or verification failures.
+- engine_checks.py:328-350 likewise labels the model continuation as a proved media error.
+- A <=40-byte ATA model can contain each exact payload. Existing tests document that pinned nwipe/libparted preserves such internal LF.
+- An authentic successful status table still produces interrupted/engine_failed/verification_failed; corresponding clean control completes and true timestamped failures remain failures.
+- This finding is incorrect attribution and misleading result/report text; it does not allow unsafe success.
+- Suggested conservative behavior: timestamped native logs with unprefixed negative continuations remain indeterminate; media check unavailable. Preserve genuine timestamped records, bare legacy parser fixtures, and real raw status-table failures. Do not convert ambiguous negative evidence into success.
+- Independent root validation required before editing. Parent has evidence; no edit ownership assigned yet.
+
+Evidence:
+- repro_model_negative.py / .log: three concrete parser traces and adjacent controls.
+- test_model_negative_origin.py: 11 failing regressions, 21 passing controls on current source.
+- model-negative-original.log / .xml: original failure evidence.
+- baseline.log / .xml: 1,104 existing tests passed, no fail/error/skip, 43.057 seconds.
+- projection_differential.py / projection-differential.json: fixed seed 20261019, 1,500 fake-record logs, zero outcome/check-status mismatches between whole-log and streaming projection.
+
+Reviewed:
+- start/pre-exec lock identity, retained log descriptor ownership, duplicate/concurrent starts and rejected retry state.
+- Popen ambiguous failures, inherited child flock and cleanup failure behavior.
+- progress ordering, partial records, nonfinite values, conservative completion, method counters and status-cell collisions.
+- cancellation/kill/timeouts, concurrent poll/cancel/stale request protection and late Stop completion.
+- log open/type/identity checks, bounded tails, whole-log projection and malformed records.
+- recovery interface/wipe locks, quiescence, journal state and same-boot terminal evidence.
+
+Limits:
+- Only fake processes, parser strings and regular temporary files used. No physical disks, real nwipe, firmware, ISO/QEMU, native platform, hosted CI or release actions.
+- 1,500 generated comparisons are bounded deterministic exploration, not exhaustive mathematical proof.
+- No additional verified defect found in the reviewed ownership/lifecycle/recovery paths.
+
+Implementation checkpoint (authorized by root after independent validation):
+- Baseline source copies retained in baseline-src/ before product edits.
+- Additional same-root trace model-status-original.log proves a 16-byte LF model can spoof a status failure cell, even within the 17-byte status-table model allowance.
+- Added tests/test_negative_record_origin_20261019.py: pre-edit 62 FAIL / 129 PASS, recorded in expanded-original.log/.xml.
+- Central negative-line provenance iterator now preserves legacy bare input behavior, trusts timestamped records, and requires complete failure rows under the exact Drive Status banner for native bare status evidence.
+- Authentic failures take precedence over untrusted model text; otherwise mixed native/model negative evidence remains indeterminate. Engine media checks remain unavailable rather than proving a model-supplied error.
+- Possible erase activity remains conservative (raw aborts included) for all existing no-erasure contradiction guards.
+- New plus original isolated regressions and pass17/projection adjacency: 1,044 PASS in 7.58s (fixed-origin-adjacent.log/.xml).
+- Focused Ruff and mypy checks pass for changed files.
+- Fixed seeded 1,500-case projection differential again has zero mismatches (projection-differential-fixed.json).
+- Product diff is final and root was notified for source freeze; broader regression suite pending (fixed-focused.*).
+- No logs rewritten, real nwipe/device operations, commits, pushes, CI dispatches or releases.
+
+Final owned verification:
+- Broader runner/recovery/engine-check/external-boundary/late-cancel/new regression suite: 1,356 PASS, zero fail/error/skip, 46.77 seconds (fixed-focused.log/.xml).
+- Final source hashes: final-source-sha256.txt. Product patch: product.diff. New regression file is untracked pending root review/staging.
+- Root independently reviewed initial failure matrix, authorized specific file ownership, and received final-diff/test evidence for integrated review. No further owned source change is pending.

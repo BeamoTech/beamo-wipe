@@ -1491,10 +1491,20 @@ def _loop(stdscr, wizard: Wizard) -> int:
             if ch == KEY_RESIZE:
                 continue
             if ch == -1:
+                enter_held, enter_quiet_since, _ = _advance_enter_quiet(
+                    enter_held, enter_quiet_since, time.monotonic()
+                )
                 escape_held, escape_quiet_since, _ = _advance_enter_quiet(
                     escape_held, escape_quiet_since, time.monotonic()
                 )
                 continue
+            # Confirm reads outside the shared input path. Carry Enter's hold
+            # through keyboard detours and interleaved token edits here too.
+            if enter_held:
+                enter_quiet_since = None
+            if _is_enter_repeat(enter_held, ch):
+                continue
+            enter_held = enter_held or ch in (curses.KEY_ENTER, 10, 13)
             if escape_held:
                 escape_quiet_since = None
             if ch == curses.KEY_F5 and wizard.can_refresh:

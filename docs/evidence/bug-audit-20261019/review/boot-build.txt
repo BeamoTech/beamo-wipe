@@ -1,0 +1,112 @@
+Boot/build audit: verified candidate B1
+Repository: /workspace/beamo-wipe
+Reviewed HEAD: 29bd8059947ecdaf2a1d61726b8f75b1f82cebed
+Source remained read-only during initial review.
+
+Problem: live asset staging accepts a non-executable shipped kiosk supervisor.
+The systemd unit directly executes /usr/local/sbin/beamo-wipe-kiosk. Its working
+file can lose mode 0755 -> 0644 (for example on a checkout with core.filemode=false)
+without Git exposing a mode diff. stage_assets explicitly requires executable
+/usr/local/bin/beamo-wipe and the nwipe hook, but never checks the supervisor.
+It therefore succeeds and rsync -a preserves a supervisor the kernel cannot exec.
+This breaks automatic wizard startup and the supervisor-provided fallback menu.
+
+Proof:
+  source /workspace/beamo-tools/activate.sh
+  python /workspace/beamo-tools/audit-20261019/boot-build/reproduce_kiosk_mode.py
+The final assertion fails on reviewed HEAD. Detailed measured results are in
+kiosk-mode-reproduction.json. Both controls keep index mode 100755 and have no
+working-tree mode diff with core.filemode=false. Staging rc=0 with modes0755 and0644.
+All fixtures are regular files in this audit directory, with mocked build identity;
+no kiosk, disk, firmware, restart, Docker, guest, or privileged process is executed.
+
+Related gap: live_build_inputs binds bytes and node type but not modes.
+The copied-tree digest remains unchanged after a copied kiosk chmod0755->0644;
+a normal tree matches and a byte-change control mismatches as expected. The copy
+check cannot detect that particular divergence after stage_assets returns.
+
+Proposed narrow B1 fix: require_executable for the kiosk alongside the existing
+entrypoint/hook checks in scripts/stage_live_assets.py; add an execute-the-real-
+stager regression in tests/test_iso_live_assets_pass20.py with0755 normal control
+and0644 rejection. Metadata binding in release_manifest can be assessed separately
+because changing its input inventory affects provenance format and existing tests.
+
+Awaiting root independent verification and ownership before any product edits.
+
+Implementation checkpoint (2026-10-19, boot_build_audit subagent):
+Root independently reproduced B1 and authorized the minimum fix, with explicit
+ownership of scripts/stage_live_assets.py, new test_kiosk_executable_staging_20261019.py,
+and the fixture-only addition in test_iso_live_assets_pass20.py.
+Original script and fixture were archived in originals/ before edits.
+
+Changed one production line: require_executable on the kiosk supervisor alongside
+the existing executable entrypoint and hook checks. The complete fixture now
+includes the real tracked0755 kiosk bytes. Six regression cases exercise the real
+stager:0755 success,0644 refusal even when Git hides the mode change, missing-path
+refusal, directory refusal, leaf-link refusal, and linked-parent refusal.
+
+Red evidence: kiosk-regression-before.txt records three expected failures on the
+old production implementation. The final test version was additionally run with
+the archived implementation in a private regular-file tree; final-regression-original.json
+shows nonexecutable/missing/directory still fail the expectation while the normal
+and existing symlink controls pass. No live supervisor is ever executed.
+
+Green evidence:
+  source /workspace/beamo-tools/activate.sh
+  python -m pytest -o addopts= -q tests/test_kiosk_executable_staging_20261019.py tests/test_iso_live_assets_pass20.py tests/test_iso_copy_binding_pass37_build.py tests/test_boot_build_inputs_pass7.py tests/test_stage_preserve_unknown_pass12_build.py tests/test_live_asset_source_race_pass33_build.py tests/test_iso_desktop_handoff_pass22_build.py tests/test_build_stage_assets_pass9.py tests/test_kiosk_recovery.py --junitxml=/workspace/beamo-tools/audit-20261019/boot-build/kiosk-staging-after.xml
+  Result:72 passed in5.04s (log:kiosk-staging-after.txt).
+After a regression-fixture simplification and explicit hidden-mode assertion:
+  python -m pytest -o addopts= -q tests/test_kiosk_executable_staging_20261019.py tests/test_iso_live_assets_pass20.py --junitxml=/workspace/beamo-tools/audit-20261019/boot-build/kiosk-final-tests.xml
+  Result:11 passed in1.81s (log:kiosk-final-tests.txt).
+  python -m ruff check scripts/stage_live_assets.py tests/test_iso_live_assets_pass20.py tests/test_kiosk_executable_staging_20261019.py
+  Result:all checks passed.
+  git diff --check
+  Result:passed.
+
+Remaining evidence boundary:
+No ISO, Docker, QEMU, physical hardware, firmware action, restart, external CI,
+publication, commit or push was performed. Root retains the full-repository gate.
+
+Related mode-copy observation is not fully addressed by pre-copy executable
+checks: live_build_inputs still does not bind metadata, so a transient mode-only
+change during rsync can produce a copied tree whose digest agrees while its kiosk
+is no longer executable. The normal static invalid-source case is fixed. The
+remaining copy-contract behavior is recorded separately for root assessment;
+release_manifest and its schema were deliberately left unchanged under root's
+explicit scope decision. Hosted QEMU still provides an independent startup gate.
+
+Second-boundary completion (supersedes the deferred critical mode-copy item above):
+Root independently traced the post-rsync byte-only verification and authorized
+checking critical executable modes in the copied tree without changing manifest
+schema. Original inside-docker.sh and its copy fixture were archived first.
+
+Before source edits, reproduce_copied_modes.py executed the original embedded
+copy-check against regular-file fixtures. Normal source/copy0755 returned0;
+copy-only0644 wrapper, kiosk and nwipe hook each incorrectly returned0 while
+source remained0755 and both byte digests agreed. Byte-tamper control returned1.
+Evidence:copied-modes-before.json. New executable regressions were then run red
+against unchanged production code:3failed,3passed; copied-mode-regression-before.txt.
+
+packaging/live/inside-docker.sh now uses require_executable for those three copied
+paths after byte-inventory verification. It resolves the trusted helper directory
+from the source-mounted release_manifest.__file__; it does not import a helper
+from /build. The existing copy fixture now contains the three executable regular
+entrypoints. New test_copied_entrypoint_modes_20261019.py covers the three mode
+losses, preserved source modes/digests, unmodified-copy success and malicious
+copied helpers that would waive a failure or crash a valid check. The existing
+byte-tamper assertions remain unchanged.
+
+Final combined gate:
+  source /workspace/beamo-tools/activate.sh
+  python -m pytest -o addopts= -q tests/test_copied_entrypoint_modes_20261019.py tests/test_iso_copy_binding_pass37_build.py tests/test_kiosk_executable_staging_20261019.py tests/test_iso_live_assets_pass20.py tests/test_boot_build_inputs_pass7.py tests/test_stage_preserve_unknown_pass12_build.py tests/test_live_asset_source_race_pass33_build.py tests/test_iso_desktop_handoff_pass22_build.py tests/test_build_stage_assets_pass9.py tests/test_kiosk_recovery.py --junitxml=/workspace/beamo-tools/audit-20261019/boot-build/copied-modes-after.xml
+  Result:76 passed in5.35s; copied-modes-after.txt and XML.
+  python -m ruff check tests/test_iso_copy_binding_pass37_build.py tests/test_copied_entrypoint_modes_20261019.py
+  shellcheck -S error packaging/live/inside-docker.sh
+  bash -n packaging/live/inside-docker.sh
+  git diff --check
+  Results:all passed.
+
+The verified critical copied-entrypoint failure is now fixed at both staging
+and post-copy boundaries. Manifest/schema remains unchanged. Files released to
+root for independent review; no ISO/Docker/QEMU, hardware, firmware, CI, commit,
+or push executed. Root retains whole-repository final checks and unfinished record.

@@ -1,5 +1,306 @@
 # Unfinished work
 
+## BW-BUG-AUDIT-20261018 — LOCAL GATES VERIFIED / COMMIT AND PUSH PREPARING
+
+- Date/author: 2026-10-18 America/Chicago / Codex. Repository BeamoTech/beamo-wipe,
+  checkout `/workspace/beamo-wipe`, branch `work`, HEAD
+  `29bd8059947ecdaf2a1d61726b8f75b1f82cebed`. Initial dirty path was this record
+  from the preceding development setup task; preserve its entries.
+- Current request: the uploaded 8,282-byte `Pasted text.txt` requests a systematic
+  evidence-first bug audit, minimal root-cause fixes/regressions, bounded multiple
+  subagents with independent validation, complete applicable verification, and
+  commit/push only after gates pass. No release authorized. Its explicit
+  instruction is "Stop on any blocker". Original request is retained at
+  `/workspace/attachments/82af801b-13a2-4b12-9c2c-851f6d510754/Pasted text.txt`.
+- BW-AUDIT-GUIDE — BLOCKED: current AGENTS.md line 9 explicitly requires
+  `~/dev/AGENTS.md`. Actual required path `/home/agent/dev/AGENTS.md` is absent.
+  The uploaded request says saved historical instructions do not grant further
+  authorization; do not use old exception notes as permission to ignore this
+  requirement. Next action: restore the shared guide (or obtain a current
+  explicit instruction resolving that missing-guide requirement), then read it.
+- BW-AUDIT-NETWORK — STILL BLOCKED: current managed environment is running,
+  connected, observations current, restricted network state now `enforced`.
+  Policy excludes cdn.playwright.dev, support.microsoft.com, learn.microsoft.com.
+  Fresh single HEAD probes fail with URLError; a bounded browser diagnostic
+  confirms the reason contains proxy HTTP 403, not a TLS verification failure.
+  No bypass or network configuration mutation attempted. Next: review/apply
+  the existing `/workspace/beamo-tools/network-access-needed.json` using the
+  supported environment configuration UI, install the pinned browser normally,
+  and rerun affected checks. Runtime status tool cannot change the allowlist.
+- Current project CI instructions supersede the pasted baseline's legacy GCP
+  description: Blacksmith `.github/workflows/ci.yml` is qualification; GCP CI is
+  legacy and must not be invoked. No CI dispatch or publication attempted.
+  `/dev/kvm` remains absent; ISO/native/hardware qualification is unrun and
+  belongs on approved separate workers when applicable, not routine local edits.
+- Stopped before spawning audit agents, proving any bug, changing application
+  code, running new source gates, committing or pushing. Previous setup results
+  remain historical evidence for that run, not completion of this bug task.
+  All requested audit areas, reproductions/fixes, regression/adjacent checks,
+  independent final review and conditional commit/push remain pending.
+- Acceptance/next sequence after prerequisites are resolved: read current
+  instructions and architecture guidance; capture source/dependency baseline;
+  assign bounded reviews across discovery/argv, runner/evidence/cancellation,
+  wizard/UI/recovery and boot/build/hardware; independently reproduce findings
+  before edits; add regressions and minimal fixes; run required local gates and
+  final diff/artifact review; preserve any unresolved limits and only commit/push
+  when applicable gates pass. Keep fake devices and all fail-closed invariants.
+- Evidence: `/workspace/beamo-tools/logs/bug-audit-20261018-preflight/preflight.json`
+  records exact source identity, missing-guide path, policy membership and fresh
+  network probes. This checkpoint is the only new repository edit for this task.
+- Current owner update (2026-10-19 UTC / 2026-10-18 America/Chicago): explicitly
+  "Don't worry about that condition any more, just continue with all the work
+  now. Get the thing that you need and then continue now." This resolves the
+  missing shared-guide stop condition for this task; continue under current
+  repository instructions without inventing missing guide contents. Network
+  policy remains enforced; continue available local work without bypassing it.
+- Resumed source still HEAD 29bd8059947ecdaf2a1d61726b8f75b1f82cebed, branch
+  `work`; only the pre-existing checkpoint is dirty. Python test and pinned Go
+  doctor preflights pass. Existing unprivileged development image
+  sha256:4cf3d86be5b8f17956299944ca8e1354fee07f3a4694f4e2b6e8237327616559
+  is available; managed Docker daemon healthy, no active peer container.
+- Four requested bounded read/prove audit agents started: storage discovery and
+  authorization; runner/progress/evidence/cancellation; wizard/Tk/GTK/curses;
+  boot/build/hardware/desktop readiness. Root independently owns recovery/report
+  review, reproduction validation, integration, evidence and final gates.
+  Agents first save candidate tests under `/workspace/beamo-tools/audit-20261019/`
+  with no product edits until independent root validation and file ownership.
+  No runtime changes, commits, pushes, hosted CI or releases yet.
+- Reproduction checkpoint: root independently confirmed (1) raw MODEL changes
+  hidden by unchanged label/Unknown-model fallback, 6 original failures/3 controls;
+  (2) staging silently accepts a tracked but non-executable kiosk, failing
+  regular-file assertion with an executable control; (3) <=40-byte LF model
+  text falsely attributes cancellation/engine/verification failure and media
+  failure, 11 original failures/21 controls; (4) GTK interrupted startup retains
+  its owned visible window while unrelated control survives; (5) held Enter
+  closes Keyboard then also accepts a retained curses confirmation token.
+  Evidence under `/workspace/beamo-tools/audit-20261019/{root,storage,runner,wizard,boot-build}/`.
+  Root archived baseline source from exact HEAD; tar SHA256
+  f247c359ba56e7792204b023db4c4206fc47cbbec041901b9871a34363eefc20.
+- Fix ownership approved only after independent proofs: storage safety.py plus
+  raw-model regression; boot stage_live_assets.py plus complete kiosk fixture
+  and new staging regression; runner nwipe_runner.py/engine_checks.py plus
+  negative-origin regression; wizard GTK/curses files plus two new regressions.
+  Storage's first raw-only replacement lost an existing display-model mutation
+  guard (732 PASS/1 FAIL), preserved as failed candidate. Corrected fingerprint
+  retains all original nine fields and appends raw MODEL; focused 733 PASS,
+  including 57 new cases and all unchanged prior guard assertions. Boot minimal
+  staging guard and complete fixtures pass focused 72 cases; final six-case
+  regression proves 3 original failures with unchanged normal/link controls.
+  Other fixes are in progress; no final gate/commit/push claimed yet.
+- Integrated implementation checkpoint: all owned application/test edits are
+  now settled on local branch `fix/safety-audit-20261019` (base HEAD unchanged).
+  Root review additionally proved Python3.10 optional-note cleanup failures:
+  archived pre-guard source produces 2 FAIL/2 controls; guarded final source
+  passes4. The kiosk/entrypoint copy-boundary proof accepts all3 copied0644
+  files on original trusted snippet; normal/byte-tamper controls behave as
+  expected. Fixed embedded check imports only trusted source helper and validates
+  copied wrapper/kiosk/nwipe hook; manifest schema/byte inventory unchanged.
+- Final source freeze: 786 runtime/test/build files; manifest
+  `/workspace/beamo-tools/audit-20261019/root/final-source-sha256.json`, SHA256
+  755b7ebacdbff3d4d95b8c4c56baf3bf7e046ba59e76a7f0180d94a57613c755.
+  Root independently runs all275 new regressions: PASS on private display300
+  at72DPI, no failures/errors/skips. First invocation accidentally used private99;
+  explicit fixture guard blocked10 GTK cases (265PASS/10setupERROR). Retained
+  that setup failure separately; corrected only display invocation, no source
+  or assertion change. Full local lint/type phase PASS; existing TODO regex
+  false-positive warning remains from unchanged release_manifest.py:40.
+  Root reporting/recovery review plus focused tests:401PASS, no new verified bug.
+  Remaining: final preview/negative/Go race-vet-fuzz/cross-build phases and full
+  canonical source/Orca gate, final diff/evidence review, conditional commit/push.
+  Read-only remote main matches base HEAD. GitHub CLI authentication is present;
+  API GraphQL PR lookup is forbidden by current network policy. New feature
+  branch had no remote head; no PR/CI/release has been created or triggered.
+- Final fast gates completed on frozen source: preview and private negative
+  safety phase PASS; Go race tests, vet and FuzzBootOption PASS (350,027
+  executions); Windows/Linux launcher cross-build PASS. Cross-build output
+  identifies base HEAD with source_dirty=true, Go1.26.8 and version0.2.13;
+  it is not native acceptance. Full canonical source/independent Orca gate
+  now running in the disposable unprivileged development container.
+  Supplemental unchanged browser assertions pass9 using explicitly selected
+  system Chromium155.0.8059.79; pinned Playwright browser remains unavailable,
+  so this is additional functional evidence rather than pinned qualification.
+  Logs: `/workspace/beamo-tools/audit-20261019/root/final-*` and
+  `system-browser-tests.{log,xml}`. Remaining: collect full results and every
+  skip reason, inspect preview/artifacts, save durable evidence, conditionally
+  commit/push after applicable local gates pass. No release authorized.
+- Artifact/preview checkpoint: the separate mandatory Orca case passes; the
+  actual fake Tk preview is inspected at72DPI without clipped text/buttons.
+  Owned preview child is terminated after capture, not counted as normal-close
+  acceptance. Windows test binary cross-compiles as PE32+AMD64; shipped Windows
+  PE and Linux ELF hashes are recorded with the exact dirty-source receipt.
+  Durable selected evidence is being assembled at
+  `docs/evidence/bug-audit-20261019/`; main full suite remains running.
+- Git-access correction: the earlier "authentication present" observation
+  meant only that GH_TOKEN was set; saved gh status actually reports it invalid.
+  Default Git read cannot prompt; explicit gh credential-helper read confirms
+  invalid credentials. No credentials printed, changed or requested. The
+  connected GitHub app successfully reads this repository, reports push
+  permission, and confirms the new feature branch absent. Use that supported
+  app to upload the verified Git tree/commit/ref after local gates pass,
+  compare every blob/tree hash and preserve matching local source identity.
+- Development-wrapper finding: a fixed-text piped-input probe independently
+  fails because Docker was invoked without stdin attachment (empty input,
+  exit1); an earlier stdin-fed version script silently produced no output and
+  is not a passing probe. `/workspace/beamo-tools/beamo-dev` now uses `-i`
+  always and `-t` only for actual terminal sessions. Same probe passes with
+  exact input/exit0; ShellCheck and Bash syntax pass. A script-file version
+  probe succeeds with Python3.13.5/GTK3.24.49/pinnedGo1.26.8 and required tool
+  versions. Exact helper/version/probe records retained in the audit evidence's
+  `development/` directory. No project source or running test container changed.
+- First complete source gate FAILED: main10,384PASS/28SKIP/22setupERROR,
+  separateOrca1PASS. All22 errors are in test_launcher_readiness.py and read a
+  missing fixtures.json after Go reports a cached success. Primary independently
+  reproduces generate/delete/reinvoke: second cached exit0 leaves no file.
+  Original full log/XML and first786-file source freeze are retained in workspace
+  history and selected compressed durable evidence; this run is not a pass.
+- Minimal fixture repair: add `-count=1` to its fake Go fixture-generation call,
+  preserving every existing assertion. New behavioral regression reuses a path,
+  deletes the generated JSON and requires regeneration; original1FAIL, fixed1PASS.
+  Actual launcher/browser adjacency24PASS. No other BEAMO_*FIXTURES generator was
+  found. This is a pre-existing test harness cache issue, separate from the six
+  product defect classes and development-wrapper stdin issue.
+- Final updated freeze:787inputs, SHA256
+  eed16a687723c95d78550ceb833eafb40bd3bfbfb676a34c0d7983ff4a40be5b.
+  Only test_launcher_readiness.py and new test_launcher_fixture_recreation_20261019.py
+  differ from the first freeze; all runtime/build/product fixes remain unchanged.
+  Fresh full lint/type phase PASS; integrated new regressions276PASS/0skip.
+  A fresh canonical source/Orca gate is now running. Commit/push remain pending
+  until it passes; no failed run, setup error or skipped qualification is counted
+  as a pass. User continuation authority and fake-device-only boundaries remain.
+- Final replacement gate PASS: main10,407PASS/28SKIP in1055.07s;
+  separateOrca1PASS. Combined10,408uniquePASS,0FAIL/ERROR; all276newcases pass.
+  Every10,159baseline main test ID is retained; exactly276added IDs and identical
+  28skip IDs/reasons (14image/artifact,9pinned-browser,4network-docs,1legacygcloud).
+  All787frozen source inputs still match. Fresh lint/types PASS; preview/private
+  safety negative/Go race-vet-fuzz/cross-build evidence remains valid for unchanged
+  corresponding source. Supplemental explicit system-browser9PASS is separate.
+  `docs/evidence/bug-audit-20261019/final-summary.json` and compressed exact JUnit
+  retain proof. First full failure and original freeze remain in history.
+  Remaining local delivery: verify retained artifact manifest, stage explicit
+  owned paths, verify staged787source bytes, upload matching Git blobs/tree and
+  commit through the connected GitHub app, publish only the feature branch and
+  verify its ref. No PR, hosted dispatch, merge or release authorized/performed.
+  Image/native/physical qualification and network-limited checks remain unverified
+  with the next actions already recorded; they are not applicable release passes.
+- Publication boundary: automatic approval review rejects exporting the optional
+  GUI screenshot, stating the image and external repository/export authorization
+  are unverified. No bypass, alternate encoding/archive or indirect image export
+  is attempted. The exact inspected PNG remains local at
+  `/workspace/beamo-tools/audit-20261019/root/tk-preview-72dpi.png`; its copied
+  staged image is removed from the publication tree. Publish the authorized
+  source/tests and text evidence instead. This does not alter787tested inputs
+  or their passing gate; only the documentation/evidence tree is updated.
+  If public screenshot export is later requested, its explicit approval remains
+  necessary; the optional image does not block requested source delivery.
+
+## BW-DEV-ENV-20261017 — LOCAL DEVELOPMENT VERIFIED / NETWORK AND QUALIFICATION GAPS OPEN
+
+- Date/author: 2026-10-17 America/Chicago / Codex. Repository BeamoTech/beamo-wipe,
+  branch `work`, HEAD `29bd8059947ecdaf2a1d61726b8f75b1f82cebed`, checkout
+  `/workspace/beamo-wipe`. Initial worktree clean. Current request is environment
+  setup, not resumption of older release/publication tasks.
+- Acceptance: select pinned Go 1.26.8, usable project Python environment with
+  lint/type/QR/signing dependencies, headless Tk/GTK/browser development where
+  supported, runnable fake-device previews and source/desktop checks, durable
+  activation/setup instructions and explicit evidence for unavailable gates.
+- Baseline: managed Debian 13 x86_64 environment connected/running; no configured
+  credentials or outbound identities. Restricted package-manager network policy
+  snapshot exists, but runtime policy state is `unknown` (not confirmed enforced).
+  Python 3.12.14 project venv has pinned pytest/cryptography/qrcode/Ruff/mypy;
+  no GI/AT-SPI, browser tooling or QR decoder. Separate Python 3.13.5 GTK venv
+  has GI but lacks remaining accessibility/browser dependencies and pip.
+  Go 1.26.8 and extracted Xvfb exist under `/workspace/beamo-tools`, off PATH.
+  Desktop doctor fails because the unselected system Go cannot start.
+- Available Docker CLI cannot connect to local socket from the default sandbox
+  (`operation not permitted`); no containers created. `/dev/kvm` absent.
+  No ISO/QEMU, native Windows/macOS, real firmware or physical-device acceptance
+  claimed. Shared `~/dev/AGENTS.md` absent; project guide and current user setup
+  authorization govern safe, user-owned local installation.
+- Next: complete dependencies in writable workspace, persist activation/setup,
+  run project doctors, safe previews and applicable local gates; record actual
+  exits, skips, limitations and log paths here before finishing. Do not change
+  physical disks/firmware, restart services/host, dispatch hosted CI or publish.
+- Checkpoint: replaced the default venv with Debian Python 3.13.5 plus system
+  GTK, preserving the old venv at `/workspace/beamo-tools/python312-venv-backup`.
+  Pinned project dev tools installed; pip dependency check passes. Go archive
+  independently matches the source checksum. Test/desktop doctors pass, real
+  Tk 8.6.16/GTK 3.24.49 windows open on a private 72-DPI Xvfb. Desktop tests/vet
+  and Windows/Linux cross-build pass (not native Windows acceptance). Local
+  lint/type, fake previews and private negative-safety phases pass. Lint emits
+  its existing TODO-regex false positive from release_manifest.py:40; no source
+  change made. Owned setup scripts pass ShellCheck after quoting mount arguments.
+- Current Docker status: local socket works when sandbox network permission is
+  enabled; managed daemon unchanged. Built `beamo-wipe-dev:20261017`, image ID
+  `sha256:cc05849e774d70efe340a34de0b5cff6de19f3ffc1313f10398969c22915fe01`,
+  with full system GTK/AT-SPI/Orca/speech, Xvfb, Chromium and test tools. Initial
+  build failure was public CA mount permissions for apt's unprivileged user;
+  corrected mount mode 0444, keeping TLS verification. The disposable wrapper
+  drops capabilities and passes no host devices or Docker socket.
+- BW-DEV-BROWSER — BLOCKED: pinned Playwright Chromium download returns HTTP
+  403 `Domain forbidden` from cdn.playwright.dev. Playwright 1.63.0 is installed;
+  system Chromium is a separate local-development browser. Do not relabel it
+  as the pinned build. Next: approved environment configuration UI review for
+  required Playwright CDN domains, then rerun normal browser install. No callable
+  environment configuration mutation tool is available in this session.
+- Durable entry points: `/workspace/beamo-tools/activate.sh`, `setup-host.sh`,
+  `build-dev-image.sh`, `beamo-dev`, `container/Dockerfile`, and `README.txt`.
+  Logs and toolchain receipt: `/workspace/beamo-tools/logs/dev-env-20261017/`.
+  Next: finish container preflight, execute source and accessibility verification,
+  inspect actual failures/skips and record readiness. Runtime source unchanged.
+- Further setup corrections: D-Bus initially refused UID 1000 because the image
+  lacked its passwd entry; added the real unprivileged beamo account. Final image
+  is `sha256:4cf3d86be5b8f17956299944ca8e1354fee07f3a4694f4e2b6e8237327616559`.
+  First source attempt produced no tests/JUnit; its failure log is retained.
+  A first readiness smoke found 2 fixture failures from an absolute inherited
+  BEAMO_GO_BIN. Selecting `go` via pinned PATH corrected that environment
+  contamination; no test/source edits. Corrected smoke: 157 PASS, doctors,
+  dependency check, web preview and desktop tests/vet PASS. Logs preserve both
+  attempts. All 779 recorded runtime/test/build source files remain unchanged.
+- Full local source phase now running in the corrected image through the
+  project's existing `BEAMO_GATE_CHILD=1 ... scripts/ci-hosted.sh tests` entry
+  point. Main suite and Orca use separate private D-Bus/Xvfb sessions at 72 DPI.
+  Evidence target: `logs/dev-env-20261017/tests.xml{,.orca.xml}`; live output
+  `full-tests.log`. Not yet a pass. No hosted workflow dispatched.
+- Verification checkpoint: separate actual Orca result PASS (1 test, 80.964s,
+  0 failures/errors/skips), retained in `tests.xml.orca.xml`. Main suite is
+  beyond 90% with no failure reported, still running; do not treat it as complete.
+  Process remains active and workspace storage has approximately 10 GB free.
+- FINAL LOCAL RESULT: existing source phase exits 0. Main 10,131 PASS / 28 SKIP
+  in 1,079.37s; separate Orca 1 PASS / 0 SKIP in 80.964s. Combined 10,132 unique
+  passing cases, no failures/errors or warning summary. Required GTK report
+  checker passes. All 779 recorded runtime/test/build source files still match
+  their pre-run hashes. Source SHA/branch unchanged; only this checkpoint is a
+  tracked modification. No commit/push, hosted CI, merge or publication performed.
+- Exact skip review: 14 generated ISO/live-build artifact cases; 9 pinned
+  Playwright browser cases; 4 external Microsoft documentation freshness cases
+  blocked by proxy HTTP 403; 1 legacy gcloud CLI case. These are not passes.
+  Modern local development does not need legacy gcloud; do not request login.
+  No package/test assertion, required gate or safety guard was weakened.
+- BW-DEV-NETWORK — BLOCKED / USER CONFIGURATION REQUIRED: proposed additions
+  are cdn.playwright.dev, support.microsoft.com and learn.microsoft.com. Concrete
+  reviewable proposal `/workspace/beamo-tools/network-access-needed.json` has
+  not been applied. Runtime tool is read-only; use supported configuration UI
+  review, preserving restricted mode/presets/proxy/TLS. Then install Chromium
+  normally and rerun the 9 browser and 4 documentation checks. Any newly denied
+  installer redirect needs its own observed-host review, not a proxy bypass.
+- BW-DEV-QUALIFICATION — NOT RUN / OUTSIDE LOCAL SETUP: no /dev/kvm; ISO/QEMU,
+  generated manufacturing artifact tests, native Windows/macOS, real firmware
+  and physical-media acceptance remain unavailable/unrun. Next: when a final
+  candidate is explicitly selected, use the approved separately authorized
+  isolated/native verification routes in AGENTS.md/docs/ci.md. Local development
+  and cross-build success do not qualify those platforms or a release.
+- Final evidence: `/workspace/beamo-tools/logs/dev-env-20261017/` contains
+  readiness-summary.json, test-summary.json, both JUnit reports, complete source
+  phase log, smoke/lint/preview/negative/build logs, dependency/tool versions,
+  779-file source manifest and setup-file hashes. README.txt gives activation,
+  repeatable smoke and exact full-test entry points. All owned containers exited
+  and were removed; the obsolete failed-setup image and temporary staging venv
+  were removed by exact owned paths/ID. Final development image remains installed.
+- Setup acceptance is complete for local editing, lint/types, fake previews,
+  desktop tests/builds and supported source/accessibility execution. It is not
+  100% coverage: the network and qualification items above remain open. No
+  remaining local source fix is pending for this environment setup request.
+
 ## BW-RELEASE-20261017-ALL — IN PROGRESS / FINAL LOCAL QUALIFIED, PUSH PENDING
 
 - Date/author:2026-10-17–18 / Codex; checkpoint01:12UTC. BeamoTech/beamo-wipe,

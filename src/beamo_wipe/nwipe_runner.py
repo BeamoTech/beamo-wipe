@@ -106,6 +106,11 @@ NWIPE_PIPE_FAILURE_RE = re.compile(
     r"^\|(/dev/[A-Za-z0-9._+-]+)\|[^|]*\|\s*"
     r"(?:-FAILED-|UABORTED|INSANITY)\s*\|"
 )
+NWIPE_FAILURE_STATUS_ROW_RE = re.compile(
+    r"^\s*!?\s*[A-Za-z0-9._+-]+\s*\|\s*"
+    r"(?:-FAILED-|UABORTED|INSANITY)\s*\|"
+    r"\s*[^|\r\n]+\|\s*\d{2,}:\d{2}:\d{2}\s*\|"
+)
 NWIPE_VERIFY_MISMATCH_RE = re.compile(
     r"^Verification mismatch on ['\"]?(/dev/[A-Za-z0-9._+-]+)"
 )
@@ -570,10 +575,32 @@ def _target_has_record(
     return False
 
 
-def _nwipe_aborted(log_text: str) -> bool:
+def _iter_negative_log_lines(log_text: str):
+    """Keep model continuations as ambiguity, not attributable engine records."""
+    lines = (log_text or "").split("\n")
+    native = any(NWIPE_RECORD_PREFIX_RE.match(line) for line in lines)
+    in_status = False
+    for line in lines:
+        if line == NWIPE_DRIVE_STATUS_HEADER:
+            in_status = True
+        elif in_status and line.startswith("***"):
+            in_status = False
+        # Native failure records have a full timestamp. Drive Status rows
+        # are bare, but their banner and complete rate/runtime fields cannot
+        # fit in the 17-byte model printed inside another status-table row.
+        trusted = (
+            not native
+            or NWIPE_RECORD_PREFIX_RE.match(line) is not None
+            or (in_status and NWIPE_FAILURE_STATUS_ROW_RE.match(line) is not None)
+        )
+        yield line, trusted
+
+
+def _nwipe_aborted(log_text: str, *, enforce_origin: bool = True) -> bool:
     return any(
         NWIPE_ABORT_LINE_RE.match(_engine_log_body(line))
-        for line in (log_text or "").split("\n")
+        for line, trusted in _iter_negative_log_lines(log_text)
+        if trusted or not enforce_origin
     )
 
 
@@ -676,8 +703,8 @@ def _line_reports_target_verification_mismatch(line: str, device: str) -> bool:
 
 def _target_reported_failure(log_text: str, device: str) -> bool:
     shared = _status_column_is_shared(log_text, device)
-    for line in (log_text or "").split("\n"):
-        if _line_reports_target_failure(line, device, shared=shared):
+    for line, trusted in _iter_negative_log_lines(log_text):
+        if trusted and _line_reports_target_failure(line, device, shared=shared):
             return True
     return False
 
@@ -730,7 +757,7 @@ def _target_has_erase_activity(log_text: str, device: str) -> bool:
     """Evidence that contradicts a claim the target was never touched."""
     if any(True for _match, _value in _iter_target_progress(log_text, device)):
         return True
-    if _nwipe_aborted(log_text):
+    if _nwipe_aborted(log_text, enforce_origin=False):
         return True
     if _target_error_summary_conflict(log_text, device):
         return True
@@ -1016,11 +1043,20 @@ def evaluate_nwipe_outcome(
         return False, "nwipe could not use the disk", "geometry_unusable"
     if any(
         _line_reports_target_verification_mismatch(line, device)
-        for line in (log_text or "").split("\n")
+        for line, trusted in _iter_negative_log_lines(log_text)
+        if trusted
     ):
         return False, "nwipe read-back verification failed", "verification_failed"
     if _target_reported_failure(log_text, device):
         return False, "nwipe reported a failure", "engine_failed"
+    if any(
+        NWIPE_ABORT_LINE_RE.match(_engine_log_body(line))
+        or _line_reports_target_failure(line, device, shared=False)
+        or _line_reports_target_verification_mismatch(line, device)
+        for line, trusted in _iter_negative_log_lines(log_text)
+        if not trusted
+    ):
+        return False, "nwipe failure evidence could not be attributed", "indeterminate"
     if exit_code != 0:
         return False, f"nwipe exited {exit_code}", "process_failed"
     summary_conflict = _target_error_summary_conflict(log_text, device)

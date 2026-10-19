@@ -1,0 +1,78 @@
+.F.F                                                                     [100%]
+=================================== FAILURES ===================================
+_ test_close_keeps_primary_error_after_secondary_cleanup_failures[ErrorWithoutNotes] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fb71ddec2b0>
+error_type = <class 'test_accessible_cleanup_compat_20261019.ErrorWithoutNotes'>
+
+    @pytest.mark.parametrize("error_type", [RuntimeError, ErrorWithoutNotes])
+    def test_close_keeps_primary_error_after_secondary_cleanup_failures(monkeypatch, error_type):
+        module, _provenance = _module(monkeypatch)
+        original = error_type("primary audio cancellation error")
+        calls, caught = [], []
+    
+        def fail(name, error):
+            calls.append(name)
+            raise error
+    
+        module.GLib.source_remove = lambda source: calls.append(("remove-timer", source))
+        module.Gtk.main_level = lambda: 1
+        module.Gtk.main_quit = lambda: calls.append("quit-loop")
+        app = module.AccessibleWizard.__new__(module.AccessibleWizard)
+        app.w = SimpleNamespace(cancel_audio=lambda: fail("cancel-audio", original))
+        app.closed = False
+        app.timer = 19
+        app._sound_dialog = SimpleNamespace(close=lambda: fail("close-dialog", OSError("secondary dialog error")))
+        app.window = SimpleNamespace(destroy=lambda: fail("destroy-window", ValueError("secondary window error")))
+        try:
+            app.close()
+        except BaseException as error:
+            caught.append(error)
+        assert calls == ["cancel-audio", "close-dialog", ("remove-timer", 19), "destroy-window", "quit-loop"]
+        assert app.closed and app.timer == 0
+>       assert caught == [original]
+E       assert [TypeError("'...ot callable")] == [ErrorWithout...ation error')]
+E         
+E         At index 0 diff: TypeError("'NoneType' object is not callable") != ErrorWithoutNotes('primary audio cancellation error')
+E         Use -v to get more diff
+
+tests/test_accessible_cleanup_compat_20261019.py:61: AssertionError
+_ test_refresh_launch_failure_finishes_claim_when_wake_also_fails[ErrorWithoutNotes] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fb71dde8050>
+error_type = <class 'test_accessible_cleanup_compat_20261019.ErrorWithoutNotes'>
+
+    @pytest.mark.parametrize("error_type", [RuntimeError, ErrorWithoutNotes])
+    def test_refresh_launch_failure_finishes_claim_when_wake_also_fails(monkeypatch, error_type):
+        module, _provenance = _module(monkeypatch)
+        original = error_type("primary launch error")
+        calls, caught = [], []
+    
+        def wake_failed():
+            calls.append("wake")
+            raise OSError("secondary wake error")
+    
+        def start_failed():
+            calls.append("start")
+            raise original
+    
+        app = module.AccessibleWizard.__new__(module.AccessibleWizard)
+        app.w = SimpleNamespace(
+            begin_refresh=lambda: 7,
+            finish_refresh=lambda seq, error: calls.append(("finish", seq, error)),
+        )
+        app._refresh_lock = threading.Lock()
+        monkeypatch.setattr(module.threading, "Event", lambda: SimpleNamespace(set=wake_failed))
+        monkeypatch.setattr(module.threading, "Thread", lambda **_kwargs: SimpleNamespace(start=start_failed))
+        returned = None
+        try:
+            returned = app._begin_refresh_scan()
+        except BaseException as error:
+            caught.append(error)
+>       assert not caught
+E       assert not [TypeError("'NoneType' object is not callable")]
+
+tests/test_accessible_cleanup_compat_20261019.py:93: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_accessible_cleanup_compat_20261019.py::test_close_keeps_primary_error_after_secondary_cleanup_failures[ErrorWithoutNotes]
+FAILED tests/test_accessible_cleanup_compat_20261019.py::test_refresh_launch_failure_finishes_claim_when_wake_also_fails[ErrorWithoutNotes]

@@ -942,7 +942,9 @@ class AccessibleWizard:
                 try:
                     launch_decided.set()
                 except BaseException as cleanup:
-                    exc.add_note(f"Refresh wake also failed: {type(cleanup).__name__}")
+                    add_note = getattr(exc, "add_note", None)
+                    if callable(add_note):
+                        add_note(f"Refresh wake also failed: {type(cleanup).__name__}")
             self.w.finish_refresh(seq, exc)
             return True
         return True
@@ -1102,8 +1104,10 @@ class AccessibleWizard:
         cleanup(self.window.destroy)
         cleanup(lambda: Gtk.main_quit() if Gtk.main_level() else None)
         if errors:
-            for error in errors[1:]:
-                errors[0].add_note(f"GTK cleanup also failed: {type(error).__name__}")
+            add_note = getattr(errors[0], "add_note", None)
+            if callable(add_note):
+                for error in errors[1:]:
+                    add_note(f"GTK cleanup also failed: {type(error).__name__}")
             raise errors[0]
 
     def _runtime_failure(self, _kind, error, _traceback):
@@ -1260,97 +1264,133 @@ def run_accessible_startup(build, *, fullscreen: bool = False,
         window = Gtk.Window(title=C.STARTING_TITLE)
     except Exception as exc:
         raise StartupDisplayUnavailable(f"no accessible display for startup stages: {exc}") from exc
-    window.set_name("beamo-accessible")
-    window.set_default_size(640, 420)
-    if fullscreen:
-        display = window.get_display()
-        monitor = display.get_primary_monitor() or display.get_monitor(0)
-        if monitor is not None:
-            geometry = monitor.get_geometry()
-            window.set_default_size(geometry.width, geometry.height)
-            window.move(geometry.x, geometry.y)
-        window.fullscreen()
-    box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-    box.set_border_width(24)
-    window.add(box)
-    rows = []
-    for _i in range(3):
-        status = Gtk.Label()
-        title = Gtk.Label()
-        title.get_style_context().add_class("screen-heading")
-        hint = Gtk.Label()
-        hint.set_line_wrap(True)
-        hint.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
-        box.pack_start(status, False, False, 0)
-        box.pack_start(title, False, False, 0)
-        box.pack_start(hint, False, False, 6)
-        rows.append((status, title, hint))
-    stall = Gtk.Label()
-    stall.set_line_wrap(True)
-    box.pack_start(stall, False, False, 6)
-    status_line = Gtk.Label(label="")
-    status_line.set_can_focus(True)
-    status_line.set_selectable(True)
-    box.pack_start(status_line, False, False, 6)
-
-    _STATUS_WORDS = {"pending": C.STARTUP_STATE_WAITING, "active": C.STARTUP_STATE_WORKING, "done": C.STARTUP_STATE_DONE}
-
-    def render() -> None:
-        snap = run.drain()
-        for (status, title, hint), row in zip(rows, snap):
-            status.set_text(_STATUS_WORDS[row["state"]])
-            title.set_text(row["title"])
-            hint.set_text(row["hint"])
-        note = run.stalled_note(persistent=True)
-        stall.set_text(note or "")
-        active = [row for row in snap if row["state"] == "active"]
-        if active:
-            status_line.set_text(f"{active[0]['title']} — {C.STARTUP_STATE_WORKING}")
-
-    def finish(result) -> bool:
-        outcome.append(result)
-        window.destroy()
-        if Gtk.main_level():
-            Gtk.main_quit()
-        return False
-
-    def close(*_args):
-        if not outcome:
-            outcome.append(("abandoned", None))
-        window.destroy()
-        if Gtk.main_level():
-            Gtk.main_quit()
-        return False
-
-    def poll() -> bool:
-        if outcome:
-            return False
-        render()
-        result = run.poll()
-        if result is None:
-            return True
-        # run.poll() applied the final report; announce it before closing.
-        render()
-        return finish(result)
-
-    window.connect("delete-event", close)
-    window.connect("key-press-event", lambda _w, event: close()
-                   if event.keyval in (Gdk.KEY_Escape,) else None)
-    window.show_all()
-    window.present()
-    if window.get_window():
-        window.get_window().focus(Gdk.CURRENT_TIME)
-    status_line.grab_focus()
-    render()
+    poll_source = None
+    original = None
     try:
-        run.start()
-    except Exception as exc:
-        # A failed worker launch cannot produce a poll result. Release the
-        # startup window before the caller opens its blocked support view.
-        window.destroy()
-        return ("failed", exc)
-    GLib.timeout_add(100, poll)
-    Gtk.main()
-    if outcome:
-        return outcome[0]
-    return ("abandoned", None)
+        window.set_name("beamo-accessible")
+        window.set_default_size(640, 420)
+        if fullscreen:
+            display = window.get_display()
+            monitor = display.get_primary_monitor() or display.get_monitor(0)
+            if monitor is not None:
+                geometry = monitor.get_geometry()
+                window.set_default_size(geometry.width, geometry.height)
+                window.move(geometry.x, geometry.y)
+            window.fullscreen()
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        box.set_border_width(24)
+        window.add(box)
+        rows = []
+        for _i in range(3):
+            status = Gtk.Label()
+            title = Gtk.Label()
+            title.get_style_context().add_class("screen-heading")
+            hint = Gtk.Label()
+            hint.set_line_wrap(True)
+            hint.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
+            box.pack_start(status, False, False, 0)
+            box.pack_start(title, False, False, 0)
+            box.pack_start(hint, False, False, 6)
+            rows.append((status, title, hint))
+        stall = Gtk.Label()
+        stall.set_line_wrap(True)
+        box.pack_start(stall, False, False, 6)
+        status_line = Gtk.Label(label="")
+        status_line.set_can_focus(True)
+        status_line.set_selectable(True)
+        box.pack_start(status_line, False, False, 6)
+
+        _STATUS_WORDS = {"pending": C.STARTUP_STATE_WAITING, "active": C.STARTUP_STATE_WORKING, "done": C.STARTUP_STATE_DONE}
+
+        def render() -> None:
+            snap = run.drain()
+            for (status, title, hint), row in zip(rows, snap):
+                status.set_text(_STATUS_WORDS[row["state"]])
+                title.set_text(row["title"])
+                hint.set_text(row["hint"])
+            note = run.stalled_note(persistent=True)
+            stall.set_text(note or "")
+            active = [row for row in snap if row["state"] == "active"]
+            if active:
+                status_line.set_text(f"{active[0]['title']} — {C.STARTUP_STATE_WORKING}")
+
+        loop_level = None
+
+        def quit_owned_loop() -> None:
+            if loop_level is not None and Gtk.main_level() == loop_level:
+                Gtk.main_quit()
+
+        def finish(result) -> bool:
+            outcome.append(result)
+            window.destroy()
+            quit_owned_loop()
+            return False
+
+        def close(*_args):
+            if not outcome:
+                outcome.append(("abandoned", None))
+            window.destroy()
+            quit_owned_loop()
+            return False
+
+        def poll() -> bool:
+            if outcome:
+                return False
+            render()
+            result = run.poll()
+            if result is None:
+                return True
+            # run.poll() applied the final report; announce it before closing.
+            render()
+            return finish(result)
+
+        window.connect("delete-event", close)
+        window.connect("key-press-event", lambda _w, event: close()
+                       if event.keyval in (Gdk.KEY_Escape,) else None)
+        window.show_all()
+        window.present()
+        if window.get_window():
+            window.get_window().focus(Gdk.CURRENT_TIME)
+        status_line.grab_focus()
+        render()
+        try:
+            run.start()
+        except Exception as exc:
+            # A failed worker launch cannot produce a poll result. Release the
+            # startup window before the caller opens its blocked support view.
+            window.destroy()
+            return ("failed", exc)
+        poll_source = GLib.timeout_add(100, poll)
+        loop_level = Gtk.main_level() + 1
+        Gtk.main()
+        if outcome:
+            return outcome[0]
+        return ("abandoned", None)
+    except BaseException as error:
+        original = error
+        raise
+    finally:
+        # Startup owns exactly this window and timeout. Retire them even when
+        # setup, worker launch or the main loop is interrupted; peer windows,
+        # timers and nested event loops belong to their own callers.
+        cleanup_errors = []
+        try:
+            if poll_source is not None:
+                pending = GLib.MainContext.default().find_source_by_id(poll_source)
+                if pending is not None:
+                    pending.destroy()
+        except BaseException as error:
+            cleanup_errors.append(error)
+        try:
+            window.destroy()
+        except BaseException as error:
+            cleanup_errors.append(error)
+        if cleanup_errors:
+            first = original if original is not None else cleanup_errors[0]
+            add_note = getattr(first, "add_note", None)
+            if callable(add_note):
+                for cleanup_error in cleanup_errors:
+                    if cleanup_error is not first:
+                        add_note(f"GTK startup cleanup also failed: {type(cleanup_error).__name__}")
+            if original is None:
+                raise first

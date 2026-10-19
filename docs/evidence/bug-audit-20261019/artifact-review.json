@@ -1,0 +1,45 @@
+{
+  "base_commit": "29bd8059947ecdaf2a1d61726b8f75b1f82cebed",
+  "branch": "fix/safety-audit-20261019",
+  "source_files_verified": 787,
+  "source_manifest_sha256": "eed16a687723c95d78550ceb833eafb40bd3bfbfb676a34c0d7983ff4a40be5b",
+  "baseline_source_archive_sha256": "f247c359ba56e7792204b023db4c4206fc47cbbec041901b9871a34363eefc20",
+  "artifacts": {
+    "desktop-windows.test.exe": {
+      "bytes": 8971776,
+      "sha256": "4dac4bc741bed2201a9568567cbc3814fb8bed7d965e451666b4dca51bc94db0"
+    },
+    "Start Beamo Wipe Linux": {
+      "bytes": 6574242,
+      "sha256": "423e6e558bd603a9bbf5b124ffe764b52cae62d3157aa3153de64ad79d30ea0e"
+    },
+    "Start Beamo Wipe.exe": {
+      "bytes": 6761472,
+      "sha256": "b0f5abe8306466522b2445f21840ea9f4880d5b852ece858e7eb918d2f0ab276"
+    }
+  },
+  "desktop_build": {
+    "files": {
+      "Start Beamo Wipe Linux": "423e6e558bd603a9bbf5b124ffe764b52cae62d3157aa3153de64ad79d30ea0e",
+      "Start Beamo Wipe.exe": "b0f5abe8306466522b2445f21840ea9f4880d5b852ece858e7eb918d2f0ab276"
+    },
+    "go": "go1.26.8",
+    "source_commit": "29bd8059947ecdaf2a1d61726b8f75b1f82cebed",
+    "source_dirty": true,
+    "source_sha256": "eb5b67364d52c48d4e12277f164883ed6c163893b5e8fd2c97f986e776ee13c5",
+    "version": "0.2.13"
+  },
+  "native_execution_acceptance": false,
+  "tk_preview_review": "Real ./preview at 72 DPI; text/buttons visible with no clipping. Fake disks only. Owned child terminated after capture; normal-close acceptance not inferred.",
+  "full_gate": "Completed local source phase; final-summary.json records passes and unverified skips",
+  "generated_fake_web_preview": {
+    "bytes": 185540,
+    "sha256": "5492d76fb06bee55066b55cc305c66bd6149514d3367456337f045032f752880",
+    "embedded_script_validation": "canonical preview phase passes all three language cases"
+  },
+  "critical_entrypoint_modes": {
+    "packaging/live/config/includes.chroot/usr/local/bin/beamo-wipe": "0o700",
+    "packaging/live/config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk": "0o700",
+    "packaging/live/config/hooks/normal/0500-build-nwipe.hook.chroot": "0o700"
+  }
+}

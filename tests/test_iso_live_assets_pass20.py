@@ -99,6 +99,11 @@ def _fixture(tmp_path):
     entrypoint.parent.mkdir(parents=True)
     entrypoint.write_text("#!/bin/sh\n")
     entrypoint.chmod(0o755)
+    kiosk = live / "config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk"
+    kiosk.parent.mkdir(parents=True)
+    kiosk_source = ROOT / "packaging/live" / kiosk.relative_to(live)
+    kiosk.write_bytes(kiosk_source.read_bytes())
+    kiosk.chmod(0o755)
     hook = live / "config/hooks/normal/0500-build-nwipe.hook.chroot"
     hook.parent.mkdir(parents=True)
     hook.write_text("#!/bin/sh\n")
@@ -108,6 +113,7 @@ def _fixture(tmp_path):
             "git",
             "add",
             "packaging/live/config/includes.chroot/usr/local/bin/beamo-wipe",
+            "packaging/live/config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk",
         ],
         cwd=project,
         check=True,

@@ -1,0 +1,29 @@
+dist/desktop/Start Beamo Wipe.exe: go1.26.8
+	path	beamo-wipe/desktop
+	mod	beamo-wipe/desktop	(devel)	
+	build	-buildmode=exe
+	build	-compiler=gc
+	build	-trimpath=true
+	build	CGO_ENABLED=0
+	build	GOARCH=amd64
+	build	GOOS=windows
+	build	GOAMD64=v1
+dist/desktop/Start Beamo Wipe Linux: go1.26.8
+	path	beamo-wipe/desktop
+	mod	beamo-wipe/desktop	(devel)	
+	build	-buildmode=exe
+	build	-compiler=gc
+	build	-trimpath=true
+	build	CGO_ENABLED=0
+	build	GOARCH=amd64
+	build	GOOS=linux
+	build	GOAMD64=v1
+/workspace/beamo-tools/audit-20261019/root/desktop-windows.test.exe: go1.26.8
+	path	beamo-wipe/desktop
+	mod	beamo-wipe/desktop	(devel)	
+	build	-buildmode=exe
+	build	-compiler=gc
+	build	CGO_ENABLED=0
+	build	GOARCH=amd64
+	build	GOOS=windows
+	build	GOAMD64=v1

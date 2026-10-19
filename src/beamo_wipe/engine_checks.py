@@ -320,6 +320,7 @@ def _parse_io_media(log_text: str, device: str) -> CheckResult:
             _provenance(parser, source="missing"),
         )
     from beamo_wipe.nwipe_runner import (
+        _iter_negative_log_lines,
         _line_reports_target_failure,
         _line_reports_target_verification_mismatch,
         _status_column_is_shared,
@@ -328,9 +329,11 @@ def _parse_io_media(log_text: str, device: str) -> CheckResult:
     if _status_column_is_shared(log_text, device):
         explicit_failures = [
             line
-            for line in (log_text or "").split("\n")
-            if _line_reports_target_failure(line, device, shared=True)
-            or _line_reports_target_verification_mismatch(line, device)
+            for line, trusted in _iter_negative_log_lines(log_text)
+            if trusted and (
+                _line_reports_target_failure(line, device, shared=True)
+                or _line_reports_target_verification_mismatch(line, device)
+            )
         ]
         if explicit_failures:
             return _check(
@@ -342,13 +345,20 @@ def _parse_io_media(log_text: str, device: str) -> CheckResult:
             "The nwipe status column is shared by another logged disk.",
             _provenance(parser, source="nwipe_log"),
         )
-    fail_lines = [
-        line
-        for line in (log_text or "").split("\n")
+    failure_records = [
+        (line, trusted)
+        for line, trusted in _iter_negative_log_lines(log_text)
         if _line_reports_target_failure(line, device, shared=False)
         or _line_reports_target_verification_mismatch(line, device)
     ]
+    fail_lines = [line for line, trusted in failure_records if trusted]
     row = _error_summary_row(log_text, names)
+    if failure_records and not fail_lines and (row is None or not any(row)):
+        return _check(
+            "io_media", "unavailable", IO_UNAVAILABLE,
+            "A failure-like line could not be attributed to an engine record.",
+            _provenance(parser, source="nwipe_log"),
+        )
     if row is None and not fail_lines:
         return _check(
             "io_media",

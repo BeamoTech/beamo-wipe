@@ -1,0 +1,53 @@
+dbus-daemon[3189]: [session uid=1000 pid=3189 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=3203 comm="python3 -" label="kernel")
+dbus-daemon[3189]: [session uid=1000 pid=3189 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[3211]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=3203 comm="python3 -" label="kernel")
+dbus-daemon[3211]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{
+  "source": "/workspace/beamo-wipe/src/beamo_wipe/ui/accessible_wizard.py",
+  "sha256": "dd2484ff669d1d08f4fa7927200517de07b420708094cd3249af5406fd0aac97",
+  "records": [
+    {
+      "mode": "normal-control",
+      "outcome": [
+        "wizard",
+        "str"
+      ],
+      "caught": null,
+      "preserved_error": false,
+      "remaining_owned_windows": 0,
+      "remaining_visible_windows": 0,
+      "unrelated_destroyed": false
+    },
+    {
+      "mode": "runtime-error-control",
+      "outcome": [
+        "failed",
+        "RuntimeError"
+      ],
+      "caught": null,
+      "preserved_error": false,
+      "remaining_owned_windows": 0,
+      "remaining_visible_windows": 0,
+      "unrelated_destroyed": false
+    },
+    {
+      "mode": "keyboard-interrupt",
+      "outcome": null,
+      "caught": "KeyboardInterrupt",
+      "preserved_error": true,
+      "remaining_owned_windows": 1,
+      "remaining_visible_windows": 1,
+      "unrelated_destroyed": false
+    }
+  ]
+}
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/beamo-tools/audit-20261019/wizard/gtk_startup_cleanup_probe.py", line 46, in <module>
+    assert records[2]['remaining_owned_windows'] == 0, 'interrupted startup retained its own window'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: interrupted startup retained its own window
