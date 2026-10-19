@@ -1903,6 +1903,17 @@ def parse_lsblk_json(
             or _has_stacked_holder(candidate, parent, by_name)
             or kind in {"crypt", "dm", "bcache"}
             or kind.startswith("raid")
+            # Missing/new types still carry filesystem identity. Without an
+            # observed owner, omitting that row could make a target look blank.
+            or (
+                kind not in {"disk", "rom", "part", "loop", "ram"}
+                and (
+                    bool(node_path(candidate))
+                    or any(candidate.get(key) for key in (
+                        "fstype", "uuid", "partuuid", "parttype", "parttypename", "partlabel",
+                    ))
+                )
+            )
         ) and (
             _filesystem_layout_row(candidate, partition=False)
             or any(

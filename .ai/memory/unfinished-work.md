@@ -1,5 +1,84 @@
 # Unfinished work
 
+## BW-BUG-AUDIT-PASS2-20261019 — LOCAL FIXES VERIFIED / QUALIFICATION GAPS OPEN
+
+- Date/author: 2026-10-19 UTC / Codex. Current owner request: "Go ahead and run
+  another very thorough and comprehensive pass of this." This is a fresh audit,
+  with the uploaded evidence-first instructions and earlier authorization still
+  applicable. Repository BeamoTech/beamo-wipe, checkout `/workspace/beamo-wipe`,
+  branch `fix/safety-audit-20261019`, starting commit
+  `32819accc77f6ed1090c6f9f0e82800d9db7b7a2`; initial worktree clean.
+- Acceptance: independently review discovery/authorization, runner/evidence and
+  cancellation, wizard/refresh/accessibility, boot/build/launchers, and report/
+  export/recovery. Prove suspected defects before edits, preserve fail-closed
+  behavior, add focused regressions for verified fixes, then rerun the applicable
+  complete local gates and inspect the final diff/artifacts. Conditional feature-
+  branch commit/push remains authorized; no release or physical device work.
+- Next: capture current source/environment baseline; assign bounded reviewers;
+  independently validate findings and integrate only proven minimal repairs.
+  Fresh evidence belongs under `/workspace/beamo-tools/audit-pass2-20261019/`.
+- Existing limits remain explicit: managed-network restrictions on the pinned
+  browser and Microsoft documentation, missing generated ISO artifacts and KVM,
+  and separate native/firmware/physical acceptance. Recheck available readiness;
+  continue all independent local work under the owner's prior continuation.
+  The missing shared-guide condition was already resolved by the owner.
+- Baseline: current Python test and Go 1.26.8 desktop doctors pass; managed Docker
+  28.4.0 and the existing unprivileged development image are available with no
+  active peer containers. Captured 787 starting source hashes. Managed network is
+  freshly confirmed enforced with the same missing browser/documentation hosts.
+  Root report/export/recovery baseline: 401 PASS on a private 72-DPI display.
+- Independently reproduced new findings before authorizing edits: (1) unbound
+  filesystem rows with unknown TYPE discard UUID/layout identity (12 FAIL /
+  15 controls PASS across direct/injected/production-metadata routes); (2) short
+  model-supplied Error Summary tables falsely attribute target/media errors
+  (18 FAIL / 6 controls PASS); (3) log growth between EOF-size and metadata capture
+  can hide appended explicit failure behind a completed prefix (1 FAIL /
+  1 control PASS); (4) curses Method-to-Limits paging carries scroll state and
+  omits opening limitations (natural transition trace and unscrolled control);
+  (5) desktop compilation overwrites foreign launcher output created during
+  compilation (2 overwrites / 2 normal controls). Root before-edit logs and exact
+  candidate proofs are retained under the pass2 evidence directory.
+- Bounded reviewer edit ownership now covers only discover.py, runner/media
+  parsing, console scroll state, desktop builder and separate new regressions.
+- Integrated final source is frozen: 792 runtime/test/build files; manifest
+  `/workspace/beamo-tools/audit-pass2-20261019/root/final-source-sha256.json`,
+  SHA256 `84fc73f381a6381aa990b12217a8a06de650e2f1728cba3f0a6669061d98f9bf`.
+  Root independently inspected all five fixes and ran all 319 new regression/
+  control cases: PASS, no failures/errors/skips. Changed Python parses with the
+  Python 3.10 grammar; root corrected test-only nested f-string quoting before
+  this freeze. This grammar check is not Python 3.10 runtime acceptance.
+- Rejected first discovery candidate overblocked an existing positive null-row
+  inventory control; original assertion retained and guard narrowed. A new
+  production null-row control then omitted required mount metadata; its fixture
+  was completed without changing production schema or old assertions. Both
+  failures remain in storage evidence. Final storage 965 PASS, runner adjacent
+  1462 PASS, console/review 90 PASS, builder/development 113 PASS. These overlap
+  the canonical gate and must not be summed as unique tests.
+- Fresh root report/privacy matrix: 792 supplemental fixture cases PASS across
+  three languages and eleven outcomes, checking sharing redaction, semantic
+  consistency, malformed core fields, bundle checksums and original preservation.
+  Seeded full-log/projection comparison: 1500 cases, zero mismatch. Actual
+  `./preview` inspected on private display :450 at 72 DPI and closed through its
+  registered WM_DELETE_WINDOW callback, exit 0; no host power action.
+- Final canonical gate PASS: main 10,726 PASS / 28 unchanged unverified SKIP in
+  1053.08 seconds, independent Orca 1 PASS; 10,727 unique passing cases, no
+  failure/error. All 10,435 previous main IDs remain; exactly 319 added. Final
+  source remains byte-identical to all 792 frozen inputs. Full lint/types,
+  preview, private safety negative, fresh uncached Go race, vet, 350,000 fuzz
+  executions, launcher cross-builds and Windows test cross-compilation pass.
+  PE32+/ELF64 headers, x86_64 machine fields, hashes and build receipt verified.
+  Supplemental explicit system-browser assertions: 9 PASS, not pinned acceptance.
+- Delivery checkpoint: reviewed fixes, new tests and exact retained proof under
+  `docs/evidence/bug-audit-20261019-pass2/` are for the existing feature branch
+  only. Independently hash-check every staged source input, Git blob/tree and
+  reconstructed commit; publish through a leased ref update and verify remote
+  HEAD, clean local tracking and zero workflow runs. Final exact delivery receipt
+  is retained at `/workspace/beamo-tools/audit-pass2-20261019/root/final-delivery.json`.
+  No PR, merge, hosted dispatch or release. Network/browser, generated image,
+  native/firmware/physical/reconnect qualification stays open as described above;
+  these are not passing coverage. No further verified defect remains in this
+  bounded local pass. The first audit and all prior history remain preserved.
+
 ## BW-BUG-AUDIT-20261018 — LOCAL FIXES COMMITTED AND PUSHED / QUALIFICATION GAPS OPEN
 
 - Date/author: 2026-10-18 America/Chicago / Codex. Repository BeamoTech/beamo-wipe,

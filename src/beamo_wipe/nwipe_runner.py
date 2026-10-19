@@ -123,6 +123,10 @@ NWIPE_ERROR_ROW_RE = re.compile(
 NWIPE_ERROR_SUMMARY_HEADER_RE = re.compile(
     r"^(?:\*+\s*)?Error Summary(?:\s*\*+)?$"
 )
+NWIPE_ERROR_SUMMARY_HEADER = (
+    "******************************** Error Summary "
+    "*********************************"
+)
 # Exact nwipe 0.42 logging.c banner: device models cannot supply this line
 # (ATA IDENTIFY is 40 bytes, status-table model is truncated to 17 bytes).
 NWIPE_DRIVE_STATUS_HEADER = (
@@ -724,13 +728,20 @@ def _target_error_summary_conflict(log_text: str, device: str) -> str:
     """Return a non-success reason for a contradictory target error row."""
     names = _status_device_names(device)
     shared = _status_column_is_shared(log_text, device)
+    lines = (log_text or "").split("\n")
+    native = any(NWIPE_RECORD_PREFIX_RE.match(line) for line in lines)
     in_table = False
-    for line in (log_text or "").split("\n"):
+    trusted_table = False
+    uncertain = False
+    for line in lines:
         # Negative error evidence uses the same record body as its header.
         # Keep raw records untouched for exact positive Drive Status proof.
         body = _engine_log_body(line)
         if _is_error_summary_header(line):
             in_table = True
+            # A short header plus a nonzero row fits inside an ATA model.
+            # Native logs need the full banner; retain bare legacy inputs.
+            trusted_table = not native or body == NWIPE_ERROR_SUMMARY_HEADER
             continue
         if in_table and body.lstrip().startswith("***"):
             in_table = False
@@ -744,13 +755,16 @@ def _target_error_summary_conflict(log_text: str, device: str) -> str:
             # contradicts a later Erased row, but without the header its
             # provenance is uncertain rather than an attributable failure.
             if row is not None and any(int(row.group(i)) > 0 for i in (2, 3, 4)):
-                return "indeterminate"
+                uncertain = True
             continue
         if row is None:
-            return "indeterminate"
+            uncertain = True
+            continue
         if any(int(row.group(i)) > 0 for i in (2, 3, 4)):
-            return "indeterminate" if shared else "engine_failed"
-    return ""
+            if trusted_table and not shared:
+                return "engine_failed"
+            uncertain = True
+    return "indeterminate" if uncertain else ""
 
 
 def _target_has_erase_activity(log_text: str, device: str) -> bool:
@@ -1501,9 +1515,13 @@ class NwipeRunner:
             with os.fdopen(fd, "rb") as fh:
                 fd = -1
                 fh.seek(0, os.SEEK_END)
-                size = fh.tell()
+                snapshot = os.fstat(fh.fileno())
+                # The size and identity must describe one snapshot. Growth
+                # between tell() and fstat() could otherwise authenticate a
+                # bounded prefix as the complete, newly enlarged log.
+                size = snapshot.st_size
                 self._log_read_state.truncated = size > nbytes
-                self._log_read_state.identity = _log_signature(os.fstat(fh.fileno()))
+                self._log_read_state.identity = _log_signature(snapshot)
                 start = max(0, size - nbytes)
                 if start:
                     # The returned bytes remain exact for display/export, but

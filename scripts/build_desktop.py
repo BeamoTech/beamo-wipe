@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 import hashlib
 import json
 import os
@@ -266,7 +267,9 @@ def verify_desktop_bundle(
             os.close(output_fd)
 
 
-def _require_generated_prior_manifest(output: Path, output_fd: int | None) -> None:
+def _require_generated_prior_manifest(
+    output: Path, output_fd: int | None
+) -> dict[str, str]:
     """Preserve unfamiliar content at the receipt path during a rebuild."""
     name = "desktop-build.json"
     try:
@@ -289,7 +292,7 @@ def _require_generated_prior_manifest(output: Path, output_fd: int | None) -> No
             raise RuntimeError(
                 "unrecognized desktop launcher without a manifest; preserve existing output"
             )
-        return
+        return {}
     if not stat.S_ISREG(metadata.st_mode):
         raise RuntimeError("unrecognized desktop manifest; preserve existing output")
     try:
@@ -335,10 +338,42 @@ def _require_generated_prior_manifest(output: Path, output_fd: int | None) -> No
             raise RuntimeError(
                 "unrecognized desktop manifest; preserve existing output"
             )
+    return dict(manifest["files"])
+
+
+def _require_unchanged_launcher_outputs(
+    output: Path, output_fd: int | None, expected: dict[str, str]
+) -> None:
+    """Keep the verified prior outputs, or our published replacements, bound."""
+    for name in LAUNCHERS:
+        try:
+            if output_fd is None:
+                (output / name).lstat()
+            else:
+                os.stat(name, dir_fd=output_fd, follow_symlinks=False)
+        except FileNotFoundError:
+            if name not in expected:
+                continue
+            raise RuntimeError("desktop launcher bytes changed before publication")
+        try:
+            if name not in expected:
+                raise OSError("unidentified launcher appeared")
+            current = _read_output_file(output, output_fd, name, 64 * 1024 * 1024)
+        except OSError as exc:
+            raise RuntimeError(
+                "desktop launcher bytes changed before publication"
+            ) from exc
+        if hashlib.sha256(current).hexdigest() != expected[name]:
+            raise RuntimeError("desktop launcher bytes changed before publication")
 
 
 def _publish_launcher(
-    output: Path, output_fd: int | None, source: Path, name: str
+    output: Path,
+    output_fd: int | None,
+    source: Path,
+    name: str,
+    *,
+    before_replace: Callable[[], None] | None = None,
 ) -> None:
     """Replace one launcher in the originally opened output directory."""
     if source.is_symlink() or not source.is_file():
@@ -351,6 +386,8 @@ def _publish_launcher(
                 owned = os.fstat(dest.fileno())
                 with source.open("rb") as src:
                     shutil.copyfileobj(src, dest)
+            if before_replace is not None:
+                before_replace()
             os.replace(temporary_path, output / name)
         except Exception:
             try:
@@ -382,6 +419,8 @@ def _publish_launcher(
         with os.fdopen(fd, "wb") as dest, source.open("rb") as src:
             shutil.copyfileobj(src, dest)
             os.fchmod(dest.fileno(), 0o755)
+        if before_replace is not None:
+            before_replace()
         os.replace(temporary, name, src_dir_fd=output_fd, dst_dir_fd=output_fd)
     except Exception:
         try:
@@ -521,7 +560,7 @@ def build(output=None):
         # A failed rebuild must not leave an earlier success receipt beside partial outputs.
         if not owns_lock():
             raise RuntimeError("desktop build lock changed before publication")
-        _require_generated_prior_manifest(output, output_fd)
+        expected_outputs = _require_generated_prior_manifest(output, output_fd)
         if output_fd is None:
             manifest.unlink(missing_ok=True)
         else:
@@ -578,12 +617,28 @@ def build(output=None):
                 raise RuntimeError(
                     "desktop build lock changed before manifest publication"
                 )
+
+            def require_current_outputs() -> None:
+                if not owns_lock():
+                    raise RuntimeError(
+                        "desktop build lock changed during launcher publication"
+                    )
+                _require_unchanged_launcher_outputs(output, output_fd, expected_outputs)
+
+            require_current_outputs()
             for name in LAUNCHERS:
                 if not owns_lock():
                     raise RuntimeError(
                         "desktop build lock changed during launcher publication"
                     )
-                _publish_launcher(output, output_fd, staged / name, name)
+                _publish_launcher(
+                    output,
+                    output_fd,
+                    staged / name,
+                    name,
+                    before_replace=require_current_outputs,
+                )
+                expected_outputs[name] = files[name]
                 if not owns_lock():
                     raise RuntimeError(
                         "desktop build lock changed during launcher publication"

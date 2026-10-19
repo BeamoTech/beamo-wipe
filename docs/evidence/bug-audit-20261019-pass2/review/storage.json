@@ -1,0 +1,95 @@
+{
+  "repository": "/workspace/beamo-wipe",
+  "base_head": "32819accc77f6ed1090c6f9f0e82800d9db7b7a2",
+  "finding": "Missing/unrecognized TYPE with unbound filesystem evidence was silently omitted, letting target filesystem UUID changes share an empty layout fingerprint and pass final identity validation.",
+  "fix": "Extend existing unbound filesystem ancestry validation to missing/unrecognized types. Preserve correctly bound unknown volumes, standalone disk/rom/ram/loop inventory, and anonymous label-only display rows. Do not infer physical ancestry from a name.",
+  "reviewed": [
+    "AGENTS.md",
+    ".ai/memory/unfinished-work.md",
+    "docs/ADVANCED.md",
+    "docs/storage-and-controller-limits.md",
+    "src/beamo_wipe/discover.py",
+    "src/beamo_wipe/safety.py",
+    "src/beamo_wipe/identity.py",
+    "src/beamo_wipe/models.py",
+    "src/beamo_wipe/inventory.py",
+    "src/beamo_wipe/wizard.py authorization fingerprint/rescan",
+    "related discovery/safety/runner/report regressions"
+  ],
+  "checked_invariants": [
+    "boot device identified and excluded",
+    "unknown/duplicate/contradictory ancestry remains fail closed",
+    "filesystem layout changes revoke target identity",
+    "correctly bound unknown types retain filesystem evidence",
+    "missing/malformed TYPE schema cannot erase filesystem evidence",
+    "invalid/nonfinite/missing numeric size on an unbound unknown row cannot erase filesystem evidence",
+    "unchanged whole-disk and irrelevant standalone inventory remain supported",
+    "locked production runner branch refuses unknown unbound new filesystem before Popen",
+    "no physical devices, real native inventory or real nwipe acquired"
+  ],
+  "reports": {
+    "untyped-before": {
+      "tests": 27,
+      "failures": 12,
+      "errors": 0,
+      "skipped": 0
+    },
+    "authorization-before": {
+      "tests": 3,
+      "failures": 3,
+      "errors": 0,
+      "skipped": 0
+    },
+    "expanded-before": {
+      "tests": 110,
+      "failures": 51,
+      "errors": 0,
+      "skipped": 0
+    },
+    "focused-after": {
+      "tests": 950,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    "final-focused": {
+      "tests": 953,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    "pathless-before": {
+      "tests": 12,
+      "failures": 12,
+      "errors": 0,
+      "skipped": 0
+    },
+    "final-expanded-focused": {
+      "tests": 965,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    "final-corrected-focused": {
+      "tests": 965,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "final-regression-baseline": {
+      "tests": 125,
+      "failures": 63,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "first_candidate_issue": "Initial broad unknown-type guard overblocked original positive null-fields label-only row; existing tests unchanged and guard narrowed. first-candidate/ and focused-after reports preserved.",
+  "fixture_correction": "New positive production-metadata-stub null-row control initially omitted mountpoints, causing required production schema refusal. Fixture gained ro=False,mountpoints=[]; no production/schema/assertion weakening. Failed final-focused and final-expanded-focused evidence preserved.",
+  "other_hypotheses": "ZFS mount visibility concern not proven reachable with shipped package/kernel support; no product changes or verified defect claimed for it. No separately verified numeric-conversion defect beyond unknown-type evidence loss.",
+  "lint": "ruff owned source/test PASS; mypy discover.py PASS; git diff --check PASS",
+  "baseline_method": "Original independently reproduced external proof: 12 FAIL/15 controls PASS. Expanded baseline loads exact archived baseline/discover.py in an isolated Python process then executes final regression module:63 FAIL/62 controls PASS. No worktree revert or branch switch.",
+  "edited_files": {
+    "src/beamo_wipe/discover.py": "1b40b281eb291137123a6495f96ac88001f33acc7fc6c903d435ffacb455bd89",
+    "tests/test_unknown_layout_ancestry_pass2_20261019.py": "83f97cb3a4a1ffbe7789f5e9289fa2894c66453b36b859673dedfcd51364621b"
+  }
+}

@@ -1227,14 +1227,18 @@ def _loop(stdscr, wizard: Wizard) -> int:
     review_seen: set[int] = set()
     while not wizard.wants_shutdown and not wizard.wants_new_session:
         wizard.tick()
-        first_review_frame = wizard.screen == Screen.LAST_CHANCE and shown_screen != Screen.LAST_CHANCE
+        screen_changed = wizard.screen != shown_screen
+        first_review_frame = wizard.screen == Screen.LAST_CHANCE and screen_changed
+        if screen_changed:
+            # A different page starts with its own opening guidance, even when
+            # both screens use the same paged-body scroll variable.
+            limits_offset = 0
         if wizard.screen != Screen.LAST_CHANCE and review_overlay_held:
             wizard.end_review_overlay()
             review_overlay_held = False
             review_seen.clear()
             review_lines = ()
         if first_review_frame:
-            limits_offset = 0
             review_seen.clear()
             review_lines = ()
             review_overlay_held = wizard.begin_review_overlay()

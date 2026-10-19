@@ -1,0 +1,86 @@
+Beamo Wipe pass2 boot/build/desktop review
+Date/author:2026-10-19 UTC / boot_build_audit subagent
+Repository:/workspace/beamo-wipe
+Baseline HEAD:32819accc77f6ed1090c6f9f0e82800d9db7b7a2
+Instructions:current AGENTS.md and docs/ci.md (Blacksmith; no legacy GCP execution).
+Root owns the shared unfinished-work record and full final gates.
+
+Reviewed boundaries/files:
+- packaging/live/config/includes.chroot/usr/local/bin/beamo-wipe and kiosk;
+  source/staged/copy executable checks, bounded retry recovery and explicit power
+  confirmations, no engine invocation by the supervisor, fixed live import paths.
+- scripts/stage_live_assets.py, scripts/stage_wrapper_sources.py,
+  scripts/build-iso.sh, packaging/live/inside-docker.sh, scripts/build_desktop.py;
+  input receipts, source snapshots, prior-output preservation, lock and output
+  identity, launcher publication, current pass1 executable-mode repairs.
+- desktop/main.go, boot.go, io.go, io_unix.go, media.go,
+  platform_linux.go, platform_windows.go, readiness.go and web/app.js;
+  exact EFI media routes, fresh plan fingerprints, pending BootNext refusal,
+  rollback semantics, bounded probes, API Host/Origin/token checks, revisions,
+  busy/single-use restart, Windows manual-only policy, source/platform boundaries.
+- docs/desktop-entry-design.md and current CI/remote-only hardware boundaries;
+  no new physical or platform-support claim is established by this review.
+
+Verified defect B2-DESKTOP-OUTPUT:
+The builder validates existing outputs before two Go compiler invocations, then
+unconditionally replaces the final launcher names. An unrelated regular file
+created/replaced during compilation is silently overwritten, even for an
+initially empty output directory. A complete valid prior bundle behaves the
+same way. No successful receipt should authorize destruction of these bytes.
+
+Evidence-first sequence:
+1. reproduce_desktop_output_replacement.py initially produced2 failing scenarios
+   and2 adjacent normal controls with fake compiler commands and regular temp
+   files only; desktop-output-replacement-before.json retained these observations.
+2. Root independently replayed and confirmed the same2 failures/2 controls before
+   authorizing source/test ownership.
+3. Original builder archived at originals/build_desktop.py before implementation.
+4. Added developer_tests/test_desktop_output_replacement_pass2_20261019.py while
+   production remained unchanged:36 FAIL/8 PASS; desktop-output-red.txt. The
+   failures cover late regular files and symlinks; the controls cover normal
+   retries, unchanged prior bundles and already-safe directory refusal.
+5. Minimal root-cause fix retains the prior verified launcher digest mapping.
+   It checks all launcher names after compiling and immediately before each
+   actual replacement, including after copying the publication temporary file.
+   The expected mapping advances only for this builder's published bytes.
+   An unexpected file, missing owned output, symlink/nonregular path or changed
+   hash stops publication and leaves no new success receipt. Existing output
+   directory/lock checks also run at that last boundary. An optional internal
+   callback preserves the existing direct helper-call contract on both dir_fd
+   and path-based implementations. The checks do not claim atomic OS CAS.
+6. Archived implementation remains replayable and fails the original assertion:
+   source /workspace/beamo-tools/activate.sh
+   python /workspace/beamo-tools/audit-pass2-20261019/boot/reproduce_desktop_output_original.py
+   Evidence:desktop-output-original-replay.txt.
+7. Current implementation passes the same replay and preserves foreign bytes in
+   both fresh/prior scenarios. Current script now writes the after file only:
+   python /workspace/beamo-tools/audit-pass2-20261019/boot/reproduce_desktop_output_replacement.py
+   Evidence:desktop-output-replacement-after.json and desktop-output-replay-after.txt.
+
+Tracked edits owned by this subagent only:
+- scripts/build_desktop.py
+- developer_tests/test_desktop_output_replacement_pass2_20261019.py
+No other source, documentation, branch, commit, push or backlog edits performed.
+
+Final focused validation:
+source /workspace/beamo-tools/activate.sh
+python -m pytest -o addopts= -q developer_tests/test_desktop_output_replacement_pass2_20261019.py developer_tests/test_desktop_portability.py developer_tests/test_dev.py tests/test_desktop_prior_bundle_pass22_build.py tests/test_desktop_manifest_preserve_pass17_build.py tests/test_desktop_lock_pass11.py tests/test_desktop_source_swap_pass36_build.py tests/test_desktop_output_swap_pass16.py tests/test_build_desktop_pass9.py tests/test_desktop_windows_output_parent.py tests/test_desktop_recipe_digest_pass25_build.py tests/test_desktop_manifest_pass10.py tests/test_desktop_go_environment_20260924.py --junitxml=/workspace/beamo-tools/audit-pass2-20261019/boot/desktop-builder-after.xml
+Result:113 passed in0.96s; desktop-builder-after.txt and XML.
+python -m ruff check scripts/build_desktop.py developer_tests/test_desktop_output_replacement_pass2_20261019.py
+python -m ruff format --check scripts/build_desktop.py developer_tests/test_desktop_output_replacement_pass2_20261019.py
+git diff --check
+Results:all passed,2 files already formatted.
+
+Read-only adjacent baseline validation:
+- Focused boot/kiosk/build modules:76passed in2.74s; boot-build-baseline.txt/XML.
+- From desktop/, pinned Go1.26.8:
+  go test -race -count=1 -run 'Test(Restart|LinuxMedia|LinuxPartitionPathShapes|Readiness|InspectPlan|WindowsManual)' ./...
+  Result:PASS; go-focused.txt. Native inventory opt-in was never enabled.
+
+Evidence limits:
+No actual disk/USB inventory or write, firmware variable action, power action,
+physical reconnect, Docker/ISO build, QEMU guest, native Windows acceptance,
+hosted CI or publication was performed. Tests used regular files, safe links/
+directories and fake compiler commands. The Go checks use fixture/fake firmware
+paths and do not restart the host. Final complete local gates remain root-owned;
+separate hardware/native/ISO qualification remains as documented.

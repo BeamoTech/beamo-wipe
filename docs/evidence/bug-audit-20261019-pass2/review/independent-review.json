@@ -1,0 +1,52 @@
+{
+  "base_commit": "32819accc77f6ed1090c6f9f0e82800d9db7b7a2",
+  "changed_existing_paths": [
+    ".ai/memory/unfinished-work.md",
+    "scripts/build_desktop.py",
+    "src/beamo_wipe/discover.py",
+    "src/beamo_wipe/engine_checks.py",
+    "src/beamo_wipe/nwipe_runner.py",
+    "src/beamo_wipe/ui/console_wizard.py"
+  ],
+  "new_test_paths": [
+    "developer_tests/test_desktop_output_replacement_pass2_20261019.py",
+    "tests/test_console_scroll_transition_pass2_20261019.py",
+    "tests/test_log_snapshot_growth_pass2_20261019.py",
+    "tests/test_summary_record_origin_pass2_20261019.py",
+    "tests/test_unknown_layout_ancestry_pass2_20261019.py"
+  ],
+  "original_test_files_modified": false,
+  "root_independent_finding_replays": [
+    "untyped-layout-independent-before.xml",
+    "summary-origin-independent-before.xml",
+    "log-growth-independent-before.xml",
+    "curses-scroll-independent-before.log",
+    "desktop-output-independent-before.log"
+  ],
+  "root_reviewed": [
+    "all five runtime/build source diffs and all five new regression modules",
+    "support_export.py report selection/evidence/log authentication, worker schema and mount/readback receipt lifecycle",
+    "session_recovery.py journal schema, locks, same-boot context, terminal authentication and ownership cleanup",
+    "evidence.py atomic publication, sidecar and recovery semantics",
+    "privacy.py sharing allowlist/redaction and immutable original preservation",
+    "outcomes.py semantic consistency and fail-closed presentation",
+    "diagnostic_report.py schema/types and source/build consistency",
+    "report_intent.py directory/inode binding and exact preference values",
+    "diagnostics.py safe ownership, bounded text and append lifecycle",
+    "result_summary.py reports, redaction and presentation"
+  ],
+  "additional_results": {
+    "report_recovery_baseline": 401,
+    "report_privacy_matrix": 792,
+    "projection_matrix": 1500,
+    "new_independent_regressions": 319,
+    "console_review_independent": 82
+  },
+  "meaningful_limits": [
+    "no claim of atomic cross-platform compare-and-swap for foreign launcher changes",
+    "Python3.10 grammar only; runtime usesPython3.13.5",
+    "Tk800x600 extra-text warning needs scrolling for last6 vertical pixels; not a separately proven authorization defect",
+    "old source evidence applies to its original implementation commit, not this changed source"
+  ],
+  "release_performed": false
+}
