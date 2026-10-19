@@ -1,6 +1,6 @@
 # Unfinished work
 
-## BW-BUG-AUDIT-20261018 — LOCAL GATES VERIFIED / COMMIT AND PUSH PREPARING
+## BW-BUG-AUDIT-20261018 — LOCAL FIXES COMMITTED AND PUSHED / QUALIFICATION GAPS OPEN
 
 - Date/author: 2026-10-18 America/Chicago / Codex. Repository BeamoTech/beamo-wipe,
   checkout `/workspace/beamo-wipe`, branch `work`, HEAD
@@ -192,6 +192,35 @@
   or their passing gate; only the documentation/evidence tree is updated.
   If public screenshot export is later requested, its explicit approval remains
   necessary; the optional image does not block requested source delivery.
+- Completed local delivery: implementation commit
+  `114f3b9f3984c44c30db0f36c60c625f20d52b05`, tree
+  `a25b82ca69b950789530b46a3c8b6c2aa7de8108`, is pushed to
+  `BeamoTech/beamo-wipe:fix/safety-audit-20261019`. Connected-app GET independently
+  verifies the exact remote ref; every83path/82unique blob and remote tree hash
+  matches the reviewed local index, including all787tested source bytes.
+  The exact remote commit object is reconstructed and hash-verified locally.
+  GitHub reports0workflow runs for that SHA; no PR/dispatch/merge/release occurs.
+  Source freeze and retained artifacts verify again after delivery. This final
+  evidence-only checkpoint does not change the tested implementation.
+- Source-upload review is resolved: automatic review initially calls the GTK
+  source private/unauthorized. Fresh checks confirm public repository identity,
+  current push permission, the user's actual uploaded "Commit and push only
+  after all gates pass" instruction, and a public GTK baseline exactly matching
+  local HEAD. The same upload tool then approves the verified patch; no bypass
+  or alternate export path is used. Optional screenshot export remains excluded.
+- Local Git tracking is configured for only this feature branch, preserving the
+  existing main-only fetch mapping. Initial set-upstream failed because that
+  mapping omitted the new branch; adding its narrow fetch mapping resolves it.
+  Shell token remains invalid; the supported connected app completes delivery
+  without exposing or modifying credentials.
+- Remaining qualification/next actions: through the supported environment UI,
+  allow the pinned Playwright CDN and Microsoft documentation domains, install
+  the actual pinned browser with normal proxy/CA settings and rerun the9+4
+  affected checks. Fourteen image/artifact cases require the separate approved
+  final ISO/native Blacksmith candidate gate; native Windows/macOS, firmware,
+  physical USB/disk/reconnect acceptance remain unrun. No release is authorized.
+  No further verified defect or incomplete implementation remains in this bounded
+  local audit. Source changes are committed/pushed, not deployed or released.
 
 ## BW-DEV-ENV-20261017 — LOCAL DEVELOPMENT VERIFIED / NETWORK AND QUALIFICATION GAPS OPEN
 

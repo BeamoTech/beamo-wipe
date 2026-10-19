@@ -4,7 +4,10 @@ Six classes of reproducible product defects and one test-fixture defect are
 fixed, with 276 new regression cases.
 Final applicable local checks pass: **10,408 unique source/Orca passes,
 28 unchanged skips, zero failures/errors**, including all 276 new cases.
-Commit/push preparation follows verified evidence retention. No release is authorized.
+Source fixes are committed and pushed as
+[`114f3b9`](https://github.com/BeamoTech/beamo-wipe/commit/114f3b9f3984c44c30db0f36c60c625f20d52b05).
+[Delivery proof](delivery.json) records the matching local/remote tree and ref.
+No hosted workflow was triggered and no release was performed.
 
 Baseline: `29bd8059947ecdaf2a1d61726b8f75b1f82cebed` in
 `/workspace/beamo-wipe`, branch `fix/safety-audit-20261019`.
