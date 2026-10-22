@@ -76,15 +76,27 @@ class _OwnedBinding:
 class _OwnedSnapshot:
     """Digest and retained identity of bytes accepted for publication."""
 
-    __slots__ = ("binding", "sha256")
+    __slots__ = ("binding", "fd", "sha256")
 
-    def __init__(self, binding: _OwnedBinding, sha256: str) -> None:
+    def __init__(self, binding: _OwnedBinding, sha256: str, fd: int) -> None:
         self.binding = binding
         self.sha256 = sha256
+        self.fd = fd
 
     @property
     def size(self) -> int:
         return self.binding.size
+
+    def close(self) -> None:
+        fd, self.fd = self.fd, -1
+        if fd >= 0:
+            os.close(fd)
+
+    def __del__(self) -> None:
+        try:
+            self.close()
+        except OSError:
+            pass
 
 
 class _ReadableBinary(Protocol):
@@ -275,14 +287,31 @@ def _upload_file(
     path: Path, object_name: str, expected: _OwnedSnapshot | None = None
 ) -> str:
     snapshot = expected if expected is not None else _snapshot_owned_file(path)
-    with _open_owned_descriptor(path, expected=snapshot.binding) as (fd, _binding):
-        with os.fdopen(os.dup(fd), "rb") as stream:
-            measured = _DigestingReader(stream)
-            _upload_stream(object_name, measured, snapshot.size)
-    uploaded_sha = measured.digest.hexdigest()
-    if uploaded_sha != snapshot.sha256:
-        raise PublishError("release input changed during upload")
-    return uploaded_sha
+    try:
+        with _open_owned_descriptor(
+            path, expected=snapshot.binding
+        ) as (named_fd, _binding):
+            retained = os.fstat(snapshot.fd)
+            named = os.fstat(named_fd)
+            if (
+                _metadata_values(retained, _REGULAR_BIND_FIELDS)
+                != snapshot.binding.fields
+                or retained.st_dev != named.st_dev
+                or retained.st_ino != named.st_ino
+            ):
+                raise PublishError(
+                    f"release input changed after verification: {path.name}"
+                )
+            os.lseek(snapshot.fd, 0, os.SEEK_SET)
+            with os.fdopen(os.dup(snapshot.fd), "rb") as stream:
+                measured = _DigestingReader(stream)
+                _upload_stream(object_name, measured, snapshot.size)
+        uploaded_sha = measured.digest.hexdigest()
+        if uploaded_sha != snapshot.sha256:
+            raise PublishError("release input changed during upload")
+        return uploaded_sha
+    finally:
+        snapshot.close()
 
 
 def _remote_sha256(object_name: str, *, expected_size: int | None = None) -> str:
@@ -330,7 +359,11 @@ def _remote_sha256(object_name: str, *, expected_size: int | None = None) -> str
 
 
 def _sha256(path: Path) -> str:
-    return _snapshot_owned_file(path).sha256
+    snapshot = _snapshot_owned_file(path)
+    try:
+        return snapshot.sha256
+    finally:
+        snapshot.close()
 
 
 def _metadata_values(
@@ -457,16 +490,25 @@ def _snapshot_owned_file(
 ) -> _OwnedSnapshot:
     digest = hashlib.sha256()
     total = 0
-    with _open_owned_descriptor(path, expected=expected) as (fd, binding):
-        while True:
-            chunk = os.read(fd, CHUNK_SIZE)
-            if not chunk:
-                break
-            total += len(chunk)
-            digest.update(chunk)
-        if total != binding.size:
-            raise PublishError(f"release input changed while hashing: {path.name}")
-    return _OwnedSnapshot(binding, digest.hexdigest())
+    retained_fd = -1
+    try:
+        with _open_owned_descriptor(path, expected=expected) as (fd, binding):
+            while True:
+                chunk = os.read(fd, CHUNK_SIZE)
+                if not chunk:
+                    break
+                total += len(chunk)
+                digest.update(chunk)
+            if total != binding.size:
+                raise PublishError(
+                    f"release input changed while hashing: {path.name}"
+                )
+            retained_fd = os.dup(fd)
+        return _OwnedSnapshot(binding, digest.hexdigest(), retained_fd)
+    except BaseException:
+        if retained_fd >= 0:
+            os.close(retained_fd)
+        raise
 
 
 def _read_owned_bytes(

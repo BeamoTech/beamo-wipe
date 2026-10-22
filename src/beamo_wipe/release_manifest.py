@@ -812,6 +812,7 @@ def _regular_output_snapshot(path: Path, limit: int) -> _OutputSnapshot | None:
         fd = _open_regular_nofollow(path)
         pinned = _regular_fd_snapshot(fd, limit)
         named_after = path.lstat()
+        confirmed = _regular_fd_snapshot(fd, limit)
     except OSError as exc:
         raise RuntimeError("unverified prior manifest output") from exc
     finally:
@@ -822,6 +823,7 @@ def _regular_output_snapshot(path: Path, limit: int) -> _OutputSnapshot | None:
         or named_after.st_uid != os.getuid()
         or _stat_fields(named_before) != pinned.fields
         or _stat_fields(named_after) != pinned.fields
+        or confirmed != pinned
     ):
         raise RuntimeError("unverified prior manifest output")
     return pinned

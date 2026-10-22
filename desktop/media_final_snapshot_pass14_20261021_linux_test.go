@@ -11,6 +11,7 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+	"time"
 )
 
 // Mutate after both content reads but before mediaDigest's final descriptor
@@ -52,6 +53,10 @@ func TestMediaDigestFinalChangeTimeSnapshotPass14(t *testing.T) {
 					if change == "unchanged" {
 						return
 					}
+					// Some overlay filesystems expose change time at one-second
+					// resolution. Cross one tick so the final snapshot assertion
+					// exercises the same check deterministically on those hosts.
+					time.Sleep(1100 * time.Millisecond)
 					if err := os.WriteFile(path, bytes.Repeat([]byte("X"), len(original)), 0600); err != nil {
 						t.Fatal(err)
 					}

@@ -523,12 +523,15 @@ def _read_regular_bytes(path: Path, *, what: str, limit: int) -> bytes:
             fd = os.open(absolute, flags)
         else:
             fd = os.open(absolute.name, flags, dir_fd=directory_fd)
+        # Read once before the first descriptor metadata handoff. A writer
+        # racing that handoff is then exposed by the required second read even
+        # on filesystems whose change timestamps advance only once per second.
+        first = _read_descriptor(fd, limit)
         opened = os.fstat(fd)
         if not stat.S_ISREG(opened.st_mode) or opened.st_size > limit:
             raise RuntimeError(f"{what} is not a bounded regular file: {absolute}")
         if opened.st_nlink != 1:
             raise RuntimeError(f"{what} is not safely bound to its path: {absolute}")
-        first = _read_descriptor(fd, limit)
         middle = os.fstat(fd)
         second = _read_descriptor(fd, limit)
         final = os.fstat(fd)

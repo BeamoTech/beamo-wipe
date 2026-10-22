@@ -3,8 +3,9 @@
 
 from __future__ import annotations
 
-import fcntl
 import errno
+import fcntl
+import hashlib
 import math
 import os
 import re
@@ -265,6 +266,21 @@ def _engine_signature(st: os.stat_result) -> tuple[int, ...]:
     )
 
 
+def _engine_digest(fd: int, size: int) -> bytes:
+    """Hash exactly the bounded executable bytes without moving its offset."""
+    digest = hashlib.sha256()
+    offset = 0
+    while offset < size:
+        chunk = os.pread(fd, min(1024 * 1024, size - offset), offset)
+        if not chunk:
+            raise SafetyError("nwipe binary changed during version check.")
+        digest.update(chunk)
+        offset += len(chunk)
+    if os.pread(fd, 1, size):
+        raise SafetyError("nwipe binary changed during version check.")
+    return digest.digest()
+
+
 def _validate_nwipe_stat(st: os.stat_result) -> None:
     if not stat.S_ISREG(st.st_mode):
         raise SafetyError("nwipe binary is not a regular file.")
@@ -332,6 +348,11 @@ def _verify_pinned_nwipe(binary: str) -> Optional[_PinnedEngine]:
     )
     probe = engine.exec_path if engine is not None else binary
     try:
+        engine_digest = (
+            _engine_digest(engine.fd, engine.signature[5])
+            if engine is not None
+            else None
+        )
         try:
             kwargs: dict[str, Any] = {}
             if engine is not None:
@@ -355,7 +376,10 @@ def _verify_pinned_nwipe(binary: str) -> Optional[_PinnedEngine]:
             )
         if engine is not None:
             try:
-                if _engine_signature(os.fstat(engine.fd)) != engine.signature:
+                if (
+                    _engine_signature(os.fstat(engine.fd)) != engine.signature
+                    or _engine_digest(engine.fd, engine.signature[5]) != engine_digest
+                ):
                     raise SafetyError("nwipe binary changed during version check.")
             except OSError as exc:
                 raise SafetyError("Cannot stat nwipe binary.") from exc

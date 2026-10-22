@@ -900,6 +900,10 @@ def test_space_report_export_retargets_focus_before_worker_starts():
         def focus_set(self):
             events.append("stable-focus")
 
+        def after_idle(self, callback):
+            events.append("redraw-scheduled")
+            callback()
+
     class Wizard:
         def begin_report_export(self):
             events.append("report-start")
@@ -911,7 +915,12 @@ def test_space_report_export_retargets_focus_before_worker_starts():
     app._draw = lambda: events.append("redraw")
 
     app._click_save_report()
-    assert events == ["stable-focus", "report-start", "redraw"]
+    assert events == [
+        "stable-focus",
+        "report-start",
+        "redraw-scheduled",
+        "redraw",
+    ]
 
 
 def test_space_release_finishes_while_idle_queue_is_busy(ui):
