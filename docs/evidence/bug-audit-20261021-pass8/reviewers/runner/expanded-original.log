@@ -1,0 +1,561 @@
+...FFFFFFFFFF..FFFF..FFFF                                                [100%]
+=================================== FAILURES ===================================
+___ test_optional_diagnostic_helper_never_escapes[OSError-KeyboardInterrupt] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7a64a50>
+request = <FixtureRequest for <Function test_optional_diagnostic_helper_never_escapes[OSError-KeyboardInterrupt]>>
+log_error = <class 'OSError'>, stderr_error = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("log_error,stderr_error", HELPER_FAILURES)
+    def test_optional_diagnostic_helper_never_escapes(
+        monkeypatch, request, log_error, stderr_error,
+    ):
+        result = _invoke(
+            monkeypatch, lambda: module._try_log_diag("nwipe", "fake_status"),
+            log_error, stderr_error,
+        )
+        trace = _trace(request, result)
+>       assert result.escaped is None, trace
+E       AssertionError: {'diagnostic_calls': 1, 'escaped': 'KeyboardInterrupt', 'fallback_calls': 1}
+E       assert 'KeyboardInterrupt' is None
+E        +  where 'KeyboardInterrupt' = namespace(escaped='KeyboardInterrupt', result=None, diagnostic_calls=[('nwipe', 'fake_status', '')], fallback_calls=['beamo-wipe [nwipe] fake_status: fake_status']).escaped
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:107: AssertionError
+______ test_optional_diagnostic_helper_never_escapes[OSError-SystemExit] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7a4d9a0>
+request = <FixtureRequest for <Function test_optional_diagnostic_helper_never_escapes[OSError-SystemExit]>>
+log_error = <class 'OSError'>, stderr_error = <class 'SystemExit'>
+
+    @pytest.mark.parametrize("log_error,stderr_error", HELPER_FAILURES)
+    def test_optional_diagnostic_helper_never_escapes(
+        monkeypatch, request, log_error, stderr_error,
+    ):
+        result = _invoke(
+            monkeypatch, lambda: module._try_log_diag("nwipe", "fake_status"),
+            log_error, stderr_error,
+        )
+        trace = _trace(request, result)
+>       assert result.escaped is None, trace
+E       AssertionError: {'diagnostic_calls': 1, 'escaped': 'SystemExit', 'fallback_calls': 1}
+E       assert 'SystemExit' is None
+E        +  where 'SystemExit' = namespace(escaped='SystemExit', result=None, diagnostic_calls=[('nwipe', 'fake_status', '')], fallback_calls=['beamo-wipe [nwipe] fake_status: fake_status']).escaped
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:107: AssertionError
+____ test_optional_diagnostic_helper_never_escapes[KeyboardInterrupt-None] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7ac8590>
+request = <FixtureRequest for <Function test_optional_diagnostic_helper_never_escapes[KeyboardInterrupt-None]>>
+log_error = <class 'KeyboardInterrupt'>, stderr_error = None
+
+    @pytest.mark.parametrize("log_error,stderr_error", HELPER_FAILURES)
+    def test_optional_diagnostic_helper_never_escapes(
+        monkeypatch, request, log_error, stderr_error,
+    ):
+        result = _invoke(
+            monkeypatch, lambda: module._try_log_diag("nwipe", "fake_status"),
+            log_error, stderr_error,
+        )
+        trace = _trace(request, result)
+>       assert result.escaped is None, trace
+E       AssertionError: {'diagnostic_calls': 1, 'escaped': 'KeyboardInterrupt', 'fallback_calls': 0}
+E       assert 'KeyboardInterrupt' is None
+E        +  where 'KeyboardInterrupt' = namespace(escaped='KeyboardInterrupt', result=None, diagnostic_calls=[('nwipe', 'fake_status', '')], fallback_calls=[]).escaped
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:107: AssertionError
+___ test_optional_diagnostic_helper_never_escapes[KeyboardInterrupt-OSError] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7aa6510>
+request = <FixtureRequest for <Function test_optional_diagnostic_helper_never_escapes[KeyboardInterrupt-OSError]>>
+log_error = <class 'KeyboardInterrupt'>, stderr_error = <class 'OSError'>
+
+    @pytest.mark.parametrize("log_error,stderr_error", HELPER_FAILURES)
+    def test_optional_diagnostic_helper_never_escapes(
+        monkeypatch, request, log_error, stderr_error,
+    ):
+        result = _invoke(
+            monkeypatch, lambda: module._try_log_diag("nwipe", "fake_status"),
+            log_error, stderr_error,
+        )
+        trace = _trace(request, result)
+>       assert result.escaped is None, trace
+E       AssertionError: {'diagnostic_calls': 1, 'escaped': 'KeyboardInterrupt', 'fallback_calls': 0}
+E       assert 'KeyboardInterrupt' is None
+E        +  where 'KeyboardInterrupt' = namespace(escaped='KeyboardInterrupt', result=None, diagnostic_calls=[('nwipe', 'fake_status', '')], fallback_calls=[]).escaped
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:107: AssertionError
+_ test_optional_diagnostic_helper_never_escapes[KeyboardInterrupt-KeyboardInterrupt] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7b73490>
+request = <FixtureRequest for <Function test_optional_diagnostic_helper_never_escapes[KeyboardInterrupt-KeyboardInterrupt]>>
+log_error = <class 'KeyboardInterrupt'>
+stderr_error = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("log_error,stderr_error", HELPER_FAILURES)
+    def test_optional_diagnostic_helper_never_escapes(
+        monkeypatch, request, log_error, stderr_error,
+    ):
+        result = _invoke(
+            monkeypatch, lambda: module._try_log_diag("nwipe", "fake_status"),
+            log_error, stderr_error,
+        )
+        trace = _trace(request, result)
+>       assert result.escaped is None, trace
+E       AssertionError: {'diagnostic_calls': 1, 'escaped': 'KeyboardInterrupt', 'fallback_calls': 0}
+E       assert 'KeyboardInterrupt' is None
+E        +  where 'KeyboardInterrupt' = namespace(escaped='KeyboardInterrupt', result=None, diagnostic_calls=[('nwipe', 'fake_status', '')], fallback_calls=[]).escaped
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:107: AssertionError
+_ test_optional_diagnostic_helper_never_escapes[KeyboardInterrupt-SystemExit] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7aeae90>
+request = <FixtureRequest for <Function test_optional_diagnostic_helper_never_escapes[KeyboardInterrupt-SystemExit]>>
+log_error = <class 'KeyboardInterrupt'>, stderr_error = <class 'SystemExit'>
+
+    @pytest.mark.parametrize("log_error,stderr_error", HELPER_FAILURES)
+    def test_optional_diagnostic_helper_never_escapes(
+        monkeypatch, request, log_error, stderr_error,
+    ):
+        result = _invoke(
+            monkeypatch, lambda: module._try_log_diag("nwipe", "fake_status"),
+            log_error, stderr_error,
+        )
+        trace = _trace(request, result)
+>       assert result.escaped is None, trace
+E       AssertionError: {'diagnostic_calls': 1, 'escaped': 'KeyboardInterrupt', 'fallback_calls': 0}
+E       assert 'KeyboardInterrupt' is None
+E        +  where 'KeyboardInterrupt' = namespace(escaped='KeyboardInterrupt', result=None, diagnostic_calls=[('nwipe', 'fake_status', '')], fallback_calls=[]).escaped
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:107: AssertionError
+________ test_optional_diagnostic_helper_never_escapes[SystemExit-None] ________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7a10560>
+request = <FixtureRequest for <Function test_optional_diagnostic_helper_never_escapes[SystemExit-None]>>
+log_error = <class 'SystemExit'>, stderr_error = None
+
+    @pytest.mark.parametrize("log_error,stderr_error", HELPER_FAILURES)
+    def test_optional_diagnostic_helper_never_escapes(
+        monkeypatch, request, log_error, stderr_error,
+    ):
+        result = _invoke(
+            monkeypatch, lambda: module._try_log_diag("nwipe", "fake_status"),
+            log_error, stderr_error,
+        )
+        trace = _trace(request, result)
+>       assert result.escaped is None, trace
+E       AssertionError: {'diagnostic_calls': 1, 'escaped': 'SystemExit', 'fallback_calls': 0}
+E       assert 'SystemExit' is None
+E        +  where 'SystemExit' = namespace(escaped='SystemExit', result=None, diagnostic_calls=[('nwipe', 'fake_status', '')], fallback_calls=[]).escaped
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:107: AssertionError
+______ test_optional_diagnostic_helper_never_escapes[SystemExit-OSError] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7a0ec50>
+request = <FixtureRequest for <Function test_optional_diagnostic_helper_never_escapes[SystemExit-OSError]>>
+log_error = <class 'SystemExit'>, stderr_error = <class 'OSError'>
+
+    @pytest.mark.parametrize("log_error,stderr_error", HELPER_FAILURES)
+    def test_optional_diagnostic_helper_never_escapes(
+        monkeypatch, request, log_error, stderr_error,
+    ):
+        result = _invoke(
+            monkeypatch, lambda: module._try_log_diag("nwipe", "fake_status"),
+            log_error, stderr_error,
+        )
+        trace = _trace(request, result)
+>       assert result.escaped is None, trace
+E       AssertionError: {'diagnostic_calls': 1, 'escaped': 'SystemExit', 'fallback_calls': 0}
+E       assert 'SystemExit' is None
+E        +  where 'SystemExit' = namespace(escaped='SystemExit', result=None, diagnostic_calls=[('nwipe', 'fake_status', '')], fallback_calls=[]).escaped
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:107: AssertionError
+_ test_optional_diagnostic_helper_never_escapes[SystemExit-KeyboardInterrupt] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7ad5a90>
+request = <FixtureRequest for <Function test_optional_diagnostic_helper_never_escapes[SystemExit-KeyboardInterrupt]>>
+log_error = <class 'SystemExit'>, stderr_error = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("log_error,stderr_error", HELPER_FAILURES)
+    def test_optional_diagnostic_helper_never_escapes(
+        monkeypatch, request, log_error, stderr_error,
+    ):
+        result = _invoke(
+            monkeypatch, lambda: module._try_log_diag("nwipe", "fake_status"),
+            log_error, stderr_error,
+        )
+        trace = _trace(request, result)
+>       assert result.escaped is None, trace
+E       AssertionError: {'diagnostic_calls': 1, 'escaped': 'SystemExit', 'fallback_calls': 0}
+E       assert 'SystemExit' is None
+E        +  where 'SystemExit' = namespace(escaped='SystemExit', result=None, diagnostic_calls=[('nwipe', 'fake_status', '')], fallback_calls=[]).escaped
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:107: AssertionError
+_____ test_optional_diagnostic_helper_never_escapes[SystemExit-SystemExit] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7ad5780>
+request = <FixtureRequest for <Function test_optional_diagnostic_helper_never_escapes[SystemExit-SystemExit]>>
+log_error = <class 'SystemExit'>, stderr_error = <class 'SystemExit'>
+
+    @pytest.mark.parametrize("log_error,stderr_error", HELPER_FAILURES)
+    def test_optional_diagnostic_helper_never_escapes(
+        monkeypatch, request, log_error, stderr_error,
+    ):
+        result = _invoke(
+            monkeypatch, lambda: module._try_log_diag("nwipe", "fake_status"),
+            log_error, stderr_error,
+        )
+        trace = _trace(request, result)
+>       assert result.escaped is None, trace
+E       AssertionError: {'diagnostic_calls': 1, 'escaped': 'SystemExit', 'fallback_calls': 0}
+E       assert 'SystemExit' is None
+E        +  where 'SystemExit' = namespace(escaped='SystemExit', result=None, diagnostic_calls=[('nwipe', 'fake_status', '')], fallback_calls=[]).escaped
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:107: AssertionError
+_ test_optional_diagnostics_do_not_prevent_requested_stop[log-keyboard-interrupt] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-158/test_optional_diagnostics_do_n2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7ad62e0>
+request = <FixtureRequest for <Function test_optional_diagnostics_do_not_prevent_requested_stop[log-keyboard-interrupt]>>
+log_error = <class 'KeyboardInterrupt'>, stderr_error = None
+
+    @pytest.mark.parametrize("log_error,stderr_error", RUNTIME_FAILURES, ids=RUNTIME_IDS)
+    def test_optional_diagnostics_do_not_prevent_requested_stop(
+        tmp_path, monkeypatch, request, log_error, stderr_error,
+    ):
+        logfile = tmp_path / "fake-active.log"
+        logfile.write_text("Fake engine in progress\n")
+        calls = []
+    
+        class FakeProcess:
+            returncode = None
+    
+            def poll(self):
+                calls.append("poll-error")
+                raise OSError("Fake process status failure")
+    
+            def terminate(self):
+                calls.append("terminate")
+                self.returncode = -15
+    
+            def wait(self, timeout):
+                calls.append("wait")
+                return self.returncode
+    
+        proc = FakeProcess()
+        runner = module.NwipeRunner()
+        runner._proc = proc
+        runner._active_request = WipeRequest(
+            "/dev/FAKE-DATA", MethodId.EVERYDAY, "/dev/FAKE-BOOT", str(logfile),
+        )
+        runner._last_logfile = str(logfile)
+        result = _invoke(monkeypatch, runner.cancel, log_error, stderr_error)
+        trace = _trace(request, result, calls=calls, process_retained=runner._proc is proc)
+>       assert "terminate" in calls, trace
+E       AssertionError: {'calls': ['poll-error'], 'diagnostic_calls': 1, 'escaped': 'KeyboardInterrupt', 'fallback_calls': 0, ...}
+E       assert 'terminate' in ['poll-error']
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:144: AssertionError
+___ test_optional_diagnostics_do_not_prevent_requested_stop[log-system-exit] ___
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-158/test_optional_diagnostics_do_n3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7ad63c0>
+request = <FixtureRequest for <Function test_optional_diagnostics_do_not_prevent_requested_stop[log-system-exit]>>
+log_error = <class 'SystemExit'>, stderr_error = None
+
+    @pytest.mark.parametrize("log_error,stderr_error", RUNTIME_FAILURES, ids=RUNTIME_IDS)
+    def test_optional_diagnostics_do_not_prevent_requested_stop(
+        tmp_path, monkeypatch, request, log_error, stderr_error,
+    ):
+        logfile = tmp_path / "fake-active.log"
+        logfile.write_text("Fake engine in progress\n")
+        calls = []
+    
+        class FakeProcess:
+            returncode = None
+    
+            def poll(self):
+                calls.append("poll-error")
+                raise OSError("Fake process status failure")
+    
+            def terminate(self):
+                calls.append("terminate")
+                self.returncode = -15
+    
+            def wait(self, timeout):
+                calls.append("wait")
+                return self.returncode
+    
+        proc = FakeProcess()
+        runner = module.NwipeRunner()
+        runner._proc = proc
+        runner._active_request = WipeRequest(
+            "/dev/FAKE-DATA", MethodId.EVERYDAY, "/dev/FAKE-BOOT", str(logfile),
+        )
+        runner._last_logfile = str(logfile)
+        result = _invoke(monkeypatch, runner.cancel, log_error, stderr_error)
+        trace = _trace(request, result, calls=calls, process_retained=runner._proc is proc)
+>       assert "terminate" in calls, trace
+E       AssertionError: {'calls': ['poll-error'], 'diagnostic_calls': 1, 'escaped': 'SystemExit', 'fallback_calls': 0, ...}
+E       assert 'terminate' in ['poll-error']
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:144: AssertionError
+_ test_optional_diagnostics_do_not_prevent_requested_stop[fallback-keyboard-interrupt] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-158/test_optional_diagnostics_do_n4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7ad6190>
+request = <FixtureRequest for <Function test_optional_diagnostics_do_not_prevent_requested_stop[fallback-keyboard-interrupt]>>
+log_error = <class 'OSError'>, stderr_error = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("log_error,stderr_error", RUNTIME_FAILURES, ids=RUNTIME_IDS)
+    def test_optional_diagnostics_do_not_prevent_requested_stop(
+        tmp_path, monkeypatch, request, log_error, stderr_error,
+    ):
+        logfile = tmp_path / "fake-active.log"
+        logfile.write_text("Fake engine in progress\n")
+        calls = []
+    
+        class FakeProcess:
+            returncode = None
+    
+            def poll(self):
+                calls.append("poll-error")
+                raise OSError("Fake process status failure")
+    
+            def terminate(self):
+                calls.append("terminate")
+                self.returncode = -15
+    
+            def wait(self, timeout):
+                calls.append("wait")
+                return self.returncode
+    
+        proc = FakeProcess()
+        runner = module.NwipeRunner()
+        runner._proc = proc
+        runner._active_request = WipeRequest(
+            "/dev/FAKE-DATA", MethodId.EVERYDAY, "/dev/FAKE-BOOT", str(logfile),
+        )
+        runner._last_logfile = str(logfile)
+        result = _invoke(monkeypatch, runner.cancel, log_error, stderr_error)
+        trace = _trace(request, result, calls=calls, process_retained=runner._proc is proc)
+>       assert "terminate" in calls, trace
+E       AssertionError: {'calls': ['poll-error'], 'diagnostic_calls': 1, 'escaped': 'KeyboardInterrupt', 'fallback_calls': 1, ...}
+E       assert 'terminate' in ['poll-error']
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:144: AssertionError
+_ test_optional_diagnostics_do_not_prevent_requested_stop[fallback-system-exit] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-158/test_optional_diagnostics_do_n5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7ad7070>
+request = <FixtureRequest for <Function test_optional_diagnostics_do_not_prevent_requested_stop[fallback-system-exit]>>
+log_error = <class 'OSError'>, stderr_error = <class 'SystemExit'>
+
+    @pytest.mark.parametrize("log_error,stderr_error", RUNTIME_FAILURES, ids=RUNTIME_IDS)
+    def test_optional_diagnostics_do_not_prevent_requested_stop(
+        tmp_path, monkeypatch, request, log_error, stderr_error,
+    ):
+        logfile = tmp_path / "fake-active.log"
+        logfile.write_text("Fake engine in progress\n")
+        calls = []
+    
+        class FakeProcess:
+            returncode = None
+    
+            def poll(self):
+                calls.append("poll-error")
+                raise OSError("Fake process status failure")
+    
+            def terminate(self):
+                calls.append("terminate")
+                self.returncode = -15
+    
+            def wait(self, timeout):
+                calls.append("wait")
+                return self.returncode
+    
+        proc = FakeProcess()
+        runner = module.NwipeRunner()
+        runner._proc = proc
+        runner._active_request = WipeRequest(
+            "/dev/FAKE-DATA", MethodId.EVERYDAY, "/dev/FAKE-BOOT", str(logfile),
+        )
+        runner._last_logfile = str(logfile)
+        result = _invoke(monkeypatch, runner.cancel, log_error, stderr_error)
+        trace = _trace(request, result, calls=calls, process_retained=runner._proc is proc)
+>       assert "terminate" in calls, trace
+E       AssertionError: {'calls': ['poll-error'], 'diagnostic_calls': 1, 'escaped': 'SystemExit', 'fallback_calls': 1, ...}
+E       assert 'terminate' in ['poll-error']
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:144: AssertionError
+_ test_optional_diagnostics_cannot_strand_completed_process[log-keyboard-interrupt] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-158/test_optional_diagnostics_cann2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7ad6970>
+request = <FixtureRequest for <Function test_optional_diagnostics_cannot_strand_completed_process[log-keyboard-interrupt]>>
+log_error = <class 'KeyboardInterrupt'>, stderr_error = None
+
+    @pytest.mark.parametrize("log_error,stderr_error", RUNTIME_FAILURES, ids=RUNTIME_IDS)
+    def test_optional_diagnostics_cannot_strand_completed_process(
+        tmp_path, monkeypatch, request, log_error, stderr_error,
+    ):
+        logfile = tmp_path / "fake-completed.log"
+        text = (
+            "/dev/FAKE-DATA: 100.00%, round 1 of 1, pass 1 of 1, "
+            "eta 00:00:00, [verifying]\n"
+        )
+        logfile.write_text(text)
+    
+        class ExitedProcess:
+            returncode = 0
+    
+            def poll(self):
+                return self.returncode
+    
+        runner = module.NwipeRunner()
+        runner._proc = ExitedProcess()
+        run = WipeRequest(
+            "/dev/FAKE-DATA", MethodId.EVERYDAY, "/dev/FAKE-BOOT", str(logfile),
+        )
+        runner._active_request = run
+        result = _invoke(monkeypatch, lambda: runner.poll(run), log_error, stderr_error)
+        trace = _trace(request, result, process_retained=runner._proc is not None)
+>       assert result.escaped is None, trace
+E       AssertionError: {'diagnostic_calls': 1, 'escaped': 'KeyboardInterrupt', 'fallback_calls': 0, 'process_retained': True}
+E       assert 'KeyboardInterrupt' is None
+E        +  where 'KeyboardInterrupt' = namespace(escaped='KeyboardInterrupt', result=None, diagnostic_calls=[('nwipe', 'completed', 'exit=0; finished')], fallback_calls=[]).escaped
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:181: AssertionError
+__ test_optional_diagnostics_cannot_strand_completed_process[log-system-exit] __
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-158/test_optional_diagnostics_cann3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7ad7e70>
+request = <FixtureRequest for <Function test_optional_diagnostics_cannot_strand_completed_process[log-system-exit]>>
+log_error = <class 'SystemExit'>, stderr_error = None
+
+    @pytest.mark.parametrize("log_error,stderr_error", RUNTIME_FAILURES, ids=RUNTIME_IDS)
+    def test_optional_diagnostics_cannot_strand_completed_process(
+        tmp_path, monkeypatch, request, log_error, stderr_error,
+    ):
+        logfile = tmp_path / "fake-completed.log"
+        text = (
+            "/dev/FAKE-DATA: 100.00%, round 1 of 1, pass 1 of 1, "
+            "eta 00:00:00, [verifying]\n"
+        )
+        logfile.write_text(text)
+    
+        class ExitedProcess:
+            returncode = 0
+    
+            def poll(self):
+                return self.returncode
+    
+        runner = module.NwipeRunner()
+        runner._proc = ExitedProcess()
+        run = WipeRequest(
+            "/dev/FAKE-DATA", MethodId.EVERYDAY, "/dev/FAKE-BOOT", str(logfile),
+        )
+        runner._active_request = run
+        result = _invoke(monkeypatch, lambda: runner.poll(run), log_error, stderr_error)
+        trace = _trace(request, result, process_retained=runner._proc is not None)
+>       assert result.escaped is None, trace
+E       AssertionError: {'diagnostic_calls': 1, 'escaped': 'SystemExit', 'fallback_calls': 0, 'process_retained': True}
+E       assert 'SystemExit' is None
+E        +  where 'SystemExit' = namespace(escaped='SystemExit', result=None, diagnostic_calls=[('nwipe', 'completed', 'exit=0; finished')], fallback_calls=[]).escaped
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:181: AssertionError
+_ test_optional_diagnostics_cannot_strand_completed_process[fallback-keyboard-interrupt] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-158/test_optional_diagnostics_cann4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7ad6190>
+request = <FixtureRequest for <Function test_optional_diagnostics_cannot_strand_completed_process[fallback-keyboard-interrupt]>>
+log_error = <class 'OSError'>, stderr_error = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("log_error,stderr_error", RUNTIME_FAILURES, ids=RUNTIME_IDS)
+    def test_optional_diagnostics_cannot_strand_completed_process(
+        tmp_path, monkeypatch, request, log_error, stderr_error,
+    ):
+        logfile = tmp_path / "fake-completed.log"
+        text = (
+            "/dev/FAKE-DATA: 100.00%, round 1 of 1, pass 1 of 1, "
+            "eta 00:00:00, [verifying]\n"
+        )
+        logfile.write_text(text)
+    
+        class ExitedProcess:
+            returncode = 0
+    
+            def poll(self):
+                return self.returncode
+    
+        runner = module.NwipeRunner()
+        runner._proc = ExitedProcess()
+        run = WipeRequest(
+            "/dev/FAKE-DATA", MethodId.EVERYDAY, "/dev/FAKE-BOOT", str(logfile),
+        )
+        runner._active_request = run
+        result = _invoke(monkeypatch, lambda: runner.poll(run), log_error, stderr_error)
+        trace = _trace(request, result, process_retained=runner._proc is not None)
+>       assert result.escaped is None, trace
+E       AssertionError: {'diagnostic_calls': 1, 'escaped': 'KeyboardInterrupt', 'fallback_calls': 1, 'process_retained': True}
+E       assert 'KeyboardInterrupt' is None
+E        +  where 'KeyboardInterrupt' = namespace(escaped='KeyboardInterrupt', result=None, diagnostic_calls=[('nwipe', 'completed', 'exit=0; finished')], fallback_calls=['beamo-wipe [nwipe] completed: exit=0; finished']).escaped
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:181: AssertionError
+_ test_optional_diagnostics_cannot_strand_completed_process[fallback-system-exit] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-158/test_optional_diagnostics_cann5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fced7ad67b0>
+request = <FixtureRequest for <Function test_optional_diagnostics_cannot_strand_completed_process[fallback-system-exit]>>
+log_error = <class 'OSError'>, stderr_error = <class 'SystemExit'>
+
+    @pytest.mark.parametrize("log_error,stderr_error", RUNTIME_FAILURES, ids=RUNTIME_IDS)
+    def test_optional_diagnostics_cannot_strand_completed_process(
+        tmp_path, monkeypatch, request, log_error, stderr_error,
+    ):
+        logfile = tmp_path / "fake-completed.log"
+        text = (
+            "/dev/FAKE-DATA: 100.00%, round 1 of 1, pass 1 of 1, "
+            "eta 00:00:00, [verifying]\n"
+        )
+        logfile.write_text(text)
+    
+        class ExitedProcess:
+            returncode = 0
+    
+            def poll(self):
+                return self.returncode
+    
+        runner = module.NwipeRunner()
+        runner._proc = ExitedProcess()
+        run = WipeRequest(
+            "/dev/FAKE-DATA", MethodId.EVERYDAY, "/dev/FAKE-BOOT", str(logfile),
+        )
+        runner._active_request = run
+        result = _invoke(monkeypatch, lambda: runner.poll(run), log_error, stderr_error)
+        trace = _trace(request, result, process_retained=runner._proc is not None)
+>       assert result.escaped is None, trace
+E       AssertionError: {'diagnostic_calls': 1, 'escaped': 'SystemExit', 'fallback_calls': 1, 'process_retained': True}
+E       assert 'SystemExit' is None
+E        +  where 'SystemExit' = namespace(escaped='SystemExit', result=None, diagnostic_calls=[('nwipe', 'completed', 'exit=0; finished')], fallback_calls=['beamo-wipe [nwipe] completed: exit=0; finished']).escaped
+
+tests/test_cancel_diagnostic_retirement_pass8_20261021.py:181: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostic_helper_never_escapes[OSError-KeyboardInterrupt]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostic_helper_never_escapes[OSError-SystemExit]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostic_helper_never_escapes[KeyboardInterrupt-None]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostic_helper_never_escapes[KeyboardInterrupt-OSError]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostic_helper_never_escapes[KeyboardInterrupt-KeyboardInterrupt]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostic_helper_never_escapes[KeyboardInterrupt-SystemExit]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostic_helper_never_escapes[SystemExit-None]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostic_helper_never_escapes[SystemExit-OSError]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostic_helper_never_escapes[SystemExit-KeyboardInterrupt]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostic_helper_never_escapes[SystemExit-SystemExit]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostics_do_not_prevent_requested_stop[log-keyboard-interrupt]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostics_do_not_prevent_requested_stop[log-system-exit]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostics_do_not_prevent_requested_stop[fallback-keyboard-interrupt]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostics_do_not_prevent_requested_stop[fallback-system-exit]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostics_cannot_strand_completed_process[log-keyboard-interrupt]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostics_cannot_strand_completed_process[log-system-exit]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostics_cannot_strand_completed_process[fallback-keyboard-interrupt]
+FAILED tests/test_cancel_diagnostic_retirement_pass8_20261021.py::test_optional_diagnostics_cannot_strand_completed_process[fallback-system-exit]
+18 failed, 7 passed in 0.28s

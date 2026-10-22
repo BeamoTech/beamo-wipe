@@ -84,6 +84,12 @@ func explainReadiness(s Snapshot, p Plan) ([]readinessCheck, string) {
 			checks[i].Detail = "Not verified. The check did not finish."
 			checks[i].Next = "Wait a moment and choose Check again, or close this window and use START-HERE.html on the USB."
 		}
+	case "runtime":
+		for i := range checks {
+			checks[i].State = "unverified"
+			checks[i].Detail = "Not verified. Beamo could not confirm whether this computer already started from the USB."
+			checks[i].Next = "Keep the computer on. Close this launcher and ask the computer's administrator for help, or return to Beamo Wipe if it is already open."
+		}
 	}
 	value := func(v string) string {
 		if v == "" {

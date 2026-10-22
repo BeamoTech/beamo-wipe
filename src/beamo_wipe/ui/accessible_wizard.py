@@ -55,52 +55,59 @@ class AccessibleWizard:
         self.w = wizard
         self.failed = False
         self.closed = False
-        self.window = Gtk.Window(title=C.ACCESSIBLE_TITLE)
-        # GtkLabel needs selectable text to accept keyboard focus, but its
-        # default select-all-on-focus emits text-selection-changed first.
-        # Orca can consume that event and suppress the real focus announcement.
-        # Keep manual selection available without selecting text on arrival.
-        self.window.get_settings().set_property("gtk-label-select-on-focus", False)
-        self.window.set_name("beamo-accessible")
-        self._style = Gtk.CssProvider()
-        self._apply_type_css()
-        # Size before the first show: a low-resolution live session may have
-        # no window manager to constrain an oversized default for us.
-        width, height = 900, 700
-        display = self.window.get_display()
-        monitor = display.get_primary_monitor() or display.get_monitor(0)
-        if monitor is not None:
-            workarea = monitor.get_workarea()
-            width = min(width, workarea.width)
-            height = min(height, workarea.height)
-        self.window.set_default_size(width, height)
-        if fullscreen:
-            # Bare X11 marks fullscreen without a window manager to resize it.
-            if monitor is not None:
-                geometry = monitor.get_geometry()
-                self.window.set_default_size(geometry.width, geometry.height)
-                self.window.move(geometry.x, geometry.y)
-            self.window.fullscreen()
-        self.window.connect("delete-event", self._close)
-        self.window.connect("key-press-event", self._key_press)
-        self.window.connect("key-release-event", self._key_release)
-        self.held: set[int] = set()
-        self._release_times: dict[int, int] = {}
-        self.generation = 0
+        # Retirement must be usable even if the first GTK setup call fails.
+        self.window = None
         self.timer = 0
-        self.primary = None
-        self.progress_label = None
-        self.countdown_label = None
-        self.error_label = None
-        self.shown = None
-        self.report_revision = -1
-        self.sound_revision = -1
         self._sound_dialog = None
-        self.actions: dict[str, Gtk.Button] = {}
-        self._refresh_lock = threading.Lock()
-        self._refresh_result: tuple[int, object] | None = None
-        self.render()
-        self.timer = GLib.timeout_add(100, self.tick)
+        self.generation = 0
+        self._main_loop_level: int | None = None
+        try:
+            self.window = Gtk.Window(title=C.ACCESSIBLE_TITLE)
+            # GtkLabel needs selectable text to accept keyboard focus, but its
+            # default select-all-on-focus emits text-selection-changed first.
+            # Orca can consume that event and suppress the real focus announcement.
+            # Keep manual selection available without selecting text on arrival.
+            self.window.get_settings().set_property("gtk-label-select-on-focus", False)
+            self.window.set_name("beamo-accessible")
+            self._style = Gtk.CssProvider()
+            self._apply_type_css()
+            # Size before the first show: a low-resolution live session may have
+            # no window manager to constrain an oversized default for us.
+            width, height = 900, 700
+            display = self.window.get_display()
+            monitor = display.get_primary_monitor() or display.get_monitor(0)
+            if monitor is not None:
+                workarea = monitor.get_workarea()
+                width = min(width, workarea.width)
+                height = min(height, workarea.height)
+            self.window.set_default_size(width, height)
+            if fullscreen:
+                # Bare X11 marks fullscreen without a window manager to resize it.
+                if monitor is not None:
+                    geometry = monitor.get_geometry()
+                    self.window.set_default_size(geometry.width, geometry.height)
+                    self.window.move(geometry.x, geometry.y)
+                self.window.fullscreen()
+            self.window.connect("delete-event", self._close)
+            self.window.connect("key-press-event", self._key_press)
+            self.window.connect("key-release-event", self._key_release)
+            self.held: set[int] = set()
+            self._release_times: dict[int, int] = {}
+            self.primary = None
+            self.progress_label = None
+            self.countdown_label = None
+            self.error_label = None
+            self.shown = None
+            self.report_revision = -1
+            self.sound_revision = -1
+            self.actions: dict[str, Gtk.Button] = {}
+            self._refresh_lock = threading.Lock()
+            self._refresh_result: tuple[int, object] | None = None
+            self.render()
+            self.timer = GLib.timeout_add(100, self.tick)
+        except BaseException as error:
+            self._close_preserving_error(error)
+            raise
 
     def _apply_type_css(self) -> None:
         scale = getattr(self.w, "text_scale", 1.0)
@@ -198,7 +205,7 @@ class AccessibleWizard:
 
         def clicked(_button):
             # A queued AT-SPI or key action from a replaced screen is stale.
-            if generation != self.generation or not widget.get_sensitive():
+            if self.closed or generation != self.generation or not widget.get_sensitive():
                 return
             action()
             if self.w.wants_shutdown or self.w.wants_new_session:
@@ -257,6 +264,8 @@ class AccessibleWizard:
         return view
 
     def render(self):
+        if getattr(self, "closed", False):
+            return
         self._live_sound_dialog()
         first_review_frame = (
             self.w.screen == Screen.LAST_CHANCE and self.shown != Screen.LAST_CHANCE
@@ -942,7 +951,9 @@ class AccessibleWizard:
                 try:
                     launch_decided.set()
                 except BaseException as cleanup:
-                    exc.add_note(f"Refresh wake also failed: {type(cleanup).__name__}")
+                    add_note = getattr(exc, "add_note", None)
+                    if callable(add_note):
+                        add_note(f"Refresh wake also failed: {type(cleanup).__name__}")
             self.w.finish_refresh(seq, exc)
             return True
         return True
@@ -1017,6 +1028,8 @@ class AccessibleWizard:
         return self._remember_key_press(event)
 
     def _key_press(self, _window, event):
+        if getattr(self, "closed", False):
+            return True
         if self._remember_key_press(event):
             return True
         key = event.keyval
@@ -1084,6 +1097,7 @@ class AccessibleWizard:
         if self.closed:
             return
         self.closed = True
+        self.generation = getattr(self, "generation", 0) + 1
         errors = []
 
         def cleanup(action):
@@ -1099,12 +1113,34 @@ class AccessibleWizard:
         if self.timer:
             timer, self.timer = self.timer, 0
             cleanup(lambda: GLib.source_remove(timer))
-        cleanup(self.window.destroy)
-        cleanup(lambda: Gtk.main_quit() if Gtk.main_level() else None)
+        if self.window is not None:
+            cleanup(self.window.destroy)
+
+        def quit_owned_loop():
+            level = Gtk.main_level()
+            # Old __new__ callers have no recorded loop. Real views record
+            # ownership before entering Gtk.main, never during construction.
+            owned = getattr(self, "_main_loop_level", level)
+            if level and owned == level:
+                Gtk.main_quit()
+
+        cleanup(quit_owned_loop)
         if errors:
-            for error in errors[1:]:
-                errors[0].add_note(f"GTK cleanup also failed: {type(error).__name__}")
+            add_note = getattr(errors[0], "add_note", None)
+            if callable(add_note):
+                for error in errors[1:]:
+                    add_note(f"GTK cleanup also failed: {type(error).__name__}")
             raise errors[0]
+
+    def _close_preserving_error(self, original):
+        try:
+            self.close()
+        except BaseException as cleanup_error:
+            if original is None:
+                raise
+            add_note = getattr(original, "add_note", None)
+            if callable(add_note):
+                add_note(f"GTK view cleanup also failed: {type(cleanup_error).__name__}")
 
     def _runtime_failure(self, _kind, error, _traceback):
         self.failed = True
@@ -1122,11 +1158,20 @@ class AccessibleWizard:
 
     def run(self):
         previous = sys.excepthook
-        sys.excepthook = self._runtime_failure
+        original = None
         try:
+            self._main_loop_level = Gtk.main_level() + 1
+            sys.excepthook = self._runtime_failure
             Gtk.main()
+        except BaseException as error:
+            original = error
+            raise
         finally:
             sys.excepthook = previous
+            try:
+                self._close_preserving_error(original)
+            finally:
+                self._main_loop_level = None
         return 3 if self.failed else 0
 
 
@@ -1260,97 +1305,133 @@ def run_accessible_startup(build, *, fullscreen: bool = False,
         window = Gtk.Window(title=C.STARTING_TITLE)
     except Exception as exc:
         raise StartupDisplayUnavailable(f"no accessible display for startup stages: {exc}") from exc
-    window.set_name("beamo-accessible")
-    window.set_default_size(640, 420)
-    if fullscreen:
-        display = window.get_display()
-        monitor = display.get_primary_monitor() or display.get_monitor(0)
-        if monitor is not None:
-            geometry = monitor.get_geometry()
-            window.set_default_size(geometry.width, geometry.height)
-            window.move(geometry.x, geometry.y)
-        window.fullscreen()
-    box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-    box.set_border_width(24)
-    window.add(box)
-    rows = []
-    for _i in range(3):
-        status = Gtk.Label()
-        title = Gtk.Label()
-        title.get_style_context().add_class("screen-heading")
-        hint = Gtk.Label()
-        hint.set_line_wrap(True)
-        hint.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
-        box.pack_start(status, False, False, 0)
-        box.pack_start(title, False, False, 0)
-        box.pack_start(hint, False, False, 6)
-        rows.append((status, title, hint))
-    stall = Gtk.Label()
-    stall.set_line_wrap(True)
-    box.pack_start(stall, False, False, 6)
-    status_line = Gtk.Label(label="")
-    status_line.set_can_focus(True)
-    status_line.set_selectable(True)
-    box.pack_start(status_line, False, False, 6)
-
-    _STATUS_WORDS = {"pending": C.STARTUP_STATE_WAITING, "active": C.STARTUP_STATE_WORKING, "done": C.STARTUP_STATE_DONE}
-
-    def render() -> None:
-        snap = run.drain()
-        for (status, title, hint), row in zip(rows, snap):
-            status.set_text(_STATUS_WORDS[row["state"]])
-            title.set_text(row["title"])
-            hint.set_text(row["hint"])
-        note = run.stalled_note(persistent=True)
-        stall.set_text(note or "")
-        active = [row for row in snap if row["state"] == "active"]
-        if active:
-            status_line.set_text(f"{active[0]['title']} — {C.STARTUP_STATE_WORKING}")
-
-    def finish(result) -> bool:
-        outcome.append(result)
-        window.destroy()
-        if Gtk.main_level():
-            Gtk.main_quit()
-        return False
-
-    def close(*_args):
-        if not outcome:
-            outcome.append(("abandoned", None))
-        window.destroy()
-        if Gtk.main_level():
-            Gtk.main_quit()
-        return False
-
-    def poll() -> bool:
-        if outcome:
-            return False
-        render()
-        result = run.poll()
-        if result is None:
-            return True
-        # run.poll() applied the final report; announce it before closing.
-        render()
-        return finish(result)
-
-    window.connect("delete-event", close)
-    window.connect("key-press-event", lambda _w, event: close()
-                   if event.keyval in (Gdk.KEY_Escape,) else None)
-    window.show_all()
-    window.present()
-    if window.get_window():
-        window.get_window().focus(Gdk.CURRENT_TIME)
-    status_line.grab_focus()
-    render()
+    poll_source = None
+    original = None
     try:
-        run.start()
-    except Exception as exc:
-        # A failed worker launch cannot produce a poll result. Release the
-        # startup window before the caller opens its blocked support view.
-        window.destroy()
-        return ("failed", exc)
-    GLib.timeout_add(100, poll)
-    Gtk.main()
-    if outcome:
-        return outcome[0]
-    return ("abandoned", None)
+        window.set_name("beamo-accessible")
+        window.set_default_size(640, 420)
+        if fullscreen:
+            display = window.get_display()
+            monitor = display.get_primary_monitor() or display.get_monitor(0)
+            if monitor is not None:
+                geometry = monitor.get_geometry()
+                window.set_default_size(geometry.width, geometry.height)
+                window.move(geometry.x, geometry.y)
+            window.fullscreen()
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        box.set_border_width(24)
+        window.add(box)
+        rows = []
+        for _i in range(3):
+            status = Gtk.Label()
+            title = Gtk.Label()
+            title.get_style_context().add_class("screen-heading")
+            hint = Gtk.Label()
+            hint.set_line_wrap(True)
+            hint.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
+            box.pack_start(status, False, False, 0)
+            box.pack_start(title, False, False, 0)
+            box.pack_start(hint, False, False, 6)
+            rows.append((status, title, hint))
+        stall = Gtk.Label()
+        stall.set_line_wrap(True)
+        box.pack_start(stall, False, False, 6)
+        status_line = Gtk.Label(label="")
+        status_line.set_can_focus(True)
+        status_line.set_selectable(True)
+        box.pack_start(status_line, False, False, 6)
+
+        _STATUS_WORDS = {"pending": C.STARTUP_STATE_WAITING, "active": C.STARTUP_STATE_WORKING, "done": C.STARTUP_STATE_DONE}
+
+        def render() -> None:
+            snap = run.drain()
+            for (status, title, hint), row in zip(rows, snap):
+                status.set_text(_STATUS_WORDS[row["state"]])
+                title.set_text(row["title"])
+                hint.set_text(row["hint"])
+            note = run.stalled_note(persistent=True)
+            stall.set_text(note or "")
+            active = [row for row in snap if row["state"] == "active"]
+            if active:
+                status_line.set_text(f"{active[0]['title']} — {C.STARTUP_STATE_WORKING}")
+
+        loop_level = None
+
+        def quit_owned_loop() -> None:
+            if loop_level is not None and Gtk.main_level() == loop_level:
+                Gtk.main_quit()
+
+        def finish(result) -> bool:
+            outcome.append(result)
+            window.destroy()
+            quit_owned_loop()
+            return False
+
+        def close(*_args):
+            if not outcome:
+                outcome.append(("abandoned", None))
+            window.destroy()
+            quit_owned_loop()
+            return False
+
+        def poll() -> bool:
+            if outcome:
+                return False
+            render()
+            result = run.poll()
+            if result is None:
+                return True
+            # run.poll() applied the final report; announce it before closing.
+            render()
+            return finish(result)
+
+        window.connect("delete-event", close)
+        window.connect("key-press-event", lambda _w, event: close()
+                       if event.keyval in (Gdk.KEY_Escape,) else None)
+        window.show_all()
+        window.present()
+        if window.get_window():
+            window.get_window().focus(Gdk.CURRENT_TIME)
+        status_line.grab_focus()
+        render()
+        try:
+            run.start()
+        except Exception as exc:
+            # A failed worker launch cannot produce a poll result. Release the
+            # startup window before the caller opens its blocked support view.
+            window.destroy()
+            return ("failed", exc)
+        poll_source = GLib.timeout_add(100, poll)
+        loop_level = Gtk.main_level() + 1
+        Gtk.main()
+        if outcome:
+            return outcome[0]
+        return ("abandoned", None)
+    except BaseException as error:
+        original = error
+        raise
+    finally:
+        # Startup owns exactly this window and timeout. Retire them even when
+        # setup, worker launch or the main loop is interrupted; peer windows,
+        # timers and nested event loops belong to their own callers.
+        cleanup_errors = []
+        try:
+            if poll_source is not None:
+                pending = GLib.MainContext.default().find_source_by_id(poll_source)
+                if pending is not None:
+                    pending.destroy()
+        except BaseException as error:
+            cleanup_errors.append(error)
+        try:
+            window.destroy()
+        except BaseException as error:
+            cleanup_errors.append(error)
+        if cleanup_errors:
+            first = original if original is not None else cleanup_errors[0]
+            add_note = getattr(first, "add_note", None)
+            if callable(add_note):
+                for cleanup_error in cleanup_errors:
+                    if cleanup_error is not first:
+                        add_note(f"GTK startup cleanup also failed: {type(cleanup_error).__name__}")
+            if original is None:
+                raise first

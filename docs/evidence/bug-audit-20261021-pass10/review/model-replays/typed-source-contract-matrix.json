@@ -1,0 +1,20 @@
+{
+  "states": 3360,
+  "strict_resolver_calls": 3360,
+  "parsed_strict_results": 3360,
+  "public_fake_discovery_calls": 3360,
+  "strict_successes": 1488,
+  "strict_refusals": 1872,
+  "fake_successes": 1584,
+  "fake_refusals": 1776,
+  "missing_link_policy_controls": 96,
+  "selectable_target_observations": 3072,
+  "native_callbacks": 0,
+  "mismatches": [],
+  "source_sha256": {
+    "src/beamo_wipe/discover.py": "94d7496625b9906c2ea6f19650b8e8dec4ac87b627d25a66ca219c45a67345b4",
+    "src/beamo_wipe/safety.py": "5cc1eeee4b220bc3f133b5933a1cd6aec382d14247156d3b4977b6b4af2e14f6",
+    "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9"
+  },
+  "scope": "Synthetic typed-source/alias conflict and strict-versus-preview identity laws; no native platform qualification."
+}

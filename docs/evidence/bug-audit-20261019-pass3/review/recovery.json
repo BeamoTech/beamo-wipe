@@ -1,0 +1,80 @@
+{
+  "repo": "/workspace/beamo-wipe",
+  "base_head": "fa2ca72b648ef373c6215699e883296bc8db551d",
+  "finding": "Recovery journal incorrectly requires exactly one protected is_boot disk, conflicting with discovery boot aliases/system-mount protection and blocking safe unrelated-target confirmation before runner.start.",
+  "fix": "Require the designated boot path to stay protected and the selected target to stay unprotected. Preserve every additional protected disk flag in the same schema/context.",
+  "reviewed": [
+    "AGENTS.md",
+    ".ai/memory/unfinished-work.md",
+    "src/beamo_wipe/session_recovery.py",
+    "src/beamo_wipe/evidence.py",
+    "src/beamo_wipe/support_export.py",
+    "src/beamo_wipe/report_intent.py",
+    "src/beamo_wipe/privacy.py",
+    "src/beamo_wipe/result_summary.py",
+    "src/beamo_wipe/outcomes.py semantic interpretation",
+    "src/beamo_wipe/wizard.py recovery/report/confirmation integration",
+    "associated recovery/export/report/privacy regression tests"
+  ],
+  "checked_invariants": [
+    "journal checksums and exact boot/build/session/context/time bindings",
+    "file ownership/mode/link checks and named lock identity",
+    "terminal reference/context/evidence/log consistency",
+    "unknown/recovered state never restores owner/token/request or starts an erase",
+    "target-protected, actual-boot-unprotected, duplicate-path and missing-boot contexts remain refused",
+    "WWN/serial aliases and independent protected system-mounted peers remain excluded",
+    "distinct WWNs disambiguate reused boot serials",
+    "all pinned methods recover truthful terminal results",
+    "fake kiosk owner/selection/token/method/countdown flow can arm unrelated target",
+    "report worker selection/revalidation/readback/unmount and receipt consistency",
+    "sharing-copy leaf allowlists/identifier scrubbing and report-intent recovery"
+  ],
+  "reports": {
+    "alias-before": {
+      "tests": 9,
+      "failures": 6,
+      "errors": 0,
+      "skipped": 0
+    },
+    "adjacent-baseline": {
+      "tests": 257,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "alias-expanded-after": {
+      "tests": 42,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "final-focused": {
+      "tests": 313,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "expanded-before": {
+      "tests": 48,
+      "failures": 33,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "additional_diagnostic": {
+    "default_mypy": "PASS (existing annotation-unchecked note)",
+    "extra_check_untyped_defs": "FAIL with same3 existing Optional record indexing diagnostics in baseline and final, outside changed validation lines; not a configured gate or a new runtime defect",
+    "files": [
+      "mypy-extra-baseline-corrected.log",
+      "mypy-extra-final.log"
+    ],
+    "initial_baseline_diagnostic_setup": "mypy-extra-baseline.log also records missing-source-search-path import diagnostics; corrected with MYPYPATH=/workspace/beamo-wipe/src"
+  },
+  "other_observations": "Old compatibility export_evidence pre-mounted-destination helper appears constrained by tmpfs-only log checks; kiosk uses private USB worker. No current authorized kiosk owner-flow defect proved there; no expansion/change proposed.",
+  "lint": "Ruff owned source/test PASS; default mypy session_recovery.py PASS; git diff --check PASS",
+  "native_scope": "All devices/discovery/process launch are guarded fakes; ordinary temporary journal/log/evidence/lock files only. No actual native inventory, nwipe, mounts, firmware/power, CI, commit or push.",
+  "edited_files": {
+    "src/beamo_wipe/session_recovery.py": "30eca99c79190a87952041de9499bd2c4d412cc64cbed9fe8f3a656d0938c858",
+    "tests/test_recovery_boot_alias_pass3_20261019.py": "e5d3d9d526dfee75810d360be5556687fde6a309ca5f8072bd55557de006d3e1"
+  }
+}

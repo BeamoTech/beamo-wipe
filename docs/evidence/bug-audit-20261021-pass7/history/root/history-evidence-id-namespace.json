@@ -1,0 +1,8 @@
+{
+  "supporting_report": "ui/plain-expanded-after.xml",
+  "passing_executions": 54,
+  "unique_junit_ids": 52,
+  "cause": "Two distinct external probe modules have empty classname and identical two test names",
+  "canonical_and_root_new_and_original_unique_ids_unchanged": true,
+  "product_or_test_source_change": false
+}

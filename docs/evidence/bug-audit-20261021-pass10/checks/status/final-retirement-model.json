@@ -1,0 +1,17 @@
+{
+  "name": "final-retirement-model",
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-overlay",
+    "/workspace/beamo-tools/audit-pass10-20261021/root/retirement-overlay.json",
+    "-run=^TestPass10RetirementIdleMatrix$",
+    "-json",
+    "./..."
+  ],
+  "started_utc": "2026-10-21T05:34:01.112440+00:00",
+  "elapsed_seconds": 2.14,
+  "exit_code": 0
+}

@@ -1,0 +1,33 @@
+[
+  {
+    "case": "normal",
+    "copy_check_rc": 0,
+    "stderr": ""
+  },
+  {
+    "case": "packaging/live/config/includes.chroot/usr/local/bin/beamo-wipe",
+    "source_mode": "755",
+    "copied_mode": "644",
+    "copy_check_rc": 0,
+    "stderr": ""
+  },
+  {
+    "case": "packaging/live/config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk",
+    "source_mode": "755",
+    "copied_mode": "644",
+    "copy_check_rc": 0,
+    "stderr": ""
+  },
+  {
+    "case": "packaging/live/config/hooks/normal/0500-build-nwipe.hook.chroot",
+    "source_mode": "755",
+    "copied_mode": "644",
+    "copy_check_rc": 0,
+    "stderr": ""
+  },
+  {
+    "case": "byte-tamper-control",
+    "copy_check_rc": 1,
+    "stderr": "copied live inputs differ from the staged checkout\n"
+  }
+]

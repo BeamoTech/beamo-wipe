@@ -1,0 +1,12 @@
+{
+  "exit_code": 0,
+  "elapsed_seconds": 3.116,
+  "cases": 470,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "unchanged_tests": true,
+  "strict_warnings": true,
+  "child_umask": "022",
+  "private_display_required": false
+}

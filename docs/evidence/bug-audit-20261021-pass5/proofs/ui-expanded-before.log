@@ -1,0 +1,423 @@
+FFF...FFF...F....FF...FFF...FF..FF..FF..                                 [100%]
+=================================== FAILURES ===================================
+______________ test_f5_interrupts_enters_quiet_interval[False-10] ______________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f836352e660>, scans=[True])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f83634f6650>
+enter = 10, fresh = False
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_f5_interrupts_enters_quiet_interval(session, monkeypatch, enter, fresh):
+        w = session.wizard
+        prepare(w, Screen.METHOD)
+        events = [(0, enter), (0.1, -1), (0.9, curses.KEY_F5), (1.2, -1)]
+        events += [(2.3, -1), (2.4, enter)] if fresh else [(1.3, enter)]
+        run_keys(monkeypatch, w, events)
+>       assert session.scans == ([True] if fresh else [])
+E       assert [True] == []
+E         
+E         Left contains one more item: True
+E         Use -v to get more diff
+
+tests/test_console_key_origin_pass5_20261021.py:147: AssertionError
+______________ test_f5_interrupts_enters_quiet_interval[False-13] ______________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f836449ead0>, scans=[True])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f83634f62c0>
+enter = 13, fresh = False
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_f5_interrupts_enters_quiet_interval(session, monkeypatch, enter, fresh):
+        w = session.wizard
+        prepare(w, Screen.METHOD)
+        events = [(0, enter), (0.1, -1), (0.9, curses.KEY_F5), (1.2, -1)]
+        events += [(2.3, -1), (2.4, enter)] if fresh else [(1.3, enter)]
+        run_keys(monkeypatch, w, events)
+>       assert session.scans == ([True] if fresh else [])
+E       assert [True] == []
+E         
+E         Left contains one more item: True
+E         Use -v to get more diff
+
+tests/test_console_key_origin_pass5_20261021.py:147: AssertionError
+_____________ test_f5_interrupts_enters_quiet_interval[False-343] ______________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f8363423610>, scans=[True])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f836369be30>
+enter = 343, fresh = False
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_f5_interrupts_enters_quiet_interval(session, monkeypatch, enter, fresh):
+        w = session.wizard
+        prepare(w, Screen.METHOD)
+        events = [(0, enter), (0.1, -1), (0.9, curses.KEY_F5), (1.2, -1)]
+        events += [(2.3, -1), (2.4, enter)] if fresh else [(1.3, enter)]
+        run_keys(monkeypatch, w, events)
+>       assert session.scans == ([True] if fresh else [])
+E       assert [True] == []
+E         
+E         Left contains one more item: True
+E         Use -v to get more diff
+
+tests/test_console_key_origin_pass5_20261021.py:147: AssertionError
+____ test_suppressed_escape_also_interrupts_enters_quiet_interval[False-10] ____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f8363423ed0>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f8363559b50>
+enter = 10, fresh = False
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_suppressed_escape_also_interrupts_enters_quiet_interval(
+        session, monkeypatch, enter, fresh
+    ):
+        w = session.wizard
+        prepare(w, Screen.METHOD)
+        events = [(0, enter), (0.4, 27), (0.5, -1), (1.0, 27), (1.6, -1)]
+        events += [(2.8, -1), (2.9, enter)] if fresh else [(1.7, enter)]
+        run_keys(monkeypatch, w, events)
+>       assert w.screen is (Screen.LAST_CHANCE if fresh else Screen.METHOD)
+E       AssertionError: assert <Screen.LAST_CHANCE: 'last_chance'> is <Screen.METHOD: 'method'>
+E        +  where <Screen.LAST_CHANCE: 'last_chance'> = <beamo_wipe.wizard.Wizard object at 0x7f8363423ed0>.screen
+
+tests/test_console_key_origin_pass5_20261021.py:162: AssertionError
+____ test_suppressed_escape_also_interrupts_enters_quiet_interval[False-13] ____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f8363498550>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f83636fb020>
+enter = 13, fresh = False
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_suppressed_escape_also_interrupts_enters_quiet_interval(
+        session, monkeypatch, enter, fresh
+    ):
+        w = session.wizard
+        prepare(w, Screen.METHOD)
+        events = [(0, enter), (0.4, 27), (0.5, -1), (1.0, 27), (1.6, -1)]
+        events += [(2.8, -1), (2.9, enter)] if fresh else [(1.7, enter)]
+        run_keys(monkeypatch, w, events)
+>       assert w.screen is (Screen.LAST_CHANCE if fresh else Screen.METHOD)
+E       AssertionError: assert <Screen.LAST_CHANCE: 'last_chance'> is <Screen.METHOD: 'method'>
+E        +  where <Screen.LAST_CHANCE: 'last_chance'> = <beamo_wipe.wizard.Wizard object at 0x7f8363498550>.screen
+
+tests/test_console_key_origin_pass5_20261021.py:162: AssertionError
+___ test_suppressed_escape_also_interrupts_enters_quiet_interval[False-343] ____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f83634987d0>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f83636ea120>
+enter = 343, fresh = False
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_suppressed_escape_also_interrupts_enters_quiet_interval(
+        session, monkeypatch, enter, fresh
+    ):
+        w = session.wizard
+        prepare(w, Screen.METHOD)
+        events = [(0, enter), (0.4, 27), (0.5, -1), (1.0, 27), (1.6, -1)]
+        events += [(2.8, -1), (2.9, enter)] if fresh else [(1.7, enter)]
+        run_keys(monkeypatch, w, events)
+>       assert w.screen is (Screen.LAST_CHANCE if fresh else Screen.METHOD)
+E       AssertionError: assert <Screen.LAST_CHANCE: 'last_chance'> is <Screen.METHOD: 'method'>
+E        +  where <Screen.LAST_CHANCE: 'last_chance'> = <beamo_wipe.wizard.Wizard object at 0x7f83634987d0>.screen
+
+tests/test_console_key_origin_pass5_20261021.py:162: AssertionError
+_____ test_enter_pressed_in_inventory_overlay_cannot_advance_picker[False] _____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f8363498a50>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f8363488350>
+fresh = False
+
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_enter_pressed_in_inventory_overlay_cannot_advance_picker(
+        session, monkeypatch, fresh
+    ):
+        w = session.wizard
+        prepare(w, Screen.PICK)
+        events = [(0, ord("b")), (0.1, 10), (0.2, 27)]
+        events += [(0.3, -1), (1.4, -1), (1.5, 10)] if fresh else [(0.3, 10)]
+        run_keys(monkeypatch, w, events)
+>       assert w.screen is (Screen.CONFIRM if fresh else Screen.PICK)
+E       AssertionError: assert <Screen.CONFIRM: 'confirm'> is <Screen.PICK: 'pick'>
+E        +  where <Screen.CONFIRM: 'confirm'> = <beamo_wipe.wizard.Wizard object at 0x7f8363498a50>.screen
+
+tests/test_console_key_origin_pass5_20261021.py:175: AssertionError
+________ test_space_from_setup_does_not_acknowledge_owner[False-splash] ________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f83634991d0>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f83634977f0>
+origin = <Screen.SPLASH: 'splash'>, fresh = False
+
+    @pytest.mark.parametrize("origin", [Screen.SPLASH, Screen.KEYBOARD])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_space_from_setup_does_not_acknowledge_owner(
+        session, monkeypatch, origin, fresh
+    ):
+        w = session.wizard
+        prepare(w, origin)
+        events = [(0, 32), (0.1, 10)]
+        events += [(0.2, -1), (1.3, -1), (1.4, 32)] if fresh else [(0.2, 32)]
+        run_keys(monkeypatch, w, events)
+        assert w.screen is Screen.OWNER
+>       assert w.owner_ok is fresh
+E       assert True is False
+E        +  where True = <beamo_wipe.wizard.Wizard object at 0x7f83634991d0>.owner_ok
+
+tests/test_console_key_origin_pass5_20261021.py:209: AssertionError
+_______ test_space_from_setup_does_not_acknowledge_owner[False-keyboard] _______
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f8363498f50>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f8363742e70>
+origin = <Screen.KEYBOARD: 'keyboard'>, fresh = False
+
+    @pytest.mark.parametrize("origin", [Screen.SPLASH, Screen.KEYBOARD])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_space_from_setup_does_not_acknowledge_owner(
+        session, monkeypatch, origin, fresh
+    ):
+        w = session.wizard
+        prepare(w, origin)
+        events = [(0, 32), (0.1, 10)]
+        events += [(0.2, -1), (1.3, -1), (1.4, 32)] if fresh else [(0.2, 32)]
+        run_keys(monkeypatch, w, events)
+        assert w.screen is Screen.OWNER
+>       assert w.owner_ok is fresh
+E       assert True is False
+E        +  where True = <beamo_wipe.wizard.Wizard object at 0x7f8363498f50>.owner_ok
+
+tests/test_console_key_origin_pass5_20261021.py:209: AssertionError
+______________ test_owner_keyboard_detour_keeps_unchecked_consent ______________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f8363423610>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f83636eef20>
+
+    def test_owner_keyboard_detour_keeps_unchecked_consent(session, monkeypatch):
+        w = session.wizard
+        prepare(w, Screen.OWNER)
+        w.set_owner(True)
+        run_keys(monkeypatch, w, [(0, 32), (0.1, ord("k")), (0.2, 10), (0.3, 32)])
+>       assert w.screen is Screen.OWNER and not w.owner_ok
+E       AssertionError: assert (<Screen.OWNER: 'owner'> is <Screen.OWNER: 'owner'> and not True)
+E        +  where <Screen.OWNER: 'owner'> = <beamo_wipe.wizard.Wizard object at 0x7f8363423610>.screen
+E        +  and   <Screen.OWNER: 'owner'> = Screen.OWNER
+E        +  and   True = <beamo_wipe.wizard.Wizard object at 0x7f8363423610>.owner_ok
+
+tests/test_console_key_origin_pass5_20261021.py:225: AssertionError
+________ test_s_from_review_cannot_confirm_stop_after_start[False-115] _________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f83634239d0>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f83636efe70>
+letter = 115, fresh = False
+
+    @pytest.mark.parametrize("letter", [ord("s"), ord("S")])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_s_from_review_cannot_confirm_stop_after_start(
+        session, monkeypatch, letter, fresh
+    ):
+        w = session.wizard
+        prepare(w, Screen.LAST_CHANCE)
+        # The first real review frame starts its visible countdown at t=0.
+        events = [(5.1, -1), (5.2, letter), (5.3, 10), (5.4, 27)]
+        events += [(5.5, -1), (6.6, -1), (6.7, letter)] if fresh else [(5.5, letter)]
+        run_keys(monkeypatch, w, events)
+>       assert w.runner.started and w.runner.cancelled is fresh
+E       assert (True and True is False)
+E        +  where True = <beamo_wipe.nwipe_runner.DryRunRunner object at 0x7f8363482780>.started
+E        +    where <beamo_wipe.nwipe_runner.DryRunRunner object at 0x7f8363482780> = <beamo_wipe.wizard.Wizard object at 0x7f83634239d0>.runner
+E        +  and   True = <beamo_wipe.nwipe_runner.DryRunRunner object at 0x7f8363482780>.cancelled
+E        +    where <beamo_wipe.nwipe_runner.DryRunRunner object at 0x7f8363482780> = <beamo_wipe.wizard.Wizard object at 0x7f83634239d0>.runner
+
+tests/test_console_key_origin_pass5_20261021.py:239: AssertionError
+_________ test_s_from_review_cannot_confirm_stop_after_start[False-83] _________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f836449e850>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f83636ee3c0>
+letter = 83, fresh = False
+
+    @pytest.mark.parametrize("letter", [ord("s"), ord("S")])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_s_from_review_cannot_confirm_stop_after_start(
+        session, monkeypatch, letter, fresh
+    ):
+        w = session.wizard
+        prepare(w, Screen.LAST_CHANCE)
+        # The first real review frame starts its visible countdown at t=0.
+        events = [(5.1, -1), (5.2, letter), (5.3, 10), (5.4, 27)]
+        events += [(5.5, -1), (6.6, -1), (6.7, letter)] if fresh else [(5.5, letter)]
+        run_keys(monkeypatch, w, events)
+>       assert w.runner.started and w.runner.cancelled is fresh
+E       assert (True and True is False)
+E        +  where True = <beamo_wipe.nwipe_runner.DryRunRunner object at 0x7f83634833e0>.started
+E        +    where <beamo_wipe.nwipe_runner.DryRunRunner object at 0x7f83634833e0> = <beamo_wipe.wizard.Wizard object at 0x7f836449e850>.runner
+E        +  and   True = <beamo_wipe.nwipe_runner.DryRunRunner object at 0x7f83634833e0>.cancelled
+E        +    where <beamo_wipe.nwipe_runner.DryRunRunner object at 0x7f83634833e0> = <beamo_wipe.wizard.Wizard object at 0x7f836449e850>.runner
+
+tests/test_console_key_origin_pass5_20261021.py:239: AssertionError
+____ test_s_from_owner_does_not_toggle_sharing_after_help_opens[False-115] _____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f8363498a50>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f83636c1160>
+letter = 115, fresh = False
+
+    @pytest.mark.parametrize("letter", [ord("s"), ord("S")])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_s_from_owner_does_not_toggle_sharing_after_help_opens(
+        session, monkeypatch, letter, fresh
+    ):
+        w = session.wizard
+        prepare(w, Screen.OWNER)
+        events = [(0, letter), (0.1, ord("r"))]
+        events += [(0.2, -1), (1.3, -1), (1.4, letter)] if fresh else [(0.2, letter)]
+        run_keys(monkeypatch, w, events)
+        assert w.screen is Screen.REPORT_HELP
+>       assert w.report_share_redacted is fresh
+E       assert True is False
+E        +  where True = <beamo_wipe.wizard.Wizard object at 0x7f8363498a50>.report_share_redacted
+
+tests/test_console_key_origin_pass5_20261021.py:261: AssertionError
+_____ test_s_from_owner_does_not_toggle_sharing_after_help_opens[False-83] _____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f8363498690>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f83636c3230>
+letter = 83, fresh = False
+
+    @pytest.mark.parametrize("letter", [ord("s"), ord("S")])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_s_from_owner_does_not_toggle_sharing_after_help_opens(
+        session, monkeypatch, letter, fresh
+    ):
+        w = session.wizard
+        prepare(w, Screen.OWNER)
+        events = [(0, letter), (0.1, ord("r"))]
+        events += [(0.2, -1), (1.3, -1), (1.4, letter)] if fresh else [(0.2, letter)]
+        run_keys(monkeypatch, w, events)
+        assert w.screen is Screen.REPORT_HELP
+>       assert w.report_share_redacted is fresh
+E       assert True is False
+E        +  where True = <beamo_wipe.wizard.Wizard object at 0x7f8363498690>.report_share_redacted
+
+tests/test_console_key_origin_pass5_20261021.py:261: AssertionError
+__________ test_refresh_detour_does_not_repeat_report_preference[32] ___________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f8363499590>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f83636c29e0>
+letter = 32
+
+    @pytest.mark.parametrize("letter", [32, ord("s")])
+    def test_refresh_detour_does_not_repeat_report_preference(session, monkeypatch, letter):
+        w = session.wizard
+        prepare(w, Screen.OWNER)
+        w.open_report_help()
+        run_keys(
+            monkeypatch,
+            w,
+            [
+                (0, letter),
+                (0.1, -1),
+                (0.9, curses.KEY_F5),
+                (1.0, 27),
+                (1.1, letter),
+            ],
+        )
+        assert w.screen is Screen.REPORT_HELP
+>       assert (w.report_wanted if letter == 32 else w.report_share_redacted) is True
+E       assert False is True
+
+tests/test_console_key_origin_pass5_20261021.py:281: AssertionError
+__________ test_refresh_detour_does_not_repeat_report_preference[115] __________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f83634996d0>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f83636c0750>
+letter = 115
+
+    @pytest.mark.parametrize("letter", [32, ord("s")])
+    def test_refresh_detour_does_not_repeat_report_preference(session, monkeypatch, letter):
+        w = session.wizard
+        prepare(w, Screen.OWNER)
+        w.open_report_help()
+        run_keys(
+            monkeypatch,
+            w,
+            [
+                (0, letter),
+                (0.1, -1),
+                (0.9, curses.KEY_F5),
+                (1.0, 27),
+                (1.1, letter),
+            ],
+        )
+        assert w.screen is Screen.REPORT_HELP
+>       assert (w.report_wanted if letter == 32 else w.report_share_redacted) is True
+E       assert False is True
+
+tests/test_console_key_origin_pass5_20261021.py:281: AssertionError
+____ test_literal_confirm_key_cannot_become_consent_after_refresh[False-32] ____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f8363499bd0>, scans=[True])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f83636c15c0>
+letter = 32, fresh = False
+
+    @pytest.mark.parametrize("letter", [32, ord("s")])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_literal_confirm_key_cannot_become_consent_after_refresh(
+        session, monkeypatch, letter, fresh
+    ):
+        w = session.wizard
+        prepare(w, Screen.CONFIRM)
+        events = [(0, letter), (0.1, curses.KEY_F5), (0.2, 10)]
+        if letter == ord("s"):
+            events.append((0.3, ord("r")))
+        events += [(0.4, -1), (1.5, -1), (1.6, letter)] if fresh else [(0.4, letter)]
+        run_keys(monkeypatch, w, events)
+        assert session.scans == [True]
+>       assert (w.owner_ok if letter == 32 else w.report_share_redacted) is fresh
+E       assert True is False
+
+tests/test_console_key_origin_pass5_20261021.py:312: AssertionError
+___ test_literal_confirm_key_cannot_become_consent_after_refresh[False-115] ____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f8363499d10>, scans=[True])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f83636d3f50>
+letter = 115, fresh = False
+
+    @pytest.mark.parametrize("letter", [32, ord("s")])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_literal_confirm_key_cannot_become_consent_after_refresh(
+        session, monkeypatch, letter, fresh
+    ):
+        w = session.wizard
+        prepare(w, Screen.CONFIRM)
+        events = [(0, letter), (0.1, curses.KEY_F5), (0.2, 10)]
+        if letter == ord("s"):
+            events.append((0.3, ord("r")))
+        events += [(0.4, -1), (1.5, -1), (1.6, letter)] if fresh else [(0.4, letter)]
+        run_keys(monkeypatch, w, events)
+        assert session.scans == [True]
+>       assert (w.owner_ok if letter == 32 else w.report_share_redacted) is fresh
+E       assert True is False
+
+tests/test_console_key_origin_pass5_20261021.py:312: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_f5_interrupts_enters_quiet_interval[False-10]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_f5_interrupts_enters_quiet_interval[False-13]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_f5_interrupts_enters_quiet_interval[False-343]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_suppressed_escape_also_interrupts_enters_quiet_interval[False-10]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_suppressed_escape_also_interrupts_enters_quiet_interval[False-13]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_suppressed_escape_also_interrupts_enters_quiet_interval[False-343]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_enter_pressed_in_inventory_overlay_cannot_advance_picker[False]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_space_from_setup_does_not_acknowledge_owner[False-splash]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_space_from_setup_does_not_acknowledge_owner[False-keyboard]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_owner_keyboard_detour_keeps_unchecked_consent
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_s_from_review_cannot_confirm_stop_after_start[False-115]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_s_from_review_cannot_confirm_stop_after_start[False-83]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_s_from_owner_does_not_toggle_sharing_after_help_opens[False-115]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_s_from_owner_does_not_toggle_sharing_after_help_opens[False-83]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_refresh_detour_does_not_repeat_report_preference[32]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_refresh_detour_does_not_repeat_report_preference[115]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_literal_confirm_key_cannot_become_consent_after_refresh[False-32]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_literal_confirm_key_cannot_become_consent_after_refresh[False-115]
+18 failed, 22 passed in 1.44s

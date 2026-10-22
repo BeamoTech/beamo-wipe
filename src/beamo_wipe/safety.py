@@ -641,7 +641,10 @@ def normalize_whole_disk(path: str, *, allow_optical: bool = False) -> str:
     return real
 
 
-def disk_identity(disk: Disk) -> Tuple[str, str, int, str, str, str, str, str, str]:
+def disk_identity(disk: Disk) -> Tuple[str, str, int, str, str, str, str, str, str, str]:
+    # Discovery keeps MODEL separate from its label/"Unknown model" fallback.
+    # Legacy callers without raw metadata still identify by their model field.
+    model = disk.model if disk.raw_model is None else disk.raw_model
     return (
         os.path.realpath(disk.path),
         (disk.serial or "").strip(),
@@ -652,6 +655,7 @@ def disk_identity(disk: Disk) -> Tuple[str, str, int, str, str, str, str, str, s
         (disk.bus or "").strip(),
         disk.kind.value if hasattr(disk.kind, "value") else str(disk.kind),
         (disk.layout_id or "").strip(),
+        (model or "").strip(),
     )
 
 
@@ -682,6 +686,11 @@ def assert_rediscovered_identity(request: WipeRequest, discovery: DiscoveryResul
     ]
     if len(matches) != 1 or disk_identity(matches[0]) != confirmed:
         raise SafetyError("Disk identity changed. Refusing to erase.")
+    inventory_confirmed = tuple(request.inventory_identity or ())
+    if inventory_confirmed and inventory_confirmed != tuple(
+        sorted(disk_identity(item) for item in listed_disks(discovery))
+    ):
+        raise SafetyError("Disk inventory changed. Refusing to erase.")
 
 
 def assert_disk_identity(disk: Disk, discovery: DiscoveryResult) -> None:
@@ -915,7 +924,7 @@ def log_location_is_tmpfs(path: Path) -> bool:
     root filesystem can also supply /tmp. Callers must separately constrain
     and resolve the path and verify their opened directory inode.
     """
-    from beamo_wipe.discover import MOUNTINFO_PATH, parse_mountinfo
+    from beamo_wipe.discover import MOUNTINFO_PATH, mountinfo_mount_is_visible, parse_mountinfo
 
     try:
         path_text = str(path)
@@ -937,6 +946,7 @@ def log_location_is_tmpfs(path: Path) -> bool:
         if line.strip()
     ]
     best_sources: list[tuple[str, str]] = []
+    best_mountpoint = ""
     best_len = -1
     for (source, mountpoint), filesystem in zip(pairs, filesystems):
         mp = mountpoint.rstrip("/") or "/"
@@ -944,6 +954,7 @@ def log_location_is_tmpfs(path: Path) -> bool:
             if len(mp) > best_len:
                 best_sources = [(source, filesystem)]
                 best_len = len(mp)
+                best_mountpoint = mp
             elif len(mp) == best_len:
                 best_sources.append((source, filesystem))
     if not best_sources:
@@ -954,6 +965,8 @@ def log_location_is_tmpfs(path: Path) -> bool:
         # Stacked mounts can share the longest mountpoint. The first row may
         # be hidden by a later target-backed mount, so neither proves where
         # this log will be written.
+        return False
+    if not mountinfo_mount_is_visible(mountinfo_text, best_mountpoint):
         return False
     _source, filesystem = best_sources[0]
     # A tmpfs has no disk backing, regardless of the user-chosen source name
@@ -1037,7 +1050,7 @@ def truncate_log_file(
         st = os.fstat(dirfd)
         if not stat.S_ISDIR(st.st_mode):
             raise SafetyError("Log parent is not a directory.")
-        file_flags = os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW
+        file_flags = os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK
         try:
             fd = os.open(name, file_flags, 0o600, dir_fd=dirfd)
         except OSError as exc:
@@ -1123,6 +1136,9 @@ def assert_ready_to_wipe(
         boot_rdev=block_rdev(boot_path) or 0,
         device_identity=disk_identity(disk),
         boot_identity=disk_identity(boot),
+        inventory_identity=tuple(
+            sorted(disk_identity(item) for item in listed_disks(discovery))
+        ),
     )
 
 

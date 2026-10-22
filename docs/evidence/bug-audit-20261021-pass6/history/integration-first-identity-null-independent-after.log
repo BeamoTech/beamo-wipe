@@ -1,0 +1,5 @@
+{"Time":"2026-10-21T02:25:39.611955591Z","Action":"start","Package":"beamo-wipe/desktop"}
+{"Time":"2026-10-21T02:25:39.621744567Z","Action":"output","Package":"beamo-wipe/desktop","Output":"testing: warning: no tests to run\n"}
+{"Time":"2026-10-21T02:25:39.621799879Z","Action":"output","Package":"beamo-wipe/desktop","Output":"PASS\n"}
+{"Time":"2026-10-21T02:25:40.623122464Z","Action":"output","Package":"beamo-wipe/desktop","Output":"ok  \tbeamo-wipe/desktop\t1.011s [no tests to run]\n"}
+{"Time":"2026-10-21T02:25:40.623175974Z","Action":"pass","Package":"beamo-wipe/desktop","Elapsed":1.011}

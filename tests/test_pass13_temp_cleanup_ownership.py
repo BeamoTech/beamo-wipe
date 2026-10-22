@@ -7,7 +7,10 @@ import pytest
 from beamo_wipe import evidence
 
 
-def test_failed_temp_cleanup_preserves_replacement_file(tmp_path, monkeypatch):
+def test_failed_fallback_temp_cleanup_preserves_final_and_replacement(
+    tmp_path, monkeypatch
+):
+    monkeypatch.setattr(evidence.sys, "platform", "darwin")
     destination = tmp_path / "result.json"
     replacement = tmp_path / "other-writer.json"
     replacement.write_bytes(b"other writer's data")
@@ -28,13 +31,13 @@ def test_failed_temp_cleanup_preserves_replacement_file(tmp_path, monkeypatch):
 
     assert temp_path is not None
     assert temp_path.read_bytes() == b"other writer's data"
-    assert not destination.exists()
+    assert destination.read_bytes() == b"our result"
 
 
 def test_exclusive_temp_collision_preserves_existing_file(tmp_path, monkeypatch):
-    monkeypatch.setattr(evidence.time, "time_ns", lambda: 123456)
+    monkeypatch.setattr(evidence.secrets, "token_hex", lambda _n: "fixed")
     destination = tmp_path / "result.json"
-    temporary = tmp_path / f".result.json.tmp.{os.getpid()}.123456"
+    temporary = tmp_path / ".result.json.tmp.fixed"
     temporary.write_bytes(b"existing private file")
 
     with pytest.raises(FileExistsError):
@@ -47,6 +50,7 @@ def test_exclusive_temp_collision_preserves_existing_file(tmp_path, monkeypatch)
 def test_replaced_temp_source_cannot_be_published_as_our_evidence(
     tmp_path, monkeypatch
 ):
+    monkeypatch.setattr(evidence.sys, "platform", "darwin")
     destination = tmp_path / "result.json"
     replacement = tmp_path / "other-writer.json"
     replacement.write_bytes(b"foreign evidence")

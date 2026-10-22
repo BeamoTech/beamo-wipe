@@ -1,0 +1,15 @@
+{
+  "name": "final-model-persistence_fault_matrix",
+  "command": [
+    "env",
+    "PYTHONPATH=/workspace/beamo-wipe/src",
+    "BEAMO_WIPE_DRY_RUN=1",
+    "python3",
+    "-W",
+    "error",
+    "/workspace/beamo-tools/audit-pass9-20261021/root/model-replays/persistence_fault_matrix.py"
+  ],
+  "started_utc": "2026-10-21T04:54:51.028337+00:00",
+  "elapsed_seconds": 0.87,
+  "exit_code": 0
+}

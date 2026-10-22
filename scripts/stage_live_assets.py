@@ -239,6 +239,7 @@ def stage_assets(root: Path, live: Path) -> None:
     put_bytes(binary / "README.txt", README.encode("utf-8"))
 
     require_executable(live / "config/includes.chroot/usr/local/bin/beamo-wipe")
+    require_executable(live / "config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk")
     require_approved_hook(live)
     for path, (digest, mode) in expected.items():
         data, actual_mode = read_regular_file(path)

@@ -1,0 +1,485 @@
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF........................ [ 64%]
+.......................................                                  [100%]
+=================================== FAILURES ===================================
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inner-poll-terminate-everyday] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'engine_failed'
+E     
+E     - engine_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inner-poll-terminate-extra] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'engine_failed'
+E     
+E     - engine_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inner-poll-terminate-quick_zero] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'engine_failed'
+E     
+E     - engine_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inner-poll-kill-everyday] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'engine_failed'
+E     
+E     - engine_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inner-poll-kill-extra] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'engine_failed'
+E     
+E     - engine_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inner-poll-kill-quick_zero] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'engine_failed'
+E     
+E     - engine_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-esrch-terminate-everyday] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'engine_failed'
+E     
+E     - engine_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-esrch-terminate-extra] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'engine_failed'
+E     
+E     - engine_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-esrch-terminate-quick_zero] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'engine_failed'
+E     
+E     - engine_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-esrch-kill-everyday] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'engine_failed'
+E     
+E     - engine_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-esrch-kill-extra] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'engine_failed'
+E     
+E     - engine_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-esrch-kill-quick_zero] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'engine_failed'
+E     
+E     - engine_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inner-poll-terminate-everyday] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'verification_failed'
+E     
+E     - verification_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inner-poll-terminate-extra] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'verification_failed'
+E     
+E     - verification_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inner-poll-terminate-quick_zero] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'verification_failed'
+E     
+E     - verification_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inner-poll-kill-everyday] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'verification_failed'
+E     
+E     - verification_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inner-poll-kill-extra] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'verification_failed'
+E     
+E     - verification_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inner-poll-kill-quick_zero] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'verification_failed'
+E     
+E     - verification_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-esrch-terminate-everyday] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'verification_failed'
+E     
+E     - verification_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-esrch-terminate-extra] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'verification_failed'
+E     
+E     - verification_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-esrch-terminate-quick_zero] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'verification_failed'
+E     
+E     - verification_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-esrch-kill-everyday] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'verification_failed'
+E     
+E     - verification_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-esrch-kill-extra] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'verification_failed'
+E     
+E     - verification_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-esrch-kill-quick_zero] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'verification_failed'
+E     
+E     - verification_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-inner-poll-terminate-everyday] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'completion_missing'
+E     
+E     - completion_missing
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-inner-poll-terminate-extra] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'completion_missing'
+E     
+E     - completion_missing
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-inner-poll-terminate-quick_zero] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'completion_missing'
+E     
+E     - completion_missing
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-inner-poll-kill-everyday] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'completion_missing'
+E     
+E     - completion_missing
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-inner-poll-kill-extra] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'completion_missing'
+E     
+E     - completion_missing
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-inner-poll-kill-quick_zero] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'completion_missing'
+E     
+E     - completion_missing
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-esrch-terminate-everyday] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'completion_missing'
+E     
+E     - completion_missing
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-esrch-terminate-extra] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'completion_missing'
+E     
+E     - completion_missing
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-esrch-terminate-quick_zero] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'completion_missing'
+E     
+E     - completion_missing
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-esrch-kill-everyday] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'completion_missing'
+E     
+E     - completion_missing
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-esrch-kill-extra] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'completion_missing'
+E     
+E     - completion_missing
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-esrch-kill-quick_zero] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'completion_missing'
+E     
+E     - completion_missing
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-inner-poll-terminate-everyday] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'process_failed'
+E     
+E     - process_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-inner-poll-terminate-extra] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'process_failed'
+E     
+E     - process_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-inner-poll-terminate-quick_zero] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'process_failed'
+E     
+E     - process_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-inner-poll-kill-everyday] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'process_failed'
+E     
+E     - process_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-inner-poll-kill-extra] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'process_failed'
+E     
+E     - process_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-inner-poll-kill-quick_zero] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'process_failed'
+E     
+E     - process_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-esrch-terminate-everyday] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'process_failed'
+E     
+E     - process_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-esrch-terminate-extra] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'process_failed'
+E     
+E     - process_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-esrch-terminate-quick_zero] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'process_failed'
+E     
+E     - process_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-esrch-kill-everyday] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'process_failed'
+E     
+E     - process_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-esrch-kill-extra] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'process_failed'
+E     
+E     - process_failed
+E     + cancelled
+_ test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-esrch-kill-quick_zero] _
+tests/test_cancel_delivery_receipt_pass6_20261021.py:145: in test_stdlib_no_delivery_keeps_terminal_engine_result
+    _assert_terminal(runner, reason, code, held)
+tests/test_cancel_delivery_receipt_pass6_20261021.py:92: in _assert_terminal
+    assert runner.result.reason == reason
+E   AssertionError: assert 'cancelled' == 'process_failed'
+E     
+E     - process_failed
+E     + cancelled
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inner-poll-terminate-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inner-poll-terminate-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inner-poll-terminate-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inner-poll-kill-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inner-poll-kill-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inner-poll-kill-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-esrch-terminate-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-esrch-terminate-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-esrch-terminate-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-esrch-kill-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-esrch-kill-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-esrch-kill-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inner-poll-terminate-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inner-poll-terminate-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inner-poll-terminate-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inner-poll-kill-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inner-poll-kill-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inner-poll-kill-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-esrch-terminate-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-esrch-terminate-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-esrch-terminate-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-esrch-kill-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-esrch-kill-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-esrch-kill-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-inner-poll-terminate-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-inner-poll-terminate-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-inner-poll-terminate-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-inner-poll-kill-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-inner-poll-kill-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-inner-poll-kill-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-esrch-terminate-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-esrch-terminate-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-esrch-terminate-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-esrch-kill-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-esrch-kill-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[Nwipe successfully completed.\n-0-completion_missing-esrch-kill-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-inner-poll-terminate-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-inner-poll-terminate-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-inner-poll-terminate-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-inner-poll-kill-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-inner-poll-kill-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-inner-poll-kill-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-esrch-terminate-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-esrch-terminate-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-esrch-terminate-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-esrch-kill-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-esrch-kill-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner::test_stdlib_no_delivery_keeps_terminal_engine_result[-5-process_failed-esrch-kill-quick_zero]
+48 failed, 63 passed in 0.77s

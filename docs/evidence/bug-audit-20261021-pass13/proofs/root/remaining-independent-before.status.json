@@ -1,0 +1,22 @@
+{
+  "name": "remaining-independent-before",
+  "command": [
+    "env",
+    "PYTHONPATH=/workspace/beamo-wipe/src:/workspace/beamo-wipe/developer_tests",
+    "python3",
+    "-m",
+    "pytest",
+    "-W",
+    "error",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-q",
+    "/workspace/beamo-tools/audit-pass13-20261021/root/test_remaining_probes.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass13-20261021/root/remaining-independent-before.xml"
+  ],
+  "started_utc": "2026-10-21T07:21:31.586983+00:00",
+  "elapsed_seconds": 0.43,
+  "exit_code": 1
+}

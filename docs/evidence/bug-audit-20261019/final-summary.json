@@ -1,0 +1,206 @@
+{
+  "base_commit": "29bd8059947ecdaf2a1d61726b8f75b1f82cebed",
+  "branch": "fix/safety-audit-20261019",
+  "full_local_source_phase_exit": 0,
+  "canonical_reports": {
+    "final-tests.xml": {
+      "cases": 10435,
+      "passed": 10407,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 28,
+      "new_cases_passed": 276,
+      "junit_sha256": "60b26a6ec560918d8712d2799dac84585f2283dc91a0fa34af6b894cd038b1e8",
+      "suites": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "28",
+          "tests": "10435",
+          "time": "1054.952",
+          "timestamp": "2026-10-19T01:05:03.349654+00:00",
+          "hostname": "0efce341f35c"
+        }
+      ],
+      "skips": [
+        {
+          "id": "tests.test_ci_hosted::test_cloud_upload_excludes_local_captures_and_env_files",
+          "message": "gcloud CLI is unavailable",
+          "details": "/workspace/beamo-wipe/tests/test_ci_hosted.py:521: gcloud CLI is unavailable"
+        },
+        {
+          "id": "tests.test_helper_boot_guidance::test_cited_microsoft_sources_are_current[https://support.microsoft.com/en-us/windows/experience/backup-recovery/windows-recovery-environment]",
+          "message": "network unavailable for https://support.microsoft.com/en-us/windows/experience/backup-recovery/windows-recovery-environment: Tunnel connection failed: 403 Forbidden",
+          "details": "/workspace/beamo-wipe/tests/test_helper_boot_guidance.py:366: network unavailable for https://support.microsoft.com/en-us/windows/experience/backup-recovery/windows-recovery-environment: Tunnel connection failed: 403 Forbidden"
+        },
+        {
+          "id": "tests.test_helper_boot_guidance::test_cited_microsoft_sources_are_current[https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/windows-recovery-environment--windows-re--technical-reference?view=windows-11]",
+          "message": "network unavailable for https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/windows-recovery-environment--windows-re--technical-reference?view=windows-11: Tunnel connection failed: 403 Forbidden",
+          "details": "/workspace/beamo-wipe/tests/test_helper_boot_guidance.py:366: network unavailable for https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/windows-recovery-environment--windows-re--technical-reference?view=windows-11: Tunnel connection failed: 403 Forbidden"
+        },
+        {
+          "id": "tests.test_helper_boot_guidance::test_cited_microsoft_sources_are_current[https://learn.microsoft.com/en-us/windows/security/operating-system-security/data-protection/bitlocker/recovery-overview]",
+          "message": "network unavailable for https://learn.microsoft.com/en-us/windows/security/operating-system-security/data-protection/bitlocker/recovery-overview: Tunnel connection failed: 403 Forbidden",
+          "details": "/workspace/beamo-wipe/tests/test_helper_boot_guidance.py:366: network unavailable for https://learn.microsoft.com/en-us/windows/security/operating-system-security/data-protection/bitlocker/recovery-overview: Tunnel connection failed: 403 Forbidden"
+        },
+        {
+          "id": "tests.test_helper_boot_guidance::test_cited_microsoft_sources_are_current[https://support.microsoft.com/en-us/windows/security/encryption/find-your-bitlocker-recovery-key]",
+          "message": "network unavailable for https://support.microsoft.com/en-us/windows/security/encryption/find-your-bitlocker-recovery-key: Tunnel connection failed: 403 Forbidden",
+          "details": "/workspace/beamo-wipe/tests/test_helper_boot_guidance.py:366: network unavailable for https://support.microsoft.com/en-us/windows/security/encryption/find-your-bitlocker-recovery-key: Tunnel connection failed: 403 Forbidden"
+        },
+        {
+          "id": "tests.test_inventory_count::test_browser_inventory_count_is_visible[1024-happy-pick-3 disks available to erase \\xb7 Beamo USB protected \\xb7 1 other device not available]",
+          "message": "Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d",
+          "details": "/workspace/beamo-wipe/tests/test_inventory_count.py:274: Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d"
+        },
+        {
+          "id": "tests.test_inventory_count::test_browser_inventory_count_is_visible[1024-empty-empty-No disks available to erase \\xb7 Beamo USB protected \\xb7 1 other device not available]",
+          "message": "Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d",
+          "details": "/workspace/beamo-wipe/tests/test_inventory_count.py:274: Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d"
+        },
+        {
+          "id": "tests.test_inventory_count::test_browser_inventory_count_is_visible[1024-blocked-blocked-Disk list could not be confirmed. No disk is available to erase.]",
+          "message": "Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d",
+          "details": "/workspace/beamo-wipe/tests/test_inventory_count.py:274: Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d"
+        },
+        {
+          "id": "tests.test_inventory_count::test_browser_inventory_count_is_visible[390-happy-pick-3 disks available to erase \\xb7 Beamo USB protected \\xb7 1 other device not available]",
+          "message": "Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d",
+          "details": "/workspace/beamo-wipe/tests/test_inventory_count.py:274: Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d"
+        },
+        {
+          "id": "tests.test_inventory_count::test_browser_inventory_count_is_visible[390-empty-empty-No disks available to erase \\xb7 Beamo USB protected \\xb7 1 other device not available]",
+          "message": "Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d",
+          "details": "/workspace/beamo-wipe/tests/test_inventory_count.py:274: Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d"
+        },
+        {
+          "id": "tests.test_inventory_count::test_browser_inventory_count_is_visible[390-blocked-blocked-Disk list could not be confirmed. No disk is available to erase.]",
+          "message": "Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d",
+          "details": "/workspace/beamo-wipe/tests/test_inventory_count.py:274: Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d"
+        },
+        {
+          "id": "tests.test_live_image::test_live_config_bootstrap_uses_https_debian_mirrors",
+          "message": "lb config artifacts are generated by scripts/build-iso.sh",
+          "details": "/workspace/beamo-wipe/tests/test_live_image.py:155: lb config artifacts are generated by scripts/build-iso.sh"
+        },
+        {
+          "id": "tests.test_live_image::test_live_config_xinit_cannot_hijack_kiosk",
+          "message": "lb config artifacts are generated by scripts/build-iso.sh",
+          "details": "/workspace/beamo-wipe/tests/test_live_image.py:235: lb config artifacts are generated by scripts/build-iso.sh"
+        },
+        {
+          "id": "tests.test_protected_boot_gallery::test_browser_protected_card_semantics[happy-pick-1]",
+          "message": "Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d",
+          "details": "/workspace/beamo-wipe/tests/test_protected_boot_gallery.py:16: Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d"
+        },
+        {
+          "id": "tests.test_protected_boot_gallery::test_browser_protected_card_semantics[empty-empty-1]",
+          "message": "Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d",
+          "details": "/workspace/beamo-wipe/tests/test_protected_boot_gallery.py:16: Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d"
+        },
+        {
+          "id": "tests.test_protected_boot_gallery::test_browser_protected_card_semantics[blocked-blocked-0]",
+          "message": "Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d",
+          "details": "/workspace/beamo-wipe/tests/test_protected_boot_gallery.py:16: Browser runtime unavailable: BrowserType.launch: Executable doesn't exist at /workspace/beamo-tools/playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     playwright install                                     \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d"
+        },
+        {
+          "id": "tests.test_release_manifest::test_manifest_schema_covers_required_fields",
+          "message": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "details": "/workspace/beamo-wipe/tests/test_release_manifest.py:237: manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest::test_manifest_fails_on_dirty_when_strict",
+          "message": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "details": "/workspace/beamo-wipe/tests/test_release_manifest.py:283: manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest::test_verify_allows_dirty_only_for_dirty_check",
+          "message": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "details": "/workspace/beamo-wipe/tests/test_release_manifest.py:296: manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest::test_manifest_fails_on_unexpected_nwipe_version",
+          "message": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "details": "/workspace/beamo-wipe/tests/test_release_manifest.py:358: manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest::test_manifest_atomic_write_and_checksum",
+          "message": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "details": "/workspace/beamo-wipe/tests/test_release_manifest.py:390: manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest::test_manifest_checksum_mismatch_is_rejected",
+          "message": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "details": "/workspace/beamo-wipe/tests/test_release_manifest.py:417: manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest::test_manifest_duplicate_write_is_idempotent",
+          "message": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "details": "/workspace/beamo-wipe/tests/test_release_manifest.py:435: manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest::test_manifest_stale_state_detected",
+          "message": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "details": "/workspace/beamo-wipe/tests/test_release_manifest.py:458: manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest::test_manifest_recovery_after_failed_write",
+          "message": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "details": "/workspace/beamo-wipe/tests/test_release_manifest.py:475: manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest::test_consumer_verification_instructions",
+          "message": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "details": "/workspace/beamo-wipe/tests/test_release_manifest.py:507: manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest::test_prior_stable_and_rollback",
+          "message": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "details": "/workspace/beamo-wipe/tests/test_release_manifest.py:521: manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        },
+        {
+          "id": "tests.test_release_manifest::test_hardware_limits_and_license",
+          "message": "manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact",
+          "details": "/workspace/beamo-wipe/tests/test_release_manifest.py:534: manufacturing ISO absent: run scripts/build-iso.sh or fetch the release artifact"
+        }
+      ]
+    },
+    "final-tests.xml.orca.xml": {
+      "cases": 1,
+      "passed": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "new_cases_passed": 0,
+      "junit_sha256": "92adbcdb0e7f479613c8ae133717637c3fb71df41c102a23e202d6f4406c32e8",
+      "suites": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "1",
+          "time": "73.909",
+          "timestamp": "2026-10-19T01:05:03.333611+00:00",
+          "hostname": "0efce341f35c"
+        }
+      ],
+      "skips": []
+    }
+  },
+  "canonical_unique_passed": 10408,
+  "canonical_skipped": 28,
+  "new_regressions_passed": 276,
+  "baseline_test_ids_retained": 10159,
+  "baseline_skip_ids_and_reasons_unchanged": true,
+  "system_browser_supplement_passed": 9,
+  "system_browser_is_pinned": false,
+  "source_files_still_match": 787,
+  "no_physical_device_or_firmware_actions": true,
+  "release_authorized": false,
+  "verified_implementation_commit": "114f3b9f3984c44c30db0f36c60c625f20d52b05",
+  "feature_branch_pushed": true,
+  "hosted_workflow_runs_observed": 0,
+  "release_performed": false
+}

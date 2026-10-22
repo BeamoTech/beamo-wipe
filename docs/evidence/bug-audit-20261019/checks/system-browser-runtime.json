@@ -1,0 +1,6 @@
+{
+  "runtime": "Chromium 155.0.8059.79 built on Debian GNU/Linux 13 (trixie)",
+  "executable": "/usr/bin/chromium",
+  "pinned_playwright_runtime": false,
+  "scope": "Unchanged inventory and protected-card assertions; supplemental only"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "close-expanded-independent-before",
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-run=^(TestCloseRetiresEveryAPIActionPass10|TestCloseRejectsAlreadyDecodingActionsPass10|TestCloseRetiresBeforeResponseFlushPass10|TestClosePreservesOpenAndBusyControlsPass10)$",
+    "-json",
+    "./..."
+  ],
+  "started_utc": "2026-10-21T05:32:54.929058+00:00",
+  "elapsed_seconds": 0.43,
+  "exit_code": 1
+}

@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 import threading
 import time
 from dataclasses import replace
@@ -1054,7 +1055,7 @@ def test_gallery_does_not_pretend_to_simulate_these_timings():
     from beamo_wipe import gallery
 
     src = gallery.__file__
-    text = open(src, encoding="utf-8").read()
+    text = Path(src).read_text(encoding="utf-8")
     assert "does not wipe" in (gallery.__doc__ or "").casefold()
     assert "run_tk_startup" not in text
     assert "ProgressTiming" not in text

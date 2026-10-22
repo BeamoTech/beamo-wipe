@@ -1,0 +1,10 @@
+{
+  "name": "system-browser-tests",
+  "command": [
+    "python3",
+    "/workspace/beamo-tools/audit-pass12-20261021/root/system_browser_check.py"
+  ],
+  "started_utc": "2026-10-21T06:54:08.054607+00:00",
+  "elapsed_seconds": 7.36,
+  "exit_code": 0
+}

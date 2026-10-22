@@ -1,0 +1,94 @@
+{
+  "reviewer": "runner_pass11",
+  "finished_utc": "2026-10-21T06:05:12.928584+00:00",
+  "client_timezone": "America/Chicago",
+  "baseline_commit": "b46e5642d4c849d503b41d8bf562cfb1f9fad68b",
+  "new_verified_defects": 1,
+  "independently_reproduced_by_root": true,
+  "repository_edits": [
+    "src/beamo_wipe/sleep_inhibit.py",
+    "tests/test_sleep_inhibit_diagnostic_retirement_pass11_20261021.py"
+  ],
+  "ownership_released": true,
+  "finding": "Optional sleep-inhibitor diagnostics could interrupt unavailable-helper start and confirmed engine retirement after helper-stop refusal. Catch BaseException only at the two diagnostic boundaries; actual process-control interruptions propagate and uncertain engine/helper handles stay owned.",
+  "expanded_regressions": {
+    "baseline": {
+      "cases": 56,
+      "unique": 56,
+      "failures": 18,
+      "errors": 0,
+      "skips": 0
+    },
+    "after": {
+      "cases": 56,
+      "unique": 56,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0
+    },
+    "test_sha256": "de5db5ec84438c821e5c0cd6995d48392df274f9045ad36668d2149d15923542",
+    "baseline_product_sha256": "b7df5b80f7d87ae0bcac0be2ddcf082ff887e5492fb8da088237b5b02a9bf11d",
+    "final_product_sha256": "e04816215c0347980d03effed9afd75a1716a44a9471683dc7c83eb4a58eac55"
+  },
+  "original_probes_after": {
+    "cases": 16,
+    "unique": 16,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0
+  },
+  "focused": {
+    "cases": 1744,
+    "unique": 1744,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0
+  },
+  "focused_modules": 75,
+  "existing_test_modules_byte_identical": 74,
+  "focused_strict_warning_policy": "-W error",
+  "focused_lint_exit": 0,
+  "new_case_breakdown": {
+    "unavailable_inhibitor_start": 8,
+    "failed_stop_recheck": 8,
+    "runner_exited_poll_cancel_cleanup": 16,
+    "uncertain_engine_retained": 4,
+    "uncertain_helper_not_replaced": 4,
+    "desktop_dry_run_noop": 8,
+    "normal_helper_cleanup": 4,
+    "genuine_process_interrupt_preserved": 4
+  },
+  "model": {
+    "states": 216,
+    "initial_positive_completions": 24,
+    "initial_negative_terminal_results": 78,
+    "cancelled_results": 66,
+    "uncertain_ownership_preserved": 48,
+    "recovery_terminal_classifications": 48,
+    "duplicate_terminal_calls": 216,
+    "native_callbacks": 0,
+    "mismatches": [],
+    "source_sha256": {
+      "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62",
+      "src/beamo_wipe/methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13",
+      "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+      "src/beamo_wipe/sleep_inhibit.py": "e04816215c0347980d03effed9afd75a1716a44a9471683dc7c83eb4a58eac55"
+    },
+    "scope": "Supporting scripted-fake process state-space through actual cancel/poll APIs. No actual subprocess, signal, engine, device or physical qualification. Not extra canonical tests."
+  },
+  "source_sha256": {
+    "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62",
+    "src/beamo_wipe/progress.py": "fef87a29ceabb1fb97b8abc521d55cea1ceb9428989104973783da6eb52c4fa6",
+    "src/beamo_wipe/engine_checks.py": "7a9d4682ca7d90a0eeb6cff9ae24a520554552c701b2728ab8f9c21895f5e27e",
+    "src/beamo_wipe/evidence.py": "512c9b024b3231bf2625b6c802a8dc2282c275153b62e2995d4d01ba9466b5c5",
+    "src/beamo_wipe/methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13",
+    "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+    "src/beamo_wipe/sleep_inhibit.py": "e04816215c0347980d03effed9afd75a1716a44a9471683dc7c83eb4a58eac55",
+    "src/beamo_wipe/diagnostics.py": "04c69fdf61a9461353067f12f575f3d5175be0b939736bbd160ad6d4e3f38bba"
+  },
+  "initial_model_history": "initial-oracle-* retains first240state external model18incorrect no-signal expectations for a duplicate custom-terminate mode. A successful custom terminate cannot establish non-delivery; remove duplicate mode, preserving216distinct states. No product finding arose from that model setup error.",
+  "limits": [
+    "Scripted fake process state-space and focused regressions overlap canonical full suite; never add model counts to canonical unique coverage.",
+    "No actual engine/device/inventory/signal/mount/firmware/power/guest/network/remote/Docker operation or native/physical qualification."
+  ]
+}

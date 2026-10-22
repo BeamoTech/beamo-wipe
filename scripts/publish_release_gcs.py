@@ -8,12 +8,13 @@ import http.client
 import io
 import json
 import os
+from contextlib import contextmanager
 from pathlib import Path
 import re
 import stat
 import subprocess
 import sys
-from typing import BinaryIO
+from typing import Any, BinaryIO, Iterator, Protocol
 from urllib.parse import quote, urlencode, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,10 +27,68 @@ BUILD_ID_RE = re.compile(r"[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}")
 CHUNK_SIZE = 8 * 1024 * 1024
 MAX_RESPONSE_BYTES = 1024 * 1024
 MAX_QEMU_LOG_LINE_BYTES = 1024 * 1024
+MAX_KEY_REGISTRY_BYTES = 1024 * 1024
+_REGULAR_BIND_FIELDS = (
+    "st_dev",
+    "st_ino",
+    "st_mode",
+    "st_uid",
+    "st_nlink",
+    "st_size",
+    "st_mtime_ns",
+    "st_ctime_ns",
+)
+_PARENT_BIND_FIELDS = ("st_dev", "st_ino", "st_mode", "st_uid")
 
 
 class PublishError(RuntimeError):
     """A release precondition or authenticated upload failed."""
+
+
+class _OwnedBinding:
+    """Identity of one owned regular file beneath one pinned parent path."""
+
+    __slots__ = ("path", "fields", "parent_fields")
+
+    def __init__(
+        self,
+        path: Path,
+        fields: tuple[Any, ...],
+        parent_fields: tuple[Any, ...],
+    ) -> None:
+        self.path = path
+        self.fields = fields
+        self.parent_fields = parent_fields
+
+    def __eq__(self, other: object) -> bool:
+        return (
+            isinstance(other, _OwnedBinding)
+            and self.path == other.path
+            and self.fields == other.fields
+            and self.parent_fields == other.parent_fields
+        )
+
+    @property
+    def size(self) -> int:
+        return int(self.fields[_REGULAR_BIND_FIELDS.index("st_size")])
+
+
+class _OwnedSnapshot:
+    """Digest and retained identity of bytes accepted for publication."""
+
+    __slots__ = ("binding", "sha256")
+
+    def __init__(self, binding: _OwnedBinding, sha256: str) -> None:
+        self.binding = binding
+        self.sha256 = sha256
+
+    @property
+    def size(self) -> int:
+        return self.binding.size
+
+
+class _ReadableBinary(Protocol):
+    def read(self, size: int = -1) -> bytes: ...
 
 
 def _unique_json_fields(pairs):
@@ -87,7 +146,7 @@ def _metadata_token() -> str:
     finally:
         connection.close()
     try:
-        payload = json.loads(body)
+        payload = json.loads(body, object_pairs_hook=_unique_json_fields)
         token = payload["access_token"]
     except (KeyError, TypeError, json.JSONDecodeError) as exc:
         raise PublishError("metadata authentication returned an invalid response") from exc
@@ -105,6 +164,8 @@ def _object_name(build_id: str, filename: str) -> str:
 
 
 def _start_resumable_upload(object_name: str, size: int, token: str) -> str:
+    if type(size) is not int or size < 0:
+        raise PublishError("invalid upload size")
     query = urlencode(
         {
             "uploadType": "resumable",
@@ -156,7 +217,11 @@ def _start_resumable_upload(object_name: str, size: int, token: str) -> str:
     return parsed.path + (f"?{parsed.query}" if parsed.query else "")
 
 
-def _send_upload(location: str, stream: BinaryIO, size: int, token: str) -> None:
+def _send_upload(
+    location: str, stream: _ReadableBinary, size: int, token: str
+) -> None:
+    if type(size) is not int or size < 0:
+        raise PublishError("invalid upload size")
     connection = http.client.HTTPSConnection(STORAGE_HOST, timeout=120)
     try:
         try:
@@ -185,22 +250,51 @@ def _send_upload(location: str, stream: BinaryIO, size: int, token: str) -> None
         connection.close()
 
 
-def _upload_stream(object_name: str, stream: BinaryIO, size: int) -> None:
+def _upload_stream(
+    object_name: str, stream: _ReadableBinary, size: int
+) -> None:
     token = _metadata_token()
     location = _start_resumable_upload(object_name, size, token)
     _send_upload(location, stream, size, token)
 
 
-def _upload_file(path: Path, object_name: str) -> None:
-    with _open_owned_file(path) as stream:
-        _upload_stream(object_name, stream, os.fstat(stream.fileno()).st_size)
+class _DigestingReader:
+    """Record the exact bytes consumed by the resumable upload."""
+
+    def __init__(self, stream: BinaryIO):
+        self.stream = stream
+        self.digest = hashlib.sha256()
+
+    def read(self, size: int = -1) -> bytes:
+        chunk = self.stream.read(size)
+        self.digest.update(chunk)
+        return chunk
 
 
-def _remote_sha256(object_name: str) -> str:
+def _upload_file(
+    path: Path, object_name: str, expected: _OwnedSnapshot | None = None
+) -> str:
+    snapshot = expected if expected is not None else _snapshot_owned_file(path)
+    with _open_owned_descriptor(path, expected=snapshot.binding) as (fd, _binding):
+        with os.fdopen(os.dup(fd), "rb") as stream:
+            measured = _DigestingReader(stream)
+            _upload_stream(object_name, measured, snapshot.size)
+    uploaded_sha = measured.digest.hexdigest()
+    if uploaded_sha != snapshot.sha256:
+        raise PublishError("release input changed during upload")
+    return uploaded_sha
+
+
+def _remote_sha256(object_name: str, *, expected_size: int | None = None) -> str:
+    if expected_size is not None and (
+        type(expected_size) is not int or expected_size < 0
+    ):
+        raise PublishError("invalid remote verification size")
     token = _metadata_token()
     encoded_object = quote(object_name, safe="")
     connection = http.client.HTTPSConnection(STORAGE_HOST, timeout=120)
     digest = hashlib.sha256()
+    total = 0
     try:
         try:
             connection.request(
@@ -212,37 +306,47 @@ def _remote_sha256(object_name: str) -> str:
             if response.status != 200:
                 _response_bytes(response)
                 raise PublishError(f"uploaded-byte verification failed with status {response.status}")
-            while True:
-                chunk = response.read(CHUNK_SIZE)
-                if not chunk:
-                    break
-                digest.update(chunk)
-            response.close()
+            try:
+                while True:
+                    read_size = CHUNK_SIZE
+                    if expected_size is not None:
+                        read_size = min(CHUNK_SIZE, expected_size - total + 1)
+                    chunk = response.read(read_size)
+                    if not chunk:
+                        break
+                    total += len(chunk)
+                    if expected_size is not None and total > expected_size:
+                        raise PublishError("remote object size verification failed")
+                    digest.update(chunk)
+            finally:
+                response.close()
         except (OSError, http.client.HTTPException) as exc:
             raise PublishError("uploaded-byte verification transport failed") from exc
     finally:
         connection.close()
+    if expected_size is not None and total != expected_size:
+        raise PublishError("remote object size verification failed")
     return digest.hexdigest()
 
 
 def _sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with _open_owned_file(path) as stream:
-        for chunk in iter(lambda: stream.read(CHUNK_SIZE), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+    return _snapshot_owned_file(path).sha256
 
 
-def _regular_owned_file(path: Path) -> None:
-    with _open_owned_file(path):
-        pass
+def _metadata_values(
+    metadata: os.stat_result, fields: tuple[str, ...]
+) -> tuple[Any, ...]:
+    return tuple(getattr(metadata, field) for field in fields)
 
 
-def _open_owned_parent(path: Path) -> int:
+def _open_owned_parent(
+    path: Path,
+) -> tuple[Path, int, tuple[Any, ...]]:
     """Pin every release-input parent without following an ancestor link."""
-    parts = path.absolute().parts
-    if ".." in parts:
+    absolute = Path(os.path.abspath(os.fspath(path)))
+    if not absolute.name or absolute.name in {".", ".."}:
         raise PublishError(f"unsafe release directory for {path.name}")
+    parts = absolute.parts
     fd = os.open(parts[0], os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
     try:
         for component in parts[1:-1]:
@@ -252,38 +356,143 @@ def _open_owned_parent(path: Path) -> int:
             )
             os.close(fd)
             fd = next_fd
-        if os.fstat(fd).st_uid != os.getuid():
+        opened = os.fstat(fd)
+        if not stat.S_ISDIR(opened.st_mode) or opened.st_uid != os.getuid():
             raise PublishError(f"unsafe release directory for {path.name}")
-        return fd
+        return absolute, fd, _metadata_values(opened, _PARENT_BIND_FIELDS)
     except Exception:
         os.close(fd)
         raise
 
 
-def _open_owned_file(path: Path) -> BinaryIO:
+def _require_parent_binding(
+    path: Path, retained_fd: int, parent_fields: tuple[Any, ...]
+) -> None:
+    absolute, current_fd, current_fields = _open_owned_parent(path)
     try:
-        parent_fd = _open_owned_parent(path)
-    except OSError as exc:
+        if (
+            current_fields != parent_fields
+            or _metadata_values(os.fstat(retained_fd), _PARENT_BIND_FIELDS)
+            != parent_fields
+        ):
+            raise PublishError(
+                f"release directory changed while using {absolute.name}"
+            )
+    finally:
+        os.close(current_fd)
+
+
+def _named_metadata(path: Path, parent_fd: int) -> os.stat_result:
+    return os.stat(path.name, dir_fd=parent_fd, follow_symlinks=False)
+
+
+@contextmanager
+def _open_owned_descriptor(
+    path: Path, *, expected: _OwnedBinding | None = None
+) -> Iterator[tuple[int, _OwnedBinding]]:
+    """Open and retain one requested owned, single-link regular inode."""
+    try:
+        absolute, parent_fd, parent_fields = _open_owned_parent(path)
+    except (OSError, PublishError) as exc:
         raise PublishError(f"unsafe release directory for {path.name}") from exc
+    fd = -1
     try:
         try:
             fd = os.open(
-                path.name,
-                os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+                absolute.name,
+                os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC,
                 dir_fd=parent_fd,
             )
         except OSError as exc:
             raise PublishError(f"unsafe release input: {path.name}") from exc
-        try:
-            metadata = os.fstat(fd)
-            if not stat.S_ISREG(metadata.st_mode) or metadata.st_uid != os.getuid():
-                raise PublishError(f"unsafe release input: {path.name}")
-            return os.fdopen(fd, "rb")
-        except Exception:
-            os.close(fd)
-            raise
+        opened = os.fstat(fd)
+        named = _named_metadata(absolute, parent_fd)
+        fields = _metadata_values(opened, _REGULAR_BIND_FIELDS)
+        if (
+            not stat.S_ISREG(opened.st_mode)
+            or opened.st_uid != os.getuid()
+            or opened.st_nlink != 1
+            or fields != _metadata_values(named, _REGULAR_BIND_FIELDS)
+        ):
+            raise PublishError(f"unsafe release input: {path.name}")
+        binding = _OwnedBinding(absolute, fields, parent_fields)
+        if expected is not None and binding != expected:
+            raise PublishError(
+                f"release input changed after verification: {path.name}"
+            )
+        _require_parent_binding(absolute, parent_fd, parent_fields)
+        yield fd, binding
+        after = os.fstat(fd)
+        named = _named_metadata(absolute, parent_fd)
+        _require_parent_binding(absolute, parent_fd, parent_fields)
+        if (
+            _metadata_values(after, _REGULAR_BIND_FIELDS) != fields
+            or _metadata_values(named, _REGULAR_BIND_FIELDS) != fields
+        ):
+            raise PublishError(f"release input changed while open: {path.name}")
+    except PublishError:
+        raise
+    except OSError as exc:
+        raise PublishError(f"release input changed while open: {path.name}") from exc
     finally:
+        if fd >= 0:
+            os.close(fd)
         os.close(parent_fd)
+
+
+@contextmanager
+def _open_owned_file(path: Path) -> Iterator[BinaryIO]:
+    with _open_owned_descriptor(path) as (fd, _binding):
+        with os.fdopen(os.dup(fd), "rb") as stream:
+            yield stream
+
+
+def _regular_owned_file(path: Path) -> _OwnedBinding:
+    with _open_owned_descriptor(path) as (_fd, binding):
+        return binding
+
+
+def _snapshot_owned_file(
+    path: Path, expected: _OwnedBinding | None = None
+) -> _OwnedSnapshot:
+    digest = hashlib.sha256()
+    total = 0
+    with _open_owned_descriptor(path, expected=expected) as (fd, binding):
+        while True:
+            chunk = os.read(fd, CHUNK_SIZE)
+            if not chunk:
+                break
+            total += len(chunk)
+            digest.update(chunk)
+        if total != binding.size:
+            raise PublishError(f"release input changed while hashing: {path.name}")
+    return _OwnedSnapshot(binding, digest.hexdigest())
+
+
+def _read_owned_bytes(
+    path: Path,
+    *,
+    limit: int,
+    label: str,
+    expected: _OwnedBinding | None = None,
+) -> tuple[bytes, _OwnedBinding]:
+    with _open_owned_descriptor(path, expected=expected) as (fd, binding):
+        if binding.size > limit:
+            raise PublishError(f"{label} exceeded the safety limit")
+        chunks = []
+        remaining = limit + 1
+        while remaining:
+            chunk = os.read(fd, min(CHUNK_SIZE, remaining))
+            if not chunk:
+                break
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        raw = b"".join(chunks)
+        if len(raw) > limit:
+            raise PublishError(f"{label} exceeded the safety limit")
+        if len(raw) != binding.size:
+            raise PublishError(f"{label} changed while being read")
+        return raw, binding
 
 
 def _git(*args: str) -> str:
@@ -514,27 +723,16 @@ def _read_signing_key() -> bytes:
         raise PublishError("refusing release publication without signing material")
     path = Path(key_path)
     try:
-        metadata = path.lstat()
-    except OSError as exc:
-        raise PublishError("signing material is unreadable") from exc
-    if not stat.S_ISREG(metadata.st_mode) or metadata.st_uid != os.getuid():
-        raise PublishError("unsafe signing material")
-    if stat.S_IMODE(metadata.st_mode) not in (0o600, 0o400):
+        raw, binding = _read_owned_bytes(
+            path, limit=32, label="signing material"
+        )
+    except PublishError as exc:
+        if "exceeded the safety limit" in str(exc):
+            raise PublishError("signing material must hold 32 raw bytes") from exc
+        raise PublishError("unsafe signing material") from exc
+    mode = int(binding.fields[_REGULAR_BIND_FIELDS.index("st_mode")])
+    if stat.S_IMODE(mode) not in (0o600, 0o400):
         raise PublishError("signing material must be mode 0600 or 0400")
-    try:
-        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
-    except OSError as exc:
-        raise PublishError("signing material cannot be securely opened") from exc
-    try:
-        with os.fdopen(fd, "rb") as stream:
-            opened = os.fstat(stream.fileno())
-            if (opened.st_dev, opened.st_ino, opened.st_uid, opened.st_mode) != (
-                metadata.st_dev, metadata.st_ino, metadata.st_uid, metadata.st_mode
-            ):
-                raise PublishError("signing material changed while opening")
-            raw = stream.read(33)
-    except OSError as exc:
-        raise PublishError("signing material cannot be read") from exc
     if len(raw) != 32:
         raise PublishError("signing material must hold 32 raw bytes")
     return raw
@@ -545,7 +743,7 @@ def _sign_release_manifest(
 ) -> tuple[Path, str]:
     """Sign the verified manifest and verify the sidecar before upload."""
     sys.path.insert(0, str(ROOT / "src"))
-    from beamo_wipe.release_signing import (
+    from beamo_wipe.release_signing import (  # type: ignore[import-untyped]
         load_key_registry,
         sign_manifest_bytes,
         verify_with_registry,
@@ -553,21 +751,31 @@ def _sign_release_manifest(
 
     manifest = dist / f"beamo-wipe-{version}-amd64.manifest.json"
     if manifest_bytes is None:
-        with _open_owned_file(manifest) as stream:
-            manifest_bytes = stream.read(16 * 1024 * 1024 + 1)
+        manifest_bytes, _manifest_binding = _read_owned_bytes(
+            manifest,
+            limit=16 * 1024 * 1024,
+            label="manifest",
+        )
     if len(manifest_bytes) > 16 * 1024 * 1024:
         raise PublishError("manifest exceeded the safety limit")
     sidecar = sign_manifest_bytes(manifest_bytes, _read_signing_key())
+    registry_path = ROOT / "packaging" / "release-keys" / "keys.json"
+    try:
+        registry_raw, _registry_binding = _read_owned_bytes(
+            registry_path,
+            limit=MAX_KEY_REGISTRY_BYTES,
+            label="publisher key registry",
+        )
+    except PublishError as exc:
+        raise PublishError("publisher key registry is unsafe") from exc
     try:
         registry = load_key_registry(
             json.loads(
-                (ROOT / "packaging" / "release-keys" / "keys.json").read_text(
-                    encoding="utf-8"
-                ),
+                registry_raw,
                 object_pairs_hook=_unique_json_fields,
             )
         )
-    except (OSError, ValueError) as exc:
+    except (UnicodeError, ValueError) as exc:
         raise PublishError("publisher key registry is unreadable") from exc
     try:
         result = verify_with_registry(manifest_bytes, sidecar, registry)
@@ -577,37 +785,69 @@ def _sign_release_manifest(
     payload = (json.dumps(sidecar, indent=2, sort_keys=True) + "\n").encode("utf-8")
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW
     try:
-        parent_fd = _open_owned_parent(sig_path)
-    except OSError as exc:
+        absolute_sig, parent_fd, parent_fields = _open_owned_parent(sig_path)
+    except (OSError, PublishError) as exc:
         raise PublishError("signature sidecar directory is unsafe") from exc
+    fd = -1
+    owned = None
+
+    def remove_owned_partial() -> None:
+        if owned is None:
+            return
+        try:
+            current = os.stat(
+                absolute_sig.name, dir_fd=parent_fd, follow_symlinks=False
+            )
+        except OSError:
+            return
+        if stat.S_ISREG(current.st_mode) and (
+            current.st_dev,
+            current.st_ino,
+        ) == (owned.st_dev, owned.st_ino):
+            try:
+                os.unlink(absolute_sig.name, dir_fd=parent_fd)
+            except OSError:
+                pass
+
     try:
         try:
-            fd = os.open(sig_path.name, flags, 0o600, dir_fd=parent_fd)
+            fd = os.open(absolute_sig.name, flags, 0o600, dir_fd=parent_fd)
         except FileExistsError as exc:
             raise PublishError("stale signature sidecar already exists") from exc
         except OSError as exc:
             raise PublishError("signature sidecar cannot be written") from exc
         owned = os.fstat(fd)
         try:
-            with os.fdopen(fd, "wb") as stream:
-                fd = -1
+            with os.fdopen(fd, "wb", closefd=False) as stream:
                 stream.write(payload)
+                stream.flush()
+                os.fsync(stream.fileno())
         except OSError as exc:
-            if fd >= 0:
-                os.close(fd)
-            try:
-                current = os.stat(
-                    sig_path.name, dir_fd=parent_fd, follow_symlinks=False
-                )
-            except OSError:
-                pass
-            else:
-                if stat.S_ISREG(current.st_mode) and (
-                    current.st_dev, current.st_ino
-                ) == (owned.st_dev, owned.st_ino):
-                    os.unlink(sig_path.name, dir_fd=parent_fd)
+            remove_owned_partial()
             raise PublishError("signature sidecar cannot be written") from exc
+        try:
+            final = os.fstat(fd)
+            named = _named_metadata(absolute_sig, parent_fd)
+            _require_parent_binding(absolute_sig, parent_fd, parent_fields)
+            final_fields = _metadata_values(final, _REGULAR_BIND_FIELDS)
+            if (
+                not stat.S_ISREG(final.st_mode)
+                or final.st_uid != os.getuid()
+                or final.st_nlink != 1
+                or final.st_size != len(payload)
+                or final_fields != _metadata_values(named, _REGULAR_BIND_FIELDS)
+            ):
+                raise PublishError("signature sidecar changed while being written")
+            os.fsync(parent_fd)
+            _require_parent_binding(absolute_sig, parent_fd, parent_fields)
+        except (OSError, PublishError) as exc:
+            remove_owned_partial()
+            if isinstance(exc, PublishError):
+                raise
+            raise PublishError("signature sidecar changed while being written") from exc
     finally:
+        if fd >= 0:
+            os.close(fd)
         os.close(parent_fd)
     print(f"Signed manifest with publisher key {result['key_id']}")
     return sig_path, hashlib.sha256(payload).hexdigest()
@@ -620,7 +860,7 @@ def publish() -> str | None:
     if os.environ.get("SKIP_ISO", "false") == "true" or os.environ.get("SKIP_QEMU", "false") == "true":
         raise PublishError("refusing release publication with a skipped ISO or QEMU gate")
 
-    version = os.environ.get("BEAMO_WIPE_VERSION", "0.2.13")
+    version = os.environ.get("BEAMO_WIPE_VERSION", "0.2.14")
     build_id = os.environ.get("BUILD_ID", "")
     if not VERSION_RE.fullmatch(version):
         raise PublishError("invalid BEAMO_WIPE_VERSION")
@@ -629,15 +869,21 @@ def publish() -> str | None:
 
     inputs = _release_inputs(version)
     sig_name = f"beamo-wipe-{version}-amd64.manifest.json.sig"
+    if (
+        len(inputs) != len(set(inputs))
+        or len(inputs) != len({path.name for path in inputs})
+    ):
+        raise PublishError("release inputs contain a duplicate path or object name")
+    bindings: dict[Path, _OwnedBinding] = {}
     for path in inputs:
         if path.name == sig_name:
             continue  # created by signing below, after manifest verification
-        _regular_owned_file(path)
+        bindings[path] = _regular_owned_file(path)
     commit = _verify_source(version)
 
     sys.path.insert(0, str(ROOT / "src"))
-    from beamo_wipe.release_manifest import verify_manifest
-    from beamo_wipe.ci_evidence import (
+    from beamo_wipe.release_manifest import verify_manifest  # type: ignore[import-untyped]
+    from beamo_wipe.ci_evidence import (  # type: ignore[import-untyped]
         load_receipts, qemu_evidence_digest, qemu_evidence_hashes,
     )
 
@@ -719,7 +965,7 @@ def publish() -> str | None:
     )
     if signature_path != ROOT / "dist" / sig_name:
         raise PublishError("signature sidecar path changed during signing")
-    _regular_owned_file(signature_path)
+    bindings[signature_path] = _regular_owned_file(signature_path)
 
     receipt_lines = [
         "release_complete=true",
@@ -729,7 +975,35 @@ def publish() -> str | None:
     ]
     for path in inputs:
         object_name = _object_name(build_id, path.name)
-        local_sha = _sha256(path)
+        try:
+            snapshot = _snapshot_owned_file(path, bindings[path])
+        except KeyError as exc:
+            raise PublishError(f"release input was not bound: {path.name}") from exc
+        except PublishError as exc:
+            if path == manifest_path:
+                message = "manifest changed after verification"
+            elif path.name == iso_name:
+                message = "ISO differs from the verified manifest"
+            elif path.name == image_name:
+                message = "USB image differs from QEMU-tested USB image"
+            elif path in expected_log_sha:
+                message = "execution log changed after verification"
+            elif path in qemu_paths:
+                message = "QEMU evidence changed after gate"
+            elif path == package_path:
+                message = "package inventory changed after verification"
+            elif path in receipt_sha:
+                message = "gate receipt changed after verification"
+            elif path in expected_sidecars:
+                message = "checksum sidecar changed after verification"
+            elif path == ROOT / "dist" / f"{image_name}.json":
+                message = "USB image metadata changed after verification"
+            elif path == signature_path:
+                message = "signature changed after signing"
+            else:
+                message = f"release input changed after verification: {path.name}"
+            raise PublishError(message) from exc
+        local_sha = snapshot.sha256
         if path == manifest_path and local_sha != validated_sha:
             raise PublishError("manifest changed after verification")
         if (
@@ -753,15 +1027,18 @@ def publish() -> str | None:
             raise PublishError("USB image metadata changed after verification")
         if path == signature_path and local_sha != signature_sha:
             raise PublishError("signature changed after signing")
-        _upload_file(path, object_name)
-        if _remote_sha256(object_name) != local_sha:
+        if _upload_file(path, object_name, snapshot) != local_sha:
+            raise PublishError(f"uploaded byte verification failed for {path.name}")
+        if _remote_sha256(object_name, expected_size=snapshot.size) != local_sha:
             raise PublishError(f"uploaded byte verification failed for {path.name}")
         receipt_lines.append(f"{local_sha}  {path.name}")
 
     receipt = ("\n".join(receipt_lines) + "\n").encode("ascii")
     receipt_object = _object_name(build_id, "RELEASE_COMPLETE.txt")
     _upload_stream(receipt_object, io.BytesIO(receipt), len(receipt))
-    if _remote_sha256(receipt_object) != hashlib.sha256(receipt).hexdigest():
+    if _remote_sha256(
+        receipt_object, expected_size=len(receipt)
+    ) != hashlib.sha256(receipt).hexdigest():
         raise PublishError("release completion receipt verification failed")
 
     release_uri = f"gs://{BUCKET}/{RELEASE_PREFIX}/{build_id}/"

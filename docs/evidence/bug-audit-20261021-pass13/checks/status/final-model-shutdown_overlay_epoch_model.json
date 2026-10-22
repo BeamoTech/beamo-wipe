@@ -1,0 +1,16 @@
+{
+  "name": "final-model-shutdown_overlay_epoch_model",
+  "command": [
+    "env",
+    "PYTHONPATH=/workspace/beamo-wipe/src:/workspace/beamo-wipe/tests",
+    "BEAMO_WIPE_DRY_RUN=1",
+    "BEAMO_WIPE_DEMO=1",
+    "python3",
+    "-W",
+    "error",
+    "/workspace/beamo-tools/audit-pass13-20261021/root/model-replays/shutdown_overlay_epoch_model.py"
+  ],
+  "started_utc": "2026-10-21T07:30:58.946401+00:00",
+  "elapsed_seconds": 0.65,
+  "exit_code": 0
+}

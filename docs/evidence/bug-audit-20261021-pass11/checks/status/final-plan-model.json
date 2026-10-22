@@ -1,0 +1,17 @@
+{
+  "name": "final-plan-model",
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-overlay",
+    "/workspace/beamo-tools/audit-pass11-20261021/root/plan-model-overlay.json",
+    "-run=^TestPass11PlanFreshnessMatrix$",
+    "-json",
+    "./..."
+  ],
+  "started_utc": "2026-10-21T06:09:09.054408+00:00",
+  "elapsed_seconds": 2.22,
+  "exit_code": 0
+}

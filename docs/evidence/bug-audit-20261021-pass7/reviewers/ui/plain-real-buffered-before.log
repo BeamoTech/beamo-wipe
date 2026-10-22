@@ -1,0 +1,69 @@
+.F                                                                       [100%]
+=================================== FAILURES ===================================
+_____ test_plain_review_delay_starts_after_warning_flush[buffered-output] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fafdaf516e0>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-115/test_plain_review_delay_starts1')
+request = <FixtureRequest for <Function test_plain_review_delay_starts_after_warning_flush[buffered-output]>>
+line_buffered = False
+
+    @pytest.mark.parametrize('line_buffered',[True,False],ids=['visible-normal-control','buffered-output'])
+    def test_plain_review_delay_starts_after_warning_flush(monkeypatch,tmp_path,request,line_buffered):
+        monkeypatch.setenv('BEAMO_WIPE_DRY_RUN','1')
+        monkeypatch.delenv('BEAMO_WIPE_LIVE',raising=False)
+        monkeypatch.setattr('beamo_wipe.safety.default_log_dir',lambda:tmp_path)
+        effects=[]
+        def forbidden(*_args,**_kwargs):
+            effects.append(True)
+            raise AssertionError('Native action forbidden')
+        for boundary in ('subprocess.run','subprocess.Popen','beamo_wipe.discover.run_lsblk',
+                         'beamo_wipe.discover.read_cmdline','beamo_wipe.discover.read_mount_sources',
+                         'beamo_wipe.nwipe_runner.NwipeRunner.start','beamo_wipe.app._shutdown',
+                         'beamo_wipe.sound._run','beamo_wipe.sound._popen'):
+            monkeypatch.setattr(boundary,forbidden)
+        clock=[0.0]
+        wizard=Wizard(discovery_for_scenario('happy'),DryRunRunner(clock=lambda:clock[0]),clock=lambda:clock[0],dry_run=True)
+        wizard.skip_intro();wizard.set_owner(True);wizard.continue_owner()
+        wizard.select_disk(wizard.selectable[0].path);wizard.continue_pick()
+        wizard.set_confirm_input(wizard.confirm.token);wizard.continue_confirm();wizard.continue_method()
+        assert wizard.screen is Screen.LAST_CHANCE
+        monkeypatch.setattr(console.time,'sleep',lambda t:clock.__setitem__(0,clock[0]+t))
+        displayed=[]
+        class RawOutput(io.FileIO):
+            def write(self,data):
+                displayed.append((clock[0],bytes(data).decode('utf-8')))
+                return super().write(data)
+        output=io.TextIOWrapper(io.BufferedWriter(RawOutput(tmp_path/'fake-terminal-output.txt','wb'),8192),
+                                encoding='utf-8',line_buffering=line_buffered)
+        original_stdout=sys.stdout
+        master,slave=os.openpty()
+        terminal=os.fdopen(os.dup(slave),'r',encoding='utf-8')
+        monkeypatch.setattr(sys,'stdin',terminal)
+        monkeypatch.setattr(sys,'stdout',output)
+        original_answer=console._answer
+        calls=[]
+        def answer(w,prompt):
+            assert prompt==C.CON_ERASE_PROMPT
+            os.write(master,b'ERASE\n')
+            return original_answer(w,prompt)
+        monkeypatch.setattr(console,'_answer',answer)
+        def claim():
+            assert wizard.erase_enabled
+            calls.append(clock[0]);wizard.wants_shutdown=True
+        monkeypatch.setattr(wizard,'confirm_erase',claim)
+        try:
+            assert console._plain_loop(wizard)==0
+            warning_at=min(t for t,text in displayed if C.SEVERITY_WARNING in text)
+            trace={'line_buffered':line_buffered,'warning_visible_at':warning_at,'erase_claims':calls,
+                   'visible_delay':calls[0]-warning_at,'native_calls':effects}
+            request.node.user_properties.append(('trace',json.dumps(trace)))
+            assert not effects
+            assert len(calls)==1
+>           assert calls[0]-warning_at>=5.0,trace
+E           AssertionError: {'erase_claims': [5.2], 'line_buffered': False, 'native_calls': [], 'visible_delay': 0.0, ...}
+E           assert (5.2 - 5.2) >= 5.0
+
+../beamo-tools/audit-pass7-20261021/ui/test_plain_real_buffered_visibility_probe.py:70: AssertionError
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass7-20261021/ui/test_plain_real_buffered_visibility_probe.py::test_plain_review_delay_starts_after_warning_flush[buffered-output]
+1 failed, 1 passed in 0.18s

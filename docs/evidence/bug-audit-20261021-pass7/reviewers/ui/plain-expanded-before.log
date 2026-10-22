@@ -1,0 +1,127 @@
+.F.F.F.F                                                                 [100%]
+=================================== FAILURES ===================================
+_ test_final_review_requires_five_visible_seconds_after_flush[immediate-block] _
+
+last_chance = (<beamo_wipe.wizard.Wizard object at 0x7f9aaae12210>, [5.2], [5.2])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9aaa40d490>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-125/test_final_review_requires_fiv1')
+request = <FixtureRequest for <Function test_final_review_requires_five_visible_seconds_after_flush[immediate-block]>>
+line_buffered = False, delay = 0.0
+
+    @pytest.mark.parametrize("line_buffered", [True, False], ids=["line", "block"])
+    @pytest.mark.parametrize("delay", [0.0, 8.0], ids=["immediate", "slow-flush"])
+    def test_final_review_requires_five_visible_seconds_after_flush(
+        last_chance, monkeypatch, tmp_path, request, line_buffered, delay,
+    ):
+        wizard, clock, calls = last_chance
+        with _terminal_output(monkeypatch, tmp_path, wizard, clock,
+                              line_buffered=line_buffered, delay=delay) as events:
+            assert console._plain_loop(wizard) == 0
+            visible = next(event for event in events if event["warning"])
+            request.node.user_properties.append(("visible_review_trace", json.dumps({
+                "line_buffered": line_buffered, "flush_delay": delay,
+                "warning": visible, "erase_claims": calls,
+            })))
+            assert len(calls) == 1
+>           assert visible["held"] and not visible["enabled"]
+E           assert (False)
+
+tests/test_plain_review_flush_pass7_20261021.py:128: AssertionError
+_ test_final_review_requires_five_visible_seconds_after_flush[slow-flush-block] _
+
+last_chance = (<beamo_wipe.wizard.Wizard object at 0x7f9aaa3a7d90>, [13.2], [13.2])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9aaa41cf50>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-125/test_final_review_requires_fiv3')
+request = <FixtureRequest for <Function test_final_review_requires_five_visible_seconds_after_flush[slow-flush-block]>>
+line_buffered = False, delay = 8.0
+
+    @pytest.mark.parametrize("line_buffered", [True, False], ids=["line", "block"])
+    @pytest.mark.parametrize("delay", [0.0, 8.0], ids=["immediate", "slow-flush"])
+    def test_final_review_requires_five_visible_seconds_after_flush(
+        last_chance, monkeypatch, tmp_path, request, line_buffered, delay,
+    ):
+        wizard, clock, calls = last_chance
+        with _terminal_output(monkeypatch, tmp_path, wizard, clock,
+                              line_buffered=line_buffered, delay=delay) as events:
+            assert console._plain_loop(wizard) == 0
+            visible = next(event for event in events if event["warning"])
+            request.node.user_properties.append(("visible_review_trace", json.dumps({
+                "line_buffered": line_buffered, "flush_delay": delay,
+                "warning": visible, "erase_claims": calls,
+            })))
+            assert len(calls) == 1
+>           assert visible["held"] and not visible["enabled"]
+E           assert (False)
+
+tests/test_plain_review_flush_pass7_20261021.py:128: AssertionError
+_ test_failed_review_flush_cannot_reach_erase_or_leave_a_review_hold[storage-full-block] _
+
+last_chance = (<beamo_wipe.wizard.Wizard object at 0x7f9aaac13d90>, [5.2], [5.2])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9aaad3de10>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-125/test_failed_review_flush_canno1')
+request = <FixtureRequest for <Function test_failed_review_flush_cannot_reach_erase_or_leave_a_review_hold[storage-full-block]>>
+line_buffered = False, error_kind = <class 'OSError'>
+
+    @pytest.mark.parametrize("line_buffered", [True, False], ids=["line", "block"])
+    @pytest.mark.parametrize("error_kind", [OSError, PermissionError], ids=["storage-full", "permission"])
+    def test_failed_review_flush_cannot_reach_erase_or_leave_a_review_hold(
+        last_chance, monkeypatch, tmp_path, request, line_buffered, error_kind,
+    ):
+        wizard, clock, calls = last_chance
+        with _terminal_output(monkeypatch, tmp_path, wizard, clock,
+                              line_buffered=line_buffered, error_kind=error_kind) as events:
+            escaped = None
+            try:
+                console._plain_loop(wizard)
+            except error_kind as error:
+                escaped = error
+            request.node.user_properties.append(("failed_review_flush_trace", json.dumps({
+                "line_buffered": line_buffered, "error_kind": error_kind.__name__,
+                "escaped": type(escaped).__name__ if escaped else None,
+                "erase_claims": calls, "writes": events,
+            })))
+>           assert calls == []
+E           assert [5.2] == []
+E             
+E             Left contains one more item: 5.2
+E             Use -v to get more diff
+
+tests/test_plain_review_flush_pass7_20261021.py:151: AssertionError
+_ test_failed_review_flush_cannot_reach_erase_or_leave_a_review_hold[permission-block] _
+
+last_chance = (<beamo_wipe.wizard.Wizard object at 0x7f9aaad08690>, [5.2], [5.2])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9aaa4285d0>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-125/test_failed_review_flush_canno3')
+request = <FixtureRequest for <Function test_failed_review_flush_cannot_reach_erase_or_leave_a_review_hold[permission-block]>>
+line_buffered = False, error_kind = <class 'PermissionError'>
+
+    @pytest.mark.parametrize("line_buffered", [True, False], ids=["line", "block"])
+    @pytest.mark.parametrize("error_kind", [OSError, PermissionError], ids=["storage-full", "permission"])
+    def test_failed_review_flush_cannot_reach_erase_or_leave_a_review_hold(
+        last_chance, monkeypatch, tmp_path, request, line_buffered, error_kind,
+    ):
+        wizard, clock, calls = last_chance
+        with _terminal_output(monkeypatch, tmp_path, wizard, clock,
+                              line_buffered=line_buffered, error_kind=error_kind) as events:
+            escaped = None
+            try:
+                console._plain_loop(wizard)
+            except error_kind as error:
+                escaped = error
+            request.node.user_properties.append(("failed_review_flush_trace", json.dumps({
+                "line_buffered": line_buffered, "error_kind": error_kind.__name__,
+                "escaped": type(escaped).__name__ if escaped else None,
+                "erase_claims": calls, "writes": events,
+            })))
+>           assert calls == []
+E           assert [5.2] == []
+E             
+E             Left contains one more item: 5.2
+E             Use -v to get more diff
+
+tests/test_plain_review_flush_pass7_20261021.py:151: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_plain_review_flush_pass7_20261021.py::test_final_review_requires_five_visible_seconds_after_flush[immediate-block]
+FAILED tests/test_plain_review_flush_pass7_20261021.py::test_final_review_requires_five_visible_seconds_after_flush[slow-flush-block]
+FAILED tests/test_plain_review_flush_pass7_20261021.py::test_failed_review_flush_cannot_reach_erase_or_leave_a_review_hold[storage-full-block]
+FAILED tests/test_plain_review_flush_pass7_20261021.py::test_failed_review_flush_cannot_reach_erase_or_leave_a_review_hold[permission-block]

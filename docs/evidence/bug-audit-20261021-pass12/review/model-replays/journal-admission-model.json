@@ -1,0 +1,2620 @@
+{
+  "baseline": "b462e62005a752b0e5f2a066bda19bd9c79bbd8b",
+  "counts": {
+    "states": 288,
+    "valid_admissions": 72,
+    "invalid_refusals": 216,
+    "rotations": 3,
+    "unchanged_refusals": 285,
+    "lock_refusals": 12,
+    "native_callbacks": 0
+  },
+  "mismatches": [],
+  "source_sha256": {
+    "src/beamo_wipe/session_recovery.py": "cf2443e391e184677b12c9d4356eb4314621aecb45244a425d6736823dd47948",
+    "src/beamo_wipe/report_intent.py": "e4a1bf94aecfc3926b72973f2319ab3f8394e03a83737d11542c5a3670727c82",
+    "src/beamo_wipe/wizard.py": "bb8d5ed38a749c07538107ad9a75fa3fa24b1c07de2f8a5eedecb05df8811ca0",
+    "tests/test_session_recovery.py": "3958efc36490aa0e3c9c56a820a620b38febd84b9d5901381dade67e390092b0",
+    "tests/test_usb_report_workflow.py": "3715d4352dfb8adb54e9f6033423604f60bc6511628e55d62940e9a44f540d09"
+  },
+  "script_sha256": "bac71140a17daa3c8c6e49430d0138220b5e83b012132dccdfbba526fc2a14cc",
+  "states": [
+    {
+      "phase": "preflight",
+      "shape": "canonical",
+      "lock": "free",
+      "engine": "absent",
+      "valid": true,
+      "rotated": true,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "canonical",
+      "lock": "free",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "canonical",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "canonical",
+      "lock": "free",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": "OSError"
+    },
+    {
+      "phase": "preflight",
+      "shape": "canonical",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "canonical",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "canonical",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "canonical",
+      "lock": "busy",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "canonical",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": true,
+      "rotated": false,
+      "raised": "SafetyError"
+    },
+    {
+      "phase": "preflight",
+      "shape": "canonical",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": "SafetyError"
+    },
+    {
+      "phase": "preflight",
+      "shape": "canonical",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": "SafetyError"
+    },
+    {
+      "phase": "preflight",
+      "shape": "canonical",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": "SafetyError"
+    },
+    {
+      "phase": "preflight",
+      "shape": "pretty",
+      "lock": "free",
+      "engine": "absent",
+      "valid": true,
+      "rotated": true,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "pretty",
+      "lock": "free",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "pretty",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "pretty",
+      "lock": "free",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": "OSError"
+    },
+    {
+      "phase": "preflight",
+      "shape": "pretty",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "pretty",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "pretty",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "pretty",
+      "lock": "busy",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "pretty",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": true,
+      "rotated": false,
+      "raised": "SafetyError"
+    },
+    {
+      "phase": "preflight",
+      "shape": "pretty",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": "SafetyError"
+    },
+    {
+      "phase": "preflight",
+      "shape": "pretty",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": "SafetyError"
+    },
+    {
+      "phase": "preflight",
+      "shape": "pretty",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": "SafetyError"
+    },
+    {
+      "phase": "preflight",
+      "shape": "reverse",
+      "lock": "free",
+      "engine": "absent",
+      "valid": true,
+      "rotated": true,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "reverse",
+      "lock": "free",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "reverse",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "reverse",
+      "lock": "free",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": "OSError"
+    },
+    {
+      "phase": "preflight",
+      "shape": "reverse",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "reverse",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "reverse",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "reverse",
+      "lock": "busy",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "reverse",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": true,
+      "rotated": false,
+      "raised": "SafetyError"
+    },
+    {
+      "phase": "preflight",
+      "shape": "reverse",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": "SafetyError"
+    },
+    {
+      "phase": "preflight",
+      "shape": "reverse",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": "SafetyError"
+    },
+    {
+      "phase": "preflight",
+      "shape": "reverse",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": "SafetyError"
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-envelope",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-envelope",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-envelope",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-envelope",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-envelope",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-envelope",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-envelope",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-envelope",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-envelope",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-envelope",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-envelope",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-envelope",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-payload",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-payload",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-payload",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-payload",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-payload",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-payload",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-payload",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-payload",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-payload",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-payload",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-payload",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "duplicate-payload",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "digest",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "digest",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "digest",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "digest",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "digest",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "digest",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "digest",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "digest",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "digest",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "digest",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "digest",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "digest",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "boot",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "boot",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "boot",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "boot",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "boot",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "boot",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "boot",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "boot",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "boot",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "boot",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "boot",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "boot",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "schema-bool",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "schema-bool",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "schema-bool",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "schema-bool",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "schema-bool",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "schema-bool",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "schema-bool",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "schema-bool",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "schema-bool",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "schema-bool",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "schema-bool",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "schema-bool",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "nan",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "nan",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "nan",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "nan",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "nan",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "nan",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "nan",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "nan",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "nan",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "nan",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "nan",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "nan",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "future",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "future",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "future",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "future",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "future",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "future",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "future",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "future",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "future",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "future",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "future",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "future",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "missing-context",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "missing-context",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "missing-context",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "missing-context",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "missing-context",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "missing-context",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "missing-context",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "missing-context",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "missing-context",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "missing-context",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "missing-context",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "missing-context",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "unknown-phase",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "unknown-phase",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "unknown-phase",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "unknown-phase",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "unknown-phase",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "unknown-phase",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "unknown-phase",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "unknown-phase",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "unknown-phase",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "unknown-phase",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "unknown-phase",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "preflight",
+      "shape": "unknown-phase",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "canonical",
+      "lock": "free",
+      "engine": "absent",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "canonical",
+      "lock": "free",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "canonical",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "canonical",
+      "lock": "free",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "canonical",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "canonical",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "canonical",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "canonical",
+      "lock": "busy",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "canonical",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "canonical",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "canonical",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "canonical",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "pretty",
+      "lock": "free",
+      "engine": "absent",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "pretty",
+      "lock": "free",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "pretty",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "pretty",
+      "lock": "free",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "pretty",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "pretty",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "pretty",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "pretty",
+      "lock": "busy",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "pretty",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "pretty",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "pretty",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "pretty",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "reverse",
+      "lock": "free",
+      "engine": "absent",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "reverse",
+      "lock": "free",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "reverse",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "reverse",
+      "lock": "free",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "reverse",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "reverse",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "reverse",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "reverse",
+      "lock": "busy",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "reverse",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "reverse",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "reverse",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "reverse",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": true,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-envelope",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-envelope",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-envelope",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-envelope",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-envelope",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-envelope",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-envelope",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-envelope",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-envelope",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-envelope",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-envelope",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-envelope",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-payload",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-payload",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-payload",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-payload",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-payload",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-payload",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-payload",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-payload",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-payload",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-payload",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-payload",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "duplicate-payload",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "digest",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "digest",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "digest",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "digest",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "digest",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "digest",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "digest",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "digest",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "digest",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "digest",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "digest",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "digest",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "boot",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "boot",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "boot",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "boot",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "boot",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "boot",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "boot",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "boot",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "boot",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "boot",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "boot",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "boot",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "schema-bool",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "schema-bool",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "schema-bool",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "schema-bool",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "schema-bool",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "schema-bool",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "schema-bool",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "schema-bool",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "schema-bool",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "schema-bool",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "schema-bool",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "schema-bool",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "nan",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "nan",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "nan",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "nan",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "nan",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "nan",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "nan",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "nan",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "nan",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "nan",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "nan",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "nan",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "future",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "future",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "future",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "future",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "future",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "future",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "future",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "future",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "future",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "future",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "future",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "future",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "missing-context",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "missing-context",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "missing-context",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "missing-context",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "missing-context",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "missing-context",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "missing-context",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "missing-context",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "missing-context",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "missing-context",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "missing-context",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "missing-context",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "unknown-phase",
+      "lock": "free",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "unknown-phase",
+      "lock": "free",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "unknown-phase",
+      "lock": "free",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "unknown-phase",
+      "lock": "free",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "unknown-phase",
+      "lock": "busy",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "unknown-phase",
+      "lock": "busy",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "unknown-phase",
+      "lock": "busy",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "unknown-phase",
+      "lock": "busy",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "unknown-phase",
+      "lock": "replaced-interface",
+      "engine": "absent",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "unknown-phase",
+      "lock": "replaced-interface",
+      "engine": "busy",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "unknown-phase",
+      "lock": "replaced-interface",
+      "engine": "unknown",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    },
+    {
+      "phase": "armed",
+      "shape": "unknown-phase",
+      "lock": "replaced-interface",
+      "engine": "error",
+      "valid": false,
+      "rotated": false,
+      "raised": null
+    }
+  ],
+  "limits": [
+    "Owned regular tempfiles and fake pinned process probe only.",
+    "No real device, engine, inventory, mount, firmware, network or remote operation.",
+    "Model overlaps existing coverage and is not additional canonical test count."
+  ]
+}

@@ -1,0 +1,962 @@
+[
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "complete",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "complete",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "complete",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "complete",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "missing",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "missing",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "missing",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "missing",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "method_conflict",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "method_conflict",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "method_conflict",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "method_conflict",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "error",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "error",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "error",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "error",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "unterminated",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "unterminated",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "unterminated",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/sda",
+    "terminal": "unterminated",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "complete",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "complete",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "complete",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "complete",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "missing",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "missing",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "missing",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "missing",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "method_conflict",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "method_conflict",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "method_conflict",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "method_conflict",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "error",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "error",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "error",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "error",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "unterminated",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "unterminated",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "unterminated",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "everyday",
+    "target": "/dev/nvme0n100",
+    "terminal": "unterminated",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "complete",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "complete",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "complete",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "complete",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "missing",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "missing",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "missing",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "missing",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "method_conflict",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "method_conflict",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "method_conflict",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "method_conflict",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "error",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "error",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "error",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "error",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "unterminated",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "unterminated",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "unterminated",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/sda",
+    "terminal": "unterminated",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "complete",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "complete",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "complete",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "complete",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "missing",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "missing",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "missing",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "missing",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "method_conflict",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "method_conflict",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "method_conflict",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "method_conflict",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "error",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "error",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "error",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "error",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "unterminated",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "unterminated",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "unterminated",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "extra",
+    "target": "/dev/nvme0n100",
+    "terminal": "unterminated",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "complete",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "complete",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "complete",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "complete",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "missing",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "missing",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "missing",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "missing",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "method_conflict",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "method_conflict",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "method_conflict",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "method_conflict",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "error",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "error",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "error",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "error",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "unterminated",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "unterminated",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "unterminated",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/sda",
+    "terminal": "unterminated",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "complete",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "complete",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "complete",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "complete",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "completed"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "missing",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "missing",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "missing",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "missing",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "completion_missing"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "method_conflict",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "method_conflict",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "method_conflict",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "method_conflict",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "error",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "error",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "error",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "error",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "verification_failed"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "unterminated",
+    "fault": "invalid_binary",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "unterminated",
+    "fault": "log_prepare",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "unterminated",
+    "fault": "known_exec",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  },
+  {
+    "method": "quick_zero",
+    "target": "/dev/nvme0n100",
+    "terminal": "unterminated",
+    "fault": "uncertain_spawn",
+    "generations": 3,
+    "last_reason": "indeterminate"
+  }
+]

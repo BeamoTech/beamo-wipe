@@ -1,0 +1,12 @@
+{
+  "authorized_fake_restarts": 278,
+  "failures": 0,
+  "malformed_duplicate_requests": 1405,
+  "native_callbacks": 0,
+  "probes": 2909,
+  "public_action_requests": 16000,
+  "refused_requests": 7013,
+  "seed_base": 802026,
+  "sessions": 200,
+  "windows_manual_policy_cases": 1000
+}

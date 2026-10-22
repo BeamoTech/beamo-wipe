@@ -1,0 +1,14 @@
+{
+  "name": "final-model-terminal_handoff_model",
+  "command": [
+    "env",
+    "PYTHONPATH=/workspace/beamo-wipe/src:/workspace/beamo-wipe/tests",
+    "python3",
+    "-W",
+    "error",
+    "/workspace/beamo-tools/audit-pass12-20261021/root/model-replays/terminal_handoff_model.py"
+  ],
+  "started_utc": "2026-10-21T06:51:59.923178+00:00",
+  "elapsed_seconds": 85.13,
+  "exit_code": 0
+}

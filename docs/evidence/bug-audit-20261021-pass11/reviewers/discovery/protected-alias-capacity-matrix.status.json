@@ -1,0 +1,9 @@
+{
+  "command": [
+    "python3",
+    "/workspace/beamo-tools/audit-pass11-20261021/discovery/protected_alias_capacity_matrix.py"
+  ],
+  "started_utc": "2026-10-21T05:58:41.390994+00:00",
+  "elapsed_seconds": 10.18,
+  "exit_code": 0
+}

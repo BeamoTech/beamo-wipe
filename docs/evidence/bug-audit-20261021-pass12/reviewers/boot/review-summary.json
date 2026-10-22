@@ -1,0 +1,43 @@
+{
+  "head": "b462e62005a752b0e5f2a066bda19bd9c79bbd8b",
+  "repository_edits": [],
+  "native_parser_probe": {
+    "status": "baseline-failure",
+    "failing_leaves": 9,
+    "passing_controls": 4
+  },
+  "native_readiness_probe": {
+    "status": "baseline-failure",
+    "failing_leaves": 2,
+    "passing_controls": 2
+  },
+  "doctor_decode_probe": {
+    "status": "baseline-failure",
+    "failing_leaves": 2,
+    "passing_controls": 2
+  },
+  "root_validation_and_repair": "pending independent reproduction and assignment",
+  "epoch_model": {
+    "cancelled_publications": 16,
+    "closed_session_refusals": 64,
+    "fresh_publications": 16,
+    "native_callbacks": 0,
+    "normal_restart_controls": 16,
+    "stale_restart_refusals": 16,
+    "states": 16
+  },
+  "focused_go": {
+    "named_pass_events": 108,
+    "skips": 0,
+    "race": "pass",
+    "vet": "pass"
+  },
+  "focused_python": {
+    "passes": 310,
+    "skips": 0,
+    "failures": 0,
+    "errors": 0,
+    "warning_policy": "error"
+  },
+  "release_ownership": "root; no publication performed"
+}

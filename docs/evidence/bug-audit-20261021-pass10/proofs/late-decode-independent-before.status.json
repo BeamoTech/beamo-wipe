@@ -1,0 +1,22 @@
+{
+  "name": "late-decode-independent-before",
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "-W",
+    "error",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-o",
+    "pythonpath=src tests",
+    "-q",
+    "/workspace/beamo-tools/audit-pass10-20261021/root/test_late_decode_probe.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass10-20261021/root/late-decode-independent-before.xml"
+  ],
+  "started_utc": "2026-10-21T05:20:04.186781+00:00",
+  "elapsed_seconds": 0.4,
+  "exit_code": 1
+}

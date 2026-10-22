@@ -1,0 +1,31 @@
+{
+  "baseline_commit": "b46e5642d4c849d503b41d8bf562cfb1f9fad68b",
+  "frozen_at_utc": "2026-10-21T06:08:29.277316+00:00",
+  "client_timezone": "America/Chicago",
+  "source_files": 822,
+  "source_manifest_sha256": "c5bd0ad6cf663f5231c88a3bddd9df1a9405f529109a92c62fa23ccef1a83992",
+  "new_case_breakdown": {
+    "tests/test_sleep_inhibit_diagnostic_retirement_pass11_20261021.py": 56
+  },
+  "new_python_cases": 56,
+  "new_go_test_pattern": "^TestBoundedOutput(OwnedHelper|BoundsInheritedPipes|CaptureControls|DrainLimitControls|EnforcesCaptureBudget)Pass11$",
+  "new_go_leaf_cases": 47,
+  "new_go_top_level_including_helper": 5,
+  "new_go_named_pass_events": 52,
+  "go_full_expected_named_pass_events": 418,
+  "expected_canonical_main_passes": 11769,
+  "expected_canonical_main_ids": 11797,
+  "expected_canonical_unique_python_passes": 11770,
+  "unchanged_python_skips": 28,
+  "changed_paths": [
+    "desktop/io.go",
+    "desktop/output_deadline_pass11_20261021_test.go",
+    "src/beamo_wipe/sleep_inhibit.py",
+    "tests/test_sleep_inhibit_diagnostic_retirement_pass11_20261021.py"
+  ],
+  "verified_root_causes": 3,
+  "all_existing_test_files_byte_identical": true,
+  "old_assertions_preserved": true,
+  "all_source_ownership_released": true,
+  "actual_native_device_engine_power_guest_actions": false
+}

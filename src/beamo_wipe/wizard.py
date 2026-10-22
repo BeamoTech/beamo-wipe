@@ -1547,9 +1547,10 @@ class Wizard:
                 from beamo_wipe.diagnostics import log_diag
 
                 log_diag("discover", "refresh_failed", type(exc).__name__)
-            except Exception:
+            except BaseException:
                 # Diagnostic logging must never keep a failed scan in the
-                # claimed REFRESHING state when /tmp is full or unavailable.
+                # claimed REFRESHING state when /tmp is unavailable or the
+                # optional write itself is interrupted.
                 pass
             fresh = DiscoveryResult(error=C.REDISCOVER_ERROR, boot_identified=False, error_code="refresh_failed")
         with self._lock:

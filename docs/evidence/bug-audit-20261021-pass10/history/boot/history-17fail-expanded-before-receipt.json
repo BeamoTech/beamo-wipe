@@ -1,0 +1,11 @@
+{
+  "baseline": "7047dfb8c22d0b17faad2d5de1ec470b2debfaac",
+  "test_sha256": "a9464a35284e40b19e5b44310789ab2f601b11e31f263026df1e18240f0160c0",
+  "product_sha256": "1cbabac38801e77c2cf741a89eb0f75666ea746e072f9eaf0e8d6628c282ef00",
+  "leaf_failures": 17,
+  "leaf_positive_controls_passed": 7,
+  "total_leaf_cases": 24,
+  "race_reports": 0,
+  "native_callbacks": 0,
+  "archive": "/workspace/beamo-tools/audit-pass10-20261021/boot/baseline/desktop"
+}

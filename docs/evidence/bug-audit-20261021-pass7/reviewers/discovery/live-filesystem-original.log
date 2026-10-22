@@ -1,0 +1,316 @@
+FFFF...FFFF...FFFF...                                                    [100%]
+=================================== FAILURES ===================================
+_________ test_live_gate_requires_block_backed_filesystem[tmpfs-False] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3950ae6650>
+filesystem = 'tmpfs', expected = False
+
+    @pytest.mark.parametrize('filesystem,expected', CASES)
+    def test_live_gate_requires_block_backed_filesystem(monkeypatch, filesystem, expected):
+        effects = forbid_native(monkeypatch)
+        observed = S.is_live_environment(cmdline='boot=live', env={}, mountinfo_text=table(filesystem))
+        assert not effects
+>       assert observed is expected
+E       assert True is False
+
+../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py:43: AssertionError
+_________ test_live_gate_requires_block_backed_filesystem[ramfs-False] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f39514c16e0>
+filesystem = 'ramfs', expected = False
+
+    @pytest.mark.parametrize('filesystem,expected', CASES)
+    def test_live_gate_requires_block_backed_filesystem(monkeypatch, filesystem, expected):
+        effects = forbid_native(monkeypatch)
+        observed = S.is_live_environment(cmdline='boot=live', env={}, mountinfo_text=table(filesystem))
+        assert not effects
+>       assert observed is expected
+E       assert True is False
+
+../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py:43: AssertionError
+________ test_live_gate_requires_block_backed_filesystem[overlay-False] ________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3950b560f0>
+filesystem = 'overlay', expected = False
+
+    @pytest.mark.parametrize('filesystem,expected', CASES)
+    def test_live_gate_requires_block_backed_filesystem(monkeypatch, filesystem, expected):
+        effects = forbid_native(monkeypatch)
+        observed = S.is_live_environment(cmdline='boot=live', env={}, mountinfo_text=table(filesystem))
+        assert not effects
+>       assert observed is expected
+E       assert True is False
+
+../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py:43: AssertionError
+_________ test_live_gate_requires_block_backed_filesystem[proc-False] __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f395139af10>
+filesystem = 'proc', expected = False
+
+    @pytest.mark.parametrize('filesystem,expected', CASES)
+    def test_live_gate_requires_block_backed_filesystem(monkeypatch, filesystem, expected):
+        effects = forbid_native(monkeypatch)
+        observed = S.is_live_environment(cmdline='boot=live', env={}, mountinfo_text=table(filesystem))
+        assert not effects
+>       assert observed is expected
+E       assert True is False
+
+../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py:43: AssertionError
+________ test_real_nwipe_gate_refuses_non_media_filesystem[tmpfs-False] ________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3950afea80>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-104/test_real_nwipe_gate_refuses_n0')
+filesystem = 'tmpfs', expected = False
+
+    @pytest.mark.parametrize('filesystem,expected', CASES)
+    def test_real_nwipe_gate_refuses_non_media_filesystem(monkeypatch, tmp_path, filesystem, expected):
+        effects = forbid_native(monkeypatch)
+        fake = tmp_path/'mountinfo';fake.write_text(table(filesystem))
+        monkeypatch.setattr(D, 'MOUNTINFO_PATH', str(fake))
+        monkeypatch.setattr(D, 'read_cmdline', lambda: 'boot=live')
+        if expected:
+            S.require_real_live_for_nwipe(env={})
+        else:
+>           with pytest.raises(S.SafetyError):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+
+../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py:55: Failed
+________ test_real_nwipe_gate_refuses_non_media_filesystem[ramfs-False] ________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3950aff200>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-104/test_real_nwipe_gate_refuses_n1')
+filesystem = 'ramfs', expected = False
+
+    @pytest.mark.parametrize('filesystem,expected', CASES)
+    def test_real_nwipe_gate_refuses_non_media_filesystem(monkeypatch, tmp_path, filesystem, expected):
+        effects = forbid_native(monkeypatch)
+        fake = tmp_path/'mountinfo';fake.write_text(table(filesystem))
+        monkeypatch.setattr(D, 'MOUNTINFO_PATH', str(fake))
+        monkeypatch.setattr(D, 'read_cmdline', lambda: 'boot=live')
+        if expected:
+            S.require_real_live_for_nwipe(env={})
+        else:
+>           with pytest.raises(S.SafetyError):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+
+../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py:55: Failed
+_______ test_real_nwipe_gate_refuses_non_media_filesystem[overlay-False] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3950b6a5f0>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-104/test_real_nwipe_gate_refuses_n2')
+filesystem = 'overlay', expected = False
+
+    @pytest.mark.parametrize('filesystem,expected', CASES)
+    def test_real_nwipe_gate_refuses_non_media_filesystem(monkeypatch, tmp_path, filesystem, expected):
+        effects = forbid_native(monkeypatch)
+        fake = tmp_path/'mountinfo';fake.write_text(table(filesystem))
+        monkeypatch.setattr(D, 'MOUNTINFO_PATH', str(fake))
+        monkeypatch.setattr(D, 'read_cmdline', lambda: 'boot=live')
+        if expected:
+            S.require_real_live_for_nwipe(env={})
+        else:
+>           with pytest.raises(S.SafetyError):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+
+../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py:55: Failed
+________ test_real_nwipe_gate_refuses_non_media_filesystem[proc-False] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3950b0ba10>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-104/test_real_nwipe_gate_refuses_n3')
+filesystem = 'proc', expected = False
+
+    @pytest.mark.parametrize('filesystem,expected', CASES)
+    def test_real_nwipe_gate_refuses_non_media_filesystem(monkeypatch, tmp_path, filesystem, expected):
+        effects = forbid_native(monkeypatch)
+        fake = tmp_path/'mountinfo';fake.write_text(table(filesystem))
+        monkeypatch.setattr(D, 'MOUNTINFO_PATH', str(fake))
+        monkeypatch.setattr(D, 'read_cmdline', lambda: 'boot=live')
+        if expected:
+            S.require_real_live_for_nwipe(env={})
+        else:
+>           with pytest.raises(S.SafetyError):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+
+../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py:55: Failed
+__ test_production_discovery_does_not_protect_pseudo_source_disk[tmpfs-False] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3950b909f0>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-104/test_production_discovery_does0')
+filesystem = 'tmpfs', expected = False
+
+    @pytest.mark.parametrize('filesystem,expected', CASES)
+    def test_production_discovery_does_not_protect_pseudo_source_disk(monkeypatch, tmp_path, filesystem, expected):
+        effects = forbid_native(monkeypatch)
+        monkeypatch.setenv('BEAMO_WIPE_DRY_RUN', '1')
+        monkeypatch.delenv('BEAMO_WIPE_LIVE', raising=False)
+        fake = tmp_path/'mountinfo';fake.write_text(table(filesystem))
+        monkeypatch.setattr(D, 'MOUNTINFO_PATH', str(fake))
+        monkeypatch.setattr(D, 'read_cmdline', lambda: 'boot=live')
+        payload = {'blockdevices':[
+            {'name':'sdb','path':'/dev/sdb','type':'disk','size':16000000000,
+             'tran':'usb','rota':False,'ro':False,'mountpoints':[],
+             'serial':'FAKE-BOOT','model':'Fake boot','children':[
+                 {'name':'sdb1','path':'/dev/sdb1','type':'part','size':15000000000,
+                  'pkname':'sdb','ro':False,'mountpoints':[],'fstype':filesystem},
+             ]},
+            {'name':'sda','path':'/dev/sda','type':'disk','size':256000000000,
+             'tran':'sata','rota':False,'ro':False,'mountpoints':[],
+             'serial':'FAKE-DATA','model':'Fake data'},
+        ]}
+        monkeypatch.setattr(D, 'run_lsblk', lambda: payload)
+        def fake_findmnt(mountpoint):
+            return SimpleNamespace(returncode=0 if mountpoint=='/run/live/medium' else 1,
+                                   stdout='/dev/sdb1\n' if mountpoint=='/run/live/medium' else '',stderr='')
+        monkeypatch.setattr(D, '_run_findmnt', fake_findmnt)
+        result = D.discover(env={})
+        assert not effects
+        if expected:
+            assert result.boot_identified and result.boot.path=='/dev/sdb'
+            assert [disk.path for disk in result.selectable]==['/dev/sda']
+        else:
+>           assert not result.boot_identified and not result.selectable
+E           AssertionError: assert (not True)
+E            +  where True = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Fake boot', serial='FAKE-BOOT', size_bytes=16000000000... read_only=False, wwn='', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).boot_identified
+
+../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py:90: AssertionError
+__ test_production_discovery_does_not_protect_pseudo_source_disk[ramfs-False] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3950b91230>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-104/test_production_discovery_does1')
+filesystem = 'ramfs', expected = False
+
+    @pytest.mark.parametrize('filesystem,expected', CASES)
+    def test_production_discovery_does_not_protect_pseudo_source_disk(monkeypatch, tmp_path, filesystem, expected):
+        effects = forbid_native(monkeypatch)
+        monkeypatch.setenv('BEAMO_WIPE_DRY_RUN', '1')
+        monkeypatch.delenv('BEAMO_WIPE_LIVE', raising=False)
+        fake = tmp_path/'mountinfo';fake.write_text(table(filesystem))
+        monkeypatch.setattr(D, 'MOUNTINFO_PATH', str(fake))
+        monkeypatch.setattr(D, 'read_cmdline', lambda: 'boot=live')
+        payload = {'blockdevices':[
+            {'name':'sdb','path':'/dev/sdb','type':'disk','size':16000000000,
+             'tran':'usb','rota':False,'ro':False,'mountpoints':[],
+             'serial':'FAKE-BOOT','model':'Fake boot','children':[
+                 {'name':'sdb1','path':'/dev/sdb1','type':'part','size':15000000000,
+                  'pkname':'sdb','ro':False,'mountpoints':[],'fstype':filesystem},
+             ]},
+            {'name':'sda','path':'/dev/sda','type':'disk','size':256000000000,
+             'tran':'sata','rota':False,'ro':False,'mountpoints':[],
+             'serial':'FAKE-DATA','model':'Fake data'},
+        ]}
+        monkeypatch.setattr(D, 'run_lsblk', lambda: payload)
+        def fake_findmnt(mountpoint):
+            return SimpleNamespace(returncode=0 if mountpoint=='/run/live/medium' else 1,
+                                   stdout='/dev/sdb1\n' if mountpoint=='/run/live/medium' else '',stderr='')
+        monkeypatch.setattr(D, '_run_findmnt', fake_findmnt)
+        result = D.discover(env={})
+        assert not effects
+        if expected:
+            assert result.boot_identified and result.boot.path=='/dev/sdb'
+            assert [disk.path for disk in result.selectable]==['/dev/sda']
+        else:
+>           assert not result.boot_identified and not result.selectable
+E           AssertionError: assert (not True)
+E            +  where True = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Fake boot', serial='FAKE-BOOT', size_bytes=16000000000... read_only=False, wwn='', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).boot_identified
+
+../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py:90: AssertionError
+_ test_production_discovery_does_not_protect_pseudo_source_disk[overlay-False] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3950b976b0>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-104/test_production_discovery_does2')
+filesystem = 'overlay', expected = False
+
+    @pytest.mark.parametrize('filesystem,expected', CASES)
+    def test_production_discovery_does_not_protect_pseudo_source_disk(monkeypatch, tmp_path, filesystem, expected):
+        effects = forbid_native(monkeypatch)
+        monkeypatch.setenv('BEAMO_WIPE_DRY_RUN', '1')
+        monkeypatch.delenv('BEAMO_WIPE_LIVE', raising=False)
+        fake = tmp_path/'mountinfo';fake.write_text(table(filesystem))
+        monkeypatch.setattr(D, 'MOUNTINFO_PATH', str(fake))
+        monkeypatch.setattr(D, 'read_cmdline', lambda: 'boot=live')
+        payload = {'blockdevices':[
+            {'name':'sdb','path':'/dev/sdb','type':'disk','size':16000000000,
+             'tran':'usb','rota':False,'ro':False,'mountpoints':[],
+             'serial':'FAKE-BOOT','model':'Fake boot','children':[
+                 {'name':'sdb1','path':'/dev/sdb1','type':'part','size':15000000000,
+                  'pkname':'sdb','ro':False,'mountpoints':[],'fstype':filesystem},
+             ]},
+            {'name':'sda','path':'/dev/sda','type':'disk','size':256000000000,
+             'tran':'sata','rota':False,'ro':False,'mountpoints':[],
+             'serial':'FAKE-DATA','model':'Fake data'},
+        ]}
+        monkeypatch.setattr(D, 'run_lsblk', lambda: payload)
+        def fake_findmnt(mountpoint):
+            return SimpleNamespace(returncode=0 if mountpoint=='/run/live/medium' else 1,
+                                   stdout='/dev/sdb1\n' if mountpoint=='/run/live/medium' else '',stderr='')
+        monkeypatch.setattr(D, '_run_findmnt', fake_findmnt)
+        result = D.discover(env={})
+        assert not effects
+        if expected:
+            assert result.boot_identified and result.boot.path=='/dev/sdb'
+            assert [disk.path for disk in result.selectable]==['/dev/sda']
+        else:
+>           assert not result.boot_identified and not result.selectable
+E           AssertionError: assert (not True)
+E            +  where True = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Fake boot', serial='FAKE-BOOT', size_bytes=16000000000... read_only=False, wwn='', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).boot_identified
+
+../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py:90: AssertionError
+__ test_production_discovery_does_not_protect_pseudo_source_disk[proc-False] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3950b97c50>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-104/test_production_discovery_does3')
+filesystem = 'proc', expected = False
+
+    @pytest.mark.parametrize('filesystem,expected', CASES)
+    def test_production_discovery_does_not_protect_pseudo_source_disk(monkeypatch, tmp_path, filesystem, expected):
+        effects = forbid_native(monkeypatch)
+        monkeypatch.setenv('BEAMO_WIPE_DRY_RUN', '1')
+        monkeypatch.delenv('BEAMO_WIPE_LIVE', raising=False)
+        fake = tmp_path/'mountinfo';fake.write_text(table(filesystem))
+        monkeypatch.setattr(D, 'MOUNTINFO_PATH', str(fake))
+        monkeypatch.setattr(D, 'read_cmdline', lambda: 'boot=live')
+        payload = {'blockdevices':[
+            {'name':'sdb','path':'/dev/sdb','type':'disk','size':16000000000,
+             'tran':'usb','rota':False,'ro':False,'mountpoints':[],
+             'serial':'FAKE-BOOT','model':'Fake boot','children':[
+                 {'name':'sdb1','path':'/dev/sdb1','type':'part','size':15000000000,
+                  'pkname':'sdb','ro':False,'mountpoints':[],'fstype':filesystem},
+             ]},
+            {'name':'sda','path':'/dev/sda','type':'disk','size':256000000000,
+             'tran':'sata','rota':False,'ro':False,'mountpoints':[],
+             'serial':'FAKE-DATA','model':'Fake data'},
+        ]}
+        monkeypatch.setattr(D, 'run_lsblk', lambda: payload)
+        def fake_findmnt(mountpoint):
+            return SimpleNamespace(returncode=0 if mountpoint=='/run/live/medium' else 1,
+                                   stdout='/dev/sdb1\n' if mountpoint=='/run/live/medium' else '',stderr='')
+        monkeypatch.setattr(D, '_run_findmnt', fake_findmnt)
+        result = D.discover(env={})
+        assert not effects
+        if expected:
+            assert result.boot_identified and result.boot.path=='/dev/sdb'
+            assert [disk.path for disk in result.selectable]==['/dev/sda']
+        else:
+>           assert not result.boot_identified and not result.selectable
+E           AssertionError: assert (not True)
+E            +  where True = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Fake boot', serial='FAKE-BOOT', size_bytes=16000000000... read_only=False, wwn='', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).boot_identified
+
+../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py:90: AssertionError
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py::test_live_gate_requires_block_backed_filesystem[tmpfs-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py::test_live_gate_requires_block_backed_filesystem[ramfs-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py::test_live_gate_requires_block_backed_filesystem[overlay-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py::test_live_gate_requires_block_backed_filesystem[proc-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py::test_real_nwipe_gate_refuses_non_media_filesystem[tmpfs-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py::test_real_nwipe_gate_refuses_non_media_filesystem[ramfs-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py::test_real_nwipe_gate_refuses_non_media_filesystem[overlay-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py::test_real_nwipe_gate_refuses_non_media_filesystem[proc-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py::test_production_discovery_does_not_protect_pseudo_source_disk[tmpfs-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py::test_production_discovery_does_not_protect_pseudo_source_disk[ramfs-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py::test_production_discovery_does_not_protect_pseudo_source_disk[overlay-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py::test_production_discovery_does_not_protect_pseudo_source_disk[proc-False]
+12 failed, 9 passed in 0.18s

@@ -1,0 +1,26 @@
+{
+  "lint": {
+    "exit": 1,
+    "output": "tests/test_live_filesystem_kind_pass7_20261021.py:7:8: F401 [*] `beamo_wipe.nwipe_runner` imported but unused\n  |\n6 | import beamo_wipe.app\n7 | import beamo_wipe.nwipe_runner\n  |        ^^^^^^^^^^^^^^^^^^^^^^^ F401\n8 | from beamo_wipe import discover as D\n9 | from beamo_wipe import safety as S\n  |\n  = help: Remove unused import: `beamo_wipe.nwipe_runner`\n\nFound 1 error.\n[*] 1 fixable with the `--fix` option.\n"
+  },
+  "source-security": {
+    "exit": 0,
+    "output": "All checks passed!\n"
+  },
+  "test-security": {
+    "exit": 0,
+    "output": "All checks passed!\n"
+  },
+  "mypy": {
+    "exit": 0,
+    "output": "Success: no issues found in 1 source file\n"
+  },
+  "diff-check": {
+    "exit": 0,
+    "output": ""
+  },
+  "python310-grammar": {
+    "exit": 0,
+    "scope": "syntax only, not native Python 3.10 runtime qualification"
+  }
+}

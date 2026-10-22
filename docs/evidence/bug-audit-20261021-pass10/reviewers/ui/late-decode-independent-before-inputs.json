@@ -1,0 +1,8 @@
+{
+  "baseline": "7047dfb8c22d0b17faad2d5de1ec470b2debfaac",
+  "app_sha256": "03f394a55c33e835686ba50818b623443fca2321f06f7e418dbd91ad8b9718bc",
+  "test_sha256": "10caef216c32e3855517dfcf94d5b5b43d3a218e0b83a63a80f7f24bf1128280",
+  "actual_red_failures": 2,
+  "passing_controls": 2,
+  "native_callbacks": 0
+}

@@ -1,0 +1,88 @@
+{
+  "baseline_commit": "e4871239f02e46137fb6d8df64b5880ae2ea4b4d",
+  "state": "OWNED SOURCE/TESTS FROZEN AND RELEASED TO ROOT",
+  "finding": {
+    "id": "RECOVERY-PASS5-NAMED-READ",
+    "trigger": "The named recovery journal is renamed/replaced or becomes a link after open returns its descriptor, before read validation snapshots.",
+    "original_effect": "SessionStore.open accepts obsolete valid preflight bytes while the current name points at corrupt/linked foreign state; read has no named inode binding. Mid-read removal must not be treated as initially missing state. No erase authority restoration claim.",
+    "independent_root_validation": "Root replayed original proof:2FAIL/1unchanged controlPASS before approving edits.",
+    "fix": "Verify full nofollow named metadata matches the opened regular/private inode before reading and after final fd metadata. Reject post-open missing/replaced names as SafetyError, retaining existing fd, owner, mode, link, size/time and directory guards.",
+    "new_regressions": 47,
+    "regression_scope": "Journal, evidence and sidecar reads at after-open, during-read and final-fstat boundaries; regular/link/directory/removal replacement preservation, descriptor closure, unchanged short/repeated reads and corrected reopen ownership.",
+    "compatibility": "Initial missing-file handling and public exception/return contracts unchanged; no atomic filesystem compare-and-read claim."
+  },
+  "checks": {
+    "recovery-named-open-before": {
+      "cases": 3,
+      "failed": 2,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 1
+    },
+    "regressions-original": {
+      "cases": 47,
+      "failed": 29,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 18
+    },
+    "regressions-fixed": {
+      "cases": 50,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 50
+    },
+    "adjacent-fixed": {
+      "cases": 1026,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 1026
+    }
+  },
+  "supplemental_sharing_matrix": {
+    "cases": 396,
+    "saved_languages": [
+      "en",
+      "fr",
+      "de"
+    ],
+    "report_languages": [
+      "en",
+      "fr",
+      "de"
+    ],
+    "outcomes": 11,
+    "identifier_forms": 4,
+    "semantic_or_redaction_failures": 0,
+    "native_effects": 0,
+    "original_evidence_mutations": 0,
+    "source_sha256": {
+      "src/beamo_wipe/privacy.py": "bcb9c6ce4764a7e6df54b970aede4003c3f90357535fc42530b831eeef0face2",
+      "src/beamo_wipe/result_summary.py": "b059c558e913348887a24b2ade36b8e34bfa01aa7acb1e64ee8a47e996cdb430",
+      "src/beamo_wipe/outcomes.py": "4af35b516e728d1b46fd8b242346c7ded29e61a0bbb9e827a617d155267bd8ba"
+    }
+  },
+  "lint": "Targeted Ruff PASS; git diff --check PASS",
+  "python310": "Changed Python files parse with3.10grammar; no separate3.10 runtime acceptance",
+  "reviewed": [
+    "session_recovery.py read/schema/owner lock/rotation/quiescence/terminal evidence binding",
+    "report_intent.py preference atomic save and private named/directory ownership",
+    "support_export.py baseline/export USB selection/controller-worker protocol/checksum/locale/receipt validation/log snapshot/mount-lock-readback-cleanup",
+    "privacy.py sharing allowlist, identifiers and canonical semantic fields",
+    "outcomes.py and result_summary.py method/result/verification/locale consistency and text/HTML sanitization",
+    "diagnostic_report.py strict duplicate-free schema/build/copy/clock classification",
+    "recovery.py owner-facing outcome/export/startup recovery sections"
+  ],
+  "source_original_sha256": "30eca99c79190a87952041de9499bd2c4d412cc64cbed9fe8f3a656d0938c858",
+  "final_sha256": {
+    "src/beamo_wipe/session_recovery.py": "24d7f6bee0109108b59137206894636c9b01e3dae7fb8908f377b57a2359459c",
+    "tests/test_recovery_named_read_pass5_20261021.py": "f0265b99091a4acc4b2f903bf2712f57704606a85636f72ad726da1652571c3c"
+  },
+  "limitations": [
+    "All custom probes have native effect fail sentinels and use ordinary temporary files/fake records. Existing adjacent tests use their established fake boundaries.",
+    "No original test assertion was changed. No further verified defect promoted in this bounded review.",
+    "No staging, commit, remote publication, actual device/nwipe/mount/power/firmware, hosted CI or qualification performed. Root owns integration, backlog, final source freeze and full gates."
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "baseline": "b46e5642d4c849d503b41d8bf562cfb1f9fad68b",
+  "product_sha256": "84dedc2a582ed89f245b1b880200ccfbeab15fb8bd1655ddd9c2b2891166e0d3",
+  "test_sha256": "22a900fd9b1f016ab7da5e8a0e2dea88086c002cb24bf457d24cbeda57f49839",
+  "new_test": "desktop/output_deadline_pass11_20261021_test.go",
+  "helper_processes": "Only this Go test executable; every finite descendant has an owned completion receipt; child race exit pause removed without disabling race detection",
+  "native_callbacks": 0
+}

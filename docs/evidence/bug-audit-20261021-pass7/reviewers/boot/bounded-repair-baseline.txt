@@ -1,0 +1,888 @@
+......FF..FFFFFFFFFFFFFFFF..............                                 [100%]
+=================================== FAILURES ===================================
+_____ test_runtime_markers_return_a_conservative_boolean[undecodable-live] _____
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_runtime_markers_return_a_6/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+payload = b'boot=live label=\xff', error = None, mounted = False
+mount_error = None, expected = True
+
+    @pytest.mark.parametrize(
+        "payload,error,mounted,mount_error,expected",
+        [
+            (b"quiet splash", None, False, None, False),
+            ("quiet label=caf\u00e9".encode(), None, False, None, False),
+            (b"boot=live quiet", None, False, None, True),
+            ("boot=live label=caf\u00e9".encode(), None, False, None, True),
+            (b"", PermissionError("fixture denied"), False, None, True),
+            (b"", OSError("fixture read failure"), False, None, True),
+            (b"boot=live label=\xff", None, False, None, True),
+            (b"quiet label=\xff", None, False, None, True),
+            (b"quiet", None, True, None, True),
+            (b"quiet", None, False, OSError("fixture mount failure"), True),
+        ],
+        ids=(
+            "normal",
+            "unicode-normal",
+            "live",
+            "unicode-live",
+            "permission-denied",
+            "read-failure",
+            "undecodable-live",
+            "undecodable-normal",
+            "mounted-live",
+            "mount-failure",
+        ),
+    )
+    def test_runtime_markers_return_a_conservative_boolean(
+        runtime, payload, error, mounted, mount_error, expected
+    ):
+        dev, marker, state, calls = runtime
+        marker.write_bytes(payload)
+        state.update(read_error=error, mounted=mounted, mount_error=mount_error)
+>       assert dev.live_environment() is expected
+               ^^^^^^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:98: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f6514a4e6f0>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+____ test_runtime_markers_return_a_conservative_boolean[undecodable-normal] ____
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_runtime_markers_return_a_7/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+payload = b'quiet label=\xff', error = None, mounted = False, mount_error = None
+expected = True
+
+    @pytest.mark.parametrize(
+        "payload,error,mounted,mount_error,expected",
+        [
+            (b"quiet splash", None, False, None, False),
+            ("quiet label=caf\u00e9".encode(), None, False, None, False),
+            (b"boot=live quiet", None, False, None, True),
+            ("boot=live label=caf\u00e9".encode(), None, False, None, True),
+            (b"", PermissionError("fixture denied"), False, None, True),
+            (b"", OSError("fixture read failure"), False, None, True),
+            (b"boot=live label=\xff", None, False, None, True),
+            (b"quiet label=\xff", None, False, None, True),
+            (b"quiet", None, True, None, True),
+            (b"quiet", None, False, OSError("fixture mount failure"), True),
+        ],
+        ids=(
+            "normal",
+            "unicode-normal",
+            "live",
+            "unicode-live",
+            "permission-denied",
+            "read-failure",
+            "undecodable-live",
+            "undecodable-normal",
+            "mounted-live",
+            "mount-failure",
+        ),
+    )
+    def test_runtime_markers_return_a_conservative_boolean(
+        runtime, payload, error, mounted, mount_error, expected
+    ):
+        dev, marker, state, calls = runtime
+        marker.write_bytes(payload)
+        state.update(read_error=error, mounted=mounted, mount_error=mount_error)
+>       assert dev.live_environment() is expected
+               ^^^^^^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:98: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f65148f5730>
+input = b'quiet label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 12: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+________ test_undecodable_runtime_refuses_before_command_helpers[setup] ________
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_undecodable_runtime_refus0/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+command = ('setup',)
+capsys = <_pytest.capture.CaptureFixture object at 0x7f6514bbf8c0>
+
+    @pytest.mark.parametrize("command", COMMANDS, ids=lambda argv: "-".join(argv))
+    def test_undecodable_runtime_refuses_before_command_helpers(runtime, command, capsys):
+        dev, marker, _, calls = runtime
+        marker.write_bytes(b"boot=live label=\xff")
+>       assert dev.main(command) == 2
+               ^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:303: in main
+    if live_environment():
+       ^^^^^^^^^^^^^^^^^^
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f6514997b30>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+___ test_undecodable_runtime_refuses_before_command_helpers[setup---native] ____
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_undecodable_runtime_refus1/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+command = ('setup', '--native')
+capsys = <_pytest.capture.CaptureFixture object at 0x7f65149f3b10>
+
+    @pytest.mark.parametrize("command", COMMANDS, ids=lambda argv: "-".join(argv))
+    def test_undecodable_runtime_refuses_before_command_helpers(runtime, command, capsys):
+        dev, marker, _, calls = runtime
+        marker.write_bytes(b"boot=live label=\xff")
+>       assert dev.main(command) == 2
+               ^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:303: in main
+    if live_environment():
+       ^^^^^^^^^^^^^^^^^^
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f6514997bf0>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+________ test_undecodable_runtime_refuses_before_command_helpers[test] _________
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_undecodable_runtime_refus2/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+command = ('test',)
+capsys = <_pytest.capture.CaptureFixture object at 0x7f6514a80a50>
+
+    @pytest.mark.parametrize("command", COMMANDS, ids=lambda argv: "-".join(argv))
+    def test_undecodable_runtime_refuses_before_command_helpers(runtime, command, capsys):
+        dev, marker, _, calls = runtime
+        marker.write_bytes(b"boot=live label=\xff")
+>       assert dev.main(command) == 2
+               ^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:303: in main
+    if live_environment():
+       ^^^^^^^^^^^^^^^^^^
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f651496b590>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+____ test_undecodable_runtime_refuses_before_command_helpers[test---native] ____
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_undecodable_runtime_refus3/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+command = ('test', '--native')
+capsys = <_pytest.capture.CaptureFixture object at 0x7f6514a783e0>
+
+    @pytest.mark.parametrize("command", COMMANDS, ids=lambda argv: "-".join(argv))
+    def test_undecodable_runtime_refuses_before_command_helpers(runtime, command, capsys):
+        dev, marker, _, calls = runtime
+        marker.write_bytes(b"boot=live label=\xff")
+>       assert dev.main(command) == 2
+               ^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:303: in main
+    if live_environment():
+       ^^^^^^^^^^^^^^^^^^
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f6514997710>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+_______ test_undecodable_runtime_refuses_before_command_helpers[preview] _______
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_undecodable_runtime_refus4/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+command = ('preview',)
+capsys = <_pytest.capture.CaptureFixture object at 0x7f6514a78640>
+
+    @pytest.mark.parametrize("command", COMMANDS, ids=lambda argv: "-".join(argv))
+    def test_undecodable_runtime_refuses_before_command_helpers(runtime, command, capsys):
+        dev, marker, _, calls = runtime
+        marker.write_bytes(b"boot=live label=\xff")
+>       assert dev.main(command) == 2
+               ^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:303: in main
+    if live_environment():
+       ^^^^^^^^^^^^^^^^^^
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f6514968110>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+____ test_undecodable_runtime_refuses_before_command_helpers[preview---web] ____
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_undecodable_runtime_refus5/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+command = ('preview', '--web')
+capsys = <_pytest.capture.CaptureFixture object at 0x7f6514b2f770>
+
+    @pytest.mark.parametrize("command", COMMANDS, ids=lambda argv: "-".join(argv))
+    def test_undecodable_runtime_refuses_before_command_helpers(runtime, command, capsys):
+        dev, marker, _, calls = runtime
+        marker.write_bytes(b"boot=live label=\xff")
+>       assert dev.main(command) == 2
+               ^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:303: in main
+    if live_environment():
+       ^^^^^^^^^^^^^^^^^^
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f651496a750>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+__ test_undecodable_runtime_refuses_before_command_helpers[preview---console] __
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_undecodable_runtime_refus6/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+command = ('preview', '--console')
+capsys = <_pytest.capture.CaptureFixture object at 0x7f65149e7df0>
+
+    @pytest.mark.parametrize("command", COMMANDS, ids=lambda argv: "-".join(argv))
+    def test_undecodable_runtime_refuses_before_command_helpers(runtime, command, capsys):
+        dev, marker, _, calls = runtime
+        marker.write_bytes(b"boot=live label=\xff")
+>       assert dev.main(command) == 2
+               ^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:303: in main
+    if live_environment():
+       ^^^^^^^^^^^^^^^^^^
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f651496af90>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+____ test_undecodable_runtime_refuses_before_command_helpers[desktop-build] ____
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_undecodable_runtime_refus7/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+command = ('desktop-build',)
+capsys = <_pytest.capture.CaptureFixture object at 0x7f651495dd00>
+
+    @pytest.mark.parametrize("command", COMMANDS, ids=lambda argv: "-".join(argv))
+    def test_undecodable_runtime_refuses_before_command_helpers(runtime, command, capsys):
+        dev, marker, _, calls = runtime
+        marker.write_bytes(b"boot=live label=\xff")
+>       assert dev.main(command) == 2
+               ^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:303: in main
+    if live_environment():
+       ^^^^^^^^^^^^^^^^^^
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f651496bc50>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+____ test_undecodable_runtime_refuses_before_command_helpers[desktop-test] _____
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_undecodable_runtime_refus8/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+command = ('desktop-test',)
+capsys = <_pytest.capture.CaptureFixture object at 0x7f6514730350>
+
+    @pytest.mark.parametrize("command", COMMANDS, ids=lambda argv: "-".join(argv))
+    def test_undecodable_runtime_refuses_before_command_helpers(runtime, command, capsys):
+        dev, marker, _, calls = runtime
+        marker.write_bytes(b"boot=live label=\xff")
+>       assert dev.main(command) == 2
+               ^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:303: in main
+    if live_environment():
+       ^^^^^^^^^^^^^^^^^^
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f6514968b30>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+____ test_undecodable_runtime_doctor_reports_blocked_without_probes[local] _____
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_undecodable_runtime_docto0/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+operation = 'local'
+capsys = <_pytest.capture.CaptureFixture object at 0x7f65149fba50>
+
+    @pytest.mark.parametrize(
+        "operation",
+        (
+            "local",
+            "test",
+            "test-native",
+            "preview",
+            "preview-web",
+            "desktop",
+            "qualification",
+        ),
+    )
+    def test_undecodable_runtime_doctor_reports_blocked_without_probes(
+        runtime, operation, capsys
+    ):
+        dev, marker, _, calls = runtime
+        marker.write_bytes(b"boot=live label=\xff")
+>       assert dev.main(["doctor", "--for", operation]) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:302: in main
+    return doctor(args.operation)
+           ^^^^^^^^^^^^^^^^^^^^^^
+dev.py:133: in doctor
+    "live_environment": live_environment(),
+                        ^^^^^^^^^^^^^^^^^^
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f6514969010>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+_____ test_undecodable_runtime_doctor_reports_blocked_without_probes[test] _____
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_undecodable_runtime_docto1/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+operation = 'test'
+capsys = <_pytest.capture.CaptureFixture object at 0x7f6514949b80>
+
+    @pytest.mark.parametrize(
+        "operation",
+        (
+            "local",
+            "test",
+            "test-native",
+            "preview",
+            "preview-web",
+            "desktop",
+            "qualification",
+        ),
+    )
+    def test_undecodable_runtime_doctor_reports_blocked_without_probes(
+        runtime, operation, capsys
+    ):
+        dev, marker, _, calls = runtime
+        marker.write_bytes(b"boot=live label=\xff")
+>       assert dev.main(["doctor", "--for", operation]) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:302: in main
+    return doctor(args.operation)
+           ^^^^^^^^^^^^^^^^^^^^^^
+dev.py:133: in doctor
+    "live_environment": live_environment(),
+                        ^^^^^^^^^^^^^^^^^^
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f651496bfb0>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+_ test_undecodable_runtime_doctor_reports_blocked_without_probes[test-native] __
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_undecodable_runtime_docto2/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+operation = 'test-native'
+capsys = <_pytest.capture.CaptureFixture object at 0x7f651494a210>
+
+    @pytest.mark.parametrize(
+        "operation",
+        (
+            "local",
+            "test",
+            "test-native",
+            "preview",
+            "preview-web",
+            "desktop",
+            "qualification",
+        ),
+    )
+    def test_undecodable_runtime_doctor_reports_blocked_without_probes(
+        runtime, operation, capsys
+    ):
+        dev, marker, _, calls = runtime
+        marker.write_bytes(b"boot=live label=\xff")
+>       assert dev.main(["doctor", "--for", operation]) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:302: in main
+    return doctor(args.operation)
+           ^^^^^^^^^^^^^^^^^^^^^^
+dev.py:133: in doctor
+    "live_environment": live_environment(),
+                        ^^^^^^^^^^^^^^^^^^
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f6514960410>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+___ test_undecodable_runtime_doctor_reports_blocked_without_probes[preview] ____
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_undecodable_runtime_docto3/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+operation = 'preview'
+capsys = <_pytest.capture.CaptureFixture object at 0x7f6514a19630>
+
+    @pytest.mark.parametrize(
+        "operation",
+        (
+            "local",
+            "test",
+            "test-native",
+            "preview",
+            "preview-web",
+            "desktop",
+            "qualification",
+        ),
+    )
+    def test_undecodable_runtime_doctor_reports_blocked_without_probes(
+        runtime, operation, capsys
+    ):
+        dev, marker, _, calls = runtime
+        marker.write_bytes(b"boot=live label=\xff")
+>       assert dev.main(["doctor", "--for", operation]) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:302: in main
+    return doctor(args.operation)
+           ^^^^^^^^^^^^^^^^^^^^^^
+dev.py:133: in doctor
+    "live_environment": live_environment(),
+                        ^^^^^^^^^^^^^^^^^^
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f651496bfb0>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+_ test_undecodable_runtime_doctor_reports_blocked_without_probes[preview-web] __
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_undecodable_runtime_docto4/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+operation = 'preview-web'
+capsys = <_pytest.capture.CaptureFixture object at 0x7f6514aa9ef0>
+
+    @pytest.mark.parametrize(
+        "operation",
+        (
+            "local",
+            "test",
+            "test-native",
+            "preview",
+            "preview-web",
+            "desktop",
+            "qualification",
+        ),
+    )
+    def test_undecodable_runtime_doctor_reports_blocked_without_probes(
+        runtime, operation, capsys
+    ):
+        dev, marker, _, calls = runtime
+        marker.write_bytes(b"boot=live label=\xff")
+>       assert dev.main(["doctor", "--for", operation]) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:302: in main
+    return doctor(args.operation)
+           ^^^^^^^^^^^^^^^^^^^^^^
+dev.py:133: in doctor
+    "live_environment": live_environment(),
+                        ^^^^^^^^^^^^^^^^^^
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f6514960950>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+___ test_undecodable_runtime_doctor_reports_blocked_without_probes[desktop] ____
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_undecodable_runtime_docto5/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+operation = 'desktop'
+capsys = <_pytest.capture.CaptureFixture object at 0x7f65148e81f0>
+
+    @pytest.mark.parametrize(
+        "operation",
+        (
+            "local",
+            "test",
+            "test-native",
+            "preview",
+            "preview-web",
+            "desktop",
+            "qualification",
+        ),
+    )
+    def test_undecodable_runtime_doctor_reports_blocked_without_probes(
+        runtime, operation, capsys
+    ):
+        dev, marker, _, calls = runtime
+        marker.write_bytes(b"boot=live label=\xff")
+>       assert dev.main(["doctor", "--for", operation]) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:302: in main
+    return doctor(args.operation)
+           ^^^^^^^^^^^^^^^^^^^^^^
+dev.py:133: in doctor
+    "live_environment": live_environment(),
+                        ^^^^^^^^^^^^^^^^^^
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f6514963b30>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+_ test_undecodable_runtime_doctor_reports_blocked_without_probes[qualification] _
+
+runtime = (<module 'dev_runtime' from '/workspace/beamo-wipe/dev.py'>, PosixPath('/tmp/pytest-of-agent/pytest-127/test_undecodable_runtime_docto6/cmdline'), {'mount_error': None, 'mounted': False, 'read_error': None}, ['read-marker'])
+operation = 'qualification'
+capsys = <_pytest.capture.CaptureFixture object at 0x7f651492b710>
+
+    @pytest.mark.parametrize(
+        "operation",
+        (
+            "local",
+            "test",
+            "test-native",
+            "preview",
+            "preview-web",
+            "desktop",
+            "qualification",
+        ),
+    )
+    def test_undecodable_runtime_doctor_reports_blocked_without_probes(
+        runtime, operation, capsys
+    ):
+        dev, marker, _, calls = runtime
+        marker.write_bytes(b"boot=live label=\xff")
+>       assert dev.main(["doctor", "--for", operation]) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:302: in main
+    return doctor(args.operation)
+           ^^^^^^^^^^^^^^^^^^^^^^
+dev.py:133: in doctor
+    "live_environment": live_environment(),
+                        ^^^^^^^^^^^^^^^^^^
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+developer_tests/test_dev_runtime_decode_pass7_20261021.py:45: in read
+    return read_text(marker, encoding="utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7f6514961a90>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+=========================== short test summary info ============================
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_runtime_markers_return_a_conservative_boolean[undecodable-live]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_runtime_markers_return_a_conservative_boolean[undecodable-normal]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_undecodable_runtime_refuses_before_command_helpers[setup]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_undecodable_runtime_refuses_before_command_helpers[setup---native]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_undecodable_runtime_refuses_before_command_helpers[test]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_undecodable_runtime_refuses_before_command_helpers[test---native]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_undecodable_runtime_refuses_before_command_helpers[preview]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_undecodable_runtime_refuses_before_command_helpers[preview---web]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_undecodable_runtime_refuses_before_command_helpers[preview---console]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_undecodable_runtime_refuses_before_command_helpers[desktop-build]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_undecodable_runtime_refuses_before_command_helpers[desktop-test]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_undecodable_runtime_doctor_reports_blocked_without_probes[local]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_undecodable_runtime_doctor_reports_blocked_without_probes[test]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_undecodable_runtime_doctor_reports_blocked_without_probes[test-native]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_undecodable_runtime_doctor_reports_blocked_without_probes[preview]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_undecodable_runtime_doctor_reports_blocked_without_probes[preview-web]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_undecodable_runtime_doctor_reports_blocked_without_probes[desktop]
+FAILED developer_tests/test_dev_runtime_decode_pass7_20261021.py::test_undecodable_runtime_doctor_reports_blocked_without_probes[qualification]
+18 failed, 22 passed in 0.62s

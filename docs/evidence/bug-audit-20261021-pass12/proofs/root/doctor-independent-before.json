@@ -1,0 +1,28 @@
+{
+  "results": [
+    {
+      "name": "normal",
+      "status": 0,
+      "structured": true,
+      "pass": true
+    },
+    {
+      "name": "malformed",
+      "status": 2,
+      "structured": true,
+      "pass": true
+    },
+    {
+      "name": "deep-object",
+      "exception": "RecursionError",
+      "structured": false,
+      "pass": false
+    },
+    {
+      "name": "deep-array",
+      "exception": "RecursionError",
+      "structured": false,
+      "pass": false
+    }
+  ]
+}

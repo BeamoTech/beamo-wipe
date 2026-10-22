@@ -1,0 +1,1894 @@
+[
+  {
+    "lanes": [
+      false,
+      false,
+      false
+    ],
+    "cancelled": [
+      false,
+      false,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      false
+    ],
+    "cancelled": [
+      false,
+      false,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      false
+    ],
+    "cancelled": [
+      false,
+      false,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      false
+    ],
+    "cancelled": [
+      false,
+      false,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      false
+    ],
+    "cancelled": [
+      false,
+      true,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      false
+    ],
+    "cancelled": [
+      false,
+      true,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      false
+    ],
+    "cancelled": [
+      false,
+      true,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      false
+    ],
+    "cancelled": [
+      false,
+      true,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      false
+    ],
+    "cancelled": [
+      true,
+      false,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      false
+    ],
+    "cancelled": [
+      true,
+      false,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      false
+    ],
+    "cancelled": [
+      true,
+      false,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      false
+    ],
+    "cancelled": [
+      true,
+      false,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      false
+    ],
+    "cancelled": [
+      true,
+      true,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      false
+    ],
+    "cancelled": [
+      true,
+      true,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      false
+    ],
+    "cancelled": [
+      true,
+      true,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      false
+    ],
+    "cancelled": [
+      true,
+      true,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      true
+    ],
+    "cancelled": [
+      false,
+      false,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2,
+      1
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      true
+    ],
+    "cancelled": [
+      false,
+      false,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      true
+    ],
+    "cancelled": [
+      false,
+      false,
+      true
+    ],
+    "close_first": false,
+    "actions": [
+      1
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      true
+    ],
+    "cancelled": [
+      false,
+      false,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      true
+    ],
+    "cancelled": [
+      false,
+      true,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      true
+    ],
+    "cancelled": [
+      false,
+      true,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      true
+    ],
+    "cancelled": [
+      false,
+      true,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      true
+    ],
+    "cancelled": [
+      false,
+      true,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      true
+    ],
+    "cancelled": [
+      true,
+      false,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2,
+      1
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      true
+    ],
+    "cancelled": [
+      true,
+      false,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      true
+    ],
+    "cancelled": [
+      true,
+      false,
+      true
+    ],
+    "close_first": false,
+    "actions": [
+      1
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      true
+    ],
+    "cancelled": [
+      true,
+      false,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      true
+    ],
+    "cancelled": [
+      true,
+      true,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      true
+    ],
+    "cancelled": [
+      true,
+      true,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      true
+    ],
+    "cancelled": [
+      true,
+      true,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      false,
+      true
+    ],
+    "cancelled": [
+      true,
+      true,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      false
+    ],
+    "cancelled": [
+      false,
+      false,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      1,
+      2
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      false
+    ],
+    "cancelled": [
+      false,
+      false,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      false
+    ],
+    "cancelled": [
+      false,
+      false,
+      true
+    ],
+    "close_first": false,
+    "actions": [
+      1
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      false
+    ],
+    "cancelled": [
+      false,
+      false,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      false
+    ],
+    "cancelled": [
+      false,
+      true,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      false
+    ],
+    "cancelled": [
+      false,
+      true,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      false
+    ],
+    "cancelled": [
+      false,
+      true,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      false
+    ],
+    "cancelled": [
+      false,
+      true,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      false
+    ],
+    "cancelled": [
+      true,
+      false,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      1,
+      2
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      false
+    ],
+    "cancelled": [
+      true,
+      false,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      false
+    ],
+    "cancelled": [
+      true,
+      false,
+      true
+    ],
+    "close_first": false,
+    "actions": [
+      1
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      false
+    ],
+    "cancelled": [
+      true,
+      false,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      false
+    ],
+    "cancelled": [
+      true,
+      true,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      false
+    ],
+    "cancelled": [
+      true,
+      true,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      false
+    ],
+    "cancelled": [
+      true,
+      true,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      false
+    ],
+    "cancelled": [
+      true,
+      true,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      true
+    ],
+    "cancelled": [
+      false,
+      false,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2,
+      0
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      true
+    ],
+    "cancelled": [
+      false,
+      false,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      true
+    ],
+    "cancelled": [
+      false,
+      false,
+      true
+    ],
+    "close_first": false,
+    "actions": [
+      0
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      true
+    ],
+    "cancelled": [
+      false,
+      false,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      true
+    ],
+    "cancelled": [
+      false,
+      true,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2,
+      0
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      true
+    ],
+    "cancelled": [
+      false,
+      true,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      true
+    ],
+    "cancelled": [
+      false,
+      true,
+      true
+    ],
+    "close_first": false,
+    "actions": [
+      0
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      true
+    ],
+    "cancelled": [
+      false,
+      true,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      true
+    ],
+    "cancelled": [
+      true,
+      false,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      true
+    ],
+    "cancelled": [
+      true,
+      false,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      true
+    ],
+    "cancelled": [
+      true,
+      false,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      true
+    ],
+    "cancelled": [
+      true,
+      false,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      true
+    ],
+    "cancelled": [
+      true,
+      true,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      true
+    ],
+    "cancelled": [
+      true,
+      true,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      true
+    ],
+    "cancelled": [
+      true,
+      true,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      false,
+      true,
+      true
+    ],
+    "cancelled": [
+      true,
+      true,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      false
+    ],
+    "cancelled": [
+      false,
+      false,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      0,
+      2
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      false
+    ],
+    "cancelled": [
+      false,
+      false,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      false
+    ],
+    "cancelled": [
+      false,
+      false,
+      true
+    ],
+    "close_first": false,
+    "actions": [
+      0
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      false
+    ],
+    "cancelled": [
+      false,
+      false,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      false
+    ],
+    "cancelled": [
+      false,
+      true,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      0,
+      2
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      false
+    ],
+    "cancelled": [
+      false,
+      true,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      false
+    ],
+    "cancelled": [
+      false,
+      true,
+      true
+    ],
+    "close_first": false,
+    "actions": [
+      0
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      false
+    ],
+    "cancelled": [
+      false,
+      true,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      false
+    ],
+    "cancelled": [
+      true,
+      false,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      false
+    ],
+    "cancelled": [
+      true,
+      false,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      false
+    ],
+    "cancelled": [
+      true,
+      false,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      false
+    ],
+    "cancelled": [
+      true,
+      false,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      false
+    ],
+    "cancelled": [
+      true,
+      true,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      false
+    ],
+    "cancelled": [
+      true,
+      true,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      false
+    ],
+    "cancelled": [
+      true,
+      true,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      false
+    ],
+    "cancelled": [
+      true,
+      true,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      true
+    ],
+    "cancelled": [
+      false,
+      false,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2,
+      1
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      true
+    ],
+    "cancelled": [
+      false,
+      false,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      true
+    ],
+    "cancelled": [
+      false,
+      false,
+      true
+    ],
+    "close_first": false,
+    "actions": [
+      1
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      true
+    ],
+    "cancelled": [
+      false,
+      false,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      true
+    ],
+    "cancelled": [
+      false,
+      true,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      true
+    ],
+    "cancelled": [
+      false,
+      true,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      true
+    ],
+    "cancelled": [
+      false,
+      true,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      true
+    ],
+    "cancelled": [
+      false,
+      true,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      true
+    ],
+    "cancelled": [
+      true,
+      false,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2,
+      1
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      true
+    ],
+    "cancelled": [
+      true,
+      false,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      true
+    ],
+    "cancelled": [
+      true,
+      false,
+      true
+    ],
+    "close_first": false,
+    "actions": [
+      1
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      true
+    ],
+    "cancelled": [
+      true,
+      false,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      true
+    ],
+    "cancelled": [
+      true,
+      true,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      true
+    ],
+    "cancelled": [
+      true,
+      true,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      true
+    ],
+    "cancelled": [
+      true,
+      true,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      false,
+      true
+    ],
+    "cancelled": [
+      true,
+      true,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      false
+    ],
+    "cancelled": [
+      false,
+      false,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      1,
+      2
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      false
+    ],
+    "cancelled": [
+      false,
+      false,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      false
+    ],
+    "cancelled": [
+      false,
+      false,
+      true
+    ],
+    "close_first": false,
+    "actions": [
+      1
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      false
+    ],
+    "cancelled": [
+      false,
+      false,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      false
+    ],
+    "cancelled": [
+      false,
+      true,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      false
+    ],
+    "cancelled": [
+      false,
+      true,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      false
+    ],
+    "cancelled": [
+      false,
+      true,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      false
+    ],
+    "cancelled": [
+      false,
+      true,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      false
+    ],
+    "cancelled": [
+      true,
+      false,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      1,
+      2
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      false
+    ],
+    "cancelled": [
+      true,
+      false,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      false
+    ],
+    "cancelled": [
+      true,
+      false,
+      true
+    ],
+    "close_first": false,
+    "actions": [
+      1
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      false
+    ],
+    "cancelled": [
+      true,
+      false,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      false
+    ],
+    "cancelled": [
+      true,
+      true,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      false
+    ],
+    "cancelled": [
+      true,
+      true,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      false
+    ],
+    "cancelled": [
+      true,
+      true,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      false
+    ],
+    "cancelled": [
+      true,
+      true,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      true
+    ],
+    "cancelled": [
+      false,
+      false,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      true
+    ],
+    "cancelled": [
+      false,
+      false,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      true
+    ],
+    "cancelled": [
+      false,
+      false,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      true
+    ],
+    "cancelled": [
+      false,
+      false,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      true
+    ],
+    "cancelled": [
+      false,
+      true,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      true
+    ],
+    "cancelled": [
+      false,
+      true,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      true
+    ],
+    "cancelled": [
+      false,
+      true,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      true
+    ],
+    "cancelled": [
+      false,
+      true,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      true
+    ],
+    "cancelled": [
+      true,
+      false,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      true
+    ],
+    "cancelled": [
+      true,
+      false,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      true
+    ],
+    "cancelled": [
+      true,
+      false,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      true
+    ],
+    "cancelled": [
+      true,
+      false,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      true
+    ],
+    "cancelled": [
+      true,
+      true,
+      false
+    ],
+    "close_first": false,
+    "actions": [
+      2
+    ]
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      true
+    ],
+    "cancelled": [
+      true,
+      true,
+      false
+    ],
+    "close_first": true,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      true
+    ],
+    "cancelled": [
+      true,
+      true,
+      true
+    ],
+    "close_first": false,
+    "actions": []
+  },
+  {
+    "lanes": [
+      true,
+      true,
+      true
+    ],
+    "cancelled": [
+      true,
+      true,
+      true
+    ],
+    "close_first": true,
+    "actions": []
+  }
+]

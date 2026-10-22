@@ -1,0 +1,10 @@
+{
+  "unique_strict_passed": 444,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "python_warning_count": 0,
+  "gtk_atspi_runtime_warning_in_final_log": false,
+  "module_count": 44,
+  "junit_sha256": "380c3690004ca24bbb8d0de875e2298a6b77345bb8e4c83d3439b9850d18118b"
+}

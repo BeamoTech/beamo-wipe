@@ -1,0 +1,65 @@
+{
+  "base_commit": "fa2ca72b648ef373c6215699e883296bc8db551d",
+  "changed_existing_paths": [
+    ".ai/memory/unfinished-work.md",
+    "scripts/build_desktop.py",
+    "src/beamo_wipe/models.py",
+    "src/beamo_wipe/nwipe_runner.py",
+    "src/beamo_wipe/safety.py",
+    "src/beamo_wipe/session_recovery.py"
+  ],
+  "new_test_paths": [
+    "developer_tests/test_desktop_final_receipt_pass3_20261019.py",
+    "tests/test_recovery_boot_alias_pass3_20261019.py",
+    "tests/test_final_inventory_snapshot_pass3_20261019.py",
+    "tests/test_cancel_signal_delivery_pass3_20261019.py"
+  ],
+  "original_test_files_modified": false,
+  "root_independent_finding_replays": [
+    "recovery-alias-independent-before.xml",
+    "peer-snapshot-independent-before.xml",
+    "cancel-signal-independent-before.xml",
+    "manifest-gap-independent-before.log"
+  ],
+  "root_intermediate_candidate_replay": "receipt-read-independent-candidate.log",
+  "root_reviewed": [
+    "All five runtime/build source diffs and all four new regression modules",
+    "Wizard._perform_stop preserves natural terminal reasons and report interruption flags",
+    "Request authorization, full inventory identity, target/boot rescan and under-lock runner.start no-spawn boundary",
+    "Recovery arm/context/checksum/protection flags, contradictory contexts, crash and terminal UI recovery without resumed consent",
+    "Runner signal delivery, exit status, terminal log classification, ownership and retry guard",
+    "Desktop final source/output/receipt consistency across both I/O implementations and safe owned-receipt cleanup",
+    "Reviewer discovery/metadata, report/export/privacy, boot/firmware and UI/state reports"
+  ],
+  "additional_results": {
+    "independent_new_regressions_passed": 234,
+    "reviewer_ui_unique_focused_passed": 196,
+    "reviewer_discovery_adjacent_passed": 1014,
+    "reviewer_recovery_adjacent_passed": 313,
+    "reviewer_desktop_affected_passed": 159,
+    "reviewer_boot_adjacent_passed": 67,
+    "root_runner_focused_passed": 125
+  },
+  "counts_overlap_canonical": true,
+  "meaningful_limits": [
+    "No atomic filesystem compare-and-swap claim for late foreign changes",
+    "Python3.10 grammar check only; Python3.13.5 runtime",
+    "Optional --check-untyped-defs has same three pre-existing baseline/final Optional-record diagnostics; configured mypy passes",
+    "Configured lint warning matches literal TODO in release_manifest.py placeholder regex; no untracked runtime TODO found",
+    "Pinned browser, generated images, native/firmware/physical/reconnect qualification unverified"
+  ],
+  "real_device_firmware_or_host_power_actions": false,
+  "release_performed": false,
+  "publication_workflow_review": {
+    "ci_push_branches": [
+      "main"
+    ],
+    "ci_pr_target_branches": [
+      "main"
+    ],
+    "release": "explicit workflow_dispatch on qualified main only",
+    "feature_branch_has_open_pr": false,
+    "feature_branch_push_does_not_invoke_these_workflows": true,
+    "hosted_dispatch_requested": false
+  }
+}

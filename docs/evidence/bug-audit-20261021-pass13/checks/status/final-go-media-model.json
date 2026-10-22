@@ -1,0 +1,17 @@
+{
+  "name": "final-go-media-model",
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-overlay",
+    "/workspace/beamo-tools/audit-pass13-20261021/root/model-replays/media-epoch-overlay.json",
+    "-run=^TestMediaEpochModelPass13$",
+    "-json",
+    "./..."
+  ],
+  "started_utc": "2026-10-21T07:31:09.701293+00:00",
+  "elapsed_seconds": 2.19,
+  "exit_code": 0
+}

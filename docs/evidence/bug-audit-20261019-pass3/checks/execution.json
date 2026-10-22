@@ -1,0 +1,53 @@
+{
+  "working_directory": "/workspace/beamo-wipe",
+  "source_frozen_files": 796,
+  "source_manifest_sha256": "0a559c0f6f9e60cd082b9b84d669d892f3240987ec7e5ec5ed1b5b2f721b2539",
+  "canonical_tests": {
+    "command": "/workspace/beamo-tools/beamo-dev env BEAMO_GATE_CHILD=1 BEAMO_GATE_JUNIT=<audit-root>/final-tests.xml bash scripts/ci-hosted.sh tests",
+    "status": "PASS",
+    "session_id": 90314,
+    "exit_code": 0
+  },
+  "completed_groups": [
+    {
+      "name": "configured lint, preview, private negative",
+      "session_id": 84464,
+      "exit_code": 0,
+      "commands": [
+        "beamo-dev env BEAMO_GATE_CHILD=1 bash scripts/ci-hosted.sh lint",
+        "beamo-dev env BEAMO_GATE_CHILD=1 bash scripts/ci-hosted.sh preview",
+        "beamo-dev env BEAMO_GATE_CHILD=1 bash scripts/ci-hosted.sh negative"
+      ]
+    },
+    {
+      "name": "Go and launcher artifacts",
+      "session_id": 18941,
+      "exit_code": 0,
+      "commands": [
+        "go test -race -count=1 ./...",
+        "go vet ./...",
+        "go test -run=^$ -fuzz=FuzzBootOption -fuzztime=350000x -parallel=2",
+        "GOOS=windows GOARCH=amd64 go test -c -o <audit-root>/desktop-windows.test.exe",
+        "python3 dev.py desktop-build"
+      ]
+    },
+    {
+      "name": "actual preview and explicit system browser supplement",
+      "session_id": 36862,
+      "exit_code": 0,
+      "commands": [
+        "beamo-dev env BEAMO_ISOLATED_X11_TEST=1 dbus-run-session -- xvfb-run -a -n 510 -s <72dpi-screen> python3 <audit-root>/inspect_live_preview.py",
+        "beamo-dev env BEAMO_ISOLATED_X11_TEST=1 dbus-run-session -- xvfb-run -a -n 520 -s <72dpi-screen> python3 <audit-root>/system_browser_check.py"
+      ]
+    },
+    {
+      "name": "independent final new regressions",
+      "session_id": 77559,
+      "exit_code": 0,
+      "passed": 234
+    }
+  ],
+  "managed_container": "unprivileged, capabilities dropped, project/tools only, no host devices or Docker socket",
+  "native_inventory_opt_in": false,
+  "no_physical_firmware_power_or_release_actions": true
+}

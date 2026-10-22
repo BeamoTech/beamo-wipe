@@ -1,0 +1,25 @@
+{
+  "operation": "test",
+  "python": "3.13.5",
+  "host": "linux",
+  "machine": "x86_64",
+  "checkout": "/workspace/beamo-wipe",
+  "environment_python": "/workspace/beamo-wipe/.venv-linux/bin/python",
+  "git": "/usr/local/bin/git",
+  "live_environment": false,
+  "environment_version": "3.13.5",
+  "modules": {
+    "pytest": true,
+    "cryptography": true,
+    "qrcode": true
+  },
+  "status": "ok",
+  "problems": [],
+  "notes": [
+    "Local preflight only; no disks, authentication, network checks, builds or CI dispatch.",
+    "Each local probe is bounded to 5 seconds; at most two probes run.",
+    "Current qualification: Blacksmith via .github/workflows/ci.yml (CI gate).",
+    "Publication is separately authorized release.yml; see docs/ci.md.",
+    "Module presence is not a passing test suite. Full Linux GTK/Orca, display and image coverage belong to the hosted gate; report local skips/failures."
+  ]
+}

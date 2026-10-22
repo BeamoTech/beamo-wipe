@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/workspace/beamo-wipe/docs/evidence/bug-audit-20261021-pass7/verify_retained.py", line 92, in <module>
+    for p,n in [('checks/final-original-probes.xml.gz',39),('checks/system-browser-tests.xml.gz',9),('reviewers/discovery/adjacent-fixed.xml.gz',2200),('reviewers/ui/refresh-expanded-after.xml.gz',52),('reviewers/ui/plain-expanded-after.xml.gz',54),('reviewers/ui/native-adjacent-after.xml.gz',56),('reviewers/recovery/candidate-adjacent.xml.gz',560),('reviewers/boot/developer-fixed.xml.gz',251),('reviewers/boot/readiness-fixed.xml.gz',24),('reviewers/runner/baseline.xml.gz',1355),('reviewers/runner/adjacent.xml.gz',154)]:green(out/p,n)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ~~~~~^^^^^^^^^
+  File "/workspace/beamo-wipe/docs/evidence/bug-audit-20261021-pass7/verify_retained.py", line 17, in green
+    items=cs(p);assert len(items)==count and len(ids(items))==count,(p,len(items))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (PosixPath('/workspace/beamo-wipe/docs/evidence/bug-audit-20261021-pass7/reviewers/ui/plain-expanded-after.xml.gz'), 54)
+Traceback (most recent call last):
+  File "/workspace/beamo-tools/audit-pass7-20261021/root/build_evidence.py", line 90, in <module>
+    subprocess.run(['python3',str(out/'verify_retained.py')],check=True,cwd=repo)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['python3', '/workspace/beamo-wipe/docs/evidence/bug-audit-20261021-pass7/verify_retained.py']' returned non-zero exit status 1.

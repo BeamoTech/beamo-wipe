@@ -837,6 +837,7 @@ def test_evidence_files_off_target_and_no_forbidden_roots(tmp_path, monkeypatch)
 
 def test_atomic_write_no_partial_file_on_failure(tmp_path, monkeypatch):
     # Simulate crash mid-write: os.write succeeds but no-replace publish fails
+    from beamo_wipe import evidence as evidence_module
     from beamo_wipe.evidence import build_evidence
 
     monkeypatch.setenv("BEAMO_WIPE_DRY_RUN", "1")
@@ -856,15 +857,19 @@ def test_atomic_write_no_partial_file_on_failure(tmp_path, monkeypatch):
         argv=[],
         log_text="",
     )
-    # Force os.link to fail
-    orig_link = os.link
-    monkeypatch.setattr(os, "link", lambda *a, **k: (_ for _ in ()).throw(OSError("link failed")))
+    # Force atomic no-replace publication to fail.
+    original_publish = evidence_module._rename_noreplace
+
+    def fail_publish(*_args):
+        raise OSError("publication failed")
+
+    monkeypatch.setattr(evidence_module, "_rename_noreplace", fail_publish)
     with pytest.raises(OSError):
         write_evidence_atomic(ev, log_dir=tmp_path, device_path=disk.path)
     # No partial .json should be visible, only tmp
     assert not any(tmp_path.glob(f"{EVIDENCE_PREFIX}*.json"))
     # tmp files may remain but not as evidence
-    monkeypatch.setattr(os, "link", orig_link)
+    monkeypatch.setattr(evidence_module, "_rename_noreplace", original_publish)
     # Now succeed
     p = write_evidence_atomic(ev, log_dir=tmp_path, device_path=disk.path)
     assert p.exists()

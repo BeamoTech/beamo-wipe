@@ -38,6 +38,15 @@ def _fixture(tmp_path: Path) -> tuple[Path, Path, Path]:
     desktop = source / "desktop/main.go"
     desktop.parent.mkdir(parents=True)
     desktop.write_bytes(b"package main\n")
+    for relative in (
+        "includes.chroot/usr/local/bin/beamo-wipe",
+        "includes.chroot/usr/local/sbin/beamo-wipe-kiosk",
+        "hooks/normal/0500-build-nwipe.hook.chroot",
+    ):
+        entrypoint = source / "packaging/live/config" / relative
+        entrypoint.parent.mkdir(parents=True, exist_ok=True)
+        entrypoint.write_bytes(b"#!/bin/sh\nexit 0\n")
+        entrypoint.chmod(0o755)
     copied.mkdir()
     return source, copied, helper
 

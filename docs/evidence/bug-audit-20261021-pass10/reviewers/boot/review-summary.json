@@ -1,0 +1,49 @@
+{
+  "baseline": "7047dfb8c22d0b17faad2d5de1ec470b2debfaac",
+  "new_verified_root_causes": 1,
+  "root_cause": "Teardown admission was not terminal: close only notified event loop and idle cached a decision afterunlock; predecoded requests could use old authority.",
+  "new_go_parent_tests": 4,
+  "new_go_leaf_cases": 24,
+  "new_go_named_pass_events": 28,
+  "baseline_new_leaf_failures": 18,
+  "baseline_new_leaf_positive_controls": 6,
+  "go_full_race_named_pass_events": 366,
+  "go_full_race_native_skips": [
+    "TestLinuxInventoryRetainsPartitionParents",
+    "TestWindowsInventoryReportsOnlyLauncherPartitionPass13"
+  ],
+  "python_modules": 25,
+  "python_unique_passed": 255,
+  "python_failures_errors_skips": 0,
+  "model": {
+    "counts": {
+      "age_refusals": 48,
+      "busy_preservations": 72,
+      "cases": 216,
+      "manual_restart_refusals": 4,
+      "mismatches": 0,
+      "native_callbacks": 0,
+      "new_idle_retirements": 24,
+      "normal_checks": 12,
+      "normal_closes": 12,
+      "normal_restarts": 4,
+      "post_retirement_refusals": 96,
+      "preclosed_idempotence": 72,
+      "preview_restarts": 4,
+      "repeated_retirements": 96,
+      "state_reads": 12
+    },
+    "scope": "Pure fake API and clock retirement law; no native qualification",
+    "source_sha256": {
+      "desktop/close_admission_pass10_20261021_test.go": "c08c7abcffa401780e3ab5a2157ef981d78039607ce5b128acd48db1919e581f",
+      "desktop/main.go": "2ada8ea89c8f1ca41cdfe9b5007c38d9c0386d880843ca9519459112d9713b60"
+    }
+  },
+  "final_owned_source_sha256": {
+    "desktop/main.go": "2ada8ea89c8f1ca41cdfe9b5007c38d9c0386d880843ca9519459112d9713b60",
+    "desktop/close_admission_pass10_20261021_test.go": "c08c7abcffa401780e3ab5a2157ef981d78039607ce5b128acd48db1919e581f"
+  },
+  "old_test_edits": [],
+  "scope": "Only desktop/main.go and one NEW Go regression module edited under root assignment. All native callbacks are fake.",
+  "ownership_released": true
+}

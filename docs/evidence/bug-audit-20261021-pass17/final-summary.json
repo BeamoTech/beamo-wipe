@@ -1,0 +1,54 @@
+{
+  "audit": "bug-audit-20261021-pass17",
+  "baseline_commit": "f994e2cf2c1db5365e9cfc4c05ac893e003884bc",
+  "branch": "fix/safety-audit-20261019",
+  "date_utc": "2026-10-21",
+  "baseline_regressions": {
+    "errors": 0,
+    "failures": 13,
+    "fixed_passes": 13,
+    "junit_sha256": "fbdc04a1881aaa316d2c0f611596c4655be43ce33d95558bc585bfa018a07d4e",
+    "skipped": 0
+  },
+  "desktop_artifacts": {
+    "go_version": "go1.26.8",
+    "linux_sha256": "7eaa49684fd58d5bbb1349530ef2b088a2fc633984e0738fc8c8eaecf40b97d4",
+    "manifest_sha256": "d2645c5cf945c363dce451fee9c2188fd7e1413e35767c7e406d5ce3db9451b5",
+    "version": "0.2.13",
+    "windows_sha256": "02aaef6cdd65d13da5bf20cea547c0fbb48dab7d9ccc18b2e416b34364c38928"
+  },
+  "final_python": {
+    "deselected": 2,
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "3fda8bd29c925007e6bf27c1a604c235d686964e861a8940e8dd0cb6d2d43388",
+    "passed": 12106,
+    "selected": 12133,
+    "skipped": 27,
+    "time_seconds": 1287.312,
+    "warnings_as_errors": true
+  },
+  "focused_python": {
+    "adjacent_checks": 211,
+    "new_regressions": 13,
+    "passed": 224,
+    "junit_sha256": "dcd0aca615e9a6635b8638f1bf538d23bb6b288aac53e1895bf970535a57934c"
+  },
+  "go_cross_compile_sha256": {
+    "darwin_amd64": "769d94a9978fb508c0874758adb634b614bc508c6f449dd771ac502c3cb1be6f",
+    "darwin_arm64": "d3e7f8d7bb4a1ad7364abb312089dce27555c540d7338fefee4de0a6440e9cd9",
+    "windows_amd64": "fcb9d9b51bb9fdc3693739874c544caf26aee5780ef82d53ad7927fc920bcf98"
+  },
+  "preview": {
+    "display": ":250",
+    "dpi": 72,
+    "fake_disks_only": true,
+    "normal_close_returncode": 0,
+    "png_sha256": "922c213939cba144951d70292b63b29baea8fe7d43e4a5f4e7f1e1adc378e5a8"
+  },
+  "publication": "local only; no push, PR, merge, deployment, or release",
+  "source_sha256": {
+    "src/beamo_wipe/ci_evidence.py": "56a437b19d3e565f727c9087864ebe246e8dc33febe6c1a508ea7424c4a7337a",
+    "tests/test_ci_evidence_directory_binding_pass17_20261021.py": "0d9b5cf8871b3c68aace488dffc7f11e1c40d4e2103b4d15d560b019494f4a17"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python",
+    "-m",
+    "pytest",
+    "tests/test_session_recovery.py",
+    "tests/test_session_recovery_reopen_pass11.py",
+    "tests/test_recovery_named_read_pass5_20261021.py",
+    "tests/test_pass11_recovery_evidence_metadata.py",
+    "tests/test_pass10_recovery_evidence_swap.py",
+    "tests/test_evidence.py",
+    "tests/test_evidence_retry.py",
+    "tests/test_pass6_evidence_export_integrity.py",
+    "tests/test_pass12_evidence_log_bound.py",
+    "tests/test_report_intent.py",
+    "tests/test_report_intent_identity_regression.py",
+    "tests/test_second_usb_export.py",
+    "tests/test_export_cleanup_ownership.py",
+    "tests/test_export_stages.py",
+    "tests/test_report_destination_unicode_pass29.py",
+    "tests/test_diagnostic_consistency_pass32_export.py",
+    "tests/test_export_worker_locale_pass4_20261019.py",
+    "tests/test_evidence_privacy_pass8.py",
+    "tests/test_privacy_sharing_copy.py",
+    "tests/test_report_html.py",
+    "tests/test_report_shutdown.py",
+    "tests/test_storage_io_recovery.py",
+    "tests/test_result_summary.py",
+    "tests/test_recovery_publication_binding_pass7_20261021.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass7-20261021/recovery/candidate-adjacent.xml"
+  ],
+  "exit_code": 0
+}

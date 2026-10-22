@@ -18,7 +18,7 @@ def browser_cases(tmp_path_factory):
     if not chrome or not shutil.which("go"):
         pytest.skip("Launcher renders require Chrome, Go and Python Playwright")
     fixtures = tmp_path_factory.mktemp("readiness") / "fixtures.json"
-    subprocess.run(["go", "test", "-run", "^TestReadinessExplainsEachCheck$", "."],
+    subprocess.run(["go", "test", "-count=1", "-run", "^TestReadinessExplainsEachCheck$", "."],
                    cwd=ROOT / "desktop", check=True,
                    env={**os.environ, "BEAMO_READINESS_FIXTURES": str(fixtures)})
     with playwright.sync_playwright() as runtime:

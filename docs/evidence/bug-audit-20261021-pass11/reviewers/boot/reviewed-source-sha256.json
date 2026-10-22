@@ -1,0 +1,23 @@
+{
+  ".github/workflows/ci.yml": "910fcf7b5e653919b1a400a2a6f0815755c192a0a794527b016f424fdb854e77",
+  "AGENTS.md": "1e6f980d50267db488a9beb353802242ac57379450c1d9c0ad77c13928509290",
+  "desktop/boot.go": "be7a7469ca9ae3109e3c6f3cbe48bf6f07139f20f3c1fb7db8b149d30bf90e89",
+  "desktop/boot_test.go": "f880928130cce761cf2eef223adff386d2c82148692b87447bbe4b4623fd8502",
+  "desktop/identity.go": "d38e14e8113763127decfb86c71420eeec42989ad6ed07655a58b94869317360",
+  "desktop/identity_pass7_test.go": "9af80b4157d9a8cc761141c96cebb8120f0d7d902c8ed9c5c5351105a832168c",
+  "desktop/io.go": "8ebffd9d5b5e4ae4f4742669c2b0f7edc32f272e5d4514e737d3e2aeb4dd4553",
+  "desktop/io_special_pass35_test.go": "24fb587079cbcc3a7368e4a75812b29e2591784802eb3e1889610d27c8110aad",
+  "desktop/io_test.go": "3e8252d3fd3e2638cf7c06b11d227bb0b4a7b148940d102765cc635006ba9d18",
+  "desktop/main.go": "2ada8ea89c8f1ca41cdfe9b5007c38d9c0386d880843ca9519459112d9713b60",
+  "desktop/media.go": "44cadc67be505ab48312cc4f4a6055055f4e6a66e3a5ef81454e64c158faa483",
+  "desktop/platform_linux.go": "af416aaabc32eef9251f804015d599c66aa9b33efdc7024a1413bac32317537b",
+  "desktop/platform_windows.go": "47e3a24180cdfb2c8b8e667e5ffb2bb398755933a8eed08921627d82fed2e356",
+  "desktop/readiness.go": "eb67aec9069cede3e29348f2a33b317aa374252090fc433c9d24a41d77d26973",
+  "desktop/readiness_pass7_test.go": "05f1810c383a1de3deeb06f4b15fd3df6b9138cf5b1bb11ab8993375b165902f",
+  "desktop/server_test.go": "a6264622f6210771b12285c642bf6e365b6a02c80548757c629b5e6b91cae0d3",
+  "desktop/web/app.js": "ab98e96d2d6eb39260fee9d712f21778020fb18f647170f81fcc24ecd7feadfa",
+  "desktop/web_session_pass11_test.go": "cd54ff23a93cca710de744a0ac488ae6033720f7b290b1bcbbde54632e8e73a5",
+  "docs/ci.md": "4bea0e17f8017df4541f4e37b7b91521ded7b334d3063b21cf57af0d51d0c67d",
+  "scripts/build_desktop.py": "ff163c8224af00e2b4394aa0f1460e7d62ec6cc93f01f314cfd66ef11e3a9cce",
+  "scripts/ci-desktop.sh": "3b49391582d512e0aae6815844027d43d3ce144861f7073458a99c5bf87061ff"
+}

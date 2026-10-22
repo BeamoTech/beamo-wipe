@@ -1,0 +1,1 @@
+{"seed": 612026, "simulated_mount_sequences": 2000, "unique_path_visibility_checks": 6106, "visible": 4615, "hidden": 1491, "absent_or_same_path_ambiguous_refusals": 11894, "source_sha256": "e6df18dc533bb9f98f55b7832fea7cace7772cea5d5a23f71803020fb60922fd", "actual_mount_or_device_actions": 0}

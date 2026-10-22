@@ -8,9 +8,10 @@ import hashlib
 import json
 import os
 import re
+import secrets
 import stat
 import subprocess
-import time
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -38,6 +39,27 @@ PRIOR_STABLE = {
 }
 
 PLACEHOLDER_RE = re.compile(r"PLACEHOLDER|TODO|XXX|CHANGEME", re.I)
+
+_REGULAR_BIND_FIELDS = (
+    "st_dev",
+    "st_ino",
+    "st_mode",
+    "st_uid",
+    "st_nlink",
+    "st_size",
+    "st_mtime_ns",
+    "st_ctime_ns",
+)
+_PARENT_BIND_FIELDS = ("st_dev", "st_ino", "st_mode", "st_uid")
+
+
+@dataclass(frozen=True)
+class _RegularBinding:
+    """Identity of one regular file and its requested link-free parent path."""
+
+    path: Path
+    fields: tuple[Any, ...]
+    parent_fields: tuple[Any, ...]
 
 
 def _run(cmd: List[str], **kw: Any) -> str:
@@ -100,19 +122,252 @@ def _validate_version(version: str) -> str:
     return version
 
 
+def _metadata_values(
+    metadata: os.stat_result, fields: tuple[str, ...]
+) -> tuple[Any, ...]:
+    return tuple(getattr(metadata, field) for field in fields)
+
+
+def _validate_nonposix_parent(path: Path) -> os.stat_result:
+    """Reject links and reparse points in a non-POSIX parent path."""
+    current = Path(path.anchor)
+    try:
+        for component in path.parent.parts[1:]:
+            current /= component
+            metadata = os.lstat(current)
+            attributes = getattr(metadata, "st_file_attributes", 0)
+            reparse = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400)
+            if not stat.S_ISDIR(metadata.st_mode) or attributes & reparse:
+                raise RuntimeError(f"cannot safely open parent of {path.name}")
+        metadata = os.lstat(path.parent)
+    except OSError as exc:
+        raise RuntimeError(f"cannot safely open parent of {path.name}") from exc
+    if not stat.S_ISDIR(metadata.st_mode):
+        raise RuntimeError(f"cannot safely open parent of {path.name}")
+    return metadata
+
+
+def _open_pinned_parent(path: Path) -> tuple[Path, Optional[int], tuple[Any, ...]]:
+    """Open every parent component without following a link."""
+    absolute = Path(os.path.abspath(os.fspath(Path(path))))
+    if not absolute.name or absolute.name in {".", ".."}:
+        raise RuntimeError("release input has no safe file name")
+    if os.name != "posix":
+        metadata = _validate_nonposix_parent(absolute)
+        return (
+            absolute,
+            None,
+            _metadata_values(metadata, _PARENT_BIND_FIELDS),
+        )
+
+    flags = (
+        os.O_RDONLY
+        | getattr(os, "O_DIRECTORY", 0)
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_CLOEXEC", 0)
+    )
+    try:
+        directory_fd = os.open(os.sep, flags)
+    except OSError as exc:
+        raise RuntimeError(f"cannot safely open parent of {absolute.name}") from exc
+    try:
+        for component in absolute.parent.parts[1:]:
+            next_fd = os.open(component, flags, dir_fd=directory_fd)
+            os.close(directory_fd)
+            directory_fd = next_fd
+        metadata = os.fstat(directory_fd)
+        if not stat.S_ISDIR(metadata.st_mode):
+            raise RuntimeError(f"cannot safely open parent of {absolute.name}")
+        return (
+            absolute,
+            directory_fd,
+            _metadata_values(metadata, _PARENT_BIND_FIELDS),
+        )
+    except (OSError, RuntimeError) as exc:
+        os.close(directory_fd)
+        if isinstance(exc, RuntimeError):
+            raise
+        raise RuntimeError(f"cannot safely open parent of {absolute.name}") from exc
+
+
+def _named_metadata(path: Path, directory_fd: Optional[int]) -> os.stat_result:
+    if directory_fd is None:
+        return os.lstat(path)
+    return os.stat(path.name, dir_fd=directory_fd, follow_symlinks=False)
+
+
+def _require_parent_binding(
+    path: Path, directory_fd: Optional[int], parent_fields: tuple[Any, ...]
+) -> None:
+    """Require the requested parent path to still name the opened directory."""
+    _, current_fd, current_fields = _open_pinned_parent(path)
+    try:
+        if current_fields != parent_fields:
+            raise RuntimeError(f"parent of {path.name} changed while being verified")
+        if directory_fd is not None and current_fd is not None:
+            opened_fields = _metadata_values(
+                os.fstat(directory_fd), _PARENT_BIND_FIELDS
+            )
+            if opened_fields != current_fields:
+                raise RuntimeError(
+                    f"parent of {path.name} changed while being verified"
+                )
+    finally:
+        if current_fd is not None:
+            os.close(current_fd)
+
+
+def _open_bound_regular(
+    path: Path,
+) -> tuple[Path, Optional[int], tuple[Any, ...], int, os.stat_result]:
+    """Open one regular leaf relative to its pinned, link-free parent."""
+    absolute, directory_fd, parent_fields = _open_pinned_parent(path)
+    fd = -1
+    try:
+        flags = (
+            os.O_RDONLY
+            | getattr(os, "O_NOFOLLOW", 0)
+            | getattr(os, "O_NONBLOCK", 0)
+            | getattr(os, "O_CLOEXEC", 0)
+        )
+        if directory_fd is None:
+            fd = os.open(absolute, flags)
+        else:
+            fd = os.open(absolute.name, flags, dir_fd=directory_fd)
+        opened = os.fstat(fd)
+        named = _named_metadata(absolute, directory_fd)
+        if not stat.S_ISREG(opened.st_mode) or _metadata_values(
+            opened, _REGULAR_BIND_FIELDS
+        ) != _metadata_values(named, _REGULAR_BIND_FIELDS):
+            raise RuntimeError(f"cannot safely read {absolute.name}")
+        _require_parent_binding(absolute, directory_fd, parent_fields)
+        return absolute, directory_fd, parent_fields, fd, opened
+    except Exception:
+        if fd >= 0:
+            os.close(fd)
+        if directory_fd is not None:
+            os.close(directory_fd)
+        raise
+
+
 def _open_regular_nofollow(path: Path) -> int:
     try:
-        # A planted FIFO would block on open() before fstat can reject it.
-        fd = os.open(str(path), os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
-    except OSError as exc:
+        # A planted FIFO cannot block because _open_bound_regular uses NONBLOCK.
+        _absolute, directory_fd, _parent_fields, fd, _opened = _open_bound_regular(path)
+        if directory_fd is not None:
+            os.close(directory_fd)
+        return fd
+    except (OSError, RuntimeError) as exc:
         raise RuntimeError(f"cannot safely read {path.name}") from exc
+
+
+def _read_descriptor(fd: int, limit: int) -> bytes:
+    os.lseek(fd, 0, os.SEEK_SET)
+    chunks = []
+    remaining = limit + 1
+    while remaining:
+        chunk = os.read(fd, min(1024 * 1024, remaining))
+        if not chunk:
+            break
+        chunks.append(chunk)
+        remaining -= len(chunk)
+    return b"".join(chunks)
+
+
+def _binding(
+    path: Path, opened: os.stat_result, parent_fields: tuple[Any, ...]
+) -> _RegularBinding:
+    return _RegularBinding(
+        path,
+        _metadata_values(opened, _REGULAR_BIND_FIELDS),
+        parent_fields,
+    )
+
+
+def _read_regular_snapshot(
+    path: Path, *, limit: int, what: str
+) -> tuple[bytes, _RegularBinding]:
+    """Read stable bounded bytes and retain their path identity."""
+    absolute, directory_fd, parent_fields, fd, opened = _open_bound_regular(path)
     try:
-        if not stat.S_ISREG(os.fstat(fd).st_mode):
-            raise RuntimeError(f"cannot safely read {path.name}")
-    except Exception:
+        if opened.st_size > limit:
+            raise RuntimeError(f"{what} exceeds size limit")
+        first = _read_descriptor(fd, limit)
+        middle = os.fstat(fd)
+        second = _read_descriptor(fd, limit)
+        final = os.fstat(fd)
+        named = _named_metadata(absolute, directory_fd)
+        requested = os.lstat(absolute)
+        _require_parent_binding(absolute, directory_fd, parent_fields)
+        expected = _metadata_values(opened, _REGULAR_BIND_FIELDS)
+        if (
+            len(first) > limit
+            or first != second
+            or len(first) != opened.st_size
+            or any(
+                _metadata_values(item, _REGULAR_BIND_FIELDS) != expected
+                for item in (middle, final, named, requested)
+            )
+        ):
+            raise RuntimeError(f"{what} changed while being verified")
+        return first, _binding(absolute, opened, parent_fields)
+    finally:
         os.close(fd)
-        raise
-    return fd
+        if directory_fd is not None:
+            os.close(directory_fd)
+
+
+def _hash_regular_snapshot(path: Path) -> tuple[str, int, _RegularBinding]:
+    """Hash one stable regular inode and retain its path identity."""
+    absolute, directory_fd, parent_fields, fd, opened = _open_bound_regular(path)
+    try:
+        digest = hashlib.sha256()
+        while True:
+            chunk = os.read(fd, 1024 * 1024)
+            if not chunk:
+                break
+            digest.update(chunk)
+        final = os.fstat(fd)
+        named = _named_metadata(absolute, directory_fd)
+        requested = os.lstat(absolute)
+        _require_parent_binding(absolute, directory_fd, parent_fields)
+        expected = _metadata_values(opened, _REGULAR_BIND_FIELDS)
+        if any(
+            _metadata_values(item, _REGULAR_BIND_FIELDS) != expected
+            for item in (final, named, requested)
+        ):
+            raise RuntimeError(f"{absolute.name} changed while it was being verified")
+        return (
+            digest.hexdigest(),
+            int(opened.st_size),
+            _binding(absolute, opened, parent_fields),
+        )
+    finally:
+        os.close(fd)
+        if directory_fd is not None:
+            os.close(directory_fd)
+
+
+def _require_regular_binding(binding: _RegularBinding) -> None:
+    """Require a previously verified file and parent to keep their identities."""
+    absolute, directory_fd, parent_fields, fd, opened = _open_bound_regular(
+        binding.path
+    )
+    try:
+        named = _named_metadata(absolute, directory_fd)
+        _require_parent_binding(absolute, directory_fd, parent_fields)
+        if (
+            parent_fields != binding.parent_fields
+            or _metadata_values(opened, _REGULAR_BIND_FIELDS) != binding.fields
+            or _metadata_values(named, _REGULAR_BIND_FIELDS) != binding.fields
+        ):
+            raise RuntimeError(
+                f"{absolute.name} changed after its release snapshot was verified"
+            )
+    finally:
+        os.close(fd)
+        if directory_fd is not None:
+            os.close(directory_fd)
 
 
 def sha256_file(path: Path) -> str:
@@ -121,40 +376,8 @@ def sha256_file(path: Path) -> str:
 
 def sha256_file_with_stat(path: Path) -> tuple[str, int]:
     """Hash and size one opened inode, rejecting pathname replacement."""
-    path = Path(path)
-    h = hashlib.sha256()
-    fd = _open_regular_nofollow(path)
-    with os.fdopen(fd, "rb") as fh:
-        opened = os.fstat(fh.fileno())
-        for chunk in iter(lambda: fh.read(8192), b""):
-            h.update(chunk)
-        read_after = os.fstat(fh.fileno())
-    try:
-        current = os.lstat(path)
-    except OSError as exc:
-        raise RuntimeError(f"cannot safely read {path.name}") from exc
-    if (
-        stat.S_ISLNK(current.st_mode)
-        or not stat.S_ISREG(current.st_mode)
-        or (
-            current.st_dev, current.st_ino, current.st_size,
-            current.st_mtime_ns, current.st_ctime_ns,
-        )
-        != (
-            opened.st_dev, opened.st_ino, opened.st_size,
-            opened.st_mtime_ns, opened.st_ctime_ns,
-        )
-        or (
-            read_after.st_dev, read_after.st_ino, read_after.st_size,
-            read_after.st_mtime_ns, read_after.st_ctime_ns,
-        )
-        != (
-            opened.st_dev, opened.st_ino, opened.st_size,
-            opened.st_mtime_ns, opened.st_ctime_ns,
-        )
-    ):
-        raise RuntimeError(f"{path.name} changed while it was being verified")
-    return h.hexdigest(), int(opened.st_size)
+    digest, size, _snapshot = _hash_regular_snapshot(path)
+    return digest, size
 
 
 def file_sha256_or_none(path: Path) -> Optional[str]:
@@ -520,18 +743,239 @@ def generate_manifest(
     return manifest
 
 
-def _atomic_write(path: Path, blob: bytes) -> None:
+_SNAPSHOT_FIELDS = (
+    "st_dev",
+    "st_ino",
+    "st_mode",
+    "st_uid",
+    "st_nlink",
+    "st_size",
+    "st_mtime_ns",
+    "st_ctime_ns",
+)
+
+
+@dataclass(frozen=True)
+class _OutputSnapshot:
+    fields: tuple[int, ...]
+    contents: bytes | str
+    kind: str = "regular"
+
+
+def _stat_fields(value: os.stat_result) -> tuple[int, ...]:
+    return tuple(int(getattr(value, field)) for field in _SNAPSHOT_FIELDS)
+
+
+def _regular_fd_snapshot(fd: int, limit: int) -> _OutputSnapshot:
+    """Read one pinned descriptor twice and bind it to complete metadata."""
+    opened = os.fstat(fd)
+
+    def read_once() -> bytes:
+        contents = bytearray()
+        while len(contents) <= limit:
+            chunk = os.pread(
+                fd, min(65536, limit + 1 - len(contents)), len(contents)
+            )
+            if not chunk:
+                break
+            contents.extend(chunk)
+        return bytes(contents)
+
+    first = read_once()
+    middle = os.fstat(fd)
+    second = read_once()
+    finished = os.fstat(fd)
+    snapshots = (opened, middle, finished)
+    if (
+        len(first) > limit
+        or first != second
+        or len(first) != opened.st_size
+        or any(not stat.S_ISREG(item.st_mode) for item in snapshots)
+        or any(item.st_uid != os.getuid() for item in snapshots)
+        or any(_stat_fields(item) != _stat_fields(opened) for item in snapshots)
+    ):
+        raise RuntimeError("unverified prior manifest output")
+    return _OutputSnapshot(_stat_fields(opened), first)
+
+
+def _regular_output_snapshot(path: Path, limit: int) -> _OutputSnapshot | None:
+    """Bind a bounded read to one unchanged, named regular file."""
+    path = Path(path)
+    try:
+        named_before = path.lstat()
+    except FileNotFoundError:
+        return None
+    if not stat.S_ISREG(named_before.st_mode) or named_before.st_uid != os.getuid():
+        raise RuntimeError("unverified prior manifest output")
+    fd = -1
+    try:
+        fd = _open_regular_nofollow(path)
+        pinned = _regular_fd_snapshot(fd, limit)
+        named_after = path.lstat()
+    except OSError as exc:
+        raise RuntimeError("unverified prior manifest output") from exc
+    finally:
+        if fd >= 0:
+            os.close(fd)
+    if (
+        not stat.S_ISREG(named_after.st_mode)
+        or named_after.st_uid != os.getuid()
+        or _stat_fields(named_before) != pinned.fields
+        or _stat_fields(named_after) != pinned.fields
+    ):
+        raise RuntimeError("unverified prior manifest output")
+    return pinned
+
+
+def _regular_snapshot_bytes(snapshot: _OutputSnapshot) -> bytes:
+    """Return bytes only for a snapshot created from a regular file."""
+    if snapshot.kind != "regular" or not isinstance(snapshot.contents, bytes):
+        raise RuntimeError("unverified prior manifest output")
+    return snapshot.contents
+
+
+def _path_snapshot(
+    path: Path, limit: int, *, allow_symlink: bool = False
+) -> _OutputSnapshot | None:
+    """Snapshot a replaceable output; links are allowed only for generic replacement."""
+    path = Path(path)
+    try:
+        before = path.lstat()
+    except FileNotFoundError:
+        return None
+    if stat.S_ISREG(before.st_mode):
+        return _regular_output_snapshot(path, limit)
+    if allow_symlink and stat.S_ISLNK(before.st_mode) and before.st_uid == os.getuid():
+        target = os.readlink(path)
+        after = path.lstat()
+        if _stat_fields(before) != _stat_fields(after):
+            raise RuntimeError("unverified prior manifest output")
+        return _OutputSnapshot(_stat_fields(before), target, "symlink")
+    raise RuntimeError("unverified prior manifest output")
+
+
+def _snapshot_matches(
+    path: Path,
+    expected: _OutputSnapshot,
+    *,
+    allow_changed_ctime: bool = False,
+) -> bool:
+    try:
+        current = _path_snapshot(
+            path,
+            len(expected.contents) if isinstance(expected.contents, bytes) else 0,
+            allow_symlink=expected.kind == "symlink",
+        )
+    except (OSError, RuntimeError):
+        return False
+    if current is None or current.kind != expected.kind or current.contents != expected.contents:
+        return False
+    for index, (actual, wanted) in enumerate(zip(current.fields, expected.fields)):
+        if index == 7 and allow_changed_ctime:
+            continue
+        if actual != wanted:
+            return False
+    return True
+
+
+_CAPTURE_CURRENT = object()
+_RENAME_NOREPLACE = 1
+_RENAME_EXCHANGE = 2
+
+
+def _renameat2(
+    source_dirfd: int,
+    source: str,
+    destination_dirfd: int,
+    destination: str,
+    flags: int,
+) -> None:
+    """Call Linux renameat2; release publication has no safe emulation."""
+    import ctypes
+    import sys
+
+    if not sys.platform.startswith("linux"):
+        raise RuntimeError("atomic release publication requires Linux renameat2")
+    libc = ctypes.CDLL(None, use_errno=True)
+    rename = getattr(libc, "renameat2", None)
+    if rename is None:
+        raise RuntimeError("atomic release publication requires Linux renameat2")
+    rename.argtypes = (
+        ctypes.c_int,
+        ctypes.c_char_p,
+        ctypes.c_int,
+        ctypes.c_char_p,
+        ctypes.c_uint,
+    )
+    rename.restype = ctypes.c_int
+    result = rename(
+        source_dirfd,
+        os.fsencode(source),
+        destination_dirfd,
+        os.fsencode(destination),
+        flags,
+    )
+    if result != 0:
+        error = ctypes.get_errno()
+        raise OSError(error, os.strerror(error), destination)
+
+
+def _snapshot_digest(snapshot: _OutputSnapshot | None) -> str:
+    if snapshot is None:
+        return "absent"
+    contents = snapshot.contents
+    if isinstance(contents, str):
+        raw = contents.encode("utf-8", errors="surrogateescape")
+    else:
+        raw = contents
+    return hashlib.sha256(raw).hexdigest()
+
+
+def _atomic_write(
+    path: Path,
+    blob: bytes,
+    *,
+    expected: _OutputSnapshot | None | object = _CAPTURE_CURRENT,
+) -> None:
+    """Publish bytes atomically while retaining every displaced pathname."""
     path = Path(path)
     directory = path.parent
     directory.mkdir(parents=True, exist_ok=True)
+    if expected is _CAPTURE_CURRENT:
+        expected = _path_snapshot(
+            path, max(MAX_MANIFEST_BYTES, len(blob)), allow_symlink=True
+        )
+    if isinstance(expected, _OutputSnapshot) and expected.contents == blob:
+        if not _snapshot_matches(path, expected):
+            raise RuntimeError("manifest output changed before publication")
+        existing_dirfd = os.open(
+            str(directory), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+        )
+        try:
+            os.fsync(existing_dirfd)
+        finally:
+            os.close(existing_dirfd)
+        if not _snapshot_matches(path, expected):
+            raise RuntimeError("manifest output changed during finalization")
+        return
     dirfd = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
     name = path.name
-    tmp_name = f".{name}.tmp.{os.getpid()}.{time.time_ns()}"
+    suffix = secrets.token_hex(16)
+    new_digest = hashlib.sha256(blob).hexdigest()
+    prior_digest = _snapshot_digest(
+        expected if isinstance(expected, _OutputSnapshot) else None
+    )
+    tmp_name = (
+        f".{name}.publish.{new_digest}.retired-{prior_digest}.{suffix}"
+    )
+    tmp_path = directory / tmp_name
     fd = -1
+    staged: _OutputSnapshot | None = None
+
     try:
         fd = os.open(
             tmp_name,
-            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+            os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
             0o600,
             dir_fd=dirfd,
         )
@@ -542,17 +986,75 @@ def _atomic_write(path: Path, blob: bytes) -> None:
                 raise OSError("short manifest write")
             view = view[written:]
         os.fsync(fd)
-        os.close(fd)
-        fd = -1
-        os.rename(tmp_name, name, src_dir_fd=dirfd, dst_dir_fd=dirfd)
+        pinned_stage = _regular_fd_snapshot(fd, len(blob))
+        if (
+            pinned_stage.contents != blob
+            or pinned_stage.fields[4] != 1
+            or stat.S_IMODE(pinned_stage.fields[2]) != 0o600
+        ):
+            raise RuntimeError("manifest staging changed")
+        staged = pinned_stage
+        if not _snapshot_matches(tmp_path, staged):
+            raise RuntimeError("manifest staging changed")
+
+        if isinstance(expected, _OutputSnapshot):
+            _renameat2(dirfd, tmp_name, dirfd, name, _RENAME_EXCHANGE)
+        else:
+            _renameat2(dirfd, tmp_name, dirfd, name, _RENAME_NOREPLACE)
+
+        published_matches = _snapshot_matches(
+            path, staged, allow_changed_ctime=True
+        )
+        displaced: _OutputSnapshot | None = None
+        if isinstance(expected, _OutputSnapshot):
+            try:
+                displaced = _path_snapshot(
+                    tmp_path,
+                    max(MAX_MANIFEST_BYTES, len(expected.contents)),
+                    allow_symlink=True,
+                )
+            except RuntimeError:
+                pass
+        displaced_matches = not isinstance(
+            expected, _OutputSnapshot
+        ) or _snapshot_matches(tmp_path, expected, allow_changed_ctime=True)
+        if isinstance(expected, _OutputSnapshot) and not displaced_matches:
+            if published_matches:
+                # The entry at the final name changed after preflight but
+                # before EXCHANGE. Swap it back atomically: the foreign entry
+                # keeps its pathname and our intended bytes stay retained at
+                # the cryptographically identified staging name.
+                _renameat2(dirfd, tmp_name, dirfd, name, _RENAME_EXCHANGE)
+                os.fsync(dirfd)
+                if displaced is not None and not _snapshot_matches(
+                    path, displaced, allow_changed_ctime=True
+                ):
+                    raise RuntimeError(
+                        f"manifest output changed; entries retained at {path} and {tmp_path}"
+                    )
+                if not _snapshot_matches(
+                    tmp_path, staged, allow_changed_ctime=True
+                ):
+                    raise RuntimeError(
+                        f"manifest output changed; entries retained at {path} and {tmp_path}"
+                    )
+            raise RuntimeError(
+                f"manifest output changed; intended bytes retained at {tmp_path}"
+            )
+        if not published_matches:
+            raise RuntimeError("manifest publication changed")
         os.fsync(dirfd)
+        if not _snapshot_matches(path, staged, allow_changed_ctime=True):
+            raise RuntimeError("manifest publication changed")
+        if isinstance(expected, _OutputSnapshot) and not _snapshot_matches(
+            tmp_path, expected, allow_changed_ctime=True
+        ):
+            raise RuntimeError(
+                f"displaced manifest output changed; retained at {tmp_path}"
+            )
     finally:
         if fd >= 0:
             os.close(fd)
-        try:
-            os.unlink(tmp_name, dir_fd=dirfd)
-        except FileNotFoundError:
-            pass
         os.close(dirfd)
 
 
@@ -564,41 +1066,46 @@ def _sidecar_blob(sha: str, name: str) -> bytes:
 
 def _prior_output_bytes(path: Path, limit: int) -> bytes | None:
     """Read an existing output without treating a link or partial file as ours."""
-    try:
-        current = path.lstat()
-    except FileNotFoundError:
-        return None
-    if not stat.S_ISREG(current.st_mode) or current.st_uid != os.getuid():
-        raise RuntimeError("unverified prior manifest output")
-    try:
-        with os.fdopen(_open_regular_nofollow(path), "rb") as stream:
-            opened = os.fstat(stream.fileno())
-            raw = stream.read(limit + 1)
-        after = path.lstat()
-    except OSError as exc:
-        raise RuntimeError("unverified prior manifest output") from exc
-    if (
-        len(raw) > limit
-        or not stat.S_ISREG(after.st_mode)
-        or (current.st_dev, current.st_ino, current.st_size)
-        != (opened.st_dev, opened.st_ino, opened.st_size)
-        or (after.st_dev, after.st_ino, after.st_size)
-        != (opened.st_dev, opened.st_ino, opened.st_size)
-    ):
-        raise RuntimeError("unverified prior manifest output")
-    return raw
+    snapshot = _regular_output_snapshot(path, limit)
+    return None if snapshot is None else _regular_snapshot_bytes(snapshot)
 
 
 def _require_replaceable_manifest_outputs(
-    dest: Path, iso_path: Path, iso_name: str, iso_sha: str
-) -> None:
+    dest: Path,
+    iso_path: Path,
+    iso_name: str,
+    iso_sha: str,
+    manifest_blob: bytes,
+) -> dict[Path, _OutputSnapshot | None]:
     """Preserve unfamiliar files before publishing any release output."""
     try:
-        prior = _prior_output_bytes(dest, MAX_MANIFEST_BYTES)
-        prior_sidecar = _prior_output_bytes(Path(str(dest) + ".sha256"), 512)
-        if (prior is None) != (prior_sidecar is None):
-            raise RuntimeError("incomplete prior manifest bundle")
-        if prior is not None:
+        dest = Path(dest)
+        manifest_sidecar = Path(str(dest) + ".sha256")
+        iso_sidecar = Path(str(iso_path) + ".sha256")
+        intended_manifest_sidecar = _sidecar_blob(
+            hashlib.sha256(manifest_blob).hexdigest(), dest.name
+        )
+        intended_iso_sidecar = _sidecar_blob(iso_sha, iso_name)
+        snapshots = {
+            dest: _regular_output_snapshot(dest, MAX_MANIFEST_BYTES),
+            manifest_sidecar: _regular_output_snapshot(manifest_sidecar, 512),
+            iso_sidecar: _regular_output_snapshot(iso_sidecar, 512),
+        }
+        prior_snapshot = snapshots[dest]
+        sidecar_snapshot = snapshots[manifest_sidecar]
+        prior = (
+            None
+            if prior_snapshot is None
+            else _regular_snapshot_bytes(prior_snapshot)
+        )
+        prior_sidecar = (
+            None
+            if sidecar_snapshot is None
+            else _regular_snapshot_bytes(sidecar_snapshot)
+        )
+        prior_is_intended = prior == manifest_blob
+        prior_is_verified = False
+        if prior is not None and not prior_is_intended:
             data = json.loads(prior, object_pairs_hook=_unique_manifest_fields)
             if not isinstance(data, dict):
                 raise RuntimeError("invalid prior manifest")
@@ -616,13 +1123,35 @@ def _require_replaceable_manifest_outputs(
                 or artifact.get("iso_name") != iso_name
                 or artifact.get("iso_path") != iso_name
                 or artifact.get("iso_sha256") != iso_sha
-                or prior_sidecar
-                != _sidecar_blob(hashlib.sha256(prior).hexdigest(), dest.name)
             ):
                 raise RuntimeError("prior manifest does not match this ISO")
-        iso_sidecar = _prior_output_bytes(Path(str(iso_path) + ".sha256"), 512)
-        if iso_sidecar is not None and iso_sidecar != _sidecar_blob(iso_sha, iso_name):
+            prior_is_verified = True
+
+        if prior is None:
+            if prior_sidecar not in (None, intended_manifest_sidecar):
+                raise RuntimeError("incomplete prior manifest bundle")
+        elif prior_is_intended:
+            if prior_sidecar not in (None, intended_manifest_sidecar):
+                raise RuntimeError("incomplete prior manifest bundle")
+        elif prior_is_verified:
+            verified_prior_sidecar = _sidecar_blob(
+                hashlib.sha256(prior).hexdigest(), dest.name
+            )
+            if prior_sidecar not in (
+                verified_prior_sidecar,
+                intended_manifest_sidecar,
+            ):
+                raise RuntimeError("incomplete prior manifest bundle")
+
+        iso_sidecar_snapshot = snapshots[iso_sidecar]
+        iso_sidecar_blob = (
+            None
+            if iso_sidecar_snapshot is None
+            else _regular_snapshot_bytes(iso_sidecar_snapshot)
+        )
+        if iso_sidecar_blob not in (None, intended_iso_sidecar):
             raise RuntimeError("prior ISO checksum does not match this ISO")
+        return snapshots
     except (OSError, ValueError, TypeError, UnicodeError, RuntimeError) as exc:
         raise RuntimeError("unverified prior manifest output") from exc
 
@@ -722,19 +1251,26 @@ def write_manifest(manifest: Dict[str, Any], dest: Path) -> Path:
     recorded_iso_sha = str(artifact.get("iso_sha256", ""))
     if sha256_file(iso_path) != recorded_iso_sha:
         raise RuntimeError("ISO checksum mismatch")
-    _require_replaceable_manifest_outputs(dest, iso_path, iso_name, recorded_iso_sha)
-    blob = (json.dumps(manifest, indent=2, sort_keys=True, ensure_ascii=False) + "\n").encode("utf-8")
-    _atomic_write(dest, blob)
-    # Sidecar
-    sha = sha256_file(dest)
+    blob = (
+        json.dumps(manifest, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    ).encode("utf-8")
     sidecar = Path(str(dest) + ".sha256")
-    _atomic_write(sidecar, _sidecar_blob(sha, dest.name))
-    # Also write ISO sidecar if not exists
     iso_sidecar = iso_path.parent / f"{iso_name}.sha256"
+    manifest_sidecar_blob = _sidecar_blob(hashlib.sha256(blob).hexdigest(), dest.name)
+    iso_sidecar_blob = _sidecar_blob(recorded_iso_sha, iso_name)
+    expected = _require_replaceable_manifest_outputs(
+        dest, iso_path, iso_name, recorded_iso_sha, blob
+    )
+    # Publish the checksum entries first.  If a later write is interrupted,
+    # every visible new byte is the exact intended retry input; the manifest
+    # itself is the final commit point.
     _atomic_write(
         iso_sidecar,
-        _sidecar_blob(str(manifest["artifact"]["iso_sha256"]), str(iso_name)),
+        iso_sidecar_blob,
+        expected=expected[iso_sidecar],
     )
+    _atomic_write(sidecar, manifest_sidecar_blob, expected=expected[sidecar])
+    _atomic_write(dest, blob, expected=expected[dest])
     return dest
 
 
@@ -759,11 +1295,9 @@ def _unique_manifest_fields(pairs):
 
 def _verify_manifest(path: Path, *, allow_dirty: bool, require_evidence: bool) -> bytes:
     path = Path(path)
-    fd = _open_regular_nofollow(path)
-    with os.fdopen(fd, "rb") as stream:
-        raw_bytes = stream.read(MAX_MANIFEST_BYTES + 1)
-    if len(raw_bytes) > MAX_MANIFEST_BYTES:
-        raise RuntimeError("release manifest exceeds size limit")
+    raw_bytes, manifest_binding = _read_regular_snapshot(
+        path, limit=MAX_MANIFEST_BYTES, what="release manifest"
+    )
     try:
         raw_manifest = raw_bytes.decode("utf-8")
     except UnicodeDecodeError as exc:
@@ -855,25 +1389,37 @@ def _verify_manifest(path: Path, *, allow_dirty: bool, require_evidence: bool) -
     if not re.fullmatch(r"[0-9a-f]{64}", recorded_iso_sha):
         raise RuntimeError("missing checksum")
     try:
-        actual_sha, actual_size = sha256_file_with_stat(iso_path)
+        actual_sha, actual_size, iso_binding = _hash_regular_snapshot(iso_path)
         if actual_sha != recorded_iso_sha:
             raise RuntimeError("ISO checksum mismatch")
         if actual_size != artifact["iso_size_bytes"]:
             raise RuntimeError("ISO size mismatch")
     except OSError as exc:
         raise RuntimeError("ISO referenced by manifest is missing") from exc
-    _verify_sidecar(Path(str(iso_path) + ".sha256"), recorded_iso_sha, iso_name)
-    _verify_sidecar(
+    iso_sidecar_binding = _verify_sidecar(
+        Path(str(iso_path) + ".sha256"), recorded_iso_sha, iso_name
+    )
+    manifest_sidecar_binding = _verify_sidecar(
         Path(str(path) + ".sha256"),
         hashlib.sha256(raw_manifest.encode("utf-8")).hexdigest(),
         path.name,
     )
+    for binding in (
+        manifest_binding,
+        iso_binding,
+        iso_sidecar_binding,
+        manifest_sidecar_binding,
+    ):
+        _require_regular_binding(binding)
     return raw_bytes
 
 
-def _verify_sidecar(path: Path, sha: str, name: str) -> None:
-    fd = _open_regular_nofollow(path)
-    with os.fdopen(fd, "r", encoding="ascii") as stream:
-        text = stream.read(512)
+def _verify_sidecar(path: Path, sha: str, name: str) -> _RegularBinding:
+    raw, binding = _read_regular_snapshot(path, limit=512, what="checksum sidecar")
+    try:
+        text = raw.decode("ascii")
+    except UnicodeDecodeError as exc:
+        raise RuntimeError(f"checksum sidecar mismatch for {name}") from exc
     if text != f"{sha}  {name}\n":
         raise RuntimeError(f"checksum sidecar mismatch for {name}")
+    return binding

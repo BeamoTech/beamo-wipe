@@ -1,0 +1,17 @@
+{
+  "name": "go-race",
+  "command": [
+    "env",
+    "-u",
+    "BEAMO_DESKTOP_NATIVE_INVENTORY_TEST",
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-json",
+    "./..."
+  ],
+  "started_utc": "2026-10-21T05:21:29.193315+00:00",
+  "elapsed_seconds": 1.72,
+  "exit_code": 0
+}

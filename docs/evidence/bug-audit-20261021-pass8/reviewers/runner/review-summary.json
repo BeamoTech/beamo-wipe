@@ -1,0 +1,68 @@
+{
+  "baseline_commit": "d8a941adc16cf0650d482f512e4b921d702373c5",
+  "verified_root_causes": 1,
+  "finding": "Optional diagnostic interruption aborts requested Stop before signal, or strands confirmed terminal process ownership.",
+  "impact": "Stop and terminal-retirement availability; no unsafe erasure or signal delivery to real processes demonstrated.",
+  "repair": "Catch BaseException only at _try_log_diag optional logging and stderr fallback boundaries.",
+  "owned_paths": {
+    "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62",
+    "tests/test_cancel_diagnostic_retirement_pass8_20261021.py": "627d242e4a1619820ba4e48fd1e30b0c8d8fe2d370628331e255c7a07bd9f56c"
+  },
+  "exact_expanded_original": {
+    "cases": 25,
+    "failures": 18,
+    "passed_controls": 7,
+    "errors": 0,
+    "skipped": 0
+  },
+  "new_cases": 25,
+  "new_case_breakdown": {
+    "optional_helper_boundaries": 13,
+    "explicit_stop": 6,
+    "terminal_retirement": 6
+  },
+  "unchanged_baseline": {
+    "cases": 1355,
+    "passed": 1355,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "unchanged_adjacent": {
+    "modules": 31,
+    "cases": 1216,
+    "passed": 1216,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "candidate_focused": {
+    "cases": 2600,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "completion_contract_matrix": {
+    "cases": 5832,
+    "expected_completed_controls": 24,
+    "expected_refusal_controls": 5808,
+    "failure_count": 0,
+    "failures": [],
+    "native_callbacks": 0,
+    "source_sha256": {
+      "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62"
+    },
+    "scope": "Pure completion law matrix, not native acceptance; separate from pytest totals"
+  },
+  "large_noerase_controls_passed": 12,
+  "existing_tests_or_assertions_edited": false,
+  "ruff_general_security_mypy_grammar_diff": "PASS",
+  "python310_grammar_is_not_native_runtime_qualification": true,
+  "supporting_suites_overlap_canonical": true,
+  "native_device_engine_inventory_signal_power_firmware_guest_actions": false,
+  "docker_network_remote_stage_commit_actions": false,
+  "ownership_released_to_root": true
+}

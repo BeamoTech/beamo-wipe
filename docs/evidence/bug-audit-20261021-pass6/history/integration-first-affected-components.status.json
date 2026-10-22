@@ -1,0 +1,10 @@
+{
+  "name": "affected-components",
+  "command": [
+    "bash",
+    "/workspace/beamo-tools/audit-pass6-20261021/root/run_affected.sh"
+  ],
+  "started_utc": "2026-10-21T02:24:39.521343+00:00",
+  "elapsed_seconds": 13.84,
+  "exit_code": 1
+}

@@ -53,7 +53,7 @@ def live_environment():
             "boot=live" in Path("/proc/cmdline").read_text().split()
             or Path("/run/live/medium").is_mount()
         )
-    except OSError:
+    except (OSError, UnicodeError):
         return True  # Unknown Linux runtime: refuse to start a preview/test.
 
 
@@ -203,7 +203,7 @@ def doctor(operation="local"):
                 or any(type(data["modules"].get(n)) is not bool for n in modules)
             ):
                 raise ValueError("invalid probe output")
-        except (ValueError, TypeError):
+        except (ValueError, TypeError, RecursionError):
             problems.append(
                 "Selected Python "
                 + (error or "returned invalid probe output")

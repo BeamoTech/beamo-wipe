@@ -1,0 +1,14 @@
+{
+  "head": "b462e62005a752b0e5f2a066bda19bd9c79bbd8b",
+  "branch": "fix/safety-audit-20261019",
+  "clean": true,
+  "verified_sources": 822,
+  "verified_retained_artifacts": 250,
+  "prior_unique_python_passes": 11770,
+  "prior_main_ids": 11797,
+  "prior_skips_unverified": 28,
+  "prior_go_named_passes": 418,
+  "prior_go_native_skips": 2,
+  "observed_utc": "2026-10-21T06:31:07.230036+00:00",
+  "client_timezone": "America/Chicago"
+}

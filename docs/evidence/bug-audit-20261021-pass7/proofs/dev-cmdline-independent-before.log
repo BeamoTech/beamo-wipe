@@ -1,0 +1,64 @@
+...F                                                                     [100%]
+=================================== FAILURES ===================================
+________ test_linux_runtime_marker_is_a_boolean_refusal[bad-utf8-True] _________
+
+case = 'bad-utf8', expected = True
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7efe73285370>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-121/test_linux_runtime_marker_is_a3')
+
+    @pytest.mark.parametrize('case,expected', [
+        ('normal', False), ('live', True), ('denied', True), ('bad-utf8', True),
+    ])
+    def test_linux_runtime_marker_is_a_boolean_refusal(case, expected, monkeypatch, tmp_path):
+        monkeypatch.delenv('BEAMO_WIPE_LIVE', raising=False)
+        monkeypatch.setattr(dev.sys, 'platform', 'linux')
+        marker = tmp_path / 'cmdline'
+        marker.write_bytes({'normal': b'quiet splash', 'live': b'boot=live quiet',
+                            'denied': b'', 'bad-utf8': b'boot=live label=\xff'}[case])
+        original_read = Path.read_text
+        calls = []
+    
+        def read(path, *args, **kwargs):
+            if str(path) != '/proc/cmdline':
+                raise AssertionError('Unexpected native read')
+            calls.append('read-marker')
+            if case == 'denied':
+                raise PermissionError('fake denied marker')
+            return original_read(marker, *args, **kwargs)
+    
+        def mounted(path):
+            assert str(path) == '/run/live/medium'
+            calls.append('fake-mount-check')
+            return False
+    
+        monkeypatch.setattr(Path, 'read_text', read)
+        monkeypatch.setattr(Path, 'is_mount', mounted)
+>       assert dev.live_environment() is expected
+               ^^^^^^^^^^^^^^^^^^^^^^
+
+../beamo-tools/audit-pass7-20261021/boot/test_dev_cmdline_decode_probe.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dev.py:53: in live_environment
+    "boot=live" in Path("/proc/cmdline").read_text().split()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../beamo-tools/audit-pass7-20261021/boot/test_dev_cmdline_decode_probe.py:31: in read
+    return original_read(marker, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:633: in read_text
+    return f.read()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <encodings.utf_8.IncrementalDecoder object at 0x7efe7327f050>
+input = b'boot=live label=\xff', final = True
+
+>   ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 16: invalid start byte
+
+<frozen codecs>:325: UnicodeDecodeError
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass7-20261021/boot/test_dev_cmdline_decode_probe.py::test_linux_runtime_marker_is_a_boolean_refusal[bad-utf8-True]
+1 failed, 3 passed in 0.13s

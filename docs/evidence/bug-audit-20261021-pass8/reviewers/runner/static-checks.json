@@ -1,0 +1,35 @@
+[
+  {
+    "name": "ruff-general-and-source/test-security",
+    "status": "fulfilled",
+    "value": {
+      "chunk_id": "07f46d",
+      "wall_time_seconds": 0.00002751,
+      "exit_code": 0,
+      "original_token_count": 15,
+      "output": "All checks passed!\nAll checks passed!\nAll checks passed!\n"
+    }
+  },
+  {
+    "name": "mypy",
+    "status": "fulfilled",
+    "value": {
+      "chunk_id": "562e18",
+      "wall_time_seconds": 0.436556023,
+      "exit_code": 0,
+      "original_token_count": 11,
+      "output": "Success: no issues found in 1 source file\n"
+    }
+  },
+  {
+    "name": "python310-grammar-and-owned-diff",
+    "status": "fulfilled",
+    "value": {
+      "chunk_id": "c2fd6d",
+      "wall_time_seconds": 0.000026319,
+      "exit_code": 0,
+      "original_token_count": 17,
+      "output": "own diff-check exit 0\n\nPython3.10 grammar passes both owned files\n"
+    }
+  }
+]

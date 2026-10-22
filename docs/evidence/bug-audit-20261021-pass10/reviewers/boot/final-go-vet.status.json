@@ -1,0 +1,14 @@
+{
+  "name": "final-go-vet",
+  "command": [
+    "env",
+    "-u",
+    "BEAMO_DESKTOP_NATIVE_INVENTORY_TEST",
+    "go",
+    "vet",
+    "./..."
+  ],
+  "started_utc": "2026-10-21T05:31:35.680852+00:00",
+  "elapsed_seconds": 0.14,
+  "exit_code": 0
+}

@@ -1,0 +1,66 @@
+{
+  "review": "PASS11 recovery/report/privacy/support/signing",
+  "baseline": "b46e5642d4c849d503b41d8bf562cfb1f9fad68b",
+  "recorded_utc": "2026-10-21T06:01:28.132463+00:00",
+  "client_timezone": "America/Chicago",
+  "verified_new_defects": [],
+  "repository_edits": [],
+  "source_files_unchanged": 12,
+  "existing_assertions_preserved": true,
+  "reports": {
+    "focused": {
+      "passed": 1063,
+      "unique_ids": 1063,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "junit_sha256": "8769cead7cc84334b9695bfe6788801c7e20bc6d3a9a3254f2a4675b165e2159",
+      "exit_code": 0
+    },
+    "adjacent": {
+      "passed": 449,
+      "unique_ids": 449,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "junit_sha256": "035a509f55b560937b6655a324c508063b47d397fabac8bc36c4febd3f670cea",
+      "exit_code": 0
+    }
+  },
+  "unique_review_passes": 1512,
+  "canonical_coverage_addition": 0,
+  "model_script": "volatile_transaction_matrix.py",
+  "model_script_sha256": "1a26bfedc52b2b5e53e1a70719a1770ef1553ecda9654ce03f7a2e0041669321",
+  "model_metrics": "volatile-transaction-matrix.json",
+  "model_counts": {
+    "cases": 240,
+    "positive_transactions": 30,
+    "injected_refusals": 210,
+    "precommit_old_bytes_preserved": 120,
+    "postcommit_new_bytes_retained": 90,
+    "postcommit_journals_block_further_save": 54,
+    "fresh_reopen_checks": 240,
+    "successful_retries": 240,
+    "quiescent_controls": 144,
+    "native_callbacks": 0
+  },
+  "model_mismatches": [],
+  "history": [
+    {
+      "paths": [
+        "initial-headless-adjacent.xml",
+        "initial-headless-adjacent.log",
+        "initial-headless-adjacent.status.json"
+      ],
+      "result": "447pass/2no-display skips; unchanged two Tk cases execute under private72DPI Xvfb in final449pass result",
+      "product_defect": false,
+      "included_in_final_coverage": false
+    }
+  ],
+  "limits": [
+    "Owned regular tempfiles/fake disks only; no actual devices, inventory, engines, mount, firmware, power or remote writes",
+    "Transaction checks establish bounded publication/retry behavior, not atomic filesystem compare-and-swap or physical-media durability",
+    "Pinned-browser/network/native/image/physical/reconnect qualification remains outside this local review"
+  ],
+  "ownership_released": true
+}

@@ -1,0 +1,33 @@
+{
+  "name": "final-new-regressions",
+  "command": [
+    "env",
+    "BEAMO_ISOLATED_X11_TEST=1",
+    "BEAMO_WIPE_DRY_RUN=1",
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "1151",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "python3",
+    "-m",
+    "pytest",
+    "-W",
+    "error",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-o",
+    "pythonpath=src tests",
+    "-q",
+    "tests/test_sleep_inhibit_diagnostic_retirement_pass11_20261021.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass11-20261021/root/final-new-regressions.xml"
+  ],
+  "started_utc": "2026-10-21T06:08:33.959060+00:00",
+  "elapsed_seconds": 0.4,
+  "exit_code": 0
+}

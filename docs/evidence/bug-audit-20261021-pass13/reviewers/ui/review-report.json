@@ -1,0 +1,894 @@
+{
+  "baseline": "7fcd706b44c0d63cf5f2959bcd235968e8300274",
+  "branch": "fix/safety-audit-20261019",
+  "status": "implementation complete; ownership released to root for canonical supported-container gate",
+  "repository_edits": [
+    "src/beamo_wipe/ui/accessible_wizard.py",
+    "tests/test_accessible_main_lifetime_pass13.py"
+  ],
+  "findings": [
+    {
+      "id": "GTK-main-view-lifetime",
+      "status": "FIXED; root independently proved original and verified repair",
+      "source": "src/beamo_wipe/ui/accessible_wizard.py",
+      "functions": [
+        "AccessibleWizard.__init__",
+        "AccessibleWizard.run"
+      ],
+      "trigger": "Initial render/show or timer installation throws; or Gtk.main raises/returns externally.",
+      "observed": "Owned visible GTK window survives all four paths; installed poll timer survives both loop paths.",
+      "proof": "lifetime-before.status.json",
+      "failures": 4,
+      "positive_controls": 1,
+      "native_callbacks": 0,
+      "minimal_fix_caution": "Initialize retirement fields before fallible GTK setup; clean on construction and every run exit; quit only owned Gtk.main level, preserving peer/nested loops.",
+      "final_regressions": {
+        "baseline_failures": 28,
+        "baseline_positive_controls": 4,
+        "fixed_passes": 32,
+        "baseline_receipt": "final-regressions-baseline.status.json",
+        "fixed_receipt": "final-regressions-fixed.status.json"
+      }
+    }
+  ],
+  "focused_checks": {
+    "command": [
+      "dbus-run-session",
+      "--",
+      "xvfb-run",
+      "-a",
+      "-n",
+      "271",
+      "-s",
+      "-screen 0 1600x1000x24 -dpi 72",
+      "python3",
+      "-m",
+      "pytest",
+      "-q",
+      "-W",
+      "error",
+      "-p",
+      "no:cacheprovider",
+      "-o",
+      "addopts=",
+      "--strict-markers",
+      "--junitxml=/workspace/beamo-tools/audit-pass13-20261021/ui/focused-ui.xml",
+      "tests/test_wizard_review_countdown_pass10.py",
+      "tests/test_wizard_flow.py",
+      "tests/test_wizard_authorization_pass8.py",
+      "tests/test_wizard_peer_swap_authorization_pass24.py",
+      "tests/test_wizard_fresh_inventory_authorization_pass23.py",
+      "tests/test_wizard_lifecycle_pass5_stop.py",
+      "tests/test_wizard_lifecycle_pass5_refresh.py",
+      "tests/test_wizard_lifecycle_pass5_evidence.py",
+      "tests/test_app_live_ownership_pass9_20261021.py",
+      "tests/test_app_live_decode_refusal_pass8_20261021.py",
+      "tests/test_app_late_decode_refusal_pass10_20261021.py",
+      "tests/test_accessible_startup_cleanup_20261019.py",
+      "tests/test_accessible_runtime_failure_pass6_regression.py",
+      "tests/test_accessible_close_cleanup_pass21.py",
+      "tests/test_accessible_cleanup_compat_20261019.py",
+      "tests/test_tk_callback_ownership_pass6_20261021.py",
+      "tests/test_tk_interpreter_callback_retirement.py",
+      "tests/test_tk_retired_pool_threads.py",
+      "tests/test_tk_runtime.py",
+      "tests/test_startup_presenter_runtime_pass37_ui.py",
+      "tests/test_startup_callback_retirement_pass17.py",
+      "tests/test_console_startup_thread_pass33_ui.py",
+      "tests/test_curses_review_paint_pass6_20261021.py",
+      "tests/test_curses_rendered_erase_gate_pass18.py",
+      "tests/test_helper_open_pass17_ui.py",
+      "tests/test_helper_localized_landmarks_pass21_ui.py",
+      "tests/test_helper_locale_guidance_pass5.py",
+      "tests/test_ui_gallery_escape_pass10.py",
+      "tests/test_gallery_run_again_report_pass26_ui.py",
+      "tests/test_app_poweroff_recheck_pass7.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 126.29,
+    "private_display_72dpi": true,
+    "native_inventory_opt_in": null,
+    "child_umask": "022",
+    "cases": 683,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0
+  },
+  "finite_model": {
+    "model": "nested-review-hold-shutdown-discard-epoch",
+    "counts": {
+      "scenarios": 108,
+      "accepted_discard_controls": 108,
+      "old_epoch_refusals": 216,
+      "busy_refusals": 90,
+      "immediate_review_refusals": 108,
+      "overlay_refusals": 180,
+      "elapsed_gate_controls": 108,
+      "events": 1926
+    },
+    "native_callbacks": 0,
+    "mismatches": 0,
+    "fake_callbacks_only": true,
+    "source_sha256": {
+      "src/beamo_wipe/wizard.py": "bb8d5ed38a749c07538107ad9a75fa3fa24b1c07de2f8a5eedecb05df8811ca0",
+      "src/beamo_wipe/ui/accessible_wizard.py": "a3f201102a7e710e0043790f125f4f571feb4d009d33370245420e26b19db905",
+      "src/beamo_wipe/ui/tk_wizard.py": "0c8b457bfdc1946ce4ea66d611b025df11884cbf044f5d548f2b0f3b7b174e7f",
+      "src/beamo_wipe/ui/console_wizard.py": "26afac6583e25e9c8eabbecb2d01324d6be1848ac405529c93646371ba317400",
+      "src/beamo_wipe/app.py": "1ed6964181276463d5c7b7bdd59818d7ce57a31bb9fef77f3ad1ff1c76f7cf65"
+    },
+    "scenarios": [
+      {
+        "language": "en",
+        "depth": 0,
+        "busy": "none",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 0,
+        "busy": "none",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 0,
+        "busy": "_report_exporting",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 0,
+        "busy": "_report_exporting",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 0,
+        "busy": "_diagnostic_busy",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 0,
+        "busy": "_diagnostic_busy",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 0,
+        "busy": "_evidence_saving",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 0,
+        "busy": "_evidence_saving",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 0,
+        "busy": "_finishing",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 0,
+        "busy": "_finishing",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 0,
+        "busy": "runner",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 0,
+        "busy": "runner",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 1,
+        "busy": "none",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 1,
+        "busy": "none",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 1,
+        "busy": "_report_exporting",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 1,
+        "busy": "_report_exporting",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 1,
+        "busy": "_diagnostic_busy",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 1,
+        "busy": "_diagnostic_busy",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 1,
+        "busy": "_evidence_saving",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 1,
+        "busy": "_evidence_saving",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 1,
+        "busy": "_finishing",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 1,
+        "busy": "_finishing",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 1,
+        "busy": "runner",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 1,
+        "busy": "runner",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 2,
+        "busy": "none",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 2,
+        "busy": "none",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 2,
+        "busy": "_report_exporting",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 2,
+        "busy": "_report_exporting",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 2,
+        "busy": "_diagnostic_busy",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 2,
+        "busy": "_diagnostic_busy",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 2,
+        "busy": "_evidence_saving",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 2,
+        "busy": "_evidence_saving",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 2,
+        "busy": "_finishing",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 2,
+        "busy": "_finishing",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "en",
+        "depth": 2,
+        "busy": "runner",
+        "return_action": "back"
+      },
+      {
+        "language": "en",
+        "depth": 2,
+        "busy": "runner",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 0,
+        "busy": "none",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 0,
+        "busy": "none",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 0,
+        "busy": "_report_exporting",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 0,
+        "busy": "_report_exporting",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 0,
+        "busy": "_diagnostic_busy",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 0,
+        "busy": "_diagnostic_busy",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 0,
+        "busy": "_evidence_saving",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 0,
+        "busy": "_evidence_saving",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 0,
+        "busy": "_finishing",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 0,
+        "busy": "_finishing",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 0,
+        "busy": "runner",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 0,
+        "busy": "runner",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 1,
+        "busy": "none",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 1,
+        "busy": "none",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 1,
+        "busy": "_report_exporting",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 1,
+        "busy": "_report_exporting",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 1,
+        "busy": "_diagnostic_busy",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 1,
+        "busy": "_diagnostic_busy",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 1,
+        "busy": "_evidence_saving",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 1,
+        "busy": "_evidence_saving",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 1,
+        "busy": "_finishing",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 1,
+        "busy": "_finishing",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 1,
+        "busy": "runner",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 1,
+        "busy": "runner",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 2,
+        "busy": "none",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 2,
+        "busy": "none",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 2,
+        "busy": "_report_exporting",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 2,
+        "busy": "_report_exporting",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 2,
+        "busy": "_diagnostic_busy",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 2,
+        "busy": "_diagnostic_busy",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 2,
+        "busy": "_evidence_saving",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 2,
+        "busy": "_evidence_saving",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 2,
+        "busy": "_finishing",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 2,
+        "busy": "_finishing",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "fr",
+        "depth": 2,
+        "busy": "runner",
+        "return_action": "back"
+      },
+      {
+        "language": "fr",
+        "depth": 2,
+        "busy": "runner",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 0,
+        "busy": "none",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 0,
+        "busy": "none",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 0,
+        "busy": "_report_exporting",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 0,
+        "busy": "_report_exporting",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 0,
+        "busy": "_diagnostic_busy",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 0,
+        "busy": "_diagnostic_busy",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 0,
+        "busy": "_evidence_saving",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 0,
+        "busy": "_evidence_saving",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 0,
+        "busy": "_finishing",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 0,
+        "busy": "_finishing",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 0,
+        "busy": "runner",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 0,
+        "busy": "runner",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 1,
+        "busy": "none",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 1,
+        "busy": "none",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 1,
+        "busy": "_report_exporting",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 1,
+        "busy": "_report_exporting",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 1,
+        "busy": "_diagnostic_busy",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 1,
+        "busy": "_diagnostic_busy",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 1,
+        "busy": "_evidence_saving",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 1,
+        "busy": "_evidence_saving",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 1,
+        "busy": "_finishing",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 1,
+        "busy": "_finishing",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 1,
+        "busy": "runner",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 1,
+        "busy": "runner",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 2,
+        "busy": "none",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 2,
+        "busy": "none",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 2,
+        "busy": "_report_exporting",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 2,
+        "busy": "_report_exporting",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 2,
+        "busy": "_diagnostic_busy",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 2,
+        "busy": "_diagnostic_busy",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 2,
+        "busy": "_evidence_saving",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 2,
+        "busy": "_evidence_saving",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 2,
+        "busy": "_finishing",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 2,
+        "busy": "_finishing",
+        "return_action": "keep_report_session"
+      },
+      {
+        "language": "de",
+        "depth": 2,
+        "busy": "runner",
+        "return_action": "back"
+      },
+      {
+        "language": "de",
+        "depth": 2,
+        "busy": "runner",
+        "return_action": "keep_report_session"
+      }
+    ],
+    "coverage_note": "Supporting model observations overlap canonical tests; not additional unique test passes."
+  },
+  "source_sha256": {
+    "src/beamo_wipe/wizard.py": "bb8d5ed38a749c07538107ad9a75fa3fa24b1c07de2f8a5eedecb05df8811ca0",
+    "src/beamo_wipe/app.py": "1ed6964181276463d5c7b7bdd59818d7ce57a31bb9fef77f3ad1ff1c76f7cf65",
+    "src/beamo_wipe/ui/tk_wizard.py": "0c8b457bfdc1946ce4ea66d611b025df11884cbf044f5d548f2b0f3b7b174e7f",
+    "src/beamo_wipe/ui/accessible_wizard.py": "8b9dae8e6faff4f2ef61532c43a9ad210a4cb45b60c1b2807b17d6dfb97b0b6f",
+    "src/beamo_wipe/ui/console_wizard.py": "26afac6583e25e9c8eabbecb2d01324d6be1848ac405529c93646371ba317400",
+    "src/beamo_wipe/ui/sound_dialog.py": "9165731d320e6f19de3e6632a7b0c43a4c688a72dbd6558b39ba46c0052aed9e",
+    "src/beamo_wipe/startup_stages.py": "131d5966f9e45505e248e8192d33a1eb39be135246d1a7191ef82b6dba832477",
+    "helper/index.html": "02478cb15c5566040a1cbcd3c62b4983b1ebd95fff40d72177d21a8e4f6d6257"
+  },
+  "safety": {
+    "actual_engine": false,
+    "native_inventory": false,
+    "device_operations": false,
+    "network_remote": false,
+    "Docker_build": false,
+    "firmware_power_guest": false,
+    "private72dpi": true,
+    "preserved_peer_displays": [
+      ":1",
+      ":99"
+    ],
+    "private_XDG_and_DBus": true,
+    "child_umask": "022"
+  },
+  "limits": "Supporting focused/model counts overlap canonical coverage. Broader adjacent diagnostic failures remain failures; no native/physical/browser/Orca acceptance claim. Initial model missing-fake-selector setup failure is retained separately and excluded from success counts. Root handles full gate/build/commit/backlog.",
+  "fixed_lifetime_adjacent": {
+    "command": [
+      "dbus-run-session",
+      "--",
+      "xvfb-run",
+      "-a",
+      "-n",
+      "271",
+      "-s",
+      "-screen 0 1600x1000x24 -dpi 72",
+      "python3",
+      "-m",
+      "pytest",
+      "-q",
+      "-W",
+      "error",
+      "-p",
+      "no:cacheprovider",
+      "-o",
+      "addopts=",
+      "--strict-markers",
+      "--junitxml=/workspace/beamo-tools/audit-pass13-20261021/ui/fixed-lifetime-adjacent.xml",
+      "tests/test_accessible_main_lifetime_pass13.py",
+      "tests/test_accessible_close_cleanup_pass21.py",
+      "tests/test_accessible_cleanup_compat_20261019.py",
+      "tests/test_accessible_startup_cleanup_20261019.py",
+      "tests/test_accessible_runtime_failure_pass6_regression.py",
+      "tests/test_gtk_dependency_handling.py",
+      "tests/test_graphical_interface_loss_pass5_regression.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 5.49,
+    "private_display_72dpi": true,
+    "native_inventory_opt_in": null,
+    "child_umask": "022",
+    "cases": 71,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0
+  },
+  "adjacent_environment_history": {
+    "command": [
+      "dbus-run-session",
+      "--",
+      "xvfb-run",
+      "-a",
+      "-n",
+      "271",
+      "-s",
+      "-screen 0 1600x1000x24 -dpi 72",
+      "python3",
+      "-m",
+      "pytest",
+      "-q",
+      "-W",
+      "error",
+      "-p",
+      "no:cacheprovider",
+      "-o",
+      "addopts=",
+      "--strict-markers",
+      "--junitxml=/workspace/beamo-tools/audit-pass13-20261021/ui/fixed-ui-adjacent.xml",
+      "tests/test_accessible_main_lifetime_pass13.py",
+      "tests/test_accessible_runtime.py",
+      "tests/test_accessible_close_cleanup_pass21.py",
+      "tests/test_accessible_cleanup_compat_20261019.py",
+      "tests/test_accessible_startup_cleanup_20261019.py",
+      "tests/test_accessible_runtime_failure_pass6_regression.py",
+      "tests/test_accessible_focus_input_pass11.py",
+      "tests/test_accessible_key_repeat.py",
+      "tests/test_accessible_last_chance_actions_pass12_ui.py",
+      "tests/test_accessible_review_visible_pass16_ui.py",
+      "tests/test_sound_dialog_state_pass12.py",
+      "tests/test_gtk_dependency_handling.py",
+      "tests/test_graphical_interface_loss_pass5_regression.py"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 41.28,
+    "private_display_72dpi": true,
+    "native_inventory_opt_in": null,
+    "child_umask": "022",
+    "cases": 346,
+    "failures": 2,
+    "errors": 0,
+    "skips": 0,
+    "notes": [
+      "Existing Orca child exits1 before announcing Screen reader on; acceptance unverified here.",
+      "Existing method choices geometry fails identically against exact baseline source: method-layout-baseline.status.json.",
+      "No old assertions changed; root canonical supported-container gate remains authoritative."
+    ]
+  },
+  "native_inventory_opt_in": null,
+  "final_owned_sha256": {
+    "src/beamo_wipe/ui/accessible_wizard.py": "a3f201102a7e710e0043790f125f4f571feb4d009d33370245420e26b19db905",
+    "tests/test_accessible_main_lifetime_pass13.py": "0401351cf7df44a314284dd5c9fdcaafe88daeee962b39cac8e7451839fefb30"
+  },
+  "source_sha256_note": "source_sha256 retains initial reviewed baseline; final_owned_sha256 binds only this agent's final implementation and exact baseline-red test bytes."
+}

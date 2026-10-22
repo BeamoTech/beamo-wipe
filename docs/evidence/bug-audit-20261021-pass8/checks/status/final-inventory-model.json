@@ -1,0 +1,14 @@
+{
+  "name": "final-inventory-model",
+  "command": [
+    "env",
+    "PYTHONPATH=/workspace/beamo-wipe/src",
+    "python3",
+    "-W",
+    "error",
+    "/workspace/beamo-tools/audit-pass8-20261021/root/model-replays/probe_inventory_equivalence.py"
+  ],
+  "started_utc": "2026-10-21T04:17:16.001527+00:00",
+  "elapsed_seconds": 5.2,
+  "exit_code": 0
+}

@@ -106,6 +106,11 @@ NWIPE_PIPE_FAILURE_RE = re.compile(
     r"^\|(/dev/[A-Za-z0-9._+-]+)\|[^|]*\|\s*"
     r"(?:-FAILED-|UABORTED|INSANITY)\s*\|"
 )
+NWIPE_FAILURE_STATUS_ROW_RE = re.compile(
+    r"^\s*!?\s*[A-Za-z0-9._+-]+\s*\|\s*"
+    r"(?:-FAILED-|UABORTED|INSANITY)\s*\|"
+    r"\s*[^|\r\n]+\|\s*\d{2,}:\d{2}:\d{2}\s*\|"
+)
 NWIPE_VERIFY_MISMATCH_RE = re.compile(
     r"^Verification mismatch on ['\"]?(/dev/[A-Za-z0-9._+-]+)"
 )
@@ -117,6 +122,10 @@ NWIPE_ERROR_ROW_RE = re.compile(
 )
 NWIPE_ERROR_SUMMARY_HEADER_RE = re.compile(
     r"^(?:\*+\s*)?Error Summary(?:\s*\*+)?$"
+)
+NWIPE_ERROR_SUMMARY_HEADER = (
+    "******************************** Error Summary "
+    "*********************************"
 )
 # Exact nwipe 0.42 logging.c banner: device models cannot supply this line
 # (ATA IDENTIFY is 40 bytes, status-table model is truncated to 17 bytes).
@@ -157,10 +166,38 @@ NWIPE_CLEAN_ENV = dict(CLEAN_SUBPROCESS_ENV)
 NWIPE_VERSION_LINE_RE = re.compile(
     rf"(?im)^nwipe version {re.escape(NWIPE_PINNED_VERSION)}(?:\s|$)"
 )
+# Keep the real POSIX methods identifiable when tests supply a custom Popen.
+_POPEN_TERMINATE = subprocess.Popen.terminate
+_POPEN_KILL = subprocess.Popen.kill
+_POPEN_SEND_SIGNAL = subprocess.Popen.send_signal
 
 
 class ProcessStatusError(SafetyError):
     """Polling failed; cancellation can still confirm exit through wait()."""
+
+
+def _send_stop_signal(proc: subprocess.Popen, *, kill: bool = False) -> bool:
+    """Return whether this stop may have delivered a signal.
+
+    POSIX Popen silently skips an exited process and suppresses ESRCH. Use
+    its exact poll/returncode/kill sequence while retaining that refusal as a
+    receipt. The normal poll still uses Popen's waitpid lock and PID-reuse
+    protection. Custom stop/signal methods retain their conservative contract.
+    """
+    stop = proc.kill if kill else proc.terminate
+    standard_stop = _POPEN_KILL if kill else _POPEN_TERMINATE
+    if (getattr(stop, "__func__", None) is standard_stop
+            and getattr(proc.send_signal, "__func__", None) is _POPEN_SEND_SIGNAL):
+        proc.poll()
+        if proc.returncode is not None:
+            return False
+        try:
+            os.kill(proc.pid, signal.SIGKILL if kill else signal.SIGTERM)
+        except ProcessLookupError:
+            return False
+    else:
+        stop()
+    return True
 
 
 def resolve_nwipe_binary(binary: str) -> str:
@@ -191,39 +228,46 @@ def nwipe_version_is_pinned(text: str) -> bool:
     return bool(NWIPE_VERSION_LINE_RE.search(text or ""))
 
 
-def _verify_pinned_nwipe(binary: str) -> None:
-    if os.path.basename(binary) != "nwipe":
-        return
-    assert_nwipe_binary_safe(binary)
-    try:
-        proc = subprocess.run(
-            [binary, "-V"],
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=NWIPE_VERSION_TIMEOUT_S,
-            shell=False,
-            env=NWIPE_CLEAN_ENV,
-        )
-    except (OSError, subprocess.TimeoutExpired) as exc:
-        raise SafetyError("Cannot verify the nwipe binary.") from exc
-    blob = f"{proc.stdout or ''}{proc.stderr or ''}"
-    if proc.returncode != 0 or not nwipe_version_is_pinned(blob):
-        raise SafetyError(
-            f"Refusing to exec nwipe; pinned version is {NWIPE_PINNED_VERSION}."
-        )
+class _PinnedEngine:
+    """Own the exact engine descriptor accepted by the version probe."""
+
+    def __init__(self, fd: int, path: str, signature: tuple[int, ...]) -> None:
+        self.fd = fd
+        self.path = path
+        self.signature = signature
+
+    @property
+    def exec_path(self) -> str:
+        return f"/proc/self/fd/{self.fd}"
+
+    def close(self) -> None:
+        fd, self.fd = self.fd, -1
+        if fd >= 0:
+            os.close(fd)
+
+    def __del__(self) -> None:
+        try:
+            self.close()
+        except OSError:
+            pass
 
 
-def assert_nwipe_binary_safe(path: str) -> None:
-    """Pinned engine must be a root-owned ELF, not a script or a writable stub."""
-    try:
-        st = os.lstat(path)
-    except OSError as exc:
-        raise SafetyError("Cannot stat nwipe binary.") from exc
-    if stat.S_ISLNK(st.st_mode):
-        raise SafetyError("Refusing to exec nwipe through a symlink.")
+def _engine_signature(st: os.stat_result) -> tuple[int, ...]:
+    return (
+        st.st_dev,
+        st.st_ino,
+        st.st_mode,
+        st.st_uid,
+        st.st_nlink,
+        st.st_size,
+        st.st_mtime_ns,
+        st.st_ctime_ns,
+    )
+
+
+def _validate_nwipe_stat(st: os.stat_result) -> None:
     if not stat.S_ISREG(st.st_mode):
-        raise SafetyError("nwipe is not a regular file.")
+        raise SafetyError("nwipe binary is not a regular file.")
     if not (st.st_mode & stat.S_IXUSR):
         raise SafetyError("nwipe is not executable.")
     if stat.S_IMODE(st.st_mode) & 0o022:
@@ -232,6 +276,17 @@ def assert_nwipe_binary_safe(path: str) -> None:
         raise SafetyError("nwipe binary must not be setuid or setgid.")
     if os.geteuid() == 0 and st.st_uid != 0:
         raise SafetyError("nwipe binary must be owned by root.")
+
+
+def _open_nwipe_binary_safe(path: str) -> _PinnedEngine:
+    """Open and validate one engine inode, retaining it for exact execution."""
+    try:
+        st = os.lstat(path)
+    except OSError as exc:
+        raise SafetyError("Cannot stat nwipe binary.") from exc
+    if stat.S_ISLNK(st.st_mode):
+        raise SafetyError("Refusing to exec nwipe through a symlink.")
+    _validate_nwipe_stat(st)
     try:
         fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
     except OSError as exc:
@@ -243,19 +298,72 @@ def assert_nwipe_binary_safe(path: str) -> None:
             fst = os.fstat(fd)
         except OSError as exc:
             raise SafetyError("Cannot stat nwipe binary.") from exc
-        if stat.S_ISLNK(fst.st_mode) or not stat.S_ISREG(fst.st_mode):
-            raise SafetyError("nwipe is not a regular file.")
+        _validate_nwipe_stat(fst)
         if fst.st_ino != st.st_ino or fst.st_dev != st.st_dev:
             raise SafetyError("nwipe binary changed during check.")
-        if stat.S_IMODE(fst.st_mode) & 0o022:
-            raise SafetyError("nwipe binary is writable by group or others.")
-        if fst.st_mode & (stat.S_ISUID | stat.S_ISGID):
-            raise SafetyError("nwipe binary must not be setuid or setgid.")
-        magic = os.read(fd, 4)
-    finally:
+        magic = os.pread(fd, 4, 0)
+        if magic != b"\x7fELF":
+            raise SafetyError("nwipe binary is not an ELF executable.")
+        return _PinnedEngine(fd, path, _engine_signature(fst))
+    except BaseException:
         os.close(fd)
-    if magic != b"\x7fELF":
-        raise SafetyError("nwipe binary is not an ELF executable.")
+        raise
+
+
+def assert_nwipe_binary_safe(path: str) -> None:
+    """Pinned engine must be a root-owned ELF, not a script or a writable stub."""
+    engine = _open_nwipe_binary_safe(path)
+    engine.close()
+
+
+_ORIGINAL_ASSERT_NWIPE_BINARY_SAFE = assert_nwipe_binary_safe
+
+
+def _verify_pinned_nwipe(binary: str) -> Optional[_PinnedEngine]:
+    if os.path.basename(binary) != "nwipe":
+        return None
+    # Keep the established injectable boundary for real-engine unit tests.
+    # Production retains a second, exact descriptor after that check.
+    assert_nwipe_binary_safe(binary)
+    engine = (
+        _open_nwipe_binary_safe(binary)
+        if assert_nwipe_binary_safe is _ORIGINAL_ASSERT_NWIPE_BINARY_SAFE
+        else None
+    )
+    probe = engine.exec_path if engine is not None else binary
+    try:
+        try:
+            kwargs: dict[str, Any] = {}
+            if engine is not None:
+                kwargs["pass_fds"] = (engine.fd,)
+            proc = subprocess.run(
+                [probe, "-V"],
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=NWIPE_VERSION_TIMEOUT_S,
+                shell=False,
+                env=NWIPE_CLEAN_ENV,
+                **kwargs,
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            raise SafetyError("Cannot verify the nwipe binary.") from exc
+        blob = f"{proc.stdout or ''}{proc.stderr or ''}"
+        if proc.returncode != 0 or not nwipe_version_is_pinned(blob):
+            raise SafetyError(
+                f"Refusing to exec nwipe; pinned version is {NWIPE_PINNED_VERSION}."
+            )
+        if engine is not None:
+            try:
+                if _engine_signature(os.fstat(engine.fd)) != engine.signature:
+                    raise SafetyError("nwipe binary changed during version check.")
+            except OSError as exc:
+                raise SafetyError("Cannot stat nwipe binary.") from exc
+        return engine
+    except BaseException:
+        if engine is not None:
+            engine.close()
+        raise
 
 
 def _try_log_diag(area: str, code: str, detail: str = "") -> None:
@@ -269,15 +377,16 @@ def _try_log_diag(area: str, code: str, detail: str = "") -> None:
         from beamo_wipe.diagnostics import log_diag
 
         log_diag(area, code, detail)
-    except Exception:
-        # Fallback to stderr for visibility when diagnostics itself fails.
+    except BaseException:
+        # Optional diagnostics, including interruption, must not abort Stop
+        # or prevent confirmed process ownership from being retired.
         try:
             import sys
 
             # sanitize detail already truncated; avoid leaking full device paths
             safe = detail[:120].replace("\n", " ") if detail else code
             print(f"beamo-wipe [{area}] {code}: {safe}", file=sys.stderr)
-        except Exception:
+        except BaseException:
             pass
 
 
@@ -570,10 +679,32 @@ def _target_has_record(
     return False
 
 
-def _nwipe_aborted(log_text: str) -> bool:
+def _iter_negative_log_lines(log_text: str):
+    """Keep model continuations as ambiguity, not attributable engine records."""
+    lines = (log_text or "").split("\n")
+    native = any(NWIPE_RECORD_PREFIX_RE.match(line) for line in lines)
+    in_status = False
+    for line in lines:
+        if line == NWIPE_DRIVE_STATUS_HEADER:
+            in_status = True
+        elif in_status and line.startswith("***"):
+            in_status = False
+        # Native failure records have a full timestamp. Drive Status rows
+        # are bare, but their banner and complete rate/runtime fields cannot
+        # fit in the 17-byte model printed inside another status-table row.
+        trusted = (
+            not native
+            or NWIPE_RECORD_PREFIX_RE.match(line) is not None
+            or (in_status and NWIPE_FAILURE_STATUS_ROW_RE.match(line) is not None)
+        )
+        yield line, trusted
+
+
+def _nwipe_aborted(log_text: str, *, enforce_origin: bool = True) -> bool:
     return any(
         NWIPE_ABORT_LINE_RE.match(_engine_log_body(line))
-        for line in (log_text or "").split("\n")
+        for line, trusted in _iter_negative_log_lines(log_text)
+        if trusted or not enforce_origin
     )
 
 
@@ -676,8 +807,8 @@ def _line_reports_target_verification_mismatch(line: str, device: str) -> bool:
 
 def _target_reported_failure(log_text: str, device: str) -> bool:
     shared = _status_column_is_shared(log_text, device)
-    for line in (log_text or "").split("\n"):
-        if _line_reports_target_failure(line, device, shared=shared):
+    for line, trusted in _iter_negative_log_lines(log_text):
+        if trusted and _line_reports_target_failure(line, device, shared=shared):
             return True
     return False
 
@@ -697,13 +828,20 @@ def _target_error_summary_conflict(log_text: str, device: str) -> str:
     """Return a non-success reason for a contradictory target error row."""
     names = _status_device_names(device)
     shared = _status_column_is_shared(log_text, device)
+    lines = (log_text or "").split("\n")
+    native = any(NWIPE_RECORD_PREFIX_RE.match(line) for line in lines)
     in_table = False
-    for line in (log_text or "").split("\n"):
+    trusted_table = False
+    uncertain = False
+    for line in lines:
         # Negative error evidence uses the same record body as its header.
         # Keep raw records untouched for exact positive Drive Status proof.
         body = _engine_log_body(line)
         if _is_error_summary_header(line):
             in_table = True
+            # A short header plus a nonzero row fits inside an ATA model.
+            # Native logs need the full banner; retain bare legacy inputs.
+            trusted_table = not native or body == NWIPE_ERROR_SUMMARY_HEADER
             continue
         if in_table and body.lstrip().startswith("***"):
             in_table = False
@@ -717,20 +855,23 @@ def _target_error_summary_conflict(log_text: str, device: str) -> str:
             # contradicts a later Erased row, but without the header its
             # provenance is uncertain rather than an attributable failure.
             if row is not None and any(int(row.group(i)) > 0 for i in (2, 3, 4)):
-                return "indeterminate"
+                uncertain = True
             continue
         if row is None:
-            return "indeterminate"
+            uncertain = True
+            continue
         if any(int(row.group(i)) > 0 for i in (2, 3, 4)):
-            return "indeterminate" if shared else "engine_failed"
-    return ""
+            if trusted_table and not shared:
+                return "engine_failed"
+            uncertain = True
+    return "indeterminate" if uncertain else ""
 
 
 def _target_has_erase_activity(log_text: str, device: str) -> bool:
     """Evidence that contradicts a claim the target was never touched."""
     if any(True for _match, _value in _iter_target_progress(log_text, device)):
         return True
-    if _nwipe_aborted(log_text):
+    if _nwipe_aborted(log_text, enforce_origin=False):
         return True
     if _target_error_summary_conflict(log_text, device):
         return True
@@ -805,6 +946,27 @@ def _target_job_percent(log_text: str, device: str) -> Optional[float]:
 
 def _log_signature(st: os.stat_result) -> tuple[int, int, int, int, int]:
     return (st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns, st.st_ctime_ns)
+
+
+def _log_is_private(st: os.stat_result) -> bool:
+    return (
+        stat.S_ISREG(st.st_mode)
+        and st.st_uid == os.getuid()
+        and stat.S_IMODE(st.st_mode) == 0o600
+        and st.st_nlink == 1
+    )
+
+
+def _named_private_log_matches(path: str, opened: os.stat_result) -> bool:
+    try:
+        named = os.lstat(path)
+    except OSError:
+        return False
+    return (
+        _log_is_private(opened)
+        and _log_is_private(named)
+        and (named.st_dev, named.st_ino) == (opened.st_dev, opened.st_ino)
+    )
 
 
 def _progress_is_final_pass(match: re.Match) -> bool:
@@ -1016,11 +1178,20 @@ def evaluate_nwipe_outcome(
         return False, "nwipe could not use the disk", "geometry_unusable"
     if any(
         _line_reports_target_verification_mismatch(line, device)
-        for line in (log_text or "").split("\n")
+        for line, trusted in _iter_negative_log_lines(log_text)
+        if trusted
     ):
         return False, "nwipe read-back verification failed", "verification_failed"
     if _target_reported_failure(log_text, device):
         return False, "nwipe reported a failure", "engine_failed"
+    if any(
+        NWIPE_ABORT_LINE_RE.match(_engine_log_body(line))
+        or _line_reports_target_failure(line, device, shared=False)
+        or _line_reports_target_verification_mismatch(line, device)
+        for line, trusted in _iter_negative_log_lines(log_text)
+        if not trusted
+    ):
+        return False, "nwipe failure evidence could not be attributed", "indeterminate"
     if exit_code != 0:
         return False, f"nwipe exited {exit_code}", "process_failed"
     summary_conflict = _target_error_summary_conflict(log_text, device)
@@ -1139,27 +1310,40 @@ class NwipeRunner:
             self._active_request = None
         resolved = resolve_nwipe_binary(self.binary)
         real_engine = os.path.basename(resolved) == "nwipe"
+        verified_engine: Optional[_PinnedEngine] = None
         if real_engine:
             require_real_live_for_nwipe()
             if pinned_nwipe_already_running(exclude_pid=os.getpid()):
                 raise SafetyError("A wipe is already running.")
-            _verify_pinned_nwipe(resolved)
-            assert_existing_is_block_device(request.device, required=True)
-            assert_existing_is_block_device(request.boot_device, required=True)
-            assert_size_unchanged(request.device, request.device_size_bytes)
-            assert_local_device_transport(request.device)
-            now_rdev = block_rdev(request.device)
-            if now_rdev is None:
-                raise SafetyError("Target is not a block device.")
-            if not request.device_rdev or now_rdev != request.device_rdev:
-                raise SafetyError("Disk identity changed. Refusing to erase.")
-            now_boot_rdev = block_rdev(request.boot_device)
-            if not request.boot_rdev or now_boot_rdev != request.boot_rdev:
-                raise SafetyError("Boot device identity changed. Refusing to erase.")
-        assert_not_boot(request.device, request.boot_device, required=real_engine)
-        argv = build_nwipe_argv(request)
-        argv[0] = resolved
-        assert_log_not_on_target(request.logfile, request.device)
+            verified_engine = _verify_pinned_nwipe(resolved)
+            try:
+                assert_existing_is_block_device(request.device, required=True)
+                assert_existing_is_block_device(request.boot_device, required=True)
+                assert_size_unchanged(request.device, request.device_size_bytes)
+                assert_local_device_transport(request.device)
+                now_rdev = block_rdev(request.device)
+                if now_rdev is None:
+                    raise SafetyError("Target is not a block device.")
+                if not request.device_rdev or now_rdev != request.device_rdev:
+                    raise SafetyError("Disk identity changed. Refusing to erase.")
+                now_boot_rdev = block_rdev(request.boot_device)
+                if not request.boot_rdev or now_boot_rdev != request.boot_rdev:
+                    raise SafetyError(
+                        "Boot device identity changed. Refusing to erase."
+                    )
+            except BaseException:
+                if verified_engine is not None:
+                    verified_engine.close()
+                raise
+        try:
+            assert_not_boot(request.device, request.boot_device, required=real_engine)
+            argv = build_nwipe_argv(request)
+            argv[0] = resolved
+            assert_log_not_on_target(request.logfile, request.device)
+        except BaseException:
+            if verified_engine is not None:
+                verified_engine.close()
+            raise
         popen_env = None
         if real_engine:
             env = dict(NWIPE_CLEAN_ENV)
@@ -1167,11 +1351,20 @@ class NwipeRunner:
             popen_env = env
         with self._lock:
             if self._cleanup_failed:
+                if verified_engine is not None:
+                    verified_engine.close()
                 raise SafetyError("Runner cleanup could not be confirmed.")
             if (self._proc is not None or self._lock_fd is not None
                     or self._log_fd is not None):
+                if verified_engine is not None:
+                    verified_engine.close()
                 raise SafetyError("A wipe is already running.")
-            self._acquire_wipe_lock(request)
+            try:
+                self._acquire_wipe_lock(request)
+            except BaseException:
+                if verified_engine is not None:
+                    verified_engine.close()
+                raise
             try:
                 # A losing concurrent process must never truncate the active
                 # runner's log. Touch the logfile only after flock succeeds.
@@ -1181,6 +1374,8 @@ class NwipeRunner:
                 if self._log_fd is None:
                     raise SafetyError("Cannot retain the validated log file.")
                 log_stat = os.fstat(self._log_fd)
+                if not _named_private_log_matches(request.logfile, log_stat):
+                    raise SafetyError("Log file changed during creation.")
                 self._active_log_identity = (
                     request.logfile, log_stat.st_dev, log_stat.st_ino
                 )
@@ -1201,7 +1396,11 @@ class NwipeRunner:
                     assert_not_boot(request.device, request.boot_device, required=True)
                     _recheck_identity_under_lock(request)
             except BaseException:
-                self._release_wipe_lock()
+                try:
+                    self._release_wipe_lock()
+                finally:
+                    if verified_engine is not None:
+                        verified_engine.close()
                 raise
             self.result = None
             self.progress = None
@@ -1225,7 +1424,11 @@ class NwipeRunner:
                 except BaseException:
                     # The erase process has not been launched yet, so an
                     # interrupted inhibitor must not strand the wipe lock.
-                    self._release_wipe_lock()
+                    try:
+                        self._release_wipe_lock()
+                    finally:
+                        if verified_engine is not None:
+                            verified_engine.close()
                     raise
             popen_kwargs: dict[str, Any] = {
                 "stdin": subprocess.DEVNULL,
@@ -1242,21 +1445,34 @@ class NwipeRunner:
             # Python os.open uses O_CLOEXEC. pass_fds keeps the flock in the
             # child so a crashed wizard cannot start a second nwipe.
             try:
+                inherited_fds = []
                 if self._lock_fd is not None:
-                    popen_kwargs["pass_fds"] = (self._lock_fd,)
+                    inherited_fds.append(self._lock_fd)
                     # Preparation and rediscovery can take time. Ownership
                     # checked at flock acquisition must still govern the
                     # pathname another interface will use before we exec.
                     _assert_named_wipe_lock(self._lock_fd, self._lock_path)
+                if verified_engine is not None:
+                    current_engine = os.fstat(verified_engine.fd)
+                    if _engine_signature(current_engine) != verified_engine.signature:
+                        raise SafetyError("nwipe binary changed before launch.")
+                    argv[0] = verified_engine.exec_path
+                    inherited_fds.append(verified_engine.fd)
+                if inherited_fds:
+                    popen_kwargs["pass_fds"] = tuple(inherited_fds)
                 current_log = os.lstat(request.logfile)
-                if (not stat.S_ISREG(current_log.st_mode)
-                        or current_log.st_uid != os.getuid()
-                        or self._active_log_identity != (
-                            request.logfile, current_log.st_dev, current_log.st_ino
-                        )):
+                if not _log_is_private(current_log) or self._active_log_identity != (
+                    request.logfile,
+                    current_log.st_dev,
+                    current_log.st_ino,
+                ):
                     raise SafetyError("Log file changed before launch.")
             except BaseException:
-                self._release_wipe_lock()
+                try:
+                    self._release_wipe_lock()
+                finally:
+                    if verified_engine is not None:
+                        verified_engine.close()
                 raise
             try:
                 self._proc = subprocess.Popen(argv, **popen_kwargs)
@@ -1270,7 +1486,7 @@ class NwipeRunner:
                 # An exec error naming the executable comes from the child's
                 # pre-exec report, after CPython reaped it, so it is safe to
                 # release and allow a fresh confirmed attempt.
-                if isinstance(exc, OSError) and exc.filename == resolved:
+                if isinstance(exc, OSError) and exc.filename in {resolved, argv[0]}:
                     try:
                         self._sleep_inhibit.stop()
                     finally:
@@ -1280,6 +1496,9 @@ class NwipeRunner:
                         "nwipe", "spawn_ownership_uncertain", type(exc).__name__
                     )
                 raise
+            finally:
+                if verified_engine is not None:
+                    verified_engine.close()
 
     def _update_progress(self, percent: Optional[float]) -> None:
         """Clamp 0-100, monotonic, never show 100 before success."""
@@ -1446,28 +1665,46 @@ class NwipeRunner:
             return ""
         try:
             st = os.fstat(fd)
+            expected = self._active_log_identity
+            active = expected is not None and expected[0] == logfile
             if not stat.S_ISREG(st.st_mode) or st.st_uid != os.getuid():
                 _try_log_diag(
                     "nwipe",
                     "log_not_regular",
                     f"mode={oct(st.st_mode)}",
                 )
+                if active:
+                    self._log_read_state.truncated = True
                 return ""
-            expected = self._active_log_identity
-            if (expected is not None and expected[0] == logfile
-                    and (st.st_dev, st.st_ino) != expected[1:]):
+            if (
+                expected is not None
+                and expected[0] == logfile
+                and (
+                    (st.st_dev, st.st_ino) != expected[1:]
+                    or not _named_private_log_matches(logfile, st)
+                )
+            ):
                 # A stable read of a replacement file is still unrelated to
                 # the log created for this process. Do not accept its status,
-                # readiness or terminal markers, even when it looks complete.
+                # readiness or terminal markers. Privacy and single-link
+                # ownership are part of that launch identity too.
                 self._log_read_state.truncated = True
-                _try_log_diag("nwipe", "log_identity_changed")
+                _try_log_diag("nwipe", "log_identity_or_privacy_changed")
                 return ""
             with os.fdopen(fd, "rb") as fh:
                 fd = -1
                 fh.seek(0, os.SEEK_END)
-                size = fh.tell()
+                snapshot = os.fstat(fh.fileno())
+                if active and not _named_private_log_matches(logfile, snapshot):
+                    self._log_read_state.truncated = True
+                    _try_log_diag("nwipe", "log_identity_or_privacy_changed")
+                    return ""
+                # The size and identity must describe one snapshot. Growth
+                # between tell() and fstat() could otherwise authenticate a
+                # bounded prefix as the complete, newly enlarged log.
+                size = snapshot.st_size
                 self._log_read_state.truncated = size > nbytes
-                self._log_read_state.identity = _log_signature(os.fstat(fh.fileno()))
+                self._log_read_state.identity = _log_signature(snapshot)
                 start = max(0, size - nbytes)
                 if start:
                     # The returned bytes remain exact for display/export, but
@@ -1478,9 +1715,16 @@ class NwipeRunner:
                 # nwipe can append after tell(). Keep this read bounded even
                 # when the file grows before or during the read.
                 tail = fh.read(nbytes).decode("utf-8", errors="replace")
-                if _log_signature(os.fstat(fh.fileno())) != self._log_read_state.identity:
+                final = os.fstat(fh.fileno())
+                changed = _log_signature(final) != self._log_read_state.identity
+                if active and not _named_private_log_matches(logfile, final):
+                    changed = True
+                if changed:
                     self._log_read_state.identity = None
                     self._log_read_state.truncated = True
+                    if active:
+                        _try_log_diag("nwipe", "log_identity_or_privacy_changed")
+                        return ""
                 return tail
         except OSError as exc:
             _try_log_diag(
@@ -1520,10 +1764,15 @@ class NwipeRunner:
             with os.fdopen(fd, "rb") as fh:
                 fd = -1
                 st = os.fstat(fh.fileno())
+                active = (
+                    self._active_log_identity is not None
+                    and self._active_log_identity[0] == logfile
+                )
                 if (
                     not stat.S_ISREG(st.st_mode)
                     or st.st_uid != os.getuid()
                     or _log_signature(st) != expected_identity
+                    or (active and not _named_private_log_matches(logfile, st))
                 ):
                     return None
                 names = _status_device_names(device)
@@ -1615,7 +1864,10 @@ class NwipeRunner:
                         retained.append(line)
                     if progress is not None:
                         last_progress_retained = relevant
-                if _log_signature(os.fstat(fh.fileno())) != expected_identity:
+                final = os.fstat(fh.fileno())
+                if _log_signature(final) != expected_identity or (
+                    active and not _named_private_log_matches(logfile, final)
+                ):
                     return None
                 if last_progress and not last_progress_retained:
                     # Keep the sample in its original table context. Appending
@@ -1760,7 +2012,9 @@ class NwipeRunner:
             if status_owned:
                 self._status_polling = proc
         pre_code = None
-        no_signal = False
+        # Failed signal calls cannot establish an owner interruption. If the
+        # process exits naturally, retain its actual terminal log verdict.
+        no_signal = True
         try:
             if status_owned:
                 try:
@@ -1769,7 +2023,8 @@ class NwipeRunner:
                     _try_log_diag("nwipe", "cancel_status_failed", type(exc).__name__)
             if pre_code is None:
                 try:
-                    proc.terminate()
+                    if _send_stop_signal(proc):
+                        no_signal = False
                 except ProcessLookupError:
                     no_signal = True
                 except (OSError, AttributeError) as exc:
@@ -1789,7 +2044,8 @@ class NwipeRunner:
             proc.wait(timeout=8)
         except subprocess.TimeoutExpired:
             try:
-                proc.kill()
+                if _send_stop_signal(proc, kill=True):
+                    no_signal = False
             except (OSError, AttributeError) as exc:
                 _try_log_diag("nwipe", "cancel_kill_failed", type(exc).__name__)
             try:

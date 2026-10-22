@@ -1,0 +1,39 @@
+[
+  {
+    "case": "kiosk-mode-755",
+    "staging_rc": 0,
+    "stderr": "",
+    "kiosk_mode": "755",
+    "index_mode": "100755",
+    "mode_change_visible_to_git": false
+  },
+  {
+    "case": "kiosk-mode-644",
+    "staging_rc": 0,
+    "stderr": "",
+    "kiosk_mode": "644",
+    "index_mode": "100755",
+    "mode_change_visible_to_git": false
+  },
+  {
+    "case": "normal",
+    "copied_digest_matches": true,
+    "copied_kiosk_mode": "755"
+  },
+  {
+    "case": "mode-only-change",
+    "copied_digest_matches": true,
+    "copied_kiosk_mode": "644"
+  },
+  {
+    "case": "byte-change",
+    "copied_digest_matches": false,
+    "copied_kiosk_mode": "755"
+  }
+]
+
+Traceback (most recent call last):
+  File "/workspace/beamo-tools/audit-20261019/boot-build/reproduce_kiosk_mode.py", line 66, in <module>
+    assert results[1]['staging_rc']!=0, 'BUG: non-executable shipped kiosk was accepted by asset staging'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: BUG: non-executable shipped kiosk was accepted by asset staging

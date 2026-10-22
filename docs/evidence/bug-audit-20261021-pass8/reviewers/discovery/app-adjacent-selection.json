@@ -1,0 +1,15 @@
+[
+  "tests/test_startup_diagnostics.py",
+  "tests/test_security_hardening.py",
+  "tests/test_preview.py",
+  "tests/test_cross_platform_20260908.py",
+  "tests/test_recovery_serial_marker_pass42.py",
+  "tests/test_live_session_power.py",
+  "tests/test_startup_stages.py",
+  "tests/test_startup_notice_state_pass12.py",
+  "tests/test_startup_language_refresh_regression.py",
+  "tests/test_startup_callback_retirement_pass17.py",
+  "tests/test_console_startup_thread_pass33_ui.py",
+  "tests/test_session_recovery.py",
+  "tests/test_app_live_decode_refusal_pass8_20261021.py"
+]

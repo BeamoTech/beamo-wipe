@@ -1,0 +1,772 @@
+FFFFFFFFFFFFFFFFFFFFFFFFFFFF..........                                   [100%]
+=================================== FAILURES ===================================
+_ test_undecodable_live_classification_refuses_every_startup_route[normal-invalid-byte-cmdline] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_undecodable_live_classifi0/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f2f86933770>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[normal-invalid-byte-cmdline]>>
+location = 'cmdline', bad_bytes = b'\xff', argv = ()
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+        assert escaped is None
+>       assert code == 3
+E       assert 17 == 3
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:110: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[normal-invalid-byte-unrelated-mountpoint] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_undecodable_live_classifi1/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f2f867a9450>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[normal-invalid-byte-unrelated-mountpoint]>>
+location = 'unrelated-mountpoint', bad_bytes = b'\xff', argv = ()
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+        assert escaped is None
+>       assert code == 3
+E       assert 17 == 3
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:110: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[normal-truncated-sequence-cmdline] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_undecodable_live_classifi2/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f2f8669a210>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[normal-truncated-sequence-cmdline]>>
+location = 'cmdline', bad_bytes = b'\xc3', argv = ()
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+        assert escaped is None
+>       assert code == 3
+E       assert 17 == 3
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:110: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[normal-truncated-sequence-unrelated-mountpoint] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_undecodable_live_classifi3/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f2f8659cb00>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[normal-truncated-sequence-unrelated-mountpoint]>>
+location = 'unrelated-mountpoint', bad_bytes = b'\xc3', argv = ()
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+        assert escaped is None
+>       assert code == 3
+E       assert 17 == 3
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:110: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[preview-invalid-byte-cmdline] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_undecodable_live_classifi4/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f2f866bac40>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[preview-invalid-byte-cmdline]>>
+location = 'cmdline', bad_bytes = b'\xff', argv = ('--demo',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+        assert escaped is None
+>       assert code == 3
+E       assert 17 == 3
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:110: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[preview-invalid-byte-unrelated-mountpoint] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_undecodable_live_classifi5/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f2f8680ab10>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[preview-invalid-byte-unrelated-mountpoint]>>
+location = 'unrelated-mountpoint', bad_bytes = b'\xff', argv = ('--demo',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+        assert escaped is None
+>       assert code == 3
+E       assert 17 == 3
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:110: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[preview-truncated-sequence-cmdline] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_undecodable_live_classifi6/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f2f85d839b0>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[preview-truncated-sequence-cmdline]>>
+location = 'cmdline', bad_bytes = b'\xc3', argv = ('--demo',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+        assert escaped is None
+>       assert code == 3
+E       assert 17 == 3
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:110: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[preview-truncated-sequence-unrelated-mountpoint] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_undecodable_live_classifi7/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f2f85d83df0>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[preview-truncated-sequence-unrelated-mountpoint]>>
+location = 'unrelated-mountpoint', bad_bytes = b'\xc3', argv = ('--demo',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+        assert escaped is None
+>       assert code == 3
+E       assert 17 == 3
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:110: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[dry-run-invalid-byte-cmdline] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_undecodable_live_classifi8/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f2f86845250>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[dry-run-invalid-byte-cmdline]>>
+location = 'cmdline', bad_bytes = b'\xff', argv = ('--dry-run',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+        assert escaped is None
+>       assert code == 3
+E       assert 17 == 3
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:110: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[dry-run-invalid-byte-unrelated-mountpoint] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_undecodable_live_classifi9/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f2f86845b50>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[dry-run-invalid-byte-unrelated-mountpoint]>>
+location = 'unrelated-mountpoint', bad_bytes = b'\xff', argv = ('--dry-run',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+        assert escaped is None
+>       assert code == 3
+E       assert 17 == 3
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:110: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[dry-run-truncated-sequence-cmdline] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_undecodable_live_classifi10/cmdline'), mounts=PosixP... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f2f85da0d70>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[dry-run-truncated-sequence-cmdline]>>
+location = 'cmdline', bad_bytes = b'\xc3', argv = ('--dry-run',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+        assert escaped is None
+>       assert code == 3
+E       assert 17 == 3
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:110: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[dry-run-truncated-sequence-unrelated-mountpoint] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_undecodable_live_classifi11/cmdline'), mounts=PosixP... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f2f85da1a90>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[dry-run-truncated-sequence-unrelated-mountpoint]>>
+location = 'unrelated-mountpoint', bad_bytes = b'\xc3', argv = ('--dry-run',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+        assert escaped is None
+>       assert code == 3
+E       assert 17 == 3
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:110: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[web-invalid-byte-cmdline] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_undecodable_live_classifi12/cmdline'), mounts=PosixP... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f2f86540f30>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[web-invalid-byte-cmdline]>>
+location = 'cmdline', bad_bytes = b'\xff', argv = ('--web',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+        assert escaped is None
+>       assert code == 3
+E       assert 17 == 3
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:110: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[web-invalid-byte-unrelated-mountpoint] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_undecodable_live_classifi13/cmdline'), mounts=PosixP... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f2f8681ef90>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[web-invalid-byte-unrelated-mountpoint]>>
+location = 'unrelated-mountpoint', bad_bytes = b'\xff', argv = ('--web',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+        assert escaped is None
+>       assert code == 3
+E       assert 17 == 3
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:110: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[web-truncated-sequence-cmdline] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_undecodable_live_classifi14/cmdline'), mounts=PosixP... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f2f8665f860>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[web-truncated-sequence-cmdline]>>
+location = 'cmdline', bad_bytes = b'\xc3', argv = ('--web',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+        assert escaped is None
+>       assert code == 3
+E       assert 17 == 3
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:110: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[web-truncated-sequence-unrelated-mountpoint] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_undecodable_live_classifi15/cmdline'), mounts=PosixP... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f2f86873890>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[web-truncated-sequence-unrelated-mountpoint]>>
+location = 'unrelated-mountpoint', bad_bytes = b'\xc3', argv = ('--web',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+        assert escaped is None
+>       assert code == 3
+E       assert 17 == 3
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:110: AssertionError
+_ test_readable_metadata_preserves_existing_live_and_desktop_dispatch[normal-ascii-desktop] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_readable_metadata_preserv0/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+live = False, suffix = b'', argv = ()
+
+    @pytest.mark.parametrize("live", [False, True], ids=["desktop", "live"])
+    @pytest.mark.parametrize("suffix", [b"", " label=caf\u00e9".encode()], ids=["ascii", "unicode"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--web",)], ids=["normal", "preview", "web"])
+    def test_readable_metadata_preserves_existing_live_and_desktop_dispatch(machine, live, suffix, argv):
+        machine.command.write_bytes((b"boot=live" if live else b"quiet") + suffix)
+        assert app.main(list(argv)) == 17
+        assert machine.calls == (["store-created", "store-open", "main", "store-close"] if live else ["main"])
+>       assert machine.reads == (["cmdline", "mountinfo"] if live else ["cmdline"])
+E       AssertionError: assert [] == ['cmdline']
+E         
+E         Right contains one more item: 'cmdline'
+E         Use -v to get more diff
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:123: AssertionError
+_ test_readable_metadata_preserves_existing_live_and_desktop_dispatch[normal-ascii-live] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_readable_metadata_preserv1/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+live = True, suffix = b'', argv = ()
+
+    @pytest.mark.parametrize("live", [False, True], ids=["desktop", "live"])
+    @pytest.mark.parametrize("suffix", [b"", " label=caf\u00e9".encode()], ids=["ascii", "unicode"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--web",)], ids=["normal", "preview", "web"])
+    def test_readable_metadata_preserves_existing_live_and_desktop_dispatch(machine, live, suffix, argv):
+        machine.command.write_bytes((b"boot=live" if live else b"quiet") + suffix)
+        assert app.main(list(argv)) == 17
+>       assert machine.calls == (["store-created", "store-open", "main", "store-close"] if live else ["main"])
+E       AssertionError: assert ['main'] == ['store-creat...'store-close']
+E         
+E         At index 0 diff: 'main' != 'store-created'
+E         Right contains 3 more items, first extra item: 'store-open'
+E         Use -v to get more diff
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:122: AssertionError
+_ test_readable_metadata_preserves_existing_live_and_desktop_dispatch[normal-unicode-desktop] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_readable_metadata_preserv2/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+live = False, suffix = b' label=caf\xc3\xa9', argv = ()
+
+    @pytest.mark.parametrize("live", [False, True], ids=["desktop", "live"])
+    @pytest.mark.parametrize("suffix", [b"", " label=caf\u00e9".encode()], ids=["ascii", "unicode"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--web",)], ids=["normal", "preview", "web"])
+    def test_readable_metadata_preserves_existing_live_and_desktop_dispatch(machine, live, suffix, argv):
+        machine.command.write_bytes((b"boot=live" if live else b"quiet") + suffix)
+        assert app.main(list(argv)) == 17
+        assert machine.calls == (["store-created", "store-open", "main", "store-close"] if live else ["main"])
+>       assert machine.reads == (["cmdline", "mountinfo"] if live else ["cmdline"])
+E       AssertionError: assert [] == ['cmdline']
+E         
+E         Right contains one more item: 'cmdline'
+E         Use -v to get more diff
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:123: AssertionError
+_ test_readable_metadata_preserves_existing_live_and_desktop_dispatch[normal-unicode-live] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_readable_metadata_preserv3/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+live = True, suffix = b' label=caf\xc3\xa9', argv = ()
+
+    @pytest.mark.parametrize("live", [False, True], ids=["desktop", "live"])
+    @pytest.mark.parametrize("suffix", [b"", " label=caf\u00e9".encode()], ids=["ascii", "unicode"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--web",)], ids=["normal", "preview", "web"])
+    def test_readable_metadata_preserves_existing_live_and_desktop_dispatch(machine, live, suffix, argv):
+        machine.command.write_bytes((b"boot=live" if live else b"quiet") + suffix)
+        assert app.main(list(argv)) == 17
+>       assert machine.calls == (["store-created", "store-open", "main", "store-close"] if live else ["main"])
+E       AssertionError: assert ['main'] == ['store-creat...'store-close']
+E         
+E         At index 0 diff: 'main' != 'store-created'
+E         Right contains 3 more items, first extra item: 'store-open'
+E         Use -v to get more diff
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:122: AssertionError
+_ test_readable_metadata_preserves_existing_live_and_desktop_dispatch[preview-ascii-desktop] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_readable_metadata_preserv4/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+live = False, suffix = b'', argv = ('--demo',)
+
+    @pytest.mark.parametrize("live", [False, True], ids=["desktop", "live"])
+    @pytest.mark.parametrize("suffix", [b"", " label=caf\u00e9".encode()], ids=["ascii", "unicode"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--web",)], ids=["normal", "preview", "web"])
+    def test_readable_metadata_preserves_existing_live_and_desktop_dispatch(machine, live, suffix, argv):
+        machine.command.write_bytes((b"boot=live" if live else b"quiet") + suffix)
+        assert app.main(list(argv)) == 17
+        assert machine.calls == (["store-created", "store-open", "main", "store-close"] if live else ["main"])
+>       assert machine.reads == (["cmdline", "mountinfo"] if live else ["cmdline"])
+E       AssertionError: assert [] == ['cmdline']
+E         
+E         Right contains one more item: 'cmdline'
+E         Use -v to get more diff
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:123: AssertionError
+_ test_readable_metadata_preserves_existing_live_and_desktop_dispatch[preview-ascii-live] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_readable_metadata_preserv5/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+live = True, suffix = b'', argv = ('--demo',)
+
+    @pytest.mark.parametrize("live", [False, True], ids=["desktop", "live"])
+    @pytest.mark.parametrize("suffix", [b"", " label=caf\u00e9".encode()], ids=["ascii", "unicode"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--web",)], ids=["normal", "preview", "web"])
+    def test_readable_metadata_preserves_existing_live_and_desktop_dispatch(machine, live, suffix, argv):
+        machine.command.write_bytes((b"boot=live" if live else b"quiet") + suffix)
+        assert app.main(list(argv)) == 17
+>       assert machine.calls == (["store-created", "store-open", "main", "store-close"] if live else ["main"])
+E       AssertionError: assert ['main'] == ['store-creat...'store-close']
+E         
+E         At index 0 diff: 'main' != 'store-created'
+E         Right contains 3 more items, first extra item: 'store-open'
+E         Use -v to get more diff
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:122: AssertionError
+_ test_readable_metadata_preserves_existing_live_and_desktop_dispatch[preview-unicode-desktop] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_readable_metadata_preserv6/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+live = False, suffix = b' label=caf\xc3\xa9', argv = ('--demo',)
+
+    @pytest.mark.parametrize("live", [False, True], ids=["desktop", "live"])
+    @pytest.mark.parametrize("suffix", [b"", " label=caf\u00e9".encode()], ids=["ascii", "unicode"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--web",)], ids=["normal", "preview", "web"])
+    def test_readable_metadata_preserves_existing_live_and_desktop_dispatch(machine, live, suffix, argv):
+        machine.command.write_bytes((b"boot=live" if live else b"quiet") + suffix)
+        assert app.main(list(argv)) == 17
+        assert machine.calls == (["store-created", "store-open", "main", "store-close"] if live else ["main"])
+>       assert machine.reads == (["cmdline", "mountinfo"] if live else ["cmdline"])
+E       AssertionError: assert [] == ['cmdline']
+E         
+E         Right contains one more item: 'cmdline'
+E         Use -v to get more diff
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:123: AssertionError
+_ test_readable_metadata_preserves_existing_live_and_desktop_dispatch[preview-unicode-live] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_readable_metadata_preserv7/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+live = True, suffix = b' label=caf\xc3\xa9', argv = ('--demo',)
+
+    @pytest.mark.parametrize("live", [False, True], ids=["desktop", "live"])
+    @pytest.mark.parametrize("suffix", [b"", " label=caf\u00e9".encode()], ids=["ascii", "unicode"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--web",)], ids=["normal", "preview", "web"])
+    def test_readable_metadata_preserves_existing_live_and_desktop_dispatch(machine, live, suffix, argv):
+        machine.command.write_bytes((b"boot=live" if live else b"quiet") + suffix)
+        assert app.main(list(argv)) == 17
+>       assert machine.calls == (["store-created", "store-open", "main", "store-close"] if live else ["main"])
+E       AssertionError: assert ['main'] == ['store-creat...'store-close']
+E         
+E         At index 0 diff: 'main' != 'store-created'
+E         Right contains 3 more items, first extra item: 'store-open'
+E         Use -v to get more diff
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:122: AssertionError
+_ test_readable_metadata_preserves_existing_live_and_desktop_dispatch[web-ascii-desktop] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_readable_metadata_preserv8/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+live = False, suffix = b'', argv = ('--web',)
+
+    @pytest.mark.parametrize("live", [False, True], ids=["desktop", "live"])
+    @pytest.mark.parametrize("suffix", [b"", " label=caf\u00e9".encode()], ids=["ascii", "unicode"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--web",)], ids=["normal", "preview", "web"])
+    def test_readable_metadata_preserves_existing_live_and_desktop_dispatch(machine, live, suffix, argv):
+        machine.command.write_bytes((b"boot=live" if live else b"quiet") + suffix)
+        assert app.main(list(argv)) == 17
+        assert machine.calls == (["store-created", "store-open", "main", "store-close"] if live else ["main"])
+>       assert machine.reads == (["cmdline", "mountinfo"] if live else ["cmdline"])
+E       AssertionError: assert [] == ['cmdline']
+E         
+E         Right contains one more item: 'cmdline'
+E         Use -v to get more diff
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:123: AssertionError
+_ test_readable_metadata_preserves_existing_live_and_desktop_dispatch[web-ascii-live] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_readable_metadata_preserv9/cmdline'), mounts=PosixPa... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+live = True, suffix = b'', argv = ('--web',)
+
+    @pytest.mark.parametrize("live", [False, True], ids=["desktop", "live"])
+    @pytest.mark.parametrize("suffix", [b"", " label=caf\u00e9".encode()], ids=["ascii", "unicode"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--web",)], ids=["normal", "preview", "web"])
+    def test_readable_metadata_preserves_existing_live_and_desktop_dispatch(machine, live, suffix, argv):
+        machine.command.write_bytes((b"boot=live" if live else b"quiet") + suffix)
+        assert app.main(list(argv)) == 17
+>       assert machine.calls == (["store-created", "store-open", "main", "store-close"] if live else ["main"])
+E       AssertionError: assert ['main'] == ['store-creat...'store-close']
+E         
+E         At index 0 diff: 'main' != 'store-created'
+E         Right contains 3 more items, first extra item: 'store-open'
+E         Use -v to get more diff
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:122: AssertionError
+_ test_readable_metadata_preserves_existing_live_and_desktop_dispatch[web-unicode-desktop] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_readable_metadata_preserv10/cmdline'), mounts=PosixP... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+live = False, suffix = b' label=caf\xc3\xa9', argv = ('--web',)
+
+    @pytest.mark.parametrize("live", [False, True], ids=["desktop", "live"])
+    @pytest.mark.parametrize("suffix", [b"", " label=caf\u00e9".encode()], ids=["ascii", "unicode"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--web",)], ids=["normal", "preview", "web"])
+    def test_readable_metadata_preserves_existing_live_and_desktop_dispatch(machine, live, suffix, argv):
+        machine.command.write_bytes((b"boot=live" if live else b"quiet") + suffix)
+        assert app.main(list(argv)) == 17
+        assert machine.calls == (["store-created", "store-open", "main", "store-close"] if live else ["main"])
+>       assert machine.reads == (["cmdline", "mountinfo"] if live else ["cmdline"])
+E       AssertionError: assert [] == ['cmdline']
+E         
+E         Right contains one more item: 'cmdline'
+E         Use -v to get more diff
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:123: AssertionError
+_ test_readable_metadata_preserves_existing_live_and_desktop_dispatch[web-unicode-live] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-161/test_readable_metadata_preserv11/cmdline'), mounts=PosixP... - overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=[], calls=['main'], effects=[])
+live = True, suffix = b' label=caf\xc3\xa9', argv = ('--web',)
+
+    @pytest.mark.parametrize("live", [False, True], ids=["desktop", "live"])
+    @pytest.mark.parametrize("suffix", [b"", " label=caf\u00e9".encode()], ids=["ascii", "unicode"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--web",)], ids=["normal", "preview", "web"])
+    def test_readable_metadata_preserves_existing_live_and_desktop_dispatch(machine, live, suffix, argv):
+        machine.command.write_bytes((b"boot=live" if live else b"quiet") + suffix)
+        assert app.main(list(argv)) == 17
+>       assert machine.calls == (["store-created", "store-open", "main", "store-close"] if live else ["main"])
+E       AssertionError: assert ['main'] == ['store-creat...'store-close']
+E         
+E         At index 0 diff: 'main' != 'store-created'
+E         Right contains 3 more items, first extra item: 'store-open'
+E         Use -v to get more diff
+
+tests/test_app_live_decode_refusal_pass8_20261021.py:122: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[normal-invalid-byte-cmdline]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[normal-invalid-byte-unrelated-mountpoint]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[normal-truncated-sequence-cmdline]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[normal-truncated-sequence-unrelated-mountpoint]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[preview-invalid-byte-cmdline]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[preview-invalid-byte-unrelated-mountpoint]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[preview-truncated-sequence-cmdline]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[preview-truncated-sequence-unrelated-mountpoint]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[dry-run-invalid-byte-cmdline]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[dry-run-invalid-byte-unrelated-mountpoint]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[dry-run-truncated-sequence-cmdline]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[dry-run-truncated-sequence-unrelated-mountpoint]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[web-invalid-byte-cmdline]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[web-invalid-byte-unrelated-mountpoint]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[web-truncated-sequence-cmdline]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[web-truncated-sequence-unrelated-mountpoint]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_readable_metadata_preserves_existing_live_and_desktop_dispatch[normal-ascii-desktop]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_readable_metadata_preserves_existing_live_and_desktop_dispatch[normal-ascii-live]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_readable_metadata_preserves_existing_live_and_desktop_dispatch[normal-unicode-desktop]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_readable_metadata_preserves_existing_live_and_desktop_dispatch[normal-unicode-live]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_readable_metadata_preserves_existing_live_and_desktop_dispatch[preview-ascii-desktop]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_readable_metadata_preserves_existing_live_and_desktop_dispatch[preview-ascii-live]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_readable_metadata_preserves_existing_live_and_desktop_dispatch[preview-unicode-desktop]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_readable_metadata_preserves_existing_live_and_desktop_dispatch[preview-unicode-live]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_readable_metadata_preserves_existing_live_and_desktop_dispatch[web-ascii-desktop]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_readable_metadata_preserves_existing_live_and_desktop_dispatch[web-ascii-live]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_readable_metadata_preserves_existing_live_and_desktop_dispatch[web-unicode-desktop]
+FAILED tests/test_app_live_decode_refusal_pass8_20261021.py::test_readable_metadata_preserves_existing_live_and_desktop_dispatch[web-unicode-live]
+28 failed, 10 passed in 0.38s

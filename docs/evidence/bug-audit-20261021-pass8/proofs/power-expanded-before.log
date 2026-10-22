@@ -1,0 +1,532 @@
+.FFF.FFF.FFF.FFF............                                             [100%]
+=================================== FAILURES ===================================
+_ test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-before-retry-runtime] _
+
+controlled_workers = ({'active': 0, 'failure': <class 'RuntimeError'>, 'stage': 'accept-after'}, [<test_power_acceptance_retirement_pass8_2...767d1f90>, PowerStatus(ac=True, batteries=(99,), complete=True), PowerStatus(ac=False, batteries=(10,), complete=True))
+request = <FixtureRequest for <Function test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-before-retry-runtime]>>
+failure = <class 'RuntimeError'>, delivery = 'before-retry', old_ac = True
+
+    @pytest.mark.parametrize("failure", [None, RuntimeError, KeyboardInterrupt, SystemExit],
+                             ids=["normal", "runtime", "interrupt", "exit"])
+    @pytest.mark.parametrize("delivery", ["before-retry", "after-retry"])
+    @pytest.mark.parametrize("old_ac", [True, False], ids=["old-connected", "old-disconnected"])
+    def test_post_acceptance_interruption_cannot_supply_the_next_reading(
+        controlled_workers, request, failure, delivery, old_ac,
+    ):
+        state, threads, readings, monitor, old, fresh = controlled_workers
+        state["failure"] = failure
+        # Both directions are meaningful: a stale good reading hides a warning,
+        # while a stale disconnected reading can show an unnecessary warning.
+        old = power.PowerStatus(ac=old_ac, batteries=(99,), complete=True)
+        monitor.reader = lambda: (
+            readings.append(state["active"]) or (old if state["active"] == 0 else fresh)
+        )
+        monitor.tick(0.0)
+        if delivery == "before-retry" or failure is None:
+            threads[0].run()
+        monitor.tick(0.1)
+        assert monitor.status.ac is (old_ac if failure is None else None)
+        monitor.tick(power.REFRESH_SECONDS + 0.1)
+        assert len(threads) == 2 and monitor.pending
+        if failure is not None and delivery == "after-retry":
+            threads[0].run()
+        monitor.tick(power.REFRESH_SECONDS + 0.2)
+        request.node.user_properties.append(("power_retry_trace", json.dumps({
+            "failure": failure.__name__ if failure else None,
+            "delivery": delivery, "old_ac": old_ac,
+            "readings": readings, "reported_ac": monitor.status.ac,
+            "pending": monitor.pending,
+        })))
+>       assert monitor.status.ac is (old_ac if failure is None else None)
+E       assert True is None
+E        +  where True = PowerStatus(ac=True, batteries=(99,), complete=True).ac
+E        +    where PowerStatus(ac=True, batteries=(99,), complete=True) = <beamo_wipe.power.PowerMonitor object at 0x7fb7767d1f90>.status
+
+../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py:96: AssertionError
+_ test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-before-retry-interrupt] _
+
+controlled_workers = ({'active': 0, 'failure': <class 'KeyboardInterrupt'>, 'stage': 'accept-after'}, [<test_power_acceptance_retirement_pa...767d2350>, PowerStatus(ac=True, batteries=(99,), complete=True), PowerStatus(ac=False, batteries=(10,), complete=True))
+request = <FixtureRequest for <Function test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-before-retry-interrupt]>>
+failure = <class 'KeyboardInterrupt'>, delivery = 'before-retry', old_ac = True
+
+    @pytest.mark.parametrize("failure", [None, RuntimeError, KeyboardInterrupt, SystemExit],
+                             ids=["normal", "runtime", "interrupt", "exit"])
+    @pytest.mark.parametrize("delivery", ["before-retry", "after-retry"])
+    @pytest.mark.parametrize("old_ac", [True, False], ids=["old-connected", "old-disconnected"])
+    def test_post_acceptance_interruption_cannot_supply_the_next_reading(
+        controlled_workers, request, failure, delivery, old_ac,
+    ):
+        state, threads, readings, monitor, old, fresh = controlled_workers
+        state["failure"] = failure
+        # Both directions are meaningful: a stale good reading hides a warning,
+        # while a stale disconnected reading can show an unnecessary warning.
+        old = power.PowerStatus(ac=old_ac, batteries=(99,), complete=True)
+        monitor.reader = lambda: (
+            readings.append(state["active"]) or (old if state["active"] == 0 else fresh)
+        )
+        monitor.tick(0.0)
+        if delivery == "before-retry" or failure is None:
+            threads[0].run()
+        monitor.tick(0.1)
+        assert monitor.status.ac is (old_ac if failure is None else None)
+        monitor.tick(power.REFRESH_SECONDS + 0.1)
+        assert len(threads) == 2 and monitor.pending
+        if failure is not None and delivery == "after-retry":
+            threads[0].run()
+        monitor.tick(power.REFRESH_SECONDS + 0.2)
+        request.node.user_properties.append(("power_retry_trace", json.dumps({
+            "failure": failure.__name__ if failure else None,
+            "delivery": delivery, "old_ac": old_ac,
+            "readings": readings, "reported_ac": monitor.status.ac,
+            "pending": monitor.pending,
+        })))
+>       assert monitor.status.ac is (old_ac if failure is None else None)
+E       assert True is None
+E        +  where True = PowerStatus(ac=True, batteries=(99,), complete=True).ac
+E        +    where PowerStatus(ac=True, batteries=(99,), complete=True) = <beamo_wipe.power.PowerMonitor object at 0x7fb7767d2350>.status
+
+../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py:96: AssertionError
+_ test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-before-retry-exit] _
+
+controlled_workers = ({'active': 0, 'failure': <class 'SystemExit'>, 'stage': 'accept-after'}, [<test_power_acceptance_retirement_pass8_202...769e6fd0>, PowerStatus(ac=True, batteries=(99,), complete=True), PowerStatus(ac=False, batteries=(10,), complete=True))
+request = <FixtureRequest for <Function test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-before-retry-exit]>>
+failure = <class 'SystemExit'>, delivery = 'before-retry', old_ac = True
+
+    @pytest.mark.parametrize("failure", [None, RuntimeError, KeyboardInterrupt, SystemExit],
+                             ids=["normal", "runtime", "interrupt", "exit"])
+    @pytest.mark.parametrize("delivery", ["before-retry", "after-retry"])
+    @pytest.mark.parametrize("old_ac", [True, False], ids=["old-connected", "old-disconnected"])
+    def test_post_acceptance_interruption_cannot_supply_the_next_reading(
+        controlled_workers, request, failure, delivery, old_ac,
+    ):
+        state, threads, readings, monitor, old, fresh = controlled_workers
+        state["failure"] = failure
+        # Both directions are meaningful: a stale good reading hides a warning,
+        # while a stale disconnected reading can show an unnecessary warning.
+        old = power.PowerStatus(ac=old_ac, batteries=(99,), complete=True)
+        monitor.reader = lambda: (
+            readings.append(state["active"]) or (old if state["active"] == 0 else fresh)
+        )
+        monitor.tick(0.0)
+        if delivery == "before-retry" or failure is None:
+            threads[0].run()
+        monitor.tick(0.1)
+        assert monitor.status.ac is (old_ac if failure is None else None)
+        monitor.tick(power.REFRESH_SECONDS + 0.1)
+        assert len(threads) == 2 and monitor.pending
+        if failure is not None and delivery == "after-retry":
+            threads[0].run()
+        monitor.tick(power.REFRESH_SECONDS + 0.2)
+        request.node.user_properties.append(("power_retry_trace", json.dumps({
+            "failure": failure.__name__ if failure else None,
+            "delivery": delivery, "old_ac": old_ac,
+            "readings": readings, "reported_ac": monitor.status.ac,
+            "pending": monitor.pending,
+        })))
+>       assert monitor.status.ac is (old_ac if failure is None else None)
+E       assert True is None
+E        +  where True = PowerStatus(ac=True, batteries=(99,), complete=True).ac
+E        +    where PowerStatus(ac=True, batteries=(99,), complete=True) = <beamo_wipe.power.PowerMonitor object at 0x7fb7769e6fd0>.status
+
+../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py:96: AssertionError
+_ test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-after-retry-runtime] _
+
+controlled_workers = ({'active': 0, 'failure': <class 'RuntimeError'>, 'stage': 'accept-after'}, [<test_power_acceptance_retirement_pass8_2...7680f0b0>, PowerStatus(ac=True, batteries=(99,), complete=True), PowerStatus(ac=False, batteries=(10,), complete=True))
+request = <FixtureRequest for <Function test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-after-retry-runtime]>>
+failure = <class 'RuntimeError'>, delivery = 'after-retry', old_ac = True
+
+    @pytest.mark.parametrize("failure", [None, RuntimeError, KeyboardInterrupt, SystemExit],
+                             ids=["normal", "runtime", "interrupt", "exit"])
+    @pytest.mark.parametrize("delivery", ["before-retry", "after-retry"])
+    @pytest.mark.parametrize("old_ac", [True, False], ids=["old-connected", "old-disconnected"])
+    def test_post_acceptance_interruption_cannot_supply_the_next_reading(
+        controlled_workers, request, failure, delivery, old_ac,
+    ):
+        state, threads, readings, monitor, old, fresh = controlled_workers
+        state["failure"] = failure
+        # Both directions are meaningful: a stale good reading hides a warning,
+        # while a stale disconnected reading can show an unnecessary warning.
+        old = power.PowerStatus(ac=old_ac, batteries=(99,), complete=True)
+        monitor.reader = lambda: (
+            readings.append(state["active"]) or (old if state["active"] == 0 else fresh)
+        )
+        monitor.tick(0.0)
+        if delivery == "before-retry" or failure is None:
+            threads[0].run()
+        monitor.tick(0.1)
+        assert monitor.status.ac is (old_ac if failure is None else None)
+        monitor.tick(power.REFRESH_SECONDS + 0.1)
+        assert len(threads) == 2 and monitor.pending
+        if failure is not None and delivery == "after-retry":
+            threads[0].run()
+        monitor.tick(power.REFRESH_SECONDS + 0.2)
+        request.node.user_properties.append(("power_retry_trace", json.dumps({
+            "failure": failure.__name__ if failure else None,
+            "delivery": delivery, "old_ac": old_ac,
+            "readings": readings, "reported_ac": monitor.status.ac,
+            "pending": monitor.pending,
+        })))
+>       assert monitor.status.ac is (old_ac if failure is None else None)
+E       assert True is None
+E        +  where True = PowerStatus(ac=True, batteries=(99,), complete=True).ac
+E        +    where PowerStatus(ac=True, batteries=(99,), complete=True) = <beamo_wipe.power.PowerMonitor object at 0x7fb77680f0b0>.status
+
+../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py:96: AssertionError
+_ test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-after-retry-interrupt] _
+
+controlled_workers = ({'active': 0, 'failure': <class 'KeyboardInterrupt'>, 'stage': 'accept-after'}, [<test_power_acceptance_retirement_pa...766f8490>, PowerStatus(ac=True, batteries=(99,), complete=True), PowerStatus(ac=False, batteries=(10,), complete=True))
+request = <FixtureRequest for <Function test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-after-retry-interrupt]>>
+failure = <class 'KeyboardInterrupt'>, delivery = 'after-retry', old_ac = True
+
+    @pytest.mark.parametrize("failure", [None, RuntimeError, KeyboardInterrupt, SystemExit],
+                             ids=["normal", "runtime", "interrupt", "exit"])
+    @pytest.mark.parametrize("delivery", ["before-retry", "after-retry"])
+    @pytest.mark.parametrize("old_ac", [True, False], ids=["old-connected", "old-disconnected"])
+    def test_post_acceptance_interruption_cannot_supply_the_next_reading(
+        controlled_workers, request, failure, delivery, old_ac,
+    ):
+        state, threads, readings, monitor, old, fresh = controlled_workers
+        state["failure"] = failure
+        # Both directions are meaningful: a stale good reading hides a warning,
+        # while a stale disconnected reading can show an unnecessary warning.
+        old = power.PowerStatus(ac=old_ac, batteries=(99,), complete=True)
+        monitor.reader = lambda: (
+            readings.append(state["active"]) or (old if state["active"] == 0 else fresh)
+        )
+        monitor.tick(0.0)
+        if delivery == "before-retry" or failure is None:
+            threads[0].run()
+        monitor.tick(0.1)
+        assert monitor.status.ac is (old_ac if failure is None else None)
+        monitor.tick(power.REFRESH_SECONDS + 0.1)
+        assert len(threads) == 2 and monitor.pending
+        if failure is not None and delivery == "after-retry":
+            threads[0].run()
+        monitor.tick(power.REFRESH_SECONDS + 0.2)
+        request.node.user_properties.append(("power_retry_trace", json.dumps({
+            "failure": failure.__name__ if failure else None,
+            "delivery": delivery, "old_ac": old_ac,
+            "readings": readings, "reported_ac": monitor.status.ac,
+            "pending": monitor.pending,
+        })))
+>       assert monitor.status.ac is (old_ac if failure is None else None)
+E       assert True is None
+E        +  where True = PowerStatus(ac=True, batteries=(99,), complete=True).ac
+E        +    where PowerStatus(ac=True, batteries=(99,), complete=True) = <beamo_wipe.power.PowerMonitor object at 0x7fb7766f8490>.status
+
+../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py:96: AssertionError
+_ test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-after-retry-exit] _
+
+controlled_workers = ({'active': 0, 'failure': <class 'SystemExit'>, 'stage': 'accept-after'}, [<test_power_acceptance_retirement_pass8_202...766f8e20>, PowerStatus(ac=True, batteries=(99,), complete=True), PowerStatus(ac=False, batteries=(10,), complete=True))
+request = <FixtureRequest for <Function test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-after-retry-exit]>>
+failure = <class 'SystemExit'>, delivery = 'after-retry', old_ac = True
+
+    @pytest.mark.parametrize("failure", [None, RuntimeError, KeyboardInterrupt, SystemExit],
+                             ids=["normal", "runtime", "interrupt", "exit"])
+    @pytest.mark.parametrize("delivery", ["before-retry", "after-retry"])
+    @pytest.mark.parametrize("old_ac", [True, False], ids=["old-connected", "old-disconnected"])
+    def test_post_acceptance_interruption_cannot_supply_the_next_reading(
+        controlled_workers, request, failure, delivery, old_ac,
+    ):
+        state, threads, readings, monitor, old, fresh = controlled_workers
+        state["failure"] = failure
+        # Both directions are meaningful: a stale good reading hides a warning,
+        # while a stale disconnected reading can show an unnecessary warning.
+        old = power.PowerStatus(ac=old_ac, batteries=(99,), complete=True)
+        monitor.reader = lambda: (
+            readings.append(state["active"]) or (old if state["active"] == 0 else fresh)
+        )
+        monitor.tick(0.0)
+        if delivery == "before-retry" or failure is None:
+            threads[0].run()
+        monitor.tick(0.1)
+        assert monitor.status.ac is (old_ac if failure is None else None)
+        monitor.tick(power.REFRESH_SECONDS + 0.1)
+        assert len(threads) == 2 and monitor.pending
+        if failure is not None and delivery == "after-retry":
+            threads[0].run()
+        monitor.tick(power.REFRESH_SECONDS + 0.2)
+        request.node.user_properties.append(("power_retry_trace", json.dumps({
+            "failure": failure.__name__ if failure else None,
+            "delivery": delivery, "old_ac": old_ac,
+            "readings": readings, "reported_ac": monitor.status.ac,
+            "pending": monitor.pending,
+        })))
+>       assert monitor.status.ac is (old_ac if failure is None else None)
+E       assert True is None
+E        +  where True = PowerStatus(ac=True, batteries=(99,), complete=True).ac
+E        +    where PowerStatus(ac=True, batteries=(99,), complete=True) = <beamo_wipe.power.PowerMonitor object at 0x7fb7766f8e20>.status
+
+../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py:96: AssertionError
+_ test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-before-retry-runtime] _
+
+controlled_workers = ({'active': 0, 'failure': <class 'RuntimeError'>, 'stage': 'accept-after'}, [<test_power_acceptance_retirement_pass8_2...76870650>, PowerStatus(ac=True, batteries=(99,), complete=True), PowerStatus(ac=False, batteries=(10,), complete=True))
+request = <FixtureRequest for <Function test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-before-retry-runtime]>>
+failure = <class 'RuntimeError'>, delivery = 'before-retry', old_ac = False
+
+    @pytest.mark.parametrize("failure", [None, RuntimeError, KeyboardInterrupt, SystemExit],
+                             ids=["normal", "runtime", "interrupt", "exit"])
+    @pytest.mark.parametrize("delivery", ["before-retry", "after-retry"])
+    @pytest.mark.parametrize("old_ac", [True, False], ids=["old-connected", "old-disconnected"])
+    def test_post_acceptance_interruption_cannot_supply_the_next_reading(
+        controlled_workers, request, failure, delivery, old_ac,
+    ):
+        state, threads, readings, monitor, old, fresh = controlled_workers
+        state["failure"] = failure
+        # Both directions are meaningful: a stale good reading hides a warning,
+        # while a stale disconnected reading can show an unnecessary warning.
+        old = power.PowerStatus(ac=old_ac, batteries=(99,), complete=True)
+        monitor.reader = lambda: (
+            readings.append(state["active"]) or (old if state["active"] == 0 else fresh)
+        )
+        monitor.tick(0.0)
+        if delivery == "before-retry" or failure is None:
+            threads[0].run()
+        monitor.tick(0.1)
+        assert monitor.status.ac is (old_ac if failure is None else None)
+        monitor.tick(power.REFRESH_SECONDS + 0.1)
+        assert len(threads) == 2 and monitor.pending
+        if failure is not None and delivery == "after-retry":
+            threads[0].run()
+        monitor.tick(power.REFRESH_SECONDS + 0.2)
+        request.node.user_properties.append(("power_retry_trace", json.dumps({
+            "failure": failure.__name__ if failure else None,
+            "delivery": delivery, "old_ac": old_ac,
+            "readings": readings, "reported_ac": monitor.status.ac,
+            "pending": monitor.pending,
+        })))
+>       assert monitor.status.ac is (old_ac if failure is None else None)
+E       assert False is None
+E        +  where False = PowerStatus(ac=False, batteries=(99,), complete=True).ac
+E        +    where PowerStatus(ac=False, batteries=(99,), complete=True) = <beamo_wipe.power.PowerMonitor object at 0x7fb776870650>.status
+
+../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py:96: AssertionError
+_ test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-before-retry-interrupt] _
+
+controlled_workers = ({'active': 0, 'failure': <class 'KeyboardInterrupt'>, 'stage': 'accept-after'}, [<test_power_acceptance_retirement_pa...76837d40>, PowerStatus(ac=True, batteries=(99,), complete=True), PowerStatus(ac=False, batteries=(10,), complete=True))
+request = <FixtureRequest for <Function test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-before-retry-interrupt]>>
+failure = <class 'KeyboardInterrupt'>, delivery = 'before-retry', old_ac = False
+
+    @pytest.mark.parametrize("failure", [None, RuntimeError, KeyboardInterrupt, SystemExit],
+                             ids=["normal", "runtime", "interrupt", "exit"])
+    @pytest.mark.parametrize("delivery", ["before-retry", "after-retry"])
+    @pytest.mark.parametrize("old_ac", [True, False], ids=["old-connected", "old-disconnected"])
+    def test_post_acceptance_interruption_cannot_supply_the_next_reading(
+        controlled_workers, request, failure, delivery, old_ac,
+    ):
+        state, threads, readings, monitor, old, fresh = controlled_workers
+        state["failure"] = failure
+        # Both directions are meaningful: a stale good reading hides a warning,
+        # while a stale disconnected reading can show an unnecessary warning.
+        old = power.PowerStatus(ac=old_ac, batteries=(99,), complete=True)
+        monitor.reader = lambda: (
+            readings.append(state["active"]) or (old if state["active"] == 0 else fresh)
+        )
+        monitor.tick(0.0)
+        if delivery == "before-retry" or failure is None:
+            threads[0].run()
+        monitor.tick(0.1)
+        assert monitor.status.ac is (old_ac if failure is None else None)
+        monitor.tick(power.REFRESH_SECONDS + 0.1)
+        assert len(threads) == 2 and monitor.pending
+        if failure is not None and delivery == "after-retry":
+            threads[0].run()
+        monitor.tick(power.REFRESH_SECONDS + 0.2)
+        request.node.user_properties.append(("power_retry_trace", json.dumps({
+            "failure": failure.__name__ if failure else None,
+            "delivery": delivery, "old_ac": old_ac,
+            "readings": readings, "reported_ac": monitor.status.ac,
+            "pending": monitor.pending,
+        })))
+>       assert monitor.status.ac is (old_ac if failure is None else None)
+E       assert False is None
+E        +  where False = PowerStatus(ac=False, batteries=(99,), complete=True).ac
+E        +    where PowerStatus(ac=False, batteries=(99,), complete=True) = <beamo_wipe.power.PowerMonitor object at 0x7fb776837d40>.status
+
+../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py:96: AssertionError
+_ test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-before-retry-exit] _
+
+controlled_workers = ({'active': 0, 'failure': <class 'SystemExit'>, 'stage': 'accept-after'}, [<test_power_acceptance_retirement_pass8_202...768366c0>, PowerStatus(ac=True, batteries=(99,), complete=True), PowerStatus(ac=False, batteries=(10,), complete=True))
+request = <FixtureRequest for <Function test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-before-retry-exit]>>
+failure = <class 'SystemExit'>, delivery = 'before-retry', old_ac = False
+
+    @pytest.mark.parametrize("failure", [None, RuntimeError, KeyboardInterrupt, SystemExit],
+                             ids=["normal", "runtime", "interrupt", "exit"])
+    @pytest.mark.parametrize("delivery", ["before-retry", "after-retry"])
+    @pytest.mark.parametrize("old_ac", [True, False], ids=["old-connected", "old-disconnected"])
+    def test_post_acceptance_interruption_cannot_supply_the_next_reading(
+        controlled_workers, request, failure, delivery, old_ac,
+    ):
+        state, threads, readings, monitor, old, fresh = controlled_workers
+        state["failure"] = failure
+        # Both directions are meaningful: a stale good reading hides a warning,
+        # while a stale disconnected reading can show an unnecessary warning.
+        old = power.PowerStatus(ac=old_ac, batteries=(99,), complete=True)
+        monitor.reader = lambda: (
+            readings.append(state["active"]) or (old if state["active"] == 0 else fresh)
+        )
+        monitor.tick(0.0)
+        if delivery == "before-retry" or failure is None:
+            threads[0].run()
+        monitor.tick(0.1)
+        assert monitor.status.ac is (old_ac if failure is None else None)
+        monitor.tick(power.REFRESH_SECONDS + 0.1)
+        assert len(threads) == 2 and monitor.pending
+        if failure is not None and delivery == "after-retry":
+            threads[0].run()
+        monitor.tick(power.REFRESH_SECONDS + 0.2)
+        request.node.user_properties.append(("power_retry_trace", json.dumps({
+            "failure": failure.__name__ if failure else None,
+            "delivery": delivery, "old_ac": old_ac,
+            "readings": readings, "reported_ac": monitor.status.ac,
+            "pending": monitor.pending,
+        })))
+>       assert monitor.status.ac is (old_ac if failure is None else None)
+E       assert False is None
+E        +  where False = PowerStatus(ac=False, batteries=(99,), complete=True).ac
+E        +    where PowerStatus(ac=False, batteries=(99,), complete=True) = <beamo_wipe.power.PowerMonitor object at 0x7fb7768366c0>.status
+
+../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py:96: AssertionError
+_ test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-after-retry-runtime] _
+
+controlled_workers = ({'active': 0, 'failure': <class 'RuntimeError'>, 'stage': 'accept-after'}, [<test_power_acceptance_retirement_pass8_2...76829470>, PowerStatus(ac=True, batteries=(99,), complete=True), PowerStatus(ac=False, batteries=(10,), complete=True))
+request = <FixtureRequest for <Function test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-after-retry-runtime]>>
+failure = <class 'RuntimeError'>, delivery = 'after-retry', old_ac = False
+
+    @pytest.mark.parametrize("failure", [None, RuntimeError, KeyboardInterrupt, SystemExit],
+                             ids=["normal", "runtime", "interrupt", "exit"])
+    @pytest.mark.parametrize("delivery", ["before-retry", "after-retry"])
+    @pytest.mark.parametrize("old_ac", [True, False], ids=["old-connected", "old-disconnected"])
+    def test_post_acceptance_interruption_cannot_supply_the_next_reading(
+        controlled_workers, request, failure, delivery, old_ac,
+    ):
+        state, threads, readings, monitor, old, fresh = controlled_workers
+        state["failure"] = failure
+        # Both directions are meaningful: a stale good reading hides a warning,
+        # while a stale disconnected reading can show an unnecessary warning.
+        old = power.PowerStatus(ac=old_ac, batteries=(99,), complete=True)
+        monitor.reader = lambda: (
+            readings.append(state["active"]) or (old if state["active"] == 0 else fresh)
+        )
+        monitor.tick(0.0)
+        if delivery == "before-retry" or failure is None:
+            threads[0].run()
+        monitor.tick(0.1)
+        assert monitor.status.ac is (old_ac if failure is None else None)
+        monitor.tick(power.REFRESH_SECONDS + 0.1)
+        assert len(threads) == 2 and monitor.pending
+        if failure is not None and delivery == "after-retry":
+            threads[0].run()
+        monitor.tick(power.REFRESH_SECONDS + 0.2)
+        request.node.user_properties.append(("power_retry_trace", json.dumps({
+            "failure": failure.__name__ if failure else None,
+            "delivery": delivery, "old_ac": old_ac,
+            "readings": readings, "reported_ac": monitor.status.ac,
+            "pending": monitor.pending,
+        })))
+>       assert monitor.status.ac is (old_ac if failure is None else None)
+E       assert False is None
+E        +  where False = PowerStatus(ac=False, batteries=(99,), complete=True).ac
+E        +    where PowerStatus(ac=False, batteries=(99,), complete=True) = <beamo_wipe.power.PowerMonitor object at 0x7fb776829470>.status
+
+../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py:96: AssertionError
+_ test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-after-retry-interrupt] _
+
+controlled_workers = ({'active': 0, 'failure': <class 'KeyboardInterrupt'>, 'stage': 'accept-after'}, [<test_power_acceptance_retirement_pa...766f3ad0>, PowerStatus(ac=True, batteries=(99,), complete=True), PowerStatus(ac=False, batteries=(10,), complete=True))
+request = <FixtureRequest for <Function test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-after-retry-interrupt]>>
+failure = <class 'KeyboardInterrupt'>, delivery = 'after-retry', old_ac = False
+
+    @pytest.mark.parametrize("failure", [None, RuntimeError, KeyboardInterrupt, SystemExit],
+                             ids=["normal", "runtime", "interrupt", "exit"])
+    @pytest.mark.parametrize("delivery", ["before-retry", "after-retry"])
+    @pytest.mark.parametrize("old_ac", [True, False], ids=["old-connected", "old-disconnected"])
+    def test_post_acceptance_interruption_cannot_supply_the_next_reading(
+        controlled_workers, request, failure, delivery, old_ac,
+    ):
+        state, threads, readings, monitor, old, fresh = controlled_workers
+        state["failure"] = failure
+        # Both directions are meaningful: a stale good reading hides a warning,
+        # while a stale disconnected reading can show an unnecessary warning.
+        old = power.PowerStatus(ac=old_ac, batteries=(99,), complete=True)
+        monitor.reader = lambda: (
+            readings.append(state["active"]) or (old if state["active"] == 0 else fresh)
+        )
+        monitor.tick(0.0)
+        if delivery == "before-retry" or failure is None:
+            threads[0].run()
+        monitor.tick(0.1)
+        assert monitor.status.ac is (old_ac if failure is None else None)
+        monitor.tick(power.REFRESH_SECONDS + 0.1)
+        assert len(threads) == 2 and monitor.pending
+        if failure is not None and delivery == "after-retry":
+            threads[0].run()
+        monitor.tick(power.REFRESH_SECONDS + 0.2)
+        request.node.user_properties.append(("power_retry_trace", json.dumps({
+            "failure": failure.__name__ if failure else None,
+            "delivery": delivery, "old_ac": old_ac,
+            "readings": readings, "reported_ac": monitor.status.ac,
+            "pending": monitor.pending,
+        })))
+>       assert monitor.status.ac is (old_ac if failure is None else None)
+E       assert False is None
+E        +  where False = PowerStatus(ac=False, batteries=(99,), complete=True).ac
+E        +    where PowerStatus(ac=False, batteries=(99,), complete=True) = <beamo_wipe.power.PowerMonitor object at 0x7fb7766f3ad0>.status
+
+../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py:96: AssertionError
+_ test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-after-retry-exit] _
+
+controlled_workers = ({'active': 0, 'failure': <class 'SystemExit'>, 'stage': 'accept-after'}, [<test_power_acceptance_retirement_pass8_202...767f9790>, PowerStatus(ac=True, batteries=(99,), complete=True), PowerStatus(ac=False, batteries=(10,), complete=True))
+request = <FixtureRequest for <Function test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-after-retry-exit]>>
+failure = <class 'SystemExit'>, delivery = 'after-retry', old_ac = False
+
+    @pytest.mark.parametrize("failure", [None, RuntimeError, KeyboardInterrupt, SystemExit],
+                             ids=["normal", "runtime", "interrupt", "exit"])
+    @pytest.mark.parametrize("delivery", ["before-retry", "after-retry"])
+    @pytest.mark.parametrize("old_ac", [True, False], ids=["old-connected", "old-disconnected"])
+    def test_post_acceptance_interruption_cannot_supply_the_next_reading(
+        controlled_workers, request, failure, delivery, old_ac,
+    ):
+        state, threads, readings, monitor, old, fresh = controlled_workers
+        state["failure"] = failure
+        # Both directions are meaningful: a stale good reading hides a warning,
+        # while a stale disconnected reading can show an unnecessary warning.
+        old = power.PowerStatus(ac=old_ac, batteries=(99,), complete=True)
+        monitor.reader = lambda: (
+            readings.append(state["active"]) or (old if state["active"] == 0 else fresh)
+        )
+        monitor.tick(0.0)
+        if delivery == "before-retry" or failure is None:
+            threads[0].run()
+        monitor.tick(0.1)
+        assert monitor.status.ac is (old_ac if failure is None else None)
+        monitor.tick(power.REFRESH_SECONDS + 0.1)
+        assert len(threads) == 2 and monitor.pending
+        if failure is not None and delivery == "after-retry":
+            threads[0].run()
+        monitor.tick(power.REFRESH_SECONDS + 0.2)
+        request.node.user_properties.append(("power_retry_trace", json.dumps({
+            "failure": failure.__name__ if failure else None,
+            "delivery": delivery, "old_ac": old_ac,
+            "readings": readings, "reported_ac": monitor.status.ac,
+            "pending": monitor.pending,
+        })))
+>       assert monitor.status.ac is (old_ac if failure is None else None)
+E       assert False is None
+E        +  where False = PowerStatus(ac=False, batteries=(99,), complete=True).ac
+E        +    where PowerStatus(ac=False, batteries=(99,), complete=True) = <beamo_wipe.power.PowerMonitor object at 0x7fb7767f9790>.status
+
+../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py:96: AssertionError
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py::test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-before-retry-runtime]
+FAILED ../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py::test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-before-retry-interrupt]
+FAILED ../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py::test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-before-retry-exit]
+FAILED ../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py::test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-after-retry-runtime]
+FAILED ../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py::test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-after-retry-interrupt]
+FAILED ../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py::test_post_acceptance_interruption_cannot_supply_the_next_reading[old-connected-after-retry-exit]
+FAILED ../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py::test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-before-retry-runtime]
+FAILED ../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py::test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-before-retry-interrupt]
+FAILED ../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py::test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-before-retry-exit]
+FAILED ../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py::test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-after-retry-runtime]
+FAILED ../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py::test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-after-retry-interrupt]
+FAILED ../beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py::test_post_acceptance_interruption_cannot_supply_the_next_reading[old-disconnected-after-retry-exit]
+12 failed, 16 passed in 0.18s

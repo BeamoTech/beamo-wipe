@@ -1,0 +1,8 @@
+{
+  "subprocess_exit_code": 1,
+  "expected_old_source_failures": 3,
+  "old_source_controls_passed": 6,
+  "test_sha256": "cc7b15ffd0ffaa989ffb32bd658437c46d8356f3420c81358aec97a5e27291c6",
+  "exact_baseline_safety_bytes": true,
+  "warnings_treated_as_errors": true
+}

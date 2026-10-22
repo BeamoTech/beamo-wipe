@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 import hashlib
 import json
 import os
@@ -193,20 +194,82 @@ def _snapshot_desktop_source(root: Path, staged_root: Path, expected: str) -> Pa
 def _read_output_file(
     output: Path, output_fd: int | None, name: str, limit: int
 ) -> bytes:
-    """Read one regular cached artifact without following a link or FIFO."""
+    """Read one unchanged, named regular artifact without following links."""
+    path = output / name
+
+    def named_metadata():
+        if output_fd is None:
+            return path.lstat()
+        return os.stat(name, dir_fd=output_fd, follow_symlinks=False)
+
+    def identity(info):
+        return (
+            info.st_dev,
+            info.st_ino,
+            info.st_mode,
+            info.st_uid,
+            info.st_nlink,
+            info.st_size,
+            info.st_mtime_ns,
+            getattr(info, "st_file_attributes", 0),
+        )
+
+    def safe(info):
+        return (
+            stat.S_ISREG(info.st_mode)
+            and info.st_size >= 0
+            and info.st_size <= limit
+            and not (
+                getattr(info, "st_file_attributes", 0)
+                & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400)
+            )
+            and (output_fd is None or info.st_uid == os.getuid())
+        )
+
+    before = named_metadata()
+    if not safe(before):
+        raise OSError("unsafe desktop output file")
     if output_fd is None:
-        path = output / name
-        if not path.is_file() or path.is_symlink() or path.stat().st_size > limit:
-            raise OSError("unsafe desktop output file")
-        return path.read_bytes()
-    fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=output_fd)
-    with os.fdopen(fd, "rb") as stream:
-        metadata = os.fstat(stream.fileno())
-        if not stat.S_ISREG(metadata.st_mode) or metadata.st_uid != os.getuid():
-            raise OSError("unsafe desktop output file")
+        stream = path.open("rb")
+    else:
+        fd = os.open(
+            name,
+            os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+            dir_fd=output_fd,
+        )
+        stream = os.fdopen(fd, "rb")
+    with stream:
+        opened = os.fstat(stream.fileno())
+        if not safe(opened) or identity(before) != identity(opened):
+            raise OSError("desktop output file changed before read")
         data = stream.read(limit + 1)
-    if len(data) > limit:
-        raise OSError("desktop output file exceeded size limit")
+        after_read = os.fstat(stream.fileno())
+        stream.seek(0)
+        verified = stream.read(limit + 1)
+        after = os.fstat(stream.fileno())
+    named = named_metadata()
+    if (
+        len(data) > limit
+        or len(verified) > limit
+        or len(data) != opened.st_size
+        or len(verified) != opened.st_size
+        or data != verified
+        or not safe(after_read)
+        or not safe(after)
+        or not safe(named)
+        or not (
+            identity(before)
+            == identity(after_read)
+            == identity(after)
+            == identity(named)
+        )
+        # Windows path stat and fstat can expose different ctime meanings.
+        # Compare each API across the read; POSIX can also compare them.
+        or before.st_ctime_ns != named.st_ctime_ns
+        or not (opened.st_ctime_ns == after_read.st_ctime_ns == after.st_ctime_ns)
+        or (output_fd is not None and before.st_ctime_ns != opened.st_ctime_ns)
+    ):
+        raise OSError("desktop output file changed during read")
     return data
 
 
@@ -266,7 +329,9 @@ def verify_desktop_bundle(
             os.close(output_fd)
 
 
-def _require_generated_prior_manifest(output: Path, output_fd: int | None) -> None:
+def _require_generated_prior_manifest(
+    output: Path, output_fd: int | None
+) -> dict[str, str]:
     """Preserve unfamiliar content at the receipt path during a rebuild."""
     name = "desktop-build.json"
     try:
@@ -289,7 +354,7 @@ def _require_generated_prior_manifest(output: Path, output_fd: int | None) -> No
             raise RuntimeError(
                 "unrecognized desktop launcher without a manifest; preserve existing output"
             )
-        return
+        return {}
     if not stat.S_ISREG(metadata.st_mode):
         raise RuntimeError("unrecognized desktop manifest; preserve existing output")
     try:
@@ -335,10 +400,85 @@ def _require_generated_prior_manifest(output: Path, output_fd: int | None) -> No
             raise RuntimeError(
                 "unrecognized desktop manifest; preserve existing output"
             )
+    return dict(manifest["files"])
+
+
+def _prior_manifest_snapshot(
+    output: Path, output_fd: int | None
+) -> tuple[tuple[int, ...], bytes] | None:
+    """Bind retirement to one unchanged, regular receipt across validation."""
+    name = "desktop-build.json"
+
+    def metadata():
+        if output_fd is None:
+            return (output / name).lstat()
+        return os.stat(name, dir_fd=output_fd, follow_symlinks=False)
+
+    def identity(info):
+        return (
+            info.st_dev,
+            info.st_ino,
+            info.st_mode,
+            info.st_uid,
+            info.st_nlink,
+            info.st_size,
+            info.st_mtime_ns,
+            info.st_ctime_ns,
+            getattr(info, "st_file_attributes", 0),
+        )
+
+    try:
+        before = metadata()
+    except FileNotFoundError:
+        return None
+    try:
+        if not stat.S_ISREG(before.st_mode) or (
+            getattr(before, "st_file_attributes", 0)
+            & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400)
+        ):
+            raise OSError("unsafe receipt")
+        data = _read_output_file(output, output_fd, name, 16 * 1024)
+        after = metadata()
+        if identity(before) != identity(after):
+            raise OSError("receipt changed during read")
+    except OSError as exc:
+        raise RuntimeError("desktop prior manifest changed or unsafe") from exc
+    return identity(after), data
+
+
+def _require_unchanged_launcher_outputs(
+    output: Path, output_fd: int | None, expected: dict[str, str]
+) -> None:
+    """Keep the verified prior outputs, or our published replacements, bound."""
+    for name in LAUNCHERS:
+        try:
+            if output_fd is None:
+                (output / name).lstat()
+            else:
+                os.stat(name, dir_fd=output_fd, follow_symlinks=False)
+        except FileNotFoundError:
+            if name not in expected:
+                continue
+            raise RuntimeError("desktop launcher bytes changed before publication")
+        try:
+            if name not in expected:
+                raise OSError("unidentified launcher appeared")
+            current = _read_output_file(output, output_fd, name, 64 * 1024 * 1024)
+        except OSError as exc:
+            raise RuntimeError(
+                "desktop launcher bytes changed before publication"
+            ) from exc
+        if hashlib.sha256(current).hexdigest() != expected[name]:
+            raise RuntimeError("desktop launcher bytes changed before publication")
 
 
 def _publish_launcher(
-    output: Path, output_fd: int | None, source: Path, name: str
+    output: Path,
+    output_fd: int | None,
+    source: Path,
+    name: str,
+    *,
+    before_replace: Callable[[], None] | None = None,
 ) -> None:
     """Replace one launcher in the originally opened output directory."""
     if source.is_symlink() or not source.is_file():
@@ -351,6 +491,8 @@ def _publish_launcher(
                 owned = os.fstat(dest.fileno())
                 with source.open("rb") as src:
                     shutil.copyfileobj(src, dest)
+            if before_replace is not None:
+                before_replace()
             os.replace(temporary_path, output / name)
         except Exception:
             try:
@@ -382,6 +524,8 @@ def _publish_launcher(
         with os.fdopen(fd, "wb") as dest, source.open("rb") as src:
             shutil.copyfileobj(src, dest)
             os.fchmod(dest.fileno(), 0o755)
+        if before_replace is not None:
+            before_replace()
         os.replace(temporary, name, src_dir_fd=output_fd, dst_dir_fd=output_fd)
     except Exception:
         try:
@@ -521,7 +665,12 @@ def build(output=None):
         # A failed rebuild must not leave an earlier success receipt beside partial outputs.
         if not owns_lock():
             raise RuntimeError("desktop build lock changed before publication")
-        _require_generated_prior_manifest(output, output_fd)
+        prior_manifest = _prior_manifest_snapshot(output, output_fd)
+        expected_outputs = _require_generated_prior_manifest(output, output_fd)
+        if not owns_lock():
+            raise RuntimeError("desktop build lock changed before manifest retirement")
+        if _prior_manifest_snapshot(output, output_fd) != prior_manifest:
+            raise RuntimeError("desktop prior manifest changed before retirement")
         if output_fd is None:
             manifest.unlink(missing_ok=True)
         else:
@@ -578,12 +727,28 @@ def build(output=None):
                 raise RuntimeError(
                     "desktop build lock changed before manifest publication"
                 )
+
+            def require_current_outputs() -> None:
+                if not owns_lock():
+                    raise RuntimeError(
+                        "desktop build lock changed during launcher publication"
+                    )
+                _require_unchanged_launcher_outputs(output, output_fd, expected_outputs)
+
+            require_current_outputs()
             for name in LAUNCHERS:
                 if not owns_lock():
                     raise RuntimeError(
                         "desktop build lock changed during launcher publication"
                     )
-                _publish_launcher(output, output_fd, staged / name, name)
+                _publish_launcher(
+                    output,
+                    output_fd,
+                    staged / name,
+                    name,
+                    before_replace=require_current_outputs,
+                )
+                expected_outputs[name] = files[name]
                 if not owns_lock():
                     raise RuntimeError(
                         "desktop build lock changed during launcher publication"
@@ -620,40 +785,92 @@ def build(output=None):
             )
             + "\n"
         )
+        require_current_outputs()
         manifest_owned = None
-        try:
-            if output_fd is None:
-                with manifest.open("x", encoding="utf-8") as stream:
-                    stream.write(manifest_bytes)
-            else:
-                manifest_fd = os.open(
-                    manifest.name,
-                    os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
-                    0o644,
-                    dir_fd=output_fd,
+
+        def manifest_matches_ours() -> bool:
+            if manifest_owned is None:
+                return False
+
+            def metadata():
+                if output_fd is None:
+                    return manifest.lstat()
+                return os.stat(manifest.name, dir_fd=output_fd, follow_symlinks=False)
+
+            def same_owned_inode(info) -> bool:
+                return stat.S_ISREG(info.st_mode) and (info.st_dev, info.st_ino) == (
+                    manifest_owned.st_dev,
+                    manifest_owned.st_ino,
                 )
-                manifest_owned = os.fstat(manifest_fd)
-                with os.fdopen(manifest_fd, "w", encoding="utf-8") as stream:
-                    stream.write(manifest_bytes)
-        except FileExistsError as exc:
-            raise RuntimeError(
-                "desktop manifest path appeared during launcher build"
-            ) from exc
-        if not owns_lock():
-            if output_fd is not None and manifest_owned is not None:
-                try:
-                    current = os.stat(
-                        manifest.name, dir_fd=output_fd, follow_symlinks=False
-                    )
-                except FileNotFoundError:
-                    pass
+
+            def read_identity(info):
+                return (
+                    info.st_dev,
+                    info.st_ino,
+                    info.st_mode,
+                    info.st_uid,
+                    info.st_size,
+                    info.st_mtime_ns,
+                    info.st_ctime_ns,
+                )
+
+            try:
+                before = metadata()
+                if not same_owned_inode(before):
+                    return False
+                current = _read_output_file(output, output_fd, manifest.name, 16 * 1024)
+                after = metadata()
+                return (
+                    current == manifest_bytes.encode("utf-8")
+                    and same_owned_inode(after)
+                    and read_identity(before) == read_identity(after)
+                )
+            except OSError:
+                return False
+
+        try:
+            try:
+                if output_fd is None:
+                    with manifest.open("x", encoding="utf-8") as stream:
+                        manifest_owned = os.fstat(stream.fileno())
+                        stream.write(manifest_bytes)
                 else:
-                    if (current.st_dev, current.st_ino) == (
-                        manifest_owned.st_dev,
-                        manifest_owned.st_ino,
-                    ):
+                    manifest_fd = os.open(
+                        manifest.name,
+                        os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                        0o644,
+                        dir_fd=output_fd,
+                    )
+                    manifest_owned = os.fstat(manifest_fd)
+                    with os.fdopen(manifest_fd, "w", encoding="utf-8") as stream:
+                        stream.write(manifest_bytes)
+            except FileExistsError as exc:
+                raise RuntimeError(
+                    "desktop manifest path appeared during launcher build"
+                ) from exc
+            if not owns_lock():
+                raise RuntimeError("desktop output changed before completion")
+            _require_unchanged_launcher_outputs(output, output_fd, expected_outputs)
+            if not manifest_matches_ours():
+                raise RuntimeError("desktop manifest changed before completion")
+            if not owns_lock():
+                raise RuntimeError("desktop output changed before completion")
+        except BaseException:
+            # A later failure must not leave our success receipt. Preserve
+            # replacement paths or bytes, including on the path-based host.
+            # A pinned directory remains safe to inspect after its path moves.
+            if (output_fd is not None or owns_lock()) and manifest_matches_ours():
+                try:
+                    if output_fd is None:
+                        os.unlink(manifest)
+                    else:
                         os.unlink(manifest.name, dir_fd=output_fd)
-            raise RuntimeError("desktop output changed before completion")
+                except OSError:
+                    print(
+                        "desktop manifest cleanup failed; owned receipt retained for inspection",
+                        file=sys.stderr,
+                    )
+            raise
         print(
             "Built Windows and Linux desktop launchers. Runtime and firmware tests remain separate gates."
         )

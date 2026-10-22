@@ -88,6 +88,11 @@ func completeIdentityFields(raw []byte) bool {
 		if dec.Decode(&value) != nil {
 			return false
 		}
+		// JSON null leaves a scalar's zero value unchanged. In particular,
+		// an unknown source_dirty value must not become a clean build.
+		if bytes.Equal(bytes.TrimSpace(value), []byte("null")) {
+			return false
+		}
 	}
 	end, err := dec.Token()
 	if err != nil || end != json.Delim('}') {

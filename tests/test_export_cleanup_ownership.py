@@ -41,22 +41,17 @@ def test_sidecar_failure_preserves_replaced_destination(tmp_path, monkeypatch):
 
 
 def test_atomic_writer_finalization_preserves_replaced_destination(tmp_path, monkeypatch):
-    """A failed temporary-link cleanup cannot delete a new owner of the path."""
+    """A failed post-publication check cannot delete a new owner of the path."""
     dest = tmp_path / "result.json"
     replacement = tmp_path / "replacement.json"
     replacement.write_bytes(b"replacement")
-    original_unlink = os.unlink
-    injected = False
+    original_publish = evidence._rename_noreplace
 
-    def fail_temp_unlink(path, *args, **kwargs):
-        nonlocal injected
-        if not injected and str(path).startswith(".result.json.tmp."):
-            injected = True
-            os.replace(replacement, dest)
-            raise OSError("temporary link cleanup failed")
-        return original_unlink(path, *args, **kwargs)
+    def replace_after_publish(directory_fd, source, destination):
+        original_publish(directory_fd, source, destination)
+        os.replace(replacement, dest)
 
-    monkeypatch.setattr(evidence.os, "unlink", fail_temp_unlink)
+    monkeypatch.setattr(evidence, "_rename_noreplace", replace_after_publish)
     with pytest.raises(evidence.EvidenceFinalizationError):
         evidence._atomic_write_bytes(dest, b"original")
     assert dest.read_bytes() == b"replacement"

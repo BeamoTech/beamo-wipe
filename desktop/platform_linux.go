@@ -2,10 +2,12 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -13,6 +15,7 @@ import (
 	"strings"
 	"syscall"
 	"unicode"
+	"unicode/utf8"
 )
 
 type linuxFirmware struct{}
@@ -110,7 +113,78 @@ func linuxMeaningfulHardwareID(value string) string {
 	return text
 }
 
+// Inventory identities must not depend on JSON's last-key-wins behavior or
+// replacement of malformed text. Fold keys like encoding/json's field matcher.
+func linuxInventoryJSON(data []byte) error {
+	if !utf8.Valid(data) {
+		return errors.New("invalid inventory UTF-8")
+	}
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.UseNumber()
+	var value func(int) error
+	value = func(depth int) error {
+		if depth > 10000 {
+			return errors.New("inventory JSON nesting exceeded")
+		}
+		token, err := dec.Token()
+		if err != nil {
+			return err
+		}
+		switch token := token.(type) {
+		case string:
+			if strings.ContainsRune(token, utf8.RuneError) {
+				return errors.New("invalid inventory string")
+			}
+		case json.Delim:
+			if token != '{' && token != '[' {
+				return errors.New("invalid inventory delimiter")
+			}
+			seen := map[string]bool{}
+			for dec.More() {
+				if token == '{' {
+					key, err := dec.Token()
+					name, ok := key.(string)
+					if err != nil || !ok || strings.ContainsRune(name, utf8.RuneError) {
+						return errors.New("invalid inventory key")
+					}
+					folded := strings.Map(func(r rune) rune {
+						minimum := r
+						for next := unicode.SimpleFold(r); next != r; next = unicode.SimpleFold(next) {
+							if next < minimum {
+								minimum = next
+							}
+						}
+						return minimum
+					}, name)
+					if seen[folded] {
+						return errors.New("duplicate inventory key")
+					}
+					seen[folded] = true
+				}
+				if err := value(depth + 1); err != nil {
+					return err
+				}
+			}
+			closing, err := dec.Token()
+			if err != nil || (token == '{' && closing != json.Delim('}')) || (token == '[' && closing != json.Delim(']')) {
+				return errors.New("invalid inventory container")
+			}
+		}
+		return nil
+	}
+	if err := value(0); err != nil {
+		return err
+	}
+	if _, err := dec.Token(); err != io.EOF {
+		return errors.New("trailing inventory JSON")
+	}
+	return nil
+}
+
 func linuxMedia(data []byte, source string) (string, []string, error) {
+	if err := linuxInventoryJSON(data); err != nil {
+		return "", nil, err
+	}
 	var inventory struct {
 		Devices []linuxNode `json:"blockdevices"`
 	}
@@ -272,17 +346,21 @@ func platformProbe(ctx context.Context) Snapshot {
 		return s
 	}
 	s.UEFI = true
-	if b, err := readSmall("/proc/cmdline", 16384); err == nil {
-		for _, arg := range strings.Fields(string(b)) {
-			if arg == "boot=live" {
-				s.Problem = "live"
-				return s
-			}
+	b, err := readSmall("/proc/cmdline", 16384)
+	if err != nil {
+		// An unreadable marker cannot establish that this is outside the
+		// live erasure environment. Do not offer a guided restart.
+		s.Problem = "runtime"
+		return s
+	}
+	for _, arg := range strings.Fields(string(b)) {
+		if arg == "boot=live" {
+			s.Problem = "live"
+			return s
 		}
 	}
 	mediaInfo := inspectMediaContext(ctx, exe)
 	s.Layout = mediaInfo.Fingerprint
-	var err error
 	if mediaInfo.Problem != "" {
 		s.Problem = mediaInfo.Problem
 		return s

@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"time"
 )
 
 var guidPattern = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`)
@@ -32,22 +33,27 @@ func readSmall(path string, max int64) ([]byte, error) {
 }
 
 type limitedBuffer struct {
-	bytes.Buffer
-	max int
+	buffer bytes.Buffer
+	max    int
 }
 
 func (b *limitedBuffer) Write(p []byte) (int, error) {
-	if b.Len()+len(p) > b.max {
+	if b.buffer.Len()+len(p) > b.max {
 		return 0, errors.New("output too large")
 	}
-	return b.Buffer.Write(p)
+	return b.buffer.Write(p)
 }
 func boundedOutput(cmd *exec.Cmd, max int) ([]byte, error) {
+	// Descendants can retain stdout/stderr after their direct parent exits or
+	// is canceled. Bound pipe draining as well as the command's own lifetime.
+	if cmd.WaitDelay <= 0 || cmd.WaitDelay > 100*time.Millisecond {
+		cmd.WaitDelay = 100 * time.Millisecond
+	}
 	b := &limitedBuffer{max: max}
 	cmd.Stdout = b
 	cmd.Stderr = io.Discard
 	err := cmd.Run()
-	return b.Bytes(), err
+	return b.buffer.Bytes(), err
 }
 
 func writeExclusiveFile(path string, data []byte, extraFlags int) error {

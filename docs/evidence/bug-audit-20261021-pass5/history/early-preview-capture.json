@@ -1,0 +1,15 @@
+{
+  "command": [
+    "./preview"
+  ],
+  "fake_disks_only": true,
+  "display": ":631",
+  "dpi": 72,
+  "window_title": "Beamo Wipe \u2014 PREVIEW (nothing is erased)",
+  "normal_close_acceptance": true,
+  "returncode": 0,
+  "teardown": "Invoked actual registered WM_DELETE_WINDOW callback",
+  "capture_review": "INCOMPLETE: captured before welcome body painted; do not use for visual acceptance",
+  "image_sha256": "922c213939cba144951d70292b63b29baea8fe7d43e4a5f4e7f1e1adc378e5a8",
+  "cause_assessment": "The helper waited for a window title and fixed0.5s, without content readiness; no product defect established. Recheck actual welcome text before capture."
+}

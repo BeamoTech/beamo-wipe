@@ -36,9 +36,10 @@ def test_poweroff_rechecks_engine_after_exit_decision(monkeypatch, use_console):
     monkeypatch.setattr("beamo_wipe.ui.console_wizard.run_console", accept_exit)
     monkeypatch.setattr("beamo_wipe.ui.tk_wizard.run_tk", lambda active, **_kw: accept_exit(active))
     args = SimpleNamespace(demo=False, lang="en", plain_console=False)
+    store = SimpleNamespace(previous=False, invalid=False, is_quiescent=lambda: True)
     assert app._run_one_session(
         args,
-        session_store=None,
+        session_store=store,
         use_console=use_console,
         want_accessible=False,
         fullscreen=False,

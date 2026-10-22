@@ -1,0 +1,753 @@
+F.FFF.FFF.FFF.FFFFFFFFFFFF.............F                                 [100%]
+=================================== FAILURES ===================================
+___ test_changed_temporary_is_refused_before_publication[preference-replace] ___
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_temporary_is_refu0/priv...u0/private/report-intent'), operation=<function publication.<locals>.operation at 0x7f41e06fde40>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e06f09d0>
+mutation = 'replace'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:115: Failed
+___ test_changed_temporary_is_refused_before_publication[preference-symlink] ___
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_temporary_is_refu2/priv...u2/private/report-intent'), operation=<function publication.<locals>.operation at 0x7f41e06feb60>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e0708950>
+mutation = 'symlink'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:115: Failed
+__ test_changed_temporary_is_refused_before_publication[preference-hardlink] ___
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_temporary_is_refu3/priv...u3/private/report-intent'), operation=<function publication.<locals>.operation at 0x7f41e06fefc0>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e0fba250>
+mutation = 'hardlink'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:115: Failed
+____ test_changed_temporary_is_refused_before_publication[preference-fifo] _____
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_temporary_is_refu4/priv...u4/private/report-intent'), operation=<function publication.<locals>.operation at 0x7f41e06fde40>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e0fbb130>
+mutation = 'fifo'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:115: Failed
+__ test_changed_temporary_is_refused_before_publication[preference-opposite] ___
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_temporary_is_refu6/priv...u6/private/report-intent'), operation=<function publication.<locals>.operation at 0x7f41e06ffba0>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e0718450>
+mutation = 'opposite'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:115: Failed
+__ test_changed_temporary_is_refused_before_publication[preference-same-size] __
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_temporary_is_refu7/priv...u7/private/report-intent'), operation=<function publication.<locals>.operation at 0x7f41e077c2c0>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e0707980>
+mutation = 'same-size'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:115: Failed
+____ test_changed_temporary_is_refused_before_publication[journal-replace] _____
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_temporary_is_refu8/private...53ae9591c5af13adf23b98","terminal":null},"sha256":"9c334710d0f95b041f80829c122c16ad5d0533c2a0fa4ba1f1b0b6bba641a7aa"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e07b0320>
+mutation = 'replace'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:115: Failed
+____ test_changed_temporary_is_refused_before_publication[journal-symlink] _____
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_temporary_is_refu10/privat...a5fc58e50975db8c9064ed","terminal":null},"sha256":"eae7f58c066be4a5be445ebcdaf15d1ad73d27d61f2552bd572f7cf95d260568"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e0712430>
+mutation = 'symlink'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:115: Failed
+____ test_changed_temporary_is_refused_before_publication[journal-hardlink] ____
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_temporary_is_refu11/privat...2b9f710f7fca0f3f19f92a","terminal":null},"sha256":"0640456cf5e6a80f1691f0fca313e52fdd771bb6813479e95ef1f43feb49283c"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e0f3f040>
+mutation = 'hardlink'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:115: Failed
+______ test_changed_temporary_is_refused_before_publication[journal-fifo] ______
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_temporary_is_refu12/privat...d6dc5c9a0c89b2cbe58234","terminal":null},"sha256":"414cd8451abf359b984523b4c9b80bdc21b9052104d36e177cfc21b2603d1216"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e0f7e690>
+mutation = 'fifo'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:115: Failed
+____ test_changed_temporary_is_refused_before_publication[journal-opposite] ____
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_temporary_is_refu14/privat...e342748973242a600847f9","terminal":null},"sha256":"9cf5f7c52c15310bd522b12500262abb4c3da4fd906ad75aad1dde267dabc440"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e07b45d0>
+mutation = 'opposite'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:115: Failed
+___ test_changed_temporary_is_refused_before_publication[journal-same-size] ____
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_temporary_is_refu15/privat...364d0fcf72b47faf0d67a6","terminal":null},"sha256":"6ee241329cd3452a3e83362d5bb7aba80f673864d01c7ea928d103f3f7edfca0"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e07b4b50>
+mutation = 'same-size'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:115: Failed
+____ test_changed_published_entry_is_not_reported_saved[preference-replace] ____
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_published_entry_i0/priv...i0/private/report-intent'), operation=<function publication.<locals>.operation at 0x7f41e077f740>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e077f6b0>
+mutation = 'replace'
+
+    @pytest.mark.parametrize("mutation", ["replace", "opposite", "same-size"])
+    def test_changed_published_entry_is_not_reported_saved(publication, monkeypatch, mutation):
+        case = publication
+        real_replace = os.replace
+        changed = []
+    
+        def replace(source, destination, **kwargs):
+            real_replace(source, destination, **kwargs)
+            changed.append(replace_entry(case, case.destination, mutation))
+    
+        monkeypatch.setattr(os, "replace", replace)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:135: Failed
+___ test_changed_published_entry_is_not_reported_saved[preference-opposite] ____
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_published_entry_i1/priv...i1/private/report-intent'), operation=<function publication.<locals>.operation at 0x7f41e077fce0>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e077fc50>
+mutation = 'opposite'
+
+    @pytest.mark.parametrize("mutation", ["replace", "opposite", "same-size"])
+    def test_changed_published_entry_is_not_reported_saved(publication, monkeypatch, mutation):
+        case = publication
+        real_replace = os.replace
+        changed = []
+    
+        def replace(source, destination, **kwargs):
+            real_replace(source, destination, **kwargs)
+            changed.append(replace_entry(case, case.destination, mutation))
+    
+        monkeypatch.setattr(os, "replace", replace)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:135: Failed
+___ test_changed_published_entry_is_not_reported_saved[preference-same-size] ___
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_published_entry_i2/priv...i2/private/report-intent'), operation=<function publication.<locals>.operation at 0x7f41e0778220>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e06dfad0>
+mutation = 'same-size'
+
+    @pytest.mark.parametrize("mutation", ["replace", "opposite", "same-size"])
+    def test_changed_published_entry_is_not_reported_saved(publication, monkeypatch, mutation):
+        case = publication
+        real_replace = os.replace
+        changed = []
+    
+        def replace(source, destination, **kwargs):
+            real_replace(source, destination, **kwargs)
+            changed.append(replace_entry(case, case.destination, mutation))
+    
+        monkeypatch.setattr(os, "replace", replace)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:135: Failed
+_____ test_changed_published_entry_is_not_reported_saved[journal-replace] ______
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_published_entry_i3/private...c9b97849c2322d03151203","terminal":null},"sha256":"34863a865d4c2134c4e446ae4451910f1af0f06fe0e023fe28a8d53d416da26d"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e07ab5d0>
+mutation = 'replace'
+
+    @pytest.mark.parametrize("mutation", ["replace", "opposite", "same-size"])
+    def test_changed_published_entry_is_not_reported_saved(publication, monkeypatch, mutation):
+        case = publication
+        real_replace = os.replace
+        changed = []
+    
+        def replace(source, destination, **kwargs):
+            real_replace(source, destination, **kwargs)
+            changed.append(replace_entry(case, case.destination, mutation))
+    
+        monkeypatch.setattr(os, "replace", replace)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:135: Failed
+_____ test_changed_published_entry_is_not_reported_saved[journal-opposite] _____
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_published_entry_i4/private...e60d05d1d6ba5849a93ba9","terminal":null},"sha256":"26a4793aac3d5d4d62e1df067d8401da5db92af853bb9f36651bc554cb8f8386"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e07aafd0>
+mutation = 'opposite'
+
+    @pytest.mark.parametrize("mutation", ["replace", "opposite", "same-size"])
+    def test_changed_published_entry_is_not_reported_saved(publication, monkeypatch, mutation):
+        case = publication
+        real_replace = os.replace
+        changed = []
+    
+        def replace(source, destination, **kwargs):
+            real_replace(source, destination, **kwargs)
+            changed.append(replace_entry(case, case.destination, mutation))
+    
+        monkeypatch.setattr(os, "replace", replace)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:135: Failed
+____ test_changed_published_entry_is_not_reported_saved[journal-same-size] _____
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_changed_published_entry_i5/private...a3eb400e6398cb04fda78b","terminal":null},"sha256":"484ba7b7b26665250c8f4be8f33605baffe077f4e5ddc44978c8acd587f65cbd"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e0fe9da0>
+mutation = 'same-size'
+
+    @pytest.mark.parametrize("mutation", ["replace", "opposite", "same-size"])
+    def test_changed_published_entry_is_not_reported_saved(publication, monkeypatch, mutation):
+        case = publication
+        real_replace = os.replace
+        changed = []
+    
+        def replace(source, destination, **kwargs):
+            real_replace(source, destination, **kwargs)
+            changed.append(replace_entry(case, case.destination, mutation))
+    
+        monkeypatch.setattr(os, "replace", replace)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:135: Failed
+________ test_failed_save_preserves_foreign_temporary[preference-write] ________
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_failed_save_preserves_for0/priv...r0/private/report-intent'), operation=<function publication.<locals>.operation at 0x7f41e06ff880>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e0feb150>
+boundary = 'write'
+
+    @pytest.mark.parametrize("boundary", ["write", "fsync"])
+    def test_failed_save_preserves_foreign_temporary(publication, monkeypatch, boundary):
+        case = publication
+        real_write, real_sync, real_open = os.write, os.fsync, os.open
+        opened, changed = [], []
+    
+        def track_open(path, flags, *args, **kwargs):
+            fd = real_open(path, flags, *args, **kwargs)
+            if str(path).startswith(case.prefix):
+                opened.append(fd)
+            return fd
+    
+        def fail(fd, *args):
+            if fd in opened and not changed:
+                path = next(case.directory.glob(case.prefix + "*"))
+                changed.append((path, replace_entry(case, path, "replace")))
+                raise OSError(errno.EIO, "fake publication storage failure")
+            return real_write(fd, *args) if boundary == "write" else real_sync(fd)
+    
+        monkeypatch.setattr(os, "open", track_open)
+        monkeypatch.setattr(os, boundary, fail)
+        with pytest.raises(OSError, match="fake publication storage failure"):
+            case.operation()
+        assert len(changed) == len(opened) == 1
+>       assert_same_entry(*changed[0])
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:168: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:93: in assert_same_entry
+    actual = path.lstat()
+             ^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:437: in lstat
+    return self.stat(follow_symlinks=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-agent/pytest-142/test_failed_save_preserves_for0/private/.report-intent-14dcd8a69802994777cc9ff9')
+
+    def stat(self, *, follow_symlinks=True):
+        """
+        Return the result of the stat() system call on this path, like
+        os.stat() does.
+        """
+>       return os.stat(self, follow_symlinks=follow_symlinks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-agent/pytest-142/test_failed_save_preserves_for0/private/.report-intent-14dcd8a69802994777cc9ff9'
+
+/usr/lib/python3.13/pathlib/_local.py:517: FileNotFoundError
+________ test_failed_save_preserves_foreign_temporary[preference-fsync] ________
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_failed_save_preserves_for1/priv...r1/private/report-intent'), operation=<function publication.<locals>.operation at 0x7f41e0778e00>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e060baf0>
+boundary = 'fsync'
+
+    @pytest.mark.parametrize("boundary", ["write", "fsync"])
+    def test_failed_save_preserves_foreign_temporary(publication, monkeypatch, boundary):
+        case = publication
+        real_write, real_sync, real_open = os.write, os.fsync, os.open
+        opened, changed = [], []
+    
+        def track_open(path, flags, *args, **kwargs):
+            fd = real_open(path, flags, *args, **kwargs)
+            if str(path).startswith(case.prefix):
+                opened.append(fd)
+            return fd
+    
+        def fail(fd, *args):
+            if fd in opened and not changed:
+                path = next(case.directory.glob(case.prefix + "*"))
+                changed.append((path, replace_entry(case, path, "replace")))
+                raise OSError(errno.EIO, "fake publication storage failure")
+            return real_write(fd, *args) if boundary == "write" else real_sync(fd)
+    
+        monkeypatch.setattr(os, "open", track_open)
+        monkeypatch.setattr(os, boundary, fail)
+        with pytest.raises(OSError, match="fake publication storage failure"):
+            case.operation()
+        assert len(changed) == len(opened) == 1
+>       assert_same_entry(*changed[0])
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:168: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:93: in assert_same_entry
+    actual = path.lstat()
+             ^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:437: in lstat
+    return self.stat(follow_symlinks=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-agent/pytest-142/test_failed_save_preserves_for1/private/.report-intent-5885050a48adc7a40a6ee34d')
+
+    def stat(self, *, follow_symlinks=True):
+        """
+        Return the result of the stat() system call on this path, like
+        os.stat() does.
+        """
+>       return os.stat(self, follow_symlinks=follow_symlinks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-agent/pytest-142/test_failed_save_preserves_for1/private/.report-intent-5885050a48adc7a40a6ee34d'
+
+/usr/lib/python3.13/pathlib/_local.py:517: FileNotFoundError
+_________ test_failed_save_preserves_foreign_temporary[journal-write] __________
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_failed_save_preserves_for2/private...f1ac216416fb3a83a9ad04","terminal":null},"sha256":"235b8b63273915114ec719455581542067b68cb7778291ec09b1f034d2737040"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e07bf850>
+boundary = 'write'
+
+    @pytest.mark.parametrize("boundary", ["write", "fsync"])
+    def test_failed_save_preserves_foreign_temporary(publication, monkeypatch, boundary):
+        case = publication
+        real_write, real_sync, real_open = os.write, os.fsync, os.open
+        opened, changed = [], []
+    
+        def track_open(path, flags, *args, **kwargs):
+            fd = real_open(path, flags, *args, **kwargs)
+            if str(path).startswith(case.prefix):
+                opened.append(fd)
+            return fd
+    
+        def fail(fd, *args):
+            if fd in opened and not changed:
+                path = next(case.directory.glob(case.prefix + "*"))
+                changed.append((path, replace_entry(case, path, "replace")))
+                raise OSError(errno.EIO, "fake publication storage failure")
+            return real_write(fd, *args) if boundary == "write" else real_sync(fd)
+    
+        monkeypatch.setattr(os, "open", track_open)
+        monkeypatch.setattr(os, boundary, fail)
+        with pytest.raises(OSError, match="fake publication storage failure"):
+            case.operation()
+        assert len(changed) == len(opened) == 1
+>       assert_same_entry(*changed[0])
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:168: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:93: in assert_same_entry
+    actual = path.lstat()
+             ^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:437: in lstat
+    return self.stat(follow_symlinks=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-agent/pytest-142/test_failed_save_preserves_for2/private/.recovery-e13930dbab076959d6fbb9f1')
+
+    def stat(self, *, follow_symlinks=True):
+        """
+        Return the result of the stat() system call on this path, like
+        os.stat() does.
+        """
+>       return os.stat(self, follow_symlinks=follow_symlinks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-agent/pytest-142/test_failed_save_preserves_for2/private/.recovery-e13930dbab076959d6fbb9f1'
+
+/usr/lib/python3.13/pathlib/_local.py:517: FileNotFoundError
+_________ test_failed_save_preserves_foreign_temporary[journal-fsync] __________
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-142/test_failed_save_preserves_for3/private...a9eb6b4c51b6e49205f351","terminal":null},"sha256":"a3b3013f5ed6f0490ac74619d38aaadd2af870213e24aac35c64434ada8214b1"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e0fe9940>
+boundary = 'fsync'
+
+    @pytest.mark.parametrize("boundary", ["write", "fsync"])
+    def test_failed_save_preserves_foreign_temporary(publication, monkeypatch, boundary):
+        case = publication
+        real_write, real_sync, real_open = os.write, os.fsync, os.open
+        opened, changed = [], []
+    
+        def track_open(path, flags, *args, **kwargs):
+            fd = real_open(path, flags, *args, **kwargs)
+            if str(path).startswith(case.prefix):
+                opened.append(fd)
+            return fd
+    
+        def fail(fd, *args):
+            if fd in opened and not changed:
+                path = next(case.directory.glob(case.prefix + "*"))
+                changed.append((path, replace_entry(case, path, "replace")))
+                raise OSError(errno.EIO, "fake publication storage failure")
+            return real_write(fd, *args) if boundary == "write" else real_sync(fd)
+    
+        monkeypatch.setattr(os, "open", track_open)
+        monkeypatch.setattr(os, boundary, fail)
+        with pytest.raises(OSError, match="fake publication storage failure"):
+            case.operation()
+        assert len(changed) == len(opened) == 1
+>       assert_same_entry(*changed[0])
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:168: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:93: in assert_same_entry
+    actual = path.lstat()
+             ^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:437: in lstat
+    return self.stat(follow_symlinks=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-agent/pytest-142/test_failed_save_preserves_for3/private/.recovery-ca2cd68bab16e58baedc7e1b')
+
+    def stat(self, *, follow_symlinks=True):
+        """
+        Return the result of the stat() system call on this path, like
+        os.stat() does.
+        """
+>       return os.stat(self, follow_symlinks=follow_symlinks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-agent/pytest-142/test_failed_save_preserves_for3/private/.recovery-ca2cd68bab16e58baedc7e1b'
+
+/usr/lib/python3.13/pathlib/_local.py:517: FileNotFoundError
+___ test_real_wizard_restart_discloses_failed_intent_save[swapped-temporary] ___
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-142/test_real_wizard_restart_discl1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f41e07bf770>
+swap = True
+
+    @pytest.mark.parametrize("swap", [False, True], ids=["normal", "swapped-temporary"])
+    def test_real_wizard_restart_discloses_failed_intent_save(tmp_path, monkeypatch, swap):
+        monkeypatch.setenv("BEAMO_WIPE_DRY_RUN", "1")
+        monkeypatch.delenv("BEAMO_WIPE_LIVE", raising=False)
+        forbidden_calls = []
+    
+        def forbidden(*_args, **_kwargs):
+            forbidden_calls.append(True)
+            raise AssertionError("Native device/process/power callback forbidden")
+    
+        for boundary in (
+            "subprocess.run", "subprocess.Popen", "beamo_wipe.discover.run_lsblk",
+            "beamo_wipe.discover.read_cmdline", "beamo_wipe.discover.read_mount_sources",
+            "beamo_wipe.nwipe_runner.NwipeRunner.start", "beamo_wipe.app._shutdown",
+        ):
+            monkeypatch.setattr(boundary, forbidden)
+        directory = tmp_path / "private"
+        directory.mkdir(mode=0o700)
+        store = ReportIntentStore(directory)
+        store.save(False)
+        wizard = make_demo_wizard()
+        wizard.enable_report_intent_recovery(store)
+        wizard.screen = Screen.REPORT_HELP
+        real_sync = os.fsync
+        swapped = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in directory.glob(".report-intent-*"):
+                if swap and not swapped and os.fstat(fd).st_ino == path.stat().st_ino:
+                    swapped.append(path.name)
+                    path.rename(directory / "retired-owned-temporary")
+                    path.write_bytes(b"not-wanted\n")
+                    path.chmod(0o600)
+    
+        with monkeypatch.context() as patch:
+            patch.setattr(os, "fsync", sync)
+            wizard.set_report_wanted(True)
+        restarted = make_demo_wizard()
+        restarted.enable_report_intent_recovery(ReportIntentStore(directory))
+        restarted.shutdown()
+        assert not forbidden_calls
+>       assert wizard.report_recovery_warning or restarted.report_wanted
+E       AssertionError: assert ('' or False)
+E        +  where '' = <beamo_wipe.wizard.Wizard object at 0x7f41e06e2e90>.report_recovery_warning
+E        +  and   False = <beamo_wipe.wizard.Wizard object at 0x7f41e06e2710>.report_wanted
+
+../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py:256: AssertionError
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[preference-replace]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[preference-symlink]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[preference-hardlink]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[preference-fifo]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[preference-opposite]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[preference-same-size]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[journal-replace]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[journal-symlink]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[journal-hardlink]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[journal-fifo]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[journal-opposite]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[journal-same-size]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_published_entry_is_not_reported_saved[preference-replace]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_published_entry_is_not_reported_saved[preference-opposite]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_published_entry_is_not_reported_saved[preference-same-size]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_published_entry_is_not_reported_saved[journal-replace]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_published_entry_is_not_reported_saved[journal-opposite]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_published_entry_is_not_reported_saved[journal-same-size]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_failed_save_preserves_foreign_temporary[preference-write]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_failed_save_preserves_foreign_temporary[preference-fsync]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_failed_save_preserves_foreign_temporary[journal-write]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_failed_save_preserves_foreign_temporary[journal-fsync]
+FAILED ../beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py::test_real_wizard_restart_discloses_failed_intent_save[swapped-temporary]
+23 failed, 17 passed in 0.37s

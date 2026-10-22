@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import sys; value=sys.stdin.read(); print(repr(value)); assert value == "beamo-stdin-probe\n"
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+''

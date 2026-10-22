@@ -1,0 +1,15 @@
+{
+  "name": "final-tests",
+  "command": [
+    "/workspace/beamo-tools/beamo-dev",
+    "env",
+    "BEAMO_GATE_CHILD=1",
+    "BEAMO_GATE_JUNIT=/workspace/beamo-tools/audit-pass6-20261021/root/final-tests.xml",
+    "bash",
+    "scripts/ci-hosted.sh",
+    "tests"
+  ],
+  "started_utc": "2026-10-21T02:24:14.568407+00:00",
+  "elapsed_seconds": 79.64,
+  "exit_code": 143
+}

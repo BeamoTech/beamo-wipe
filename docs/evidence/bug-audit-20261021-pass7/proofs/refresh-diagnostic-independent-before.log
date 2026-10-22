@@ -1,0 +1,116 @@
+..FF                                                                     [100%]
+=================================== FAILURES ===================================
+_ test_refresh_failure_resolves_before_optional_diagnostic_interruption[KeyboardInterrupt] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f37d3599250>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-105/test_refresh_failure_resolves_2')
+request = <FixtureRequest for <Function test_refresh_failure_resolves_before_optional_diagnostic_interruption[KeyboardInterrupt]>>
+diagnostic_error = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize('diagnostic_error',[None,OSError,KeyboardInterrupt,SystemExit])
+    def test_refresh_failure_resolves_before_optional_diagnostic_interruption(monkeypatch,tmp_path,request,diagnostic_error):
+        monkeypatch.setenv('BEAMO_WIPE_DRY_RUN','1')
+        monkeypatch.delenv('BEAMO_WIPE_LIVE',raising=False)
+        monkeypatch.setattr('beamo_wipe.safety.default_log_dir',lambda:tmp_path)
+        effects=[]
+        def forbidden(*_args,**_kwargs):
+            effects.append(True)
+            raise AssertionError('Native action forbidden')
+        for boundary in ('subprocess.run','subprocess.Popen','beamo_wipe.discover.run_lsblk',
+                         'beamo_wipe.discover.read_cmdline','beamo_wipe.discover.read_mount_sources',
+                         'beamo_wipe.nwipe_runner.NwipeRunner.start','beamo_wipe.app._shutdown',
+                         'beamo_wipe.sound._run','beamo_wipe.sound._popen'):
+            monkeypatch.setattr(boundary,forbidden)
+        def failed_scan():
+            raise OSError('Fake inventory scan failed')
+        wizard=Wizard(discovery_for_scenario('happy'),DryRunRunner(),rediscover=failed_scan,dry_run=True)
+        wizard.skip_intro()
+        assert wizard.open_refresh_confirm()
+        diagnostics=[]
+        def log_diag(*args):
+            diagnostics.append(args[:2])
+            if diagnostic_error:
+                raise diagnostic_error('Fake optional logging interruption')
+        monkeypatch.setattr('beamo_wipe.diagnostics.log_diag',log_diag)
+        escaped=None
+        try:
+            wizard.confirm_refresh()
+        except BaseException as error:
+            escaped=type(error).__name__
+        before=wizard.screen
+        wizard.back()
+        wizard.shutdown()
+        trace={'error':diagnostic_error.__name__ if diagnostic_error else None,'escaped':escaped,
+               'screen_after_refresh':before.name,'screen_after_back_and_shutdown':wizard.screen.name,
+               'can_refresh':wizard.can_refresh,'wants_shutdown':wizard.wants_shutdown,
+               'diagnostic_calls':diagnostics,'native_calls':effects}
+        request.node.user_properties.append(('trace',json.dumps(trace)))
+        print(json.dumps(trace))
+        assert not effects
+>       assert before is Screen.PICK_BLOCKED,trace
+E       AssertionError: {'can_refresh': False, 'diagnostic_calls': [('discover', 'refresh_failed')], 'error': 'KeyboardInterrupt', 'escaped': 'KeyboardInterrupt', ...}
+E       assert <Screen.REFRESHING: 'refreshing'> is <Screen.PICK_BLOCKED: 'pick_blocked'>
+E        +  where <Screen.PICK_BLOCKED: 'pick_blocked'> = Screen.PICK_BLOCKED
+
+../beamo-tools/audit-pass7-20261021/ui/test_refresh_diagnostic_interruption_probe.py:52: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{"error": "KeyboardInterrupt", "escaped": "KeyboardInterrupt", "screen_after_refresh": "REFRESHING", "screen_after_back_and_shutdown": "REFRESHING", "can_refresh": false, "wants_shutdown": false, "diagnostic_calls": [["discover", "refresh_failed"]], "native_calls": []}
+_ test_refresh_failure_resolves_before_optional_diagnostic_interruption[SystemExit] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f37d34eb020>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-105/test_refresh_failure_resolves_3')
+request = <FixtureRequest for <Function test_refresh_failure_resolves_before_optional_diagnostic_interruption[SystemExit]>>
+diagnostic_error = <class 'SystemExit'>
+
+    @pytest.mark.parametrize('diagnostic_error',[None,OSError,KeyboardInterrupt,SystemExit])
+    def test_refresh_failure_resolves_before_optional_diagnostic_interruption(monkeypatch,tmp_path,request,diagnostic_error):
+        monkeypatch.setenv('BEAMO_WIPE_DRY_RUN','1')
+        monkeypatch.delenv('BEAMO_WIPE_LIVE',raising=False)
+        monkeypatch.setattr('beamo_wipe.safety.default_log_dir',lambda:tmp_path)
+        effects=[]
+        def forbidden(*_args,**_kwargs):
+            effects.append(True)
+            raise AssertionError('Native action forbidden')
+        for boundary in ('subprocess.run','subprocess.Popen','beamo_wipe.discover.run_lsblk',
+                         'beamo_wipe.discover.read_cmdline','beamo_wipe.discover.read_mount_sources',
+                         'beamo_wipe.nwipe_runner.NwipeRunner.start','beamo_wipe.app._shutdown',
+                         'beamo_wipe.sound._run','beamo_wipe.sound._popen'):
+            monkeypatch.setattr(boundary,forbidden)
+        def failed_scan():
+            raise OSError('Fake inventory scan failed')
+        wizard=Wizard(discovery_for_scenario('happy'),DryRunRunner(),rediscover=failed_scan,dry_run=True)
+        wizard.skip_intro()
+        assert wizard.open_refresh_confirm()
+        diagnostics=[]
+        def log_diag(*args):
+            diagnostics.append(args[:2])
+            if diagnostic_error:
+                raise diagnostic_error('Fake optional logging interruption')
+        monkeypatch.setattr('beamo_wipe.diagnostics.log_diag',log_diag)
+        escaped=None
+        try:
+            wizard.confirm_refresh()
+        except BaseException as error:
+            escaped=type(error).__name__
+        before=wizard.screen
+        wizard.back()
+        wizard.shutdown()
+        trace={'error':diagnostic_error.__name__ if diagnostic_error else None,'escaped':escaped,
+               'screen_after_refresh':before.name,'screen_after_back_and_shutdown':wizard.screen.name,
+               'can_refresh':wizard.can_refresh,'wants_shutdown':wizard.wants_shutdown,
+               'diagnostic_calls':diagnostics,'native_calls':effects}
+        request.node.user_properties.append(('trace',json.dumps(trace)))
+        print(json.dumps(trace))
+        assert not effects
+>       assert before is Screen.PICK_BLOCKED,trace
+E       AssertionError: {'can_refresh': False, 'diagnostic_calls': [('discover', 'refresh_failed')], 'error': 'SystemExit', 'escaped': 'SystemExit', ...}
+E       assert <Screen.REFRESHING: 'refreshing'> is <Screen.PICK_BLOCKED: 'pick_blocked'>
+E        +  where <Screen.PICK_BLOCKED: 'pick_blocked'> = Screen.PICK_BLOCKED
+
+../beamo-tools/audit-pass7-20261021/ui/test_refresh_diagnostic_interruption_probe.py:52: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{"error": "SystemExit", "escaped": "SystemExit", "screen_after_refresh": "REFRESHING", "screen_after_back_and_shutdown": "REFRESHING", "can_refresh": false, "wants_shutdown": false, "diagnostic_calls": [["discover", "refresh_failed"]], "native_calls": []}
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass7-20261021/ui/test_refresh_diagnostic_interruption_probe.py::test_refresh_failure_resolves_before_optional_diagnostic_interruption[KeyboardInterrupt]
+FAILED ../beamo-tools/audit-pass7-20261021/ui/test_refresh_diagnostic_interruption_probe.py::test_refresh_failure_resolves_before_optional_diagnostic_interruption[SystemExit]
+2 failed, 2 passed in 0.15s

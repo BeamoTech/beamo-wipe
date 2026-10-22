@@ -1,0 +1,18 @@
+{
+  "states": 216,
+  "initial_positive_completions": 24,
+  "initial_negative_terminal_results": 78,
+  "cancelled_results": 66,
+  "uncertain_ownership_preserved": 48,
+  "recovery_terminal_classifications": 48,
+  "duplicate_terminal_calls": 216,
+  "native_callbacks": 0,
+  "mismatches": [],
+  "source_sha256": {
+    "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62",
+    "src/beamo_wipe/methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13",
+    "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+    "src/beamo_wipe/sleep_inhibit.py": "e04816215c0347980d03effed9afd75a1716a44a9471683dc7c83eb4a58eac55"
+  },
+  "scope": "Supporting scripted-fake process state-space through actual cancel/poll APIs. No actual subprocess, signal, engine, device or physical qualification. Not extra canonical tests."
+}

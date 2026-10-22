@@ -335,10 +335,17 @@ def _popen(tool: str, args: List[str]):
     """Allowlisted fire-and-forget spawn. Returns the Popen, or None."""
     if tool not in _ALLOWED_BINARIES:
         return None
+    ticket = getattr(_audio_context, "ticket", None)
+    if ticket is not None and ticket.cancelled.is_set():
+        return None
     from beamo_wipe.safety import resolve_system_binary, session_exec_env
 
     resolved = resolve_system_binary(tool)
     if not resolved:
+        return None
+    # Resolution can overlap cancellation by the UI. Do not start a new
+    # player after this request has already been withdrawn.
+    if ticket is not None and ticket.cancelled.is_set():
         return None
     try:
         proc = subprocess.Popen(
@@ -352,9 +359,6 @@ def _popen(tool: str, args: List[str]):
         )
     except (OSError, subprocess.SubprocessError):
         return None
-    launch_decided = threading.Event()
-    launch_allowed = threading.Event()
-
     def stop_player() -> None:
         try:
             proc.terminate()
@@ -370,6 +374,16 @@ def _popen(tool: str, args: List[str]):
                 pass
         except (OSError, AttributeError):
             pass
+
+    # Popen can spend long enough constructing the child for the UI to
+    # withdraw this request. The process is now ours, so reject that stale
+    # admission by terminating and reaping it before creating a reaper.
+    if ticket is not None and ticket.cancelled.is_set():
+        stop_player()
+        return None
+
+    launch_decided = threading.Event()
+    launch_allowed = threading.Event()
 
     def reap() -> None:
         launch_decided.wait()
@@ -402,6 +416,10 @@ def _ready(kind: str):
         return False, C.SOUND_ACTION_FAILED
     if not _on_live():
         return False, C.SOUND_OUTCOME_OFF_LIVE
+    # PulseAudio exits after an idle period on the live image. Start it before
+    # probing, but let the actual pactl observation decide availability: a
+    # daemon start result alone cannot prove that an output exists or does not.
+    ensure_audio()
     state = list_outputs()
     if not state.available:
         return False, C.SOUND_NO_OUTPUT_PLAY

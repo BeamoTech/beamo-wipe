@@ -1,0 +1,68 @@
+{
+  "reviewed_at_utc": "2026-10-21T04:54:21.037161+00:00",
+  "baseline": "e28487d7595ee45a53d503fa1a76d8c22979f012",
+  "new_proved_defects": 1,
+  "repo_edits": [
+    "tests/test_app_live_ownership_pass9_20261021.py"
+  ],
+  "focused": {
+    "modules": 69,
+    "unique_cases": 2326,
+    "passed": 2320,
+    "skipped_unverified": 6,
+    "failures": 0,
+    "errors": 0,
+    "warnings": 0,
+    "all_skips_exact_prior_id_reason_matches": true,
+    "exit_code": 0
+  },
+  "model": {
+    "seed_base": 9082026,
+    "counts": {
+      "contexts": 512,
+      "discovery_calls": 5120,
+      "order_representation_checks": 4096,
+      "protected_target_observations": 14504,
+      "positive_selectable_observations": 5976,
+      "ambiguous_boot_refusals": 512,
+      "duplicate_identity_refusals": 512
+    },
+    "native_callbacks": 0,
+    "failures": [],
+    "source_sha256": {
+      "src/beamo_wipe/discover.py": "94d7496625b9906c2ea6f19650b8e8dec4ac87b627d25a66ca219c45a67345b4",
+      "src/beamo_wipe/safety.py": "5cc1eeee4b220bc3f133b5933a1cd6aec382d14247156d3b4977b6b4af2e14f6",
+      "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9"
+    },
+    "scope": "Fresh fake protected graph/order/tree-flat/contradiction checks; no native acceptance"
+  },
+  "reviewed_source_sha256": {
+    "src/beamo_wipe/discover.py": "94d7496625b9906c2ea6f19650b8e8dec4ac87b627d25a66ca219c45a67345b4",
+    "src/beamo_wipe/safety.py": "5cc1eeee4b220bc3f133b5933a1cd6aec382d14247156d3b4977b6b4af2e14f6",
+    "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+    "src/beamo_wipe/inventory.py": "bd594d0f6279181bb01bfa96c07ed8041d3da09fbee9ae9baf16dba60caa6acd",
+    "src/beamo_wipe/identity.py": "4ccada033bab0c3811450cb9ab4e85c74936af56e8cd94fdf84f8d5566942050"
+  },
+  "reviewed_source_unchanged_from_baseline": true,
+  "ownership_released": true,
+  "native_acceptance_claimed": false,
+  "finding": {
+    "origin": "Root raised concern; discovery independently reproduced actual proc-I/O trigger before root repair",
+    "root_cause": "Initial unreadable proc data became a desktop classification, later successful classifier constructed real wizard without SessionStore",
+    "baseline_exact_new_cases": 64,
+    "baseline_failures": 48,
+    "baseline_positive_controls_passed": 16,
+    "after_new_plus_original_passed": 68,
+    "after_errors": 0,
+    "after_failures": 0,
+    "after_skips": 0,
+    "product_edit_owner": "root",
+    "product_diff_review": "Early live/store refusal before signals/readers/discovery; final real-wizard/store refusal before report-intent/UI. Existing helper I/O contracts preserved."
+  },
+  "final_owned_source_sha256": {
+    "tests/test_app_live_ownership_pass9_20261021.py": "f3af730fae852b0d3b170387ce0ccaaa45747bb1269598488ef7bab419793e55"
+  },
+  "reviewed_product_sha256": {
+    "src/beamo_wipe/app.py": "03f394a55c33e835686ba50818b623443fca2321f06f7e418dbd91ad8b9718bc"
+  }
+}

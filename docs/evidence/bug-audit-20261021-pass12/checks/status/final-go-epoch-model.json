@@ -1,0 +1,17 @@
+{
+  "name": "final-go-epoch-model",
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-overlay",
+    "/workspace/beamo-tools/audit-pass12-20261021/root/model-replays/request-epoch-overlay.json",
+    "-run=^TestPass12RequestEpochModel$",
+    "-json",
+    "./..."
+  ],
+  "started_utc": "2026-10-21T06:53:37.656039+00:00",
+  "elapsed_seconds": 2.29,
+  "exit_code": 0
+}

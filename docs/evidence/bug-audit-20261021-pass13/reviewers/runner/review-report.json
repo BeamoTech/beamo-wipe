@@ -1,0 +1,101 @@
+{
+  "reviewer": "runner_pass13",
+  "finished_utc": "2026-10-21T07:24:46.566076+00:00",
+  "baseline_commit": "7fcd706b44c0d63cf5f2959bcd235968e8300274",
+  "new_proved_candidates": 1,
+  "independent_root_validation": {
+    "confirmed": true,
+    "proof": "/workspace/beamo-tools/audit-pass13-20261021/root/test_remaining_probes.py",
+    "sha256": "4a86376bba8fab25f37835a4b8a774e054e4221352a5a37a2ba630ff88aa586a",
+    "failures": 2,
+    "positive_controls": 1
+  },
+  "repository_edits": [
+    "src/beamo_wipe/sound.py",
+    "tests/test_sound_cancelled_spawn_pass13_20261021.py"
+  ],
+  "ownership_released": true,
+  "source_sha256": {
+    "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62",
+    "src/beamo_wipe/progress.py": "fef87a29ceabb1fb97b8abc521d55cea1ceb9428989104973783da6eb52c4fa6",
+    "src/beamo_wipe/engine_checks.py": "7a9d4682ca7d90a0eeb6cff9ae24a520554552c701b2728ab8f9c21895f5e27e",
+    "src/beamo_wipe/sleep_inhibit.py": "e04816215c0347980d03effed9afd75a1716a44a9471683dc7c83eb4a58eac55",
+    "src/beamo_wipe/audio_jobs.py": "07e34b995a4df7424e6e1c5cd1a345856cd6b9ff622606fa74a79af2688597e0",
+    "src/beamo_wipe/sound.py": "9d94ba6920d8122017fbdbbe1b7a5ff3d04bf672e4d5810689ddb0e2e2bcc7a6"
+  },
+  "finding": {
+    "summary": "Cancelled outcome audio may spawn a new paplay after the final daemon helper observes cancellation.",
+    "location": "src/beamo_wipe/sound.py:_popen and play_outcome",
+    "trigger": "Current audio worker ticket is cancelled while ensure_audio runs its _run helper; helper returns None, ensure_audio False is ignored, and _popen has no ticket cancellation guard.",
+    "impact": "A stale/cancelled outcome earcon starts playing after the cancellation was already observed. Erase state and terminal verdict remain unaffected.",
+    "minimal_baseline_probe": {
+      "file": "test_cancelled_outcome_probe.py",
+      "exit_code": 1,
+      "failures": 1,
+      "positive_controls": 1
+    },
+    "pipeline_baseline_probe": {
+      "file": "test_cancelled_outcome_pipeline_probe.py",
+      "exit_code": 1,
+      "failures": 2,
+      "positive_controls": 2
+    },
+    "evidence_before_edit": true,
+    "repair": "_popen refuses current cancelled worker tickets before resolving the binary and rechecks after resolution before spawn. No-ticket and active-ticket playback/reaper behavior retained."
+  },
+  "focused": {
+    "exit_code": 0,
+    "elapsed_seconds": 3.116,
+    "cases": 470,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "unchanged_tests": true,
+    "strict_warnings": true,
+    "child_umask": "022",
+    "private_display_required": false
+  },
+  "model": {
+    "states": 128,
+    "accepted_actions": 56,
+    "cancelled_tickets": 328,
+    "closed_refusals": 64,
+    "native_callbacks": 0,
+    "mismatches": [],
+    "scope": "supporting fake-only finite model; counts overlap canonical tests"
+  },
+  "source_review": [
+    "Runner process/request binding and status-claim generation guards retain ownership across cancellation and late polls.",
+    "Completion parsing continues to require target/method evidence and refuses incomplete positive records.",
+    "Sleep inhibitor optional diagnostics preserve engine retirement and uncertain helper handles.",
+    "Audio worker two-lane queue supersession/close behavior matches a new independent finite reference model."
+  ],
+  "limits": [
+    "No native engine, device, inventory, sysfs, mount, firmware, power, guest, network, remote, Docker or build action.",
+    "All new probes/model actions use fake callbacks; focused modules use owned regular files and fake process/thread fixtures.",
+    "No UI display required. Native opt-in flags absent. Strict warning pytest child umask022.",
+    "Model and focused counts are supporting evidence and overlap canonical coverage; do not add them to unique test totals.",
+    "Root owns independent bug confirmation, edit assignment, complete gates, documentation/backlog, builds and commit."
+  ],
+  "new_verified_defects": 1,
+  "expanded_regressions": {
+    "baseline": {
+      "cases": 20,
+      "failures": 8,
+      "errors": 0,
+      "skips": 0
+    },
+    "after_with_existing_audio_reaper": {
+      "cases": 56,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0
+    },
+    "test_sha256": "43a05fe6af6b311175e3e41da83ee7ae7defcb60649885773e48f00b25ace80a",
+    "baseline_sound_sha256": "891ba8bb93d291a5fda74c7a9967787e62608a1e60e66f8711c9c2647e7099af",
+    "final_sound_sha256": "9d94ba6920d8122017fbdbbe1b7a5ff3d04bf672e4d5810689ddb0e2e2bcc7a6",
+    "unchanged_final_tests_since_before": true
+  },
+  "focused_modules": 22,
+  "old_focused_tests_byte_identical_to_head": true
+}

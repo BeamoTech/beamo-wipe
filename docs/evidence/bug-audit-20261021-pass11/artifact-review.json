@@ -1,0 +1,68 @@
+{
+  "build_receipt": {
+    "files": {
+      "Start Beamo Wipe Linux": "19d7e5dc673b0881760ce906d7a19a3c48291893af04adcdfbe64f68d6e0fbf5",
+      "Start Beamo Wipe.exe": "924d1ecd7ce4bff91f9e679f0554175cac1a4b49d6e9551e387832374bd59b08"
+    },
+    "go": "go1.26.8",
+    "source_commit": "b46e5642d4c849d503b41d8bf562cfb1f9fad68b",
+    "source_dirty": true,
+    "source_sha256": "c33bb1a02325823e5c56a63e8ae467d467e1b9697a8b2f891933b9591b63a226",
+    "version": "0.2.13"
+  },
+  "native_platform_or_image_acceptance": false,
+  "independent_bundle_verifier": "PASS: current HEAD/dirty/version/source digest and launcher hashes",
+  "outputs": {
+    "Start Beamo Wipe Linux": {
+      "sha256": "19d7e5dc673b0881760ce906d7a19a3c48291893af04adcdfbe64f68d6e0fbf5",
+      "bytes": 6574242,
+      "format": "ELF64 little-endian x86_64",
+      "executed": false,
+      "mode": "0o755"
+    },
+    "Start Beamo Wipe.exe": {
+      "sha256": "924d1ecd7ce4bff91f9e679f0554175cac1a4b49d6e9551e387832374bd59b08",
+      "bytes": 6766080,
+      "format": "PE32+ x86_64",
+      "executed": false,
+      "mode": "0o755"
+    }
+  },
+  "source_manifest_sha256": "c5bd0ad6cf663f5231c88a3bddd9df1a9405f529109a92c62fa23ccef1a83992",
+  "windows_test_cross_compile": {
+    "sha256": "d99e597d671ac427a00b00e14b7d0a689736496baccdc28adfd284a2396ba877",
+    "bytes": 9043456,
+    "format": "PE32+ x86_64",
+    "executed": false,
+    "mode": "0o755"
+  },
+  "critical_executable_modes": {
+    "preview": "0o700",
+    "scripts/test-all.sh": "0o700",
+    "scripts/build-iso.sh": "0o700",
+    "scripts/ci-hosted.sh": "0o700",
+    "packaging/live/config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk": "0o700",
+    "packaging/live/config/includes.chroot/usr/local/bin/beamo-wipe": "0o700",
+    "packaging/live/config/hooks/normal/0500-build-nwipe.hook.chroot": "0o700"
+  },
+  "preview_normal_close": {
+    "command": [
+      "./preview"
+    ],
+    "fake_disks_only": true,
+    "display": ":1151",
+    "dpi": 72,
+    "window_title": "Beamo Wipe \u2014 PREVIEW (nothing is erased)",
+    "welcome_content_observed_before_capture": true,
+    "normal_close_acceptance": true,
+    "returncode": 0,
+    "teardown": "Invoked actual registered WM_DELETE_WINDOW callback"
+  },
+  "preview_image": {
+    "sha256": "922c213939cba144951d70292b63b29baea8fe7d43e4a5f4e7f1e1adc378e5a8",
+    "bytes": 34807,
+    "visually_inspected": true,
+    "included_in_public_artifacts": false,
+    "local_path": "/workspace/beamo-tools/audit-pass11-20261021/root/actual-preview-72dpi.png"
+  }
+}

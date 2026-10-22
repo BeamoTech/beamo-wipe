@@ -1,0 +1,9 @@
+The first local repair candidate redeclared err: new cmdline b,err declaration
+conflicted with the old later var err error. Go compilation failed before tests.
+Diagnostic: platform_linux.go:290:6: err redeclared in this block; other declaration
+at platform_linux.go:275:5. Removed the obsolete later declaration; no existing
+assertion changed. Corrected regression and full focused/race/vet gates pass.
+This is a recorded diagnostic summary, not an original stdout capture: the initial
+log was overwritten by the corrected run before its retention copy was made.
+An evidence-summary shell snippet also initially had a Python else0 syntax typo;
+no command executed before parse failure; corrected helper completed normally.

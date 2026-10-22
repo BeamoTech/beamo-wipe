@@ -79,8 +79,9 @@ def test_publisher_rejects_qemu_evidence_changed_after_gate(tmp_path, monkeypatc
             summary.write_bytes(b"everyday=fail\n")
         return signature, _sha(signature.read_bytes())
 
-    def upload_file(path, object_name):
+    def upload_file(path, object_name, _snapshot):
         uploads[object_name] = _sha(path.read_bytes())
+        return uploads[object_name]
 
     def upload_stream(object_name, stream, _size):
         uploads[object_name] = _sha(stream.read())
@@ -93,7 +94,11 @@ def test_publisher_rejects_qemu_evidence_changed_after_gate(tmp_path, monkeypatc
     monkeypatch.setattr(PUBLISHER, "_verify_usb_image", lambda *_args: (_sha(image.read_bytes()), "b" * 64))
     monkeypatch.setattr(PUBLISHER, "_upload_file", upload_file)
     monkeypatch.setattr(PUBLISHER, "_upload_stream", upload_stream)
-    monkeypatch.setattr(PUBLISHER, "_remote_sha256", lambda object_name: uploads[object_name])
+    monkeypatch.setattr(
+        PUBLISHER,
+        "_remote_sha256",
+        lambda object_name, **_kwargs: uploads[object_name],
+    )
     monkeypatch.setattr(release_manifest, "verify_manifest", lambda _path: manifest_bytes)
     monkeypatch.setattr(ci_evidence, "load_receipts", lambda _path: [receipt])
     monkeypatch.setenv("PUBLISH_RELEASE", "true")

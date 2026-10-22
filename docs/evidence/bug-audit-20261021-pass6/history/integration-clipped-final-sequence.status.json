@@ -1,0 +1,10 @@
+{
+  "name": "final-sequence",
+  "command": [
+    "bash",
+    "/workspace/beamo-tools/audit-pass6-20261021/root/run_final_sequence.sh"
+  ],
+  "started_utc": "2026-10-21T02:27:51.549512+00:00",
+  "elapsed_seconds": 946.56,
+  "exit_code": 143
+}

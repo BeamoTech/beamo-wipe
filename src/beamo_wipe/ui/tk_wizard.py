@@ -1345,6 +1345,10 @@ class TkWizard:
             self.w = wizard
             self.root = _new_owned_root(self._native_owner)
             self.root._tk_wizard = self  # type: ignore[attr-defined]
+            # Tk otherwise prints callback exceptions and keeps its event loop
+            # open, even when the failed callback removed Stop or its timer.
+            # This hook belongs only to this owned root/interpreter.
+            self.root.report_callback_exception = self._runtime_failure
             # Set the geometry scale; fonts below use explicit pixel sizes. The layout geometry below is fixed pixels (content
             # column, minimum window, countdown ring), so point-sized fonts must
             # not float with the X server's reported DPI — on a 100+ DPI panel
@@ -1968,26 +1972,33 @@ class TkWizard:
             if power_label is not None:
                 power_label.configure(text=self.w.power_text)
             self._after_id = self.root.after(100, self._tick)
-        except Exception as exc:
-            # Tk otherwise swallows callback exceptions and leaves the timer
-            # unscheduled, so a running erase would lose status monitoring.
-            self._after_id = None
-            self._fatal_ui = True
+        except BaseException as exc:
+            self._runtime_failure(type(exc), exc, exc.__traceback__)
+
+    def _runtime_failure(self, _kind, error, _traceback) -> None:
+        """Settle an owned erase before retiring any failed Tk callback."""
+        if getattr(self, "_ui_dead", False) or getattr(self, "_handling_runtime_failure", False):
+            return
+        self._handling_runtime_failure = True
+        self._after_id = None
+        self._fatal_ui = True
+        try:
             try:
                 from beamo_wipe.diagnostics import log_diag
 
-                log_diag("ui", "tk_runtime_failed", type(exc).__name__)
-            except Exception:
+                log_diag("ui", "tk_runtime_failed", type(error).__name__)
+            except BaseException:
                 pass
             try:
                 self.w.settle_failed_interface()
-            except Exception as cancel_exc:
+            except BaseException as cancel_exc:
                 try:
                     from beamo_wipe.diagnostics import log_diag
 
                     log_diag("ui", "tk_failure_cancel_failed", type(cancel_exc).__name__)
-                except Exception:
+                except BaseException:
                     pass
+        finally:
             self._teardown()
 
     def _draw(self) -> None:

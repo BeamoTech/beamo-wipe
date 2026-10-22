@@ -1,0 +1,20 @@
+{
+  "seed_base": 9082026,
+  "counts": {
+    "contexts": 512,
+    "discovery_calls": 5120,
+    "order_representation_checks": 4096,
+    "protected_target_observations": 14504,
+    "positive_selectable_observations": 5976,
+    "ambiguous_boot_refusals": 512,
+    "duplicate_identity_refusals": 512
+  },
+  "native_callbacks": 0,
+  "failures": [],
+  "source_sha256": {
+    "src/beamo_wipe/discover.py": "94d7496625b9906c2ea6f19650b8e8dec4ac87b627d25a66ca219c45a67345b4",
+    "src/beamo_wipe/safety.py": "5cc1eeee4b220bc3f133b5933a1cd6aec382d14247156d3b4977b6b4af2e14f6",
+    "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9"
+  },
+  "scope": "Fresh fake protected graph/order/tree-flat/contradiction checks; no native acceptance"
+}

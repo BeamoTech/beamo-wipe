@@ -1,0 +1,13 @@
+{
+  "started_utc": "2026-10-21T03:11:57.149558+00:00",
+  "repo": "BeamoTech/beamo-wipe",
+  "worktree": "/workspace/beamo-wipe",
+  "branch": "fix/safety-audit-20261019",
+  "head": "938fe60347c78f2a745d5d5b04e30dfa013da809",
+  "tree": "45d56d3c562d14b3ba6339174c259a4580dbaff4",
+  "clean": true,
+  "source_files": 809,
+  "prior_unique_python_passed": 11355,
+  "prior_main_test_ids": 11382,
+  "prior_main_skips": 28
+}

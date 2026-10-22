@@ -1,0 +1,44 @@
+{
+  "audit": "bug-audit-20261021-pass15",
+  "baseline_commit": "0163594b71bf57ca7be82b0c9b65605bd3c3fc79",
+  "branch": "fix/safety-audit-20261019",
+  "date_utc": "2026-10-21",
+  "baseline_regressions": {
+    "controls": 1,
+    "failures": 8,
+    "fixed_passes": 9,
+    "junit_sha256": "b4d6529b93310baedaf62e12f43182c0ee0c8f82deeb46b6c9a5da48ae07dc09"
+  },
+  "desktop_artifacts": {
+    "go_version": "go1.26.8",
+    "linux_sha256": "800c423ae7d7c023a8ca33b7e18666ab4911622a853a976e0a52a66087ac7837",
+    "manifest_sha256": "49003a9f2f422e2baf8ae94cde94f8a5f0b0c9f8e4d5b9d4e416e3bb47b89346",
+    "version": "0.2.13",
+    "windows_sha256": "c261361a74bc2d05b33567bee321c945ffc9e78d27a3a802b498502e2cd4fc64"
+  },
+  "final_python": {
+    "deselected": 2,
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "2d9c58eb3603f078afedaa659d17fc78ae5ac7d2267f4792075ff1ead24edbbc",
+    "passed": 12074,
+    "selected": 12101,
+    "skipped": 27,
+    "time_seconds": 1252.603,
+    "warnings_as_errors": true
+  },
+  "preview": {
+    "display": ":250",
+    "dpi": 72,
+    "fake_disks_only": true,
+    "normal_close_returncode": 0,
+    "png_sha256": "922c213939cba144951d70292b63b29baea8fe7d43e4a5f4e7f1e1adc378e5a8"
+  },
+  "publication": "local only; no push, PR, merge, deployment, or release",
+  "source_sha256": {
+    "src/beamo_wipe/build_identity.py": "7ebdf1ef15065f233bec986cbd821163261c93793e10290750af1e52f6116f3b",
+    "src/beamo_wipe/startup_stages.py": "7f6796b2f22a0d86892902977807907c92788535d249062f21e6a36ac6cd7a86",
+    "tests/test_build_identity_publication_pass15_20261021.py": "39c52cff36937e9e61a7eb6283c0c5e285ea566aae625887442e91bfd28fb4be",
+    "tests/test_startup_launch_retirement_pass15_20261021.py": "4a975ad4ecc1f338773bcb711aa127c49448fabf1586a2b88032417fe0e25cdd"
+  }
+}

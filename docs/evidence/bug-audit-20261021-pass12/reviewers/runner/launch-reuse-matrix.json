@@ -1,0 +1,23 @@
+{
+  "states": 120,
+  "accepted_generations": 360,
+  "verified_success": 72,
+  "negative_terminal": 288,
+  "injected_refusals": 120,
+  "retained_uncertain": 30,
+  "duplicate_start_refusals": 360,
+  "mismatched_poll_refusals": 360,
+  "stale_generation_polls": 240,
+  "clean_retries": 360,
+  "native_callbacks": 0,
+  "mismatches": [],
+  "source_sha256": {
+    "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62",
+    "src/beamo_wipe/progress.py": "fef87a29ceabb1fb97b8abc521d55cea1ceb9428989104973783da6eb52c4fa6",
+    "src/beamo_wipe/engine_checks.py": "7a9d4682ca7d90a0eeb6cff9ae24a520554552c701b2728ab8f9c21895f5e27e",
+    "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+    "src/beamo_wipe/methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13",
+    "src/beamo_wipe/sleep_inhibit.py": "e04816215c0347980d03effed9afd75a1716a44a9471683dc7c83eb4a58eac55"
+  },
+  "scope": "Supporting fake process and owned regular-file model; overlaps focused/canonical tests. No engine, device, subprocess, signals or native callbacks."
+}

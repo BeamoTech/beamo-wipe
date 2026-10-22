@@ -1,0 +1,22 @@
+{
+  "name": "power-acceptance-independent-before",
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "-W",
+    "error",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-o",
+    "pythonpath=src",
+    "-q",
+    "/workspace/beamo-tools/audit-pass8-20261021/root/test_power_acceptance_probe.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass8-20261021/root/power-acceptance-independent-before.xml"
+  ],
+  "started_utc": "2026-10-21T04:04:43.773489+00:00",
+  "elapsed_seconds": 0.32,
+  "exit_code": 1
+}

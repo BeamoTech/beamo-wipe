@@ -26,14 +26,14 @@ import argparse
 import datetime
 import hashlib
 import json
-import os
 import re
-import stat
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence
 from urllib.parse import urlsplit
+
+from beamo_wipe.release_signing import _read_regular_bytes, _write_new_file
 
 GATE_RECEIPT_SCHEMA = "beamo-wipe-gate-receipt/1"
 TEST_EVIDENCE_SCHEMA = "beamo-wipe-test-evidence/1"
@@ -783,25 +783,8 @@ def verify_package_inventory(
 
 
 def _read_text_file(path: Path, *, what: str) -> str:
-    path = Path(path)
     limit = 16 * 1024 * 1024
-    try:
-        fd = os.open(
-            path,
-            os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0),
-        )
-    except OSError as exc:
-        raise RuntimeError(f"{what} cannot be safely read: {path}") from exc
-    try:
-        with os.fdopen(fd, "rb") as stream:
-            metadata = os.fstat(stream.fileno())
-            if not stat.S_ISREG(metadata.st_mode) or metadata.st_size > limit:
-                raise RuntimeError(f"{what} is not a bounded regular file: {path}")
-            raw = stream.read(limit + 1)
-    except OSError as exc:
-        raise RuntimeError(f"{what} cannot be safely read: {path}") from exc
-    if len(raw) > limit:
-        raise RuntimeError(f"{what} exceeds input size limit: {path}")
+    raw = _read_regular_bytes(Path(path), what=what, limit=limit)
     try:
         return raw.decode("utf-8")
     except UnicodeDecodeError as exc:
@@ -860,8 +843,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             started_at=args.started_at or None,
             ended_at=args.ended_at or None,
         )
-        Path(args.out).write_text(
-            json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        _write_new_file(
+            Path(args.out),
+            (json.dumps(receipt, indent=2, sort_keys=True) + "\n").encode("utf-8"),
+            0o644,
         )
         print(f"wrote {args.out} gate={receipt['gate']} status={receipt['status']}")
         return 0
@@ -875,8 +860,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             source_commit=args.commit,
             generated_at=args.generated_at or None,
         )
-        Path(args.out).write_text(
-            json.dumps(inventory, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        _write_new_file(
+            Path(args.out),
+            (json.dumps(inventory, indent=2, sort_keys=True) + "\n").encode("utf-8"),
+            0o644,
         )
         print(f"wrote {args.out} packages={inventory['package_count']}")
         return 0

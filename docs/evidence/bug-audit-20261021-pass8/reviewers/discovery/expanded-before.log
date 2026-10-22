@@ -1,0 +1,516 @@
+FFFFFFFFFFFFFFFF..................                                       [100%]
+=================================== FAILURES ===================================
+_ test_undecodable_live_classification_refuses_every_startup_route[normal-invalid-byte-cmdline] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-163/test_undecodable_live_classifi0/cmdline'), mounts=PosixPa...overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=['cmdline'], calls=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f71a6c5f770>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[normal-invalid-byte-cmdline]>>
+location = 'cmdline', bad_bytes = b'\xff', argv = ()
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py:112: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[normal-invalid-byte-unrelated-mountpoint] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-163/test_undecodable_live_classifi1/cmdline'), mounts=PosixPa...ay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=['cmdline', 'mountinfo'], calls=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f71a628b890>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[normal-invalid-byte-unrelated-mountpoint]>>
+location = 'unrelated-mountpoint', bad_bytes = b'\xff', argv = ()
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py:112: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[normal-truncated-sequence-cmdline] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-163/test_undecodable_live_classifi2/cmdline'), mounts=PosixPa...overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=['cmdline'], calls=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f71a628bb10>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[normal-truncated-sequence-cmdline]>>
+location = 'cmdline', bad_bytes = b'\xc3', argv = ()
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py:112: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[normal-truncated-sequence-unrelated-mountpoint] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-163/test_undecodable_live_classifi3/cmdline'), mounts=PosixPa...ay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=['cmdline', 'mountinfo'], calls=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f71a62c6fd0>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[normal-truncated-sequence-unrelated-mountpoint]>>
+location = 'unrelated-mountpoint', bad_bytes = b'\xc3', argv = ()
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py:112: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[preview-invalid-byte-cmdline] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-163/test_undecodable_live_classifi4/cmdline'), mounts=PosixPa...overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=['cmdline'], calls=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f71a62c7bb0>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[preview-invalid-byte-cmdline]>>
+location = 'cmdline', bad_bytes = b'\xff', argv = ('--demo',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py:112: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[preview-invalid-byte-unrelated-mountpoint] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-163/test_undecodable_live_classifi5/cmdline'), mounts=PosixPa...ay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=['cmdline', 'mountinfo'], calls=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f71a63428d0>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[preview-invalid-byte-unrelated-mountpoint]>>
+location = 'unrelated-mountpoint', bad_bytes = b'\xff', argv = ('--demo',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py:112: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[preview-truncated-sequence-cmdline] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-163/test_undecodable_live_classifi6/cmdline'), mounts=PosixPa...overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=['cmdline'], calls=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f71a627ff00>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[preview-truncated-sequence-cmdline]>>
+location = 'cmdline', bad_bytes = b'\xc3', argv = ('--demo',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py:112: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[preview-truncated-sequence-unrelated-mountpoint] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-163/test_undecodable_live_classifi7/cmdline'), mounts=PosixPa...ay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=['cmdline', 'mountinfo'], calls=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f71a636c380>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[preview-truncated-sequence-unrelated-mountpoint]>>
+location = 'unrelated-mountpoint', bad_bytes = b'\xc3', argv = ('--demo',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py:112: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[dry-run-invalid-byte-cmdline] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-163/test_undecodable_live_classifi8/cmdline'), mounts=PosixPa...overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=['cmdline'], calls=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f71a6328c50>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[dry-run-invalid-byte-cmdline]>>
+location = 'cmdline', bad_bytes = b'\xff', argv = ('--dry-run',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py:112: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[dry-run-invalid-byte-unrelated-mountpoint] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-163/test_undecodable_live_classifi9/cmdline'), mounts=PosixPa...ay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=['cmdline', 'mountinfo'], calls=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f71a632a550>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[dry-run-invalid-byte-unrelated-mountpoint]>>
+location = 'unrelated-mountpoint', bad_bytes = b'\xff', argv = ('--dry-run',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py:112: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[dry-run-truncated-sequence-cmdline] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-163/test_undecodable_live_classifi10/cmdline'), mounts=PosixP...overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=['cmdline'], calls=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f71a61c05f0>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[dry-run-truncated-sequence-cmdline]>>
+location = 'cmdline', bad_bytes = b'\xc3', argv = ('--dry-run',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py:112: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[dry-run-truncated-sequence-unrelated-mountpoint] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-163/test_undecodable_live_classifi11/cmdline'), mounts=PosixP...ay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=['cmdline', 'mountinfo'], calls=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f71a61c1310>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[dry-run-truncated-sequence-unrelated-mountpoint]>>
+location = 'unrelated-mountpoint', bad_bytes = b'\xc3', argv = ('--dry-run',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py:112: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[web-invalid-byte-cmdline] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-163/test_undecodable_live_classifi12/cmdline'), mounts=PosixP...overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=['cmdline'], calls=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f71a61d82f0>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[web-invalid-byte-cmdline]>>
+location = 'cmdline', bad_bytes = b'\xff', argv = ('--web',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py:112: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[web-invalid-byte-unrelated-mountpoint] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-163/test_undecodable_live_classifi13/cmdline'), mounts=PosixP...ay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=['cmdline', 'mountinfo'], calls=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f71a61d92b0>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[web-invalid-byte-unrelated-mountpoint]>>
+location = 'unrelated-mountpoint', bad_bytes = b'\xff', argv = ('--web',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py:112: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[web-truncated-sequence-cmdline] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-163/test_undecodable_live_classifi14/cmdline'), mounts=PosixP...overlay overlay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=['cmdline'], calls=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f71a619e410>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[web-truncated-sequence-cmdline]>>
+location = 'cmdline', bad_bytes = b'\xc3', argv = ('--web',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py:112: AssertionError
+_ test_undecodable_live_classification_refuses_every_startup_route[web-truncated-sequence-unrelated-mountpoint] _
+
+machine = namespace(command=PosixPath('/tmp/pytest-of-agent/pytest-163/test_undecodable_live_classifi15/cmdline'), mounts=PosixP...ay rw\n2 1 8:241 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n', reads=['cmdline', 'mountinfo'], calls=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f71a62e3650>
+request = <FixtureRequest for <Function test_undecodable_live_classification_refuses_every_startup_route[web-truncated-sequence-unrelated-mountpoint]>>
+location = 'unrelated-mountpoint', bad_bytes = b'\xc3', argv = ('--web',)
+
+    @pytest.mark.parametrize("location", ["cmdline", "unrelated-mountpoint"])
+    @pytest.mark.parametrize("bad_bytes", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [(), ("--demo",), ("--dry-run",), ("--web",)],
+                             ids=["normal", "preview", "dry-run", "web"])
+    def test_undecodable_live_classification_refuses_every_startup_route(
+        machine, capsys, request, location, bad_bytes, argv,
+    ):
+        corrupt(machine, location, bad_bytes)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except BaseException as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("startup_refusal_trace", json.dumps({
+            "location": location, "argv": argv, "code": code, "escaped": escaped,
+            "reads": machine.reads, "calls": machine.calls,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py:112: AssertionError
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[normal-invalid-byte-cmdline]
+FAILED ../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[normal-invalid-byte-unrelated-mountpoint]
+FAILED ../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[normal-truncated-sequence-cmdline]
+FAILED ../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[normal-truncated-sequence-unrelated-mountpoint]
+FAILED ../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[preview-invalid-byte-cmdline]
+FAILED ../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[preview-invalid-byte-unrelated-mountpoint]
+FAILED ../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[preview-truncated-sequence-cmdline]
+FAILED ../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[preview-truncated-sequence-unrelated-mountpoint]
+FAILED ../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[dry-run-invalid-byte-cmdline]
+FAILED ../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[dry-run-invalid-byte-unrelated-mountpoint]
+FAILED ../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[dry-run-truncated-sequence-cmdline]
+FAILED ../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[dry-run-truncated-sequence-unrelated-mountpoint]
+FAILED ../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[web-invalid-byte-cmdline]
+FAILED ../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[web-invalid-byte-unrelated-mountpoint]
+FAILED ../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[web-truncated-sequence-cmdline]
+FAILED ../beamo-tools/audit-pass8-20261021/discovery/app-decode-baseline/test_app_live_decode_refusal_pass8_20261021.py::test_undecodable_live_classification_refuses_every_startup_route[web-truncated-sequence-unrelated-mountpoint]
+16 failed, 18 passed in 0.24s

@@ -1,0 +1,44 @@
+{
+  "audit": "BW-BUG-AUDIT-PASS22-20261022",
+  "baseline_commit": "3accb9cd944f0195b23b70476712454cb5820bd7",
+  "branch": "fix/safety-audit-20261019",
+  "completed_utc": "2026-10-22",
+  "final_python": {
+    "deselected_generated_live_config": 2,
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "488c2fe4c16194c6f4adf5ddd139eb1ea6faab2aea61857b8c56f12d82ed773b",
+    "passed": 12178,
+    "selected": 12204,
+    "skipped": 26
+  },
+  "focused_release": {
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "5f818fe1c3257fc8eb5559d129f9f44236850b6096a13b0b39153070fb4c84d6",
+    "passed": 270,
+    "selected": 282,
+    "skipped": 12
+  },
+  "go": {
+    "fuzz_executions": 350021,
+    "fuzz_target": 350000,
+    "transcript_sha256": "4a3f15f39b5c90ae71ee31f6fa9ab27089d66106ef009c8a54e40655cd550830",
+    "version": "go1.26.8"
+  },
+  "regressions": {
+    "baseline_failed": 18,
+    "baseline_passed_controls": 1,
+    "baseline_transcript_sha256": "dce3b0b37e31951c467d2101bb3cc5e6d6d15d1a0487b37188b20fdc41ad8813",
+    "fixed_passed": 19,
+    "fixed_transcript_sha256": "8514344dcbb6f32d4c9e7b512d951d51aae74f928d39c8253739033d4ea8a4b3"
+  },
+  "source_freeze_sha256": "59ecd8726bbae072a62645f779403465c968e65b53c639d256655ef396b6b43a",
+  "source_sha256": {
+    "scripts/publish_release_gcs.py": "026f1fb336673627441387c2c6f096600d12b50ef2b3cdb466e3d04c6e174415",
+    "tests/test_release_publisher_binding_pass22_20261022.py": "5d8d2fd29c3c742b089ee47756ac629da3676981d2cc7dbbbf01b5a47d20ba0d",
+    "tests/test_release_publisher_pass9.py": "403b26838eb6c8c69d51604b10f953807b6d2d9951030bc15bcb7d708b7f877b",
+    "tests/test_release_qemu_evidence_pass10.py": "c4035dc80cad879123aeba275cc36bb40e4564773dd1538a4d32e497557cb24c"
+  },
+  "static_transcript_sha256": "623ade206f2790781373037754cf2ba7503a228764bfc41d2ce7f4eae74c5c14"
+}

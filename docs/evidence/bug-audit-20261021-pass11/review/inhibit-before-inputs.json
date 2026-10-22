@@ -1,0 +1,9 @@
+{
+  "baseline": "b46e5642d4c849d503b41d8bf562cfb1f9fad68b",
+  "source_sha256": {
+    "src/beamo_wipe/sleep_inhibit.py": "b7df5b80f7d87ae0bcac0be2ddcf082ff887e5492fb8da088237b5b02a9bf11d",
+    "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62"
+  },
+  "probe_sha256": "57111fc6a2e6f6eb457f1811a4f93124db63a57cd8706c6cc30afd366fd12ee7",
+  "actual_process_or_device_actions": false
+}

@@ -1,0 +1,544 @@
+FF.FF.FF.FF.FF.FF.FF.FF...............                                   [100%]
+=================================== FAILURES ===================================
+_ test_late_decode_failure_refuses_without_dispatch[preview-invalid-byte-cmdline-unowned-override] _
+
+machine = namespace(mode={'owned': False, 'fault': 2, 'location': 'cmdline', 'bad': b'\xff', 'suffix': b''}, reads=['cmdline', 'cmdline'], calls=[], sessions=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1c34ddb8c0>
+request = <FixtureRequest for <Function test_late_decode_failure_refuses_without_dispatch[preview-invalid-byte-cmdline-unowned-override]>>
+owned = False, fault = 2, location = 'cmdline', bad = b'\xff'
+argv = ('--demo',)
+
+    @pytest.mark.parametrize("owned,fault", [(False, 2), (False, 3), (True, 2)],
+                             ids=["unowned-override", "unowned-admission", "owned-control"])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    @pytest.mark.parametrize("bad", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [("--demo",), ("--web",)], ids=["preview", "web"])
+    def test_late_decode_failure_refuses_without_dispatch(
+        machine, capsys, request, owned, fault, location, bad, argv,
+    ):
+        machine.mode.update(owned=owned, fault=fault, location=location, bad=bad)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except UnicodeError as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("late_decode_trace", json.dumps({
+            "owned": owned, "classification": fault, "location": location, "argv": argv,
+            "code": code, "escaped": escaped, "reads": machine.reads, "store": machine.calls,
+            "session_dispatch": machine.sessions, "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+tests/test_app_late_decode_refusal_pass10_20261021.py:104: AssertionError
+_ test_late_decode_failure_refuses_without_dispatch[preview-invalid-byte-cmdline-unowned-admission] _
+
+machine = namespace(mode={'owned': False, 'fault': 3, 'location': 'cmdline', 'bad': b'\xff', 'suffix': b''}, reads=['cmdline', 'cmdline', 'cmdline'], calls=[], sessions=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1c34c51590>
+request = <FixtureRequest for <Function test_late_decode_failure_refuses_without_dispatch[preview-invalid-byte-cmdline-unowned-admission]>>
+owned = False, fault = 3, location = 'cmdline', bad = b'\xff'
+argv = ('--demo',)
+
+    @pytest.mark.parametrize("owned,fault", [(False, 2), (False, 3), (True, 2)],
+                             ids=["unowned-override", "unowned-admission", "owned-control"])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    @pytest.mark.parametrize("bad", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [("--demo",), ("--web",)], ids=["preview", "web"])
+    def test_late_decode_failure_refuses_without_dispatch(
+        machine, capsys, request, owned, fault, location, bad, argv,
+    ):
+        machine.mode.update(owned=owned, fault=fault, location=location, bad=bad)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except UnicodeError as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("late_decode_trace", json.dumps({
+            "owned": owned, "classification": fault, "location": location, "argv": argv,
+            "code": code, "escaped": escaped, "reads": machine.reads, "store": machine.calls,
+            "session_dispatch": machine.sessions, "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+tests/test_app_late_decode_refusal_pass10_20261021.py:104: AssertionError
+_ test_late_decode_failure_refuses_without_dispatch[preview-invalid-byte-mountinfo-unowned-override] _
+
+machine = namespace(mode={'owned': False, 'fault': 2, 'location': 'mountinfo', 'bad': b'\xff', 'suffix': b''}, reads=['cmdline', 'cmdline'], calls=[], sessions=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1c34a34770>
+request = <FixtureRequest for <Function test_late_decode_failure_refuses_without_dispatch[preview-invalid-byte-mountinfo-unowned-override]>>
+owned = False, fault = 2, location = 'mountinfo', bad = b'\xff'
+argv = ('--demo',)
+
+    @pytest.mark.parametrize("owned,fault", [(False, 2), (False, 3), (True, 2)],
+                             ids=["unowned-override", "unowned-admission", "owned-control"])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    @pytest.mark.parametrize("bad", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [("--demo",), ("--web",)], ids=["preview", "web"])
+    def test_late_decode_failure_refuses_without_dispatch(
+        machine, capsys, request, owned, fault, location, bad, argv,
+    ):
+        machine.mode.update(owned=owned, fault=fault, location=location, bad=bad)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except UnicodeError as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("late_decode_trace", json.dumps({
+            "owned": owned, "classification": fault, "location": location, "argv": argv,
+            "code": code, "escaped": escaped, "reads": machine.reads, "store": machine.calls,
+            "session_dispatch": machine.sessions, "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+tests/test_app_late_decode_refusal_pass10_20261021.py:104: AssertionError
+_ test_late_decode_failure_refuses_without_dispatch[preview-invalid-byte-mountinfo-unowned-admission] _
+
+machine = namespace(mode={'owned': False, 'fault': 3, 'location': 'mountinfo', 'bad': b'\xff', 'suffix': b''}, reads=['cmdline', 'cmdline', 'cmdline'], calls=[], sessions=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1c342668b0>
+request = <FixtureRequest for <Function test_late_decode_failure_refuses_without_dispatch[preview-invalid-byte-mountinfo-unowned-admission]>>
+owned = False, fault = 3, location = 'mountinfo', bad = b'\xff'
+argv = ('--demo',)
+
+    @pytest.mark.parametrize("owned,fault", [(False, 2), (False, 3), (True, 2)],
+                             ids=["unowned-override", "unowned-admission", "owned-control"])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    @pytest.mark.parametrize("bad", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [("--demo",), ("--web",)], ids=["preview", "web"])
+    def test_late_decode_failure_refuses_without_dispatch(
+        machine, capsys, request, owned, fault, location, bad, argv,
+    ):
+        machine.mode.update(owned=owned, fault=fault, location=location, bad=bad)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except UnicodeError as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("late_decode_trace", json.dumps({
+            "owned": owned, "classification": fault, "location": location, "argv": argv,
+            "code": code, "escaped": escaped, "reads": machine.reads, "store": machine.calls,
+            "session_dispatch": machine.sessions, "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+tests/test_app_late_decode_refusal_pass10_20261021.py:104: AssertionError
+_ test_late_decode_failure_refuses_without_dispatch[preview-truncated-sequence-cmdline-unowned-override] _
+
+machine = namespace(mode={'owned': False, 'fault': 2, 'location': 'cmdline', 'bad': b'\xc3', 'suffix': b''}, reads=['cmdline', 'cmdline'], calls=[], sessions=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1c34223240>
+request = <FixtureRequest for <Function test_late_decode_failure_refuses_without_dispatch[preview-truncated-sequence-cmdline-unowned-override]>>
+owned = False, fault = 2, location = 'cmdline', bad = b'\xc3'
+argv = ('--demo',)
+
+    @pytest.mark.parametrize("owned,fault", [(False, 2), (False, 3), (True, 2)],
+                             ids=["unowned-override", "unowned-admission", "owned-control"])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    @pytest.mark.parametrize("bad", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [("--demo",), ("--web",)], ids=["preview", "web"])
+    def test_late_decode_failure_refuses_without_dispatch(
+        machine, capsys, request, owned, fault, location, bad, argv,
+    ):
+        machine.mode.update(owned=owned, fault=fault, location=location, bad=bad)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except UnicodeError as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("late_decode_trace", json.dumps({
+            "owned": owned, "classification": fault, "location": location, "argv": argv,
+            "code": code, "escaped": escaped, "reads": machine.reads, "store": machine.calls,
+            "session_dispatch": machine.sessions, "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+tests/test_app_late_decode_refusal_pass10_20261021.py:104: AssertionError
+_ test_late_decode_failure_refuses_without_dispatch[preview-truncated-sequence-cmdline-unowned-admission] _
+
+machine = namespace(mode={'owned': False, 'fault': 3, 'location': 'cmdline', 'bad': b'\xc3', 'suffix': b''}, reads=['cmdline', 'cmdline', 'cmdline'], calls=[], sessions=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1c342239b0>
+request = <FixtureRequest for <Function test_late_decode_failure_refuses_without_dispatch[preview-truncated-sequence-cmdline-unowned-admission]>>
+owned = False, fault = 3, location = 'cmdline', bad = b'\xc3'
+argv = ('--demo',)
+
+    @pytest.mark.parametrize("owned,fault", [(False, 2), (False, 3), (True, 2)],
+                             ids=["unowned-override", "unowned-admission", "owned-control"])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    @pytest.mark.parametrize("bad", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [("--demo",), ("--web",)], ids=["preview", "web"])
+    def test_late_decode_failure_refuses_without_dispatch(
+        machine, capsys, request, owned, fault, location, bad, argv,
+    ):
+        machine.mode.update(owned=owned, fault=fault, location=location, bad=bad)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except UnicodeError as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("late_decode_trace", json.dumps({
+            "owned": owned, "classification": fault, "location": location, "argv": argv,
+            "code": code, "escaped": escaped, "reads": machine.reads, "store": machine.calls,
+            "session_dispatch": machine.sessions, "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+tests/test_app_late_decode_refusal_pass10_20261021.py:104: AssertionError
+_ test_late_decode_failure_refuses_without_dispatch[preview-truncated-sequence-mountinfo-unowned-override] _
+
+machine = namespace(mode={'owned': False, 'fault': 2, 'location': 'mountinfo', 'bad': b'\xc3', 'suffix': b''}, reads=['cmdline', 'cmdline'], calls=[], sessions=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1c34cc0f50>
+request = <FixtureRequest for <Function test_late_decode_failure_refuses_without_dispatch[preview-truncated-sequence-mountinfo-unowned-override]>>
+owned = False, fault = 2, location = 'mountinfo', bad = b'\xc3'
+argv = ('--demo',)
+
+    @pytest.mark.parametrize("owned,fault", [(False, 2), (False, 3), (True, 2)],
+                             ids=["unowned-override", "unowned-admission", "owned-control"])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    @pytest.mark.parametrize("bad", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [("--demo",), ("--web",)], ids=["preview", "web"])
+    def test_late_decode_failure_refuses_without_dispatch(
+        machine, capsys, request, owned, fault, location, bad, argv,
+    ):
+        machine.mode.update(owned=owned, fault=fault, location=location, bad=bad)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except UnicodeError as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("late_decode_trace", json.dumps({
+            "owned": owned, "classification": fault, "location": location, "argv": argv,
+            "code": code, "escaped": escaped, "reads": machine.reads, "store": machine.calls,
+            "session_dispatch": machine.sessions, "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+tests/test_app_late_decode_refusal_pass10_20261021.py:104: AssertionError
+_ test_late_decode_failure_refuses_without_dispatch[preview-truncated-sequence-mountinfo-unowned-admission] _
+
+machine = namespace(mode={'owned': False, 'fault': 3, 'location': 'mountinfo', 'bad': b'\xc3', 'suffix': b''}, reads=['cmdline', 'cmdline', 'cmdline'], calls=[], sessions=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1c34ccb4d0>
+request = <FixtureRequest for <Function test_late_decode_failure_refuses_without_dispatch[preview-truncated-sequence-mountinfo-unowned-admission]>>
+owned = False, fault = 3, location = 'mountinfo', bad = b'\xc3'
+argv = ('--demo',)
+
+    @pytest.mark.parametrize("owned,fault", [(False, 2), (False, 3), (True, 2)],
+                             ids=["unowned-override", "unowned-admission", "owned-control"])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    @pytest.mark.parametrize("bad", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [("--demo",), ("--web",)], ids=["preview", "web"])
+    def test_late_decode_failure_refuses_without_dispatch(
+        machine, capsys, request, owned, fault, location, bad, argv,
+    ):
+        machine.mode.update(owned=owned, fault=fault, location=location, bad=bad)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except UnicodeError as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("late_decode_trace", json.dumps({
+            "owned": owned, "classification": fault, "location": location, "argv": argv,
+            "code": code, "escaped": escaped, "reads": machine.reads, "store": machine.calls,
+            "session_dispatch": machine.sessions, "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+tests/test_app_late_decode_refusal_pass10_20261021.py:104: AssertionError
+_ test_late_decode_failure_refuses_without_dispatch[web-invalid-byte-cmdline-unowned-override] _
+
+machine = namespace(mode={'owned': False, 'fault': 2, 'location': 'cmdline', 'bad': b'\xff', 'suffix': b''}, reads=['cmdline', 'cmdline'], calls=[], sessions=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1c3426f310>
+request = <FixtureRequest for <Function test_late_decode_failure_refuses_without_dispatch[web-invalid-byte-cmdline-unowned-override]>>
+owned = False, fault = 2, location = 'cmdline', bad = b'\xff', argv = ('--web',)
+
+    @pytest.mark.parametrize("owned,fault", [(False, 2), (False, 3), (True, 2)],
+                             ids=["unowned-override", "unowned-admission", "owned-control"])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    @pytest.mark.parametrize("bad", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [("--demo",), ("--web",)], ids=["preview", "web"])
+    def test_late_decode_failure_refuses_without_dispatch(
+        machine, capsys, request, owned, fault, location, bad, argv,
+    ):
+        machine.mode.update(owned=owned, fault=fault, location=location, bad=bad)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except UnicodeError as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("late_decode_trace", json.dumps({
+            "owned": owned, "classification": fault, "location": location, "argv": argv,
+            "code": code, "escaped": escaped, "reads": machine.reads, "store": machine.calls,
+            "session_dispatch": machine.sessions, "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+tests/test_app_late_decode_refusal_pass10_20261021.py:104: AssertionError
+_ test_late_decode_failure_refuses_without_dispatch[web-invalid-byte-cmdline-unowned-admission] _
+
+machine = namespace(mode={'owned': False, 'fault': 3, 'location': 'cmdline', 'bad': b'\xff', 'suffix': b''}, reads=['cmdline', 'cmdline', 'cmdline'], calls=[], sessions=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1c34b483d0>
+request = <FixtureRequest for <Function test_late_decode_failure_refuses_without_dispatch[web-invalid-byte-cmdline-unowned-admission]>>
+owned = False, fault = 3, location = 'cmdline', bad = b'\xff', argv = ('--web',)
+
+    @pytest.mark.parametrize("owned,fault", [(False, 2), (False, 3), (True, 2)],
+                             ids=["unowned-override", "unowned-admission", "owned-control"])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    @pytest.mark.parametrize("bad", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [("--demo",), ("--web",)], ids=["preview", "web"])
+    def test_late_decode_failure_refuses_without_dispatch(
+        machine, capsys, request, owned, fault, location, bad, argv,
+    ):
+        machine.mode.update(owned=owned, fault=fault, location=location, bad=bad)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except UnicodeError as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("late_decode_trace", json.dumps({
+            "owned": owned, "classification": fault, "location": location, "argv": argv,
+            "code": code, "escaped": escaped, "reads": machine.reads, "store": machine.calls,
+            "session_dispatch": machine.sessions, "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+tests/test_app_late_decode_refusal_pass10_20261021.py:104: AssertionError
+_ test_late_decode_failure_refuses_without_dispatch[web-invalid-byte-mountinfo-unowned-override] _
+
+machine = namespace(mode={'owned': False, 'fault': 2, 'location': 'mountinfo', 'bad': b'\xff', 'suffix': b''}, reads=['cmdline', 'cmdline'], calls=[], sessions=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1c34d0cd10>
+request = <FixtureRequest for <Function test_late_decode_failure_refuses_without_dispatch[web-invalid-byte-mountinfo-unowned-override]>>
+owned = False, fault = 2, location = 'mountinfo', bad = b'\xff'
+argv = ('--web',)
+
+    @pytest.mark.parametrize("owned,fault", [(False, 2), (False, 3), (True, 2)],
+                             ids=["unowned-override", "unowned-admission", "owned-control"])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    @pytest.mark.parametrize("bad", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [("--demo",), ("--web",)], ids=["preview", "web"])
+    def test_late_decode_failure_refuses_without_dispatch(
+        machine, capsys, request, owned, fault, location, bad, argv,
+    ):
+        machine.mode.update(owned=owned, fault=fault, location=location, bad=bad)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except UnicodeError as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("late_decode_trace", json.dumps({
+            "owned": owned, "classification": fault, "location": location, "argv": argv,
+            "code": code, "escaped": escaped, "reads": machine.reads, "store": machine.calls,
+            "session_dispatch": machine.sessions, "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+tests/test_app_late_decode_refusal_pass10_20261021.py:104: AssertionError
+_ test_late_decode_failure_refuses_without_dispatch[web-invalid-byte-mountinfo-unowned-admission] _
+
+machine = namespace(mode={'owned': False, 'fault': 3, 'location': 'mountinfo', 'bad': b'\xff', 'suffix': b''}, reads=['cmdline', 'cmdline', 'cmdline'], calls=[], sessions=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1c34d0ea50>
+request = <FixtureRequest for <Function test_late_decode_failure_refuses_without_dispatch[web-invalid-byte-mountinfo-unowned-admission]>>
+owned = False, fault = 3, location = 'mountinfo', bad = b'\xff'
+argv = ('--web',)
+
+    @pytest.mark.parametrize("owned,fault", [(False, 2), (False, 3), (True, 2)],
+                             ids=["unowned-override", "unowned-admission", "owned-control"])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    @pytest.mark.parametrize("bad", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [("--demo",), ("--web",)], ids=["preview", "web"])
+    def test_late_decode_failure_refuses_without_dispatch(
+        machine, capsys, request, owned, fault, location, bad, argv,
+    ):
+        machine.mode.update(owned=owned, fault=fault, location=location, bad=bad)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except UnicodeError as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("late_decode_trace", json.dumps({
+            "owned": owned, "classification": fault, "location": location, "argv": argv,
+            "code": code, "escaped": escaped, "reads": machine.reads, "store": machine.calls,
+            "session_dispatch": machine.sessions, "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+tests/test_app_late_decode_refusal_pass10_20261021.py:104: AssertionError
+_ test_late_decode_failure_refuses_without_dispatch[web-truncated-sequence-cmdline-unowned-override] _
+
+machine = namespace(mode={'owned': False, 'fault': 2, 'location': 'cmdline', 'bad': b'\xc3', 'suffix': b''}, reads=['cmdline', 'cmdline'], calls=[], sessions=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1c34afc9f0>
+request = <FixtureRequest for <Function test_late_decode_failure_refuses_without_dispatch[web-truncated-sequence-cmdline-unowned-override]>>
+owned = False, fault = 2, location = 'cmdline', bad = b'\xc3', argv = ('--web',)
+
+    @pytest.mark.parametrize("owned,fault", [(False, 2), (False, 3), (True, 2)],
+                             ids=["unowned-override", "unowned-admission", "owned-control"])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    @pytest.mark.parametrize("bad", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [("--demo",), ("--web",)], ids=["preview", "web"])
+    def test_late_decode_failure_refuses_without_dispatch(
+        machine, capsys, request, owned, fault, location, bad, argv,
+    ):
+        machine.mode.update(owned=owned, fault=fault, location=location, bad=bad)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except UnicodeError as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("late_decode_trace", json.dumps({
+            "owned": owned, "classification": fault, "location": location, "argv": argv,
+            "code": code, "escaped": escaped, "reads": machine.reads, "store": machine.calls,
+            "session_dispatch": machine.sessions, "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+tests/test_app_late_decode_refusal_pass10_20261021.py:104: AssertionError
+_ test_late_decode_failure_refuses_without_dispatch[web-truncated-sequence-cmdline-unowned-admission] _
+
+machine = namespace(mode={'owned': False, 'fault': 3, 'location': 'cmdline', 'bad': b'\xc3', 'suffix': b''}, reads=['cmdline', 'cmdline', 'cmdline'], calls=[], sessions=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1c34c85f90>
+request = <FixtureRequest for <Function test_late_decode_failure_refuses_without_dispatch[web-truncated-sequence-cmdline-unowned-admission]>>
+owned = False, fault = 3, location = 'cmdline', bad = b'\xc3', argv = ('--web',)
+
+    @pytest.mark.parametrize("owned,fault", [(False, 2), (False, 3), (True, 2)],
+                             ids=["unowned-override", "unowned-admission", "owned-control"])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    @pytest.mark.parametrize("bad", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [("--demo",), ("--web",)], ids=["preview", "web"])
+    def test_late_decode_failure_refuses_without_dispatch(
+        machine, capsys, request, owned, fault, location, bad, argv,
+    ):
+        machine.mode.update(owned=owned, fault=fault, location=location, bad=bad)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except UnicodeError as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("late_decode_trace", json.dumps({
+            "owned": owned, "classification": fault, "location": location, "argv": argv,
+            "code": code, "escaped": escaped, "reads": machine.reads, "store": machine.calls,
+            "session_dispatch": machine.sessions, "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+tests/test_app_late_decode_refusal_pass10_20261021.py:104: AssertionError
+_ test_late_decode_failure_refuses_without_dispatch[web-truncated-sequence-mountinfo-unowned-override] _
+
+machine = namespace(mode={'owned': False, 'fault': 2, 'location': 'mountinfo', 'bad': b'\xc3', 'suffix': b''}, reads=['cmdline', 'cmdline'], calls=[], sessions=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1c34cee2a0>
+request = <FixtureRequest for <Function test_late_decode_failure_refuses_without_dispatch[web-truncated-sequence-mountinfo-unowned-override]>>
+owned = False, fault = 2, location = 'mountinfo', bad = b'\xc3'
+argv = ('--web',)
+
+    @pytest.mark.parametrize("owned,fault", [(False, 2), (False, 3), (True, 2)],
+                             ids=["unowned-override", "unowned-admission", "owned-control"])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    @pytest.mark.parametrize("bad", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [("--demo",), ("--web",)], ids=["preview", "web"])
+    def test_late_decode_failure_refuses_without_dispatch(
+        machine, capsys, request, owned, fault, location, bad, argv,
+    ):
+        machine.mode.update(owned=owned, fault=fault, location=location, bad=bad)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except UnicodeError as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("late_decode_trace", json.dumps({
+            "owned": owned, "classification": fault, "location": location, "argv": argv,
+            "code": code, "escaped": escaped, "reads": machine.reads, "store": machine.calls,
+            "session_dispatch": machine.sessions, "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+tests/test_app_late_decode_refusal_pass10_20261021.py:104: AssertionError
+_ test_late_decode_failure_refuses_without_dispatch[web-truncated-sequence-mountinfo-unowned-admission] _
+
+machine = namespace(mode={'owned': False, 'fault': 3, 'location': 'mountinfo', 'bad': b'\xc3', 'suffix': b''}, reads=['cmdline', 'cmdline', 'cmdline'], calls=[], sessions=[], effects=[])
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1c34c9dfd0>
+request = <FixtureRequest for <Function test_late_decode_failure_refuses_without_dispatch[web-truncated-sequence-mountinfo-unowned-admission]>>
+owned = False, fault = 3, location = 'mountinfo', bad = b'\xc3'
+argv = ('--web',)
+
+    @pytest.mark.parametrize("owned,fault", [(False, 2), (False, 3), (True, 2)],
+                             ids=["unowned-override", "unowned-admission", "owned-control"])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    @pytest.mark.parametrize("bad", [b"\xff", b"\xc3"], ids=["invalid-byte", "truncated-sequence"])
+    @pytest.mark.parametrize("argv", [("--demo",), ("--web",)], ids=["preview", "web"])
+    def test_late_decode_failure_refuses_without_dispatch(
+        machine, capsys, request, owned, fault, location, bad, argv,
+    ):
+        machine.mode.update(owned=owned, fault=fault, location=location, bad=bad)
+        escaped = None
+        code = None
+        try:
+            code = app.main(list(argv))
+        except UnicodeError as error:
+            escaped = type(error).__name__
+        output = capsys.readouterr()
+        request.node.user_properties.append(("late_decode_trace", json.dumps({
+            "owned": owned, "classification": fault, "location": location, "argv": argv,
+            "code": code, "escaped": escaped, "reads": machine.reads, "store": machine.calls,
+            "session_dispatch": machine.sessions, "native_callbacks": len(machine.effects),
+        })))
+>       assert escaped is None
+E       AssertionError: assert 'UnicodeDecodeError' is None
+
+tests/test_app_late_decode_refusal_pass10_20261021.py:104: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_app_late_decode_refusal_pass10_20261021.py::test_late_decode_failure_refuses_without_dispatch[preview-invalid-byte-cmdline-unowned-override]
+FAILED tests/test_app_late_decode_refusal_pass10_20261021.py::test_late_decode_failure_refuses_without_dispatch[preview-invalid-byte-cmdline-unowned-admission]
+FAILED tests/test_app_late_decode_refusal_pass10_20261021.py::test_late_decode_failure_refuses_without_dispatch[preview-invalid-byte-mountinfo-unowned-override]
+FAILED tests/test_app_late_decode_refusal_pass10_20261021.py::test_late_decode_failure_refuses_without_dispatch[preview-invalid-byte-mountinfo-unowned-admission]
+FAILED tests/test_app_late_decode_refusal_pass10_20261021.py::test_late_decode_failure_refuses_without_dispatch[preview-truncated-sequence-cmdline-unowned-override]
+FAILED tests/test_app_late_decode_refusal_pass10_20261021.py::test_late_decode_failure_refuses_without_dispatch[preview-truncated-sequence-cmdline-unowned-admission]
+FAILED tests/test_app_late_decode_refusal_pass10_20261021.py::test_late_decode_failure_refuses_without_dispatch[preview-truncated-sequence-mountinfo-unowned-override]
+FAILED tests/test_app_late_decode_refusal_pass10_20261021.py::test_late_decode_failure_refuses_without_dispatch[preview-truncated-sequence-mountinfo-unowned-admission]
+FAILED tests/test_app_late_decode_refusal_pass10_20261021.py::test_late_decode_failure_refuses_without_dispatch[web-invalid-byte-cmdline-unowned-override]
+FAILED tests/test_app_late_decode_refusal_pass10_20261021.py::test_late_decode_failure_refuses_without_dispatch[web-invalid-byte-cmdline-unowned-admission]
+FAILED tests/test_app_late_decode_refusal_pass10_20261021.py::test_late_decode_failure_refuses_without_dispatch[web-invalid-byte-mountinfo-unowned-override]
+FAILED tests/test_app_late_decode_refusal_pass10_20261021.py::test_late_decode_failure_refuses_without_dispatch[web-invalid-byte-mountinfo-unowned-admission]
+FAILED tests/test_app_late_decode_refusal_pass10_20261021.py::test_late_decode_failure_refuses_without_dispatch[web-truncated-sequence-cmdline-unowned-override]
+FAILED tests/test_app_late_decode_refusal_pass10_20261021.py::test_late_decode_failure_refuses_without_dispatch[web-truncated-sequence-cmdline-unowned-admission]
+FAILED tests/test_app_late_decode_refusal_pass10_20261021.py::test_late_decode_failure_refuses_without_dispatch[web-truncated-sequence-mountinfo-unowned-override]
+FAILED tests/test_app_late_decode_refusal_pass10_20261021.py::test_late_decode_failure_refuses_without_dispatch[web-truncated-sequence-mountinfo-unowned-admission]
+16 failed, 22 passed in 0.29s

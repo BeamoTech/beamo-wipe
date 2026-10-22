@@ -1,0 +1,13 @@
+{
+  "baseline": "e28487d7595ee45a53d503fa1a76d8c22979f012",
+  "product_sha256": "3bf7e23122e1aefd821f7c9a9d6a0dced4f6757589ea6939c8ac9dc0f8054852",
+  "root_proof_sha256": "0dff0b98c45ee501c5297f0d627036fb2b1ba2fcf9462ce2fffc7f429fecf239",
+  "actual_red": {
+    "failures": 1,
+    "positive_controls": 2,
+    "errors": 0,
+    "skips": 0
+  },
+  "trace": "Public main -> actual _main/_run_one_session -> UI: dry=False, store=None after initial classifier false then true.",
+  "native_actions": false
+}

@@ -1,0 +1,70 @@
+{
+  "reviewed_at_utc": "2026-10-21T05:24:03.737465+00:00",
+  "client_timezone": "America/Chicago",
+  "baseline": "7047dfb8c22d0b17faad2d5de1ec470b2debfaac",
+  "verified_new_defects": 0,
+  "repository_edits": [],
+  "old_test_edits": [],
+  "ownership_released": true,
+  "focused": {
+    "modules": 76,
+    "unique_cases": 2407,
+    "passed": 2401,
+    "skipped_unverified": 6,
+    "failures": 0,
+    "errors": 0,
+    "python_warnings": 0,
+    "warning_policy": "-W error",
+    "display": "private72DPI Xvfb/D-Bus, BEAMO_ISOLATED_X11_TEST=1",
+    "exit_code": 0,
+    "all_skips_exact_prior_id_reason_matches": true
+  },
+  "new_model": {
+    "states": 3360,
+    "strict_resolver_calls": 3360,
+    "parsed_strict_results": 3360,
+    "public_fake_discovery_calls": 3360,
+    "strict_successes": 1488,
+    "strict_refusals": 1872,
+    "fake_successes": 1584,
+    "fake_refusals": 1776,
+    "missing_link_policy_controls": 96,
+    "selectable_target_observations": 3072,
+    "native_callbacks": 0,
+    "mismatches": [],
+    "source_sha256": {
+      "src/beamo_wipe/discover.py": "94d7496625b9906c2ea6f19650b8e8dec4ac87b627d25a66ca219c45a67345b4",
+      "src/beamo_wipe/safety.py": "5cc1eeee4b220bc3f133b5933a1cd6aec382d14247156d3b4977b6b4af2e14f6",
+      "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9"
+    },
+    "scope": "Synthetic typed-source/alias conflict and strict-versus-preview identity laws; no native platform qualification."
+  },
+  "model_exit_code": 0,
+  "model_elapsed_seconds": 4.0,
+  "model_script_sha256": "cc11c3e0a31326ead42c1011f655b7ebca45b60e6542d75b81068baaee09f448",
+  "reviewed_source_sha256": {
+    "src/beamo_wipe/discover.py": "94d7496625b9906c2ea6f19650b8e8dec4ac87b627d25a66ca219c45a67345b4",
+    "src/beamo_wipe/safety.py": "5cc1eeee4b220bc3f133b5933a1cd6aec382d14247156d3b4977b6b4af2e14f6",
+    "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+    "src/beamo_wipe/identity.py": "4ccada033bab0c3811450cb9ab4e85c74936af56e8cd94fdf84f8d5566942050",
+    "src/beamo_wipe/inventory.py": "bd594d0f6279181bb01bfa96c07ed8041d3da09fbee9ae9baf16dba60caa6acd"
+  },
+  "component_inputs_byte_identical_to_baseline": true,
+  "reviewed_contracts": [
+    "Boot identity from live mounts, conflicting override/typed sources and conservative label fallback.",
+    "Physical whole-disk/partition parent proof, duplicates, stacked holder mount evidence and aliases.",
+    "Exact label versus case-insensitive UUID/PARTUUID comparison; malformed/ambiguous typed values refuse.",
+    "Strict by-* link ownership versus fake-inventory missing-link policy; foreign link remains refusal.",
+    "Boot never selectable; ambiguous/orphan/loop sources produce no target; normal separate target stays selectable.",
+    "Identity/final inventory/token and method/argv preflight assertions in added adjacent suites."
+  ],
+  "history": [
+    "Initial added mixed operation-identity GUI module ran without X:1GTK failure/2398passes/8skips. Kept history-headless-focused.*; unchanged tests rerun correctly at private72DPI:2401passes/6exact prior pinned-browser skips. No product edit or assertion relaxation."
+  ],
+  "limits": [
+    "Synthetic metadata/regular files only. No actual inventory/device/mount/engine/firmware/power/guest/network/remote/Docker action.",
+    "Model parses strict resolution results and separately exercises injected fake discovery; it does not qualify native inventory or hardware.",
+    "Supporting subsets/model states overlap canonical full coverage and are not additional unique product tests.",
+    "Six pinned browser skips remain unverified; parent owns supplemental browser and complete final gates."
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "started_utc": "2026-10-21T05:59:51.549803+00:00",
+  "contexts": 10,
+  "faults": [
+    "none",
+    "write-start",
+    "write-middle",
+    "file-sync",
+    "replace",
+    "directory-sync",
+    "readback",
+    "close"
+  ],
+  "write_read_chunk_limits": [
+    null,
+    1,
+    7
+  ],
+  "counts": {
+    "cases": 240,
+    "positive_transactions": 30,
+    "injected_refusals": 210,
+    "precommit_old_bytes_preserved": 120,
+    "postcommit_new_bytes_retained": 90,
+    "postcommit_journals_block_further_save": 54,
+    "fresh_reopen_checks": 240,
+    "successful_retries": 240,
+    "quiescent_controls": 144,
+    "native_callbacks": 0
+  },
+  "mismatches": [],
+  "source_sha256": {
+    "src/beamo_wipe/session_recovery.py": "cf2443e391e184677b12c9d4356eb4314621aecb45244a425d6736823dd47948",
+    "src/beamo_wipe/report_intent.py": "872072d5a51c72a01596dea683de7279c6191eb072c733ce8ae475fbef95e9fb",
+    "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+    "src/beamo_wipe/safety.py": "5cc1eeee4b220bc3f133b5933a1cd6aec382d14247156d3b4977b6b4af2e14f6",
+    "tests/test_session_recovery.py": "3958efc36490aa0e3c9c56a820a620b38febd84b9d5901381dade67e390092b0",
+    "tests/test_usb_report_workflow.py": "3715d4352dfb8adb54e9f6033423604f60bc6511628e55d62940e9a44f540d09"
+  },
+  "script_sha256": "1a26bfedc52b2b5e53e1a70719a1770ef1553ecda9654ce03f7a2e0041669321",
+  "physical_qualification": false
+}

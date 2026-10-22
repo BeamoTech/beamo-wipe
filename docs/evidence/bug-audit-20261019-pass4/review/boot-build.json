@@ -1,0 +1,120 @@
+{
+  "repo": "/workspace/beamo-wipe",
+  "base_head": "7f839e50e63db27a787eeabd758579352b6b3a3a",
+  "state": "OWNED SOURCE/TESTS FROZEN AND RELEASED TO ROOT",
+  "findings": [
+    {
+      "id": "prior-receipt-retirement",
+      "proof": "Validated prior receipt is replaced/edited/linked before unconditional deletion; original builder succeeds and removes foreign receipt.6 FAIL/2 unchanged controls PASS, independently replayed by root.",
+      "fix": "Capture exact regular prior receipt metadata+bytes before validation; compare a stable snapshot afterward, recheck lock/directory ownership before retirement. Fresh appearing/changed/missing/link/directory/metadata/read-span changes refuse before compiler/publication and preserve external content. Existing function return contract unchanged. No atomic compare-and-delete claim."
+    },
+    {
+      "id": "duplicate-http-consent",
+      "proof": "Authenticated duplicate confirm/revision members are coalesced by encoding/json, letting a later true/current value override conflicting false/stale consent.Original overlay:3 failing duplicate subcases/3 passing unique controls, independently replayed by root.",
+      "fix": "Bounded streaming root-object decoder rejects duplicate logical confirm/revision members, including decoded escapes and Unicode/case aliases, before acquiring action state. Preserve unique alias forms, harmless omissions/null fields, auth, bounds, types, unknown/trailing rejection, revision binding and single use."
+    }
+  ],
+  "reviewed": [
+    "AGENTS.md",
+    ".ai/memory/unfinished-work.md",
+    "docs/development.md",
+    "scripts/build_desktop.py",
+    "scripts/stage_live_assets.py",
+    "desktop/main.go",
+    "desktop/boot.go",
+    "desktop/readiness.go",
+    "desktop/platform_linux.go",
+    "desktop/platform_windows.go",
+    "desktop/platform_other.go",
+    "desktop/web/app.js",
+    "packaging/live/config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk",
+    "related desktop publication/readiness/HTTP/firmware tests"
+  ],
+  "python_reports": {
+    "prior-before": {
+      "tests": 8,
+      "failures": 6,
+      "errors": 0,
+      "skipped": 0
+    },
+    "builder-after": {
+      "tests": 126,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "builder-final": {
+      "tests": 134,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "builder-final-adjacent": {
+      "tests": 215,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "go_reports": {
+    "duplicate-before": {
+      "top_level": {
+        "pass": 1,
+        "fail": 1,
+        "skip": 0
+      },
+      "named_subtests": {
+        "pass": 3,
+        "fail": 3,
+        "skip": 0
+      }
+    },
+    "go-after": {
+      "top_level": {
+        "pass": 4,
+        "fail": 0,
+        "skip": 0
+      },
+      "named_subtests": {
+        "pass": 137,
+        "fail": 0,
+        "skip": 0
+      }
+    },
+    "go-race-after": {
+      "top_level": {
+        "pass": 4,
+        "fail": 0,
+        "skip": 0
+      },
+      "named_subtests": {
+        "pass": 137,
+        "fail": 0,
+        "skip": 0
+      }
+    },
+    "go-expanded-before": {
+      "top_level": {
+        "pass": 2,
+        "fail": 2,
+        "skip": 0
+      },
+      "named_subtests": {
+        "pass": 97,
+        "fail": 40,
+        "skip": 0
+      }
+    }
+  },
+  "go_case_count_note": "The new Go module has4 top-level tests and137 named subtests. Inline assertion loops are not counted as extra cases. Baseline40 named failures comprise36 duplicate-member cases plus4 null-root schema refusals;97 named controls pass.",
+  "lint": "Final owned Python Ruff check and format check PASS; Go gofmt applied, focused race PASS, go vet PASS; git diff --check PASS.",
+  "additional_typing_diagnostic": "mypy on the builder (outside configured source-only gate) has identical pre-existing Path/str loop-variable error at line58 on baseline and final. Initial unsourced MYPYPATH also emitted an import-untyped setup error; corrected baseline/final diagnostic logs retained. No new diagnostic introduced.",
+  "lint_setup_corrections": "Removed a new unused Path import and replaced imported fixture/noqa redefinitions with the established wrapped fixture pattern after Ruff formatting; assertions and old tests unchanged.",
+  "limits": "Read-only boot/kiosk inspection and fake compiler, firmware/data/HTTP callbacks only. No actual native inventory, nwipe, mounts, guest, firmware/power/restart, hosted actions, backlog/staging/commit/push/release. Native/platform/image qualification remains separate. BEAMO_DESKTOP_NATIVE_INVENTORY_TEST was unset for all Go calls.",
+  "edited_files": {
+    "scripts/build_desktop.py": "ff163c8224af00e2b4394aa0f1460e7d62ec6cc93f01f314cfd66ef11e3a9cce",
+    "developer_tests/test_desktop_prior_receipt_retirement_pass4_20261019.py": "de9bc65a5f2846224e3793cede5122cecffc6982126b99d88dcc63c26de996a7",
+    "desktop/main.go": "df049c99fb545d77b126fab7916b48a5e2a11b1fbcda61e344b22dcda3610534",
+    "desktop/api_duplicate_json_pass4_20261019_test.go": "305a5accc6cbbe865c5d32cc05ef5e9c98ed609991db7cbee4ec71e18455253f"
+  }
+}

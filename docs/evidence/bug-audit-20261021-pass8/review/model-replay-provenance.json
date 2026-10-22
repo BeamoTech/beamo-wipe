@@ -1,0 +1,19 @@
+{
+  "python_models": {
+    "probe_inventory_equivalence.py": {
+      "reviewer": "discovery",
+      "exact_script_sha256": "9e6ef39a5f12f6696512873a7d3a0deab2c5b79442314c3dd905dc5247d1b2c9"
+    },
+    "completion_contract_matrix.py": {
+      "reviewer": "runner",
+      "exact_script_sha256": "6bd9633847c6d918b595ec5518ce3e860a18ebab4c5bc3de13223868adf0bd25"
+    },
+    "semantic_export_matrix.py": {
+      "reviewer": "recovery",
+      "exact_script_sha256": "02e327f6ba7a22a3500ee07a7b1f14c59ef6d3ccd24c27e345ba383822d5a62f"
+    }
+  },
+  "go_model_original_sha256": "6f4aa45b6bd0810c2e2a933e7247f28bb87f12cc5aea437434fe19ece374c0ad",
+  "go_model_root_sha256": "ce3d8fcd04f26d59a84df3fea95ab7b45681af59e97c2cdf0444a1f3aeb84b45",
+  "go_model_only_change": "Output metrics path moved from reviewer directory to root; all assertions unchanged."
+}

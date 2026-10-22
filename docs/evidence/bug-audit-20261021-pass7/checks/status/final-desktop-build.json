@@ -1,0 +1,11 @@
+{
+  "name": "final-desktop-build",
+  "command": [
+    "/workspace/beamo-tools/beamo-dev",
+    "python3",
+    "scripts/build_desktop.py"
+  ],
+  "started_utc": "2026-10-21T03:29:41.371782+00:00",
+  "elapsed_seconds": 15.22,
+  "exit_code": 0
+}

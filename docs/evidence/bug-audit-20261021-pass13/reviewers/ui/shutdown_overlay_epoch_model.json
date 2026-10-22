@@ -1,0 +1,674 @@
+{
+  "model": "nested-review-hold-shutdown-discard-epoch",
+  "counts": {
+    "scenarios": 108,
+    "accepted_discard_controls": 108,
+    "old_epoch_refusals": 216,
+    "busy_refusals": 90,
+    "immediate_review_refusals": 108,
+    "overlay_refusals": 180,
+    "elapsed_gate_controls": 108,
+    "events": 1926
+  },
+  "native_callbacks": 0,
+  "mismatches": 0,
+  "fake_callbacks_only": true,
+  "source_sha256": {
+    "src/beamo_wipe/wizard.py": "bb8d5ed38a749c07538107ad9a75fa3fa24b1c07de2f8a5eedecb05df8811ca0",
+    "src/beamo_wipe/ui/accessible_wizard.py": "a3f201102a7e710e0043790f125f4f571feb4d009d33370245420e26b19db905",
+    "src/beamo_wipe/ui/tk_wizard.py": "0c8b457bfdc1946ce4ea66d611b025df11884cbf044f5d548f2b0f3b7b174e7f",
+    "src/beamo_wipe/ui/console_wizard.py": "26afac6583e25e9c8eabbecb2d01324d6be1848ac405529c93646371ba317400",
+    "src/beamo_wipe/app.py": "1ed6964181276463d5c7b7bdd59818d7ce57a31bb9fef77f3ad1ff1c76f7cf65"
+  },
+  "scenarios": [
+    {
+      "language": "en",
+      "depth": 0,
+      "busy": "none",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 0,
+      "busy": "none",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 0,
+      "busy": "_report_exporting",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 0,
+      "busy": "_report_exporting",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 0,
+      "busy": "_diagnostic_busy",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 0,
+      "busy": "_diagnostic_busy",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 0,
+      "busy": "_evidence_saving",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 0,
+      "busy": "_evidence_saving",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 0,
+      "busy": "_finishing",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 0,
+      "busy": "_finishing",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 0,
+      "busy": "runner",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 0,
+      "busy": "runner",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 1,
+      "busy": "none",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 1,
+      "busy": "none",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 1,
+      "busy": "_report_exporting",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 1,
+      "busy": "_report_exporting",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 1,
+      "busy": "_diagnostic_busy",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 1,
+      "busy": "_diagnostic_busy",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 1,
+      "busy": "_evidence_saving",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 1,
+      "busy": "_evidence_saving",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 1,
+      "busy": "_finishing",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 1,
+      "busy": "_finishing",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 1,
+      "busy": "runner",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 1,
+      "busy": "runner",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 2,
+      "busy": "none",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 2,
+      "busy": "none",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 2,
+      "busy": "_report_exporting",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 2,
+      "busy": "_report_exporting",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 2,
+      "busy": "_diagnostic_busy",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 2,
+      "busy": "_diagnostic_busy",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 2,
+      "busy": "_evidence_saving",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 2,
+      "busy": "_evidence_saving",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 2,
+      "busy": "_finishing",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 2,
+      "busy": "_finishing",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "en",
+      "depth": 2,
+      "busy": "runner",
+      "return_action": "back"
+    },
+    {
+      "language": "en",
+      "depth": 2,
+      "busy": "runner",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 0,
+      "busy": "none",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 0,
+      "busy": "none",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 0,
+      "busy": "_report_exporting",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 0,
+      "busy": "_report_exporting",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 0,
+      "busy": "_diagnostic_busy",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 0,
+      "busy": "_diagnostic_busy",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 0,
+      "busy": "_evidence_saving",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 0,
+      "busy": "_evidence_saving",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 0,
+      "busy": "_finishing",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 0,
+      "busy": "_finishing",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 0,
+      "busy": "runner",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 0,
+      "busy": "runner",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 1,
+      "busy": "none",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 1,
+      "busy": "none",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 1,
+      "busy": "_report_exporting",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 1,
+      "busy": "_report_exporting",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 1,
+      "busy": "_diagnostic_busy",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 1,
+      "busy": "_diagnostic_busy",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 1,
+      "busy": "_evidence_saving",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 1,
+      "busy": "_evidence_saving",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 1,
+      "busy": "_finishing",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 1,
+      "busy": "_finishing",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 1,
+      "busy": "runner",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 1,
+      "busy": "runner",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 2,
+      "busy": "none",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 2,
+      "busy": "none",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 2,
+      "busy": "_report_exporting",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 2,
+      "busy": "_report_exporting",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 2,
+      "busy": "_diagnostic_busy",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 2,
+      "busy": "_diagnostic_busy",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 2,
+      "busy": "_evidence_saving",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 2,
+      "busy": "_evidence_saving",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 2,
+      "busy": "_finishing",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 2,
+      "busy": "_finishing",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "fr",
+      "depth": 2,
+      "busy": "runner",
+      "return_action": "back"
+    },
+    {
+      "language": "fr",
+      "depth": 2,
+      "busy": "runner",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 0,
+      "busy": "none",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 0,
+      "busy": "none",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 0,
+      "busy": "_report_exporting",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 0,
+      "busy": "_report_exporting",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 0,
+      "busy": "_diagnostic_busy",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 0,
+      "busy": "_diagnostic_busy",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 0,
+      "busy": "_evidence_saving",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 0,
+      "busy": "_evidence_saving",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 0,
+      "busy": "_finishing",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 0,
+      "busy": "_finishing",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 0,
+      "busy": "runner",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 0,
+      "busy": "runner",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 1,
+      "busy": "none",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 1,
+      "busy": "none",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 1,
+      "busy": "_report_exporting",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 1,
+      "busy": "_report_exporting",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 1,
+      "busy": "_diagnostic_busy",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 1,
+      "busy": "_diagnostic_busy",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 1,
+      "busy": "_evidence_saving",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 1,
+      "busy": "_evidence_saving",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 1,
+      "busy": "_finishing",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 1,
+      "busy": "_finishing",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 1,
+      "busy": "runner",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 1,
+      "busy": "runner",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 2,
+      "busy": "none",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 2,
+      "busy": "none",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 2,
+      "busy": "_report_exporting",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 2,
+      "busy": "_report_exporting",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 2,
+      "busy": "_diagnostic_busy",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 2,
+      "busy": "_diagnostic_busy",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 2,
+      "busy": "_evidence_saving",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 2,
+      "busy": "_evidence_saving",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 2,
+      "busy": "_finishing",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 2,
+      "busy": "_finishing",
+      "return_action": "keep_report_session"
+    },
+    {
+      "language": "de",
+      "depth": 2,
+      "busy": "runner",
+      "return_action": "back"
+    },
+    {
+      "language": "de",
+      "depth": 2,
+      "busy": "runner",
+      "return_action": "keep_report_session"
+    }
+  ],
+  "coverage_note": "Supporting model observations overlap canonical tests; not additional unique test passes."
+}

@@ -1,0 +1,44 @@
+Built Windows and Linux desktop launchers. Runtime and firmware tests remain separate gates.
+Built Windows and Linux desktop launchers. Runtime and firmware tests remain separate gates.
+Built Windows and Linux desktop launchers. Runtime and firmware tests remain separate gates.
+Built Windows and Linux desktop launchers. Runtime and firmware tests remain separate gates.
+[
+  {
+    "prior_bundle": false,
+    "injected_foreign_output": false,
+    "build_error": null,
+    "foreign_preserved": false,
+    "final_output": "new compiled launcher",
+    "build_calls": 2
+  },
+  {
+    "prior_bundle": false,
+    "injected_foreign_output": true,
+    "build_error": null,
+    "foreign_preserved": false,
+    "final_output": "new compiled launcher",
+    "build_calls": 2
+  },
+  {
+    "prior_bundle": true,
+    "injected_foreign_output": false,
+    "build_error": null,
+    "foreign_preserved": false,
+    "final_output": "new compiled launcher",
+    "build_calls": 2
+  },
+  {
+    "prior_bundle": true,
+    "injected_foreign_output": true,
+    "build_error": null,
+    "foreign_preserved": false,
+    "final_output": "new compiled launcher",
+    "build_calls": 2
+  }
+]
+
+Traceback (most recent call last):
+  File "/workspace/beamo-tools/audit-pass2-20261019/boot/reproduce_desktop_output_replacement.py", line 57, in <module>
+    assert all(row['build_error'] is not None and row['foreign_preserved'] for row in results if row['injected_foreign_output']), 'BUG: desktop builder silently overwrote foreign output created during compilation'
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: BUG: desktop builder silently overwrote foreign output created during compilation

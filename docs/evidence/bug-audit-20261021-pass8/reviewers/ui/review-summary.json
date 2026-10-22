@@ -1,0 +1,58 @@
+{
+  "baseline_commit": "d8a941adc16cf0650d482f512e4b921d702373c5",
+  "scope": "Wizard/Tk/GTK/console consent, input freshness, lifecycle/failure retirement, refresh/stop/shutdown/modal/readability",
+  "new_ui_findings_promoted": 0,
+  "independent_root_power_candidate_confirmed": true,
+  "power_candidate_impact": "Misleading fresh AC telemetry from a rejected worker while an accepted later worker is in flight; not erase authorization",
+  "power_proof_parent_path": "root/test_power_acceptance_probe.py",
+  "counts": {
+    "baseline": {
+      "cases": 266,
+      "passed": 266,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "native-baseline": {
+      "cases": 137,
+      "passed": 137,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "power-adjacent": {
+      "cases": 91,
+      "passed": 91,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "power-independent-before": {
+      "cases": 4,
+      "passed": 1,
+      "failures": 3,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "source_sha256": {
+    "src/beamo_wipe/wizard.py": "bb8d5ed38a749c07538107ad9a75fa3fa24b1c07de2f8a5eedecb05df8811ca0",
+    "src/beamo_wipe/ui/tk_wizard.py": "0c8b457bfdc1946ce4ea66d611b025df11884cbf044f5d548f2b0f3b7b174e7f",
+    "src/beamo_wipe/ui/accessible_wizard.py": "8b9dae8e6faff4f2ef61532c43a9ad210a4cb45b60c1b2807b17d6dfb97b0b6f",
+    "src/beamo_wipe/ui/console_wizard.py": "26afac6583e25e9c8eabbecb2d01324d6be1848ac405529c93646371ba317400",
+    "src/beamo_wipe/ui/sound_dialog.py": "9165731d320e6f19de3e6632a7b0c43a4c688a72dbd6558b39ba46c0052aed9e"
+  },
+  "all_owned_source_unchanged": true,
+  "repository_edits": false,
+  "existing_assertions_edited": false,
+  "all_checks_warnings_as_errors": true,
+  "native_or_physical_qualification": false,
+  "docker_network_remote_hosted_ci_or_actual_device_actions": false,
+  "supporting_counts_overlap_parent_canonical": true,
+  "unproved_hypotheses_not_promoted": [
+    "Repaint countdown after direct font/resize helper: font utility is intentionally absent on Last Chance; no supported live trigger was established beyond already-tested first frame/modal return.",
+    "GTK partial-constructor resource lifetime: did not establish a surviving live erase or shipping state failure; existing app ownership settlement and process exit remain authoritative.",
+    "Curses slow repeat: one-second quiet contract already exists; no new concrete counterexample established."
+  ],
+  "ownership": "Read-only review complete; no source ownership acquired. Root owns candidate repair, integration, final full gates, backlog, ledger and commit."
+}

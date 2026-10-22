@@ -1,0 +1,78 @@
+diff --git a/src/beamo_wipe/report_intent.py b/src/beamo_wipe/report_intent.py
+index 8a46163..ca95ac0 100644
+--- a/src/beamo_wipe/report_intent.py
++++ b/src/beamo_wipe/report_intent.py
+@@ -80,8 +80,12 @@ class ReportIntentStore:
+                     raise SafetyError("Invalid report preference")
+                 after = os.fstat(fd)
+                 named = os.stat(self.NAME, dir_fd=directory, follow_symlinks=False)
++                fields = (
++                    "st_dev", "st_ino", "st_size", "st_mode", "st_uid", "st_nlink",
++                    "st_mtime_ns", "st_ctime_ns",
++                )
+                 if (
+-                    (after.st_dev, after.st_ino) != (named.st_dev, named.st_ino)
++                    any(getattr(after, key) != getattr(named, key) for key in fields)
+                     or (st.st_size, st.st_mtime_ns, st.st_ctime_ns, st.st_mode, st.st_nlink)
+                     != (after.st_size, after.st_mtime_ns, after.st_ctime_ns,
+                         after.st_mode, after.st_nlink)
+diff --git a/tests/test_report_intent_named_snapshot_pass12_20261021.py b/tests/test_report_intent_named_snapshot_pass12_20261021.py
+new file mode 100644
+index 0000000..6253670
+--- /dev/null
++++ b/tests/test_report_intent_named_snapshot_pass12_20261021.py
+@@ -0,0 +1,54 @@
++"""Report intent reads bind the final name to the complete private snapshot."""
++
++import os
++
++import pytest
++
++from beamo_wipe.report_intent import ReportIntentStore
++from beamo_wipe.safety import SafetyError
++
++
++@pytest.mark.parametrize("wanted", [False, True])
++@pytest.mark.parametrize("mutation", ["normal", "mode", "link", "rewrite"])
++def test_load_checks_final_named_snapshot(tmp_path, monkeypatch, wanted, mutation):
++    directory = tmp_path / "private"
++    directory.mkdir(mode=0o700)
++    store = ReportIntentStore(directory)
++    store.save(wanted)
++    path = directory / store.NAME
++    original_stat = os.stat
++    before = original_stat(path)
++    changed = False
++
++    def mutate_before_final_named_stat(name, *args, **kwargs):
++        nonlocal changed
++        if name == store.NAME and kwargs.get("dir_fd") is not None and not changed:
++            changed = True
++            if mutation == "mode":
++                path.chmod(0o644)
++            elif mutation == "link":
++                os.link(path, directory / "another-name")
++            elif mutation == "rewrite":
++                original = path.read_bytes()
++                path.write_bytes(original.replace(b"wanted", b"vanted"))
++                # Force a distinct same-size snapshot even on a coarse clock.
++                os.utime(path, ns=(before.st_atime_ns, before.st_mtime_ns + 1))
++        return original_stat(name, *args, **kwargs)
++
++    monkeypatch.setattr(os, "stat", mutate_before_final_named_stat)
++    if mutation == "normal":
++        assert store.load() is wanted
++    else:
++        with pytest.raises(SafetyError, match="Unsafe report preference file"):
++            store.load()
++    assert changed
++    after = original_stat(path)
++    assert (before.st_dev, before.st_ino) == (after.st_dev, after.st_ino)
++    assert before.st_size == after.st_size
++    if mutation == "mode":
++        assert after.st_mode & 0o777 == 0o644
++    elif mutation == "link":
++        assert after.st_nlink == 2
++    elif mutation == "rewrite":
++        assert after.st_mtime_ns != before.st_mtime_ns
++        assert b"vanted" in path.read_bytes()

@@ -1,0 +1,365 @@
+{
+  "seed": 2026101904,
+  "cases": 5000,
+  "methods_per_case": 3,
+  "source_sha256": {
+    "src/beamo_wipe/nwipe_runner.py": "53a518cd19001dda8207b6b83526b09c9e8147148a9eb7ee77cb57c1b82e8b66",
+    "src/beamo_wipe/engine_checks.py": "7a9d4682ca7d90a0eeb6cff9ae24a520554552c701b2728ab8f9c21895f5e27e"
+  },
+  "mismatches": 4,
+  "examples": [
+    {
+      "case": 413,
+      "method": "everyday",
+      "full": "Model with embedded phrase and random text\n",
+      "projection": "\n",
+      "full_checks": [
+        {
+          "id": "hidden_capacity",
+          "status": "unavailable",
+          "summary": "The hidden-storage check was not available. That is not a pass.",
+          "detail": "The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.",
+          "provenance": {
+            "source": "nwipe_log",
+            "parser": "beamo_wipe.engine_checks.hidden_capacity",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        },
+        {
+          "id": "io_media",
+          "status": "unavailable",
+          "summary": "Disk error counts were not available. That is not a pass.",
+          "detail": "The pinned nwipe v0.42 Error Summary did not include this disk.",
+          "provenance": {
+            "source": "nwipe_log",
+            "parser": "beamo_wipe.engine_checks.io_media",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        },
+        {
+          "id": "coverage",
+          "status": "warning",
+          "summary": "Overwrite reaches only storage the disk exposes. Hidden copies may remain.",
+          "detail": "Device type is unknown; do not assume it is a hard disk or SSD. Flash limits: Overwriting reaches only storage the device exposes. It cannot guarantee coverage of inaccessible, remapped, over-provisioned (spare), or controller-managed flash areas. Additional overwrite passes do not fix these limitations.",
+          "provenance": {
+            "source": "storage_limits",
+            "parser": "beamo_wipe.engine_checks.coverage",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        }
+      ],
+      "projected_checks": [
+        {
+          "id": "hidden_capacity",
+          "status": "unavailable",
+          "summary": "The hidden-storage check was not available. That is not a pass.",
+          "detail": "The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.",
+          "provenance": {
+            "source": "missing",
+            "parser": "beamo_wipe.engine_checks.hidden_capacity",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        },
+        {
+          "id": "io_media",
+          "status": "unavailable",
+          "summary": "Disk error counts were not available. That is not a pass.",
+          "detail": "The pinned nwipe v0.42 Error Summary did not include this disk.",
+          "provenance": {
+            "source": "missing",
+            "parser": "beamo_wipe.engine_checks.io_media",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        },
+        {
+          "id": "coverage",
+          "status": "warning",
+          "summary": "Overwrite reaches only storage the disk exposes. Hidden copies may remain.",
+          "detail": "Device type is unknown; do not assume it is a hard disk or SSD. Flash limits: Overwriting reaches only storage the device exposes. It cannot guarantee coverage of inaccessible, remapped, over-provisioned (spare), or controller-managed flash areas. Additional overwrite passes do not fix these limitations.",
+          "provenance": {
+            "source": "storage_limits",
+            "parser": "beamo_wipe.engine_checks.coverage",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        }
+      ]
+    },
+    {
+      "case": 3109,
+      "method": "everyday",
+      "full": " sdb | 0 | 0 | 0\n",
+      "projection": "\n",
+      "full_checks": [
+        {
+          "id": "hidden_capacity",
+          "status": "unavailable",
+          "summary": "The hidden-storage check was not available. That is not a pass.",
+          "detail": "The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.",
+          "provenance": {
+            "source": "nwipe_log",
+            "parser": "beamo_wipe.engine_checks.hidden_capacity",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        },
+        {
+          "id": "io_media",
+          "status": "unavailable",
+          "summary": "Disk error counts were not available. That is not a pass.",
+          "detail": "The pinned nwipe v0.42 Error Summary did not include this disk.",
+          "provenance": {
+            "source": "nwipe_log",
+            "parser": "beamo_wipe.engine_checks.io_media",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        },
+        {
+          "id": "coverage",
+          "status": "warning",
+          "summary": "Overwrite reaches only storage the disk exposes. Hidden copies may remain.",
+          "detail": "Device type is unknown; do not assume it is a hard disk or SSD. Flash limits: Overwriting reaches only storage the device exposes. It cannot guarantee coverage of inaccessible, remapped, over-provisioned (spare), or controller-managed flash areas. Additional overwrite passes do not fix these limitations.",
+          "provenance": {
+            "source": "storage_limits",
+            "parser": "beamo_wipe.engine_checks.coverage",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        }
+      ],
+      "projected_checks": [
+        {
+          "id": "hidden_capacity",
+          "status": "unavailable",
+          "summary": "The hidden-storage check was not available. That is not a pass.",
+          "detail": "The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.",
+          "provenance": {
+            "source": "missing",
+            "parser": "beamo_wipe.engine_checks.hidden_capacity",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        },
+        {
+          "id": "io_media",
+          "status": "unavailable",
+          "summary": "Disk error counts were not available. That is not a pass.",
+          "detail": "The pinned nwipe v0.42 Error Summary did not include this disk.",
+          "provenance": {
+            "source": "missing",
+            "parser": "beamo_wipe.engine_checks.io_media",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        },
+        {
+          "id": "coverage",
+          "status": "warning",
+          "summary": "Overwrite reaches only storage the disk exposes. Hidden copies may remain.",
+          "detail": "Device type is unknown; do not assume it is a hard disk or SSD. Flash limits: Overwriting reaches only storage the device exposes. It cannot guarantee coverage of inaccessible, remapped, over-provisioned (spare), or controller-managed flash areas. Additional overwrite passes do not fix these limitations.",
+          "provenance": {
+            "source": "storage_limits",
+            "parser": "beamo_wipe.engine_checks.coverage",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        }
+      ]
+    },
+    {
+      "case": 3130,
+      "method": "everyday",
+      "full": " sdb | 0 | 0 | 0\n",
+      "projection": "\n",
+      "full_checks": [
+        {
+          "id": "hidden_capacity",
+          "status": "unavailable",
+          "summary": "The hidden-storage check was not available. That is not a pass.",
+          "detail": "The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.",
+          "provenance": {
+            "source": "nwipe_log",
+            "parser": "beamo_wipe.engine_checks.hidden_capacity",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        },
+        {
+          "id": "io_media",
+          "status": "unavailable",
+          "summary": "Disk error counts were not available. That is not a pass.",
+          "detail": "The pinned nwipe v0.42 Error Summary did not include this disk.",
+          "provenance": {
+            "source": "nwipe_log",
+            "parser": "beamo_wipe.engine_checks.io_media",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        },
+        {
+          "id": "coverage",
+          "status": "warning",
+          "summary": "Overwrite reaches only storage the disk exposes. Hidden copies may remain.",
+          "detail": "Device type is unknown; do not assume it is a hard disk or SSD. Flash limits: Overwriting reaches only storage the device exposes. It cannot guarantee coverage of inaccessible, remapped, over-provisioned (spare), or controller-managed flash areas. Additional overwrite passes do not fix these limitations.",
+          "provenance": {
+            "source": "storage_limits",
+            "parser": "beamo_wipe.engine_checks.coverage",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        }
+      ],
+      "projected_checks": [
+        {
+          "id": "hidden_capacity",
+          "status": "unavailable",
+          "summary": "The hidden-storage check was not available. That is not a pass.",
+          "detail": "The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.",
+          "provenance": {
+            "source": "missing",
+            "parser": "beamo_wipe.engine_checks.hidden_capacity",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        },
+        {
+          "id": "io_media",
+          "status": "unavailable",
+          "summary": "Disk error counts were not available. That is not a pass.",
+          "detail": "The pinned nwipe v0.42 Error Summary did not include this disk.",
+          "provenance": {
+            "source": "missing",
+            "parser": "beamo_wipe.engine_checks.io_media",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        },
+        {
+          "id": "coverage",
+          "status": "warning",
+          "summary": "Overwrite reaches only storage the disk exposes. Hidden copies may remain.",
+          "detail": "Device type is unknown; do not assume it is a hard disk or SSD. Flash limits: Overwriting reaches only storage the device exposes. It cannot guarantee coverage of inaccessible, remapped, over-provisioned (spare), or controller-managed flash areas. Additional overwrite passes do not fix these limitations.",
+          "provenance": {
+            "source": "storage_limits",
+            "parser": "beamo_wipe.engine_checks.coverage",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        }
+      ]
+    },
+    {
+      "case": 3916,
+      "method": "everyday",
+      "full": " sdb | 0 | 0 | 0\n",
+      "projection": "\n",
+      "full_checks": [
+        {
+          "id": "hidden_capacity",
+          "status": "unavailable",
+          "summary": "The hidden-storage check was not available. That is not a pass.",
+          "detail": "The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.",
+          "provenance": {
+            "source": "nwipe_log",
+            "parser": "beamo_wipe.engine_checks.hidden_capacity",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        },
+        {
+          "id": "io_media",
+          "status": "unavailable",
+          "summary": "Disk error counts were not available. That is not a pass.",
+          "detail": "The pinned nwipe v0.42 Error Summary did not include this disk.",
+          "provenance": {
+            "source": "nwipe_log",
+            "parser": "beamo_wipe.engine_checks.io_media",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        },
+        {
+          "id": "coverage",
+          "status": "warning",
+          "summary": "Overwrite reaches only storage the disk exposes. Hidden copies may remain.",
+          "detail": "Device type is unknown; do not assume it is a hard disk or SSD. Flash limits: Overwriting reaches only storage the device exposes. It cannot guarantee coverage of inaccessible, remapped, over-provisioned (spare), or controller-managed flash areas. Additional overwrite passes do not fix these limitations.",
+          "provenance": {
+            "source": "storage_limits",
+            "parser": "beamo_wipe.engine_checks.coverage",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        }
+      ],
+      "projected_checks": [
+        {
+          "id": "hidden_capacity",
+          "status": "unavailable",
+          "summary": "The hidden-storage check was not available. That is not a pass.",
+          "detail": "The pinned nwipe v0.42 log did not contain a usable hidden-storage result for this disk.",
+          "provenance": {
+            "source": "missing",
+            "parser": "beamo_wipe.engine_checks.hidden_capacity",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        },
+        {
+          "id": "io_media",
+          "status": "unavailable",
+          "summary": "Disk error counts were not available. That is not a pass.",
+          "detail": "The pinned nwipe v0.42 Error Summary did not include this disk.",
+          "provenance": {
+            "source": "missing",
+            "parser": "beamo_wipe.engine_checks.io_media",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        },
+        {
+          "id": "coverage",
+          "status": "warning",
+          "summary": "Overwrite reaches only storage the disk exposes. Hidden copies may remain.",
+          "detail": "Device type is unknown; do not assume it is a hard disk or SSD. Flash limits: Overwriting reaches only storage the device exposes. It cannot guarantee coverage of inaccessible, remapped, over-provisioned (spare), or controller-managed flash areas. Additional overwrite passes do not fix these limitations.",
+          "provenance": {
+            "source": "storage_limits",
+            "parser": "beamo_wipe.engine_checks.coverage",
+            "engine": "nwipe",
+            "engine_version": "0.42",
+            "engine_commit": "6082bde060091e66365d852a1877f2ee80c67105"
+          }
+        }
+      ]
+    }
+  ],
+  "fake_files_only": true
+}

@@ -1,0 +1,54 @@
+.F                                                                       [100%]
+=================================== FAILURES ===================================
+_ test_save_cannot_confirm_wanted_while_publishing_not_wanted[swapped-temporary] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-106/test_save_cannot_confirm_wante1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fe4078496e0>
+swap = True
+request = <FixtureRequest for <Function test_save_cannot_confirm_wanted_while_publishing_not_wanted[swapped-temporary]>>
+
+    @pytest.mark.parametrize('swap', [False, True], ids=['normal-control', 'swapped-temporary'])
+    def test_save_cannot_confirm_wanted_while_publishing_not_wanted(tmp_path, monkeypatch, swap, request):
+        directory = tmp_path / 'private'
+        directory.mkdir(mode=0o700)
+        store = ReportIntentStore(directory)
+        store.save(False)
+        original_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            original_sync(fd)
+            for path in directory.glob('.report-intent-*'):
+                if path.stat().st_ino != os.fstat(fd).st_ino:
+                    continue
+                if swap and not changed:
+                    changed.append(path.name)
+                    path.rename(directory / 'retired-owned-temporary')
+                    path.write_bytes(b'not-wanted\n')
+                    path.chmod(0o600)
+                return
+    
+        monkeypatch.setattr(os, 'fsync', sync)
+        error = None
+        try:
+            store.save(True)
+        except SafetyError as exc:
+            error = str(exc)
+        monkeypatch.setattr(os, 'fsync', original_sync)
+        loaded = store.load()
+        trace = {'swap': swap, 'changed': changed, 'save_error': error,
+                 'requested_wanted': True, 'loaded_wanted': loaded,
+                 'named_bytes': (directory / store.NAME).read_text()}
+        request.node.user_properties.append(('trace', json.dumps(trace)))
+        print(json.dumps(trace))
+>       assert error is not None or loaded is True, trace
+E       AssertionError: {'changed': ['.report-intent-1b0bcce5b1c857c829dcb57a'], 'loaded_wanted': False, 'named_bytes': 'not-wanted
+E         ', 'requested_wanted': True, ...}
+E       assert (None is not None or False is True)
+
+../beamo-tools/audit-pass7-20261021/recovery/test_report_intent_publish_probe.py:45: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{"swap": true, "changed": [".report-intent-1b0bcce5b1c857c829dcb57a"], "save_error": null, "requested_wanted": true, "loaded_wanted": false, "named_bytes": "not-wanted\n"}
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass7-20261021/recovery/test_report_intent_publish_probe.py::test_save_cannot_confirm_wanted_while_publishing_not_wanted[swapped-temporary]
+1 failed, 1 passed in 0.11s

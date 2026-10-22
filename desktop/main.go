@@ -70,10 +70,14 @@ func planView(p Plan, preview bool) view {
 			"firmware":       "The computer's boot settings could not be read. You can still use the boot menu. Administrator permission may be required for a guided restart.",
 			"platform":       "This launcher supports Intel/AMD 64-bit Windows and Linux PCs. This USB does not support Apple Silicon or Chromebooks.",
 			"live":           "You are already in the Beamo USB environment. Use the Beamo Wipe window to choose and confirm a disk.",
+			"runtime":        "Beamo could not confirm whether this computer already started from the USB. Keep the computer on and close this launcher. If Beamo Wipe is already open, return to that window.",
 			"windows-manual": "Windows can cancel a restart after accepting it, so this launcher will not set a one-time boot request. Save your work, keep the Beamo USB connected, then use the computer's normal Restart command and choose the USB from its boot menu.",
 		}[p.Problem]
 		if v.Detail == "" {
 			v.Detail = "Automatic startup could not be checked. Nothing has been changed. Follow the boot instructions below."
+		}
+		if p.Problem == "runtime" {
+			v.Title = "Keep this computer on"
 		}
 	}
 	v.Checks, v.Technical = p.checks, p.technical
@@ -133,6 +137,7 @@ type app struct {
 	token, host string
 	preview     bool
 	busy        bool
+	closed      bool
 	p           Plan
 	revision    uint64
 	current     view
@@ -141,6 +146,81 @@ type app struct {
 	close       chan struct{}
 	closeOnce   sync.Once
 	lastSeen    time.Time
+}
+
+// Retire session authority before releasing the mutex or ending the server.
+// Existing handlers may still be decoding requests while teardown begins.
+func (a *app) retireLocked() {
+	if a.closed {
+		return
+	}
+	a.closed = true
+	a.p = Plan{}
+	a.revision++
+	a.current = planView(Plan{Problem: "cancelled"}, a.preview)
+	a.current.Revision = a.revision
+}
+
+func (a *app) retireIfIdle(now time.Time) bool {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	if a.closed {
+		return true
+	}
+	if now.Sub(a.lastSeen) <= 5*time.Minute || a.busy {
+		return false
+	}
+	a.retireLocked()
+	return true
+}
+
+type apiRequest struct {
+	Confirm  bool   `json:"confirm"`
+	Revision uint64 `json:"revision"`
+}
+
+func decodeAPIRequest(reader io.Reader) (apiRequest, error) {
+	var body apiRequest
+	dec := json.NewDecoder(reader)
+	opening, err := dec.Token()
+	if err != nil || opening != json.Delim('{') {
+		return body, errors.New("invalid request object")
+	}
+	seen := map[string]bool{}
+	for dec.More() {
+		token, err := dec.Token()
+		key, ok := token.(string)
+		if err != nil || !ok {
+			return body, errors.New("invalid request field")
+		}
+		// encoding/json matches struct fields without regard to case. Match
+		// that behavior while rejecting escaped/case aliases of one field.
+		switch {
+		case strings.EqualFold(key, "confirm"):
+			key = "confirm"
+		case strings.EqualFold(key, "revision"):
+			key = "revision"
+		default:
+			return body, errors.New("unknown request field")
+		}
+		if seen[key] {
+			return body, errors.New("duplicate request field")
+		}
+		seen[key] = true
+		if key == "confirm" {
+			err = dec.Decode(&body.Confirm)
+		} else {
+			err = dec.Decode(&body.Revision)
+		}
+		if err != nil {
+			return body, err
+		}
+	}
+	closing, err := dec.Token()
+	if err != nil || closing != json.Delim('}') || dec.Decode(&struct{}{}) != io.EOF {
+		return body, errors.New("invalid request object")
+	}
+	return body, nil
 }
 
 func (a *app) serve(w http.ResponseWriter, r *http.Request) {
@@ -161,17 +241,17 @@ func (a *app) serve(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "JSON required", 415)
 			return
 		}
-		var body struct {
-			Confirm  bool   `json:"confirm"`
-			Revision uint64 `json:"revision"`
-		}
-		dec := json.NewDecoder(http.MaxBytesReader(w, r.Body, 256))
-		dec.DisallowUnknownFields()
-		if dec.Decode(&body) != nil || dec.Decode(&struct{}{}) != io.EOF {
+		body, err := decodeAPIRequest(http.MaxBytesReader(w, r.Body, 256))
+		if err != nil {
 			http.Error(w, "Invalid request", 400)
 			return
 		}
 		a.mu.Lock()
+		if a.closed {
+			a.mu.Unlock()
+			http.Error(w, "This session has ended", 403)
+			return
+		}
 		if r.URL.Path == "/api/state" {
 			v := a.current
 			a.mu.Unlock()
@@ -186,6 +266,7 @@ func (a *app) serve(w http.ResponseWriter, r *http.Request) {
 		}
 		switch r.URL.Path {
 		case "/api/close":
+			a.retireLocked()
 			a.mu.Unlock()
 			sendJSON(w, map[string]bool{"closed": true})
 			if flusher, ok := w.(http.Flusher); ok {
@@ -357,10 +438,7 @@ func run() error {
 		case <-a.close:
 			return nil
 		case <-ticker.C:
-			a.mu.Lock()
-			idle := time.Since(a.lastSeen) > 5*time.Minute && !a.busy
-			a.mu.Unlock()
-			if idle {
+			if a.retireIfIdle(time.Now()) {
 				return nil
 			}
 		}

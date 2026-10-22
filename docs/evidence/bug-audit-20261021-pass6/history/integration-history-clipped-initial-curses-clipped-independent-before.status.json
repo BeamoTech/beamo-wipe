@@ -1,0 +1,18 @@
+{
+  "name": "curses-clipped-independent-before",
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-q",
+    "/workspace/beamo-tools/audit-pass6-20261021/root/test_curses_clipped_review_probe.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass6-20261021/root/curses-clipped-independent-before.xml"
+  ],
+  "started_utc": "2026-10-21T02:41:53.117510+00:00",
+  "elapsed_seconds": 0.45,
+  "exit_code": 1
+}

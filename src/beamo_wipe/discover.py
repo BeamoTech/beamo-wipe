@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 import re
+import stat
 import subprocess
 import unicodedata
 from dataclasses import replace
@@ -93,6 +94,18 @@ FINDMNT_TIMEOUT_S = 8
 LSBLK_BINARIES = ("/usr/bin/lsblk",)
 FINDMNT_BINARIES = ("/usr/bin/findmnt",)
 MOUNTINFO_PATH = "/proc/self/mountinfo"
+# A mount's SOURCE label is arbitrary on pseudo and network filesystems.
+# Require a known block-backed filesystem as well as a block-looking source;
+# unknown types fail closed. Do not infer this from major:minor, since Btrfs
+# and FUSE block mounts can have anonymous mount device IDs.
+_BLOCK_BACKED_FILESYSTEMS = frozenset({
+    "adfs", "affs", "befs", "bfs", "btrfs", "efs", "erofs", "ext2",
+    "ext3", "ext4", "exfat", "f2fs", "fuseblk", "gfs2", "hfs",
+    "hfsplus", "hpfs", "iso9660", "minix", "msdos", "nilfs2", "ntfs",
+    "ntfs3", "ocfs2", "omfs", "qnx4", "qnx6", "reiserfs", "romfs",
+    "squashfs", "sysv", "udf", "ufs", "vfat", "vxfs", "xenix", "xfs",
+    "zonefs",
+})
 # PARTTYPE and PARTTYPENAME are read by classify_contents. Bookworm
 # util-linux 2.38 supports both; dropping them makes Windows GUID evidence
 # invisible and a real OS disk look like a data disk.
@@ -1512,6 +1525,61 @@ def _is_loop_path(path: str, blockdevices: Sequence[Dict[str, Any]]) -> bool:
     return bool(re.match(r"^loop", os.path.basename(path), re.IGNORECASE))
 
 
+def _verified_device_link_target(path: str) -> Optional[str]:
+    """Return a stable block-device symlink target, or refuse the evidence."""
+    try:
+        link_before = os.lstat(path)
+        if not stat.S_ISLNK(link_before.st_mode):
+            return None
+        value_before = os.readlink(path)
+        resolved = os.path.realpath(path)
+        through_link = os.stat(path)
+        at_resolved_name = os.stat(resolved)
+        value_after = os.readlink(path)
+        link_after = os.lstat(path)
+        through_link_final = os.stat(path)
+        at_resolved_name_final = os.stat(resolved)
+        resolved_final = os.path.realpath(path)
+    except (OSError, ValueError):
+        return None
+    link_before_snapshot = (
+        link_before.st_dev, link_before.st_ino, link_before.st_mode,
+        link_before.st_nlink, link_before.st_size, link_before.st_mtime_ns,
+        link_before.st_ctime_ns,
+    )
+    link_after_snapshot = (
+        link_after.st_dev, link_after.st_ino, link_after.st_mode,
+        link_after.st_nlink, link_after.st_size, link_after.st_mtime_ns,
+        link_after.st_ctime_ns,
+    )
+    def target_snapshot(item: os.stat_result) -> Tuple[int, ...]:
+        return (
+            item.st_dev, item.st_ino, item.st_mode, item.st_nlink,
+            item.st_uid, item.st_gid, item.st_size, item.st_rdev,
+            item.st_mtime_ns, item.st_ctime_ns,
+        )
+
+    through_link_snapshot = target_snapshot(through_link)
+    if (
+        not value_before
+        or value_before != value_after
+        or link_before_snapshot != link_after_snapshot
+        or resolved == path
+        or resolved_final != resolved
+        or not resolved.startswith("/dev/")
+        or not stat.S_ISBLK(through_link.st_mode)
+        or not stat.S_ISBLK(at_resolved_name.st_mode)
+        or any(
+            target_snapshot(item) != through_link_snapshot
+            for item in (
+                at_resolved_name, through_link_final, at_resolved_name_final,
+            )
+        )
+    ):
+        return None
+    return resolved
+
+
 def _resolve_boot_path(
     raw: str, blockdevices: Sequence[Dict[str, Any]], *, require_device_link: bool = True
 ) -> Optional[str]:
@@ -1529,12 +1597,15 @@ def _resolve_boot_path(
             # identifier; stale labels must never protect the wrong disk.
             # If the link is absent, matching only the reported identifier
             # could protect a newly inserted disk and expose the real boot USB.
-            try:
-                link_target = os.path.realpath(raw)
-            except OSError:
-                return None
-            if link_target == raw and require_device_link:
-                return None
+            if require_device_link:
+                link_target = _verified_device_link_target(raw)
+                if not link_target:
+                    return None
+            else:
+                try:
+                    link_target = os.path.realpath(raw)
+                except OSError:
+                    return None
             if link_target != raw:
                 actual = parent_disk_path(link_target, blockdevices)
                 if not actual or not resolved or os.path.realpath(actual) != os.path.realpath(resolved):
@@ -1903,6 +1974,17 @@ def parse_lsblk_json(
             or _has_stacked_holder(candidate, parent, by_name)
             or kind in {"crypt", "dm", "bcache"}
             or kind.startswith("raid")
+            # Missing/new types still carry filesystem identity. Without an
+            # observed owner, omitting that row could make a target look blank.
+            or (
+                kind not in {"disk", "rom", "part", "loop", "ram"}
+                and (
+                    bool(node_path(candidate))
+                    or any(candidate.get(key) for key in (
+                        "fstype", "uuid", "partuuid", "parttype", "parttypename", "partlabel",
+                    ))
+                )
+            )
         ) and (
             _filesystem_layout_row(candidate, partition=False)
             or any(
@@ -2496,6 +2578,125 @@ def parse_mountinfo(text: str) -> List[Tuple[str, str]]:
     return pairs
 
 
+def mountinfo_mount_is_visible(text: str, mountpoint: str) -> bool:
+    """Prove that a mount's pathname still reaches its recorded parent tree.
+
+    A mount over an ancestor hides older child mounts without removing their
+    mountinfo rows. The longest matching pathname alone does not identify the
+    effective filesystem. Compare covering mounts through their mount-ID
+    parent chains; neither row order nor numeric ID order proves visibility.
+    """
+    rows: Dict[int, Tuple[int, str]] = {}
+    for line in (text or "").splitlines():
+        if not line.strip():
+            continue
+        if " - " not in line:
+            return False
+        left, right = line.split(" - ", 1)
+        fields = left.split()
+        if len(fields) < 5 or len(right.split()) < 2:
+            return False
+        if not fields[0].isascii() or not fields[0].isdigit():
+            return False
+        if not fields[1].isascii() or not fields[1].isdigit():
+            return False
+        try:
+            mount_id, parent_id = int(fields[0]), int(fields[1])
+            path = _mountinfo_unescape(fields[4]).rstrip("/") or "/"
+        except ValueError:
+            return False
+        if mount_id <= 0 or mount_id in rows or not path.startswith("/"):
+            return False
+        rows[mount_id] = (parent_id, path)
+
+    # Missing parents are valid at a namespace/chroot boundary. Present
+    # parents must describe one acyclic tree with compatible path ancestry.
+    checked: set[int] = set()
+    for mount_id in rows:
+        trail: set[int] = set()
+        current = mount_id
+        while current in rows and current not in checked:
+            if current in trail:
+                return False
+            trail.add(current)
+            parent_id, path = rows[current]
+            if parent_id == current and path == "/":
+                # A namespace root can be its own parent.
+                break
+            if parent_id in rows:
+                parent_path = rows[parent_id][1]
+                if not (
+                    path == parent_path or parent_path == "/"
+                    or path.startswith(parent_path + "/")
+                ):
+                    return False
+            current = parent_id
+        checked.update(trail)
+
+    wanted = mountpoint.rstrip("/") or "/"
+    candidates = [mount_id for mount_id, (_parent, path) in rows.items() if path == wanted]
+    if len(candidates) != 1:
+        return False
+    ancestry: set[int] = set()
+    child_by_parent: Dict[int, int] = {}
+    current = candidates[0]
+    while current in rows and current not in ancestry:
+        ancestry.add(current)
+        parent_id = rows[current][0]
+        if parent_id == current:
+            break
+        child_by_parent[parent_id] = current
+        current = parent_id
+    for mount_id, (_parent, path) in rows.items():
+        if mount_id in ancestry or not (
+            path == wanted or path == "/" or wanted.startswith(path + "/")
+        ):
+            continue
+        # A prefix on another branch may cover our child, or may itself be
+        # hidden beneath our branch. Compare the first children below their
+        # common parent. Only a strictly higher mount on our branch proves
+        # the other prefix is hidden and cannot affect this pathname.
+        branch = mount_id
+        trail = set()
+        other_child = branch
+        while branch not in ancestry:
+            if branch not in rows or branch in trail:
+                return False
+            trail.add(branch)
+            other_child = branch
+            branch = rows[branch][0]
+        own_child = child_by_parent.get(branch)
+        if own_child is None:
+            return False
+        own_path, other_path = rows[own_child][1], rows[other_child][1]
+        if own_path == other_path or not (
+            own_path == "/" or other_path.startswith(own_path + "/")
+        ):
+            return False
+    return True
+
+
+def _verified_live_mount_sources(text: str, paths: Sequence[str]) -> List[str]:
+    pairs = parse_mountinfo(text)
+    lines = [line for line in text.splitlines() if line.strip()]
+    if len(pairs) != len(lines):
+        # A dropped row might cover the apparent live medium. Refuse before
+        # a findmnt SOURCE can become fallback evidence for that mount.
+        raise ValueError("live mount information is incomplete")
+    filesystems = [line.split(" - ", 1)[1].split()[0] for line in lines]
+    wanted = set(paths)
+    found: List[str] = []
+    for (source, mountpoint), filesystem in zip(pairs, filesystems):
+        if mountpoint not in wanted:
+            continue
+        if filesystem not in _BLOCK_BACKED_FILESYSTEMS:
+            raise ValueError("live mount filesystem is unverified")
+        if not mountinfo_mount_is_visible(text, mountpoint):
+            raise ValueError("live mount ancestry is unresolved")
+        found.append(source)
+    return found
+
+
 def read_mountinfo_sources(
     paths: Sequence[str] = LIVE_MOUNTS, text: Optional[str] = None
 ) -> List[str]:
@@ -2511,12 +2712,7 @@ def read_mountinfo_sources(
             except Exception:
                 pass
             return []
-    wanted = set(paths)
-    found: List[str] = []
-    for source, mountpoint in parse_mountinfo(text):
-        if mountpoint in wanted:
-            found.append(source)
-    return found
+    return _verified_live_mount_sources(text, paths)
 
 
 def live_medium_is_mounted(
@@ -2527,8 +2723,9 @@ def live_medium_is_mounted(
     """True when a known live-medium path is mounted from a block device.
 
     Directory presence is not enough (`mkdir /run/live/medium`). The source
-    must be a /dev node, a typed LABEL=/UUID= source, or a kernel disk name.
-    tmpfs/overlay sources do not count.
+    must name a known block-backed filesystem and be a /dev node, a typed
+    LABEL=/UUID= source, or a kernel disk name. Pseudo filesystems do not count
+    even when their SOURCE label looks like a device.
     """
     if text is None:
         try:
@@ -2542,18 +2739,13 @@ def live_medium_is_mounted(
             except Exception:
                 pass
             return False
-    pairs = parse_mountinfo(text)
-    if len(pairs) != sum(bool(line.strip()) for line in text.splitlines()):
-        # A dropped row might be a later mount covering the apparent live
-        # medium. Incomplete mountinfo cannot establish a real live session.
+    try:
+        sources = _verified_live_mount_sources(text, paths)
+    except ValueError:
         return False
-    wanted = set(paths)
-    live_rows = [(source, mountpoint) for source, mountpoint in pairs if mountpoint in wanted]
-    if not live_rows or len({mountpoint for _source, mountpoint in live_rows}) != len(live_rows):
-        # Two mounts at one path leave an older, hidden source in mountinfo.
-        # Without resolving the effective mount, neither proves boot media.
+    if not sources:
         return False
-    for source, _mountpoint in live_rows:
+    for source in sources:
         raw = (source or "").split("[", 1)[0].strip()
         if not raw:
             return False

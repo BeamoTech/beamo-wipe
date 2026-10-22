@@ -1,0 +1,20 @@
+{"Time":"2026-10-21T04:09:51.411225311Z","Action":"start","Package":"beamo-wipe/desktop"}
+{"Time":"2026-10-21T04:09:51.420713823Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestPass8ReadinessActionModel"}
+{"Time":"2026-10-21T04:09:51.420734974Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass8ReadinessActionModel","Output":"=== RUN   TestPass8ReadinessActionModel\n"}
+{"Time":"2026-10-21T04:09:52.387310407Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass8ReadinessActionModel","Output":"{\n"}
+{"Time":"2026-10-21T04:09:52.387364757Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass8ReadinessActionModel","Output":"  \"authorized_fake_restarts\": 278,\n"}
+{"Time":"2026-10-21T04:09:52.387368593Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass8ReadinessActionModel","Output":"  \"failures\": 0,\n"}
+{"Time":"2026-10-21T04:09:52.387372438Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass8ReadinessActionModel","Output":"  \"malformed_duplicate_requests\": 1405,\n"}
+{"Time":"2026-10-21T04:09:52.387374702Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass8ReadinessActionModel","Output":"  \"native_callbacks\": 0,\n"}
+{"Time":"2026-10-21T04:09:52.387376605Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass8ReadinessActionModel","Output":"  \"probes\": 2909,\n"}
+{"Time":"2026-10-21T04:09:52.387378447Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass8ReadinessActionModel","Output":"  \"public_action_requests\": 16000,\n"}
+{"Time":"2026-10-21T04:09:52.38738014Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass8ReadinessActionModel","Output":"  \"refused_requests\": 7013,\n"}
+{"Time":"2026-10-21T04:09:52.387381752Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass8ReadinessActionModel","Output":"  \"seed_base\": 802026,\n"}
+{"Time":"2026-10-21T04:09:52.387383314Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass8ReadinessActionModel","Output":"  \"sessions\": 200,\n"}
+{"Time":"2026-10-21T04:09:52.387384947Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass8ReadinessActionModel","Output":"  \"windows_manual_policy_cases\": 1000\n"}
+{"Time":"2026-10-21T04:09:52.387386509Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass8ReadinessActionModel","Output":"}\n"}
+{"Time":"2026-10-21T04:09:52.389530012Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass8ReadinessActionModel","Output":"--- PASS: TestPass8ReadinessActionModel (0.97s)\n"}
+{"Time":"2026-10-21T04:09:52.389546357Z","Action":"pass","Package":"beamo-wipe/desktop","Test":"TestPass8ReadinessActionModel","Elapsed":0.97}
+{"Time":"2026-10-21T04:09:52.389781054Z","Action":"output","Package":"beamo-wipe/desktop","Output":"PASS\n"}
+{"Time":"2026-10-21T04:09:53.393776659Z","Action":"output","Package":"beamo-wipe/desktop","Output":"ok  \tbeamo-wipe/desktop\t1.982s\n"}
+{"Time":"2026-10-21T04:09:53.393853903Z","Action":"pass","Package":"beamo-wipe/desktop","Elapsed":1.983}

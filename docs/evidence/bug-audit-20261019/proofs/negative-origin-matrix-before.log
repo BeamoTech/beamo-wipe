@@ -1,0 +1,227 @@
+FFFFFFFFF..................FF...                                         [100%]
+=================================== FAILURES ===================================
+_ test_model_lf_cannot_claim_attributed_failure[everyday-Nwipe was aborted by the user-interrupted] _
+
+payload = 'Nwipe was aborted by the user', reason = 'interrupted'
+method = <MethodId.EVERYDAY: 'everyday'>
+
+    @pytest.mark.parametrize('payload,reason', NEGATIVES)
+    @pytest.mark.parametrize('method', tuple(MethodId))
+    def test_model_lf_cannot_claim_attributed_failure(payload, reason, method):
+        model = 'X\n' + payload
+        assert len(model.encode()) <= 40
+        log = STAMP + '/dev/sda, ATA, ' + model + ', serial FAKE\n' + STATUS + ROW
+        observed = completion_for_method(0, log, '/dev/sda', method)
+>       assert not observed[0] and observed[2] == 'indeterminate', observed
+E       AssertionError: (False, 'nwipe was aborted', 'interrupted')
+E       assert (not False and 'interrupted' == 'indeterminate'
+E         
+E         - indeterminate
+E         + interrupted)
+
+../beamo-tools/audit-20261019/runner/test_model_negative_origin.py:25: AssertionError
+_ test_model_lf_cannot_claim_attributed_failure[everyday-/dev/sda: >>> FAILURE! <<<-engine_failed] _
+
+payload = '/dev/sda: >>> FAILURE! <<<', reason = 'engine_failed'
+method = <MethodId.EVERYDAY: 'everyday'>
+
+    @pytest.mark.parametrize('payload,reason', NEGATIVES)
+    @pytest.mark.parametrize('method', tuple(MethodId))
+    def test_model_lf_cannot_claim_attributed_failure(payload, reason, method):
+        model = 'X\n' + payload
+        assert len(model.encode()) <= 40
+        log = STAMP + '/dev/sda, ATA, ' + model + ', serial FAKE\n' + STATUS + ROW
+        observed = completion_for_method(0, log, '/dev/sda', method)
+>       assert not observed[0] and observed[2] == 'indeterminate', observed
+E       AssertionError: (False, 'nwipe reported a failure', 'engine_failed')
+E       assert (not False and 'engine_failed' == 'indeterminate'
+E         
+E         - indeterminate
+E         + engine_failed)
+
+../beamo-tools/audit-20261019/runner/test_model_negative_origin.py:25: AssertionError
+_ test_model_lf_cannot_claim_attributed_failure[everyday-Verification mismatch on '/dev/sda'-verification_failed] _
+
+payload = "Verification mismatch on '/dev/sda'", reason = 'verification_failed'
+method = <MethodId.EVERYDAY: 'everyday'>
+
+    @pytest.mark.parametrize('payload,reason', NEGATIVES)
+    @pytest.mark.parametrize('method', tuple(MethodId))
+    def test_model_lf_cannot_claim_attributed_failure(payload, reason, method):
+        model = 'X\n' + payload
+        assert len(model.encode()) <= 40
+        log = STAMP + '/dev/sda, ATA, ' + model + ', serial FAKE\n' + STATUS + ROW
+        observed = completion_for_method(0, log, '/dev/sda', method)
+>       assert not observed[0] and observed[2] == 'indeterminate', observed
+E       AssertionError: (False, 'nwipe read-back verification failed', 'verification_failed')
+E       assert (not False and 'verification_failed' == 'indeterminate'
+E         
+E         - indeterminate
+E         + verification_failed)
+
+../beamo-tools/audit-20261019/runner/test_model_negative_origin.py:25: AssertionError
+_ test_model_lf_cannot_claim_attributed_failure[extra-Nwipe was aborted by the user-interrupted] _
+
+payload = 'Nwipe was aborted by the user', reason = 'interrupted'
+method = <MethodId.EXTRA: 'extra'>
+
+    @pytest.mark.parametrize('payload,reason', NEGATIVES)
+    @pytest.mark.parametrize('method', tuple(MethodId))
+    def test_model_lf_cannot_claim_attributed_failure(payload, reason, method):
+        model = 'X\n' + payload
+        assert len(model.encode()) <= 40
+        log = STAMP + '/dev/sda, ATA, ' + model + ', serial FAKE\n' + STATUS + ROW
+        observed = completion_for_method(0, log, '/dev/sda', method)
+>       assert not observed[0] and observed[2] == 'indeterminate', observed
+E       AssertionError: (False, 'nwipe was aborted', 'interrupted')
+E       assert (not False and 'interrupted' == 'indeterminate'
+E         
+E         - indeterminate
+E         + interrupted)
+
+../beamo-tools/audit-20261019/runner/test_model_negative_origin.py:25: AssertionError
+_ test_model_lf_cannot_claim_attributed_failure[extra-/dev/sda: >>> FAILURE! <<<-engine_failed] _
+
+payload = '/dev/sda: >>> FAILURE! <<<', reason = 'engine_failed'
+method = <MethodId.EXTRA: 'extra'>
+
+    @pytest.mark.parametrize('payload,reason', NEGATIVES)
+    @pytest.mark.parametrize('method', tuple(MethodId))
+    def test_model_lf_cannot_claim_attributed_failure(payload, reason, method):
+        model = 'X\n' + payload
+        assert len(model.encode()) <= 40
+        log = STAMP + '/dev/sda, ATA, ' + model + ', serial FAKE\n' + STATUS + ROW
+        observed = completion_for_method(0, log, '/dev/sda', method)
+>       assert not observed[0] and observed[2] == 'indeterminate', observed
+E       AssertionError: (False, 'nwipe reported a failure', 'engine_failed')
+E       assert (not False and 'engine_failed' == 'indeterminate'
+E         
+E         - indeterminate
+E         + engine_failed)
+
+../beamo-tools/audit-20261019/runner/test_model_negative_origin.py:25: AssertionError
+_ test_model_lf_cannot_claim_attributed_failure[extra-Verification mismatch on '/dev/sda'-verification_failed] _
+
+payload = "Verification mismatch on '/dev/sda'", reason = 'verification_failed'
+method = <MethodId.EXTRA: 'extra'>
+
+    @pytest.mark.parametrize('payload,reason', NEGATIVES)
+    @pytest.mark.parametrize('method', tuple(MethodId))
+    def test_model_lf_cannot_claim_attributed_failure(payload, reason, method):
+        model = 'X\n' + payload
+        assert len(model.encode()) <= 40
+        log = STAMP + '/dev/sda, ATA, ' + model + ', serial FAKE\n' + STATUS + ROW
+        observed = completion_for_method(0, log, '/dev/sda', method)
+>       assert not observed[0] and observed[2] == 'indeterminate', observed
+E       AssertionError: (False, 'nwipe read-back verification failed', 'verification_failed')
+E       assert (not False and 'verification_failed' == 'indeterminate'
+E         
+E         - indeterminate
+E         + verification_failed)
+
+../beamo-tools/audit-20261019/runner/test_model_negative_origin.py:25: AssertionError
+_ test_model_lf_cannot_claim_attributed_failure[quick_zero-Nwipe was aborted by the user-interrupted] _
+
+payload = 'Nwipe was aborted by the user', reason = 'interrupted'
+method = <MethodId.QUICK_ZERO: 'quick_zero'>
+
+    @pytest.mark.parametrize('payload,reason', NEGATIVES)
+    @pytest.mark.parametrize('method', tuple(MethodId))
+    def test_model_lf_cannot_claim_attributed_failure(payload, reason, method):
+        model = 'X\n' + payload
+        assert len(model.encode()) <= 40
+        log = STAMP + '/dev/sda, ATA, ' + model + ', serial FAKE\n' + STATUS + ROW
+        observed = completion_for_method(0, log, '/dev/sda', method)
+>       assert not observed[0] and observed[2] == 'indeterminate', observed
+E       AssertionError: (False, 'nwipe was aborted', 'interrupted')
+E       assert (not False and 'interrupted' == 'indeterminate'
+E         
+E         - indeterminate
+E         + interrupted)
+
+../beamo-tools/audit-20261019/runner/test_model_negative_origin.py:25: AssertionError
+_ test_model_lf_cannot_claim_attributed_failure[quick_zero-/dev/sda: >>> FAILURE! <<<-engine_failed] _
+
+payload = '/dev/sda: >>> FAILURE! <<<', reason = 'engine_failed'
+method = <MethodId.QUICK_ZERO: 'quick_zero'>
+
+    @pytest.mark.parametrize('payload,reason', NEGATIVES)
+    @pytest.mark.parametrize('method', tuple(MethodId))
+    def test_model_lf_cannot_claim_attributed_failure(payload, reason, method):
+        model = 'X\n' + payload
+        assert len(model.encode()) <= 40
+        log = STAMP + '/dev/sda, ATA, ' + model + ', serial FAKE\n' + STATUS + ROW
+        observed = completion_for_method(0, log, '/dev/sda', method)
+>       assert not observed[0] and observed[2] == 'indeterminate', observed
+E       AssertionError: (False, 'nwipe reported a failure', 'engine_failed')
+E       assert (not False and 'engine_failed' == 'indeterminate'
+E         
+E         - indeterminate
+E         + engine_failed)
+
+../beamo-tools/audit-20261019/runner/test_model_negative_origin.py:25: AssertionError
+_ test_model_lf_cannot_claim_attributed_failure[quick_zero-Verification mismatch on '/dev/sda'-verification_failed] _
+
+payload = "Verification mismatch on '/dev/sda'", reason = 'verification_failed'
+method = <MethodId.QUICK_ZERO: 'quick_zero'>
+
+    @pytest.mark.parametrize('payload,reason', NEGATIVES)
+    @pytest.mark.parametrize('method', tuple(MethodId))
+    def test_model_lf_cannot_claim_attributed_failure(payload, reason, method):
+        model = 'X\n' + payload
+        assert len(model.encode()) <= 40
+        log = STAMP + '/dev/sda, ATA, ' + model + ', serial FAKE\n' + STATUS + ROW
+        observed = completion_for_method(0, log, '/dev/sda', method)
+>       assert not observed[0] and observed[2] == 'indeterminate', observed
+E       AssertionError: (False, 'nwipe read-back verification failed', 'verification_failed')
+E       assert (not False and 'verification_failed' == 'indeterminate'
+E         
+E         - indeterminate
+E         + verification_failed)
+
+../beamo-tools/audit-20261019/runner/test_model_negative_origin.py:25: AssertionError
+_ test_model_lf_cannot_claim_proved_media_failure[/dev/sda: >>> FAILURE! <<<-engine_failed] _
+
+payload = '/dev/sda: >>> FAILURE! <<<', reason = 'engine_failed'
+
+    @pytest.mark.parametrize('payload,reason', NEGATIVES[1:])
+    def test_model_lf_cannot_claim_proved_media_failure(payload, reason):
+        log = STAMP + '/dev/sda, ATA, X\n' + payload + ', serial FAKE\n' + ERRORS + STATUS + ROW
+        checks = {row.id: row.status for row in evaluate_engine_checks(log, '/dev/sda')}
+>       assert checks['io_media'] == 'unavailable', checks
+E       AssertionError: {'coverage': 'warning', 'hidden_capacity': 'unavailable', 'io_media': 'fail'}
+E       assert 'fail' == 'unavailable'
+E         
+E         - unavailable
+E         + fail
+
+../beamo-tools/audit-20261019/runner/test_model_negative_origin.py:38: AssertionError
+_ test_model_lf_cannot_claim_proved_media_failure[Verification mismatch on '/dev/sda'-verification_failed] _
+
+payload = "Verification mismatch on '/dev/sda'", reason = 'verification_failed'
+
+    @pytest.mark.parametrize('payload,reason', NEGATIVES[1:])
+    def test_model_lf_cannot_claim_proved_media_failure(payload, reason):
+        log = STAMP + '/dev/sda, ATA, X\n' + payload + ', serial FAKE\n' + ERRORS + STATUS + ROW
+        checks = {row.id: row.status for row in evaluate_engine_checks(log, '/dev/sda')}
+>       assert checks['io_media'] == 'unavailable', checks
+E       AssertionError: {'coverage': 'warning', 'hidden_capacity': 'unavailable', 'io_media': 'fail'}
+E       assert 'fail' == 'unavailable'
+E         
+E         - unavailable
+E         + fail
+
+../beamo-tools/audit-20261019/runner/test_model_negative_origin.py:38: AssertionError
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-20261019/runner/test_model_negative_origin.py::test_model_lf_cannot_claim_attributed_failure[everyday-Nwipe was aborted by the user-interrupted]
+FAILED ../beamo-tools/audit-20261019/runner/test_model_negative_origin.py::test_model_lf_cannot_claim_attributed_failure[everyday-/dev/sda: >>> FAILURE! <<<-engine_failed]
+FAILED ../beamo-tools/audit-20261019/runner/test_model_negative_origin.py::test_model_lf_cannot_claim_attributed_failure[everyday-Verification mismatch on '/dev/sda'-verification_failed]
+FAILED ../beamo-tools/audit-20261019/runner/test_model_negative_origin.py::test_model_lf_cannot_claim_attributed_failure[extra-Nwipe was aborted by the user-interrupted]
+FAILED ../beamo-tools/audit-20261019/runner/test_model_negative_origin.py::test_model_lf_cannot_claim_attributed_failure[extra-/dev/sda: >>> FAILURE! <<<-engine_failed]
+FAILED ../beamo-tools/audit-20261019/runner/test_model_negative_origin.py::test_model_lf_cannot_claim_attributed_failure[extra-Verification mismatch on '/dev/sda'-verification_failed]
+FAILED ../beamo-tools/audit-20261019/runner/test_model_negative_origin.py::test_model_lf_cannot_claim_attributed_failure[quick_zero-Nwipe was aborted by the user-interrupted]
+FAILED ../beamo-tools/audit-20261019/runner/test_model_negative_origin.py::test_model_lf_cannot_claim_attributed_failure[quick_zero-/dev/sda: >>> FAILURE! <<<-engine_failed]
+FAILED ../beamo-tools/audit-20261019/runner/test_model_negative_origin.py::test_model_lf_cannot_claim_attributed_failure[quick_zero-Verification mismatch on '/dev/sda'-verification_failed]
+FAILED ../beamo-tools/audit-20261019/runner/test_model_negative_origin.py::test_model_lf_cannot_claim_proved_media_failure[/dev/sda: >>> FAILURE! <<<-engine_failed]
+FAILED ../beamo-tools/audit-20261019/runner/test_model_negative_origin.py::test_model_lf_cannot_claim_proved_media_failure[Verification mismatch on '/dev/sda'-verification_failed]
+11 failed, 21 passed in 0.15s

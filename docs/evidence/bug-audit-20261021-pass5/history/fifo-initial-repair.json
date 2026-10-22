@@ -1,0 +1,44 @@
+{
+  "state": "FROZEN AND RELEASED TO ROOT",
+  "baseline": "e4871239f02e46137fb6d8df64b5880ae2ea4b4d",
+  "finding": "Blocking FIFO log replacement during pre-exec log open",
+  "promotion": "Root independently reproduced 1FAIL/1regular control; approved narrow same-owner replacement-race availability repair",
+  "product_change": "Add O_NONBLOCK to the write/create/no-follow log open so FIFO-without-reader refuses promptly, while opened FIFO-with-reader reaches existing regular-inode rejection before truncation.",
+  "changed_files": {
+    "src/beamo_wipe/safety.py": "56edc298efcbb74d7405d34c81825b622ac8df0f4c743e8cdae3da84e19874f1",
+    "tests/test_log_fifo_open_pass5_20261021.py": "cdbde0697e9bf6529c29e59fb42b699f4f4f3e2daa3f120433fc8e4a8ed49765"
+  },
+  "original_proof_before": {
+    "failed": 1,
+    "passed": 1
+  },
+  "exact_final_module_on_archived_original_safety": {
+    "failed": 3,
+    "passed": 6,
+    "errors": 0,
+    "skipped": 0
+  },
+  "final_adjacency": {
+    "passed": 207,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "includes_new_cases": 9
+  },
+  "unchanged_original_proof_after": {
+    "passed": 2,
+    "failed": 0
+  },
+  "checks": {
+    "ruff": "PASS",
+    "new_test_format": "PASS",
+    "python310_grammar": "PASS for both owned files; not separate runtime acceptance",
+    "diff_check": "PASS"
+  },
+  "scope": "Actual runner route and direct truncate close/retain. FIFO with/without reader, unchanged regular controls, no fake spawn on refusal, lock/log FD cleanup, original bytes preserved, corrected retry.",
+  "intermediate_failures": {
+    "new_test_draft": "FD tracker initially counted fdopen-managed completion-read handles; narrowed tracking to pre-exec lock/log ownership before genuine expanded baseline. Draft5FAIL/4PASS preserved. Existing assertions unchanged.",
+    "adjacent_setup": "One nonexistent tests/test_guardrails.py path caused collection-only setup error; corrected explicit selection207PASS. Error log preserved."
+  },
+  "limits": "No unsafe erasure or unprivileged attack claim. Requires same-owner/root pathname replacement in private log directory. Only ordinary temporary logs/FIFOs, owned helper processes and fake engine callbacks used; native inventory/process/device/mount/firmware/power callbacks forbidden. No staging/backlog/commit/remote or further delegation."
+}

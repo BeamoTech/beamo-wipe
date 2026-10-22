@@ -145,8 +145,9 @@ def test_publication_rejects_manifest_replaced_after_validation(
             path.write_bytes(replacement)
         return accepted
 
-    def upload_file(path, object_name):
+    def upload_file(path, object_name, _snapshot):
         uploads[object_name] = hashlib.sha256(path.read_bytes()).hexdigest()
+        return uploads[object_name]
 
     def upload_stream(object_name, stream, _size):
         uploads[object_name] = hashlib.sha256(stream.read()).hexdigest()
@@ -171,7 +172,9 @@ def test_publication_rejects_manifest_replaced_after_validation(
     monkeypatch.setattr(PUBLISHER, "_upload_file", upload_file)
     monkeypatch.setattr(PUBLISHER, "_upload_stream", upload_stream)
     monkeypatch.setattr(
-        PUBLISHER, "_remote_sha256", lambda object_name: uploads[object_name]
+        PUBLISHER,
+        "_remote_sha256",
+        lambda object_name, **_kwargs: uploads[object_name],
     )
     monkeypatch.setattr(release_manifest, "verify_manifest", verify_then_replace)
     monkeypatch.setattr(ci_evidence, "load_receipts", lambda _path: [])
@@ -301,8 +304,9 @@ def test_publication_binds_usb_image_to_qemu(tmp_path, monkeypatch, scenario):
             receipt_path.write_text(json.dumps({**receipt, "status": "fail"}))
         return signature, hashlib.sha256(b"fixture signature").hexdigest()
 
-    def upload_file(path, object_name):
+    def upload_file(path, object_name, _snapshot):
         uploads[object_name] = hashlib.sha256(path.read_bytes()).hexdigest()
+        return uploads[object_name]
 
     def upload_stream(object_name, stream, _size):
         uploads[object_name] = hashlib.sha256(stream.read()).hexdigest()
@@ -330,7 +334,9 @@ def test_publication_binds_usb_image_to_qemu(tmp_path, monkeypatch, scenario):
     monkeypatch.setattr(PUBLISHER, "_upload_file", upload_file)
     monkeypatch.setattr(PUBLISHER, "_upload_stream", upload_stream)
     monkeypatch.setattr(
-        PUBLISHER, "_remote_sha256", lambda object_name: uploads[object_name]
+        PUBLISHER,
+        "_remote_sha256",
+        lambda object_name, **_kwargs: uploads[object_name],
     )
     if scenario in {"sidecar_replaced", "metadata_replaced", "sha256sums_replaced"}:
         verify_image = PUBLISHER._verify_usb_image

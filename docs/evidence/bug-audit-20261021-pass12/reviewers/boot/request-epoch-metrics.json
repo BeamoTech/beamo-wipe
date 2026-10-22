@@ -1,0 +1,9 @@
+{
+  "cancelled_publications": 16,
+  "closed_session_refusals": 64,
+  "fresh_publications": 16,
+  "native_callbacks": 0,
+  "normal_restart_controls": 16,
+  "stale_restart_refusals": 16,
+  "states": 16
+}

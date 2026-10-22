@@ -1,0 +1,20 @@
+[ci-hosted] orca on a dedicated Xvfb 1600x1000 @ 72 DPI
+[ci-hosted] pytest under a separate Xvfb 1600x1000 @ 72 DPI
+dbus-daemon[17]: [session uid=1000 pid=17 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=46 comm="python3 -m pytest -p no:cacheprovider tests/test_a" label="kernel")
+dbus-daemon[17]: [session uid=1000 pid=17 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[54]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=46 comm="python3 -m pytest -p no:cacheprovider tests/test_a" label="kernel")
+dbus-daemon[54]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+dbus-daemon[18]: [session uid=1000 pid=18 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=45 comm="python3 -m pytest --deselect=tests/test_accessible" label="kernel")
+dbus-daemon[18]: [session uid=1000 pid=18 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[17]: [session uid=1000 pid=17 pidfd=5] Activating service name='ca.desrt.dconf' requested by ':1.1' (uid=1000 pid=48 comm="/usr/libexec/at-spi-bus-launcher" label="kernel")
+dbus-daemon[17]: [session uid=1000 pid=17 pidfd=5] Successfully activated service 'ca.desrt.dconf'
+........................................................................ [  0%]
+...........dbus-daemon[70]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=45 comm="python3 -m pytest --deselect=tests/test_accessible" label="kernel")
+dbus-daemon[70]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+............................................................. [  1%]
+........................................................................ [  1%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+..................

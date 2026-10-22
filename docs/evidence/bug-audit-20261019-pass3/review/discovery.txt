@@ -1,0 +1,75 @@
+Beamo Wipe comprehensive audit PASS3: discovery/identity/authorization
+Starting source: /workspace/beamo-wipe HEAD fa2ca72b648ef373c6215699e883296bc8db551d
+Auditor: runner_audit (rotated scope), 2026-10-19 UTC
+
+Read current AGENTS.md, relevant unfinished-work history and operating guidance.
+Prior owner exception for missing shared guide remains resolved. All evidence
+uses fake inventory/process values or regular workspace/temporary files; no
+native inventory, actual nwipe, physical device, power, firmware or hosted action.
+
+Reviewed:
+- discover.py: boot mount/cmdline/typed-source/label provenance; canonical paths,
+  whole disk/partition ancestry, unresolved/stacked filesystem and holder cases,
+  duplicate physical observations, boot/mounted hardware aliases, raw MODEL,
+  serial/WWN fallback, filesystem layout hashes and contents classification;
+  numeric/text/control/children shape normalization and production schema gate.
+- safety.py: whole-device/boot guards, local/remote transport predicates,
+  confirmation token uniqueness, exact boolean consent/delay, disk identity,
+  assert_ready_to_wipe and final assert_rediscovered_identity boundary.
+- models.py, identity.py, inventory.py: identity representation and picker peers;
+  Wizard._operation_key/_perform_start and runner's under-lock identity handoff.
+
+Verified bug (independently replayed and approved by root before edits):
+The wizard binds consent to every listed disk, but request construction retained
+only target and boot fingerprints. A peer added, removed or swapped during the
+runner's final under-lock rediscovery passed even though the same mutation would
+revoke authorization at the earlier wizard check. The target and boot themselves
+remain unchanged in the proof; this is lost inventory-bound authorization, not
+an assertion that the engine would select a different target.
+
+Evidence before edits:
+- test_final_peer_snapshot.py / final-peer-original.log/.xml: 3 FAIL / 1 unchanged
+  control PASS using real assert_ready_to_wipe-generated requests and fake final
+  discovery; verifies Wizard._operation_key changes for the exact same mutation.
+- baseline.log/.xml: 787 existing discovery/safety/identity/boot/authorization
+  cases PASS in 3.17 seconds, zero fail/error/skip.
+- New tracked regression file before product changes: expanded-original.log/.xml
+  records 73 FAIL / 13 controls PASS (86 cases); includes full guarded real-runner
+  start with only a fake Popen, proving no spawn when peer metadata changes.
+- baseline-src/ and baseline-source-sha256.txt retain exact pre-edit owned source.
+
+Minimal approved repair:
+- models.py: append defaulted WipeRequest.inventory_identity for constructor
+  compatibility. Empty snapshots preserve manually constructed legacy requests.
+- safety.py: every authorization-boundary request captures the sorted canonical
+  disk_identity tuple for listed disks, including protected boot media. The
+  final guard compares it after the existing target/boot identity checks.
+- tests/test_final_inventory_snapshot_pass3_20261019.py: all three methods;
+  add/remove, serial/size/WWN/MODEL/raw MODEL/layout/vendor/bus/kind and boot alias;
+  unchanged/reordering and legacy target/boot validation controls. Includes
+  assert_rediscovered_identity and complete guarded runner.start boundaries.
+- No Wizard refactor, wipe flags, discovery logic, physical policy or prior
+  assertion changed. No other tracked files edited by this agent.
+
+Current verification:
+- fixed-focused.log/.xml: 197 PASS in 1.30 seconds, zero fail/error/skip.
+- Focused Ruff and mypy pass; git diff --check clean.
+- final-adjacent.log/.xml: broader adjacent suite pending at report creation.
+- product.diff / final-source-sha256.txt: final owned patch and exact file hashes.
+
+Root owns independent review, integrated full gates, canonical backlog and any
+conditional commit/push. This agent has not staged, committed, pushed or released.
+
+Final verification checkpoint:
+- Broader first attempt (final-adjacent.log/.xml) had 1 GTK initialization failure,
+  1011 PASS / 2 SKIP because no graphical display was provided. Preserved as
+  environment-failure evidence, not claimed as a passing gate.
+- Initial private-display attempt was denied a local D-Bus socket by the default
+  sandbox (display-setup-failed.log), before tests executed. Supported local
+  socket/network permission enabled the isolated test session; no policy bypass,
+  external access, host display replacement or tracked file edit occurred.
+- Corrected exact suite on independent 72-DPI Xvfb + private D-Bus:
+  final-adjacent-display.log/.xml: 1,014 PASS, 0 FAIL/ERROR/SKIP, 6.77 seconds.
+- All three final owned source/test hashes still match final-source-sha256.txt.
+  Root received the final report, patch and successful evidence for independent
+  integration/full gates. No additional verified defect remains in this review.

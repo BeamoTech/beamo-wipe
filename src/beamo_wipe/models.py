@@ -150,6 +150,10 @@ class WipeRequest:
     # The same hotplug/path-reuse check also applies to the boot medium before
     # nwipe receives --exclude for its /dev path.
     boot_identity: tuple = ()
+    # Inventory the owner confirmed, carried through the final runner rescan.
+    # Empty preserves manually constructed legacy requests; the authorization
+    # boundary always captures every listed disk, including protected media.
+    inventory_identity: tuple = ()
 
 
 @dataclass(frozen=True)

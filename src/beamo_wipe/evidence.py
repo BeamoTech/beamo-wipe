@@ -8,13 +8,16 @@ always FAILED, never COMPLETED/VERIFIED. No hostname, IP, or user details.
 from __future__ import annotations
 
 import datetime
+import ctypes
 import errno
 import hashlib
 import json
 import math
 import os
 import re
+import secrets
 import stat
+import sys
 import time
 import unicodedata
 from pathlib import Path
@@ -651,27 +654,94 @@ class EvidenceFinalizationError(OSError):
     """Publication occurred but its final filesystem synchronization failed."""
 
 
+def _rename_noreplace(directory_fd: int, source: str, destination: str) -> None:
+    """Atomically publish ``source`` without replacing ``destination``."""
+    if sys.platform.startswith("linux"):
+        libc = ctypes.CDLL(None, use_errno=True)
+        try:
+            renameat2 = libc.renameat2
+        except AttributeError as exc:
+            raise OSError(errno.ENOSYS, "renameat2 is required for publication") from exc
+        renameat2.argtypes = (
+            ctypes.c_int,
+            ctypes.c_char_p,
+            ctypes.c_int,
+            ctypes.c_char_p,
+            ctypes.c_uint,
+        )
+        renameat2.restype = ctypes.c_int
+        if renameat2(
+            directory_fd,
+            os.fsencode(source),
+            directory_fd,
+            os.fsencode(destination),
+            1,  # RENAME_NOREPLACE
+        ) != 0:
+            error = ctypes.get_errno()
+            raise OSError(error, os.strerror(error), destination)
+        return
+
+    # Development-only portability fallback. The cryptographic source name
+    # bounds interference, but POSIX has no portable atomic no-replace rename.
+    # Never roll back the final name if unlinking the source fails.
+    os.link(
+        source,
+        destination,
+        src_dir_fd=directory_fd,
+        dst_dir_fd=directory_fd,
+        follow_symlinks=False,
+    )
+    try:
+        os.unlink(source, dir_fd=directory_fd)
+    except BaseException as exc:
+        if isinstance(exc, Exception):
+            raise EvidenceFinalizationError("Evidence finalization failed") from exc
+        raise
+
+
 def _atomic_write_bytes(path: Path, data: bytes) -> tuple[int, int]:
     directory = path.parent
     dir_fd = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
-    tmp_name = f".{path.name}.tmp.{os.getpid()}.{time.time_ns()}"
-    fd = -1
-    temp_identity: tuple[int, int] | None = None
+    tmp_name = f".{path.name}.tmp.{secrets.token_hex(16)}"
+    fd = pinned_fd = -1
 
-    def remove_owned_temp() -> None:
-        if temp_identity is None:
-            return
-        try:
-            current = os.stat(tmp_name, dir_fd=dir_fd, follow_symlinks=False)
-        except FileNotFoundError:
-            return
-        if (current.st_dev, current.st_ino) == temp_identity:
-            os.unlink(tmp_name, dir_fd=dir_fd)
+    def verify_publication(name: str, links: int) -> None:
+        fields = (
+            "st_dev", "st_ino", "st_size", "st_mode", "st_uid", "st_nlink",
+            "st_mtime_ns", "st_ctime_ns",
+        )
+        opened = os.fstat(pinned_fd)
+        named = os.stat(name, dir_fd=dir_fd, follow_symlinks=False)
+        if (
+            any(getattr(opened, key) != getattr(named, key) for key in fields)
+            or not stat.S_ISREG(opened.st_mode)
+            or opened.st_uid != os.getuid()
+            or stat.S_IMODE(opened.st_mode) != 0o600
+            or opened.st_nlink != links
+            or opened.st_size != len(data)
+        ):
+            raise SafetyError("Evidence publication changed")
+        received = bytearray()
+        while len(received) <= len(data):
+            chunk = os.pread(
+                pinned_fd, min(65536, len(data) + 1 - len(received)), len(received)
+            )
+            if not chunk:
+                break
+            received.extend(chunk)
+        after = os.fstat(pinned_fd)
+        named = os.stat(name, dir_fd=dir_fd, follow_symlinks=False)
+        if received != data or any(
+            getattr(opened, key) != getattr(after, key)
+            or getattr(after, key) != getattr(named, key)
+            for key in fields
+        ):
+            raise SafetyError("Evidence publication changed")
 
     try:
         fd = os.open(
             tmp_name,
-            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+            os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
             0o600,
             dir_fd=dir_fd,
         )
@@ -685,44 +755,25 @@ def _atomic_write_bytes(path: Path, data: bytes) -> tuple[int, int]:
             view = view[written:]
         os.fsync(fd)
         published_identity = temp_identity
+        # Keep the inode pinned through publication while retaining the
+        # original close boundary: its failure must refuse before renameat2.
+        pinned_fd = os.dup(fd)
         closing_fd = fd
         fd = -1
         # A failed close has platform-dependent ownership; never retry its
         # descriptor number, which may already have been reused.
         os.close(closing_fd)
-        # Publish the already-fsynced inode without replacing an existing
-        # entry. linkat's create-if-absent behavior closes the exists()/rename
-        # race that could overwrite a report planted between preflight and
-        # commit. This primitive is used on the local evidence filesystem;
-        # the FAT32 workflow has its own O_EXCL bundle writer.
-        os.link(
-            tmp_name,
-            path.name,
-            src_dir_fd=dir_fd,
-            dst_dir_fd=dir_fd,
-            follow_symlinks=False,
-        )
+        verify_publication(tmp_name, 1)
+        # Linux atomically consumes the temporary name and refuses an occupied
+        # destination. No final-name rollback or temp-name unlink is needed.
+        _rename_noreplace(dir_fd, tmp_name, path.name)
         try:
-            current = os.stat(path.name, dir_fd=dir_fd, follow_symlinks=False)
-            if (current.st_dev, current.st_ino) != published_identity:
-                raise SafetyError("Evidence publication changed")
-            remove_owned_temp()
+            verify_publication(path.name, 1)
             os.fsync(dir_fd)
+            verify_publication(path.name, 1)
         except BaseException as exc:
-            # linkat() already made the destination visible. If durability
-            # cannot be proved, remove only the entry created by this call
-            # so a retry is not blocked by an orphan without its checksum.
-            # Another writer may have replaced the path during finalization.
-            try:
-                current = os.stat(path.name, dir_fd=dir_fd, follow_symlinks=False)
-                if (current.st_dev, current.st_ino) == published_identity:
-                    os.unlink(path.name, dir_fd=dir_fd)
-            except OSError:
-                pass
-            try:
-                os.fsync(dir_fd)
-            except OSError:
-                pass
+            # A published exact file is a resumable state. Portable POSIX has
+            # no unlink-if-same-inode primitive, so never roll back this name.
             if isinstance(exc, Exception):
                 raise EvidenceFinalizationError("Evidence finalization failed") from exc
             raise
@@ -733,7 +784,8 @@ def _atomic_write_bytes(path: Path, data: bytes) -> tuple[int, int]:
                 os.close(fd)
         finally:
             try:
-                remove_owned_temp()
+                if pinned_fd >= 0:
+                    os.close(pinned_fd)
             finally:
                 os.close(dir_fd)
 
@@ -769,6 +821,86 @@ def _verified_evidence_bytes(path: Path, *, private: bool = False) -> bytes:
     return data
 
 
+def _exact_private_file(path: Path, expected: bytes) -> tuple[int, int] | None:
+    """Return a stable identity only when a named private file has exact bytes."""
+    directory_fd = os.open(
+        str(path.parent), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    )
+    fd = -1
+    try:
+        try:
+            fd = os.open(
+                path.name,
+                os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+                dir_fd=directory_fd,
+            )
+        except FileNotFoundError:
+            return None
+        opened = os.fstat(fd)
+        fields = (
+            "st_dev", "st_ino", "st_size", "st_mode", "st_uid", "st_nlink",
+            "st_mtime_ns", "st_ctime_ns",
+        )
+        if (
+            not stat.S_ISREG(opened.st_mode)
+            or opened.st_uid != os.getuid()
+            or stat.S_IMODE(opened.st_mode) != 0o600
+            or opened.st_nlink != 1
+            or opened.st_size != len(expected)
+        ):
+            raise SafetyError("Export destination contains unsafe evidence")
+
+        def read_once() -> bytes:
+            os.lseek(fd, 0, os.SEEK_SET)
+            received = bytearray()
+            while len(received) <= len(expected):
+                chunk = os.read(fd, min(65536, len(expected) + 1 - len(received)))
+                if not chunk:
+                    break
+                received.extend(chunk)
+            return bytes(received)
+
+        first = read_once()
+        second = read_once()
+        after = os.fstat(fd)
+        named = os.stat(path.name, dir_fd=directory_fd, follow_symlinks=False)
+        if (
+            first != expected
+            or second != expected
+            or any(
+                getattr(opened, field) != getattr(after, field)
+                or getattr(after, field) != getattr(named, field)
+                for field in fields
+            )
+        ):
+            raise SafetyError("Export destination contains different evidence")
+        return opened.st_dev, opened.st_ino
+    except OSError as exc:
+        raise SafetyError("Cannot safely inspect export destination") from exc
+    finally:
+        try:
+            if fd >= 0:
+                os.close(fd)
+        finally:
+            os.close(directory_fd)
+
+
+def _publish_or_accept_exact(path: Path, data: bytes) -> tuple[int, int]:
+    """Publish once, or resume only an identical stable private-file state."""
+    existing = _exact_private_file(path, data)
+    if existing is not None:
+        return existing
+    try:
+        return _atomic_write_bytes(path, data)
+    except FileExistsError:
+        # A concurrent publisher may have won after the absence check. Its
+        # exact bytes are harmless; every other state belongs to that writer.
+        existing = _exact_private_file(path, data)
+        if existing is None:
+            raise
+        return existing
+
+
 def export_evidence(
     evidence_path: Path,
     dest_dir: Path,
@@ -800,8 +932,6 @@ def export_evidence(
     # to dest_dir itself (default would wrongly require dest under /tmp/beamo-wipe
     # and every real export would fail).
     dest_file = dest_dir / src.name
-    if dest_file.exists() or Path(str(dest_file) + CHECKSUM_SUFFIX).exists():
-        raise SafetyError("Export destination already contains this evidence")
     assert_log_not_on_target(str(dest_file), target_device or "", log_dir=dest_dir)
     if boot_device:
         assert_log_not_on_target(str(dest_file), boot_device, log_dir=dest_dir)
@@ -809,24 +939,23 @@ def export_evidence(
     # Compatibility API for pre-mounted destinations. The kiosk does not call
     # this path; _atomic_write_bytes still publishes without replacement.
     dest_sc = Path(str(dest_file) + CHECKSUM_SUFFIX)
-    published_identity = None
-    try:
-        published_identity = _atomic_write_bytes(dest_file, data)
-        _atomic_write_bytes(
-            dest_sc,
-            f"{hashlib.sha256(data).hexdigest()}  {dest_file.name}\n".encode("ascii"),
-        )
-    except Exception:
-        # A different writer may replace the published path while the sidecar
-        # is being written. Only remove the inode created by this attempt.
-        if published_identity is not None:
-            try:
-                current = os.stat(dest_file, follow_symlinks=False)
-                if (current.st_dev, current.st_ino) == published_identity:
-                    dest_file.unlink()
-            except OSError:
-                pass
-        raise
+    sidecar_data = (
+        f"{hashlib.sha256(data).hexdigest()}  {dest_file.name}\n".encode("ascii")
+    )
+    # Inspect both names before publishing either. An exact partial bundle is
+    # a resumable interrupted attempt; every differing entry remains foreign.
+    _exact_private_file(dest_file, data)
+    _exact_private_file(dest_sc, sidecar_data)
+    # The checksum is harmless without its evidence. Publishing it first means
+    # an interruption never exposes unauthenticated JSON and needs no racy
+    # stat-then-unlink rollback of a final pathname.
+    _publish_or_accept_exact(dest_sc, sidecar_data)
+    _publish_or_accept_exact(dest_file, data)
+    if (
+        _exact_private_file(dest_sc, sidecar_data) is None
+        or _exact_private_file(dest_file, data) is None
+    ):
+        raise SafetyError("Export evidence finalization failed")
     # Fsync dest_dir
     try:
         dfd = os.open(str(dest_dir), os.O_DIRECTORY | os.O_RDONLY)

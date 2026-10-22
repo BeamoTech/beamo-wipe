@@ -1,0 +1,17 @@
+Command: /workspace/beamo-wipe/.venv-linux/bin/python3 -m pytest -o addopts= -q tests/test_audit_20260907_recovery.py tests/test_audit_20260908_reports.py tests/test_diagnostic_baseline_order_pass16_disk.py tests/test_diagnostic_boot_evidence_pass11.py tests/test_diagnostic_consistency_pass32_export.py tests/test_diagnostic_malformed_bounds_pass8.py tests/test_diagnostics_directory_binding_regression.py tests/test_diagnostics_line_separators_pass21.py tests/test_discovery_diagnostics_privacy_pass6.py tests/test_evidence_privacy_pass8.py tests/test_gallery_run_again_report_pass26_ui.py tests/test_kiosk_recovery.py tests/test_outcomes_sharing_consistency_pass31.py tests/test_pass10_recovery_evidence_swap.py tests/test_pass11_recovery_evidence_metadata.py tests/test_pass25_report_readme_privacy.py tests/test_pass26_report_check_corrob.py tests/test_pass30_file_uri_privacy.py tests/test_privacy_sharing_copy.py tests/test_recovery_boot_alias_pass3_20261019.py tests/test_recovery_directory_identity_regression.py tests/test_recovery_lock_identity_regression.py tests/test_recovery_named_read_pass5_20261021.py tests/test_recovery_sections.py tests/test_recovery_serial_marker_pass42.py tests/test_recovery_unicode_line_break_pass29.py tests/test_recovery_zero_capacity_baseline_regression.py tests/test_report_destination_unicode_pass29.py tests/test_report_failure_recovery.py tests/test_report_html.py tests/test_report_intent.py tests/test_report_intent_identity_regression.py tests/test_report_media_notice.py tests/test_report_mount_lock_ownership_pass28.py tests/test_report_shutdown.py tests/test_result_elapsed_conflict_pass12.py tests/test_result_presentations.py tests/test_result_summary.py tests/test_runner_diagnostics_privacy_pass6.py tests/test_runner_log_privacy_pass8.py tests/test_screens_report_actions.py tests/test_separate_report_status.py tests/test_session_recovery.py tests/test_session_recovery_reopen_pass11.py tests/test_startup_diagnostics.py tests/test_storage_io_recovery.py tests/test_support_export_pass8.py tests/test_usb_report_workflow.py
+........................................................................ [  7%]
+........................................................................ [ 14%]
+........................................................................ [ 21%]
+........................................................................ [ 28%]
+........................................................................ [ 35%]
+........................................................................ [ 42%]
+........................................................................ [ 49%]
+........................................................................ [ 56%]
+........................................................................ [ 63%]
+........................................................................ [ 70%]
+........................................................................ [ 77%]
+........................................................................ [ 84%]
+........................................................................ [ 91%]
+........................................................................ [ 98%]
+..................                                                       [100%]
+1026 passed in 15.61s

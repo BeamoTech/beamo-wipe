@@ -1,0 +1,22 @@
+{
+  "name": "recovery-final-exact-baseline",
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "-W",
+    "error",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-o",
+    "pythonpath=/workspace/beamo-tools/audit-pass7-20261021/recovery/baseline/src /workspace/beamo-tools/audit-pass7-20261021/recovery/baseline/tests",
+    "-q",
+    "/workspace/beamo-tools/audit-pass7-20261021/root/recovery-final-baseline-tests/test_recovery_publication_binding_pass7_20261021.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass7-20261021/root/recovery-final-exact-baseline.xml"
+  ],
+  "started_utc": "2026-10-21T03:35:00.664936+00:00",
+  "elapsed_seconds": 0.59,
+  "exit_code": 1
+}

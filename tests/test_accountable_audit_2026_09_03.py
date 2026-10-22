@@ -468,7 +468,7 @@ def test_export_sidecar_failure_is_retryable(tmp_path, monkeypatch):
 
 
 def test_export_post_rename_fsync_failure_is_retryable(tmp_path, monkeypatch):
-    """A USB directory-sync error must not strand an orphan JSON forever."""
+    """A USB directory-sync error leaves an exact resumable sidecar."""
     import stat
 
     import beamo_wipe.evidence as evidence
@@ -488,7 +488,11 @@ def test_export_post_rename_fsync_failure_is_retryable(tmp_path, monkeypatch):
     with pytest.raises(evidence.EvidenceFinalizationError, match="finalization"):
         export_evidence(src, dest)
     assert not (dest / src.name).exists()
-    assert not Path(str(dest / src.name) + ".sha256").exists()
+    sidecar = Path(str(dest / src.name) + ".sha256")
+    assert sidecar.read_text(encoding="ascii") == (
+        f"{hashlib.sha256(src.read_bytes()).hexdigest()}  {src.name}\n"
+    )
+    assert stat.S_IMODE(sidecar.stat().st_mode) == 0o600
 
     monkeypatch.setattr(evidence.os, "fsync", original_fsync)
     assert verify_evidence_checksum(export_evidence(src, dest))

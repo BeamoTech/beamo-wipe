@@ -1,0 +1,12 @@
+{
+  "command": [
+    "python3",
+    "-W",
+    "error",
+    "/workspace/beamo-tools/audit-pass10-20261021/discovery/typed_source_contract_matrix.py"
+  ],
+  "started_utc": "2026-10-21T05:22:56.036295+00:00",
+  "elapsed_seconds": 4.0,
+  "exit_code": 0,
+  "exact_script_sha256": "cc11c3e0a31326ead42c1011f655b7ebca45b60e6542d75b81068baaee09f448"
+}

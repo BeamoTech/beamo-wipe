@@ -80,8 +80,12 @@ class ReportIntentStore:
                     raise SafetyError("Invalid report preference")
                 after = os.fstat(fd)
                 named = os.stat(self.NAME, dir_fd=directory, follow_symlinks=False)
+                fields = (
+                    "st_dev", "st_ino", "st_size", "st_mode", "st_uid", "st_nlink",
+                    "st_mtime_ns", "st_ctime_ns",
+                )
                 if (
-                    (after.st_dev, after.st_ino) != (named.st_dev, named.st_ino)
+                    any(getattr(after, key) != getattr(named, key) for key in fields)
                     or (st.st_size, st.st_mtime_ns, st.st_ctime_ns, st.st_mode, st.st_nlink)
                     != (after.st_size, after.st_mtime_ns, after.st_ctime_ns,
                         after.st_mode, after.st_nlink)
@@ -95,38 +99,84 @@ class ReportIntentStore:
         finally:
             os.close(directory)
 
+    def _verify_publication(self, directory: int, fd: int, name: str, data: bytes) -> None:
+        """Bind the named private file to our still-open inode and exact bytes."""
+        fields = (
+            "st_dev", "st_ino", "st_size", "st_mode", "st_uid", "st_nlink",
+            "st_mtime_ns", "st_ctime_ns",
+        )
+        opened = os.fstat(fd)
+        named = os.stat(name, dir_fd=directory, follow_symlinks=False)
+        if (
+            any(getattr(opened, key) != getattr(named, key) for key in fields)
+            or not stat.S_ISREG(opened.st_mode)
+            or opened.st_uid != os.getuid()
+            or stat.S_IMODE(opened.st_mode) != 0o600
+            or opened.st_nlink != 1
+            or opened.st_size != len(data)
+        ):
+            raise SafetyError("Unsafe report preference file")
+        received = b""
+        while len(received) <= len(data):
+            chunk = os.pread(fd, len(data) + 1 - len(received), len(received))
+            if not chunk:
+                break
+            received += chunk
+        after = os.fstat(fd)
+        named = os.stat(name, dir_fd=directory, follow_symlinks=False)
+        if received != data or any(
+            getattr(opened, key) != getattr(after, key)
+            or getattr(after, key) != getattr(named, key)
+            for key in fields
+        ):
+            raise SafetyError("Unsafe report preference file")
+
     def save(self, wanted: bool) -> None:
         if type(wanted) is not bool:
             raise ValueError("Report intent must be boolean")
         directory = self._directory_fd()
         temporary = ".report-intent-" + secrets.token_hex(12)
+        fd = None
         created = False
         try:
             fd = os.open(
                 temporary,
-                os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
                 0o600,
                 dir_fd=directory,
             )
             created = True
-            try:
-                data = b"wanted\n" if wanted else b"not-wanted\n"
-                while data:
-                    size = os.write(fd, data)
-                    if size <= 0:
-                        raise OSError("Incomplete report preference write")
-                    data = data[size:]
-                os.fsync(fd)
-            finally:
-                os.close(fd)
+            data = b"wanted\n" if wanted else b"not-wanted\n"
+            pending = data
+            while pending:
+                size = os.write(fd, pending)
+                if size <= 0:
+                    raise OSError("Incomplete report preference write")
+                pending = pending[size:]
+            os.fsync(fd)
             self._verify_directory(directory)
+            self._verify_publication(directory, fd, temporary, data)
             os.replace(temporary, self.NAME, src_dir_fd=directory, dst_dir_fd=directory)
             created = False
             os.fsync(directory)
             self._verify_directory(directory)
+            self._verify_publication(directory, fd, self.NAME, data)
         finally:
             try:
-                if created:
-                    os.unlink(temporary, dir_fd=directory)
+                if created and fd is not None:
+                    opened = os.fstat(fd)
+                    try:
+                        named = os.stat(temporary, dir_fd=directory, follow_symlinks=False)
+                    except FileNotFoundError:
+                        pass
+                    else:
+                        # Keep the descriptor live until cleanup completes so
+                        # its inode cannot be reused for a foreign temporary.
+                        if (opened.st_dev, opened.st_ino) == (named.st_dev, named.st_ino):
+                            os.unlink(temporary, dir_fd=directory)
             finally:
-                os.close(directory)
+                try:
+                    if fd is not None:
+                        os.close(fd)
+                finally:
+                    os.close(directory)

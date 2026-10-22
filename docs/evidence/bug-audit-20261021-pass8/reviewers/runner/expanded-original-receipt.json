@@ -1,0 +1,12 @@
+{
+  "baseline": "d8a941adc16cf0650d482f512e4b921d702373c5",
+  "test_sha256": "627d242e4a1619820ba4e48fd1e30b0c8d8fe2d370628331e255c7a07bd9f56c",
+  "product_source_sha256": "a30e375ddb27be5bb9e781f17751586760a178a6822d610e811e1d9c2cb3bbb1",
+  "before_product_edit": true,
+  "counts": {
+    "cases": 25,
+    "failures": 18,
+    "errors": 0,
+    "skipped": 0
+  }
+}

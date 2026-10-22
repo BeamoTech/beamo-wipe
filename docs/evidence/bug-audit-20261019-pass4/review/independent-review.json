@@ -1,0 +1,73 @@
+{
+  "reviewer": "Root independent integration review",
+  "baseline_commit": "7f839e50e63db27a787eeabd758579352b6b3a3a",
+  "final_source_files": 800,
+  "source_manifest_sha256": "9b4c0e6b0be2153e4349c01a61b813518f834da789e1f206df8db260fc515342",
+  "reviewed_product_and_new_test_diffs": {
+    "scripts/build_desktop.py": "ff163c8224af00e2b4394aa0f1460e7d62ec6cc93f01f314cfd66ef11e3a9cce",
+    "desktop/main.go": "df049c99fb545d77b126fab7916b48a5e2a11b1fbcda61e344b22dcda3610534",
+    "src/beamo_wipe/support_export.py": "f1cdd6c5c21caeb237d4c2c3837d14abd99a4c254d3fcf02ad0edbb6285ba0f1",
+    "src/beamo_wipe/ui/console_wizard.py": "86aaf67d0bbce045b2fb461e8f1e583837a33af8ac957bec04a9fe194eaba7f9",
+    "developer_tests/test_desktop_prior_receipt_retirement_pass4_20261019.py": "de9bc65a5f2846224e3793cede5122cecffc6982126b99d88dcc63c26de996a7",
+    "desktop/api_duplicate_json_pass4_20261019_test.go": "305a5accc6cbbe865c5d32cc05ef5e9c98ed609991db7cbee4ec71e18455253f",
+    "tests/test_console_stop_hold_pass4_20261019.py": "4e8258b50fa61eada5930a55f19dff63d4f0bbb79229bef9231c7b98e1b2c974",
+    "tests/test_export_worker_locale_pass4_20261019.py": "6e05aa51077e2de3a3cd0f97a2d62fa4a3e866d5aac595925e0b1c4af299b99d"
+  },
+  "existing_test_assertions_modified": false,
+  "python310_grammar": "PASS for changed Python files; no Python3.10 runtime qualification",
+  "independent_original_proofs": {
+    "prior_receipt": {
+      "failed": 6,
+      "controls_passed": 2
+    },
+    "diagnostic_locale": {
+      "failed": 2,
+      "controls_passed": 3
+    },
+    "ordinary_locale": {
+      "failed": 2,
+      "controls_passed": 3
+    },
+    "restart_json": {
+      "failed_named_subtests": 3,
+      "controls_passed": 3
+    },
+    "curses_stop": {
+      "failed": 1,
+      "controls_passed": 1
+    }
+  },
+  "final_new_python": {
+    "passed": 97,
+    "failed": 0,
+    "skipped": 0
+  },
+  "final_new_go": {
+    "top_level_passed": 4,
+    "named_subtests_passed": 137,
+    "race": true
+  },
+  "unchanged_original_probes_after": {
+    "passed": 20,
+    "failed": 0
+  },
+  "actual_gui_cases": {
+    "passed": 59,
+    "failed": 0,
+    "skipped": 0
+  },
+  "no_atomic_compare_and_delete_claim": true,
+  "fake_boundaries_only": true,
+  "source_freeze_revalidated_on_resume": true,
+  "diff_review_conclusions": [
+    "Receipt snapshot compares regular metadata and exact bytes across validation before retirement; lock/directory ownership rechecked.",
+    "API preserves unique field aliases, bounded/authenticated decode, revision and single-use gates while refusing duplicate logical members.",
+    "Worker accepts only exact supported language values, keeps evidence bytes unchanged and legacy requests English; malformed values fail before inventory.",
+    "Curses S hold spans modal opening; suppressed repeats still advance existing Enter/Escape key bookkeeping; fresh S and completion retain precedence."
+  ],
+  "intermediate_results": "Setup/fixture/optional type failures and artificial projection provenance differences retained separately from passing gates.",
+  "go_full_race_native_skips": {
+    "TestLinuxInventoryRetainsPartitionParents": "Requires explicitly opted-in isolated native inventory worker; unset by design",
+    "TestWindowsInventoryReportsOnlyLauncherPartitionPass13": "PowerShell unavailable"
+  }
+}

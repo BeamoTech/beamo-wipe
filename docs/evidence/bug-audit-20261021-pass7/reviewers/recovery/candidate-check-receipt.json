@@ -1,0 +1,42 @@
+{
+  "src/beamo_wipe/report_intent.py": "872072d5a51c72a01596dea683de7279c6191eb072c733ce8ae475fbef95e9fb",
+  "src/beamo_wipe/session_recovery.py": "cf2443e391e184677b12c9d4356eb4314621aecb45244a425d6736823dd47948",
+  "tests/test_storage_io_recovery.py": "afc50560d29f1b0910ea4738c3d20ad42fec05117dec88c67a9fa48f587201c7",
+  "tests/test_recovery_publication_binding_pass7_20261021.py": "0e9d93118c77e14f661981af239d6fd885ae0496fda04ede688aa82a020fcf3f",
+  "expanded-baseline-provenance-red.xml": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "23",
+      "skipped": "0",
+      "tests": "40",
+      "time": "0.331",
+      "timestamp": "2026-10-21T03:30:26.227833+00:00",
+      "hostname": "425a4e623e59"
+    }
+  ],
+  "candidate-original-fixture.xml": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "1",
+      "skipped": "0",
+      "tests": "56",
+      "time": "0.332",
+      "timestamp": "2026-10-21T03:29:38.139947+00:00",
+      "hostname": "425a4e623e59"
+    }
+  ],
+  "candidate-focused.xml": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "56",
+      "time": "0.324",
+      "timestamp": "2026-10-21T03:29:50.408691+00:00",
+      "hostname": "425a4e623e59"
+    }
+  ]
+}

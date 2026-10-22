@@ -1,0 +1,17 @@
+{"Time":"2026-10-21T05:22:16.69725404Z","Action":"start","Package":"beamo-wipe/desktop"}
+{"Time":"2026-10-21T05:22:16.70705806Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestPass10CloseInflightAdmissionProbe"}
+{"Time":"2026-10-21T05:22:16.707079622Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseInflightAdmissionProbe","Output":"=== RUN   TestPass10CloseInflightAdmissionProbe\n"}
+{"Time":"2026-10-21T05:22:16.707120712Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestPass10CloseInflightAdmissionProbe/normal-inflight"}
+{"Time":"2026-10-21T05:22:16.707124338Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseInflightAdmissionProbe/normal-inflight","Output":"=== RUN   TestPass10CloseInflightAdmissionProbe/normal-inflight\n"}
+{"Time":"2026-10-21T05:22:16.707508804Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseInflightAdmissionProbe/normal-inflight","Output":"--- PASS: TestPass10CloseInflightAdmissionProbe/normal-inflight (0.00s)\n"}
+{"Time":"2026-10-21T05:22:16.707517917Z","Action":"pass","Package":"beamo-wipe/desktop","Test":"TestPass10CloseInflightAdmissionProbe/normal-inflight","Elapsed":0}
+{"Time":"2026-10-21T05:22:16.707529003Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestPass10CloseInflightAdmissionProbe/closed-inflight"}
+{"Time":"2026-10-21T05:22:16.707531167Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseInflightAdmissionProbe/closed-inflight","Output":"=== RUN   TestPass10CloseInflightAdmissionProbe/closed-inflight\n"}
+{"Time":"2026-10-21T05:22:16.708167784Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseInflightAdmissionProbe/closed-inflight","Output":"    pass10_external_close_probe_test.go:153: inflight restart survived successful close: code=200 calls=1\n"}
+{"Time":"2026-10-21T05:22:16.708180282Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseInflightAdmissionProbe/closed-inflight","Output":"--- FAIL: TestPass10CloseInflightAdmissionProbe/closed-inflight (0.00s)\n"}
+{"Time":"2026-10-21T05:22:16.708182986Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestPass10CloseInflightAdmissionProbe/closed-inflight","Elapsed":0}
+{"Time":"2026-10-21T05:22:16.70818576Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseInflightAdmissionProbe","Output":"--- FAIL: TestPass10CloseInflightAdmissionProbe (0.00s)\n"}
+{"Time":"2026-10-21T05:22:16.708188294Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestPass10CloseInflightAdmissionProbe","Elapsed":0}
+{"Time":"2026-10-21T05:22:16.708190167Z","Action":"output","Package":"beamo-wipe/desktop","Output":"FAIL\n"}
+{"Time":"2026-10-21T05:22:16.708349386Z","Action":"output","Package":"beamo-wipe/desktop","Output":"FAIL\tbeamo-wipe/desktop\t0.011s\n"}
+{"Time":"2026-10-21T05:22:16.708367823Z","Action":"fail","Package":"beamo-wipe/desktop","Elapsed":0.011}

@@ -1,0 +1,5 @@
+Supplemental browser: Chromium 155.0.8059.79 built on Debian GNU/Linux 13 (trixie)
+dbus-daemon[8]: [session uid=1000 pid=8 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=49 comm="/usr/lib/chromium/chromium --show-component-extens" label="kernel")
+dbus-daemon[8]: [session uid=1000 pid=8 pidfd=5] Successfully activated service 'org.a11y.Bus'
+.........                                                                [100%]
+9 passed in 7.90s

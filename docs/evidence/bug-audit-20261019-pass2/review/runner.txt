@@ -1,0 +1,64 @@
+Beamo Wipe comprehensive audit pass 2: runner/evidence
+Source baseline: /workspace/beamo-wipe HEAD 32819accc77f6ed1090c6f9f0e82800d9db7b7a2
+Auditor: runner_audit, 2026-10-19 UTC
+
+Reviewed current AGENTS.md, docs/ADVANCED.md, relevant unfinished-work record;
+prior missing shared-guide exception is already resolved by current owner.
+Reviewed runner launch/lock/log lifecycle, start/cancel/poll and retries, terminal
+completion/method binding and byte limits; engine checks, evidence construction,
+recovery authentication and progress timing; sampled release verification schemas.
+No real nwipe, physical device, firmware or host inventory operation performed.
+
+Verified and root-independently-reproduced issues:
+1. False attributed Error Summary from a 36-byte ATA model containing
+   X\nError Summary\n sda | 1 | 0 | 0\n***.
+   Existing native-record provenance did not extend to summary-table nonzero
+   counts. A successful authentic Drive Status was labeled engine_failed and
+   io_media=fail. Original isolated proof: 18 FAIL / 6 native+legacy controls
+   PASS; small and >1MiB streamed logs, all three methods and error columns.
+2. Inconsistent EOF and signature capture in _read_log_tail. File growth
+   between tell() and the subsequent fstat() could authenticate a bounded prefix
+   as the full larger log, hide an appended explicit target failure, and return
+   successful WipeResult from public poll(). Original isolated proof: 1 FAIL /
+   1 unchanged control PASS. Root independently replayed both issues before
+   authorizing specific runtime/test file ownership.
+
+Changes (only authorized owned files):
+- src/beamo_wipe/nwipe_runner.py: in native logs, only the full pinned Error
+  Summary banner attributes nonzero table errors; short model tables remain
+  indeterminate. Scan past uncertain rows to retain genuine error precedence.
+  Log size and read identity now derive from one fstat snapshot.
+- src/beamo_wipe/engine_checks.py: untrusted short table counts cannot prove
+  media failures or contradict a real nonzero table. Ambiguous target errors
+  still prevent a zero-error pass. Legacy and authentic duplicate/invalid
+  behavior remains intact.
+- tests/test_summary_record_origin_pass2_20261019.py and
+  tests/test_log_snapshot_growth_pass2_20261019.py: 143 cases, original source
+  56 FAIL / 87 controls PASS. Stable seek/fstat append hooks explicitly assert
+  injection occurred after the fix; tell-only historical hook is not reused
+  as fixed-code proof. No engine log bytes rewritten.
+
+Verification:
+- fixed-focused.log/.xml: 1,134 PASS in 8.21s, zero fail/error/skip.
+- Focused Ruff and mypy checks pass; git diff --check clean.
+- numeric-error-rows.json: public poll safely classifies 20, 21, 5000 and 70000
+  digit error counters without exception. Existing bounded numeric regexes
+  already protect conversion; no new numeric defect or broad change needed.
+- projection-differential-final.json: 1,500 fixed-seed fake logs compare whole
+  versus streamed-projection method outcomes and engine checks; zero mismatch.
+- Broader final-adjacent runner/cancellation/engine/progress suite pending;
+  root notified that owned source/tests are frozen for independent full gates.
+
+Evidence:
+- baseline-src/ and baseline-source-sha256.txt archive pre-edit runtime files.
+- test_summary_origin.py / summary-origin-original.log/.xml: first issue proof.
+- test_log_growth_identity.py / growth-original.log/.xml: second issue proof.
+- expanded-original.log/.xml: new stable-boundary regression matrix before edits.
+- product.diff and final-source-sha256.txt: final patch and four owned file hashes.
+
+No commit, push, hosted CI, release, physical/native/ISO qualification, or
+shared backlog edit performed by this agent. Root owns integration and gates.
+
+Final adjacent suite completed: final-adjacent.log/.xml records 1,462 PASS,
+zero fail/error/skip, 44.95 seconds. Owned source/test bytes remain frozen;
+root received final patch, hashes and test evidence for independent gates.

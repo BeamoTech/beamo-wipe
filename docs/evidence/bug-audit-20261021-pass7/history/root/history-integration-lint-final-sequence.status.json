@@ -1,0 +1,10 @@
+{
+  "name": "final-sequence",
+  "command": [
+    "python3",
+    "/workspace/beamo-tools/audit-pass7-20261021/root/run_final_sequence.py"
+  ],
+  "started_utc": "2026-10-21T03:33:26.857124+00:00",
+  "elapsed_seconds": 47.44,
+  "exit_code": 1
+}

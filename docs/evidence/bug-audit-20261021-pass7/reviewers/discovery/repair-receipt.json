@@ -1,0 +1,67 @@
+{
+  "baseline": "938fe60347c78f2a745d5d5b04e30dfa013da809",
+  "owned_paths": {
+    "src/beamo_wipe/discover.py": "94d7496625b9906c2ea6f19650b8e8dec4ac87b627d25a66ca219c45a67345b4",
+    "tests/test_live_filesystem_kind_pass7_20261021.py": "b33f5cfe335f6f7e701dee196a957d73f5cad151d3eb18901e8665a6b0a97f59"
+  },
+  "counts": {
+    "live-filesystem-original": {
+      "tests": 21,
+      "failures": 12,
+      "errors": 0,
+      "skipped": 0
+    },
+    "expanded-original": {
+      "tests": 64,
+      "failures": 30,
+      "errors": 0,
+      "skipped": 0
+    },
+    "adjacent-baseline": {
+      "tests": 2136,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "adjacent-fixed": {
+      "tests": 2200,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "final-focused": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "static_checks": {
+    "lint": {
+      "exit": 0,
+      "output": "All checks passed!\n"
+    },
+    "source-security": {
+      "exit": 0,
+      "output": "All checks passed!\n"
+    },
+    "test-security": {
+      "exit": 0,
+      "output": "All checks passed!\n"
+    },
+    "mypy": {
+      "exit": 0,
+      "output": "Success: no issues found in 1 source file\n"
+    },
+    "diff-check": {
+      "exit": 0,
+      "output": ""
+    },
+    "python310-grammar": {
+      "exit": 0,
+      "scope": "syntax only, not native Python 3.10 runtime qualification"
+    }
+  },
+  "boundaries": "Fake inventory/process/power/engine guards and ordinary tempfiles only. No native inventory/device/engine/mount/USB/firmware/guest/Docker/network/hostedCI actions. No staging or commits.",
+  "qualification": "Host Python local checks only; Python3.10 grammar check is syntax, not native runtime acceptance. Unknown filesystem types deliberately fail closed. Parent owns final aggregate gate, freeze and backlog."
+}

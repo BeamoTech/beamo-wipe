@@ -1,0 +1,22 @@
+{
+  "name": "final-preference-independent",
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "-W",
+    "error",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-o",
+    "pythonpath=src tests",
+    "-q",
+    "/workspace/beamo-tools/audit-pass12-20261021/root/test_preference_snapshot_probe.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass12-20261021/root/final-preference-independent.xml"
+  ],
+  "started_utc": "2026-10-21T06:51:55.756104+00:00",
+  "elapsed_seconds": 0.28,
+  "exit_code": 0
+}

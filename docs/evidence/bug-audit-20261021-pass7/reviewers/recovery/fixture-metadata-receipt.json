@@ -1,0 +1,6 @@
+{
+  "original_sha256": "3246794406f7c8bbc25c0791a0fcd0e171a64422d1bf011c3d46750fee36fa16",
+  "candidate_sha256": "afc50560d29f1b0910ea4738c3d20ad42fec05117dec88c67a9fa48f587201c7",
+  "all_assertions_identical": true,
+  "only_existing_identity_mocks_extended_to_preference": true
+}

@@ -1,0 +1,77 @@
+{
+  "reviewed_at_utc": "2026-10-21T01:14:04.363763+00:00",
+  "baseline_commit": "e4871239f02e46137fb6d8df64b5880ae2ea4b4d",
+  "independent_original_proofs": {
+    "named_recovery_read": {
+      "failures": 2,
+      "controls_passed": 1
+    },
+    "enter_quiet_shortcut": {
+      "failures": 1,
+      "controls_passed": 1
+    },
+    "owner_space_origin": {
+      "failures": 1,
+      "controls_passed": 1
+    },
+    "stop_s_origin": {
+      "failures": 1,
+      "controls_passed": 1
+    },
+    "linux_live_probe": {
+      "named_failures": 1,
+      "named_controls_passed": 2
+    },
+    "fifo_log_open": {
+      "failures": 1,
+      "controls_passed": 1
+    }
+  },
+  "final_new_python_regression_control_cases": 97,
+  "separate_linux_fixture": {
+    "go_parent_passed": 1,
+    "named_scenarios_passed": 15,
+    "root_independent_race": true,
+    "counts_are_within_one_python_case": true
+  },
+  "original_python_proofs_after": {
+    "passed": 11,
+    "failures": 0
+  },
+  "reviewed_source_hashes": {
+    "desktop/main.go": "1cbabac38801e77c2cf741a89eb0f75666ea746e072f9eaf0e8d6628c282ef00",
+    "desktop/platform_linux.go": "af416aaabc32eef9251f804015d599c66aa9b33efdc7024a1413bac32317537b",
+    "desktop/readiness.go": "eb67aec9069cede3e29348f2a33b317aa374252090fc433c9d24a41d77d26973",
+    "src/beamo_wipe/session_recovery.py": "24d7f6bee0109108b59137206894636c9b01e3dae7fb8908f377b57a2359459c",
+    "src/beamo_wipe/ui/console_wizard.py": "680315cafcc337c7cce74a76194609d7d74474471192f90360d2f7b3cc3667f5",
+    "tests/test_recovery_named_read_pass5_20261021.py": "f0265b99091a4acc4b2f903bf2712f57704606a85636f72ad726da1652571c3c",
+    "tests/test_console_key_origin_pass5_20261021.py": "c6146dffcf9fb72e22fbd33745720cd73eff3d96a43c07533985a2cb16132fd0",
+    "developer_tests/test_desktop_live_probe_pass5_20261021.py": "e31c839117efa7e10349abc377e6234c7bd935c2caae5163363203733565336d",
+    "src/beamo_wipe/safety.py": "56edc298efcbb74d7405d34c81825b622ac8df0f4c743e8cdae3da84e19874f1",
+    "tests/test_log_fifo_open_pass5_20261021.py": "cc7b15ffd0ffaa989ffb32bd658437c46d8356f3420c81358aec97a5e27291c6"
+  },
+  "preexisting_test_files_or_assertions_modified": false,
+  "python310_grammar": "PASS; no separate3.10runtime qualification",
+  "source_frozen_files": 804,
+  "source_manifest_sha256": "fcbe3ad83409ba91557fb5cd8584d25a42e72d3e71d4a7657e5b6cbc154144de",
+  "review_conclusions": [
+    "Recovery binds opened private-file metadata to its nofollow named entry before/after bytes; missing post-open names refuse instead of new-journal handling.",
+    "Curses resets every held-key quiet span before shortcut/overlay/repeated-key returns, retains Space/S origin across screens and observes quiet inside overlays; literal typing and fresh release controls preserved.",
+    "Linux read errors refuse before media/inventory/firmware with an unverified runtime state and consistent keep-on guidance; normal/live/platform/legacy precedence preserved.",
+    "Nonblocking log open permits prompt FIFO refusal before spawn, preserving existing opened-inode checks, FD/lock cleanup, ordinary logs and corrected retry. Narrow same-owner/root replacement-race availability hardening."
+  ],
+  "no_atomic_filesystem_claim": true,
+  "no_actual_device_or_power_actions": true,
+  "fifo_fixture_process_isolation": "spawn; unchanged9behavioral assertions; strict post-thread warning-as-error check required and final full gate rerun",
+  "root_fifo_spawn_baseline": {
+    "failures": 3,
+    "controls_passed": 6,
+    "exact_final_test_sha256": "cc7b15ffd0ffaa989ffb32bd658437c46d8356f3420c81358aec97a5e27291c6",
+    "exact_archived_baseline_source": true
+  },
+  "root_fifo_threaded_strict": {
+    "passed": 9,
+    "warnings_treated_as_errors": true
+  },
+  "final_targeted_python_warning_policy": "warnings treated as errors for97new+11original+9threaded cases"
+}

@@ -1,0 +1,59 @@
+{
+  "recorded_at_utc": "2026-10-21T04:14:28.353371+00:00",
+  "baseline_commit": "d8a941adc16cf0650d482f512e4b921d702373c5",
+  "reviewer": "recovery_pass8",
+  "verified_new_root_causes": 0,
+  "repository_edits": false,
+  "source_sha256": {
+    "src/beamo_wipe/session_recovery.py": "cf2443e391e184677b12c9d4356eb4314621aecb45244a425d6736823dd47948",
+    "src/beamo_wipe/report_intent.py": "872072d5a51c72a01596dea683de7279c6191eb072c733ce8ae475fbef95e9fb",
+    "src/beamo_wipe/evidence.py": "512c9b024b3231bf2625b6c802a8dc2282c275153b62e2995d4d01ba9466b5c5",
+    "src/beamo_wipe/support_export.py": "f1cdd6c5c21caeb237d4c2c3837d14abd99a4c254d3fcf02ad0edbb6285ba0f1",
+    "src/beamo_wipe/privacy.py": "bcb9c6ce4764a7e6df54b970aede4003c3f90357535fc42530b831eeef0face2",
+    "src/beamo_wipe/outcomes.py": "4af35b516e728d1b46fd8b242346c7ded29e61a0bbb9e827a617d155267bd8ba",
+    "src/beamo_wipe/result_summary.py": "b059c558e913348887a24b2ade36b8e34bfa01aa7acb1e64ee8a47e996cdb430"
+  },
+  "strict_baseline": {
+    "cases": 715,
+    "unique_ids": 715,
+    "passed": 715,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "semantic_model": {
+    "cases": 16200,
+    "original_successes": 54,
+    "actual_bundles": 2025,
+    "same_language_readers": true,
+    "identifier_cases": [
+      "FAKE-MATRIX-ID",
+      "verified",
+      "last",
+      "completed",
+      "en",
+      "withheld"
+    ],
+    "native_callbacks": 0,
+    "semantic_failures": []
+  },
+  "model_actual_exit_code": 0,
+  "supporting_counts_overlap_or_are_separate_from_canonical": true,
+  "history": "First model had literal sda log names while first demo target was nvme0n1: zero success controls; archived history-model-foreign-target-* then corrected target templates and required >=54 successes. No product/test edits.",
+  "reviewed_boundaries": [
+    "SessionStore schema/checksum/context/lock/journal lifecycle, restart/quiescence/disarm/finish/close",
+    "ReportIntent private reads/publication/cleanup",
+    "Evidence construction/atomic writes/readback/checksum/recovery and supported Wizard caller checks",
+    "Export strict inventory/protected identity, worker request/receipt, private mount lifecycle, FAT32 file bundle/readback/unmount",
+    "Privacy and same-language verdict/method integrity, owner/sharing text/HTML and original-byte preservation"
+  ],
+  "unpromoted_avenues": [
+    "Lower-level evidence writer temp mutation does not prove a shipping false verdict: supported Wizard compares persisted meaning to frozen observation and refuses mismatch; no reclassification of PASS7 store binding.",
+    "Changed-locale sharing-copy re-read remains unsupported as previously recorded; matrix deliberately keeps producer/reader language equal.",
+    "No-erase late-marker/projection hypothesis handed to runner reviewer; fresh direct12case large/small controls passed, no new parser defect."
+  ],
+  "hardware_native_image_or_remote_actions": false,
+  "docker_actions": false,
+  "remaining": "Root owns final integrated source freeze/canonical full local gates/evidence ledger/backlog/staging/local commit and qualified delivery. Native/image/physical/pinned-browser and publication-review gaps remain separate."
+}

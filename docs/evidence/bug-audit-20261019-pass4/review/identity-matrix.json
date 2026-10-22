@@ -1,0 +1,368 @@
+{
+  "cases": 60,
+  "unchanged_accepted": 6,
+  "mutations_rejected": 54,
+  "native_acquisition_guard": "passed",
+  "results": [
+    {
+      "route": "direct",
+      "subject": "target",
+      "field": "unchanged",
+      "accepted": true
+    },
+    {
+      "route": "direct",
+      "subject": "target",
+      "field": "serial",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "target",
+      "field": "wwn",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "target",
+      "field": "model",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "target",
+      "field": "vendor",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "target",
+      "field": "size",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "target",
+      "field": "tran",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "target",
+      "field": "rota",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "target",
+      "field": "uuid",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "target",
+      "field": "path",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "boot",
+      "field": "unchanged",
+      "accepted": true
+    },
+    {
+      "route": "direct",
+      "subject": "boot",
+      "field": "serial",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "boot",
+      "field": "wwn",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "boot",
+      "field": "model",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "boot",
+      "field": "vendor",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "boot",
+      "field": "size",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "boot",
+      "field": "tran",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "boot",
+      "field": "rota",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "boot",
+      "field": "uuid",
+      "accepted": false
+    },
+    {
+      "route": "direct",
+      "subject": "boot",
+      "field": "path",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "target",
+      "field": "unchanged",
+      "accepted": true
+    },
+    {
+      "route": "injected",
+      "subject": "target",
+      "field": "serial",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "target",
+      "field": "wwn",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "target",
+      "field": "model",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "target",
+      "field": "vendor",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "target",
+      "field": "size",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "target",
+      "field": "tran",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "target",
+      "field": "rota",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "target",
+      "field": "uuid",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "target",
+      "field": "path",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "boot",
+      "field": "unchanged",
+      "accepted": true
+    },
+    {
+      "route": "injected",
+      "subject": "boot",
+      "field": "serial",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "boot",
+      "field": "wwn",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "boot",
+      "field": "model",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "boot",
+      "field": "vendor",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "boot",
+      "field": "size",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "boot",
+      "field": "tran",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "boot",
+      "field": "rota",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "boot",
+      "field": "uuid",
+      "accepted": false
+    },
+    {
+      "route": "injected",
+      "subject": "boot",
+      "field": "path",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "target",
+      "field": "unchanged",
+      "accepted": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "target",
+      "field": "serial",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "target",
+      "field": "wwn",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "target",
+      "field": "model",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "target",
+      "field": "vendor",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "target",
+      "field": "size",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "target",
+      "field": "tran",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "target",
+      "field": "rota",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "target",
+      "field": "uuid",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "target",
+      "field": "path",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "boot",
+      "field": "unchanged",
+      "accepted": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "boot",
+      "field": "serial",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "boot",
+      "field": "wwn",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "boot",
+      "field": "model",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "boot",
+      "field": "vendor",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "boot",
+      "field": "size",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "boot",
+      "field": "tran",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "boot",
+      "field": "rota",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "boot",
+      "field": "uuid",
+      "accepted": false
+    },
+    {
+      "route": "production-metadata-stub",
+      "subject": "boot",
+      "field": "path",
+      "accepted": false
+    }
+  ]
+}

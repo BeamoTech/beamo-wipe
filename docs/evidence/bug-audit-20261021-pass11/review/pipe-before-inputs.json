@@ -1,0 +1,11 @@
+{
+  "baseline": "b46e5642d4c849d503b41d8bf562cfb1f9fad68b",
+  "source": {
+    "desktop/io.go": "84dedc2a582ed89f245b1b880200ccfbeab15fb8bd1655ddd9c2b2891166e0d3",
+    "desktop/platform_linux.go": "af416aaabc32eef9251f804015d599c66aa9b33efdc7024a1413bac32317537b",
+    "desktop/platform_windows.go": "47e3a24180cdfb2c8b8e667e5ffb2bb398755933a8eed08921627d82fed2e356"
+  },
+  "probe_sha256": "3de70f56382554a77d21e650176a8c175dbf4b7b9c1f7a997b5eb51270e3b911",
+  "helper_sha256": "74f31153bfe6377742923158888aa228c77eb196382613462464819d6ecf6b9e",
+  "only_owned_finite_helpers": true
+}

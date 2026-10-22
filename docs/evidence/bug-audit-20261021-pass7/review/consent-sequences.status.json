@@ -1,0 +1,10 @@
+{
+  "name": "consent-sequences",
+  "command": [
+    "python3",
+    "/workspace/beamo-tools/audit-pass7-20261021/root/probe_consent_sequences.py"
+  ],
+  "started_utc": "2026-10-21T03:27:31.253196+00:00",
+  "elapsed_seconds": 2.52,
+  "exit_code": 0
+}

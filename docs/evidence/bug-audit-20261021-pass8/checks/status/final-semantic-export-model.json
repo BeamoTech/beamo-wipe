@@ -1,0 +1,14 @@
+{
+  "name": "final-semantic-export-model",
+  "command": [
+    "env",
+    "PYTHONPATH=/workspace/beamo-wipe/src",
+    "python3",
+    "-W",
+    "error",
+    "/workspace/beamo-tools/audit-pass8-20261021/root/model-replays/semantic_export_matrix.py"
+  ],
+  "started_utc": "2026-10-21T04:17:21.613337+00:00",
+  "elapsed_seconds": 53.31,
+  "exit_code": 0
+}

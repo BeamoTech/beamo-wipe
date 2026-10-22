@@ -1,0 +1,61 @@
+{
+  "reviewer": "runner_pass9",
+  "finished_utc": "2026-10-21T04:48:43.315563+00:00",
+  "baseline_commit": "e28487d7595ee45a53d503fa1a76d8c22979f012",
+  "new_verified_defects": 0,
+  "repository_edits": [],
+  "ownership_released": true,
+  "strict_suites": [
+    {
+      "name": "adjacent",
+      "cases": 1430,
+      "unique_ids": 1430,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0
+    },
+    {
+      "name": "engine-evidence-adjacent",
+      "cases": 213,
+      "unique_ids": 213,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0
+    }
+  ],
+  "unique_strict_passes": 1643,
+  "strict_warning_policy": "-W error",
+  "model": {
+    "cases": 480,
+    "positive_controls": 96,
+    "refusal_controls": 384,
+    "whole_log_projection_comparisons": 240,
+    "failure_count": 0,
+    "failures": [],
+    "native_callbacks": 0,
+    "source_sha256": {
+      "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62"
+    },
+    "scope": "Pure fake terminal evidence law and owned-file projection matrix; supporting counts do not add to pytest totals or native acceptance."
+  },
+  "source_sha256": {
+    "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62",
+    "src/beamo_wipe/progress.py": "fef87a29ceabb1fb97b8abc521d55cea1ceb9428989104973783da6eb52c4fa6",
+    "src/beamo_wipe/engine_checks.py": "7a9d4682ca7d90a0eeb6cff9ae24a520554552c701b2728ab8f9c21895f5e27e",
+    "src/beamo_wipe/evidence.py": "512c9b024b3231bf2625b6c802a8dc2282c275153b62e2995d4d01ba9466b5c5",
+    "src/beamo_wipe/verification_evidence.py": "b76adeb6f595987863e67255c94f05ee424e8f515037b5c69c824e2f14bbb73a"
+  },
+  "limitations": [
+    "Fake fixtures and owned regular-file logs only; no native engine/device/signal/firmware/power/guest or hosted actions.",
+    "Supporting pytest subset overlaps the later canonical full run; do not add its counts to canonical passes.",
+    "No guarantee of absence of all bugs or hardware acceptance."
+  ],
+  "reviewed_paths": [
+    "Start/preflight/reset concurrency and lock/log/active-request ownership.",
+    "Poll/cancel arbitration, natural exit versus signal delivery and terminal state retirement.",
+    "Exact method counters and phase, negative record attribution, summary conflicts, large-log projection order.",
+    "Bounded log read and inode/signature checks; malformed and incomplete records.",
+    "Display-only progress/clock/estimate semantics, engine-check provenance and error/erasure numeric bounds.",
+    "Evidence verification tiers and private read/publication contracts."
+  ]
+}

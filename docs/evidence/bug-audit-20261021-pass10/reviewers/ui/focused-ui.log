@@ -1,0 +1,10 @@
+dbus-daemon[143838]: [session uid=1000 pid=143838 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=143854 comm="/workspace/beamo-wipe/.venv-linux/bin/python3 -m p" label="kernel")
+dbus-daemon[143838]: [session uid=1000 pid=143838 pidfd=5] Successfully activated service 'org.a11y.Bus'
+........................................................................ [ 26%]
+...........................dbus-daemon[143922]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=143854 comm="/workspace/beamo-wipe/.venv-linux/bin/python3 -m p" label="kernel")
+dbus-daemon[143922]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+............................................. [ 52%]
+........................................................................ [ 79%]
+........................................................                 [100%]
+272 passed in 26.73s

@@ -1,0 +1,14 @@
+{
+  "name": "final-go-fuzz",
+  "command": [
+    "go",
+    "test",
+    "-run=^$",
+    "-fuzz=FuzzBootOption",
+    "-fuzztime=350000x",
+    "-parallel=2"
+  ],
+  "started_utc": "2026-10-21T05:34:05.385005+00:00",
+  "elapsed_seconds": 14.4,
+  "exit_code": 0
+}

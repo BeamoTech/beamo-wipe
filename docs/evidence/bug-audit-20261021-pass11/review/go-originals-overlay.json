@@ -1,0 +1,7 @@
+{
+  "Replace": {
+    "/workspace/beamo-wipe/desktop/pipe_deadline_root_external_test.go": "/workspace/beamo-tools/audit-pass11-20261021/root/pipe_deadline_probe_test.go",
+    "/workspace/beamo-wipe/desktop/output_size_root_external_test.go": "/workspace/beamo-tools/audit-pass11-20261021/root/output_size_probe_test.go",
+    "/workspace/beamo-wipe/desktop/output_cancel_boot_external_test.go": "/workspace/beamo-tools/audit-pass11-20261021/boot/output_cancel_probe_test.go"
+  }
+}

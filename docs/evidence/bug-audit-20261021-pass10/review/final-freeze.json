@@ -1,0 +1,29 @@
+{
+  "baseline_commit": "7047dfb8c22d0b17faad2d5de1ec470b2debfaac",
+  "frozen_at_utc": "2026-10-21T05:33:39.797985+00:00",
+  "client_timezone": "America/Chicago",
+  "source_files": 820,
+  "source_manifest_sha256": "822c1b77b4fe9bba5a86813cb5e98f9594975f26b98cf8c5146affa1779dc7a1",
+  "new_case_breakdown": {
+    "tests/test_app_late_decode_refusal_pass10_20261021.py": 38
+  },
+  "new_python_cases": 38,
+  "new_go_test_pattern": "^(TestCloseRetiresEveryAPIActionPass10|TestCloseRejectsAlreadyDecodingActionsPass10|TestCloseRetiresBeforeResponseFlushPass10|TestClosePreservesOpenAndBusyControlsPass10)$",
+  "new_go_leaf_cases": 24,
+  "new_go_parent_tests": 4,
+  "new_go_named_pass_events": 28,
+  "go_full_expected_named_pass_events": 366,
+  "go_model_test_pattern": "^TestPass10RetirementIdleMatrix$",
+  "changed_paths": [
+    "desktop/close_admission_pass10_20261021_test.go",
+    "desktop/main.go",
+    "src/beamo_wipe/app.py",
+    "tests/test_app_late_decode_refusal_pass10_20261021.py"
+  ],
+  "verified_root_causes": 2,
+  "all_existing_test_files_byte_identical": true,
+  "old_assertions_preserved": true,
+  "reviewers_released": true,
+  "root_review": "Root independently reproduced both original defects before edits, replayed exact expanded38Python/24Go baseline bytes (16F22controls;18F6controls), read all product diffs/new tests/models. Unowned startup only broadens existing refusal boundary; launcher terminal admission/plan/readiness/revision retire under one mutex, including idle. Busy restart ownership, previews, authentication and Windows manual policy controls remain. All old tests byte-identical.",
+  "actual_native_device_engine_power_guest_actions": false
+}

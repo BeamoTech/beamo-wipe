@@ -1,0 +1,1 @@
+{"cases": 5832, "expected_completed_controls": 24, "expected_refusal_controls": 5808, "failure_count": 0, "native_callbacks": 0, "source_sha256": {"src/beamo_wipe/nwipe_runner.py": "a30e375ddb27be5bb9e781f17751586760a178a6822d610e811e1d9c2cb3bbb1"}, "scope": "Pure completion law matrix, not native acceptance; separate from pytest totals"}

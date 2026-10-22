@@ -1,0 +1,13 @@
+{
+  "name": "final-negative",
+  "command": [
+    "env",
+    "BEAMO_GATE_CHILD=1",
+    "bash",
+    "scripts/ci-hosted.sh",
+    "negative"
+  ],
+  "started_utc": "2026-10-21T04:54:59.979237+00:00",
+  "elapsed_seconds": 0.71,
+  "exit_code": 0
+}

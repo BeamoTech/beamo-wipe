@@ -1,0 +1,57 @@
+{
+  "audit": "bug-audit-20261021-pass18",
+  "baseline_commit": "7d261c6f1167de6a10f8d7d8b11c4d664af5be68",
+  "branch": "fix/safety-audit-20261019",
+  "date_utc": "2026-10-21",
+  "baseline_regressions": {
+    "errors": 0,
+    "failures": 7,
+    "fixed_passes": 7,
+    "junit_sha256": "9168808aa06dc5867fa0603640aae64e1a9e1c0e0542d945f7df46f58249dd08",
+    "skipped": 0
+  },
+  "desktop_artifacts": {
+    "go_version": "go1.26.8",
+    "linux_sha256": "56548a195cbdb243e8e75bd61152ace0f562544c71c02c1793f7a98b4649197e",
+    "manifest_sha256": "17c11bc8831ec687d9b92e92ced524e4f5bf9a9404dec30169b55b7d0eea634f",
+    "version": "0.2.13",
+    "windows_sha256": "7c1a635feebb68411261eb058dc606d3531570e20cdee3bc22d52e7299782dd2"
+  },
+  "final_python": {
+    "deselected": 2,
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "a9e2b1342b60a698992c036b94dfc7edf1e5f641afda9a5cc229ea2e2d2aa470",
+    "passed": 12113,
+    "selected": 12140,
+    "skipped": 27,
+    "time_seconds": 1267.825,
+    "warnings_as_errors": true
+  },
+  "focused_python": {
+    "errors": 0,
+    "failed": 0,
+    "junit_sha256": "78424a9a33b91fa05869143a9cc44df8ad5f273ad16b7c7c105397867175e1ac",
+    "new_regressions": 7,
+    "passed": 197,
+    "selected": 209,
+    "skipped": 12
+  },
+  "go_cross_compile_sha256": {
+    "darwin_amd64": "ec410795fa4e41e140860808ca077999d069ec43e39e3772277b8afe64af9e11",
+    "darwin_arm64": "edd77ad855044f275bc559b301b68ca625db306a7e715c8bb743887bb7045d69",
+    "windows_amd64": "8ed5998731f92c368b62807febbf52a1090eeb4f552cd044d47fc6ecbd8d537b"
+  },
+  "preview": {
+    "display": ":250",
+    "dpi": 72,
+    "fake_disks_only": true,
+    "normal_close_returncode": 0,
+    "png_sha256": "922c213939cba144951d70292b63b29baea8fe7d43e4a5f4e7f1e1adc378e5a8"
+  },
+  "publication": "local only; no push, PR, merge, deployment, or release",
+  "source_sha256": {
+    "src/beamo_wipe/release_manifest.py": "3fa0a0c66c7abc1490cfa6f665038ab3b323db8b2ff87db5ceb1f6f67236a5b5",
+    "tests/test_release_bundle_path_binding_pass18_20261021.py": "84b84f92565fec1fa27eadb7aab0ae7e7ea769645ff635e6e45ce3001347e463"
+  }
+}

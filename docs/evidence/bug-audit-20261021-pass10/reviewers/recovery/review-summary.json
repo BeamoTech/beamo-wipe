@@ -1,0 +1,55 @@
+{
+  "baseline_commit": "7047dfb8c22d0b17faad2d5de1ec470b2debfaac",
+  "finished_utc": "2026-10-21T05:24:46.313983+00:00",
+  "repository_edits": [],
+  "new_verified_defects": 0,
+  "ownership_released": true,
+  "focused_modules": 66,
+  "focused_unique_passed": 1063,
+  "focused_failures": 0,
+  "focused_errors": 0,
+  "focused_skipped": 0,
+  "python_warning_policy": "error",
+  "focused_xml": "focused-umask022.xml",
+  "focused_status": "focused-umask022.status.json",
+  "focused_environment": "Child-only umask0022, private72DPI Xvfb and private D-Bus; host activation, no Docker.",
+  "initial_setup_history": {
+    "xml": "focused.xml",
+    "status": "focused.status.json",
+    "failures": 1,
+    "passed": 1062,
+    "cause": "Host umask0077 turned fixture requested mkdir0755 into0700 before product invocation; invariant755 failed despite unchanged directory. Confirmed independent pre-product mkdir trace. No product/assertion edit; same1063 rerun under child-only umask0022."
+  },
+  "model": {
+    "contexts": 24,
+    "positive_bundles": 24,
+    "content_manifest_checks": 24,
+    "duplicate_session_refusals": 24,
+    "tamper_refusals": 1680,
+    "restored_positive_rechecks": 1680,
+    "extra_file_refusals": 24,
+    "native_callbacks": 0,
+    "mismatches": [],
+    "source_sha256": {
+      "src/beamo_wipe/support_export.py": "f1cdd6c5c21caeb237d4c2c3837d14abd99a4c254d3fcf02ad0edbb6285ba0f1",
+      "src/beamo_wipe/diagnostic_report.py": "fc01e84c6f917d679ea743bc104c5c5d6031de34bd9d68b6f6ee43f63986a1dd",
+      "src/beamo_wipe/evidence.py": "512c9b024b3231bf2625b6c802a8dc2282c275153b62e2995d4d01ba9466b5c5",
+      "src/beamo_wipe/result_summary.py": "b059c558e913348887a24b2ade36b8e34bfa01aa7acb1e64ee8a47e996cdb430",
+      "src/beamo_wipe/privacy.py": "bcb9c6ce4764a7e6df54b970aede4003c3f90357535fc42530b831eeef0face2",
+      "src/beamo_wipe/lang.py": "490786bbd8971678d82969b2180ecb5aa94f86785b52323f1dddbec1353878ba",
+      "tests/test_result_presentations.py": "1b57533a72672408ee5630736c3693ccf894456d822e7ae6d04843550a8693d0"
+    }
+  },
+  "model_script_sha256": "6de28959a36705f23999a0dc6a5825edad599ad7100f907a59a639b0bcef480b",
+  "scope": "Journal/report-intent identity, evidence/diagnostic privacy, result truth, report media/receipts, bundle publication/readback/duplicates/tamper/restoration.",
+  "unpromoted_observations": [
+    "read_diagnostics accepts general JSON leaves, but no production caller exists; no user-reachable defect established.",
+    "Compatibility manual export cleanup on control interruption can leave incomplete bytes, but no saved receipt is claimed and shipped kiosk does not call that API; not promoted as a new production defect.",
+    "Arbitrary direct controller state mutation or swapping same-owner files after a final observation is not an atomic filesystem guarantee; existing frozen claim/readback gates protect supported callers."
+  ],
+  "limits": [
+    "Fake-only model and owned files/FIFOs/symlinks; no actual block device, inventory, process, mount, firmware, power or guest operation.",
+    "Readback model does not qualify physical FAT32/remount/readback/reconnect.",
+    "Supporting model and subset overlap canonical full coverage; do not add to unique canonical totals."
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "python": "3.13.5",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "gtk": "3.24.49",
+  "packages": {
+    "pytest": "9.0.3",
+    "ruff": "0.9.2",
+    "mypy": "2.1.0",
+    "cryptography": "50.0.1",
+    "qrcode": "8.2",
+    "playwright": "1.63.0",
+    "pillow": "13.0.0",
+    "pyzbar": "0.1.9"
+  },
+  "go": "go version go1.26.8 linux/amd64",
+  "system_chromium": "Chromium 155.0.8059.79 built on Debian GNU/Linux 13 (trixie)",
+  "container_image_id": "sha256:4cf3d86be5b8f17956299944ca8e1354fee07f3a4694f4e2b6e8237327616559",
+  "native_device_inventory_opt_in": false
+}

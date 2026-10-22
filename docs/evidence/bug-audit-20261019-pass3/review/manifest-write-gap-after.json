@@ -1,0 +1,56 @@
+[
+  {
+    "host": "posix",
+    "kind": "none",
+    "write_reached": true,
+    "build_error": null,
+    "verify_error": null,
+    "manifest_exists": true,
+    "foreign_receipt_preserved": false
+  },
+  {
+    "host": "posix",
+    "kind": "launcher",
+    "write_reached": true,
+    "build_error": "RuntimeError: desktop launcher bytes changed before publication",
+    "verify_error": "RuntimeError: desktop launcher manifest is missing or invalid; rebuild launchers",
+    "manifest_exists": false,
+    "foreign_receipt_preserved": false
+  },
+  {
+    "host": "posix",
+    "kind": "receipt",
+    "write_reached": true,
+    "build_error": "RuntimeError: desktop manifest changed before completion",
+    "verify_error": "RuntimeError: desktop launcher manifest is missing or invalid; rebuild launchers",
+    "manifest_exists": true,
+    "foreign_receipt_preserved": true
+  },
+  {
+    "host": "nt",
+    "kind": "none",
+    "write_reached": true,
+    "build_error": null,
+    "verify_error": null,
+    "manifest_exists": true,
+    "foreign_receipt_preserved": false
+  },
+  {
+    "host": "nt",
+    "kind": "launcher",
+    "write_reached": true,
+    "build_error": "RuntimeError: desktop launcher bytes changed before publication",
+    "verify_error": "RuntimeError: desktop launcher manifest is missing or invalid; rebuild launchers",
+    "manifest_exists": false,
+    "foreign_receipt_preserved": false
+  },
+  {
+    "host": "nt",
+    "kind": "receipt",
+    "write_reached": true,
+    "build_error": "RuntimeError: desktop manifest changed before completion",
+    "verify_error": "RuntimeError: desktop launcher manifest is missing or invalid; rebuild launchers",
+    "manifest_exists": true,
+    "foreign_receipt_preserved": true
+  }
+]

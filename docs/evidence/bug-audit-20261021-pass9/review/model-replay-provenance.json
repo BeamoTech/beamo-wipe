@@ -1,0 +1,18 @@
+{
+  "protected_graph_matrix.py": {
+    "reviewer": "discovery",
+    "exact_script_sha256": "da32775112953c76ef2d62c829ba1c4f4b091ee673ba0b3bf68481dd0126320e"
+  },
+  "contradiction_projection_matrix.py": {
+    "reviewer": "runner",
+    "exact_script_sha256": "381dd8c8954bb1d8f8318826ec884cdb9ce2f232df029b6f52193f264e640084"
+  },
+  "persistence_fault_matrix.py": {
+    "reviewer": "recovery",
+    "exact_script_sha256": "3bd50b6bcca88995ad6c1fad9d933d3fb2eaf86babf8b7103610b1125d8044d2"
+  },
+  "visible_consent_sequence_model.py": {
+    "reviewer": "ui",
+    "exact_script_sha256": "57aaa46487ecaeae9d8bc260b10c9146eaaf82e9f101275f3f8610b7b7d3b553"
+  }
+}

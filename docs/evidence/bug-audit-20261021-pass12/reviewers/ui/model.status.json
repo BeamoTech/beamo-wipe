@@ -1,0 +1,11 @@
+{
+  "command": [
+    "python",
+    "/workspace/beamo-tools/audit-pass12-20261021/ui/terminal_handoff_model.py"
+  ],
+  "exit_code": 0,
+  "child_umask": "022",
+  "fake_only": true,
+  "no_gui": true,
+  "native_callbacks": 0
+}

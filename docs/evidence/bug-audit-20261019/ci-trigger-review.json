@@ -1,0 +1,27 @@
+{
+  "scope": "Read-only pre-publication review; later publication receipt records actual remote state",
+  "utc": "2026-10-19T01:19:16.290705+00:00",
+  "branch": "fix/safety-audit-20261019",
+  "connected_github_app_reads": {
+    "repository_push_permission": true,
+    "matching_branch_absent": true,
+    "matching_open_pull_requests": 0
+  },
+  "ci_triggers": {
+    "push_branches": [
+      "main"
+    ],
+    "pull_request_base_branches": [
+      "main"
+    ],
+    "manual_dispatch_available": true
+  },
+  "expected_ci_for_new_feature_branch_without_pr": false,
+  "hosted_dispatch_authorized_or_requested": false,
+  "release_authorized": false,
+  "workflow_sha256": {
+    ".github/workflows/agent-pr.yml": "ae7d99b573df34d3b10c4452ce5ab51c10635fceee9d384ea5481686ea903e24",
+    ".github/workflows/ci.yml": "910fcf7b5e653919b1a400a2a6f0815755c192a0a794527b016f424fdb854e77",
+    ".github/workflows/release.yml": "916f44551d91cdd629f2c0b48d124e4bb53e150a74614360c4f5c7637956158a"
+  }
+}

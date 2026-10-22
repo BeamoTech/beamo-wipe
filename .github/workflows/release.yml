@@ -6,7 +6,7 @@ on:
       version:
         description: Version whose tag points at the qualified main commit
         required: true
-        default: '0.2.13'
+        default: '0.2.14'
 
 permissions:
   contents: read
@@ -54,8 +54,8 @@ jobs:
       - name: Stage only the tested release inputs
         id: transfer
         run: |
-          python3 scripts/release_transfer.py pack
-          echo "manifest_sha256=$(sha256sum release-transfer/transfer-manifest.json | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+          manifest_sha256="$(python3 scripts/release_transfer.py pack)"
+          echo "manifest_sha256=$manifest_sha256" >> "$GITHUB_OUTPUT"
       - name: Transfer verified inputs to protected publisher
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:

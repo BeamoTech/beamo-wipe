@@ -1,0 +1,26 @@
+{
+  "hidden-mount-independent-before": {
+    "cases": 4,
+    "failures": 2,
+    "errors": 0,
+    "controls_passed": 2
+  },
+  "tk-callback-independent-before": {
+    "cases": 4,
+    "failures": 2,
+    "errors": 0,
+    "controls_passed": 2
+  },
+  "curses-write-independent-before": {
+    "cases": 2,
+    "failures": 1,
+    "errors": 0,
+    "controls_passed": 1
+  },
+  "cancel-inner-poll-independent-before": {
+    "cases": 45,
+    "failures": 12,
+    "errors": 0,
+    "controls_passed": 33
+  }
+}

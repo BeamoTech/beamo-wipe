@@ -1,0 +1,22 @@
+{
+  "base_commit": "0547f9124a6841cf074fdfb553a1e1fcde4f3da2",
+  "source_files": 809,
+  "source_manifest_sha256": "960a4b46132cd2bf4a0a72b04d81a11b34587e3ede74bfb0786c9d5ec7babe1a",
+  "changed_product_files": [
+    "desktop/identity.go",
+    "src/beamo_wipe/discover.py",
+    "src/beamo_wipe/nwipe_runner.py",
+    "src/beamo_wipe/safety.py",
+    "src/beamo_wipe/ui/console_wizard.py",
+    "src/beamo_wipe/ui/tk_wizard.py"
+  ],
+  "new_regression_files": [
+    "desktop/identity_dirty_null_pass6_20261021_test.go",
+    "tests/test_cancel_delivery_receipt_pass6_20261021.py",
+    "tests/test_curses_review_paint_pass6_20261021.py",
+    "tests/test_mount_visibility_pass6_20261021.py",
+    "tests/test_tk_callback_ownership_pass6_20261021.py"
+  ],
+  "existing_test_files_modified": false,
+  "post_review_test_import_correction": "Replace module-level importorskip before imports with standard tkinter import; existing native module already imports tkinter. No test assertions changed."
+}

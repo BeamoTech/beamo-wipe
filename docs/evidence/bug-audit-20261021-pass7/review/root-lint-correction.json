@@ -1,0 +1,15 @@
+{
+  "reason": "Full lint E731 in new test helper: replace two assigned lambdas with equivalent nested defs",
+  "product_change": false,
+  "assertions_changed": false,
+  "baseline_replay_required": true,
+  "path": "tests/test_recovery_publication_binding_pass7_20261021.py",
+  "final_sha256": "8e5b736d5dc7a6a472544ad7048d0f29a92309f722c7d1e6a4f70883283e7b9b",
+  "exact_final_baseline": {
+    "cases": 40,
+    "failures": 23,
+    "errors": 0,
+    "skipped": 0
+  },
+  "old_assertion_ast_identical": true
+}

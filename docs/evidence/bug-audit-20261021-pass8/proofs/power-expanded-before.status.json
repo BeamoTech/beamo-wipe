@@ -1,0 +1,22 @@
+{
+  "name": "power-expanded-before",
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "-W",
+    "error",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-o",
+    "pythonpath=/workspace/beamo-tools/audit-pass8-20261021/root/baseline-archive/src",
+    "-q",
+    "/workspace/beamo-tools/audit-pass8-20261021/root/power-expanded-baseline/test_power_acceptance_retirement_pass8_20261021.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass8-20261021/root/power-expanded-before.xml"
+  ],
+  "started_utc": "2026-10-21T04:08:21.674747+00:00",
+  "elapsed_seconds": 0.37,
+  "exit_code": 1
+}

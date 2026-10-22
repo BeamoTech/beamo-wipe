@@ -29,7 +29,7 @@ GOLDENS = Path(__file__).parent / "goldens" / "result_summary"
 def _assert_golden(name: str, text: str) -> None:
     path = GOLDENS / name
     assert path.is_file(), f"missing golden {name}"
-    assert path.read_text(encoding="utf-8") == text
+    assert path.read_text(encoding="utf-8") == f"{text}\n"
 
 
 @pytest.mark.parametrize("case", CASES, ids=[c[0] for c in CASES])

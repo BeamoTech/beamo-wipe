@@ -1,0 +1,36 @@
+FF..                                                                     [100%]
+=================================== FAILURES ===================================
+_ test_transient_initial_proc_read_cannot_dispatch_unowned_live_wizard[cmdline] _
+
+machine = namespace(mode={'fault': 'cmdline', 'live': True}, calls=['cmdline-OSError', 'fake-discovery', 'report-intent'], obser...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 4}, effects=[])
+location = 'cmdline'
+request = <FixtureRequest for <Function test_transient_initial_proc_read_cannot_dispatch_unowned_live_wizard[cmdline]>>
+
+    @pytest.mark.parametrize('location',['cmdline','mountinfo'])
+    def test_transient_initial_proc_read_cannot_dispatch_unowned_live_wizard(machine,location,request):
+        machine.mode['fault']=location
+        code=app.main(['--console','--dry-run'])
+        request.node.user_properties.append(('trace',json.dumps({'fault':location,'code':code,'calls':machine.calls,'reads':machine.reads,'ui':machine.observed,'native_callbacks':len(machine.effects)})))
+>       assert code==3
+E       assert 23 == 3
+
+../beamo-tools/audit-pass9-20261021/discovery/test_transient_live_ownership.py:80: AssertionError
+_ test_transient_initial_proc_read_cannot_dispatch_unowned_live_wizard[mountinfo] _
+
+machine = namespace(mode={'fault': 'mountinfo', 'live': True}, calls=['mountinfo-OSError', 'fake-discovery', 'report-intent'], o...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 5}, effects=[])
+location = 'mountinfo'
+request = <FixtureRequest for <Function test_transient_initial_proc_read_cannot_dispatch_unowned_live_wizard[mountinfo]>>
+
+    @pytest.mark.parametrize('location',['cmdline','mountinfo'])
+    def test_transient_initial_proc_read_cannot_dispatch_unowned_live_wizard(machine,location,request):
+        machine.mode['fault']=location
+        code=app.main(['--console','--dry-run'])
+        request.node.user_properties.append(('trace',json.dumps({'fault':location,'code':code,'calls':machine.calls,'reads':machine.reads,'ui':machine.observed,'native_callbacks':len(machine.effects)})))
+>       assert code==3
+E       assert 23 == 3
+
+../beamo-tools/audit-pass9-20261021/discovery/test_transient_live_ownership.py:80: AssertionError
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass9-20261021/discovery/test_transient_live_ownership.py::test_transient_initial_proc_read_cannot_dispatch_unowned_live_wizard[cmdline]
+FAILED ../beamo-tools/audit-pass9-20261021/discovery/test_transient_live_ownership.py::test_transient_initial_proc_read_cannot_dispatch_unowned_live_wizard[mountinfo]
+2 failed, 2 passed in 0.15s

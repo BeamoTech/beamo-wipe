@@ -1,0 +1,13 @@
+{
+  "name": "doctor-test",
+  "command": [
+    "python3",
+    "dev.py",
+    "doctor",
+    "--for",
+    "test"
+  ],
+  "started_utc": "2026-10-21T06:08:53.412392+00:00",
+  "elapsed_seconds": 0.05,
+  "exit_code": 0
+}

@@ -1,0 +1,34 @@
+{
+  "baseline_commit": "e28487d7595ee45a53d503fa1a76d8c22979f012",
+  "source_edits": [],
+  "new_defects_proved": 0,
+  "focused_modules": 38,
+  "focused_unique_passed": 714,
+  "focused_failures": 0,
+  "focused_errors": 0,
+  "focused_skipped": 0,
+  "python_warnings": 0,
+  "persistence_model": {
+    "cases": 360,
+    "successful_operations": 124,
+    "injected_refusals": 236,
+    "clean_retries": 208,
+    "reopens": 360,
+    "post_error_visible_new_records": 80,
+    "native_callbacks": 0,
+    "unexpected": [],
+    "source_sha256": {
+      "src/beamo_wipe/report_intent.py": "872072d5a51c72a01596dea683de7279c6191eb072c733ce8ae475fbef95e9fb",
+      "src/beamo_wipe/session_recovery.py": "cf2443e391e184677b12c9d4356eb4314621aecb45244a425d6736823dd47948"
+    }
+  },
+  "ownership_released": true,
+  "no_native_or_remote_actions": true,
+  "scope": "Recovery/report persistence, file ownership and binding, log authentication, result sharing, diagnostic privacy, export receipt and retry paths",
+  "limits": [
+    "Fake-only model and existing tests do not qualify real FAT32 media, privileged mount/readback, hardware reconnect, ISO/KVM or native platforms.",
+    "Before/after syscall injection models observable Python errors, not an atomic filesystem compare/swap guarantee.",
+    "Supporting cases overlap canonical coverage and are not additional canonical test passes."
+  ],
+  "retained_harness_history": "persistence-fault-matrix.setup-failure.log: process module imported after monkeypatching Popen; fixed by importing target modules before boundary stubs, no product changes or weakened assertions."
+}

@@ -1,0 +1,753 @@
+F.FFF.FFF.FFF.FFFFFFFFFFFF.............F                                 [100%]
+=================================== FAILURES ===================================
+___ test_changed_temporary_is_refused_before_publication[preference-replace] ___
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_temporary_is_refu0/priv...fu0/private/report-intent'), operation=<function publication.<locals>.<lambda> at 0x7f1491313e20>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f14913083e0>
+mutation = 'replace'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:113: Failed
+___ test_changed_temporary_is_refused_before_publication[preference-symlink] ___
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_temporary_is_refu2/priv...fu2/private/report-intent'), operation=<function publication.<locals>.<lambda> at 0x7f1491277380>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f14912a4050>
+mutation = 'symlink'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:113: Failed
+__ test_changed_temporary_is_refused_before_publication[preference-hardlink] ___
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_temporary_is_refu3/priv...fu3/private/report-intent'), operation=<function publication.<locals>.<lambda> at 0x7f149173c2c0>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f14921e4490>
+mutation = 'hardlink'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:113: Failed
+____ test_changed_temporary_is_refused_before_publication[preference-fifo] _____
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_temporary_is_refu4/priv...fu4/private/report-intent'), operation=<function publication.<locals>.<lambda> at 0x7f149173c4a0>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f14923a7bd0>
+mutation = 'fifo'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:113: Failed
+__ test_changed_temporary_is_refused_before_publication[preference-opposite] ___
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_temporary_is_refu6/priv...fu6/private/report-intent'), operation=<function publication.<locals>.<lambda> at 0x7f149173d1c0>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f1491288450>
+mutation = 'opposite'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:113: Failed
+__ test_changed_temporary_is_refused_before_publication[preference-same-size] __
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_temporary_is_refu7/priv...fu7/private/report-intent'), operation=<function publication.<locals>.<lambda> at 0x7f149173d3a0>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f14913056d0>
+mutation = 'same-size'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:113: Failed
+____ test_changed_temporary_is_refused_before_publication[journal-replace] _____
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_temporary_is_refu8/private...67d45161810a5bcd9fb521","terminal":null},"sha256":"e193f92fab90f04d3db1714ceed18e60b16e29519ae7d066f549f92a1d9bb6fc"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f1491306030>
+mutation = 'replace'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:113: Failed
+____ test_changed_temporary_is_refused_before_publication[journal-symlink] _____
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_temporary_is_refu10/privat...dbc1c28cd7a8cd88e0eef9","terminal":null},"sha256":"b3a86ed0f7a1022a359830a77530785a165a0a3f7e5c5e479c13ee6a40d4b9fc"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f14912afe70>
+mutation = 'symlink'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:113: Failed
+____ test_changed_temporary_is_refused_before_publication[journal-hardlink] ____
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_temporary_is_refu11/privat...89106e4d974781291e33ec","terminal":null},"sha256":"4c9e05a11480e22263d4e005d11dad6b3401076d918c8a79dfe3a715d895f063"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f1491776f70>
+mutation = 'hardlink'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:113: Failed
+______ test_changed_temporary_is_refused_before_publication[journal-fifo] ______
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_temporary_is_refu12/privat...b7f104328fec4bb2c128f4","terminal":null},"sha256":"d7243fdfaf133bdbe499619b296d5496bff8560d9295e01ccd6334efd2de715a"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f14912dd9d0>
+mutation = 'fifo'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:113: Failed
+____ test_changed_temporary_is_refused_before_publication[journal-opposite] ____
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_temporary_is_refu14/privat...364aaf5a7237ecf858e8df","terminal":null},"sha256":"8b353a6b688167780adc659dfc1fb8eadc0600a4a342624e25d31f926eed9b30"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f149129efc0>
+mutation = 'opposite'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:113: Failed
+___ test_changed_temporary_is_refused_before_publication[journal-same-size] ____
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_temporary_is_refu15/privat...41d80ade6f920cec055210","terminal":null},"sha256":"4fa75349d647cb7da8cef6304a6cff8c8f7cb3f56d7d646921b244a0e054dc36"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f149129f280>
+mutation = 'same-size'
+
+    @pytest.mark.parametrize("mutation", [
+        "replace", "remove", "symlink", "hardlink", "fifo", "directory",
+        "opposite", "same-size",
+    ])
+    def test_changed_temporary_is_refused_before_publication(publication, monkeypatch, mutation):
+        case = publication
+        real_sync = os.fsync
+        changed = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in case.directory.glob(case.prefix + "*"):
+                if not changed and os.fstat(fd).st_ino == path.stat().st_ino:
+                    changed.append((path, replace_entry(case, path, mutation)))
+    
+        monkeypatch.setattr(os, "fsync", sync)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:113: Failed
+____ test_changed_published_entry_is_not_reported_saved[preference-replace] ____
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_published_entry_i0/priv..._i0/private/report-intent'), operation=<function publication.<locals>.<lambda> at 0x7f149173f600>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f149173c2d0>
+mutation = 'replace'
+
+    @pytest.mark.parametrize("mutation", ["replace", "opposite", "same-size"])
+    def test_changed_published_entry_is_not_reported_saved(publication, monkeypatch, mutation):
+        case = publication
+        real_replace = os.replace
+        changed = []
+    
+        def replace(source, destination, **kwargs):
+            real_replace(source, destination, **kwargs)
+            changed.append(replace_entry(case, case.destination, mutation))
+    
+        monkeypatch.setattr(os, "replace", replace)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:133: Failed
+___ test_changed_published_entry_is_not_reported_saved[preference-opposite] ____
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_published_entry_i1/priv..._i1/private/report-intent'), operation=<function publication.<locals>.<lambda> at 0x7f149173fba0>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f149173ec10>
+mutation = 'opposite'
+
+    @pytest.mark.parametrize("mutation", ["replace", "opposite", "same-size"])
+    def test_changed_published_entry_is_not_reported_saved(publication, monkeypatch, mutation):
+        case = publication
+        real_replace = os.replace
+        changed = []
+    
+        def replace(source, destination, **kwargs):
+            real_replace(source, destination, **kwargs)
+            changed.append(replace_entry(case, case.destination, mutation))
+    
+        monkeypatch.setattr(os, "replace", replace)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:133: Failed
+___ test_changed_published_entry_is_not_reported_saved[preference-same-size] ___
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_published_entry_i2/priv..._i2/private/report-intent'), operation=<function publication.<locals>.<lambda> at 0x7f1491324040>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f1492070b90>
+mutation = 'same-size'
+
+    @pytest.mark.parametrize("mutation", ["replace", "opposite", "same-size"])
+    def test_changed_published_entry_is_not_reported_saved(publication, monkeypatch, mutation):
+        case = publication
+        real_replace = os.replace
+        changed = []
+    
+        def replace(source, destination, **kwargs):
+            real_replace(source, destination, **kwargs)
+            changed.append(replace_entry(case, case.destination, mutation))
+    
+        monkeypatch.setattr(os, "replace", replace)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:133: Failed
+_____ test_changed_published_entry_is_not_reported_saved[journal-replace] ______
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_published_entry_i3/private...740cb37f3d95ed175d2ab2","terminal":null},"sha256":"bada0ecfe2eece1a00892236d8865acac8c38ebb70665d366e38334ff47aa833"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f14913a1950>
+mutation = 'replace'
+
+    @pytest.mark.parametrize("mutation", ["replace", "opposite", "same-size"])
+    def test_changed_published_entry_is_not_reported_saved(publication, monkeypatch, mutation):
+        case = publication
+        real_replace = os.replace
+        changed = []
+    
+        def replace(source, destination, **kwargs):
+            real_replace(source, destination, **kwargs)
+            changed.append(replace_entry(case, case.destination, mutation))
+    
+        monkeypatch.setattr(os, "replace", replace)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:133: Failed
+_____ test_changed_published_entry_is_not_reported_saved[journal-opposite] _____
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_published_entry_i4/private...53a6458fed505f6d4c338e","terminal":null},"sha256":"04f5bf615225259eed6573136e1d0fa3a08b8508acd68ae8ac3515d461480009"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f14913a34d0>
+mutation = 'opposite'
+
+    @pytest.mark.parametrize("mutation", ["replace", "opposite", "same-size"])
+    def test_changed_published_entry_is_not_reported_saved(publication, monkeypatch, mutation):
+        case = publication
+        real_replace = os.replace
+        changed = []
+    
+        def replace(source, destination, **kwargs):
+            real_replace(source, destination, **kwargs)
+            changed.append(replace_entry(case, case.destination, mutation))
+    
+        monkeypatch.setattr(os, "replace", replace)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:133: Failed
+____ test_changed_published_entry_is_not_reported_saved[journal-same-size] _____
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_changed_published_entry_i5/private...1f90f26df41798e068fc4b","terminal":null},"sha256":"f80127b82a4acf30044e9b994b718e2d21fb5b2da8da51c51141f97ca77c9aa0"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f1491286b30>
+mutation = 'same-size'
+
+    @pytest.mark.parametrize("mutation", ["replace", "opposite", "same-size"])
+    def test_changed_published_entry_is_not_reported_saved(publication, monkeypatch, mutation):
+        case = publication
+        real_replace = os.replace
+        changed = []
+    
+        def replace(source, destination, **kwargs):
+            real_replace(source, destination, **kwargs)
+            changed.append(replace_entry(case, case.destination, mutation))
+    
+        monkeypatch.setattr(os, "replace", replace)
+>       with pytest.raises((OSError, SafetyError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'OSError'>, <class 'beamo_wipe.safety.SafetyError'>)
+
+tests/test_recovery_publication_binding_pass7_20261021.py:133: Failed
+________ test_failed_save_preserves_foreign_temporary[preference-write] ________
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_failed_save_preserves_for0/priv...or0/private/report-intent'), operation=<function publication.<locals>.<lambda> at 0x7f14913253a0>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f14916c87c0>
+boundary = 'write'
+
+    @pytest.mark.parametrize("boundary", ["write", "fsync"])
+    def test_failed_save_preserves_foreign_temporary(publication, monkeypatch, boundary):
+        case = publication
+        real_write, real_sync, real_open = os.write, os.fsync, os.open
+        opened, changed = [], []
+    
+        def track_open(path, flags, *args, **kwargs):
+            fd = real_open(path, flags, *args, **kwargs)
+            if str(path).startswith(case.prefix):
+                opened.append(fd)
+            return fd
+    
+        def fail(fd, *args):
+            if fd in opened and not changed:
+                path = next(case.directory.glob(case.prefix + "*"))
+                changed.append((path, replace_entry(case, path, "replace")))
+                raise OSError(errno.EIO, "fake publication storage failure")
+            return real_write(fd, *args) if boundary == "write" else real_sync(fd)
+    
+        monkeypatch.setattr(os, "open", track_open)
+        monkeypatch.setattr(os, boundary, fail)
+        with pytest.raises(OSError, match="fake publication storage failure"):
+            case.operation()
+        assert len(changed) == len(opened) == 1
+>       assert_same_entry(*changed[0])
+
+tests/test_recovery_publication_binding_pass7_20261021.py:166: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_recovery_publication_binding_pass7_20261021.py:91: in assert_same_entry
+    actual = path.lstat()
+             ^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:437: in lstat
+    return self.stat(follow_symlinks=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-agent/pytest-133/test_failed_save_preserves_for0/private/.report-intent-f7ea2ea1e37f2823b2fb0cbc')
+
+    def stat(self, *, follow_symlinks=True):
+        """
+        Return the result of the stat() system call on this path, like
+        os.stat() does.
+        """
+>       return os.stat(self, follow_symlinks=follow_symlinks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-agent/pytest-133/test_failed_save_preserves_for0/private/.report-intent-f7ea2ea1e37f2823b2fb0cbc'
+
+/usr/lib/python3.13/pathlib/_local.py:517: FileNotFoundError
+________ test_failed_save_preserves_foreign_temporary[preference-fsync] ________
+
+publication = namespace(kind='preference', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_failed_save_preserves_for1/priv...or1/private/report-intent'), operation=<function publication.<locals>.<lambda> at 0x7f149173e3e0>, old=b'not-wanted\n')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f14916ecec0>
+boundary = 'fsync'
+
+    @pytest.mark.parametrize("boundary", ["write", "fsync"])
+    def test_failed_save_preserves_foreign_temporary(publication, monkeypatch, boundary):
+        case = publication
+        real_write, real_sync, real_open = os.write, os.fsync, os.open
+        opened, changed = [], []
+    
+        def track_open(path, flags, *args, **kwargs):
+            fd = real_open(path, flags, *args, **kwargs)
+            if str(path).startswith(case.prefix):
+                opened.append(fd)
+            return fd
+    
+        def fail(fd, *args):
+            if fd in opened and not changed:
+                path = next(case.directory.glob(case.prefix + "*"))
+                changed.append((path, replace_entry(case, path, "replace")))
+                raise OSError(errno.EIO, "fake publication storage failure")
+            return real_write(fd, *args) if boundary == "write" else real_sync(fd)
+    
+        monkeypatch.setattr(os, "open", track_open)
+        monkeypatch.setattr(os, boundary, fail)
+        with pytest.raises(OSError, match="fake publication storage failure"):
+            case.operation()
+        assert len(changed) == len(opened) == 1
+>       assert_same_entry(*changed[0])
+
+tests/test_recovery_publication_binding_pass7_20261021.py:166: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_recovery_publication_binding_pass7_20261021.py:91: in assert_same_entry
+    actual = path.lstat()
+             ^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:437: in lstat
+    return self.stat(follow_symlinks=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-agent/pytest-133/test_failed_save_preserves_for1/private/.report-intent-c75cd51e2def58caa51d2493')
+
+    def stat(self, *, follow_symlinks=True):
+        """
+        Return the result of the stat() system call on this path, like
+        os.stat() does.
+        """
+>       return os.stat(self, follow_symlinks=follow_symlinks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-agent/pytest-133/test_failed_save_preserves_for1/private/.report-intent-c75cd51e2def58caa51d2493'
+
+/usr/lib/python3.13/pathlib/_local.py:517: FileNotFoundError
+_________ test_failed_save_preserves_foreign_temporary[journal-write] __________
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_failed_save_preserves_for2/private...41bdd09839b133ca246f2a","terminal":null},"sha256":"fa916eacfe28fcb086a61a172e5cc963014a85f9c5fd83e2669dc050658496b4"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f14916ecc20>
+boundary = 'write'
+
+    @pytest.mark.parametrize("boundary", ["write", "fsync"])
+    def test_failed_save_preserves_foreign_temporary(publication, monkeypatch, boundary):
+        case = publication
+        real_write, real_sync, real_open = os.write, os.fsync, os.open
+        opened, changed = [], []
+    
+        def track_open(path, flags, *args, **kwargs):
+            fd = real_open(path, flags, *args, **kwargs)
+            if str(path).startswith(case.prefix):
+                opened.append(fd)
+            return fd
+    
+        def fail(fd, *args):
+            if fd in opened and not changed:
+                path = next(case.directory.glob(case.prefix + "*"))
+                changed.append((path, replace_entry(case, path, "replace")))
+                raise OSError(errno.EIO, "fake publication storage failure")
+            return real_write(fd, *args) if boundary == "write" else real_sync(fd)
+    
+        monkeypatch.setattr(os, "open", track_open)
+        monkeypatch.setattr(os, boundary, fail)
+        with pytest.raises(OSError, match="fake publication storage failure"):
+            case.operation()
+        assert len(changed) == len(opened) == 1
+>       assert_same_entry(*changed[0])
+
+tests/test_recovery_publication_binding_pass7_20261021.py:166: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_recovery_publication_binding_pass7_20261021.py:91: in assert_same_entry
+    actual = path.lstat()
+             ^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:437: in lstat
+    return self.stat(follow_symlinks=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-agent/pytest-133/test_failed_save_preserves_for2/private/.recovery-3e4484c3b26f8eb8cd33eca1')
+
+    def stat(self, *, follow_symlinks=True):
+        """
+        Return the result of the stat() system call on this path, like
+        os.stat() does.
+        """
+>       return os.stat(self, follow_symlinks=follow_symlinks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-agent/pytest-133/test_failed_save_preserves_for2/private/.recovery-3e4484c3b26f8eb8cd33eca1'
+
+/usr/lib/python3.13/pathlib/_local.py:517: FileNotFoundError
+_________ test_failed_save_preserves_foreign_temporary[journal-fsync] __________
+
+publication = namespace(kind='journal', directory=PosixPath('/tmp/pytest-of-agent/pytest-133/test_failed_save_preserves_for3/private...71e75a30372bece2c6152a","terminal":null},"sha256":"5cb052b5bb7b46ebd509b9ca85630631e8aeed51afac768a69103a481acaadae"}')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f14916ef3f0>
+boundary = 'fsync'
+
+    @pytest.mark.parametrize("boundary", ["write", "fsync"])
+    def test_failed_save_preserves_foreign_temporary(publication, monkeypatch, boundary):
+        case = publication
+        real_write, real_sync, real_open = os.write, os.fsync, os.open
+        opened, changed = [], []
+    
+        def track_open(path, flags, *args, **kwargs):
+            fd = real_open(path, flags, *args, **kwargs)
+            if str(path).startswith(case.prefix):
+                opened.append(fd)
+            return fd
+    
+        def fail(fd, *args):
+            if fd in opened and not changed:
+                path = next(case.directory.glob(case.prefix + "*"))
+                changed.append((path, replace_entry(case, path, "replace")))
+                raise OSError(errno.EIO, "fake publication storage failure")
+            return real_write(fd, *args) if boundary == "write" else real_sync(fd)
+    
+        monkeypatch.setattr(os, "open", track_open)
+        monkeypatch.setattr(os, boundary, fail)
+        with pytest.raises(OSError, match="fake publication storage failure"):
+            case.operation()
+        assert len(changed) == len(opened) == 1
+>       assert_same_entry(*changed[0])
+
+tests/test_recovery_publication_binding_pass7_20261021.py:166: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_recovery_publication_binding_pass7_20261021.py:91: in assert_same_entry
+    actual = path.lstat()
+             ^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:437: in lstat
+    return self.stat(follow_symlinks=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-agent/pytest-133/test_failed_save_preserves_for3/private/.recovery-041d0e47922f7d901a02e9d1')
+
+    def stat(self, *, follow_symlinks=True):
+        """
+        Return the result of the stat() system call on this path, like
+        os.stat() does.
+        """
+>       return os.stat(self, follow_symlinks=follow_symlinks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-agent/pytest-133/test_failed_save_preserves_for3/private/.recovery-041d0e47922f7d901a02e9d1'
+
+/usr/lib/python3.13/pathlib/_local.py:517: FileNotFoundError
+___ test_real_wizard_restart_discloses_failed_intent_save[swapped-temporary] ___
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-133/test_real_wizard_restart_discl1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f14916ee820>
+swap = True
+
+    @pytest.mark.parametrize("swap", [False, True], ids=["normal", "swapped-temporary"])
+    def test_real_wizard_restart_discloses_failed_intent_save(tmp_path, monkeypatch, swap):
+        monkeypatch.setenv("BEAMO_WIPE_DRY_RUN", "1")
+        monkeypatch.delenv("BEAMO_WIPE_LIVE", raising=False)
+        forbidden_calls = []
+    
+        def forbidden(*_args, **_kwargs):
+            forbidden_calls.append(True)
+            raise AssertionError("Native device/process/power callback forbidden")
+    
+        for boundary in (
+            "subprocess.run", "subprocess.Popen", "beamo_wipe.discover.run_lsblk",
+            "beamo_wipe.discover.read_cmdline", "beamo_wipe.discover.read_mount_sources",
+            "beamo_wipe.nwipe_runner.NwipeRunner.start", "beamo_wipe.app._shutdown",
+        ):
+            monkeypatch.setattr(boundary, forbidden)
+        directory = tmp_path / "private"
+        directory.mkdir(mode=0o700)
+        store = ReportIntentStore(directory)
+        store.save(False)
+        wizard = make_demo_wizard()
+        wizard.enable_report_intent_recovery(store)
+        wizard.screen = Screen.REPORT_HELP
+        real_sync = os.fsync
+        swapped = []
+    
+        def sync(fd):
+            real_sync(fd)
+            for path in directory.glob(".report-intent-*"):
+                if swap and not swapped and os.fstat(fd).st_ino == path.stat().st_ino:
+                    swapped.append(path.name)
+                    path.rename(directory / "retired-owned-temporary")
+                    path.write_bytes(b"not-wanted\n")
+                    path.chmod(0o600)
+    
+        with monkeypatch.context() as patch:
+            patch.setattr(os, "fsync", sync)
+            wizard.set_report_wanted(True)
+        restarted = make_demo_wizard()
+        restarted.enable_report_intent_recovery(ReportIntentStore(directory))
+        restarted.shutdown()
+        assert not forbidden_calls
+>       assert wizard.report_recovery_warning or restarted.report_wanted
+E       AssertionError: assert ('' or False)
+E        +  where '' = <beamo_wipe.wizard.Wizard object at 0x7f149126bc50>.report_recovery_warning
+E        +  and   False = <beamo_wipe.wizard.Wizard object at 0x7f149126b750>.report_wanted
+
+tests/test_recovery_publication_binding_pass7_20261021.py:254: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[preference-replace]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[preference-symlink]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[preference-hardlink]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[preference-fifo]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[preference-opposite]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[preference-same-size]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[journal-replace]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[journal-symlink]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[journal-hardlink]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[journal-fifo]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[journal-opposite]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_temporary_is_refused_before_publication[journal-same-size]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_published_entry_is_not_reported_saved[preference-replace]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_published_entry_is_not_reported_saved[preference-opposite]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_published_entry_is_not_reported_saved[preference-same-size]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_published_entry_is_not_reported_saved[journal-replace]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_published_entry_is_not_reported_saved[journal-opposite]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_changed_published_entry_is_not_reported_saved[journal-same-size]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_failed_save_preserves_foreign_temporary[preference-write]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_failed_save_preserves_foreign_temporary[preference-fsync]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_failed_save_preserves_foreign_temporary[journal-write]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_failed_save_preserves_foreign_temporary[journal-fsync]
+FAILED tests/test_recovery_publication_binding_pass7_20261021.py::test_real_wizard_restart_discloses_failed_intent_save[swapped-temporary]
+23 failed, 17 passed in 0.65s

@@ -1,0 +1,24 @@
+diff --git a/src/beamo_wipe/nwipe_runner.py b/src/beamo_wipe/nwipe_runner.py
+index 07d7272..ffa6a9c 100644
+--- a/src/beamo_wipe/nwipe_runner.py
++++ b/src/beamo_wipe/nwipe_runner.py
+@@ -306,15 +306,16 @@ def _try_log_diag(area: str, code: str, detail: str = "") -> None:
+         from beamo_wipe.diagnostics import log_diag
+ 
+         log_diag(area, code, detail)
+-    except Exception:
+-        # Fallback to stderr for visibility when diagnostics itself fails.
++    except BaseException:
++        # Optional diagnostics, including interruption, must not abort Stop
++        # or prevent confirmed process ownership from being retired.
+         try:
+             import sys
+ 
+             # sanitize detail already truncated; avoid leaking full device paths
+             safe = detail[:120].replace("\n", " ") if detail else code
+             print(f"beamo-wipe [{area}] {code}: {safe}", file=sys.stderr)
+-        except Exception:
++        except BaseException:
+             pass
+ 
+ 

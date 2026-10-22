@@ -1,0 +1,10 @@
+{
+  "name": "final-doctor-reviewer",
+  "command": [
+    "python3",
+    "/workspace/beamo-tools/audit-pass12-20261021/boot/doctor_probe.py"
+  ],
+  "started_utc": "2026-10-21T06:51:56.189609+00:00",
+  "elapsed_seconds": 0.07,
+  "exit_code": 0
+}

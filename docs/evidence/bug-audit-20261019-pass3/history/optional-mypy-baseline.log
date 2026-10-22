@@ -1,0 +1,4 @@
+/workspace/beamo-tools/audit-pass3-20261019/reports/baseline/session_recovery.py:570: error: Value of type "dict[Any, Any] | None" is not indexable  [index]
+/workspace/beamo-tools/audit-pass3-20261019/reports/baseline/session_recovery.py:584: error: Value of type "dict[Any, Any] | None" is not indexable  [index]
+/workspace/beamo-tools/audit-pass3-20261019/reports/baseline/session_recovery.py:615: error: Value of type "dict[Any, Any] | None" is not indexable  [index]
+Found 3 errors in 1 file (checked 1 source file)

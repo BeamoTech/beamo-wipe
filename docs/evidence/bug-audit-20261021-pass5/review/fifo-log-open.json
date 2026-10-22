@@ -1,0 +1,37 @@
+{
+  "state": "FROZEN AND RELEASED TO ROOT",
+  "reason": "Full canonical run raised9 material DeprecationWarnings because fork occurred after GUI tests started threads. Root archived/superseded that run; no warning suppression.",
+  "only_test_change": "multiprocessing.get_context(\"fork\") -> get_context(\"spawn\")",
+  "product_safety_source_unchanged": true,
+  "frozen_sha256": {
+    "src/beamo_wipe/safety.py": "56edc298efcbb74d7405d34c81825b622ac8df0f4c743e8cdae3da84e19874f1",
+    "tests/test_log_fifo_open_pass5_20261021.py": "cc7b15ffd0ffaa989ffb32bd658437c46d8356f3420c81358aec97a5e27291c6"
+  },
+  "checks": {
+    "spawn-expanded-before.xml": {
+      "failure": 3,
+      "error": 0,
+      "skipped": 0,
+      "passed": 6
+    },
+    "spawn-expanded-after.xml": {
+      "failure": 0,
+      "error": 0,
+      "skipped": 0,
+      "passed": 9
+    },
+    "post-thread-spawn.xml": {
+      "failure": 0,
+      "error": 0,
+      "skipped": 0,
+      "passed": 9
+    }
+  },
+  "all_three_reports_have_same9_test_ids": true,
+  "green_and_post_thread_warnings_policy": "python -W error and pytest -W error;9cases pass without warnings",
+  "baseline_provenance": "spawn-baseline-receipt.json; isolated regular-file copied src package with archived safety.py plus byte-identical final new test, subprocess python -m pytest. No inherited sys.modules overlay.",
+  "threaded_proof": "post_thread_spawn_check.py has __main__ guard and keeps an owned benign thread alive while pytest runs. Thread is stopped and joined afterward.",
+  "adjacency": "Prior207 cases on unchanged product remain historical supporting evidence. No broad duplicate rerun after this one-line fixture change.",
+  "lint": "Ruff check/format PASS;3.10grammar PASS; owned diffcheck PASS",
+  "native_actions": "None; only owned fresh helpers/FIFOs and fake callbacks."
+}

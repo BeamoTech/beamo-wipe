@@ -1,0 +1,151 @@
+.FFF                                                                     [100%]
+=================================== FAILURES ===================================
+___ test_rejected_power_worker_cannot_supply_the_next_sample[runtime-error] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f33043c16e0>
+request = <FixtureRequest for <Function test_rejected_power_worker_cannot_supply_the_next_sample[runtime-error]>>
+interruption = <class 'RuntimeError'>
+
+    @pytest.mark.parametrize('interruption',[None,RuntimeError,KeyboardInterrupt,SystemExit],ids=['normal-control','runtime-error','keyboard-interrupt','system-exit'])
+    def test_rejected_power_worker_cannot_supply_the_next_sample(monkeypatch,request,interruption):
+     events=[];threads=[];readings=[]
+     class Event:
+      def __init__(self):
+       self.flag=False;self.reject=len(events)==1 and interruption is not None;events.append(self)
+      def set(self):
+       self.flag=True
+       if self.reject:
+        self.reject=False;raise interruption('fake interruption after acceptance flag mutation')
+      def clear(self):self.flag=False
+      def is_set(self):return self.flag
+      def wait(self):assert self.flag,'This proof never waits on an actual thread'
+     class Thread:
+      def __init__(self,*,target,daemon,name):
+       assert daemon and name=='beamo-power';self.target=target;threads.append(self)
+      def start(self):pass
+     def reader():
+      readings.append('first sample');return power.PowerStatus(ac=True,batteries=(99,),complete=True)
+     monkeypatch.setattr(power.threading,'Event',Event);monkeypatch.setattr(power.threading,'Thread',Thread)
+     monitor=power.PowerMonitor(reader)
+     monitor.tick(0.0)
+     assert len(threads)==1
+     threads[0].target()
+     if interruption is None:
+      monitor.tick(0.1);assert monitor.status.ac is True;assert readings==['first sample']
+     else:
+      assert not monitor.pending and monitor.status.ac is None
+      monitor.tick(power.REFRESH_SECONDS)
+      assert monitor.pending and len(threads)==2
+      # The accepted second worker is deliberately still in flight. It has not
+      # produced a reading, so a rejected first reading cannot describe its state.
+      monitor.tick(power.REFRESH_SECONDS+0.1)
+      trace={'interruption':interruption.__name__,'readings':readings,'ac':monitor.status.ac,'pending':monitor.pending,'queued':monitor._results.qsize()}
+      request.node.user_properties.append(('rejected_launch_trace',json.dumps(trace)))
+>     assert monitor.status.ac is None,trace
+E     AssertionError: {'ac': True, 'interruption': 'RuntimeError', 'pending': False, 'queued': 0, ...}
+E     assert True is None
+E      +  where True = PowerStatus(ac=True, batteries=(99,), complete=True).ac
+E      +    where PowerStatus(ac=True, batteries=(99,), complete=True) = <beamo_wipe.power.PowerMonitor object at 0x7f33041b6850>.status
+
+../beamo-tools/audit-pass8-20261021/root/test_power_acceptance_probe.py:41: AssertionError
+_ test_rejected_power_worker_cannot_supply_the_next_sample[keyboard-interrupt] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f330439f890>
+request = <FixtureRequest for <Function test_rejected_power_worker_cannot_supply_the_next_sample[keyboard-interrupt]>>
+interruption = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize('interruption',[None,RuntimeError,KeyboardInterrupt,SystemExit],ids=['normal-control','runtime-error','keyboard-interrupt','system-exit'])
+    def test_rejected_power_worker_cannot_supply_the_next_sample(monkeypatch,request,interruption):
+     events=[];threads=[];readings=[]
+     class Event:
+      def __init__(self):
+       self.flag=False;self.reject=len(events)==1 and interruption is not None;events.append(self)
+      def set(self):
+       self.flag=True
+       if self.reject:
+        self.reject=False;raise interruption('fake interruption after acceptance flag mutation')
+      def clear(self):self.flag=False
+      def is_set(self):return self.flag
+      def wait(self):assert self.flag,'This proof never waits on an actual thread'
+     class Thread:
+      def __init__(self,*,target,daemon,name):
+       assert daemon and name=='beamo-power';self.target=target;threads.append(self)
+      def start(self):pass
+     def reader():
+      readings.append('first sample');return power.PowerStatus(ac=True,batteries=(99,),complete=True)
+     monkeypatch.setattr(power.threading,'Event',Event);monkeypatch.setattr(power.threading,'Thread',Thread)
+     monitor=power.PowerMonitor(reader)
+     monitor.tick(0.0)
+     assert len(threads)==1
+     threads[0].target()
+     if interruption is None:
+      monitor.tick(0.1);assert monitor.status.ac is True;assert readings==['first sample']
+     else:
+      assert not monitor.pending and monitor.status.ac is None
+      monitor.tick(power.REFRESH_SECONDS)
+      assert monitor.pending and len(threads)==2
+      # The accepted second worker is deliberately still in flight. It has not
+      # produced a reading, so a rejected first reading cannot describe its state.
+      monitor.tick(power.REFRESH_SECONDS+0.1)
+      trace={'interruption':interruption.__name__,'readings':readings,'ac':monitor.status.ac,'pending':monitor.pending,'queued':monitor._results.qsize()}
+      request.node.user_properties.append(('rejected_launch_trace',json.dumps(trace)))
+>     assert monitor.status.ac is None,trace
+E     AssertionError: {'ac': True, 'interruption': 'KeyboardInterrupt', 'pending': False, 'queued': 0, ...}
+E     assert True is None
+E      +  where True = PowerStatus(ac=True, batteries=(99,), complete=True).ac
+E      +    where PowerStatus(ac=True, batteries=(99,), complete=True) = <beamo_wipe.power.PowerMonitor object at 0x7f33041b5590>.status
+
+../beamo-tools/audit-pass8-20261021/root/test_power_acceptance_probe.py:41: AssertionError
+____ test_rejected_power_worker_cannot_supply_the_next_sample[system-exit] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f33041b2470>
+request = <FixtureRequest for <Function test_rejected_power_worker_cannot_supply_the_next_sample[system-exit]>>
+interruption = <class 'SystemExit'>
+
+    @pytest.mark.parametrize('interruption',[None,RuntimeError,KeyboardInterrupt,SystemExit],ids=['normal-control','runtime-error','keyboard-interrupt','system-exit'])
+    def test_rejected_power_worker_cannot_supply_the_next_sample(monkeypatch,request,interruption):
+     events=[];threads=[];readings=[]
+     class Event:
+      def __init__(self):
+       self.flag=False;self.reject=len(events)==1 and interruption is not None;events.append(self)
+      def set(self):
+       self.flag=True
+       if self.reject:
+        self.reject=False;raise interruption('fake interruption after acceptance flag mutation')
+      def clear(self):self.flag=False
+      def is_set(self):return self.flag
+      def wait(self):assert self.flag,'This proof never waits on an actual thread'
+     class Thread:
+      def __init__(self,*,target,daemon,name):
+       assert daemon and name=='beamo-power';self.target=target;threads.append(self)
+      def start(self):pass
+     def reader():
+      readings.append('first sample');return power.PowerStatus(ac=True,batteries=(99,),complete=True)
+     monkeypatch.setattr(power.threading,'Event',Event);monkeypatch.setattr(power.threading,'Thread',Thread)
+     monitor=power.PowerMonitor(reader)
+     monitor.tick(0.0)
+     assert len(threads)==1
+     threads[0].target()
+     if interruption is None:
+      monitor.tick(0.1);assert monitor.status.ac is True;assert readings==['first sample']
+     else:
+      assert not monitor.pending and monitor.status.ac is None
+      monitor.tick(power.REFRESH_SECONDS)
+      assert monitor.pending and len(threads)==2
+      # The accepted second worker is deliberately still in flight. It has not
+      # produced a reading, so a rejected first reading cannot describe its state.
+      monitor.tick(power.REFRESH_SECONDS+0.1)
+      trace={'interruption':interruption.__name__,'readings':readings,'ac':monitor.status.ac,'pending':monitor.pending,'queued':monitor._results.qsize()}
+      request.node.user_properties.append(('rejected_launch_trace',json.dumps(trace)))
+>     assert monitor.status.ac is None,trace
+E     AssertionError: {'ac': True, 'interruption': 'SystemExit', 'pending': False, 'queued': 0, ...}
+E     assert True is None
+E      +  where True = PowerStatus(ac=True, batteries=(99,), complete=True).ac
+E      +    where PowerStatus(ac=True, batteries=(99,), complete=True) = <beamo_wipe.power.PowerMonitor object at 0x7f33043c2d70>.status
+
+../beamo-tools/audit-pass8-20261021/root/test_power_acceptance_probe.py:41: AssertionError
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass8-20261021/root/test_power_acceptance_probe.py::test_rejected_power_worker_cannot_supply_the_next_sample[runtime-error]
+FAILED ../beamo-tools/audit-pass8-20261021/root/test_power_acceptance_probe.py::test_rejected_power_worker_cannot_supply_the_next_sample[keyboard-interrupt]
+FAILED ../beamo-tools/audit-pass8-20261021/root/test_power_acceptance_probe.py::test_rejected_power_worker_cannot_supply_the_next_sample[system-exit]
+3 failed, 1 passed in 0.13s

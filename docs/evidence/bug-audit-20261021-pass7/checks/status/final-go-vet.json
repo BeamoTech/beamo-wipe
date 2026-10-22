@@ -1,0 +1,12 @@
+{
+  "name": "final-go-vet",
+  "command": [
+    "/workspace/beamo-tools/beamo-dev",
+    "bash",
+    "-c",
+    "cd desktop; go vet ./..."
+  ],
+  "started_utc": "2026-10-21T03:28:46.393355+00:00",
+  "elapsed_seconds": 13.82,
+  "exit_code": 0
+}

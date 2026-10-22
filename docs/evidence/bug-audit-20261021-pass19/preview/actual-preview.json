@@ -1,0 +1,14 @@
+{
+  "command": [
+    "./preview"
+  ],
+  "display": ":250",
+  "dpi": 72,
+  "fake_disks_only": true,
+  "normal_close_acceptance": true,
+  "returncode": 0,
+  "screenshot_sha256": "922c213939cba144951d70292b63b29baea8fe7d43e4a5f4e7f1e1adc378e5a8",
+  "teardown": "Sent WM_DELETE_WINDOW to the actual preview window",
+  "welcome_content_observed_before_capture": true,
+  "window_title": "Beamo Wipe \u2014 PREVIEW (nothing is erased)"
+}

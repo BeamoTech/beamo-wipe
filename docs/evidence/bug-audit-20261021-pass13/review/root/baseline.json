@@ -1,0 +1,13 @@
+{
+  "head": "7fcd706b44c0d63cf5f2959bcd235968e8300274",
+  "branch": "fix/safety-audit-20261019",
+  "working_tree_clean": true,
+  "started_utc": "2026-10-21T07:16:42.899400+00:00",
+  "prior_source_inputs": 825,
+  "prior_retained_artifacts": 217,
+  "prior_unique_python_passes": 11798,
+  "prior_main_test_ids": 11825,
+  "prior_python_skips": 28,
+  "prior_go_named_passes": 459,
+  "prior_go_native_skips": 2
+}

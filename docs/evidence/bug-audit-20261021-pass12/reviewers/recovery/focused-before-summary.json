@@ -1,0 +1,20 @@
+{
+  "total": 519,
+  "unique_ids": 519,
+  "passed": 517,
+  "failures": 0,
+  "errors": 0,
+  "skips": [
+    {
+      "id": "tests.test_support_contact::test_tk_support_text_is_keyboard_reachable",
+      "message": "no display: no display name and no $DISPLAY environment variable",
+      "text": "/workspace/beamo-wipe/tests/test_tk_runtime.py:49: no display: no display name and no $DISPLAY environment variable"
+    },
+    {
+      "id": "tests.test_support_code::test_tk_diagnostic_rejection_renders_code_and_build",
+      "message": "no display: no display name and no $DISPLAY environment variable",
+      "text": "/workspace/beamo-wipe/tests/test_tk_runtime.py:49: no display: no display name and no $DISPLAY environment variable"
+    }
+  ],
+  "junit_sha256": "eb09d2bc04cd404c3a666291a05bf4cf098691802339bcdfc3e7769ffbd45c24"
+}

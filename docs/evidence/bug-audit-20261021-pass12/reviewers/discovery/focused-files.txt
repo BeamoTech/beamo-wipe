@@ -1,0 +1,12 @@
+tests/test_discovery_observation_fallback_pass16.py
+tests/test_discovery_nonfinite_size_pass21.py
+tests/test_descendant_holder_filesystem_pass19.py
+tests/test_duplicate_bcache_filesystem_pass19.py
+tests/test_disk_name_layout_pass21.py
+tests/test_disk_name_alias_layout_pass21.py
+tests/test_unbound_bcache_filesystem_pass19.py
+tests/test_holder_ancestor_contradiction_pass19.py
+tests/test_holder_ancestor_mount_pass20.py
+tests/test_mounted_holder_type_pass20.py
+tests/test_raw_model_revalidation_20261019.py
+tests/test_unknown_layout_ancestry_pass2_20261019.py

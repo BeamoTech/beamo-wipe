@@ -1,0 +1,55 @@
+{
+  "audit": "bug-audit-20261021-pass16",
+  "baseline_commit": "f3ff0b52b6d83f8b52e76b46e9293552d6fb003c",
+  "branch": "fix/safety-audit-20261019",
+  "date_utc": "2026-10-21",
+  "baseline_regressions": {
+    "controls": 2,
+    "failures": 17,
+    "fixed_passes": 19,
+    "junit_sha256": "5291b0e76fc9f4fad4a5bb275f2f8b397877f2d27f9034a313f5b60d5541aa74"
+  },
+  "desktop_artifacts": {
+    "go_version": "go1.26.8",
+    "linux_sha256": "e05df5df3cd169db2e946cfab29efd71c309b6f9bd75ed94be353a705eccb12d",
+    "manifest_sha256": "89c508b2151704c5d28f98e1d0f35fffdb882a8e55f041a6b8e95884fcf42361",
+    "version": "0.2.13",
+    "windows_sha256": "b3c04fee3947d6eeb05d2a5ce2e2cdb63c9b737405694f9d5320d53b8714022f"
+  },
+  "final_python": {
+    "deselected": 2,
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "27f44f5976da186c1136fdbfc857a095fccf4e0fd09c620c1b4502480e0f63bb",
+    "passed": 12093,
+    "selected": 12120,
+    "skipped": 27,
+    "time_seconds": 1263.781,
+    "warnings_as_errors": true
+  },
+  "focused_python": {
+    "adjacent_checks": 210,
+    "new_regressions": 19,
+    "passed": 229,
+    "junit_sha256": "63d58cd6aa65c564b9dc2da64d1011d6cca054ac05838146a9c68d15a3b44721"
+  },
+  "go_cross_compile_sha256": {
+    "darwin_amd64": "769d94a9978fb508c0874758adb634b614bc508c6f449dd771ac502c3cb1be6f",
+    "darwin_arm64": "d3e7f8d7bb4a1ad7364abb312089dce27555c540d7338fefee4de0a6440e9cd9",
+    "windows_amd64": "fcb9d9b51bb9fdc3693739874c544caf26aee5780ef82d53ad7927fc920bcf98"
+  },
+  "preview": {
+    "display": ":250",
+    "dpi": 72,
+    "fake_disks_only": true,
+    "normal_close_returncode": 0,
+    "png_sha256": "d359d065737214be51290f151958f22f7bea03a736668476aaf1c53342a26d0a"
+  },
+  "publication": "local only; no push, PR, merge, deployment, or release",
+  "source_sha256": {
+    "src/beamo_wipe/release_signing.py": "ae12476353b57db1a0e54d2a362ba8896c16a8459885f96f977fb607b4cb2353",
+    "src/beamo_wipe/verification_evidence.py": "809d9477636ec93bd8d3fba7675c2f0fdc537c0f04e4d0ec371a90e6de743b6d",
+    "tests/test_release_signing_path_binding_pass16_20261021.py": "2dd8ba8195f8301d982227f3c926cd6705070cf7982d871e0e76e1bd33183b98",
+    "tests/test_verification_evidence_path_binding_pass16_20261021.py": "7496fe415af0f3babd7bab2fa74ec4d61161bf13efa00377ec473be98488ada8"
+  }
+}

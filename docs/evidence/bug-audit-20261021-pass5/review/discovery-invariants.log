@@ -1,0 +1,12 @@
+{
+  "seed": 2026102105,
+  "equivalent_flat_nested_scenarios": 192,
+  "token_ownership": {
+    "inventories": 3000,
+    "views": 10509,
+    "confirmable": 7436,
+    "ambiguous_refused": 3073
+  },
+  "cross_disk_token_collisions": 0,
+  "native_acquisition_guard": "PASS"
+}

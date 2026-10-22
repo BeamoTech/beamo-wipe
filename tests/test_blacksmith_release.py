@@ -163,6 +163,10 @@ def test_release_download_inventory_is_signed_and_binds_compressed_usb(tmp_path,
     assert "not configured" not in inventory["verification"]["signing"]
     assert "--manifest dist/release-downloads.json" in inventory["verification"]["signature_command"]
     files = inventory["files"]
+    marker_bytes = (stage / "RELEASE_COMPLETE.txt").read_bytes()
+    assert files["RELEASE_COMPLETE.txt"] == {
+        "sha256": sha(marker_bytes), "bytes": len(marker_bytes),
+    }
     assert files[f"{stem}.img"]["sha256"] == sha(raw)
     assert files[f"{stem}.img"]["bytes"] == len(raw)
     assert files[f"{stem}.img.gz"]["sha256"] == sha(compressed.read_bytes())

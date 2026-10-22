@@ -1,0 +1,11 @@
+........................................................................ [ 22%]
+........................................................................ [ 44%]
+.........................................................dbus-daemon[112906]: [session uid=1000 pid=112906 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=112920 comm="python3 -m pytest -W error -p no:cacheprovider -o" label="kernel")
+dbus-daemon[112906]: [session uid=1000 pid=112906 pidfd=5] Successfully activated service 'org.a11y.Bus'
+...dbus-daemon[113295]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=112920 comm="python3 -m pytest -W error -p no:cacheprovider -o" label="kernel")
+dbus-daemon[113295]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+............ [ 66%]
+........................................................................ [ 88%]
+......................................                                   [100%]
+326 passed in 15.53s

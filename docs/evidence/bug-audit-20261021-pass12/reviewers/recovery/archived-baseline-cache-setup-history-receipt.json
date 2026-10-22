@@ -1,0 +1,11 @@
+{
+  "module_probe": [
+    "/tmp/beamo-pass12-intent-baseline-pggwhika/beamo_wipe/report_intent.py",
+    "872072d5a51c72a01596dea683de7279c6191eb072c733ce8ae475fbef95e9fb"
+  ],
+  "exit_code": 1,
+  "test_sha256": "925a31dd06fdbde5b0b95a2dee670bef3a467d917ee1da30ddf2a9ca74ade2d6",
+  "baseline_source_sha256": "872072d5a51c72a01596dea683de7279c6191eb072c733ce8ae475fbef95e9fb",
+  "shared_source_sha256": "e4a1bf94aecfc3926b72973f2319ab3f8394e03a83737d11542c5a3670727c82",
+  "temporary_owned_package_only": true
+}

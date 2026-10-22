@@ -1,0 +1,42 @@
+{
+  "audit": "BW-BUG-AUDIT-PASS21-20261022",
+  "baseline_commit": "65a79d03c86c88fe1730d076ac88e446f9c4a50d",
+  "branch": "fix/safety-audit-20261019",
+  "completed_utc": "2026-10-22",
+  "final_python": {
+    "deselected_generated_live_config": 2,
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "ea6b910bb4d677de5e6f40e7b7523815c6e667e1bb060ea587a291357713fcb0",
+    "passed": 12159,
+    "selected": 12185,
+    "skipped": 26
+  },
+  "focused_release": {
+    "errors": 0,
+    "failures": 0,
+    "passed": 388,
+    "selected": 469,
+    "skipped": 81,
+    "transcript_sha256": "825272052d8c787ef08ac704d78976e022e380351e7609b11b825fc22eae3fc0"
+  },
+  "go": {
+    "crossbuild_transcript_sha256": "0434da0397eb399971ecfbd77c2e2aee857a2ecce90e20dd831ae9216262e0dc",
+    "fuzz_executions": 350000,
+    "race_vet_fuzz_transcript_sha256": "2f7839b78b918fa3829032046ba62423a0da9356803eb90a71969e0667e7b40a",
+    "version": "go1.26.8"
+  },
+  "regressions": {
+    "baseline_failed": 21,
+    "baseline_passed_controls": 1,
+    "baseline_transcript_sha256": "6d06daa1a1742b5f6716a5d785abff5858446f8df55cda2e67d3023c4b765a29",
+    "fixed_passed": 22,
+    "fixed_transcript_sha256": "b7456fe1c73277ed8a41d0de67f445660ef54ae8186642ae68ec93519cc7ba5b"
+  },
+  "source_sha256": {
+    ".github/workflows/release.yml": "9ea706daab022179231911c921ab0801f13dfac9aa67935e9790718dbeb88e0c",
+    "scripts/release_transfer.py": "1a760110711f23980187e6059c4187f36bcbf6bb7cb208af8c89114bff3de5aa",
+    "tests/test_release_transfer_binding_pass21_20261022.py": "9f55ba6db795b8afe43ea2a6a0c906a910bb8dae232d0a6d1ae0658eacfe9562"
+  },
+  "static_transcript_sha256": "31b22a790ef1c1c2204ee85fec33d96cde0b337bd183db762f0b8e17cb389731"
+}

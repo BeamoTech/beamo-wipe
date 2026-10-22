@@ -1,0 +1,20 @@
+{
+  "name": "live-filesystem-independent-before",
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-o",
+    "pythonpath=src",
+    "-q",
+    "/workspace/beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass7-20261021/root/live-filesystem-independent-before.xml"
+  ],
+  "started_utc": "2026-10-21T03:19:18.959176+00:00",
+  "elapsed_seconds": 0.38,
+  "exit_code": 1
+}

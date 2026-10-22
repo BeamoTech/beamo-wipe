@@ -1,0 +1,16 @@
+{
+  "name": "expanded-before",
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-run",
+    "^(TestCloseRetiresEveryAPIActionPass10|TestCloseRejectsAlreadyDecodingActionsPass10|TestCloseRetiresBeforeResponseFlushPass10|TestClosePreservesOpenAndBusyControlsPass10)$",
+    "-json",
+    "."
+  ],
+  "started_utc": "2026-10-21T05:27:49.054563+00:00",
+  "elapsed_seconds": 1.15,
+  "exit_code": 1
+}

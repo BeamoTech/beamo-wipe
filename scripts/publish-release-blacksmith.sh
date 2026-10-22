@@ -40,16 +40,20 @@ PYTHONPATH=src "$RUNNER_TEMP/beamo-release-venv/bin/python" \
   scripts/prepare_release_assets.py "$stage"
 
 tag="v$BEAMO_WIPE_VERSION"
+title="Beamo Wipe $BEAMO_WIPE_VERSION"
+notes_file="docs/release-${BEAMO_WIPE_VERSION}.md"
 if draft_state="$(gh release view "$tag" --repo "$GITHUB_REPOSITORY" \
   --json isDraft --jq .isDraft 2>/dev/null)"; then
   [[ "$draft_state" == true ]] || {
     echo "Release $tag is already public; refusing to replace its assets." >&2
     exit 2
   }
+  gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=true --prerelease=false \
+    --title "$title" --notes-file "$notes_file"
 else
   gh release create "$tag" --repo "$GITHUB_REPOSITORY" --verify-tag --draft \
-    --title "Beamo Wipe $BEAMO_WIPE_VERSION" \
-    --notes-file "docs/release-${BEAMO_WIPE_VERSION}.md"
+    --prerelease=false \
+    --title "$title" --notes-file "$notes_file"
 fi
 
 assets=(
@@ -66,6 +70,23 @@ assets=(
   "$stage/release-downloads.json" "$stage/release-downloads.json.sig"
   "$stage/RELEASE_COMPLETE.txt"
 )
+
+restore_verified_draft() {
+  local restored_release_id
+  if restored_release_id="$(
+    gh api --method PATCH \
+      "repos/$GITHUB_REPOSITORY/releases/$verified_release_id" \
+      -F draft=true | \
+      BEAMO_GITHUB_RELEASE_DRAFT=true \
+        "$RUNNER_TEMP/beamo-release-venv/bin/python" \
+          scripts/verify_github_release_assets.py - "${assets[@]}"
+  )" && [[ "$restored_release_id" == "$verified_release_id" ]]; then
+    return 0
+  fi
+  echo "Failed to restore the verified GitHub release draft $verified_release_id." >&2
+  return 1
+}
+
 # A failed attempt may have left a partial draft. Replace only draft assets;
 # the complete server digest check below still gates public promotion.
 gh release upload "$tag" --repo "$GITHUB_REPOSITORY" --clobber "${assets[@]}"
@@ -73,11 +94,75 @@ gh release upload "$tag" --repo "$GITHUB_REPOSITORY" --clobber "${assets[@]}"
 # GitHub supplies the SHA-256 of each stored asset. Refuse public promotion
 # until every server digest equals the exact local bytes we uploaded.
 for ((attempt = 1; attempt <= 6; attempt++)); do
-  scripts/fetch_github_draft_release.sh "$GITHUB_REPOSITORY" "$tag" \
-    > "$stage/github-release.json"
-  if "$RUNNER_TEMP/beamo-release-venv/bin/python" scripts/verify_github_release_assets.py \
-    "$stage/github-release.json" "${assets[@]}"; then
-    gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=false --latest
+  if verified_release_id="$(
+    scripts/fetch_github_draft_release.sh "$GITHUB_REPOSITORY" "$tag" | \
+      "$RUNNER_TEMP/beamo-release-venv/bin/python" scripts/verify_github_release_assets.py \
+        - "${assets[@]}"
+  )"; then
+    [[ "$verified_release_id" =~ ^[1-9][0-9]*$ ]] || {
+      echo "Verified GitHub release ID is invalid." >&2
+      exit 2
+    }
+    remote_tag_sha="$(gh api \
+      "repos/$GITHUB_REPOSITORY/commits/$tag" --jq .sha)"
+    [[ "$remote_tag_sha" == "$GITHUB_SHA" ]] || {
+      echo "Remote tag $tag no longer identifies qualified source $GITHUB_SHA." >&2
+      exit 2
+    }
+    if ! promoted_release_id="$(
+      gh api --method PATCH \
+        "repos/$GITHUB_REPOSITORY/releases/$verified_release_id" \
+        -F draft=false -f make_latest=true | \
+        BEAMO_GITHUB_RELEASE_DRAFT=false \
+          "$RUNNER_TEMP/beamo-release-venv/bin/python" \
+            scripts/verify_github_release_assets.py - "${assets[@]}"
+    )"; then
+      echo "GitHub publication response failed exact verification." >&2
+      restore_verified_draft || true
+      exit 2
+    fi
+    [[ "$promoted_release_id" == "$verified_release_id" ]] || {
+      echo "GitHub promoted an unexpected release record." >&2
+      restore_verified_draft || true
+      exit 2
+    }
+    if ! published_tag_sha="$(gh api \
+      "repos/$GITHUB_REPOSITORY/commits/$tag" --jq .sha)"; then
+      echo "Remote tag $tag could not be rechecked after publication." >&2
+      restore_verified_draft || true
+      exit 2
+    fi
+    [[ "$published_tag_sha" == "$GITHUB_SHA" ]] || {
+      echo "Remote tag $tag moved during publication; restoring the draft." >&2
+      restore_verified_draft || true
+      exit 2
+    }
+    if ! latest_release_id="$(
+      gh api "repos/$GITHUB_REPOSITORY/releases/latest" | \
+        BEAMO_GITHUB_RELEASE_DRAFT=false \
+          "$RUNNER_TEMP/beamo-release-venv/bin/python" \
+            scripts/verify_github_release_assets.py - "${assets[@]}"
+    )"; then
+      echo "GitHub latest release response failed exact verification." >&2
+      restore_verified_draft || true
+      exit 2
+    fi
+    [[ "$latest_release_id" == "$verified_release_id" ]] || {
+      echo "GitHub latest release does not identify the verified release." >&2
+      restore_verified_draft || true
+      exit 2
+    }
+    if ! final_tag_sha="$(gh api \
+        "repos/$GITHUB_REPOSITORY/commits/$tag" --jq .sha)"; then
+      echo "Remote tag $tag could not be rechecked after latest release verification." >&2
+      restore_verified_draft || true
+      exit 2
+    fi
+    [[ "$final_tag_sha" == "$GITHUB_SHA" ]] || {
+      echo "Remote tag $tag moved while the latest release was verified; restoring the draft." >&2
+      restore_verified_draft || true
+      exit 2
+    }
     echo "Published verified signed release $tag from $GITHUB_SHA (build $BUILD_ID)"
     exit 0
   fi

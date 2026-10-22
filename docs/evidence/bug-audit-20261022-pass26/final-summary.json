@@ -1,0 +1,38 @@
+{
+  "audit": "BW-BUG-AUDIT-PASS26-20261022",
+  "baseline_commit": "b4564a95a1cf30d0b7faf6f75379612b4fd293ac",
+  "branch": "fix/safety-audit-20261019",
+  "completed_utc": "2026-10-22",
+  "final_python": {
+    "deselected_generated_live_config": 2,
+    "deselected_host_gtk_layout": 1,
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "b8a5002009aa4d0446c39e8df525a200a18f0c5b8c3391f29672ec87ea952e9c",
+    "passed": 12224,
+    "selected": 12242,
+    "skipped": 18
+  },
+  "focused_release": {
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "1f06afda7b5c01b991af7bc14ea668f764e620ddf910368f4e76ed50e773e2bf",
+    "passed": 330,
+    "selected": 342,
+    "skipped": 12
+  },
+  "regressions": {
+    "baseline_failed": 5,
+    "baseline_passed_controls": 1,
+    "baseline_transcript_sha256": "ded561c5498e48f81602ab84d602d0a34e3edc28d2428ca42bce82b1f89dabf7",
+    "fixed_passed": 6,
+    "fixed_transcript_sha256": "ac5bca4dcd276fccac917d1caa1c356a89433d67bd12aedde40611f8958d4183"
+  },
+  "source_freeze_sha256": "e4d8d171856e3f66128eefeb411c0beef3774f8e82af2e04fb47d7afc63b1064",
+  "source_sha256": {
+    "scripts/publish-release-blacksmith.sh": "c2b42f19f8134e51e5d6f4a81293391b7ab899894707d63647f7cf9e58ddcce9",
+    "tests/test_github_release_latest_pass25_20261022.py": "6c9b01b82cddca73a341bff171381046bc72d5431d38260d821659cb876b115a",
+    "tests/test_github_release_final_tag_pass26_20261022.py": "68159d482a36867701fa4422714bbce2279a8088b1a7eb81db3eb1bc5a819915"
+  },
+  "static_transcript_sha256": "5d1c23ceb6773ce2c8434a520bf954e68090fb4b4f51b8e21053aa54e72c2d33"
+}

@@ -82,7 +82,8 @@ class SleepInhibit:
                 from beamo_wipe.diagnostics import log_diag
 
                 log_diag("power", "sleep_inhibit_unavailable", INHIBIT_BIN)
-            except Exception:
+            except BaseException:
+                # Optional logging must not interrupt erase ownership cleanup.
                 pass
 
     def stop(self) -> None:
@@ -113,5 +114,6 @@ class SleepInhibit:
                 from beamo_wipe.diagnostics import log_diag
 
                 log_diag("power", "sleep_inhibit_stop_failed", "terminate")
-            except Exception:
+            except BaseException:
+                # Retain helper ownership without interrupting engine retirement.
                 pass

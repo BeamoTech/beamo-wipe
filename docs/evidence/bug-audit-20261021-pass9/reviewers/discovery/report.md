@@ -1,0 +1,17 @@
+# PASS9 discovery, inventory and startup ownership review
+
+No additional disk-selection defect was proved. A root-raised startup ownership concern was independently corroborated with real proc-reader helpers and actual public entry/controller code, then covered by one new regression module. Product and old fixture edits belong to root. New test ownership is released.
+
+Fresh source review read production parsing and boot resolution, physical observation preservation, protected hardware-alias closure, mounted and opened-volume ancestry, typed-source resolution, mount visibility, hardware/layout identity, final rediscovery and inventory presentation gates. Candidate disk concerns were checked against authoritative-parent identity, conservative ambiguity handling and normal controls; none established a new selection failure.
+
+`focused.status.json` records the actual 69-module command and exit0: 2,320 passing cases and 6 unverified pinned-browser skips, 2,326 unique JUnit IDs, no failures/errors/Python warnings. `skip-comparison.json` verifies exact skip IDs/reasons against PASS8 canonical evidence. No blocked browser download was retried.
+
+Fresh `protected_graph_matrix.py` independently computes protected identifier reachability for 512 seeded fake inventories: 5,120 discover calls, 4,096 tree/flat/order checks, 5,976 positive selectable observations, 14,504 protected observations, 512 ambiguous-boot refusals and 512 contradictory-duplicate refusals. Actual exit0, no mismatch/native callback. The model forbids subprocesses, native acquisition, engine start, shutdown and device/proc/sys opens, with fake device resolution. Source hashes are bound in its JSON. Root independent replay uses the same script after sourcing `/workspace/beamo-tools/activate.sh`.
+
+The independent original startup proof is `test_transient_live_ownership.py`. First cmdline or mountinfo OSError returned the established helper False/empty result; later successful reads of unchanged live metadata constructed NwipeRunner and entered fake console with dry_run=False and session store None. Actual red2FAIL/2normal controlsPASS, zero native callbacks. Root independently proved the same cause.
+
+Final `tests/test_app_live_ownership_pass9_20261021.py` adds64 cases:48 transient combinations of2 proc files,1/2/3 failed initial reads,4 controller routes and2 preview flags, plus16 stable-live/desktop controls. Its exact final bytes were replayed against archived baseline src using explicit isolated PYTHONPATH:48FAIL/16positive controlsPASS,64unique IDs,0errors/skips. Earlier looser candidate34FAIL/30PASS is preserved as history. Root's early live/store refusal and final real-wizard/store refusal preserve reader helper contracts. After repair all64new cases plus4original proof cases pass (68unique/no errors/skips/warnings), actual exit0 in `ownership-focused-after.status.json`.
+
+The final new test hash and reviewed app hash are in `review-summary.json`; root owns any later integration changes and final source freeze. New test Ruff check passes. Existing accessible test assertion expressions remain unchanged under root's ownership fixture adaptation; root also owns poweroff fixture updates. No other repository file was edited by discovery reviewer.
+
+Supporting counts overlap the final canonical suite and are not added to it. Native device, physical firmware/media/reconnect and live-image qualification remain unverified; integrated gates remain root-owned.
