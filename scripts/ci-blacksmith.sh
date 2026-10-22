@@ -67,6 +67,19 @@ phase() {
             fi
           done
         fi
+        if [[ "$gate" == desktop-launchers && "$code" -eq 0 ]]; then
+          if [[ -L "$private_root/dist/desktop" || ! -d "$private_root/dist/desktop" ]]; then
+            echo "desktop gate did not produce a regular bundle directory" >&2
+            code=1
+          else
+            # The ISO must embed the exact launcher pair that passed the Go
+            # race/vet/fuzz and cross-build gate in this private source tree.
+            # build-iso.sh verifies its signed inventory before staging it.
+            rm -rf -- "$mounted_root/dist/desktop"
+            mkdir -p "$mounted_root/dist"
+            cp -a -- "$private_root/dist/desktop" "$mounted_root/dist/desktop"
+          fi
+        fi
         exit "$code"
       fi
       if [[ "$gate" == iso ]]; then

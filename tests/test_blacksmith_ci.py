@@ -56,6 +56,8 @@ raise SystemExit(7 if gate == os.environ['FAILED_GATE'] else 0)
         command = "\n".join(args)
         assert "tar --no-same-owner" in command
         assert 'mounted_root/dist/evidence' in command
+        assert 'private_root/dist/desktop' in command
+        assert 'mounted_root/dist/desktop' in command
 
 
 def test_blacksmith_refuses_developer_machine():
