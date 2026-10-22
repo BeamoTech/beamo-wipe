@@ -1226,10 +1226,20 @@ def _drain_retired_interpreters() -> None:
 
 
 def _drain_retired_native() -> None:
-    # The asset helper must return first: its loop/snapshot tuple references
-    # can otherwise keep the last asset's raw interpreter alive for this pass.
-    _drain_retired_assets()
-    _drain_retired_interpreters()
+    # Building the snapshot can allocate and trigger the GC callback again on
+    # this same thread.  A nested drain must not mutate the dictionary while
+    # the outer drain is copying it.  Other owner threads keep independent
+    # guards and can continue releasing their own buckets.
+    if getattr(_RETIRED_THREAD, "draining", False):
+        return
+    _RETIRED_THREAD.draining = True
+    try:
+        # The asset helper must return first: its loop/snapshot tuple references
+        # can otherwise keep the last asset's raw interpreter alive for this pass.
+        _drain_retired_assets()
+        _drain_retired_interpreters()
+    finally:
+        _RETIRED_THREAD.draining = False
 
 
 def _drain_retired_native_after_gc(phase: str, _info: dict) -> None:
@@ -4567,7 +4577,14 @@ class TkWizard:
             self.root.focus_set()
         if self.w.begin_report_export():
             self._report_space_release_pending = keyboard_space
-            self._draw()
+            if keyboard_space:
+                # Keep the event target alive until Tk finishes routing this
+                # physical press.  Tcl 8.6 can otherwise continue the same
+                # event through bindings created by the redraw, activating
+                # the new Shut down control before key-up arrives.
+                self.root.after_idle(self._draw)
+            else:
+                self._draw()
         elif keyboard_space and previous_focus is not None:
             previous_focus.focus_set()
 

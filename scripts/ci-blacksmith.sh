@@ -21,6 +21,7 @@ PY
 phase() {
   local gate="$1"
   local options=()
+  local private_sources=0
   # Same absolute checkout path inside/outside the container is essential:
   # the ISO builder talks to the sibling Docker daemon using bind mounts.
   if [[ "$gate" == iso ]]; then
@@ -30,6 +31,12 @@ phase() {
     # Needed for private file-backed loop mounts. Never bind host /dev;
     # qemu-verify.sh independently refuses /dev/ in every guest drive argv.
     options+=(--privileged)
+  else
+    # A bind-mounted checkout keeps the runner's uid and host filesystem
+    # timestamp behavior inside this root container.  Security tests must
+    # exercise ordinary, container-owned files so ownership and change-time
+    # checks describe production semantics instead of the Docker mount.
+    private_sources=1
   fi
   docker run --rm --platform linux/amd64 \
     -v "$ROOT:$ROOT" -w "$ROOT" "${options[@]}" \
@@ -39,12 +46,35 @@ phase() {
     -e PIP_CACHE_DIR="$ROOT/.ci-cache/pip/$gate" \
     -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0="$ROOT" \
     "$IMAGE" bash -ceu '
-      if [[ "$1" == iso ]]; then
+      mounted_root="$1"
+      private_sources="$2"
+      gate="$3"
+      if [[ "$private_sources" == 1 ]]; then
+        private_root="$(mktemp -d /tmp/beamo-wipe-source.XXXXXX)"
+        tar -C "$mounted_root" \
+          --exclude=./.ci-cache --exclude=./dist --exclude=./qemu-evidence \
+          --exclude=./.venv --exclude=./.venv-linux \
+          -cf - . | tar --no-same-owner -C "$private_root" -xf -
+        cd "$private_root"
+        export PIP_CACHE_DIR="$private_root/.ci-cache/pip/$gate"
+        code=0
+        bash scripts/ci-hosted.sh "$gate" || code=$?
+        if [[ -d "$private_root/dist/evidence" ]]; then
+          mkdir -p "$mounted_root/dist/evidence"
+          for artifact in "$private_root/dist/evidence/$gate".*; do
+            if [[ -f "$artifact" ]]; then
+              cp "$artifact" "$mounted_root/dist/evidence/"
+            fi
+          done
+        fi
+        exit "$code"
+      fi
+      if [[ "$gate" == iso ]]; then
         apt-get update -qq
         apt-get install -y -qq --no-install-recommends ca-certificates docker.io git python3
       fi
-      exec bash scripts/ci-hosted.sh "$1"
-    ' -- "$gate"
+      exec bash scripts/ci-hosted.sh "$gate"
+    ' -- "$ROOT" "$private_sources" "$gate"
 }
 
 case "${1:-}" in
