@@ -900,27 +900,27 @@ def test_space_report_export_retargets_focus_before_worker_starts():
         def focus_set(self):
             events.append("stable-focus")
 
-        def after_idle(self, callback):
-            events.append("redraw-scheduled")
-            callback()
-
     class Wizard:
+        screen = Screen.DONE
+
         def begin_report_export(self):
             events.append("report-start")
             return True
 
+        def arm_done_keyboard(self):
+            events.append("keyboard-armed")
+
     app.root = Root()
     app.w = Wizard()
     app._space_action_active = True
+    app._space_release_after = None
+    app._primary = None
     app._draw = lambda: events.append("redraw")
 
     app._click_save_report()
-    assert events == [
-        "stable-focus",
-        "report-start",
-        "redraw-scheduled",
-        "redraw",
-    ]
+    assert events == ["stable-focus", "report-start"]
+    app._release_space()
+    assert events == ["stable-focus", "report-start", "keyboard-armed", "redraw"]
 
 
 def test_space_release_finishes_while_idle_queue_is_busy(ui):
@@ -958,7 +958,7 @@ def test_space_release_finishes_while_idle_queue_is_busy(ui):
 
 @pytest.mark.parametrize("run", range(5))
 def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypatch, run):
-    """Use server-delivered release after Save destroys the initiating control."""
+    """Keep Save alive through a server-delivered release, then redraw."""
     import ctypes
     import ctypes.util
     import os
@@ -1020,7 +1020,7 @@ def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypa
             app.root.update()
             time.sleep(0.01)
         assert app._report_space_release_pending
-        assert not save.winfo_exists()
+        assert save.winfo_exists()
         assert not wiz.wants_shutdown
         held_until = time.monotonic() + 1.2
         while time.monotonic() < held_until:
@@ -1035,6 +1035,7 @@ def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypa
             app.root.update()
             time.sleep(0.01)
         assert not app._space_held, "server-delivered Space release was lost"
+        assert not save.winfo_exists()
         assert not wiz.wants_shutdown
     finally:
         xtst.XTestFakeKeyEvent(connection, code, 0, 0)

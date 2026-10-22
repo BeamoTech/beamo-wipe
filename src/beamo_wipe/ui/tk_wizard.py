@@ -1601,7 +1601,11 @@ class TkWizard:
             return 1.0
 
     def _on_root_configure(self, event) -> None:
-        if event.widget is not self.root or self._layout_drawing:
+        if (
+            event.widget is not self.root
+            or self._layout_drawing
+            or self._report_space_release_pending
+        ):
             return
         if self._sync_layout():
             self._layout_drawing = True
@@ -1869,7 +1873,8 @@ class TkWizard:
                 self._teardown()
                 return
             self._arm_shutdown_enter_if_idle()
-            self._draw()
+            if not self._report_space_release_pending:
+                self._draw()
 
         return wrapped
 
@@ -1966,18 +1971,22 @@ class TkWizard:
             if self.w.wants_shutdown or self.w.wants_new_session:
                 self._teardown()
                 return
-            if self.w.screen != prev:
-                self._draw()
-            elif self.w.screen in {Screen.DONE, Screen.DIAGNOSTIC, Screen.WORKING} and (
-                self.w.report_view.revision != self._shown_report_revision
-            ):
-                self._draw()
-            elif self.w.screen in {Screen.DONE, Screen.WORKING} and getattr(self.w, "sound_revision", 0) != getattr(self, "_shown_sound_revision", 0):
-                self._draw()
-            elif self.w.screen == Screen.LAST_CHANCE:
-                self._refresh_last_chance()
-            elif self.w.screen in {Screen.WORKING, Screen.STOPPING}:
-                self._refresh_working()
+            # A report worker changes the view revision immediately after a
+            # keyboard save begins. Preserve the focused Save control until
+            # its physical Space release has reached `_release_space`.
+            if not self._report_space_release_pending:
+                if self.w.screen != prev:
+                    self._draw()
+                elif self.w.screen in {Screen.DONE, Screen.DIAGNOSTIC, Screen.WORKING} and (
+                    self.w.report_view.revision != self._shown_report_revision
+                ):
+                    self._draw()
+                elif self.w.screen in {Screen.DONE, Screen.WORKING} and getattr(self.w, "sound_revision", 0) != getattr(self, "_shown_sound_revision", 0):
+                    self._draw()
+                elif self.w.screen == Screen.LAST_CHANCE:
+                    self._refresh_last_chance()
+                elif self.w.screen in {Screen.WORKING, Screen.STOPPING}:
+                    self._refresh_working()
             power_label = getattr(self, "_power_label", None)
             if power_label is not None:
                 power_label.configure(text=self.w.power_text)
@@ -4548,6 +4557,11 @@ class TkWizard:
         self._report_space_release_pending = False
         self.w.arm_done_keyboard()
         emit_serial_marker("BEAMO_WIPE_KEY_SPACE_RELEASED")
+        if restore_done_focus:
+            # Keep the Save button alive until the physical key-up has been
+            # routed.  Redrawing at idle after key-down can still destroy the
+            # X11 event target before a QMP or slow hardware release arrives.
+            self._draw()
         if (
             restore_done_focus
             and self.w.screen == Screen.DONE
@@ -4577,13 +4591,7 @@ class TkWizard:
             self.root.focus_set()
         if self.w.begin_report_export():
             self._report_space_release_pending = keyboard_space
-            if keyboard_space:
-                # Keep the event target alive until Tk finishes routing this
-                # physical press.  Tcl 8.6 can otherwise continue the same
-                # event through bindings created by the redraw, activating
-                # the new Shut down control before key-up arrives.
-                self.root.after_idle(self._draw)
-            else:
+            if not keyboard_space:
                 self._draw()
         elif keyboard_space and previous_focus is not None:
             previous_focus.focus_set()
