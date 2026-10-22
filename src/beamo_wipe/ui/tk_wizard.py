@@ -1469,7 +1469,7 @@ class TkWizard:
             self._return_release_time: Optional[int] = None
             self._space_held = False
             self._space_release_after: Optional[str] = None
-            self._space_release_timeout_after: Optional[str] = None
+            self._space_release_generation = 0
             self._space_release_time: Optional[int] = None
             self._space_action_active = False
             self._report_space_release_pending = False
@@ -1931,7 +1931,6 @@ class TkWizard:
             for attr in (
                 "_return_release_after",
                 "_space_release_after",
-                "_space_release_timeout_after",
                 "_after_id",
             ):
                 callback = getattr(self, attr, None)
@@ -4526,15 +4525,16 @@ class TkWizard:
 
     def _claim_space_press(self, event=None) -> bool:
         """Claim a new physical Space press; suppress X11 repeat pairs."""
-        for attr in ("_space_release_after", "_space_release_timeout_after"):
-            callback = getattr(self, attr, None)
-            if callback is None:
-                continue
+        callback = getattr(self, "_space_release_after", None)
+        if callback is not None:
             try:
                 self.root.after_cancel(callback)
             except tk.TclError:
                 pass
-            setattr(self, attr, None)
+            self._space_release_after = None
+        self._space_release_generation = (
+            getattr(self, "_space_release_generation", 0) + 1
+        )
         repeat = (self._space_release_time is not None
                   and self._space_release_time == self._key_event_time(event))
         if self._space_held or repeat:
@@ -4548,33 +4548,34 @@ class TkWizard:
         # Queue cleanup without requiring global idle: report redraws can
         # otherwise starve a delivered release. Give a queued X11 autorepeat
         # press time to cancel its paired release before acknowledging key-up.
-        for attr in ("_space_release_after", "_space_release_timeout_after"):
-            callback = getattr(self, attr, None)
-            if callback is None:
-                continue
+        callback = getattr(self, "_space_release_after", None)
+        if callback is not None:
             try:
                 self.root.after_cancel(callback)
             except tk.TclError:
                 pass
-            setattr(self, attr, None)
+            self._space_release_after = None
         self._space_release_time = self._key_event_time(_event)
         emit_serial_marker("BEAMO_WIPE_KEY_SPACE_RELEASE_RECEIVED")
-        after_idle = getattr(self.root, "after_idle", None)
-        self._space_release_after = (
-            after_idle(self._release_space) if callable(after_idle) else None
+        generation = getattr(self, "_space_release_generation", 0) + 1
+        self._space_release_generation = generation
+        self._space_release_after = self.root.after(
+            25, lambda: self._release_space(generation)
         )
-        self._space_release_timeout_after = self.root.after(25, self._release_space)
         return "break"
 
-    def _release_space(self) -> None:
-        for attr in ("_space_release_after", "_space_release_timeout_after"):
-            callback = getattr(self, attr, None)
-            setattr(self, attr, None)
-            if callback is not None:
-                try:
-                    self.root.after_cancel(callback)
-                except (AttributeError, tk.TclError):
-                    pass
+    def _release_space(self, generation: Optional[int] = None) -> None:
+        current_generation = getattr(self, "_space_release_generation", 0)
+        if generation is not None and generation != current_generation:
+            return
+        self._space_release_generation = current_generation + 1
+        callback = getattr(self, "_space_release_after", None)
+        self._space_release_after = None
+        if callback is not None:
+            try:
+                self.root.after_cancel(callback)
+            except (AttributeError, tk.TclError):
+                pass
         self._space_held = False
         restore_done_focus = self._report_space_release_pending
         self._report_space_release_pending = False
@@ -4605,19 +4606,13 @@ class TkWizard:
         self.w.begin_evidence_retry()
 
     def _click_save_report(self) -> None:
-        # Space can start export before QMP sends key-up. Focus the stable
-        # toplevel before the report-start marker: a redraw destroys the Save
-        # button, and X11 can otherwise discard a release targeted at it.
+        # Space can start export before QMP sends key-up. Keep the focused Save
+        # control alive until that release so X11 retains the event target.
         keyboard_space = self._space_action_active
-        previous_focus = self.root.focus_get() if keyboard_space else None
-        if keyboard_space:
-            self.root.focus_set()
         if self.w.begin_report_export():
             self._report_space_release_pending = keyboard_space
             if not keyboard_space:
                 self._draw()
-        elif keyboard_space and previous_focus is not None:
-            previous_focus.focus_set()
 
     def _click_shutdown(self) -> None:
         """Button Space/click on Shut down. Ignore until the arriving key is up."""
