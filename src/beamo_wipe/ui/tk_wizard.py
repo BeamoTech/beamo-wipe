@@ -1604,7 +1604,7 @@ class TkWizard:
         if (
             event.widget is not self.root
             or self._layout_drawing
-            or self._report_space_release_pending
+            or getattr(self, "_report_space_release_pending", False)
         ):
             return
         if self._sync_layout():
@@ -1873,7 +1873,7 @@ class TkWizard:
                 self._teardown()
                 return
             self._arm_shutdown_enter_if_idle()
-            if not self._report_space_release_pending:
+            if not getattr(self, "_report_space_release_pending", False):
                 self._draw()
 
         return wrapped
@@ -1974,7 +1974,7 @@ class TkWizard:
             # A report worker changes the view revision immediately after a
             # keyboard save begins. Preserve the focused Save control until
             # its physical Space release has reached `_release_space`.
-            if not self._report_space_release_pending:
+            if not getattr(self, "_report_space_release_pending", False):
                 if self.w.screen != prev:
                     self._draw()
                 elif self.w.screen in {Screen.DONE, Screen.DIAGNOSTIC, Screen.WORKING} and (
@@ -4414,7 +4414,7 @@ class TkWizard:
                 self._click_shutdown,
                 enabled=not report.exporting and not report.saving_evidence,
             )
-        if self._primary is not None and not self._report_space_release_pending:
+        if self._primary is not None and not getattr(self, "_report_space_release_pending", False):
             self._primary.focus_set()
 
     def _advanced(self) -> None:
