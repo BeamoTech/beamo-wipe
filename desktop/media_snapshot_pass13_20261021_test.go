@@ -34,6 +34,9 @@ func (c *mediaHandoffContextPass13) Err() error {
 func TestMediaDigestFinalSnapshotPass13(t *testing.T) {
 	for _, change := range []string{"unchanged", "same-size", "restored-mtime", "mode", "replace", "append", "truncate"} {
 		t.Run(change, func(t *testing.T) {
+			if change == "replace" && runtime.GOOS == "windows" {
+				t.Skip("Windows denies replacing a file while mediaDigest holds it open")
+			}
 			path := filepath.Join(t.TempDir(), "owned-media-input")
 			t.Cleanup(func() { _ = os.Chmod(path, 0600) })
 			original := []byte("fixture-content-0123456789")
