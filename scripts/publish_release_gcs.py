@@ -283,6 +283,21 @@ class _DigestingReader:
         return chunk
 
 
+def _descriptor_sha256(fd: int, size: int, name: str) -> str:
+    """Hash exactly one retained descriptor without changing its offset."""
+    digest = hashlib.sha256()
+    offset = 0
+    while offset < size:
+        chunk = os.pread(fd, min(CHUNK_SIZE, size - offset), offset)
+        if not chunk:
+            raise PublishError(f"release input changed during upload: {name}")
+        digest.update(chunk)
+        offset += len(chunk)
+    if os.pread(fd, 1, size):
+        raise PublishError(f"release input changed during upload: {name}")
+    return digest.hexdigest()
+
+
 def _upload_file(
     path: Path, object_name: str, expected: _OwnedSnapshot | None = None
 ) -> str:
@@ -303,11 +318,12 @@ def _upload_file(
                     f"release input changed after verification: {path.name}"
                 )
             os.lseek(snapshot.fd, 0, os.SEEK_SET)
-            with os.fdopen(os.dup(snapshot.fd), "rb") as stream:
+            with os.fdopen(os.dup(snapshot.fd), "rb", buffering=0) as stream:
                 measured = _DigestingReader(stream)
                 _upload_stream(object_name, measured, snapshot.size)
         uploaded_sha = measured.digest.hexdigest()
-        if uploaded_sha != snapshot.sha256:
+        final_sha = _descriptor_sha256(snapshot.fd, snapshot.size, path.name)
+        if uploaded_sha != snapshot.sha256 or final_sha != snapshot.sha256:
             raise PublishError("release input changed during upload")
         return uploaded_sha
     finally:
