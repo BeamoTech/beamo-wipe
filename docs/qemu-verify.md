@@ -72,7 +72,7 @@ The gate fails unless all of these pass:
    that virtual policy, not a refusal test or physical-firmware guarantee.
 
 ```sh
-BEAMO_WIPE_VERSION=0.2.13 ./scripts/qemu-verify.sh
+BEAMO_WIPE_VERSION=0.2.14 ./scripts/qemu-verify.sh
 evidence_dir=$(cat qemu-evidence/PATH)
 find "$evidence_dir" -maxdepth 1 -type f -print
 ```

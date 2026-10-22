@@ -1,0 +1,10 @@
+{
+  "name": "semantic-export-matrix",
+  "command": [
+    "python3",
+    "/workspace/beamo-tools/audit-pass8-20261021/recovery/semantic_export_matrix.py"
+  ],
+  "started_utc": "2026-10-21T04:09:58.019161+00:00",
+  "elapsed_seconds": 54.52,
+  "exit_code": 0
+}

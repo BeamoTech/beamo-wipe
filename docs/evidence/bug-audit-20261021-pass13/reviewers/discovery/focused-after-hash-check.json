@@ -1,0 +1,116 @@
+[
+  {
+    "path": "src/beamo_wipe/discover.py",
+    "expected": "94d7496625b9906c2ea6f19650b8e8dec4ac87b627d25a66ca219c45a67345b4",
+    "actual": "94d7496625b9906c2ea6f19650b8e8dec4ac87b627d25a66ca219c45a67345b4",
+    "match": true
+  },
+  {
+    "path": "src/beamo_wipe/safety.py",
+    "expected": "5cc1eeee4b220bc3f133b5933a1cd6aec382d14247156d3b4977b6b4af2e14f6",
+    "actual": "5cc1eeee4b220bc3f133b5933a1cd6aec382d14247156d3b4977b6b4af2e14f6",
+    "match": true
+  },
+  {
+    "path": "src/beamo_wipe/identity.py",
+    "expected": "4ccada033bab0c3811450cb9ab4e85c74936af56e8cd94fdf84f8d5566942050",
+    "actual": "4ccada033bab0c3811450cb9ab4e85c74936af56e8cd94fdf84f8d5566942050",
+    "match": true
+  },
+  {
+    "path": "src/beamo_wipe/inventory.py",
+    "expected": "bd594d0f6279181bb01bfa96c07ed8041d3da09fbee9ae9baf16dba60caa6acd",
+    "actual": "bd594d0f6279181bb01bfa96c07ed8041d3da09fbee9ae9baf16dba60caa6acd",
+    "match": true
+  },
+  {
+    "path": "src/beamo_wipe/models.py",
+    "expected": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+    "actual": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+    "match": true
+  },
+  {
+    "path": "tests/test_discovery_typed_source_pass9.py",
+    "expected": "e236b18992180059b7ae014956532501bcae61ede35cc267c210697f3514075e",
+    "actual": "e236b18992180059b7ae014956532501bcae61ede35cc267c210697f3514075e",
+    "match": true
+  },
+  {
+    "path": "tests/test_discovery_udev_alias_pass10.py",
+    "expected": "059d063e57402b1f717d74731c432e051f38827ee561981dbb7957fa90485353",
+    "actual": "059d063e57402b1f717d74731c432e051f38827ee561981dbb7957fa90485353",
+    "match": true
+  },
+  {
+    "path": "tests/test_discovery_alias_brackets_pass10.py",
+    "expected": "1b7625e5720f54e362ea0a3228c85c922a4e2d588e58706cd6ec819c19ebc4f1",
+    "actual": "1b7625e5720f54e362ea0a3228c85c922a4e2d588e58706cd6ec819c19ebc4f1",
+    "match": true
+  },
+  {
+    "path": "tests/test_missing_udev_link_pass14_discovery.py",
+    "expected": "511547c252cd701ab470fc8bfe46c1a32424e7d9617d52fb33936e9c92fc2725",
+    "actual": "511547c252cd701ab470fc8bfe46c1a32424e7d9617d52fb33936e9c92fc2725",
+    "match": true
+  },
+  {
+    "path": "tests/test_boot_label_exact_pass33.py",
+    "expected": "f616a8b98662db13263bbe48c845e15896cce9eca0dd32c791f2ad7fad46aebc",
+    "actual": "f616a8b98662db13263bbe48c845e15896cce9eca0dd32c791f2ad7fad46aebc",
+    "match": true
+  },
+  {
+    "path": "tests/test_cmdline_boot_competition_regression.py",
+    "expected": "0ef2cc7de2cd49ff868137eb17affa4616693a7c9d8166c00436bd6c52cfb854",
+    "actual": "0ef2cc7de2cd49ff868137eb17affa4616693a7c9d8166c00436bd6c52cfb854",
+    "match": true
+  },
+  {
+    "path": "tests/test_discovery_unresolved_override_pass20.py",
+    "expected": "61d8e936b993964d1f4450b009a94c72eac926298720e2a68c2527f0213fdd7e",
+    "actual": "61d8e936b993964d1f4450b009a94c72eac926298720e2a68c2527f0213fdd7e",
+    "match": true
+  },
+  {
+    "path": "tests/test_discovery_label_whitespace_pass13.py",
+    "expected": "e532702ff1a8b54f4d59fd231d3b8ca3b985150b1e07afc48b0ed484394ae845",
+    "actual": "e532702ff1a8b54f4d59fd231d3b8ca3b985150b1e07afc48b0ed484394ae845",
+    "match": true
+  },
+  {
+    "path": "tests/test_inventory_boot_alias_pass34.py",
+    "expected": "9f661ce9a07f63186335489b737992fc56b227b7a0170e6f1f6664e7cbc6ee5e",
+    "actual": "9f661ce9a07f63186335489b737992fc56b227b7a0170e6f1f6664e7cbc6ee5e",
+    "match": true
+  },
+  {
+    "path": "tests/test_boot_wwn_alias_pass12_discovery.py",
+    "expected": "8e62404489270b034164a81c40093df496a93e6353d1eb1127f66686e4bfb91d",
+    "actual": "8e62404489270b034164a81c40093df496a93e6353d1eb1127f66686e4bfb91d",
+    "match": true
+  },
+  {
+    "path": "tests/test_boot_serial_alias_pass7.py",
+    "expected": "4868cb3a154f665b87dc395d8343accb46140b242a78e54136285042727c8ee7",
+    "actual": "4868cb3a154f665b87dc395d8343accb46140b242a78e54136285042727c8ee7",
+    "match": true
+  },
+  {
+    "path": "tests/test_identity.py",
+    "expected": "971724addd89c5e4ffe22191992a9e4aaf9f30995ea331498b6aead15e0b9c97",
+    "actual": "971724addd89c5e4ffe22191992a9e4aaf9f30995ea331498b6aead15e0b9c97",
+    "match": true
+  },
+  {
+    "path": "tests/test_excluded_inventory.py",
+    "expected": "3576463e1fd7bed35a894011ed68136209da7432464c890dd892498cc3c4c4d1",
+    "actual": "3576463e1fd7bed35a894011ed68136209da7432464c890dd892498cc3c4c4d1",
+    "match": true
+  },
+  {
+    "path": "tests/test_contents_efi_token_pass13.py",
+    "expected": "7e0e2fcc2504df6efa84a57453c8183e0f2c8c607e8b863a4c70f4f036338539",
+    "actual": "7e0e2fcc2504df6efa84a57453c8183e0f2c8c607e8b863a4c70f4f036338539",
+    "match": true
+  }
+]

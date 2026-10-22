@@ -1,0 +1,793 @@
+.FFFFFFFFFFF..F.FFFFF                                                    [100%]
+=================================== FAILURES ===================================
+_______ test_failed_native_review_paint_cannot_enable_erase[write-error] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc59e28a8b0>
+failure = 'write-error'
+tmp_path = PosixPath('/tmp/pytest-of-beamo/pytest-0/test_failed_native_review_pain1')
+
+    @pytest.mark.parametrize("failure", ["none", "write-error", "resize"])
+    def test_failed_native_review_paint_cannot_enable_erase(monkeypatch, failure, tmp_path):
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+        effects = []
+    
+        def forbidden(*_args, **_kwargs):
+            effects.append(True)
+            raise AssertionError("Native device/process/power action forbidden")
+    
+        for boundary in (
+            "subprocess.run", "subprocess.Popen", "beamo_wipe.discover.run_lsblk",
+            "beamo_wipe.discover.read_cmdline", "beamo_wipe.discover.read_mount_sources",
+            "beamo_wipe.nwipe_runner.NwipeRunner.start", "beamo_wipe.app._shutdown",
+            "beamo_wipe.sound._run", "beamo_wipe.sound._popen",
+        ):
+            monkeypatch.setattr(boundary, forbidden)
+        clock = [0.0]
+        wizard = Wizard(discovery_for_scenario("happy"), DryRunRunner(clock=lambda: clock[0]),
+                        clock=lambda: clock[0], dry_run=True)
+        wizard.skip_intro()
+        wizard.set_owner(True)
+        wizard.continue_owner()
+        wizard.select_disk(wizard.selectable[0].path)
+        wizard.continue_pick()
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+        wizard.continue_method()
+        assert wizard.screen == Screen.LAST_CHANCE
+        monkeypatch.setattr(console, "_curses_opt", lambda *_args: None)
+        monkeypatch.setattr(console.time, "sleep", lambda _seconds: clock.__setitem__(0, clock[0] + 6))
+        launches = []
+        monkeypatch.setattr(wizard, "confirm_erase", lambda: launches.append(clock[0]))
+    
+        class Terminal:
+            def __init__(self):
+                self.frames = []
+                self.lines = []
+                self.errors = 0
+                self.height = 200
+    
+            def keypad(self, *_args): pass
+            def nodelay(self, *_args): pass
+            def getmaxyx(self): return (self.height, 200)
+            def erase(self): self.lines = []
+    
+            def addstr(self, y, x, text, *_args):
+                if failure == "resize":
+                    # The frame measured a roomy terminal; the first native write
+                    # arrives after it shrinks. Later review rows are now absent.
+                    self.height = 5
+                if failure == "write-error" and C.SEVERITY_WARNING in text:
+                    self.errors += 1
+                    raise console.curses.error("Fake native write failed")
+                self.lines.append((y, x, text))
+    
+            def refresh(self):
+                self.frames.append(tuple(self.lines))
+    
+            def getch(self):
+                if len(self.frames) == 1:
+                    return -1
+                if len(self.frames) == 2:
+                    return 10
+                wizard.wants_shutdown = True
+                return -1
+    
+        terminal = Terminal()
+        assert console._run_loop_guarded(terminal, wizard) == 0
+        warnings_seen = any(C.SEVERITY_WARNING in text for frame in terminal.frames
+                            for _y, _x, text in frame)
+        assert not effects
+        if failure != "none":
+            assert not warnings_seen
+            if failure == "write-error":
+                assert terminal.errors
+>           assert launches == []
+E           assert [6.0] == []
+E             
+E             Left contains one more item: 6.0
+E             Use -v to get more diff
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py:88: AssertionError
+_________ test_failed_native_review_paint_cannot_enable_erase[resize] __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc59daf9b50>
+failure = 'resize'
+tmp_path = PosixPath('/tmp/pytest-of-beamo/pytest-0/test_failed_native_review_pain2')
+
+    @pytest.mark.parametrize("failure", ["none", "write-error", "resize"])
+    def test_failed_native_review_paint_cannot_enable_erase(monkeypatch, failure, tmp_path):
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+        effects = []
+    
+        def forbidden(*_args, **_kwargs):
+            effects.append(True)
+            raise AssertionError("Native device/process/power action forbidden")
+    
+        for boundary in (
+            "subprocess.run", "subprocess.Popen", "beamo_wipe.discover.run_lsblk",
+            "beamo_wipe.discover.read_cmdline", "beamo_wipe.discover.read_mount_sources",
+            "beamo_wipe.nwipe_runner.NwipeRunner.start", "beamo_wipe.app._shutdown",
+            "beamo_wipe.sound._run", "beamo_wipe.sound._popen",
+        ):
+            monkeypatch.setattr(boundary, forbidden)
+        clock = [0.0]
+        wizard = Wizard(discovery_for_scenario("happy"), DryRunRunner(clock=lambda: clock[0]),
+                        clock=lambda: clock[0], dry_run=True)
+        wizard.skip_intro()
+        wizard.set_owner(True)
+        wizard.continue_owner()
+        wizard.select_disk(wizard.selectable[0].path)
+        wizard.continue_pick()
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+        wizard.continue_method()
+        assert wizard.screen == Screen.LAST_CHANCE
+        monkeypatch.setattr(console, "_curses_opt", lambda *_args: None)
+        monkeypatch.setattr(console.time, "sleep", lambda _seconds: clock.__setitem__(0, clock[0] + 6))
+        launches = []
+        monkeypatch.setattr(wizard, "confirm_erase", lambda: launches.append(clock[0]))
+    
+        class Terminal:
+            def __init__(self):
+                self.frames = []
+                self.lines = []
+                self.errors = 0
+                self.height = 200
+    
+            def keypad(self, *_args): pass
+            def nodelay(self, *_args): pass
+            def getmaxyx(self): return (self.height, 200)
+            def erase(self): self.lines = []
+    
+            def addstr(self, y, x, text, *_args):
+                if failure == "resize":
+                    # The frame measured a roomy terminal; the first native write
+                    # arrives after it shrinks. Later review rows are now absent.
+                    self.height = 5
+                if failure == "write-error" and C.SEVERITY_WARNING in text:
+                    self.errors += 1
+                    raise console.curses.error("Fake native write failed")
+                self.lines.append((y, x, text))
+    
+            def refresh(self):
+                self.frames.append(tuple(self.lines))
+    
+            def getch(self):
+                if len(self.frames) == 1:
+                    return -1
+                if len(self.frames) == 2:
+                    return 10
+                wizard.wants_shutdown = True
+                return -1
+    
+        terminal = Terminal()
+        assert console._run_loop_guarded(terminal, wizard) == 0
+        warnings_seen = any(C.SEVERITY_WARNING in text for frame in terminal.frames
+                            for _y, _x, text in frame)
+        assert not effects
+        if failure != "none":
+            assert not warnings_seen
+            if failure == "write-error":
+                assert terminal.errors
+>           assert launches == []
+E           assert [6.0] == []
+E             
+E             Left contains one more item: 6.0
+E             Use -v to get more diff
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py:88: AssertionError
+_ test_native_add_reports_whether_content_was_painted[Visible-20-80-3-0-False-True] _
+
+text = 'Visible', height = 20, width = 80, y = 3, x = 0, throws = False
+expected = True
+
+    @pytest.mark.parametrize("text,height,width,y,x,throws,expected", [
+        ("Visible", 20, 80, 3, 0, False, True),
+        ("", 20, 80, 3, 0, False, True),
+        ("", 20, 80, 20, 0, False, False),
+        ("Visible", 20, 80, -1, 0, False, False),
+        ("Visible", 20, 80, 20, 0, False, False),
+        ("Visible", 20, 80, 3, 79, False, False),
+        ("Visible", 20, 1, 3, 0, False, False),
+        ("Visible", 20, 80, 3, 0, True, False),
+    ])
+    def test_native_add_reports_whether_content_was_painted(text, height, width, y, x, throws, expected):
+        calls = []
+    
+        class Terminal:
+            def getmaxyx(self): return height, width
+    
+            def addstr(self, *args):
+                calls.append(args)
+                if throws:
+                    raise console.curses.error("Fake native write failed")
+    
+>       assert console._add(Terminal(), y, x, text) is expected
+E       AssertionError: assert None is True
+E        +  where None = <function _add at 0x7fc59e3b56c0>(<test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal object at 0x7fc59da45940>, 3, 0, 'Visible')
+E        +    where <function _add at 0x7fc59e3b56c0> = console._add
+E        +    and   <test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal object at 0x7fc59da45940> = <class 'test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal'>()
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py:115: AssertionError
+__ test_native_add_reports_whether_content_was_painted[-20-80-3-0-False-True] __
+
+text = '', height = 20, width = 80, y = 3, x = 0, throws = False
+expected = True
+
+    @pytest.mark.parametrize("text,height,width,y,x,throws,expected", [
+        ("Visible", 20, 80, 3, 0, False, True),
+        ("", 20, 80, 3, 0, False, True),
+        ("", 20, 80, 20, 0, False, False),
+        ("Visible", 20, 80, -1, 0, False, False),
+        ("Visible", 20, 80, 20, 0, False, False),
+        ("Visible", 20, 80, 3, 79, False, False),
+        ("Visible", 20, 1, 3, 0, False, False),
+        ("Visible", 20, 80, 3, 0, True, False),
+    ])
+    def test_native_add_reports_whether_content_was_painted(text, height, width, y, x, throws, expected):
+        calls = []
+    
+        class Terminal:
+            def getmaxyx(self): return height, width
+    
+            def addstr(self, *args):
+                calls.append(args)
+                if throws:
+                    raise console.curses.error("Fake native write failed")
+    
+>       assert console._add(Terminal(), y, x, text) is expected
+E       AssertionError: assert None is True
+E        +  where None = <function _add at 0x7fc59e3b56c0>(<test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal object at 0x7fc59da45be0>, 3, 0, '')
+E        +    where <function _add at 0x7fc59e3b56c0> = console._add
+E        +    and   <test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal object at 0x7fc59da45be0> = <class 'test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal'>()
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py:115: AssertionError
+_ test_native_add_reports_whether_content_was_painted[-20-80-20-0-False-False] _
+
+text = '', height = 20, width = 80, y = 20, x = 0, throws = False
+expected = False
+
+    @pytest.mark.parametrize("text,height,width,y,x,throws,expected", [
+        ("Visible", 20, 80, 3, 0, False, True),
+        ("", 20, 80, 3, 0, False, True),
+        ("", 20, 80, 20, 0, False, False),
+        ("Visible", 20, 80, -1, 0, False, False),
+        ("Visible", 20, 80, 20, 0, False, False),
+        ("Visible", 20, 80, 3, 79, False, False),
+        ("Visible", 20, 1, 3, 0, False, False),
+        ("Visible", 20, 80, 3, 0, True, False),
+    ])
+    def test_native_add_reports_whether_content_was_painted(text, height, width, y, x, throws, expected):
+        calls = []
+    
+        class Terminal:
+            def getmaxyx(self): return height, width
+    
+            def addstr(self, *args):
+                calls.append(args)
+                if throws:
+                    raise console.curses.error("Fake native write failed")
+    
+>       assert console._add(Terminal(), y, x, text) is expected
+E       AssertionError: assert None is False
+E        +  where None = <function _add at 0x7fc59e3b56c0>(<test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal object at 0x7fc59da45e80>, 20, 0, '')
+E        +    where <function _add at 0x7fc59e3b56c0> = console._add
+E        +    and   <test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal object at 0x7fc59da45e80> = <class 'test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal'>()
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py:115: AssertionError
+_ test_native_add_reports_whether_content_was_painted[Visible-20-80--1-0-False-False] _
+
+text = 'Visible', height = 20, width = 80, y = -1, x = 0, throws = False
+expected = False
+
+    @pytest.mark.parametrize("text,height,width,y,x,throws,expected", [
+        ("Visible", 20, 80, 3, 0, False, True),
+        ("", 20, 80, 3, 0, False, True),
+        ("", 20, 80, 20, 0, False, False),
+        ("Visible", 20, 80, -1, 0, False, False),
+        ("Visible", 20, 80, 20, 0, False, False),
+        ("Visible", 20, 80, 3, 79, False, False),
+        ("Visible", 20, 1, 3, 0, False, False),
+        ("Visible", 20, 80, 3, 0, True, False),
+    ])
+    def test_native_add_reports_whether_content_was_painted(text, height, width, y, x, throws, expected):
+        calls = []
+    
+        class Terminal:
+            def getmaxyx(self): return height, width
+    
+            def addstr(self, *args):
+                calls.append(args)
+                if throws:
+                    raise console.curses.error("Fake native write failed")
+    
+>       assert console._add(Terminal(), y, x, text) is expected
+E       AssertionError: assert None is False
+E        +  where None = <function _add at 0x7fc59e3b56c0>(<test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal object at 0x7fc59da46120>, -1, 0, 'Visible')
+E        +    where <function _add at 0x7fc59e3b56c0> = console._add
+E        +    and   <test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal object at 0x7fc59da46120> = <class 'test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal'>()
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py:115: AssertionError
+_ test_native_add_reports_whether_content_was_painted[Visible-20-80-20-0-False-False] _
+
+text = 'Visible', height = 20, width = 80, y = 20, x = 0, throws = False
+expected = False
+
+    @pytest.mark.parametrize("text,height,width,y,x,throws,expected", [
+        ("Visible", 20, 80, 3, 0, False, True),
+        ("", 20, 80, 3, 0, False, True),
+        ("", 20, 80, 20, 0, False, False),
+        ("Visible", 20, 80, -1, 0, False, False),
+        ("Visible", 20, 80, 20, 0, False, False),
+        ("Visible", 20, 80, 3, 79, False, False),
+        ("Visible", 20, 1, 3, 0, False, False),
+        ("Visible", 20, 80, 3, 0, True, False),
+    ])
+    def test_native_add_reports_whether_content_was_painted(text, height, width, y, x, throws, expected):
+        calls = []
+    
+        class Terminal:
+            def getmaxyx(self): return height, width
+    
+            def addstr(self, *args):
+                calls.append(args)
+                if throws:
+                    raise console.curses.error("Fake native write failed")
+    
+>       assert console._add(Terminal(), y, x, text) is expected
+E       AssertionError: assert None is False
+E        +  where None = <function _add at 0x7fc59e3b56c0>(<test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal object at 0x7fc59da463c0>, 20, 0, 'Visible')
+E        +    where <function _add at 0x7fc59e3b56c0> = console._add
+E        +    and   <test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal object at 0x7fc59da463c0> = <class 'test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal'>()
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py:115: AssertionError
+_ test_native_add_reports_whether_content_was_painted[Visible-20-80-3-79-False-False] _
+
+text = 'Visible', height = 20, width = 80, y = 3, x = 79, throws = False
+expected = False
+
+    @pytest.mark.parametrize("text,height,width,y,x,throws,expected", [
+        ("Visible", 20, 80, 3, 0, False, True),
+        ("", 20, 80, 3, 0, False, True),
+        ("", 20, 80, 20, 0, False, False),
+        ("Visible", 20, 80, -1, 0, False, False),
+        ("Visible", 20, 80, 20, 0, False, False),
+        ("Visible", 20, 80, 3, 79, False, False),
+        ("Visible", 20, 1, 3, 0, False, False),
+        ("Visible", 20, 80, 3, 0, True, False),
+    ])
+    def test_native_add_reports_whether_content_was_painted(text, height, width, y, x, throws, expected):
+        calls = []
+    
+        class Terminal:
+            def getmaxyx(self): return height, width
+    
+            def addstr(self, *args):
+                calls.append(args)
+                if throws:
+                    raise console.curses.error("Fake native write failed")
+    
+>       assert console._add(Terminal(), y, x, text) is expected
+E       AssertionError: assert None is False
+E        +  where None = <function _add at 0x7fc59e3b56c0>(<test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal object at 0x7fc59da46660>, 3, 79, 'Visible')
+E        +    where <function _add at 0x7fc59e3b56c0> = console._add
+E        +    and   <test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal object at 0x7fc59da46660> = <class 'test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal'>()
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py:115: AssertionError
+_ test_native_add_reports_whether_content_was_painted[Visible-20-1-3-0-False-False] _
+
+text = 'Visible', height = 20, width = 1, y = 3, x = 0, throws = False
+expected = False
+
+    @pytest.mark.parametrize("text,height,width,y,x,throws,expected", [
+        ("Visible", 20, 80, 3, 0, False, True),
+        ("", 20, 80, 3, 0, False, True),
+        ("", 20, 80, 20, 0, False, False),
+        ("Visible", 20, 80, -1, 0, False, False),
+        ("Visible", 20, 80, 20, 0, False, False),
+        ("Visible", 20, 80, 3, 79, False, False),
+        ("Visible", 20, 1, 3, 0, False, False),
+        ("Visible", 20, 80, 3, 0, True, False),
+    ])
+    def test_native_add_reports_whether_content_was_painted(text, height, width, y, x, throws, expected):
+        calls = []
+    
+        class Terminal:
+            def getmaxyx(self): return height, width
+    
+            def addstr(self, *args):
+                calls.append(args)
+                if throws:
+                    raise console.curses.error("Fake native write failed")
+    
+>       assert console._add(Terminal(), y, x, text) is expected
+E       AssertionError: assert None is False
+E        +  where None = <function _add at 0x7fc59e3b56c0>(<test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal object at 0x7fc59da46900>, 3, 0, 'Visible')
+E        +    where <function _add at 0x7fc59e3b56c0> = console._add
+E        +    and   <test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal object at 0x7fc59da46900> = <class 'test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal'>()
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py:115: AssertionError
+_ test_native_add_reports_whether_content_was_painted[Visible-20-80-3-0-True-False] _
+
+text = 'Visible', height = 20, width = 80, y = 3, x = 0, throws = True
+expected = False
+
+    @pytest.mark.parametrize("text,height,width,y,x,throws,expected", [
+        ("Visible", 20, 80, 3, 0, False, True),
+        ("", 20, 80, 3, 0, False, True),
+        ("", 20, 80, 20, 0, False, False),
+        ("Visible", 20, 80, -1, 0, False, False),
+        ("Visible", 20, 80, 20, 0, False, False),
+        ("Visible", 20, 80, 3, 79, False, False),
+        ("Visible", 20, 1, 3, 0, False, False),
+        ("Visible", 20, 80, 3, 0, True, False),
+    ])
+    def test_native_add_reports_whether_content_was_painted(text, height, width, y, x, throws, expected):
+        calls = []
+    
+        class Terminal:
+            def getmaxyx(self): return height, width
+    
+            def addstr(self, *args):
+                calls.append(args)
+                if throws:
+                    raise console.curses.error("Fake native write failed")
+    
+>       assert console._add(Terminal(), y, x, text) is expected
+E       AssertionError: assert None is False
+E        +  where None = <function _add at 0x7fc59e3b56c0>(<test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal object at 0x7fc59da46ba0>, 3, 0, 'Visible')
+E        +    where <function _add at 0x7fc59e3b56c0> = console._add
+E        +    and   <test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal object at 0x7fc59da46ba0> = <class 'test_curses_review_paint_pass6_20261021.test_native_add_reports_whether_content_was_painted.<locals>.Terminal'>()
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py:115: AssertionError
+_____ test_successful_retry_can_complete_the_previously_failed_review_line _____
+
+    def test_successful_retry_can_complete_the_previously_failed_review_line():
+        visible = set()
+        lines = ["Disk identity", "", "Warning: irreversible"]
+        failures = [True]
+    
+        class Terminal:
+            def getmaxyx(self): return 20, 80
+    
+            def addstr(self, _y, _x, text, *_args):
+                if text.startswith("Warning") and failures[0]:
+                    raise console.curses.error("Fake transient write error")
+    
+        terminal = Terminal()
+        console._paint_paged(terminal, 0, lines, 0, 20, 80, visible)
+>       assert visible == {0, 1}
+E       assert {0, 1, 2} == {0, 1}
+E         
+E         Extra items in the left set:
+E         2
+E         Use -v to get more diff
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py:136: AssertionError
+__ test_scheduled_poll_callback_keeps_monitoring_or_settles[interrupted-poll] __
+
+running_ui = (<beamo_wipe.wizard.Wizard object at 0x7fc59daa3ed0>, <beamo_wipe.ui.tk_wizard.TkWizard object at 0x7fc59daa3b10>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc59e21bb50>
+interruption = True
+
+    @pytest.mark.parametrize("interruption", [False, True], ids=["normal", "interrupted-poll"])
+    def test_scheduled_poll_callback_keeps_monitoring_or_settles(running_ui, monkeypatch, interruption):
+        wizard, app = running_ui
+        original_poll = wizard.runner.poll
+        polls = []
+    
+        def poll(request):
+            polls.append(True)
+            if interruption and len(polls) == 1:
+                raise KeyboardInterrupt("Fake poll interruption")
+            return original_poll(request)
+    
+        monkeypatch.setattr(wizard.runner, "poll", poll)
+        app.root.after_cancel(app._after_id)
+        app._after_id = app.root.after(0, app._tick)
+        app.root.update()
+        _drain(app)
+        if interruption:
+>           assert app._fatal_ui and app._ui_dead
+E           assert (False)
+E            +  where False = <beamo_wipe.ui.tk_wizard.TkWizard object at 0x7fc59daa3b10>._fatal_ui
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py:103: AssertionError
+---------------------------- Captured stderr setup -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+----------------------------- Captured stderr call -----------------------------
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/tkinter/__init__.py", line 2071, in __call__
+    return self.func(*args)
+           ~~~~~~~~~^^^^^^^
+  File "/usr/lib/python3.13/tkinter/__init__.py", line 865, in callit
+    func(*args)
+    ~~~~^^^^^^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/report-baseline/src/beamo_wipe/ui/tk_wizard.py", line 1949, in _tick
+    self.w.tick()
+    ~~~~~~~~~~~^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/report-baseline/src/beamo_wipe/wizard.py", line 882, in tick
+    result = self.runner.poll(self._wipe_request)
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py", line 94, in poll
+    raise KeyboardInterrupt("Fake poll interruption")
+KeyboardInterrupt: Fake poll interruption
+__ test_native_stop_callback_failure_settles_before_destroying[widget-error] ___
+
+running_ui = (<beamo_wipe.wizard.Wizard object at 0x7fc59daa3c50>, <beamo_wipe.ui.tk_wizard.TkWizard object at 0x7fc59daa2e90>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc59ecb2e40>
+error_kind = <class '_tkinter.TclError'>
+
+    @pytest.mark.parametrize("error_kind", [None, tk.TclError, KeyboardInterrupt],
+                             ids=["normal", "widget-error", "widget-interrupted"])
+    def test_native_stop_callback_failure_settles_before_destroying(running_ui, monkeypatch, error_kind):
+        wizard, app = running_ui
+        stop = _button(app, C.STOP_ASK)
+        original_label = tk.Label.__init__
+        failures = []
+    
+        def label(self, *args, **kwargs):
+            if error_kind is not None and not failures:
+                failures.append(True)
+                raise error_kind("Fake one-shot widget allocation failure")
+            return original_label(self, *args, **kwargs)
+    
+        monkeypatch.setattr(tk.Label, "__init__", label)
+        _click(stop)
+        _drain(app)
+        if error_kind is not None:
+            assert failures
+>           assert app._fatal_ui and app._ui_dead
+E           assert (False)
+E            +  where False = <beamo_wipe.ui.tk_wizard.TkWizard object at 0x7fc59daa2e90>._fatal_ui
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py:134: AssertionError
+---------------------------- Captured stderr setup -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+----------------------------- Captured stderr call -----------------------------
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/tkinter/__init__.py", line 2071, in __call__
+    return self.func(*args)
+           ~~~~~~~~~^^^^^^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/report-baseline/src/beamo_wipe/ui/tk_wizard.py", line 775, in _release
+    self._command()
+    ~~~~~~~~~~~~~^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/report-baseline/src/beamo_wipe/ui/tk_wizard.py", line 1853, in wrapped
+    fn()
+    ~~^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/report-baseline/src/beamo_wipe/ui/tk_wizard.py", line 4544, in _click_cancel
+    self._draw()
+    ~~~~~~~~~~^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/report-baseline/src/beamo_wipe/ui/tk_wizard.py", line 2077, in _draw
+    dispatch[screen]()
+    ~~~~~~~~~~~~~~~~^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/report-baseline/src/beamo_wipe/ui/tk_wizard.py", line 4170, in _working
+    self._title_block(col, C.STOP_TITLE)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/report-baseline/src/beamo_wipe/ui/tk_wizard.py", line 2175, in _title_block
+    self._h(col, title).pack(fill=tk.X, pady=(top, 4 if subtitle else bottom))
+    ~~~~~~~^^^^^^^^^^^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/report-baseline/src/beamo_wipe/ui/tk_wizard.py", line 2137, in _h
+    label = tk.Label(
+        parent, text=text, font=self.font_h, fg=fg, bg=bg,
+        wraplength=self.lay.wrap, justify=tk.LEFT, anchor="w",
+    )
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py", line 126, in label
+    raise error_kind("Fake one-shot widget allocation failure")
+_tkinter.TclError: Fake one-shot widget allocation failure
+_ test_native_stop_callback_failure_settles_before_destroying[widget-interrupted] _
+
+running_ui = (<beamo_wipe.wizard.Wizard object at 0x7fc59daa34d0>, <beamo_wipe.ui.tk_wizard.TkWizard object at 0x7fc59daa3b10>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc59d4834d0>
+error_kind = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("error_kind", [None, tk.TclError, KeyboardInterrupt],
+                             ids=["normal", "widget-error", "widget-interrupted"])
+    def test_native_stop_callback_failure_settles_before_destroying(running_ui, monkeypatch, error_kind):
+        wizard, app = running_ui
+        stop = _button(app, C.STOP_ASK)
+        original_label = tk.Label.__init__
+        failures = []
+    
+        def label(self, *args, **kwargs):
+            if error_kind is not None and not failures:
+                failures.append(True)
+                raise error_kind("Fake one-shot widget allocation failure")
+            return original_label(self, *args, **kwargs)
+    
+        monkeypatch.setattr(tk.Label, "__init__", label)
+        _click(stop)
+        _drain(app)
+        if error_kind is not None:
+            assert failures
+>           assert app._fatal_ui and app._ui_dead
+E           assert (False)
+E            +  where False = <beamo_wipe.ui.tk_wizard.TkWizard object at 0x7fc59daa3b10>._fatal_ui
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py:134: AssertionError
+---------------------------- Captured stderr setup -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+----------------------------- Captured stderr call -----------------------------
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/tkinter/__init__.py", line 2071, in __call__
+    return self.func(*args)
+           ~~~~~~~~~^^^^^^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/report-baseline/src/beamo_wipe/ui/tk_wizard.py", line 775, in _release
+    self._command()
+    ~~~~~~~~~~~~~^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/report-baseline/src/beamo_wipe/ui/tk_wizard.py", line 1853, in wrapped
+    fn()
+    ~~^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/report-baseline/src/beamo_wipe/ui/tk_wizard.py", line 4544, in _click_cancel
+    self._draw()
+    ~~~~~~~~~~^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/report-baseline/src/beamo_wipe/ui/tk_wizard.py", line 2077, in _draw
+    dispatch[screen]()
+    ~~~~~~~~~~~~~~~~^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/report-baseline/src/beamo_wipe/ui/tk_wizard.py", line 4170, in _working
+    self._title_block(col, C.STOP_TITLE)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/report-baseline/src/beamo_wipe/ui/tk_wizard.py", line 2175, in _title_block
+    self._h(col, title).pack(fill=tk.X, pady=(top, 4 if subtitle else bottom))
+    ~~~~~~~^^^^^^^^^^^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/report-baseline/src/beamo_wipe/ui/tk_wizard.py", line 2137, in _h
+    label = tk.Label(
+        parent, text=text, font=self.font_h, fg=fg, bg=bg,
+        wraplength=self.lay.wrap, justify=tk.LEFT, anchor="w",
+    )
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py", line 126, in label
+    raise error_kind("Fake one-shot widget allocation failure")
+KeyboardInterrupt: Fake one-shot widget allocation failure
+___ test_callback_recovery_does_not_depend_on_optional_diagnostics[OSError] ____
+
+running_ui = (<beamo_wipe.wizard.Wizard object at 0x7fc59daa3c50>, <beamo_wipe.ui.tk_wizard.TkWizard object at 0x7fc59daa2e90>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc59e39b230>
+diagnostic_error = <class 'OSError'>
+
+    @pytest.mark.parametrize("diagnostic_error", [OSError, KeyboardInterrupt])
+    def test_callback_recovery_does_not_depend_on_optional_diagnostics(running_ui, monkeypatch, diagnostic_error):
+        wizard, app = running_ui
+    
+        def broken_log(*_args):
+            raise diagnostic_error("Fake diagnostic failure")
+    
+        monkeypatch.setattr("beamo_wipe.diagnostics.log_diag", broken_log)
+        app.root.after(0, lambda: (_ for _ in ()).throw(RuntimeError("Fake native callback failure")))
+        app.root.update()
+>       assert app._fatal_ui and app._ui_dead
+E       assert (False)
+E        +  where False = <beamo_wipe.ui.tk_wizard.TkWizard object at 0x7fc59daa2e90>._fatal_ui
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py:160: AssertionError
+---------------------------- Captured stderr setup -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+----------------------------- Captured stderr call -----------------------------
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/tkinter/__init__.py", line 2071, in __call__
+    return self.func(*args)
+           ~~~~~~~~~^^^^^^^
+  File "/usr/lib/python3.13/tkinter/__init__.py", line 865, in callit
+    func(*args)
+    ~~~~^^^^^^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py", line 158, in <lambda>
+    app.root.after(0, lambda: (_ for _ in ()).throw(RuntimeError("Fake native callback failure")))
+                              ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py", line 158, in <genexpr>
+    app.root.after(0, lambda: (_ for _ in ()).throw(RuntimeError("Fake native callback failure")))
+RuntimeError: Fake native callback failure
+_ test_callback_recovery_does_not_depend_on_optional_diagnostics[KeyboardInterrupt] _
+
+running_ui = (<beamo_wipe.wizard.Wizard object at 0x7fc59daa34d0>, <beamo_wipe.ui.tk_wizard.TkWizard object at 0x7fc59daa3b10>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc59d4342f0>
+diagnostic_error = <class 'KeyboardInterrupt'>
+
+    @pytest.mark.parametrize("diagnostic_error", [OSError, KeyboardInterrupt])
+    def test_callback_recovery_does_not_depend_on_optional_diagnostics(running_ui, monkeypatch, diagnostic_error):
+        wizard, app = running_ui
+    
+        def broken_log(*_args):
+            raise diagnostic_error("Fake diagnostic failure")
+    
+        monkeypatch.setattr("beamo_wipe.diagnostics.log_diag", broken_log)
+        app.root.after(0, lambda: (_ for _ in ()).throw(RuntimeError("Fake native callback failure")))
+        app.root.update()
+>       assert app._fatal_ui and app._ui_dead
+E       assert (False)
+E        +  where False = <beamo_wipe.ui.tk_wizard.TkWizard object at 0x7fc59daa3b10>._fatal_ui
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py:160: AssertionError
+---------------------------- Captured stderr setup -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+----------------------------- Captured stderr call -----------------------------
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/tkinter/__init__.py", line 2071, in __call__
+    return self.func(*args)
+           ~~~~~~~~~^^^^^^^
+  File "/usr/lib/python3.13/tkinter/__init__.py", line 865, in callit
+    func(*args)
+    ~~~~^^^^^^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py", line 158, in <lambda>
+    app.root.after(0, lambda: (_ for _ in ()).throw(RuntimeError("Fake native callback failure")))
+                              ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py", line 158, in <genexpr>
+    app.root.after(0, lambda: (_ for _ in ()).throw(RuntimeError("Fake native callback failure")))
+RuntimeError: Fake native callback failure
+_________ test_callback_failure_preserves_peer_root_and_is_idempotent __________
+
+running_ui = (<beamo_wipe.wizard.Wizard object at 0x7fc59daa2e90>, <beamo_wipe.ui.tk_wizard.TkWizard object at 0x7fc59daa2fd0>)
+
+    def test_callback_failure_preserves_peer_root_and_is_idempotent(running_ui):
+        wizard, app = running_ui
+        peer = tk.Tk()
+        peer.withdraw()
+        callbacks = []
+        peer.after(0, lambda: callbacks.append(True))
+        try:
+            app.root.after(0, lambda: (_ for _ in ()).throw(RuntimeError("Fake owned callback failure")))
+            app.root.update()
+            peer.update()
+            assert callbacks == [True]
+            assert peer.winfo_exists()
+>           assert app._fatal_ui and app._ui_dead
+E           assert (False)
+E            +  where False = <beamo_wipe.ui.tk_wizard.TkWizard object at 0x7fc59daa2fd0>._fatal_ui
+
+../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py:177: AssertionError
+---------------------------- Captured stderr setup -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+----------------------------- Captured stderr call -----------------------------
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/tkinter/__init__.py", line 2071, in __call__
+    return self.func(*args)
+           ~~~~~~~~~^^^^^^^
+  File "/usr/lib/python3.13/tkinter/__init__.py", line 865, in callit
+    func(*args)
+    ~~~~^^^^^^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py", line 172, in <lambda>
+    app.root.after(0, lambda: (_ for _ in ()).throw(RuntimeError("Fake owned callback failure")))
+                              ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py", line 172, in <genexpr>
+    app.root.after(0, lambda: (_ for _ in ()).throw(RuntimeError("Fake owned callback failure")))
+RuntimeError: Fake owned callback failure
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py::test_failed_native_review_paint_cannot_enable_erase[write-error]
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py::test_failed_native_review_paint_cannot_enable_erase[resize]
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py::test_native_add_reports_whether_content_was_painted[Visible-20-80-3-0-False-True]
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py::test_native_add_reports_whether_content_was_painted[-20-80-3-0-False-True]
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py::test_native_add_reports_whether_content_was_painted[-20-80-20-0-False-False]
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py::test_native_add_reports_whether_content_was_painted[Visible-20-80--1-0-False-False]
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py::test_native_add_reports_whether_content_was_painted[Visible-20-80-20-0-False-False]
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py::test_native_add_reports_whether_content_was_painted[Visible-20-80-3-79-False-False]
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py::test_native_add_reports_whether_content_was_painted[Visible-20-1-3-0-False-False]
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py::test_native_add_reports_whether_content_was_painted[Visible-20-80-3-0-True-False]
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_curses_review_paint_pass6_20261021.py::test_successful_retry_can_complete_the_previously_failed_review_line
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py::test_scheduled_poll_callback_keeps_monitoring_or_settles[interrupted-poll]
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py::test_native_stop_callback_failure_settles_before_destroying[widget-error]
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py::test_native_stop_callback_failure_settles_before_destroying[widget-interrupted]
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py::test_callback_recovery_does_not_depend_on_optional_diagnostics[OSError]
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py::test_callback_recovery_does_not_depend_on_optional_diagnostics[KeyboardInterrupt]
+FAILED ../beamo-tools/audit-pass6-20261021/root/ui-final-tests-original/test_tk_callback_ownership_pass6_20261021.py::test_callback_failure_preserves_peer_root_and_is_idempotent
+17 failed, 4 passed in 3.11s

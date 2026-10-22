@@ -1,0 +1,25 @@
+{
+  "baseline_commit": "e4871239f02e46137fb6d8df64b5880ae2ea4b4d",
+  "archived_pre_repair_source_matches": {
+    "src/beamo_wipe/safety.py": {
+      "retained_archive": "runner/late-log-open/safety-original.py",
+      "sha256": "57cd7c7d051f21a04785e11c156164db384e9c9a0d40b9d113ddfc8d62941eb2",
+      "exact_git_blob_bytes": true
+    },
+    "src/beamo_wipe/ui/console_wizard.py": {
+      "retained_archive": "ui/baseline/console_wizard.py",
+      "sha256": "86aaf67d0bbce045b2fb461e8f1e583837a33af8ac957bec04a9fe194eaba7f9",
+      "exact_git_blob_bytes": true
+    },
+    "src/beamo_wipe/session_recovery.py": {
+      "retained_archive": "reports/session_recovery-original.py",
+      "sha256": "30eca99c79190a87952041de9499bd2c4d412cc64cbed9fe8f3a656d0938c858",
+      "exact_git_blob_bytes": true
+    },
+    "desktop/platform_linux.go": {
+      "retained_archive": "boot/baseline/platform_linux.go",
+      "sha256": "05b4665228fd6e4f7ea0fce38428de01a71ed19e516b05bc8a61ad9c09403522",
+      "exact_git_blob_bytes": true
+    }
+  }
+}

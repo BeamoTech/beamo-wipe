@@ -1,0 +1,10 @@
+{
+  "name": "final-evidence-validation",
+  "command": [
+    "python3",
+    "/workspace/beamo-tools/audit-pass7-20261021/root/build_evidence.py"
+  ],
+  "started_utc": "2026-10-21T03:56:29.554608+00:00",
+  "elapsed_seconds": 0.51,
+  "exit_code": 1
+}

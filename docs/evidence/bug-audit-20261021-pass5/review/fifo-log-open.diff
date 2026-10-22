@@ -1,0 +1,13 @@
+diff --git a/src/beamo_wipe/safety.py b/src/beamo_wipe/safety.py
+index 95f445d..340bd49 100644
+--- a/src/beamo_wipe/safety.py
++++ b/src/beamo_wipe/safety.py
+@@ -1046,7 +1046,7 @@ def truncate_log_file(
+         st = os.fstat(dirfd)
+         if not stat.S_ISDIR(st.st_mode):
+             raise SafetyError("Log parent is not a directory.")
+-        file_flags = os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW
++        file_flags = os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK
+         try:
+             fd = os.open(name, file_flags, 0o600, dir_fd=dirfd)
+         except OSError as exc:

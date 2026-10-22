@@ -1,0 +1,23 @@
+diff --git a/src/beamo_wipe/sound.py b/src/beamo_wipe/sound.py
+index 13de422..57b194a 100644
+--- a/src/beamo_wipe/sound.py
++++ b/src/beamo_wipe/sound.py
+@@ -335,11 +335,18 @@ def _popen(tool: str, args: List[str]):
+     """Allowlisted fire-and-forget spawn. Returns the Popen, or None."""
+     if tool not in _ALLOWED_BINARIES:
+         return None
++    ticket = getattr(_audio_context, "ticket", None)
++    if ticket is not None and ticket.cancelled.is_set():
++        return None
+     from beamo_wipe.safety import resolve_system_binary, session_exec_env
+ 
+     resolved = resolve_system_binary(tool)
+     if not resolved:
+         return None
++    # Resolution can overlap cancellation by the UI. Do not start a new
++    # player after this request has already been withdrawn.
++    if ticket is not None and ticket.cancelled.is_set():
++        return None
+     try:
+         proc = subprocess.Popen(
+             [resolved, *args],

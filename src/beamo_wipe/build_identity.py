@@ -7,6 +7,8 @@ import hashlib
 import json
 import os
 import re
+import secrets
+import stat
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -15,9 +17,7 @@ from beamo_wipe.safety import SafetyError
 BUILD_PATH = Path("/usr/share/beamo-wipe/build-identity.json")
 COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
-BUILD_ID_RE = re.compile(
-    r"^(?:[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}|local)$"
-)
+BUILD_ID_RE = re.compile(r"^(?:[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}|local)$")
 FILE_KEYS = frozenset({"source_commit", "source_sha256", "build_id", "source_dirty"})
 STATUSES = frozenset(
     {"production", "development", "dirty", "source_mismatch", "unavailable"}
@@ -125,7 +125,9 @@ def load_injected_build(path: Path | None = None) -> dict[str, Any] | None:
             raw = _read_at(fd, target.name, limit=4096)
         finally:
             os.close(fd)
-        return parse_injected_build(json.loads(raw, object_pairs_hook=_unique_identity_fields))
+        return parse_injected_build(
+            json.loads(raw, object_pairs_hook=_unique_identity_fields)
+        )
     except (
         OSError,
         SafetyError,
@@ -173,6 +175,134 @@ def assert_injectable(
         raise RuntimeError("production image refuses dirty source")
 
 
+def _identity_directory(directory: Path, *, create: bool) -> int:
+    """Open one output directory without following any path component."""
+    absolute = Path(os.path.abspath(directory))
+    flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    fd = os.open("/", flags)
+    try:
+        for component in absolute.parts[1:]:
+            if create:
+                try:
+                    os.mkdir(component, 0o755, dir_fd=fd)
+                except FileExistsError:
+                    pass
+            next_fd = os.open(component, flags, dir_fd=fd)
+            os.close(fd)
+            fd = next_fd
+        return fd
+    except BaseException:
+        os.close(fd)
+        raise
+
+
+def _identity_bytes(fd: int, size: int) -> bytes:
+    data = b""
+    while len(data) <= size:
+        chunk = os.pread(fd, min(4096, size + 1 - len(data)), len(data))
+        if not chunk:
+            break
+        data += chunk
+    return data
+
+
+def _verify_identity_publication(
+    directory_fd: int, name: str, fd: int, expected: bytes
+) -> None:
+    """Bind the final name, opened inode, metadata, and exact identity bytes."""
+    fields = (
+        "st_dev",
+        "st_ino",
+        "st_size",
+        "st_mode",
+        "st_uid",
+        "st_nlink",
+        "st_mtime_ns",
+        "st_ctime_ns",
+    )
+    opened = os.fstat(fd)
+    named = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
+    if (
+        any(getattr(opened, key) != getattr(named, key) for key in fields)
+        or not stat.S_ISREG(opened.st_mode)
+        or opened.st_uid != os.getuid()
+        or stat.S_IMODE(opened.st_mode) != 0o644
+        or opened.st_nlink != 1
+        or opened.st_size != len(expected)
+    ):
+        raise RuntimeError("build identity changed during publication")
+    first = _identity_bytes(fd, len(expected))
+    second = _identity_bytes(fd, len(expected))
+    after = os.fstat(fd)
+    named_after = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
+    if (
+        first != expected
+        or second != expected
+        or any(
+            getattr(opened, key) != getattr(after, key)
+            or getattr(after, key) != getattr(named_after, key)
+            for key in fields
+        )
+    ):
+        raise RuntimeError("build identity changed during publication")
+
+
+def _publish_identity(path: Path, data: bytes) -> None:
+    if not path.name or path.name in {".", ".."}:
+        raise RuntimeError("invalid build identity path")
+    directory_fd = _identity_directory(path.parent, create=True)
+    temporary = ".build-identity-" + secrets.token_hex(16)
+    fd = -1
+    try:
+        fd = os.open(
+            temporary,
+            os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+            0o600,
+            dir_fd=directory_fd,
+        )
+        pending = memoryview(data)
+        while pending:
+            written = os.write(fd, pending)
+            if written <= 0:
+                raise OSError("incomplete build identity write")
+            pending = pending[written:]
+        os.fchmod(fd, 0o644)
+        os.fsync(fd)
+        _verify_identity_publication(directory_fd, temporary, fd, data)
+        # Replaces an unexpected leaf link as a directory entry; it never
+        # opens or truncates the link target.
+        os.replace(
+            temporary,
+            path.name,
+            src_dir_fd=directory_fd,
+            dst_dir_fd=directory_fd,
+        )
+        os.fsync(directory_fd)
+        _verify_identity_publication(directory_fd, path.name, fd, data)
+        current_fd = _identity_directory(path.parent, create=False)
+        try:
+            opened_directory = os.fstat(directory_fd)
+            current_directory = os.fstat(current_fd)
+            if (opened_directory.st_dev, opened_directory.st_ino) != (
+                current_directory.st_dev,
+                current_directory.st_ino,
+            ):
+                raise RuntimeError(
+                    "build identity directory changed during publication"
+                )
+        finally:
+            os.close(current_fd)
+    finally:
+        try:
+            # A failed exact stage is retained. POSIX has no atomic
+            # unlink-if-same-inode operation, so a stat-then-unlink cleanup
+            # could delete a concurrent replacement of the staging name.
+            if fd >= 0:
+                os.close(fd)
+        finally:
+            os.close(directory_fd)
+
+
 def write_injected(
     path: Path,
     *,
@@ -195,8 +325,8 @@ def write_injected(
         build_id=build_id,
         source_dirty=source_dirty,
     )
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, sort_keys=True) + "\n", encoding="ascii")
+    data = (json.dumps(payload, sort_keys=True) + "\n").encode("ascii")
+    _publish_identity(path, data)
     return payload
 
 
@@ -239,8 +369,16 @@ def evidence_identity(build: Mapping[str, Any] | None = None) -> dict[str, Any]:
     if status not in STATUSES:
         record = empty_build(record.get("runtime_source_sha256") or None)
         status = STATUS_UNAVAILABLE
-    commit = record.get("source_commit") if COMMIT_RE.fullmatch(str(record.get("source_commit") or "")) else ""
-    build_id = record.get("build_id") if BUILD_ID_RE.fullmatch(str(record.get("build_id") or "")) else ""
+    commit = (
+        record.get("source_commit")
+        if COMMIT_RE.fullmatch(str(record.get("source_commit") or ""))
+        else ""
+    )
+    build_id = (
+        record.get("build_id")
+        if BUILD_ID_RE.fullmatch(str(record.get("build_id") or ""))
+        else ""
+    )
     if status == STATUS_UNAVAILABLE:
         commit = ""
         build_id = ""
@@ -248,5 +386,7 @@ def evidence_identity(build: Mapping[str, Any] | None = None) -> dict[str, Any]:
         "source_commit": commit,
         "build_id": build_id,
         "build_status": status,
-        "source_dirty": bool(record.get("source_dirty")) if status != STATUS_UNAVAILABLE else False,
+        "source_dirty": bool(record.get("source_dirty"))
+        if status != STATUS_UNAVAILABLE
+        else False,
     }

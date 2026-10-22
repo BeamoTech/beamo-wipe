@@ -1,0 +1,58 @@
+{
+  "baseline_commit": "938fe60347c78f2a745d5d5b04e30dfa013da809",
+  "baseline_tree": "45d56d3c562d14b3ba6339174c259a4580dbaff4",
+  "finding": "Undecodable Linux runtime marker crashes development preflight instead of returning an actionable conservative refusal.",
+  "impact": "Low-severity preflight availability; no unsafe erasure or guard bypass demonstrated.",
+  "repair": "Catch UnicodeError alongside OSError in live_environment only.",
+  "approved_paths_final_sha256": {
+    "dev.py": "961ec1f7a10b70ebb88a1246124885268997b8f1e48f6f18f20d160dcc11508a",
+    "developer_tests/test_dev_runtime_decode_pass7_20261021.py": "be143e516bdaaff69904a9e5a20523f5bda2540ae54880b32f763c988471edd2"
+  },
+  "exact_new_module_before_edit": {
+    "tests": 40,
+    "failures": 18,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 22
+  },
+  "all_developer_tests_after_edit": {
+    "tests": 251,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 251
+  },
+  "original_proof_after_edit": {
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 4
+  },
+  "launcher_readiness_after_edit": {
+    "tests": 24,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 24
+  },
+  "developer_ruff_check_and_format_exit": 0,
+  "python310_grammar_exit": 0,
+  "own_diff_whitespace_exit": 0,
+  "new_module_unchanged_since_baseline_archive": true,
+  "existing_test_assertions_edited": false,
+  "setup_errors_in_new_baseline_or_fixed_suites": 0,
+  "prior_original_probe_retained": "dev-cmdline-original.txt/xml:1FAIL/3PASS",
+  "initial_read_only_supporting_gates": {
+    "go_race_named_pass_events": 338,
+    "go_race_native_skips": 2,
+    "go_vet_exit": 0,
+    "focused_python_passed": 285,
+    "focused_python_skipped": 0
+  },
+  "counts_are_separate_and_overlap_parent_gates": true,
+  "hardware_or_native_platform_or_guest_or_image_acceptance": false,
+  "no_native_inventory_opt_in": true,
+  "no_docker_or_network_or_remote_mutation": true,
+  "ownership": "Released approved source paths to root; root owns final source freeze, integration, canonical full gates, retained ledger, staging and commit."
+}

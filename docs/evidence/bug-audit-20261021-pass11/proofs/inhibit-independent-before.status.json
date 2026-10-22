@@ -1,0 +1,20 @@
+{
+  "name": "inhibit-independent-before",
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "-W",
+    "error",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-q",
+    "/workspace/beamo-tools/audit-pass11-20261021/root/test_inhibit_optional_probe.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass11-20261021/root/inhibit-independent-before.xml"
+  ],
+  "started_utc": "2026-10-21T06:00:41.508195+00:00",
+  "elapsed_seconds": 0.5,
+  "exit_code": 1
+}

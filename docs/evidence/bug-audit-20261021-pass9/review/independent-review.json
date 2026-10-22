@@ -1,0 +1,36 @@
+{
+  "baseline_commit": "e28487d7595ee45a53d503fa1a76d8c22979f012",
+  "frozen_at_utc": "2026-10-21T04:54:28.960755+00:00",
+  "source_files": 818,
+  "source_manifest_sha256": "74323f9ed2ff1b64fceca4d43fd907d6f936471b8eea27f0406e1da1685c3a46",
+  "new_case_breakdown": {
+    "tests/test_app_live_ownership_pass9_20261021.py": 64
+  },
+  "new_python_cases": 64,
+  "changed_paths": [
+    "src/beamo_wipe/app.py",
+    "tests/test_accessible_boot_option.py",
+    "tests/test_app_live_ownership_pass9_20261021.py",
+    "tests/test_app_poweroff_recheck_pass7.py"
+  ],
+  "verified_root_causes": 1,
+  "all_unchanged_test_files_byte_identical": true,
+  "old_behavior_assertions_preserved": true,
+  "fixture_adaptations": {
+    "tests/test_accessible_boot_option.py": {
+      "old_assertion_count": 68,
+      "all_expected_outcomes_unchanged": true,
+      "assert_ast_identical": true,
+      "only_ast_normalization": null
+    },
+    "tests/test_app_poweroff_recheck_pass7.py": {
+      "old_assertion_count": 4,
+      "all_expected_outcomes_unchanged": true,
+      "assert_ast_identical": false,
+      "only_ast_normalization": "None-to-fake-owned-store call input"
+    }
+  },
+  "reviewers_released": true,
+  "root_review": "Root independently reproduced public dispatch, read complete product diff and exact64 regression cases, checked early+final authority boundaries and fake-only positive controls. Two old test modules supply fake session ownership in3 scenarios; no old expected result, counter assertion or ID changes. Public/read_cmdline/live mount helper contracts retained.",
+  "actual_native_device_engine_power_guest_actions": false
+}

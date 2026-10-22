@@ -1,0 +1,51 @@
+........................................................................ [  6%]
+........................................................................ [ 13%]
+........................................................................ [ 20%]
+........................................................................ [ 27%]
+.....................................................F.................. [ 33%]
+........................................................................ [ 40%]
+........................................................................ [ 47%]
+........................................................................ [ 54%]
+........................................................................ [ 60%]
+........................................................................ [ 67%]
+........................................................................ [ 74%]
+........................................................................ [ 81%]
+........................................................................ [ 88%]
+........................................................................ [ 94%]
+.......................................................                  [100%]
+=================================== FAILURES ===================================
+_________ test_export_worker_rejects_linked_mount_root_before_writing __________
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-181/test_export_worker_rejects_lin0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fba855ff0e0>
+
+    def test_export_worker_rejects_linked_mount_root_before_writing(tmp_path, monkeypatch):
+        outside = tmp_path / "outside"
+        outside.mkdir(mode=0o755)
+        root = tmp_path / "mount-root"
+        root.symlink_to(outside, target_is_directory=True)
+        monkeypatch.setattr(export, "MOUNT_ROOT", root)
+        monkeypatch.setattr(
+            export,
+            "_run_command",
+            lambda *_args, **_kwargs: subprocess.CompletedProcess([], 1),
+        )
+        monkeypatch.setattr(export, "_mounted_exact", lambda *_args: False)
+    
+        with pytest.raises(SafetyError):
+            export._persist_and_verify_report(
+                SimpleNamespace(fstype="vfat"), None, b"", "unavailable", 0
+            )
+    
+>       assert stat.S_IMODE(outside.stat().st_mode) == 0o755
+E       AssertionError: assert 448 == 493
+E        +  where 448 = <built-in function S_IMODE>(16832)
+E        +    where <built-in function S_IMODE> = stat.S_IMODE
+E        +    and   16832 = os.stat_result(st_mode=16832, st_ino=127624, st_dev=33, st_nlink=2, st_uid=1000, st_gid=1000, st_size=40, st_atime=1792559985, st_mtime=1792559985, st_ctime=1792559985).st_mode
+E        +      where os.stat_result(st_mode=16832, st_ino=127624, st_dev=33, st_nlink=2, st_uid=1000, st_gid=1000, st_size=40, st_atime=1792559985, st_mtime=1792559985, st_ctime=1792559985) = stat()
+E        +        where stat = PosixPath('/tmp/pytest-of-agent/pytest-181/test_export_worker_rejects_lin0/outside').stat
+
+tests/test_export_mount_root_boundary_pass11.py:31: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_export_mount_root_boundary_pass11.py::test_export_worker_rejects_linked_mount_root_before_writing
+1 failed, 1062 passed in 17.58s

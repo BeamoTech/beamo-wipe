@@ -1,0 +1,4 @@
+src/beamo_wipe/session_recovery.py:573: error: Value of type "dict[Any, Any] | None" is not indexable  [index]
+src/beamo_wipe/session_recovery.py:587: error: Value of type "dict[Any, Any] | None" is not indexable  [index]
+src/beamo_wipe/session_recovery.py:618: error: Value of type "dict[Any, Any] | None" is not indexable  [index]
+Found 3 errors in 1 file (checked 1 source file)

@@ -1,0 +1,67 @@
+{
+  "baseline": "b46e5642d4c849d503b41d8bf562cfb1f9fad68b",
+  "recorded_utc": "2026-10-21T06:02:32.531907+00:00",
+  "client_timezone": "America/Chicago",
+  "scope": [
+    "wizard review/consent/method/countdown/detours",
+    "keyboard/layout/language authorization",
+    "Tk/GTK/curses/plain lifecycle/input/failure handling",
+    "static helper and gallery preview boundaries"
+  ],
+  "verified_new_product_defects": 0,
+  "repository_edits": [],
+  "all_59_reviewed_input_bytes_equal_baseline": true,
+  "focused_tests": {
+    "unique_strict_passed": 444,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "python_warning_count": 0,
+    "gtk_atspi_runtime_warning_in_final_log": false,
+    "module_count": 44,
+    "junit_sha256": "380c3690004ca24bbb8d0de875e2298a6b77345bb8e4c83d3439b9850d18118b"
+  },
+  "model": {
+    "review_scenarios": 360,
+    "layout_scenarios": 63,
+    "detours": 720,
+    "nested_overlay_claims": 360,
+    "overlay_held_refusals": 360,
+    "fresh_countdown_checks": 975,
+    "layout_invalidation_controls": 18,
+    "layout_preservation_controls": 45,
+    "wrong_token_refusals": 63,
+    "owner_refusals": 63,
+    "blocked_erase_calls": 3132,
+    "explicit_fake_starts": 423,
+    "expiry_ticks_without_autostart": 423,
+    "fake_lstat_refusals": 3384,
+    "native_callbacks": 0,
+    "mismatches": 0,
+    "source_sha256": {
+      "src/beamo_wipe/wizard.py": "bb8d5ed38a749c07538107ad9a75fa3fa24b1c07de2f8a5eedecb05df8811ca0",
+      "src/beamo_wipe/keyboard.py": "9ad34bfb4c91972e29a63c00058a82c9050e74c91beee7c7bf04d871c31599d0",
+      "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+      "src/beamo_wipe/safety.py": "5cc1eeee4b220bc3f133b5933a1cd6aec382d14247156d3b4977b6b4af2e14f6",
+      "src/beamo_wipe/identity.py": "4ccada033bab0c3811450cb9ab4e85c74936af56e8cd94fdf84f8d5566942050",
+      "src/beamo_wipe/discover.py": "94d7496625b9906c2ea6f19650b8e8dec4ac87b627d25a66ca219c45a67345b4",
+      "src/beamo_wipe/demo.py": "00fa36bb9078c7a81efce7b08a1b8d4a646a4e224dd7f141df822fb45810426a",
+      "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62"
+    }
+  },
+  "model_script": "review_detour_layout_matrix.py",
+  "model_script_sha256": "c7f7464caa8d63b8a57201faf159018418b796b7eab74a2f8b9fdbee821c41b1",
+  "positive_refusal_controls_preserved": true,
+  "initial_histories": [
+    "initial-focused-ui.*:444 passes; inherited shared AT-SPI cache diagnostic, unchanged assertions rerun under private runtime/cache without warning",
+    "initial-review_detour_layout_matrix.*:all-green original model before adding actual expiry ticks",
+    "history-pre-lstat-*:all-green expiry-tick model before injecting controlled absent /dev metadata"
+  ],
+  "interpretation": "Focused cases overlap canonical suite. Model states and fake starts are supporting checks, not extra canonical test IDs. Expected rdev_check_skipped FileNotFoundError lines come from controlled absent fake devices; no real device action.",
+  "limitations": [
+    "Actual Orca screen-reader acceptance deferred to root clean container gate",
+    "Pinned browser execution/native/device/image/physical qualification not performed",
+    "This bounded review cannot establish absence of every possible defect"
+  ],
+  "ownership_released": true
+}

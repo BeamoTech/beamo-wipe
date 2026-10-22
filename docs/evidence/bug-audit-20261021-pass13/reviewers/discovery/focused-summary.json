@@ -1,0 +1,16 @@
+{
+  "baseline": "7fcd706b44c0d63cf5f2959bcd235968e8300274",
+  "errors": 0,
+  "exit": 0,
+  "failures": 0,
+  "native_guard": {
+    "synthetic_lstat": 2,
+    "synthetic_realpath": 17740
+  },
+  "native_inventory_optin_present": false,
+  "passed": 176,
+  "skipped": 0,
+  "testcases": 176,
+  "unique_ids": 176,
+  "warnings": false
+}

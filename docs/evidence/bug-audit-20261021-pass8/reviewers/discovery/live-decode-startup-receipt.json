@@ -1,0 +1,58 @@
+{
+  "baseline": "d8a941adc16cf0650d482f512e4b921d702373c5",
+  "finding": "Public app.main live-state classification has no exception boundary around strict UTF-8 proc metadata reads",
+  "impact": "Startup availability/structured refusal loss; no unsafe erase demonstrated",
+  "expected": "Undecodable classification returns blocked status3, no _main or SessionStore/native action; do not turn unknown into non-live false",
+  "tests": 4,
+  "failures": 2,
+  "controls_passed": 2,
+  "errors": 0,
+  "skipped": 0,
+  "native_callback_count": 0,
+  "source_sha256": {
+    "src/beamo_wipe/app.py": "30e005d148b07415b57fa293762f142a491fa1ec012661cf02ed2739bfb261e5",
+    "src/beamo_wipe/discover.py": "94d7496625b9906c2ea6f19650b8e8dec4ac87b627d25a66ca219c45a67345b4",
+    "src/beamo_wipe/safety.py": "5cc1eeee4b220bc3f133b5933a1cd6aec382d14247156d3b4977b6b4af2e14f6"
+  },
+  "proof_sha256": "70aa68c35490d4bb8203975bab6cd00f93c34551de97f44f0e8291304619a242",
+  "traces": [
+    {
+      "case": "test_startup_decoding_failure_returns_blocked_status[normal-desktop]",
+      "properties": [
+        [
+          "startup_trace",
+          "{\"case\": \"normal-desktop\", \"code\": 17, \"escaped\": null, \"calls\": [\"main\"], \"native_calls\": 0}"
+        ]
+      ]
+    },
+    {
+      "case": "test_startup_decoding_failure_returns_blocked_status[normal-live]",
+      "properties": [
+        [
+          "startup_trace",
+          "{\"case\": \"normal-live\", \"code\": 17, \"escaped\": null, \"calls\": [\"store-open\", \"main\", \"store-close\"], \"native_calls\": 0}"
+        ]
+      ]
+    },
+    {
+      "case": "test_startup_decoding_failure_returns_blocked_status[bad-cmdline]",
+      "properties": [
+        [
+          "startup_trace",
+          "{\"case\": \"bad-cmdline\", \"code\": null, \"escaped\": \"UnicodeDecodeError\", \"calls\": [], \"native_calls\": 0}"
+        ]
+      ]
+    },
+    {
+      "case": "test_startup_decoding_failure_returns_blocked_status[bad-unrelated-mountpoint]",
+      "properties": [
+        [
+          "startup_trace",
+          "{\"case\": \"bad-unrelated-mountpoint\", \"code\": null, \"escaped\": \"UnicodeDecodeError\", \"calls\": [], \"native_calls\": 0}"
+        ]
+      ]
+    }
+  ],
+  "date_utc": "2026-10-21T04:07:15.550077+00:00",
+  "readonly_repository": true
+}

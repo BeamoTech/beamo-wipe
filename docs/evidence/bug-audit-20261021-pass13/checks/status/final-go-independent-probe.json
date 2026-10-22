@@ -1,0 +1,17 @@
+{
+  "name": "final-go-independent-probe",
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-overlay",
+    "/workspace/beamo-tools/audit-pass13-20261021/root/media-hash-overlay.json",
+    "-run=^TestRootMediaDigestFreshnessPass13$",
+    "-json",
+    "./..."
+  ],
+  "started_utc": "2026-10-21T07:31:07.518185+00:00",
+  "elapsed_seconds": 2.15,
+  "exit_code": 0
+}

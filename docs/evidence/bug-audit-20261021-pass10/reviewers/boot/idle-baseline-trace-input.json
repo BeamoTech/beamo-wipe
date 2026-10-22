@@ -1,0 +1,6 @@
+{
+  "baseline": "7047dfb8c22d0b17faad2d5de1ec470b2debfaac",
+  "main_sha256": "1cbabac38801e77c2cf741a89eb0f75666ea746e072f9eaf0e8d6628c282ef00",
+  "exact_production_guard": "a.mu.Lock()\n\t\t\tidle := time.Since(a.lastSeen) > 5*time.Minute && !a.busy\n\t\t\ta.mu.Unlock()",
+  "trace_scope": "Handler admitted between unchanged ticker unlock and cached idle return; fake callbacks only."
+}

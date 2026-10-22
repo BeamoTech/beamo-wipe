@@ -1,0 +1,29 @@
+{
+  "name": "final-ui-exact-original",
+  "command": [
+    "/workspace/beamo-tools/beamo-dev",
+    "env",
+    "BEAMO_WIPE_DRY_RUN=1",
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "764",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "python3",
+    "-m",
+    "pytest",
+    "-p",
+    "no:cacheprovider",
+    "-c",
+    "/workspace/beamo-tools/audit-pass6-20261021/root/pytest-ui-original.ini",
+    "-q",
+    "/workspace/beamo-tools/audit-pass6-20261021/root/ui-final-tests-original",
+    "--junitxml=/workspace/beamo-tools/audit-pass6-20261021/root/final-ui-exact-original.xml"
+  ],
+  "started_utc": "2026-10-21T02:27:51.575621+00:00",
+  "elapsed_seconds": 18.41,
+  "exit_code": 1
+}

@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/workspace/beamo-tools/audit-pass9-20261021/recovery/persistence_fault_matrix.py", line 32, in <module>
+    global_patch.setattr(name,forbidden)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/workspace/beamo-wipe/.venv-linux/lib/python3.13/site-packages/_pytest/monkeypatch.py", line 236, in setattr
+    name, target = derive_importpath(target, raising)
+                   ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/beamo-wipe/.venv-linux/lib/python3.13/site-packages/_pytest/monkeypatch.py", line 104, in derive_importpath
+    target = resolve(module)
+  File "/workspace/beamo-wipe/.venv-linux/lib/python3.13/site-packages/_pytest/monkeypatch.py", line 79, in resolve
+    __import__(used)
+    ~~~~~~~~~~^^^^^^
+  File "/workspace/beamo-wipe/src/beamo_wipe/nwipe_runner.py", line 170, in <module>
+    _POPEN_TERMINATE = subprocess.Popen.terminate
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'function' object has no attribute 'terminate'

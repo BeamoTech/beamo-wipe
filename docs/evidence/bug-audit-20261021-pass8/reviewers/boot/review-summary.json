@@ -1,0 +1,46 @@
+{
+  "baseline_commit": "d8a941adc16cf0650d482f512e4b921d702373c5",
+  "verified_new_defects": 0,
+  "repository_edits": false,
+  "existing_test_assertions_changed": false,
+  "reviewed_source_inputs_unchanged": true,
+  "reviewed_input_count": 57,
+  "focused_python": {
+    "cases": 325,
+    "passed": 325,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "python_warning_summary": false,
+    "exit_code": 0
+  },
+  "go_race": {
+    "named_pass_events": 338,
+    "native_skips_unverified": [
+      "TestLinuxInventoryRetainsPartitionParents",
+      "TestWindowsInventoryReportsOnlyLauncherPartitionPass13"
+    ],
+    "uncached": true,
+    "exit_code": 0
+  },
+  "go_vet_exit": 0,
+  "fresh_readiness_model": {
+    "authorized_fake_restarts": 278,
+    "failures": 0,
+    "malformed_duplicate_requests": 1405,
+    "native_callbacks": 0,
+    "probes": 2909,
+    "public_action_requests": 16000,
+    "refused_requests": 7013,
+    "seed_base": 802026,
+    "sessions": 200,
+    "windows_manual_policy_cases": 1000
+  },
+  "model_go_test_passed": 1,
+  "model_source_overlay_only": true,
+  "model_go_test_is_separate_from_baseline_or_parent_canonical_tests": true,
+  "supplemental_counts_not_unique_python_passes": true,
+  "actual_native_inventory_firmware_power_device_engine_network_docker_hosted_or_remote_actions": false,
+  "native_windows_image_firmware_physical_acceptance": false,
+  "recorded_at_utc": "2026-10-21T04:10:58.574353+00:00"
+}

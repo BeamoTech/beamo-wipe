@@ -1,0 +1,91 @@
+{
+  "baseline": "d8a941adc16cf0650d482f512e4b921d702373c5",
+  "verified_new_root_causes": 1,
+  "finding": "Uncaught live-state UTF-8 decoding in public app.main initial classification",
+  "impact": "Startup availability and structured refusal; no unsafe erase demonstrated",
+  "approved_paths_final_sha256": {
+    "src/beamo_wipe/app.py": "3bf7e23122e1aefd821f7c9a9d6a0dced4f6757589ea6939c8ac9dc0f8054852",
+    "tests/test_app_live_decode_refusal_pass8_20261021.py": "be0b5f9e40ee3222fb96801a3db44ee7a1460b6bcb010816f2565ef912c2a12c"
+  },
+  "counts": {
+    "adjacent-baseline": {
+      "cases": 2200,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "live-decode-startup-before": {
+      "cases": 4,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0
+    },
+    "expanded-before": {
+      "cases": 34,
+      "failures": 16,
+      "errors": 0,
+      "skipped": 0
+    },
+    "focused-after": {
+      "cases": 38,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "app-adjacent-after": {
+      "cases": 326,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "static_checks": {
+    "lint": {
+      "exit_code": 0,
+      "output": "All checks passed!\n"
+    },
+    "source-security": {
+      "exit_code": 0,
+      "output": "All checks passed!\n"
+    },
+    "test-security": {
+      "exit_code": 0,
+      "output": "All checks passed!\n"
+    },
+    "mypy": {
+      "exit_code": 0,
+      "output": "Success: no issues found in 1 source file\n"
+    },
+    "diff-check": {
+      "exit_code": 0,
+      "output": ""
+    },
+    "python310-grammar": {
+      "exit_code": 0,
+      "scope": "syntax only, not native Python3.10 execution"
+    }
+  },
+  "discovery_equivalence": {
+    "seed_base": 7082026,
+    "counts": {
+      "contexts": 256,
+      "discovery_calls": 3528,
+      "representation_permutation_checks": 3072,
+      "layout_mutations_checked": 456
+    },
+    "native_callbacks": 0,
+    "failures": [],
+    "source_sha256": {
+      "src/beamo_wipe/discover.py": "94d7496625b9906c2ea6f19650b8e8dec4ac87b627d25a66ca219c45a67345b4",
+      "src/beamo_wipe/safety.py": "5cc1eeee4b220bc3f133b5933a1cd6aec382d14247156d3b4977b6b4af2e14f6",
+      "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9"
+    },
+    "scope": "Fake physical eligibility/order/tree-flat/layout-change model; no native hardware acceptance"
+  },
+  "existing_test_assertions_modified": false,
+  "new_module_all_assertions_preserved_during_fixture_correction": true,
+  "final_exact_new_module_matches_baseline_archive": true,
+  "history": "Initial34case16FAIL18controls captured before product edit. Repository autouse classifier stub required newfixture restore actual classifier under fakeproc/native guards; initial28FAIL10PASS candidate archived history-autouse-*; finalexactmodule replay baseline16FAIL18controls. Product patch unchanged. First original proof unhandled trace retained history-first-*.",
+  "boundaries": "Only fake proc bytes/SessionStore/_main/inventory/process/power plus ordinary tempfiles and owned private72DPIXvfb; no Docker, native inventory/device/engine/mount/USB/firmware/host/guest/network/remote/stage/commit/backlog mutation.",
+  "ownership": "Both approved paths frozen and released to root; no further edits planned. Root canonical source freeze/full integration remains pending."
+}

@@ -1,0 +1,1 @@
+One configuration search returned exit2 because it named absent optional setup.cfg, ruff.toml and .ruff.toml; not a product/test failure. Follow-up rg of existing scripts/.github identified canonical ruff/mypy commands. No missing file was created.

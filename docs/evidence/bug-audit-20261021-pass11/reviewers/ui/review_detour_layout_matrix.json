@@ -1,0 +1,28 @@
+{
+  "review_scenarios": 360,
+  "layout_scenarios": 63,
+  "detours": 720,
+  "nested_overlay_claims": 360,
+  "overlay_held_refusals": 360,
+  "fresh_countdown_checks": 975,
+  "layout_invalidation_controls": 18,
+  "layout_preservation_controls": 45,
+  "wrong_token_refusals": 63,
+  "owner_refusals": 63,
+  "blocked_erase_calls": 3132,
+  "explicit_fake_starts": 423,
+  "expiry_ticks_without_autostart": 423,
+  "fake_lstat_refusals": 3384,
+  "native_callbacks": 0,
+  "mismatches": 0,
+  "source_sha256": {
+    "src/beamo_wipe/wizard.py": "bb8d5ed38a749c07538107ad9a75fa3fa24b1c07de2f8a5eedecb05df8811ca0",
+    "src/beamo_wipe/keyboard.py": "9ad34bfb4c91972e29a63c00058a82c9050e74c91beee7c7bf04d871c31599d0",
+    "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+    "src/beamo_wipe/safety.py": "5cc1eeee4b220bc3f133b5933a1cd6aec382d14247156d3b4977b6b4af2e14f6",
+    "src/beamo_wipe/identity.py": "4ccada033bab0c3811450cb9ab4e85c74936af56e8cd94fdf84f8d5566942050",
+    "src/beamo_wipe/discover.py": "94d7496625b9906c2ea6f19650b8e8dec4ac87b627d25a66ca219c45a67345b4",
+    "src/beamo_wipe/demo.py": "00fa36bb9078c7a81efce7b08a1b8d4a646a4e224dd7f141df822fb45810426a",
+    "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62"
+  }
+}

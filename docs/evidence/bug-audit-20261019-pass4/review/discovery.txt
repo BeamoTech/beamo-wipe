@@ -1,0 +1,80 @@
+Beamo Wipe PASS4 discovery/safety/identity audit
+2026-10-19 UTC / boot_build_audit subagent (rotated scope)
+Repository:/workspace/beamo-wipe
+Baseline:7f839e50e63db27a787eeabd758579352b6b3a3a
+Outcome:NO NEW VERIFIED DEFECT in this bounded review. No tracked edits, backlog
+changes, staging, commits, pushes, publication or further delegation performed.
+
+Instructions reviewed:
+- Current AGENTS.md, current unfinished-work context and the uploaded request at
+  /workspace/attachments/388acdc0-b62e-4936-817a-c2dac85c000d/Pasted text.txt.
+- Current repository Blacksmith guidance overrides the uploaded legacy GCP route.
+- Prior continuation authorization resolves the old missing-guide stop condition;
+  no missing instructions were invented and no network restriction was bypassed.
+
+Files/contracts reviewed:
+- src/beamo_wipe/discover.py:production lsblk schema, duplicate JSON handling,
+  strict identity text, numeric/boolean parsing, boot source precedence, whole-
+  disk identification, nested/flat ownership, mount propagation, hidden/malformed
+  physical observations, alias closure, filesystem layout and content evidence.
+- src/beamo_wipe/safety.py:boot/path/partition exclusion, transport restrictions,
+  mounted/read-only/zero-size eligibility, canonical physical fingerprints,
+  same-size confirmation, cross-disk token conflicts, before-exec rediscovery,
+  block/rdev/size guards, owner/token/countdown requirements and log location.
+- src/beamo_wipe/models.py, identity.py and inventory.py:raw versus presentation
+  metadata, identity display, missing/duplicate identifiers, comparison guidance,
+  excluded records and stable confirmation peers.
+- argv construction/validation in src/beamo_wipe/nwipe_runner.py; relevant wizard
+  operation/authorization fingerprints were traced to confirm stale path/peer
+  context revokes authorization. Runner execution remains root-owned.
+
+Verified invariants and supplementary probes:
+1. probe_identity_matrix.py uses the repository's guarded fake_machine fixture.
+   Both target and boot changes were replayed through direct parser, injected
+   discover(), and the production-metadata-stub route. Sixty cases passed:
+   six unchanged controls accepted and54 serial/WWN/model/vendor/size/transport/
+   rotation/UUID/path mutations rejected. The acquisition guard confirmed no
+   native inventory, subprocess or /dev,/sys,/proc access. Both direct selected-
+   disk validation and final request rediscovery were exercised for targets.
+   Evidence:identity-matrix.json.
+2. probe_token_matrix.py uses a fixed seed20261019 and500 fake inventories with
+   1752 disk views. It covers same-size/different-size peers, blank/all-zero/
+   placeholder IDs, shared suffixes, differing case, kernel-name-like values,
+   numeric identifiers and prefixed WWNs. There were1234 unique confirmable
+   tokens,518 fail-closed ambiguous views and0 cross-disk token collisions.
+   Exact and case-insensitive token matching behaved consistently.
+   Evidence:token-matrix.json.
+3. probe_argv_matrix.py uses fake missing device stats, lexical fake /dev paths,
+   preview environment and a regular temporary log root. All3 method controls
+   construct exactly one target and the required boot exclusion. Forty-eight
+   malformed variants were refused:extra/changed/missing/partition targets,
+   extra file positional, force flags, unknown flags, duplicate required flags,
+   missing/changed/duplicate exclude, changed log, enabled PDF path and rounds.
+   No engine or other process was spawned; no physical node was read or written.
+   Evidence:argv-matrix.json. This is argument-boundary evidence, not native
+   nwipe/device acceptance.
+
+Focused unchanged regression gate:
+source /workspace/beamo-tools/activate.sh
+python -m pytest -o addopts= -q tests/test_discovery_observation_fallback_pass16.py tests/test_physical_observation_context_pass15.py tests/test_unresolved_physical_bridge_pass17.py tests/test_unresolved_physical_duplicates_pass17.py tests/test_pathless_physical_bridge_pass18.py tests/test_pathless_unresolved_identity_pass18.py tests/test_disk_name_layout_pass21.py tests/test_disk_name_alias_layout_pass21.py tests/test_unknown_layout_ancestry_pass2_20261019.py tests/test_raw_model_revalidation_20261019.py --junitxml=/workspace/beamo-tools/audit-pass4-20261019/discovery/guarded-focused.xml
+Result:1499 passed in4.45s;0 failures/errors/skips.
+Evidence:guarded-focused.txt and guarded-focused.xml.
+These focused cases overlap root's complete gate; do not sum them as additional
+unique tests. No new product regression was added because no defect was proved.
+
+Relevant source hashes observed after review:
+1b40b281eb291137123a6495f96ac88001f33acc7fc6c903d435ffacb455bd89  src/beamo_wipe/discover.py
+57cd7c7d051f21a04785e11c156164db384e9c9a0d40b9d113ddfc8d62941eb2  src/beamo_wipe/safety.py
+4ccada033bab0c3811450cb9ab4e85c74936af56e8cd94fdf84f8d5566942050  src/beamo_wipe/identity.py
+bd594d0f6279181bb01bfa96c07ed8041d3da09fbee9ae9baf16dba60caa6acd  src/beamo_wipe/inventory.py
+e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9  src/beamo_wipe/models.py
+
+Limits/handoff:
+This is bounded source and fake-metadata verification. It does not establish
+native discovery accuracy on real hardware, acceptance of a physical hotplug,
+atomic protection against a device replaced after the final operating-system
+check, or completed hardware/firmware/ISO qualification. No native inventory,
+physical disk/USB operation, real process/device action, restart, nwipe,
+ISO/QEMU or hosted CI was invoked. Supplemental artifacts contain only fake
+identities. Root retains full gates, integration and any remote delivery; remote
+publication was neither attempted nor treated as authorized by this subtask.

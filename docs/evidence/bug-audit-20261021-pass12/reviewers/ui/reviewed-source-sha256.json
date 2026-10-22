@@ -1,0 +1,210 @@
+{
+  "desktop/web/app.js": {
+    "sha256": "ab98e96d2d6eb39260fee9d712f21778020fb18f647170f81fcc24ecd7feadfa",
+    "same_as_baseline": true
+  },
+  "docs/screens.md": {
+    "sha256": "35f49a99967b6c22557c97c6a34396a40c96a802059a09dbc8632cb0a6c79367",
+    "same_as_baseline": true
+  },
+  "helper/de.html": {
+    "sha256": "a107cbc33d6a100e3f47f9b0f4132ac30a5d302ee34aefb637aa2978462aaf73",
+    "same_as_baseline": true
+  },
+  "helper/fr.html": {
+    "sha256": "e0aa48eae7264564c1f9f6a94c0e670459140a3272a3bbda239468a938db7266",
+    "same_as_baseline": true
+  },
+  "helper/index.html": {
+    "sha256": "02478cb15c5566040a1cbcd3c62b4983b1ebd95fff40d72177d21a8e4f6d6257",
+    "same_as_baseline": true
+  },
+  "src/beamo_wipe/app.py": {
+    "sha256": "1ed6964181276463d5c7b7bdd59818d7ce57a31bb9fef77f3ad1ff1c76f7cf65",
+    "same_as_baseline": true
+  },
+  "src/beamo_wipe/copy.py": {
+    "sha256": "91b68c6aeb8187d47038c3d5c0d0d53be23e31b61d35c69fbc66217417758034",
+    "same_as_baseline": true
+  },
+  "src/beamo_wipe/demo.py": {
+    "sha256": "00fa36bb9078c7a81efce7b08a1b8d4a646a4e224dd7f141df822fb45810426a",
+    "same_as_baseline": true
+  },
+  "src/beamo_wipe/gallery.py": {
+    "sha256": "2fa9810b5527aa05408fcee2899c258ad9af4868ea18dcda08d37814292c958c",
+    "same_as_baseline": true
+  },
+  "src/beamo_wipe/lang.py": {
+    "sha256": "490786bbd8971678d82969b2180ecb5aa94f86785b52323f1dddbec1353878ba",
+    "same_as_baseline": true
+  },
+  "src/beamo_wipe/models.py": {
+    "sha256": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+    "same_as_baseline": true
+  },
+  "src/beamo_wipe/outcomes.py": {
+    "sha256": "4af35b516e728d1b46fd8b242346c7ded29e61a0bbb9e827a617d155267bd8ba",
+    "same_as_baseline": true
+  },
+  "src/beamo_wipe/result_summary.py": {
+    "sha256": "b059c558e913348887a24b2ade36b8e34bfa01aa7acb1e64ee8a47e996cdb430",
+    "same_as_baseline": true
+  },
+  "src/beamo_wipe/startup_stages.py": {
+    "sha256": "131d5966f9e45505e248e8192d33a1eb39be135246d1a7191ef82b6dba832477",
+    "same_as_baseline": true
+  },
+  "src/beamo_wipe/ui/accessible_wizard.py": {
+    "sha256": "8b9dae8e6faff4f2ef61532c43a9ad210a4cb45b60c1b2807b17d6dfb97b0b6f",
+    "same_as_baseline": true
+  },
+  "src/beamo_wipe/ui/console_wizard.py": {
+    "sha256": "26afac6583e25e9c8eabbecb2d01324d6be1848ac405529c93646371ba317400",
+    "same_as_baseline": true
+  },
+  "src/beamo_wipe/ui/sound_dialog.py": {
+    "sha256": "9165731d320e6f19de3e6632a7b0c43a4c688a72dbd6558b39ba46c0052aed9e",
+    "same_as_baseline": true
+  },
+  "src/beamo_wipe/ui/tk_wizard.py": {
+    "sha256": "0c8b457bfdc1946ce4ea66d611b025df11884cbf044f5d548f2b0f3b7b174e7f",
+    "same_as_baseline": true
+  },
+  "src/beamo_wipe/wizard.py": {
+    "sha256": "bb8d5ed38a749c07538107ad9a75fa3fa24b1c07de2f8a5eedecb05df8811ca0",
+    "same_as_baseline": true
+  },
+  "tests/test_accessible_cleanup_compat_20261019.py": {
+    "sha256": "6094b0f929d3359e81a1bc52ed394abb9a7d09c7d2bfd5be88eb49aaa019cd7d",
+    "same_as_baseline": true
+  },
+  "tests/test_accessible_close_cleanup_pass21.py": {
+    "sha256": "17d33a6646acf8471570be2696aafe00cc5b12a754492ccc37d2f4ab55af59a8",
+    "same_as_baseline": true
+  },
+  "tests/test_accessible_runtime_failure_pass6_regression.py": {
+    "sha256": "fe5fab5825697e518bae23017ec7fcf6afc507e722b938cf767e33d5f2383329",
+    "same_as_baseline": true
+  },
+  "tests/test_accessible_startup_cleanup_20261019.py": {
+    "sha256": "db775ceb25791897c2245c2ae6e7c114ed1bffd558accbc6ad243a4f8b2d462a",
+    "same_as_baseline": true
+  },
+  "tests/test_console_fallback_complete.py": {
+    "sha256": "86272061bf0bf6ebca49b8e4c121e570d85898885f35cf3870d1fd3cea070701",
+    "same_as_baseline": true
+  },
+  "tests/test_console_interface_loss_regression.py": {
+    "sha256": "f51d33b93e59eed4a859ef522c858f005bf644eb953df9ab4a4319f9bdc0a992",
+    "same_as_baseline": true
+  },
+  "tests/test_copy.py": {
+    "sha256": "01285c47e2bb63866a86e5ee25286811507b0364debdb6510092e11d83ca3297",
+    "same_as_baseline": true
+  },
+  "tests/test_erase_another.py": {
+    "sha256": "860e4fa209c95e7672d05ed270dde65f0cf2c8810dc75b143362066aad875c86",
+    "same_as_baseline": true
+  },
+  "tests/test_finish_evidence_shutdown_regression.py": {
+    "sha256": "a8a6de6e51c1ddda5661c09117fe3e96179714db7621155e091a34a57399341a",
+    "same_as_baseline": true
+  },
+  "tests/test_gallery_localized_copy_pass5.py": {
+    "sha256": "6b6cafb3ce64adddc41e8db1eb9f69b102495d710da01de4f43495101f8c5d58",
+    "same_as_baseline": true
+  },
+  "tests/test_gallery_run_again_report_pass26_ui.py": {
+    "sha256": "4bc8da3813cb4fabb1f815f93253bbb124e17c01ea8133dffd20718e05dd7bcc",
+    "same_as_baseline": true
+  },
+  "tests/test_graphical_interface_loss_pass5_regression.py": {
+    "sha256": "d07b9b517e8e4bd18699fc002ac956771bb6ba01dab15d485b9adcb5edabcb3d",
+    "same_as_baseline": true
+  },
+  "tests/test_helper_locale_guidance_pass5.py": {
+    "sha256": "a518b1d1188c6fe6589b9b422fbc7a4de451119911173b14216367f3f5bb67c2",
+    "same_as_baseline": true
+  },
+  "tests/test_helper_localized_landmarks_pass21_ui.py": {
+    "sha256": "fc50f7c3f31b75284caa9055138422e55abbc483c5eeefb04338a29c5cc8c929",
+    "same_as_baseline": true
+  },
+  "tests/test_helper_open_pass17_ui.py": {
+    "sha256": "ad21ca5a7e71ca429c3332ea518f351d3adbf47b7e2afa1515a89ad564865d34",
+    "same_as_baseline": true
+  },
+  "tests/test_language_new_session_pass16_ui.py": {
+    "sha256": "db4fd501acb0698125a7b8dcb4290448557b26b21b8407e4e755ff0bfa369598",
+    "same_as_baseline": true
+  },
+  "tests/test_method_copy_evidence_pass37.py": {
+    "sha256": "2c6794e9acd312d531cea34d036c6904a2db6b98721aa236a6ed7b3cd3eb1881",
+    "same_as_baseline": true
+  },
+  "tests/test_method_operation_copy.py": {
+    "sha256": "61089dbeacfb2303f14503cd384ee6594df259fb906f5c13923de42e6b5cb158",
+    "same_as_baseline": true
+  },
+  "tests/test_new_session_pinned_engine_regression.py": {
+    "sha256": "0015c5b8d92c82e7a605310c633df04cfe5086ef3e2b18fe3110cca1f65a087d",
+    "same_as_baseline": true
+  },
+  "tests/test_privacy_sharing_copy.py": {
+    "sha256": "136b65fd8872ae2559e49de4c735330766b95596bbdf38ac941920cddf27b928",
+    "same_as_baseline": true
+  },
+  "tests/test_reader_new_session_regression.py": {
+    "sha256": "dbc68931a94bf1c85ff20871541f0041fdec2fe29f1d94fc4ff8554501fb1082",
+    "same_as_baseline": true
+  },
+  "tests/test_report_media_notice.py": {
+    "sha256": "f87335c597470524cc8513e50b849bad5c681f90c3a2003ec86014e224b4b26a",
+    "same_as_baseline": true
+  },
+  "tests/test_report_shutdown.py": {
+    "sha256": "f457aaa086f3104cb247a04a3bc8c9d710a69815841bbc0f824dfc69586ea414",
+    "same_as_baseline": true
+  },
+  "tests/test_result_presentations.py": {
+    "sha256": "1b57533a72672408ee5630736c3693ccf894456d822e7ae6d04843550a8693d0",
+    "same_as_baseline": true
+  },
+  "tests/test_screens_report_actions.py": {
+    "sha256": "eb3ecd50cc73f3504f55a41ba52dc0425f200d84b928736e5863e13b8e3b3fea",
+    "same_as_baseline": true
+  },
+  "tests/test_separate_report_status.py": {
+    "sha256": "66919bfd2aa02b025aa3027f2ad0d7b01b095decdb976b193cf10b23241103a9",
+    "same_as_baseline": true
+  },
+  "tests/test_startup_callback_retirement_pass17.py": {
+    "sha256": "b008493fee9540ca0f659a54aaca491b4197f93566e5a4fff29d03d6369bc65c",
+    "same_as_baseline": true
+  },
+  "tests/test_startup_presenter_runtime_pass37_ui.py": {
+    "sha256": "e74829d631ca5a806a8b6780c65d96ef80313f01106a187ca294461040f53f60",
+    "same_as_baseline": true
+  },
+  "tests/test_text_size_new_session_pass17_ui.py": {
+    "sha256": "5961012a97a2e28cc4182e0e0152793691db14294c2e4cab6914025b4b7d94ef",
+    "same_as_baseline": true
+  },
+  "tests/test_tk_callback_ownership_pass6_20261021.py": {
+    "sha256": "4e7020dcb731d9d3f7e8f50cdf508a70ee7b410f0b83e53dc17dcbbf4011d3ea",
+    "same_as_baseline": true
+  },
+  "tests/test_tk_interpreter_callback_retirement.py": {
+    "sha256": "8bdfce823cc68740446f6e1ce149d346175d1a9849f58dc3422e0e793dc524d0",
+    "same_as_baseline": true
+  },
+  "tests/test_tk_retired_pool_threads.py": {
+    "sha256": "9ad54014ba5db3af9c609539a4badfe3c290fc6d8099be896bc45c113cb58909",
+    "same_as_baseline": true
+  },
+  "tests/test_ui_console_overlay_escape_pass10.py": {
+    "sha256": "8a0482358b3cc2f172577205218245b14c867dd405818d9fb1f7c5991faede44",
+    "same_as_baseline": true
+  }
+}

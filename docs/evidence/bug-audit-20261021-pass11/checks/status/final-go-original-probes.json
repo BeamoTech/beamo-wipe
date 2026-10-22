@@ -1,0 +1,17 @@
+{
+  "name": "final-go-original-probes",
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-overlay",
+    "/workspace/beamo-tools/audit-pass11-20261021/root/go-originals-overlay.json",
+    "-run=^(TestPass11RootOutputDrainDeadline|TestPass11RootOutputCaptureLimit|TestPass11OutputCancellationProbe)$",
+    "-json",
+    "./..."
+  ],
+  "started_utc": "2026-10-21T06:09:05.045618+00:00",
+  "elapsed_seconds": 3.98,
+  "exit_code": 0
+}

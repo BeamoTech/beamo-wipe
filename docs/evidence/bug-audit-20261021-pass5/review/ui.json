@@ -1,0 +1,75 @@
+{
+  "baseline": "e4871239f02e46137fb6d8df64b5880ae2ea4b4d",
+  "ownership": "Only console_wizard.py and one new regression module; source/tests frozen and released to root",
+  "root_causes": [
+    "Shortcut, inventory and suppressed-repeat early returns bypassed shared release-evidence reset/press tracking.",
+    "Space/S history reset at screen boundaries let preexisting physical holds become new owner/report/stop actions."
+  ],
+  "independent_minimal_proofs": {
+    "f5_enter_quiet": "1FAIL/1freshcontrolPASS",
+    "keyboard_space_owner": "1FAIL/1freshcontrolPASS",
+    "review_s_stop": "1FAIL/1freshcontrolPASS"
+  },
+  "expanded_final_original": "18FAIL/22controlsPASS against archived pre-edit console only",
+  "final_new_cases": "40PASS",
+  "adjacent_final": "300PASS no skips/failures/errors",
+  "python_reports": {
+    "focused-original": {
+      "cases": 118,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "expanded-before": {
+      "cases": 33,
+      "failures": 16,
+      "errors": 0,
+      "skipped": 0
+    },
+    "final-regression-before": {
+      "cases": 40,
+      "failures": 18,
+      "errors": 0,
+      "skipped": 0
+    },
+    "final-regression-after": {
+      "cases": 40,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "focused-final": {
+      "cases": 300,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "candidate-overlay-quiet": {
+      "cases": 3,
+      "failures": 3,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "repair": "Track Enter/Space/S presses and reset all quiet intervals before any shortcut/overlay/repeated-key return. Preserve Space and a unified sharing/Stop S history across screens, including literal Confirm input. Observe quiet intervals inside inventory overlays as well as ordinary screens. Suppress repeats only for their action roles; literal keyboard/Confirm text still accepts repeat Space/S/backspace. No controller/consent contract change.",
+  "no_existing_assertion_modified": true,
+  "python310_grammar": "PASS for both changed files; not Python3.10 runtime acceptance",
+  "lint": "Ruff check PASS for both changed files; new regression module formatting PASS; git diff --check PASS",
+  "scope_reviewed": [
+    "Wizard state/authorization/countdown/modal/screen epoch/start-stop/evidence/refresh lifecycle",
+    "Tk focused Return/Space/Escape/F5 gates and draw-generation guards, native cleanup and modal callbacks",
+    "GTK generation-bound buttons, token/owner callbacks, modal key propagation and focused final-review activation",
+    "curses shared/Confirm/overlay/literal prompt input paths, pagination and fallback dispatch",
+    "plain console consent/utility prompt handling and interface-loss recovery"
+  ],
+  "history": [
+    "Minimal Stop-origin proof draft stubbed _paint_paged without marking review visible; both cases remained gated before action. Corrected fixture to real paged renderer, retaining stop-origin-fixture-paint-failure.* separately.",
+    "First expanded fake-stat fixture omitted demo loop/partition/NVMe paths and failed setup preconditions. Corrected exact fake-name/rdev mapping; expanded-fixture-metadata-failure.* retained.",
+    "First repair preserved Enter origin inside overlays but failed to observe quiet there; 3fresh-control failures retained in candidate-overlay-quiet.*. Moved no-input advancement before overlay dispatch. Final40cases include those controls and original assertions unchanged."
+  ],
+  "limits": "Fake inventory, exact fake block-stat predicates, real Wizard and DryRunRunner, ordinary temp log locations. Sentinels forbid actual subprocess, inventory, NwipeRunner start and host shutdown. No native engine/device/mount/power/firmware/guest/hosted/remote write/staging/commit/backlog actions. Root owns final full canonical/GUI execution and integration.",
+  "final_sha256": {
+    "src/beamo_wipe/ui/console_wizard.py": "680315cafcc337c7cce74a76194609d7d74474471192f90360d2f7b3cc3667f5",
+    "tests/test_console_key_origin_pass5_20261021.py": "c6146dffcf9fb72e22fbd33745720cd73eff3d96a43c07533985a2cb16132fd0"
+  }
+}

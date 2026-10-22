@@ -38,8 +38,8 @@ The screen-reader view exposes Keep first and both native buttons. See
 [the state, console, and recovery rules](report-shutdown.md). No report survives
 live-session shutdown or power loss unless it has been exported.
 
-> **Matrix v1.15 — for Beamo Wipe 0.2.13 (nwipe 0.42)**
-> Date: 2026-10-17
+> **Matrix v1.16 — for Beamo Wipe 0.2.14 (nwipe 0.42)**
+> Date: 2026-10-22
 > Author: Accountable senior engineer (this checkout)
 > Status: Versioned release target. No physical destructives on the developer host. Production evidence requires the exact-source Blacksmith gate and signed release manifest.
 
@@ -84,10 +84,10 @@ Environments map to evidence tiers defined in [`docs/evidence-tiers.md`](evidenc
 
 | Artifact | Version | Path | Size | SHA-256 | Build inputs pinned |
 | --- | --- | --- | --- | --- | --- |
-| Beamo Wipe wrapper | **0.2.13** | `src/beamo_wipe/__init__.py:__version__` | — | — | `pyproject.toml 0.2.13`, `NWIPE_PINNED_VERSION 0.42`, `NWIPE_PINNED_COMMIT 6082bde0…67105` |
-| Staged chroot copy | 0.2.13 | `packaging/live/config/includes.chroot/usr/lib/python3/dist-packages/beamo_wipe/__init__.py` | — | — | Synced from `src/` by `scripts/build-iso.sh` (hook `0500-build-nwipe` clones at pinned commit, `GIT_CONFIG_*` isolated, fails closed if compiler packages remain) |
+| Beamo Wipe wrapper | **0.2.14** | `src/beamo_wipe/__init__.py:__version__` | — | — | `pyproject.toml 0.2.14`, `NWIPE_PINNED_VERSION 0.42`, `NWIPE_PINNED_COMMIT 6082bde0…67105` |
+| Staged chroot copy | 0.2.14 | `packaging/live/config/includes.chroot/usr/lib/python3/dist-packages/beamo_wipe/__init__.py` | — | — | Synced from `src/` by `scripts/build-iso.sh` (hook `0500-build-nwipe` clones at pinned commit, `GIT_CONFIG_*` isolated, fails closed if compiler packages remain) |
 | Prior stable ISO | **0.2.11** | GitHub release `v0.2.11` | 564,133,888 bytes | `9694068e4d70824b316f12da9bd4c0ee964809d15ce5ad4d406333f710176305` | Source `662cf470f9fcedf710d897591560267575745fea`; signed release and retained rollback target |
-| Release target | **0.2.13** | `dist/beamo-wipe-0.2.13-amd64.iso` | Set by hosted build | Set by manifest | Content-addressed build inputs; production upload only after full hosted/QEMU success |
+| Release target | **0.2.14** | `dist/beamo-wipe-0.2.14-amd64.iso` | Set by hosted build | Set by manifest | Content-addressed build inputs; production upload only after full hosted/QEMU success |
 
 `packaging/live/config/bootstrap` and `binary` are `https://deb.debian.org` / `https://security.debian.org` only, use debootstrap `minbase` with system defaults ignored, `firmware false`, `bootappend live: noeject nopersistence noswap ip=frommedia nox11autologin`, and `bootloaders syslinux grub-efi` (BIOS + UEFI). Full apt/package list: `packaging/live/config/package-lists/beamo.list.chroot` (kept minimal — no `curl/git/build-essential/sudo/network-manager/openssh-server`).
 
@@ -333,17 +333,17 @@ BEAMO_WIPE_NO_OPEN=1 ./preview --web && ls web-preview/index.html
 # Main/PR workflow: Blacksmith full gate with native Windows and KVM guests.
 gh run list --repo BeamoTech/beamo-wipe --workflow ci.yml
 # Only after separate publication authorization and exact tagged-main qualification:
-gh workflow run release.yml --repo BeamoTech/beamo-wipe --ref main -f version=0.2.13
+gh workflow run release.yml --repo BeamoTech/beamo-wipe --ref main -f version=0.2.14
 # Published GCS path: gs://beamo-wipe_cloudbuild/releases/<BUILD_ID>/
-sha256sum dist/beamo-wipe-0.2.13-amd64.iso
-dd if=dist/beamo-wipe-0.2.13-amd64.iso bs=1 skip=32769 count=5 2>/dev/null | od -An -tx1  # CD001
+sha256sum dist/beamo-wipe-0.2.14-amd64.iso
+dd if=dist/beamo-wipe-0.2.14-amd64.iso bs=1 skip=32769 count=5 2>/dev/null | od -An -tx1  # CD001
 ```
 
 ### Disposable QEMU destructive (isolated x86_64 VM only)
 
 ```bash
 # On a throwaway x86_64 Linux VM with /dev/kvm, no host disks passed through:
-BEAMO_WIPE_VERSION=0.2.13 ./scripts/qemu-verify.sh
+BEAMO_WIPE_VERSION=0.2.14 ./scripts/qemu-verify.sh
 # Checklist per docs/vm-test.md:
 # - exact manifest/ISO checksums
 # - shipped nwipe 0.42 bytes only
@@ -396,6 +396,7 @@ BEAMO_WIPE_VERSION=0.2.13 ./scripts/qemu-verify.sh
 | **1.13** | 2026-09-28 | 0.2.12 | Kiosk terminal EOF and persistent input-failure recovery, uncertain-cleanup support wording, and draft asset verification; pending exact-source qualification. Hardware support and pinned nwipe remain unchanged. |
 | **1.14** | 2026-09-29 | 0.2.12 | Development/doctor and CI guidance corrected to the configured Blacksmith route; runbook 1.12 separates local subsets, main qualification and authorized publication. Legacy tooling retained. No hosted run triggered for this correction. |
 | **1.15** | 2026-10-17 | 0.2.13 | Repeated safety and reliability audit fixes; runbook 1.13 and release defaults aligned. Exact-source hosted qualification and signed publication remain required. No expanded hardware claims or pin changes. |
+| **1.16** | 2026-10-22 | 0.2.14 | Additional safety, recovery, evidence-integrity and release-publication hardening; runbook 1.14 and release defaults aligned. Exact-source hosted qualification and signed publication remain required. No expanded hardware claims or pin changes. |
 
 ---
 

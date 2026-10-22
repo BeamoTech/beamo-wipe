@@ -1,0 +1,16 @@
+[
+  "tests/test_accessible_focus_input_pass11.py",
+  "tests/test_accessible_sound_review_pass15_ui.py",
+  "tests/test_accessible_refresh_async_regression.py",
+  "tests/test_tk_review_visible_pass16_ui.py",
+  "tests/test_tk_startup_focus_geometry_pass12.py",
+  "tests/test_tk_refresh_draw_failure_regression.py",
+  "tests/test_tk_keyboard_option_pass23_ui.py",
+  "tests/test_tk_interpreter_callback_retirement.py",
+  "tests/test_tk_focus_reveal_pass14.py",
+  "tests/test_confirm_focus_callback_lifetime_pass16.py",
+  "tests/test_startup_callback_retirement_pass17.py",
+  "tests/test_startup_language_refresh_regression.py",
+  "tests/test_curses_review_page_pass18_ui.py",
+  "tests/test_curses_review_paint_pass6_20261021.py"
+]

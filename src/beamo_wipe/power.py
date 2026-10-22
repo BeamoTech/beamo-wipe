@@ -187,6 +187,9 @@ class PowerMonitor:
                 threading.Thread(target=read, daemon=True, name='beamo-power').start()
                 launch_allowed.set()
             except BaseException:
+                # set() can publish acceptance before an interruption escapes.
+                # Revoke it before releasing a rejected worker's decision gate.
+                launch_allowed.clear()
                 self.pending = False
                 self.status = PowerStatus()
                 self._next = now + REFRESH_SECONDS

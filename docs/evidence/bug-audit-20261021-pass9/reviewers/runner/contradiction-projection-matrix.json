@@ -1,0 +1,13 @@
+{
+  "cases": 480,
+  "positive_controls": 96,
+  "refusal_controls": 384,
+  "whole_log_projection_comparisons": 240,
+  "failure_count": 0,
+  "failures": [],
+  "native_callbacks": 0,
+  "source_sha256": {
+    "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62"
+  },
+  "scope": "Pure fake terminal evidence law and owned-file projection matrix; supporting counts do not add to pytest totals or native acceptance."
+}

@@ -1,0 +1,9 @@
+{
+  "states": 128,
+  "accepted_actions": 56,
+  "cancelled_tickets": 328,
+  "closed_refusals": 64,
+  "native_callbacks": 0,
+  "mismatches": [],
+  "scope": "supporting fake-only finite model; counts overlap canonical tests"
+}

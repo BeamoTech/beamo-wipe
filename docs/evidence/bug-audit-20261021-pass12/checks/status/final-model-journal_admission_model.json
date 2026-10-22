@@ -1,0 +1,14 @@
+{
+  "name": "final-model-journal_admission_model",
+  "command": [
+    "env",
+    "PYTHONPATH=/workspace/beamo-wipe/src:/workspace/beamo-wipe/tests",
+    "python3",
+    "-W",
+    "error",
+    "/workspace/beamo-tools/audit-pass12-20261021/root/model-replays/journal_admission_model.py"
+  ],
+  "started_utc": "2026-10-21T06:53:25.084438+00:00",
+  "elapsed_seconds": 0.88,
+  "exit_code": 0
+}

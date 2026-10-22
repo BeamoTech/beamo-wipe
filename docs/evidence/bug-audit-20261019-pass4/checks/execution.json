@@ -1,0 +1,37 @@
+{
+  "verified_at_utc": "2026-10-21T00:38:36.656166+00:00",
+  "source_frozen_files": 800,
+  "source_manifest_sha256": "9b4c0e6b0be2153e4349c01a61b813518f834da789e1f206df8db260fc515342",
+  "canonical_tests": {
+    "status": "PASS",
+    "exit_code": 0,
+    "exec_session_id": 67718,
+    "command": "beamo-dev env BEAMO_GATE_CHILD=1 BEAMO_GATE_JUNIT=.../root/resume-tests.xml bash scripts/ci-hosted.sh tests",
+    "main": "resume-tests.xml",
+    "orca": "resume-tests.xml.orca.xml"
+  },
+  "completed_groups": [
+    {
+      "name": "Fresh lint/preview/negative",
+      "exec_session_id": 93397,
+      "exit_code": 0
+    },
+    {
+      "name": "Fresh uncached Go race/vet/fuzz350000, Windows test compile, desktop builds",
+      "exec_session_id": 91501,
+      "exit_code": 0
+    },
+    {
+      "name": "Actual fake preview normal close and supplemental system browser",
+      "exec_session_id": 2893,
+      "exit_code": 0
+    }
+  ],
+  "go_native_skips_separate_from_python": [
+    "TestLinuxInventoryRetainsPartitionParents",
+    "TestWindowsInventoryReportsOnlyLauncherPartitionPass13"
+  ],
+  "source_unchanged_through_fresh_execution": true,
+  "native_or_physical_qualification": false,
+  "release_performed": false
+}

@@ -1,0 +1,782 @@
+.......................FFFFFFFFFFFFFFFFFFFFFF..FFFF...FFFF......         [100%]
+=================================== FAILURES ===================================
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-tmpfs] _
+
+filesystem = 'tmpfs', source = '/dev/sdb1'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - tmpfs /dev/sdb1 rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - tmpfs /dev/sdb1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-ramfs] _
+
+filesystem = 'ramfs', source = '/dev/sdb1'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - ramfs /dev/sdb1 rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - ramfs /dev/sdb1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-overlay] _
+
+filesystem = 'overlay', source = '/dev/sdb1'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - overlay /dev/sdb1 rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - overlay /dev/sdb1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-proc] _
+
+filesystem = 'proc', source = '/dev/sdb1'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - proc /dev/sdb1 rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - proc /dev/sdb1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-sysfs] _
+
+filesystem = 'sysfs', source = '/dev/sdb1'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - sysfs /dev/sdb1 rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - sysfs /dev/sdb1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-nfs4] _
+
+filesystem = 'nfs4', source = '/dev/sdb1'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - nfs4 /dev/sdb1 rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - nfs4 /dev/sdb1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-cifs] _
+
+filesystem = 'cifs', source = '/dev/sdb1'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - cifs /dev/sdb1 rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - cifs /dev/sdb1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-fuse.sshfs] _
+
+filesystem = 'fuse.sshfs', source = '/dev/sdb1'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - fuse.sshfs /dev/sdb1 rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - fuse.sshfs /dev/sdb1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-ubifs] _
+
+filesystem = 'ubifs', source = '/dev/sdb1'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - ubifs /dev/sdb1 rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - ubifs /dev/sdb1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-unknown-filesystem] _
+
+filesystem = 'unknown-filesystem', source = '/dev/sdb1'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - unknown-filesystem /dev/sdb1 rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - unknown-filesystem /dev/sdb1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-tmpfs] _
+
+filesystem = 'tmpfs', source = 'UUID=FAKE-LIVE'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - tmpfs UUID=FAKE-LIVE rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - tmpfs UUID=FAKE-LIVE rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-ramfs] _
+
+filesystem = 'ramfs', source = 'UUID=FAKE-LIVE'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - ramfs UUID=FAKE-LIVE rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - ramfs UUID=FAKE-LIVE rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-overlay] _
+
+filesystem = 'overlay', source = 'UUID=FAKE-LIVE'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - overlay UUID=FAKE-LIVE rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - overlay UUID=FAKE-LIVE rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-proc] _
+
+filesystem = 'proc', source = 'UUID=FAKE-LIVE'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - proc UUID=FAKE-LIVE rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - proc UUID=FAKE-LIVE rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-sysfs] _
+
+filesystem = 'sysfs', source = 'UUID=FAKE-LIVE'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - sysfs UUID=FAKE-LIVE rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - sysfs UUID=FAKE-LIVE rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-nfs4] _
+
+filesystem = 'nfs4', source = 'UUID=FAKE-LIVE'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - nfs4 UUID=FAKE-LIVE rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - nfs4 UUID=FAKE-LIVE rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-cifs] _
+
+filesystem = 'cifs', source = 'UUID=FAKE-LIVE'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - cifs UUID=FAKE-LIVE rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - cifs UUID=FAKE-LIVE rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-fuse.sshfs] _
+
+filesystem = 'fuse.sshfs', source = 'UUID=FAKE-LIVE'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - fuse.sshfs UUID=FAKE-LIVE rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - fuse.sshfs UUID=FAKE-LIVE rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-ubifs] _
+
+filesystem = 'ubifs', source = 'UUID=FAKE-LIVE'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - ubifs UUID=FAKE-LIVE rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - ubifs UUID=FAKE-LIVE rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-unknown-filesystem] _
+
+filesystem = 'unknown-filesystem', source = 'UUID=FAKE-LIVE'
+
+    @pytest.mark.parametrize("filesystem", UNPROVEN_FILESYSTEMS)
+    @pytest.mark.parametrize("source", ["/dev/sdb1", "UUID=FAKE-LIVE"])
+    def test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media(filesystem, source):
+>       _check_unproven(_table(filesystem, source))
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - unknown-filesystem UUID=FAKE-LIVE rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 0:48 / /run/live/medium rw - unknown-filesystem UUID=FAKE-LIVE rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+________ test_actual_live_requirement_uses_filesystem_kind[tmpfs-False] ________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f04517cd470>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-137/test_actual_live_requirement_u0')
+filesystem = 'tmpfs', expected = False
+
+    @pytest.mark.parametrize("filesystem,expected", [
+        ("tmpfs", False), ("overlay", False), ("iso9660", True), ("ext4", True),
+    ])
+    def test_actual_live_requirement_uses_filesystem_kind(monkeypatch, tmp_path, filesystem, expected):
+        path = tmp_path / "mountinfo"
+        path.write_text(_table(filesystem))
+        monkeypatch.setattr(D, "MOUNTINFO_PATH", str(path))
+        monkeypatch.setattr(D, "read_cmdline", lambda: "boot=live")
+        if expected:
+            S.require_real_live_for_nwipe(env={})
+        else:
+>           with pytest.raises(S.SafetyError):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:98: Failed
+_______ test_actual_live_requirement_uses_filesystem_kind[overlay-False] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f04517ccad0>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-137/test_actual_live_requirement_u1')
+filesystem = 'overlay', expected = False
+
+    @pytest.mark.parametrize("filesystem,expected", [
+        ("tmpfs", False), ("overlay", False), ("iso9660", True), ("ext4", True),
+    ])
+    def test_actual_live_requirement_uses_filesystem_kind(monkeypatch, tmp_path, filesystem, expected):
+        path = tmp_path / "mountinfo"
+        path.write_text(_table(filesystem))
+        monkeypatch.setattr(D, "MOUNTINFO_PATH", str(path))
+        monkeypatch.setattr(D, "read_cmdline", lambda: "boot=live")
+        if expected:
+            S.require_real_live_for_nwipe(env={})
+        else:
+>           with pytest.raises(S.SafetyError):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:98: Failed
+_ test_production_discovery_cannot_fall_back_to_findmnt_on_pseudo_media[tmpfs-False] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f04517cd780>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-137/test_production_discovery_cann0')
+filesystem = 'tmpfs', expected = False
+
+    @pytest.mark.parametrize("filesystem,expected", [
+        ("tmpfs", False), ("ramfs", False), ("overlay", False), ("proc", False),
+        ("iso9660", True), ("vfat", True), ("ext4", True),
+    ])
+    def test_production_discovery_cannot_fall_back_to_findmnt_on_pseudo_media(
+        monkeypatch, tmp_path, filesystem, expected,
+    ):
+        path = tmp_path / "mountinfo"
+        path.write_text(_table(filesystem))
+        monkeypatch.setattr(D, "MOUNTINFO_PATH", str(path))
+        monkeypatch.setattr(D, "read_cmdline", lambda: "boot=live")
+        payload = {"blockdevices": [
+            {"name": "sdb", "path": "/dev/sdb", "type": "disk", "size": 16_000_000_000,
+             "tran": "usb", "rota": False, "ro": False, "mountpoints": [],
+             "serial": "FAKE-BOOT", "model": "Fake boot", "children": [
+                 {"name": "sdb1", "path": "/dev/sdb1", "type": "part", "size": 15_000_000_000,
+                  "pkname": "sdb", "ro": False, "mountpoints": [], "fstype": filesystem},
+             ]},
+            {"name": "sda", "path": "/dev/sda", "type": "disk", "size": 256_000_000_000,
+             "tran": "sata", "rota": False, "ro": False, "mountpoints": [],
+             "serial": "FAKE-DATA", "model": "Fake data"},
+        ]}
+        monkeypatch.setattr(D, "run_lsblk", lambda: payload)
+    
+        def findmnt(point):
+            matched = point == "/run/live/medium"
+            return SimpleNamespace(returncode=0 if matched else 1,
+                                   stdout="/dev/sdb1\n" if matched else "", stderr="")
+    
+        monkeypatch.setattr(D, "_run_findmnt", findmnt)
+        result = D.discover(env={})
+        if expected:
+            assert result.boot_identified and result.boot.path == "/dev/sdb"
+            assert [disk.path for disk in result.selectable] == ["/dev/sda"]
+        else:
+>           assert not result.boot_identified and not result.selectable
+E           AssertionError: assert (not True)
+E            +  where True = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Fake boot', serial='FAKE-BOOT', size_bytes=16000000000... read_only=False, wwn='', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).boot_identified
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:137: AssertionError
+_ test_production_discovery_cannot_fall_back_to_findmnt_on_pseudo_media[ramfs-False] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f04517cdc50>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-137/test_production_discovery_cann1')
+filesystem = 'ramfs', expected = False
+
+    @pytest.mark.parametrize("filesystem,expected", [
+        ("tmpfs", False), ("ramfs", False), ("overlay", False), ("proc", False),
+        ("iso9660", True), ("vfat", True), ("ext4", True),
+    ])
+    def test_production_discovery_cannot_fall_back_to_findmnt_on_pseudo_media(
+        monkeypatch, tmp_path, filesystem, expected,
+    ):
+        path = tmp_path / "mountinfo"
+        path.write_text(_table(filesystem))
+        monkeypatch.setattr(D, "MOUNTINFO_PATH", str(path))
+        monkeypatch.setattr(D, "read_cmdline", lambda: "boot=live")
+        payload = {"blockdevices": [
+            {"name": "sdb", "path": "/dev/sdb", "type": "disk", "size": 16_000_000_000,
+             "tran": "usb", "rota": False, "ro": False, "mountpoints": [],
+             "serial": "FAKE-BOOT", "model": "Fake boot", "children": [
+                 {"name": "sdb1", "path": "/dev/sdb1", "type": "part", "size": 15_000_000_000,
+                  "pkname": "sdb", "ro": False, "mountpoints": [], "fstype": filesystem},
+             ]},
+            {"name": "sda", "path": "/dev/sda", "type": "disk", "size": 256_000_000_000,
+             "tran": "sata", "rota": False, "ro": False, "mountpoints": [],
+             "serial": "FAKE-DATA", "model": "Fake data"},
+        ]}
+        monkeypatch.setattr(D, "run_lsblk", lambda: payload)
+    
+        def findmnt(point):
+            matched = point == "/run/live/medium"
+            return SimpleNamespace(returncode=0 if matched else 1,
+                                   stdout="/dev/sdb1\n" if matched else "", stderr="")
+    
+        monkeypatch.setattr(D, "_run_findmnt", findmnt)
+        result = D.discover(env={})
+        if expected:
+            assert result.boot_identified and result.boot.path == "/dev/sdb"
+            assert [disk.path for disk in result.selectable] == ["/dev/sda"]
+        else:
+>           assert not result.boot_identified and not result.selectable
+E           AssertionError: assert (not True)
+E            +  where True = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Fake boot', serial='FAKE-BOOT', size_bytes=16000000000... read_only=False, wwn='', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).boot_identified
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:137: AssertionError
+_ test_production_discovery_cannot_fall_back_to_findmnt_on_pseudo_media[overlay-False] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f04517cdef0>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-137/test_production_discovery_cann2')
+filesystem = 'overlay', expected = False
+
+    @pytest.mark.parametrize("filesystem,expected", [
+        ("tmpfs", False), ("ramfs", False), ("overlay", False), ("proc", False),
+        ("iso9660", True), ("vfat", True), ("ext4", True),
+    ])
+    def test_production_discovery_cannot_fall_back_to_findmnt_on_pseudo_media(
+        monkeypatch, tmp_path, filesystem, expected,
+    ):
+        path = tmp_path / "mountinfo"
+        path.write_text(_table(filesystem))
+        monkeypatch.setattr(D, "MOUNTINFO_PATH", str(path))
+        monkeypatch.setattr(D, "read_cmdline", lambda: "boot=live")
+        payload = {"blockdevices": [
+            {"name": "sdb", "path": "/dev/sdb", "type": "disk", "size": 16_000_000_000,
+             "tran": "usb", "rota": False, "ro": False, "mountpoints": [],
+             "serial": "FAKE-BOOT", "model": "Fake boot", "children": [
+                 {"name": "sdb1", "path": "/dev/sdb1", "type": "part", "size": 15_000_000_000,
+                  "pkname": "sdb", "ro": False, "mountpoints": [], "fstype": filesystem},
+             ]},
+            {"name": "sda", "path": "/dev/sda", "type": "disk", "size": 256_000_000_000,
+             "tran": "sata", "rota": False, "ro": False, "mountpoints": [],
+             "serial": "FAKE-DATA", "model": "Fake data"},
+        ]}
+        monkeypatch.setattr(D, "run_lsblk", lambda: payload)
+    
+        def findmnt(point):
+            matched = point == "/run/live/medium"
+            return SimpleNamespace(returncode=0 if matched else 1,
+                                   stdout="/dev/sdb1\n" if matched else "", stderr="")
+    
+        monkeypatch.setattr(D, "_run_findmnt", findmnt)
+        result = D.discover(env={})
+        if expected:
+            assert result.boot_identified and result.boot.path == "/dev/sdb"
+            assert [disk.path for disk in result.selectable] == ["/dev/sda"]
+        else:
+>           assert not result.boot_identified and not result.selectable
+E           AssertionError: assert (not True)
+E            +  where True = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Fake boot', serial='FAKE-BOOT', size_bytes=16000000000... read_only=False, wwn='', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).boot_identified
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:137: AssertionError
+_ test_production_discovery_cannot_fall_back_to_findmnt_on_pseudo_media[proc-False] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f04517ce900>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-137/test_production_discovery_cann3')
+filesystem = 'proc', expected = False
+
+    @pytest.mark.parametrize("filesystem,expected", [
+        ("tmpfs", False), ("ramfs", False), ("overlay", False), ("proc", False),
+        ("iso9660", True), ("vfat", True), ("ext4", True),
+    ])
+    def test_production_discovery_cannot_fall_back_to_findmnt_on_pseudo_media(
+        monkeypatch, tmp_path, filesystem, expected,
+    ):
+        path = tmp_path / "mountinfo"
+        path.write_text(_table(filesystem))
+        monkeypatch.setattr(D, "MOUNTINFO_PATH", str(path))
+        monkeypatch.setattr(D, "read_cmdline", lambda: "boot=live")
+        payload = {"blockdevices": [
+            {"name": "sdb", "path": "/dev/sdb", "type": "disk", "size": 16_000_000_000,
+             "tran": "usb", "rota": False, "ro": False, "mountpoints": [],
+             "serial": "FAKE-BOOT", "model": "Fake boot", "children": [
+                 {"name": "sdb1", "path": "/dev/sdb1", "type": "part", "size": 15_000_000_000,
+                  "pkname": "sdb", "ro": False, "mountpoints": [], "fstype": filesystem},
+             ]},
+            {"name": "sda", "path": "/dev/sda", "type": "disk", "size": 256_000_000_000,
+             "tran": "sata", "rota": False, "ro": False, "mountpoints": [],
+             "serial": "FAKE-DATA", "model": "Fake data"},
+        ]}
+        monkeypatch.setattr(D, "run_lsblk", lambda: payload)
+    
+        def findmnt(point):
+            matched = point == "/run/live/medium"
+            return SimpleNamespace(returncode=0 if matched else 1,
+                                   stdout="/dev/sdb1\n" if matched else "", stderr="")
+    
+        monkeypatch.setattr(D, "_run_findmnt", findmnt)
+        result = D.discover(env={})
+        if expected:
+            assert result.boot_identified and result.boot.path == "/dev/sdb"
+            assert [disk.path for disk in result.selectable] == ["/dev/sda"]
+        else:
+>           assert not result.boot_identified and not result.selectable
+E           AssertionError: assert (not True)
+E            +  where True = DiscoveryResult(disks=(Disk(path='/dev/sdb', name='sdb', model='Fake boot', serial='FAKE-BOOT', size_bytes=16000000000... read_only=False, wwn='', vendor='', mountpoints=(), raw_model=None, contents='unknown', hotplug=False, layout_id=''))).boot_identified
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:137: AssertionError
+_ test_one_real_mount_does_not_establish_a_second_pseudo_live_path[False-tmpfs] _
+
+filesystem = 'tmpfs', reverse = False
+
+    @pytest.mark.parametrize("filesystem", ["tmpfs", "fuse.sshfs"])
+    @pytest.mark.parametrize("reverse", [False, True])
+    def test_one_real_mount_does_not_establish_a_second_pseudo_live_path(filesystem, reverse):
+        rows = [_row("iso9660"), _row(filesystem, point="/lib/live/mount/medium", mount_id=3)]
+        if reverse:
+            rows.reverse()
+        text = "1 0 0:1 / / rw - overlay overlay rw\n" + "".join(rows)
+>       _check_unproven(text)
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:147: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 8:17 / /run/live/medium rw - iso9660 /dev/sdb1 rw\n3 1 0:48 / /lib/live/mount/medium rw - tmpfs /dev/sdb1 rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 8:17 / /run/live/medium rw - iso9660 /dev/sdb1 rw\n3 1 0:48 / /lib/live/mount/medium rw - tmpfs /dev/sdb1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_one_real_mount_does_not_establish_a_second_pseudo_live_path[False-fuse.sshfs] _
+
+filesystem = 'fuse.sshfs', reverse = False
+
+    @pytest.mark.parametrize("filesystem", ["tmpfs", "fuse.sshfs"])
+    @pytest.mark.parametrize("reverse", [False, True])
+    def test_one_real_mount_does_not_establish_a_second_pseudo_live_path(filesystem, reverse):
+        rows = [_row("iso9660"), _row(filesystem, point="/lib/live/mount/medium", mount_id=3)]
+        if reverse:
+            rows.reverse()
+        text = "1 0 0:1 / / rw - overlay overlay rw\n" + "".join(rows)
+>       _check_unproven(text)
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:147: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n2 1 8:17 / /run/live/medium rw - iso9660 /dev/sdb1 rw\n3 1 0:48 / /lib/live/mount/medium rw - fuse.sshfs /dev/sdb1 rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n2 1 8:17 / /run/live/medium rw - iso9660 /dev/sdb1 rw\n3 1 0:48 / /lib/live/mount/medium rw - fuse.sshfs /dev/sdb1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_one_real_mount_does_not_establish_a_second_pseudo_live_path[True-tmpfs] _
+
+filesystem = 'tmpfs', reverse = True
+
+    @pytest.mark.parametrize("filesystem", ["tmpfs", "fuse.sshfs"])
+    @pytest.mark.parametrize("reverse", [False, True])
+    def test_one_real_mount_does_not_establish_a_second_pseudo_live_path(filesystem, reverse):
+        rows = [_row("iso9660"), _row(filesystem, point="/lib/live/mount/medium", mount_id=3)]
+        if reverse:
+            rows.reverse()
+        text = "1 0 0:1 / / rw - overlay overlay rw\n" + "".join(rows)
+>       _check_unproven(text)
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:147: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n3 1 0:48 / /lib/live/mount/medium rw - tmpfs /dev/sdb1 rw\n2 1 8:17 / /run/live/medium rw - iso9660 /dev/sdb1 rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n3 1 0:48 / /lib/live/mount/medium rw - tmpfs /dev/sdb1 rw\n2 1 8:17 / /run/live/medium rw - iso9660 /dev/sdb1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+_ test_one_real_mount_does_not_establish_a_second_pseudo_live_path[True-fuse.sshfs] _
+
+filesystem = 'fuse.sshfs', reverse = True
+
+    @pytest.mark.parametrize("filesystem", ["tmpfs", "fuse.sshfs"])
+    @pytest.mark.parametrize("reverse", [False, True])
+    def test_one_real_mount_does_not_establish_a_second_pseudo_live_path(filesystem, reverse):
+        rows = [_row("iso9660"), _row(filesystem, point="/lib/live/mount/medium", mount_id=3)]
+        if reverse:
+            rows.reverse()
+        text = "1 0 0:1 / / rw - overlay overlay rw\n" + "".join(rows)
+>       _check_unproven(text)
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:147: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '1 0 0:1 / / rw - overlay overlay rw\n3 1 0:48 / /lib/live/mount/medium rw - fuse.sshfs /dev/sdb1 rw\n2 1 8:17 / /run/live/medium rw - iso9660 /dev/sdb1 rw\n'
+
+    def _check_unproven(text):
+>       assert not D.live_medium_is_mounted(text=text)
+E       AssertionError: assert not True
+E        +  where True = <function live_medium_is_mounted at 0x7f045180f2e0>(text='1 0 0:1 / / rw - overlay overlay rw\n3 1 0:48 / /lib/live/mount/medium rw - fuse.sshfs /dev/sdb1 rw\n2 1 8:17 / /run/live/medium rw - iso9660 /dev/sdb1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7f045180f2e0> = D.live_medium_is_mounted
+
+../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py:53: AssertionError
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-tmpfs]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-ramfs]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-overlay]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-proc]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-sysfs]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-nfs4]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-cifs]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-fuse.sshfs]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-ubifs]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[/dev/sdb1-unknown-filesystem]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-tmpfs]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-ramfs]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-overlay]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-proc]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-sysfs]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-nfs4]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-cifs]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-fuse.sshfs]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-ubifs]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_pseudo_network_and_unknown_filesystems_cannot_impersonate_media[UUID=FAKE-LIVE-unknown-filesystem]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_actual_live_requirement_uses_filesystem_kind[tmpfs-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_actual_live_requirement_uses_filesystem_kind[overlay-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_production_discovery_cannot_fall_back_to_findmnt_on_pseudo_media[tmpfs-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_production_discovery_cannot_fall_back_to_findmnt_on_pseudo_media[ramfs-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_production_discovery_cannot_fall_back_to_findmnt_on_pseudo_media[overlay-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_production_discovery_cannot_fall_back_to_findmnt_on_pseudo_media[proc-False]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_one_real_mount_does_not_establish_a_second_pseudo_live_path[False-tmpfs]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_one_real_mount_does_not_establish_a_second_pseudo_live_path[False-fuse.sshfs]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_one_real_mount_does_not_establish_a_second_pseudo_live_path[True-tmpfs]
+FAILED ../beamo-tools/audit-pass7-20261021/discovery/expanded-original/tests/test_live_filesystem_kind_pass7_20261021.py::test_one_real_mount_does_not_establish_a_second_pseudo_live_path[True-fuse.sshfs]
+30 failed, 34 passed in 0.34s

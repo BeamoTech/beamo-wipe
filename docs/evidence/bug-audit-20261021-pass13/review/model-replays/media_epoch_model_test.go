@@ -1,0 +1,50 @@
+package main
+
+import (
+    "bytes"
+    "context"
+    "crypto/sha256"
+    "fmt"
+    "os"
+    "path/filepath"
+    "testing"
+)
+
+type epochContextPass13 struct {context.Context; calls,epoch int; mutate func()}
+func (c *epochContextPass13) Err() error {c.calls++; if c.calls==c.epoch {c.mutate()}; return nil}
+
+func TestMediaEpochModelPass13(t *testing.T) {
+    accepted,refused,states:=0,0,0
+    for epoch:=1;epoch<=4;epoch++ {for _,operation:=range []string{"unchanged","rewrite","append","truncate","replace"} {for _,restore:=range []bool{false,true} {
+        t.Run(fmt.Sprintf("epoch%d/%s/restore%t",epoch,operation,restore),func(t *testing.T){
+            states++
+            path:=filepath.Join(t.TempDir(),"owned-regular-file")
+            original:=[]byte("media-content-0123456789")
+            if err:=os.WriteFile(path,original,0600);err!=nil {t.Fatal(err)}
+            info,err:=os.Stat(path);if err!=nil {t.Fatal(err)}
+            ctx:=&epochContextPass13{Context:context.Background(),epoch:epoch,mutate:func(){
+                var err error
+                switch operation {
+                case "rewrite": err=os.WriteFile(path,bytes.Repeat([]byte("X"),len(original)),0600)
+                case "append": err=os.WriteFile(path,append(append([]byte{},original...),[]byte("appended")...),0600)
+                case "truncate": err=os.WriteFile(path,original[:len(original)-3],0600)
+                case "replace":
+                    err=os.Rename(path,path+".old")
+                    if err==nil {err=os.WriteFile(path,original,0600)}
+                }
+                if err!=nil {t.Fatal(err)}
+                if restore&&operation!="unchanged" {if err=os.Chtimes(path,info.ModTime(),info.ModTime());err!=nil {t.Fatal(err)}}
+            }}
+            digest,err:=mediaDigest(ctx,path,1024)
+            wantAccepted:=epoch==1||operation=="unchanged"||(epoch==2&&operation=="rewrite"&&restore)
+            if err==nil {accepted++} else {refused++}
+            if (err==nil)!=wantAccepted {t.Fatalf("acceptance=%t want=%t",err==nil,wantAccepted)}
+            if err==nil {
+                current,err:=os.ReadFile(path);if err!=nil {t.Fatal(err)}
+                sum:=sha256.Sum256(current)
+                if !bytes.Equal(digest,sum[:]) {t.Fatal("accepted stale digest")}
+            }
+        })
+    }}}
+    t.Logf("states=%d accepted=%d refused=%d native_callbacks=0",states,accepted,refused)
+}

@@ -1,0 +1,19 @@
+diff --git a/src/beamo_wipe/app.py b/src/beamo_wipe/app.py
+index 5d47172..cbe9321 100644
+--- a/src/beamo_wipe/app.py
++++ b/src/beamo_wipe/app.py
+@@ -653,7 +653,13 @@ MISSING_FILE = "Missing file: {path}"
+ def main(argv: list[str] | None = None) -> int:
+     # Help, version and invalid arguments must not create a recovery session.
+     args = _parser().parse_args(argv)
+-    if not running_on_live_usb():
++    try:
++        live = running_on_live_usb()
++    except UnicodeError:
++        # Unknown live state must not fall through to preview or startup.
++        print(RECOVERY_UNAVAILABLE, file=sys.stderr)
++        return 3
++    if not live:
+         return _main(argv, args=args)
+     from beamo_wipe.session_recovery import SessionStore
+     store = SessionStore()

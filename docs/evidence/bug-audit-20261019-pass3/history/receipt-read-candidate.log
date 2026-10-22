@@ -1,0 +1,84 @@
+Built Windows and Linux desktop launchers. Runtime and firmware tests remain separate gates.
+Built Windows and Linux desktop launchers. Runtime and firmware tests remain separate gates.
+Built Windows and Linux desktop launchers. Runtime and firmware tests remain separate gates.
+Built Windows and Linux desktop launchers. Runtime and firmware tests remain separate gates.
+[
+  {
+    "host": "posix",
+    "primary_launcher_error": false,
+    "mutate_receipt_during_read": false,
+    "mutation_reached": false,
+    "build_error": null,
+    "manifest_exists": true,
+    "foreign_preserved": false
+  },
+  {
+    "host": "posix",
+    "primary_launcher_error": false,
+    "mutate_receipt_during_read": true,
+    "mutation_reached": true,
+    "build_error": null,
+    "manifest_exists": true,
+    "foreign_preserved": true
+  },
+  {
+    "host": "posix",
+    "primary_launcher_error": true,
+    "mutate_receipt_during_read": false,
+    "mutation_reached": false,
+    "build_error": "RuntimeError: desktop launcher bytes changed before publication",
+    "manifest_exists": false,
+    "foreign_preserved": false
+  },
+  {
+    "host": "posix",
+    "primary_launcher_error": true,
+    "mutate_receipt_during_read": true,
+    "mutation_reached": true,
+    "build_error": "RuntimeError: desktop launcher bytes changed before publication",
+    "manifest_exists": false,
+    "foreign_preserved": false
+  },
+  {
+    "host": "nt",
+    "primary_launcher_error": false,
+    "mutate_receipt_during_read": false,
+    "mutation_reached": false,
+    "build_error": null,
+    "manifest_exists": true,
+    "foreign_preserved": false
+  },
+  {
+    "host": "nt",
+    "primary_launcher_error": false,
+    "mutate_receipt_during_read": true,
+    "mutation_reached": true,
+    "build_error": null,
+    "manifest_exists": true,
+    "foreign_preserved": true
+  },
+  {
+    "host": "nt",
+    "primary_launcher_error": true,
+    "mutate_receipt_during_read": false,
+    "mutation_reached": false,
+    "build_error": "RuntimeError: desktop launcher bytes changed before publication",
+    "manifest_exists": false,
+    "foreign_preserved": false
+  },
+  {
+    "host": "nt",
+    "primary_launcher_error": true,
+    "mutate_receipt_during_read": true,
+    "mutation_reached": true,
+    "build_error": "RuntimeError: desktop launcher bytes changed before publication",
+    "manifest_exists": false,
+    "foreign_preserved": false
+  }
+]
+
+Traceback (most recent call last):
+  File "/workspace/beamo-tools/audit-pass3-20261019/boot/reproduce_receipt_read_change.py", line 61, in <module>
+    assert all(row['build_error'] is not None and row['foreign_preserved'] for row in results if row['mutate_receipt_during_read']), 'BUG: receipt edit during read produced false success or cleanup removed foreign receipt bytes'
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: BUG: receipt edit during read produced false success or cleanup removed foreign receipt bytes

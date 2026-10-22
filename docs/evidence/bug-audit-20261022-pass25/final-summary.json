@@ -1,0 +1,52 @@
+{
+  "audit": "BW-BUG-AUDIT-PASS25-20261022",
+  "baseline_commit": "f9d77be2d50b773808ee82981ebcf4c4728895e6",
+  "branch": "fix/safety-audit-20261019",
+  "completed_utc": "2026-10-22",
+  "environment": {
+    "chrome": "156.0.8078.47",
+    "gcloud": "590.0.0",
+    "go": "1.26.8",
+    "node": "24.21.0",
+    "umask": "0022"
+  },
+  "final_python": {
+    "deselected_generated_live_config": 2,
+    "deselected_host_gtk_layout": 1,
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "78bfc9f4fdf1a771f5da614ff2ccb11f460e569c774b5ef7d13b33496ffb70d9",
+    "passed": 12218,
+    "selected": 12236,
+    "skipped": 18
+  },
+  "focused_release": {
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "ae07b1fb347d8c24adbeb6608933170e456152a26b7c5391bcf3c8490f38577b",
+    "passed": 323,
+    "selected": 336,
+    "skipped": 13
+  },
+  "focused_tooling": {
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "aae6dae2f6a4580765101e57dd522e1b5c723f01c3ed8136d6a6981c3b995f01",
+    "passed": 227,
+    "selected": 231,
+    "skipped": 4
+  },
+  "regressions": {
+    "baseline_failed": 6,
+    "baseline_passed_controls": 0,
+    "baseline_transcript_sha256": "97bc48e480fbd9e4cde177cd5a55793b409c0f28309c8a238362e5f3fb4844f8",
+    "fixed_passed": 6,
+    "fixed_transcript_sha256": "847fe1d6cb2b5a1bb5414b1f8e1d2d97cb1143e4fb124dd64c2df270c09f4ee5"
+  },
+  "source_freeze_sha256": "051083d54fc7326243c366d5eccdc9f4e7c0977f4eab25adc83978ac8a3d20eb",
+  "source_sha256": {
+    "scripts/publish-release-blacksmith.sh": "ce8faa3e55b76ad982184531f86c93a914a1725536265591e78486fc1ec0b617",
+    "tests/test_github_release_latest_pass25_20261022.py": "40c95a8f39660f77073da817cffd2e08ad31f8c1d4bc57f4a1bab7c5739e970f"
+  },
+  "static_transcript_sha256": "ef689cd78e5e6c884c7f45f1bcaa3bf9d79fd27916b8a561fa3845e8349bc77e"
+}

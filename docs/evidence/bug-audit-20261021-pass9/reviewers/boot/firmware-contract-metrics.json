@@ -1,0 +1,10 @@
+{
+  "foreign_request_preservation_controls": 288,
+  "inventory_cases": 150,
+  "inventory_success_controls": 40,
+  "mismatches": 0,
+  "native_callbacks": 0,
+  "restart_success_controls": 9,
+  "transaction_cases": 6048,
+  "transaction_refusals": 6039
+}

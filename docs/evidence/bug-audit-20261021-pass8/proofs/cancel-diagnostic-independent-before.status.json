@@ -1,0 +1,22 @@
+{
+  "name": "cancel-diagnostic-independent-before",
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "-W",
+    "error",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-o",
+    "pythonpath=src",
+    "-q",
+    "/workspace/beamo-tools/audit-pass8-20261021/runner/test_cancel_diagnostic_interruption_probe.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass8-20261021/root/cancel-diagnostic-independent-before.xml"
+  ],
+  "started_utc": "2026-10-21T04:09:22.473395+00:00",
+  "elapsed_seconds": 0.39,
+  "exit_code": 1
+}

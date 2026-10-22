@@ -1,0 +1,12 @@
+{
+  "baseline": "7047dfb8c22d0b17faad2d5de1ec470b2debfaac",
+  "test_sha256": "c08c7abcffa401780e3ab5a2157ef981d78039607ce5b128acd48db1919e581f",
+  "product_sha256": "1cbabac38801e77c2cf741a89eb0f75666ea746e072f9eaf0e8d6628c282ef00",
+  "leaf_failures": 18,
+  "leaf_positive_controls_passed": 6,
+  "total_leaf_cases": 24,
+  "race_reports": 0,
+  "native_callbacks": 0,
+  "archive": "/workspace/beamo-tools/audit-pass10-20261021/boot/baseline/desktop",
+  "fixture_history": "Windows normal-check positive control now asserts the existing manual-only policy, retaining Linux ready-route assertion; same24 leaf cases. Previous module/receipt retained."
+}

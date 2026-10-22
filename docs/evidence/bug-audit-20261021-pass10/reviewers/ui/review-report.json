@@ -1,0 +1,55 @@
+{
+  "reviewer": "ui_pass10",
+  "finished_utc": "2026-10-21T05:25:59.023894+00:00",
+  "client_timezone": "America/Chicago",
+  "baseline_commit": "7047dfb8c22d0b17faad2d5de1ec470b2debfaac",
+  "new_independent_ui_defects_proved": 0,
+  "repository_edits": [],
+  "old_test_edits": [],
+  "ownership_released": true,
+  "strict_ui_modules": 34,
+  "strict_unique_passes": 272,
+  "strict_failures_errors_skips": 0,
+  "strict_warning_policy": "-W error",
+  "display": "Owned private Xvfb72DPI and D-Bus; no peer display changed",
+  "reviewed_inputs_unchanged": 40,
+  "refresh_generation_model": {
+    "scenarios": 405,
+    "refresh_claims": 720,
+    "invalid_outcome_refusals": 225,
+    "stale_completions_ignored": 855,
+    "duplicate_completions_ignored": 135,
+    "empty_inventory_controls": 45,
+    "clean_retries": 315,
+    "blocked_erase_calls": 5715,
+    "explicit_fake_starts": 405,
+    "native_callbacks": 0,
+    "mismatches": 0,
+    "source_sha256": {
+      "src/beamo_wipe/wizard.py": "bb8d5ed38a749c07538107ad9a75fa3fa24b1c07de2f8a5eedecb05df8811ca0",
+      "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+      "src/beamo_wipe/identity.py": "4ccada033bab0c3811450cb9ab4e85c74936af56e8cd94fdf84f8d5566942050"
+    }
+  },
+  "independent_root_startup_finding": {
+    "origin": "Root raised; UI independently reproduced actual classifier read-time failure and UTF-8 error",
+    "baseline_exact_app_sha256": "03f394a55c33e835686ba50818b623443fca2321f06f7e418dbd91ad8b9718bc",
+    "baseline_failures": 2,
+    "baseline_passing_owned_live_controls": 2,
+    "fixed_original_cases_passed": 4,
+    "fixed_app_sha256": "1ed6964181276463d5c7b7bdd59818d7ce57a31bb9fef77f3ad1ff1c76f7cf65",
+    "minimal_repair_review": "Unowned _main dispatch is inside the existing UnicodeError refusal handler. The public false-classification path cannot present a real wizard without SessionStore due to the unchanged ownership guards; owned-store closure/refusal and parser exits are unchanged."
+  },
+  "no_native_or_remote_actions": true,
+  "scope": [
+    "Owner/token/method/countdown and separate explicit erase action",
+    "Refresh authorization reset, late/stale/duplicate callback retirement, failed/empty scans and clean reauthorization",
+    "Tk and GTK event generation, repeat holds, callbacks and cleanup",
+    "Console input origin/held keys/review painting/interface ownership"
+  ],
+  "limits": [
+    "Supporting subsets/models overlap canonical full coverage; do not add their counts to canonical passes.",
+    "Pure controller model does not prove actual hardware/firmware/native Windows/ISO acceptance.",
+    "No Orca qualification in this bounded subset; parent owns final full separate Orca gate."
+  ]
+}

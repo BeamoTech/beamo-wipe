@@ -1,0 +1,134 @@
+{"Time":"2026-10-21T05:27:50.184408076Z","Action":"start","Package":"beamo-wipe/desktop"}
+{"Time":"2026-10-21T05:27:50.194113527Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10"}
+{"Time":"2026-10-21T05:27:50.194136871Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10","Output":"=== RUN   TestCloseRetiresEveryAPIActionPass10\n"}
+{"Time":"2026-10-21T05:27:50.194169589Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/restart"}
+{"Time":"2026-10-21T05:27:50.194174146Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/restart","Output":"=== RUN   TestCloseRetiresEveryAPIActionPass10/ready/restart\n"}
+{"Time":"2026-10-21T05:27:50.194340618Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/restart","Output":"    close_admission_pass10_20261021_test.go:44: successful close retained or failed to revise published authority\n"}
+{"Time":"2026-10-21T05:27:50.194365695Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/restart","Output":"--- FAIL: TestCloseRetiresEveryAPIActionPass10/ready/restart (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.19438967Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/restart","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.19441696Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/check"}
+{"Time":"2026-10-21T05:27:50.194420254Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/check","Output":"=== RUN   TestCloseRetiresEveryAPIActionPass10/ready/check\n"}
+{"Time":"2026-10-21T05:27:50.194519449Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/check","Output":"    close_admission_pass10_20261021_test.go:44: successful close retained or failed to revise published authority\n"}
+{"Time":"2026-10-21T05:27:50.194537495Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/check","Output":"--- FAIL: TestCloseRetiresEveryAPIActionPass10/ready/check (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.194559037Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/check","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.194585465Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/state"}
+{"Time":"2026-10-21T05:27:50.194588339Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/state","Output":"=== RUN   TestCloseRetiresEveryAPIActionPass10/ready/state\n"}
+{"Time":"2026-10-21T05:27:50.194730647Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/state","Output":"    close_admission_pass10_20261021_test.go:44: successful close retained or failed to revise published authority\n"}
+{"Time":"2026-10-21T05:27:50.194747702Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/state","Output":"--- FAIL: TestCloseRetiresEveryAPIActionPass10/ready/state (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.194770815Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/state","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.194832816Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/close"}
+{"Time":"2026-10-21T05:27:50.19483544Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/close","Output":"=== RUN   TestCloseRetiresEveryAPIActionPass10/ready/close\n"}
+{"Time":"2026-10-21T05:27:50.194926532Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/close","Output":"    close_admission_pass10_20261021_test.go:44: successful close retained or failed to revise published authority\n"}
+{"Time":"2026-10-21T05:27:50.194939511Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/close","Output":"--- FAIL: TestCloseRetiresEveryAPIActionPass10/ready/close (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.194964568Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/ready/close","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.195022823Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/restart"}
+{"Time":"2026-10-21T05:27:50.195025947Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/restart","Output":"=== RUN   TestCloseRetiresEveryAPIActionPass10/manual/restart\n"}
+{"Time":"2026-10-21T05:27:50.195105563Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/restart","Output":"    close_admission_pass10_20261021_test.go:44: successful close retained or failed to revise published authority\n"}
+{"Time":"2026-10-21T05:27:50.195127615Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/restart","Output":"--- FAIL: TestCloseRetiresEveryAPIActionPass10/manual/restart (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.195136438Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/restart","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.195162737Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/check"}
+{"Time":"2026-10-21T05:27:50.19516529Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/check","Output":"=== RUN   TestCloseRetiresEveryAPIActionPass10/manual/check\n"}
+{"Time":"2026-10-21T05:27:50.195266748Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/check","Output":"    close_admission_pass10_20261021_test.go:44: successful close retained or failed to revise published authority\n"}
+{"Time":"2026-10-21T05:27:50.195291564Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/check","Output":"--- FAIL: TestCloseRetiresEveryAPIActionPass10/manual/check (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.195308559Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/check","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.195332644Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/state"}
+{"Time":"2026-10-21T05:27:50.195335198Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/state","Output":"=== RUN   TestCloseRetiresEveryAPIActionPass10/manual/state\n"}
+{"Time":"2026-10-21T05:27:50.195541489Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/state","Output":"    close_admission_pass10_20261021_test.go:44: successful close retained or failed to revise published authority\n"}
+{"Time":"2026-10-21T05:27:50.195561017Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/state","Output":"--- FAIL: TestCloseRetiresEveryAPIActionPass10/manual/state (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.195586584Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/state","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.195635386Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/close"}
+{"Time":"2026-10-21T05:27:50.19563807Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/close","Output":"=== RUN   TestCloseRetiresEveryAPIActionPass10/manual/close\n"}
+{"Time":"2026-10-21T05:27:50.195769451Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/close","Output":"    close_admission_pass10_20261021_test.go:44: successful close retained or failed to revise published authority\n"}
+{"Time":"2026-10-21T05:27:50.195794978Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/close","Output":"--- FAIL: TestCloseRetiresEveryAPIActionPass10/manual/close (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.195817791Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/manual/close","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.195846614Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/restart"}
+{"Time":"2026-10-21T05:27:50.195849327Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/restart","Output":"=== RUN   TestCloseRetiresEveryAPIActionPass10/preview/restart\n"}
+{"Time":"2026-10-21T05:27:50.195939769Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/restart","Output":"    close_admission_pass10_20261021_test.go:44: successful close retained or failed to revise published authority\n"}
+{"Time":"2026-10-21T05:27:50.195962312Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/restart","Output":"--- FAIL: TestCloseRetiresEveryAPIActionPass10/preview/restart (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.195979778Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/restart","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.196161793Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/check"}
+{"Time":"2026-10-21T05:27:50.196163826Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/check","Output":"=== RUN   TestCloseRetiresEveryAPIActionPass10/preview/check\n"}
+{"Time":"2026-10-21T05:27:50.196281798Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/check","Output":"    close_admission_pass10_20261021_test.go:44: successful close retained or failed to revise published authority\n"}
+{"Time":"2026-10-21T05:27:50.19630366Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/check","Output":"--- FAIL: TestCloseRetiresEveryAPIActionPass10/preview/check (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.196322948Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/check","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.196374092Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/state"}
+{"Time":"2026-10-21T05:27:50.196376826Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/state","Output":"=== RUN   TestCloseRetiresEveryAPIActionPass10/preview/state\n"}
+{"Time":"2026-10-21T05:27:50.196463272Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/state","Output":"    close_admission_pass10_20261021_test.go:44: successful close retained or failed to revise published authority\n"}
+{"Time":"2026-10-21T05:27:50.196489861Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/state","Output":"--- FAIL: TestCloseRetiresEveryAPIActionPass10/preview/state (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.196578801Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/state","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.196608474Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/close"}
+{"Time":"2026-10-21T05:27:50.196611158Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/close","Output":"=== RUN   TestCloseRetiresEveryAPIActionPass10/preview/close\n"}
+{"Time":"2026-10-21T05:27:50.196738694Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/close","Output":"    close_admission_pass10_20261021_test.go:44: successful close retained or failed to revise published authority\n"}
+{"Time":"2026-10-21T05:27:50.196760846Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/close","Output":"--- FAIL: TestCloseRetiresEveryAPIActionPass10/preview/close (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.196779073Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10/preview/close","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.196798761Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10","Output":"--- FAIL: TestCloseRetiresEveryAPIActionPass10 (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.196817148Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresEveryAPIActionPass10","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.19684554Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10"}
+{"Time":"2026-10-21T05:27:50.196848123Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10","Output":"=== RUN   TestCloseRejectsAlreadyDecodingActionsPass10\n"}
+{"Time":"2026-10-21T05:27:50.196889684Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10/restart"}
+{"Time":"2026-10-21T05:27:50.196892298Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10/restart","Output":"=== RUN   TestCloseRejectsAlreadyDecodingActionsPass10/restart\n"}
+{"Time":"2026-10-21T05:27:50.19717509Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10/restart","Output":"    close_admission_pass10_20261021_test.go:111: decoding action survived close: status=200 probes=0 restarts=1\n"}
+{"Time":"2026-10-21T05:27:50.197199055Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10/restart","Output":"--- FAIL: TestCloseRejectsAlreadyDecodingActionsPass10/restart (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.19721609Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10/restart","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.197246534Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10/check"}
+{"Time":"2026-10-21T05:27:50.197249408Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10/check","Output":"=== RUN   TestCloseRejectsAlreadyDecodingActionsPass10/check\n"}
+{"Time":"2026-10-21T05:27:50.198094971Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10/check","Output":"    close_admission_pass10_20261021_test.go:111: decoding action survived close: status=200 probes=1 restarts=0\n"}
+{"Time":"2026-10-21T05:27:50.198114329Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10/check","Output":"--- FAIL: TestCloseRejectsAlreadyDecodingActionsPass10/check (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.19814232Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10/check","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.198243157Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10/state"}
+{"Time":"2026-10-21T05:27:50.198247883Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10/state","Output":"=== RUN   TestCloseRejectsAlreadyDecodingActionsPass10/state\n"}
+{"Time":"2026-10-21T05:27:50.198564194Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10/state","Output":"    close_admission_pass10_20261021_test.go:111: decoding action survived close: status=200 probes=0 restarts=0\n"}
+{"Time":"2026-10-21T05:27:50.198576452Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10/state","Output":"--- FAIL: TestCloseRejectsAlreadyDecodingActionsPass10/state (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.198649158Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10/state","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.198716697Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10","Output":"--- FAIL: TestCloseRejectsAlreadyDecodingActionsPass10 (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.198742534Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRejectsAlreadyDecodingActionsPass10","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.198908957Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10"}
+{"Time":"2026-10-21T05:27:50.19891096Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10","Output":"=== RUN   TestCloseRetiresBeforeResponseFlushPass10\n"}
+{"Time":"2026-10-21T05:27:50.198974563Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10/restart"}
+{"Time":"2026-10-21T05:27:50.198977837Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10/restart","Output":"=== RUN   TestCloseRetiresBeforeResponseFlushPass10/restart\n"}
+{"Time":"2026-10-21T05:27:50.199282151Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10/restart","Output":"    close_admission_pass10_20261021_test.go:155: close response retained action authority: close=200 action=200 probes=0 restarts=1\n"}
+{"Time":"2026-10-21T05:27:50.199290593Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10/restart","Output":"--- FAIL: TestCloseRetiresBeforeResponseFlushPass10/restart (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.199307398Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10/restart","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.199337822Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10/check"}
+{"Time":"2026-10-21T05:27:50.199340075Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10/check","Output":"=== RUN   TestCloseRetiresBeforeResponseFlushPass10/check\n"}
+{"Time":"2026-10-21T05:27:50.199752046Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10/check","Output":"    close_admission_pass10_20261021_test.go:155: close response retained action authority: close=200 action=200 probes=1 restarts=0\n"}
+{"Time":"2026-10-21T05:27:50.199766567Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10/check","Output":"--- FAIL: TestCloseRetiresBeforeResponseFlushPass10/check (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.199787798Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10/check","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.19981644Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10/state"}
+{"Time":"2026-10-21T05:27:50.199818282Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10/state","Output":"=== RUN   TestCloseRetiresBeforeResponseFlushPass10/state\n"}
+{"Time":"2026-10-21T05:27:50.200163535Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10/state","Output":"    close_admission_pass10_20261021_test.go:155: close response retained action authority: close=200 action=200 probes=0 restarts=0\n"}
+{"Time":"2026-10-21T05:27:50.200186879Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10/state","Output":"--- FAIL: TestCloseRetiresBeforeResponseFlushPass10/state (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.200205787Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10/state","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.200237083Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10","Output":"--- FAIL: TestCloseRetiresBeforeResponseFlushPass10 (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.200278513Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestCloseRetiresBeforeResponseFlushPass10","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.200315807Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10"}
+{"Time":"2026-10-21T05:27:50.200318842Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10","Output":"=== RUN   TestClosePreservesOpenAndBusyControlsPass10\n"}
+{"Time":"2026-10-21T05:27:50.200569467Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/restart"}
+{"Time":"2026-10-21T05:27:50.200573233Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/restart","Output":"=== RUN   TestClosePreservesOpenAndBusyControlsPass10/restart\n"}
+{"Time":"2026-10-21T05:27:50.200736551Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/restart","Output":"--- PASS: TestClosePreservesOpenAndBusyControlsPass10/restart (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.200753165Z","Action":"pass","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/restart","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.200786333Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/check"}
+{"Time":"2026-10-21T05:27:50.200788246Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/check","Output":"=== RUN   TestClosePreservesOpenAndBusyControlsPass10/check\n"}
+{"Time":"2026-10-21T05:27:50.201134871Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/check","Output":"--- PASS: TestClosePreservesOpenAndBusyControlsPass10/check (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.201151505Z","Action":"pass","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/check","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.201183813Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/preview"}
+{"Time":"2026-10-21T05:27:50.201185645Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/preview","Output":"=== RUN   TestClosePreservesOpenAndBusyControlsPass10/preview\n"}
+{"Time":"2026-10-21T05:27:50.201295525Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/preview","Output":"--- PASS: TestClosePreservesOpenAndBusyControlsPass10/preview (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.201318349Z","Action":"pass","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/preview","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.201347771Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/busy"}
+{"Time":"2026-10-21T05:27:50.201349354Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/busy","Output":"=== RUN   TestClosePreservesOpenAndBusyControlsPass10/busy\n"}
+{"Time":"2026-10-21T05:27:50.201450441Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/busy","Output":"--- PASS: TestClosePreservesOpenAndBusyControlsPass10/busy (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.201454137Z","Action":"pass","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/busy","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.201479113Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/unauthorized"}
+{"Time":"2026-10-21T05:27:50.201481056Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/unauthorized","Output":"=== RUN   TestClosePreservesOpenAndBusyControlsPass10/unauthorized\n"}
+{"Time":"2026-10-21T05:27:50.201547613Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/unauthorized","Output":"--- PASS: TestClosePreservesOpenAndBusyControlsPass10/unauthorized (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.201569194Z","Action":"pass","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/unauthorized","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.20159393Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/malformed"}
+{"Time":"2026-10-21T05:27:50.201595933Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/malformed","Output":"=== RUN   TestClosePreservesOpenAndBusyControlsPass10/malformed\n"}
+{"Time":"2026-10-21T05:27:50.201739733Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/malformed","Output":"--- PASS: TestClosePreservesOpenAndBusyControlsPass10/malformed (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.20175177Z","Action":"pass","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10/malformed","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.20177227Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10","Output":"--- PASS: TestClosePreservesOpenAndBusyControlsPass10 (0.00s)\n"}
+{"Time":"2026-10-21T05:27:50.201809484Z","Action":"pass","Package":"beamo-wipe/desktop","Test":"TestClosePreservesOpenAndBusyControlsPass10","Elapsed":0}
+{"Time":"2026-10-21T05:27:50.203014206Z","Action":"output","Package":"beamo-wipe/desktop","Output":"FAIL\n"}
+{"Time":"2026-10-21T05:27:50.203249559Z","Action":"output","Package":"beamo-wipe/desktop","Output":"FAIL\tbeamo-wipe/desktop\t0.018s\n"}
+{"Time":"2026-10-21T05:27:50.20328495Z","Action":"fail","Package":"beamo-wipe/desktop","Elapsed":0.019}

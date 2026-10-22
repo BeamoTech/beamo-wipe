@@ -1,0 +1,20 @@
+{
+  "contexts": 24,
+  "positive_bundles": 24,
+  "content_manifest_checks": 24,
+  "duplicate_session_refusals": 24,
+  "tamper_refusals": 1680,
+  "restored_positive_rechecks": 1680,
+  "extra_file_refusals": 24,
+  "native_callbacks": 0,
+  "mismatches": [],
+  "source_sha256": {
+    "src/beamo_wipe/support_export.py": "f1cdd6c5c21caeb237d4c2c3837d14abd99a4c254d3fcf02ad0edbb6285ba0f1",
+    "src/beamo_wipe/diagnostic_report.py": "fc01e84c6f917d679ea743bc104c5c5d6031de34bd9d68b6f6ee43f63986a1dd",
+    "src/beamo_wipe/evidence.py": "512c9b024b3231bf2625b6c802a8dc2282c275153b62e2995d4d01ba9466b5c5",
+    "src/beamo_wipe/result_summary.py": "b059c558e913348887a24b2ade36b8e34bfa01aa7acb1e64ee8a47e996cdb430",
+    "src/beamo_wipe/privacy.py": "bcb9c6ce4764a7e6df54b970aede4003c3f90357535fc42530b831eeef0face2",
+    "src/beamo_wipe/lang.py": "490786bbd8971678d82969b2180ecb5aa94f86785b52323f1dddbec1353878ba",
+    "tests/test_result_presentations.py": "1b57533a72672408ee5630736c3693ccf894456d822e7ae6d04843550a8693d0"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "command": [
+    "/workspace/beamo-wipe/.venv-linux/bin/python3",
+    "/workspace/beamo-tools/audit-pass9-20261021/recovery/persistence_fault_matrix.py"
+  ],
+  "started_utc": "2026-10-21T04:47:51.993288+00:00",
+  "elapsed_seconds": 0.29,
+  "exit_code": 0
+}

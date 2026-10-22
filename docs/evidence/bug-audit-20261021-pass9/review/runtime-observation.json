@@ -1,0 +1,24 @@
+{
+  "observations_current": true,
+  "desired_phase": "running",
+  "observed_phase": "running",
+  "connectivity": "connected",
+  "network": {
+    "mode": "restricted",
+    "state": "enforced"
+  },
+  "bindings": {
+    "secrets": 0,
+    "runtime_variables": 0,
+    "outbound_identities": 0
+  },
+  "docker": {
+    "server": "28.4.0",
+    "driver": "vfs",
+    "healthy": true
+  },
+  "startup": {
+    "version": 1,
+    "vpn_configured": false
+  }
+}

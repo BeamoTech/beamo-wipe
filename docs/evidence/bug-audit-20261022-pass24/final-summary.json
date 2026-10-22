@@ -1,0 +1,39 @@
+{
+  "audit": "BW-BUG-AUDIT-PASS24-20261022",
+  "baseline_commit": "3dfd1c9fc344595d3a6007eb1772abe6a44ca966",
+  "branch": "fix/safety-audit-20261019",
+  "completed_utc": "2026-10-22",
+  "final_python": {
+    "deselected_generated_live_config": 2,
+    "deselected_host_gtk_layout": 1,
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "04bb136b9fb1a50057085f51da2da771254ff106121b6563290d353f76206305",
+    "passed": 12141,
+    "selected": 12228,
+    "skipped": 87
+  },
+  "focused_release": {
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "516a12fc31f58c51c1ad30601af9f05064de225cc237618063527a78ad96e86e",
+    "passed": 317,
+    "selected": 330,
+    "skipped": 13
+  },
+  "regressions": {
+    "baseline_failed": 11,
+    "baseline_passed_controls": 1,
+    "baseline_transcript_sha256": "ca13cc147bb0564b080dfe105e998121878da0a79e296b4fbd0eca7fe3609746",
+    "fixed_passed": 12,
+    "fixed_transcript_sha256": "3d3377f640e1b82956f0ce086adb49ad9bfcd816c36e31b275158e850c8683bc"
+  },
+  "source_freeze_sha256": "3e0393b3033dbbeb9156fd5f87bd534352827191a337a025bb90ee6cca37d9be",
+  "source_sha256": {
+    "scripts/publish-release-blacksmith.sh": "679c5110b0d826e7df2789642b320455c4a2155b09e31ce102d6735fa15c225b",
+    "scripts/verify_github_release_assets.py": "373321e725b387b9074392e219422a28160a97b7d7e9c88142dcd3c1c8de86ad",
+    "tests/test_github_release_promotion_pass23_20261022.py": "ff2b03e1cd32fdeec19ecdd05fd55232c7fdf9892856487164f46fd02bd4678f",
+    "tests/test_github_release_publication_pass24_20261022.py": "382aa47208d1d6b5a075ea0062d72bf3765d056d4a073a2beb6880f1413008cc"
+  },
+  "static_transcript_sha256": "a6a35bee6416c16ea8e63a42174d34b4a68902e30217d6a04b94a6c43a6ddda4"
+}

@@ -1,0 +1,3 @@
+'Nwipe was aborted by the user' model_bytes= 31 forged= (False, 'nwipe was aborted', 'interrupted') authentic= (False, 'nwipe was aborted', 'interrupted') clean= (True, 'finished', 'completed')
+'/dev/sda: >>> FAILURE! <<<' model_bytes= 28 forged= (False, 'nwipe reported a failure', 'engine_failed') authentic= (False, 'nwipe reported a failure', 'engine_failed') clean= (True, 'finished', 'completed')
+"Verification mismatch on '/dev/sda'" model_bytes= 37 forged= (False, 'nwipe read-back verification failed', 'verification_failed') authentic= (False, 'nwipe read-back verification failed', 'verification_failed') clean= (True, 'finished', 'completed')

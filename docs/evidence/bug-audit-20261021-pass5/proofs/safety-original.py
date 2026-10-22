@@ -1,0 +1,1143 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""Fail-closed rules. If we cannot prove a wipe is safe, we do not start it."""
+
+from __future__ import annotations
+
+import os
+import re
+import shutil
+import stat
+import sys
+import time
+from pathlib import Path
+from typing import Iterable, Optional, Sequence, Tuple, Mapping
+
+from beamo_wipe import copy as _copy
+from beamo_wipe.copy import (
+    confirm_type_chars,
+    confirm_type_four,
+    confirm_type_size,
+)
+from beamo_wipe.models import ConfirmSpec, Disk, DiscoveryResult, WipeRequest
+
+# Whole-disk nodes only. Partitions (sda1, nvme0n1p1) are never wipe targets.
+# nbd is excluded: a network block device can point at remote storage.
+WHOLE_DISK_RE = re.compile(
+    r"^/dev/(?:"
+    r"sd[a-z]+|hd[a-z]+|vd[a-z]+|xvd[a-z]+|dasd[a-z]+|"
+    r"nvme\d+n\d+|mmcblk\d+|sr\d+"
+    r")$"
+)
+OPTICAL_RE = re.compile(r"^/dev/sr\d+$")
+# Confirm tokens are typed by a person. Reject path elements and control chars
+# so a garbage serial cannot become `../sda` or a homoglyph of another disk.
+SAFE_TOKEN_RE = re.compile(r"^[A-Za-z0-9._:-]+$")
+
+# boot=live / boot=casper as a kernel cmdline *token*, not a substring.
+LIVE_BOOT_RE = re.compile(r"(?:^|\s)boot=(?:live|casper)(?:\s|,|$)")
+
+# Mountpoints that mean "this is the running system / live medium". A disk
+# mounted here is never a wipe target, even if boot identification glitched.
+PROTECTED_MOUNT_PREFIXES = (
+    "/run/live",
+    "/lib/live",
+    "/run/initramfs",
+    "/cdrom",
+    "/mnt/live",
+    "/usr",
+    "/boot",
+    "/lib",
+    "/bin",
+    "/sbin",
+    "/etc",
+    "/var",
+    "/opt",
+    "/home",
+    "/root",
+    "/snap",
+    "/sys",
+    "/proc",
+    "/dev",
+)
+
+FORBIDDEN_LOG_ROOTS = (
+    "/mnt/target",
+    "/target",
+    "/media/target",
+)
+
+DEFAULT_LOG_DIR = Path("/tmp/beamo-wipe")
+
+# Inherited env is never passed to lsblk/findmnt/nwipe. LD_PRELOAD in the
+# kiosk profile is unset; this is the second line if that ever regresses.
+CLEAN_SUBPROCESS_ENV = {
+    "PATH": "/usr/sbin:/usr/bin:/sbin:/bin",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "HOME": "/root",
+    "TERM": "linux",
+}
+# Display/audio sockets the kiosk actually needs. Never PATH, LD_*, or PYTHON*.
+SESSION_ENV_ALLOWLIST = (
+    "DISPLAY",
+    "WAYLAND_DISPLAY",
+    "XAUTHORITY",
+    "DBUS_SESSION_BUS_ADDRESS",
+    "XDG_RUNTIME_DIR",
+    "PULSE_RUNTIME_PATH",
+    "PULSE_SERVER",
+)
+SYSTEM_BIN_PREFIXES = ("/usr/bin/", "/bin/", "/usr/sbin/", "/sbin/")
+
+
+def session_exec_env() -> dict[str, str]:
+    """Clean subprocess env plus the current graphical/audio session sockets."""
+    env = dict(CLEAN_SUBPROCESS_ENV)
+    home = os.environ.get("HOME")
+    if home and "\x00" not in home and os.path.isabs(home) and home not in {"/", "/tmp"}:
+        env["HOME"] = home
+    for key in SESSION_ENV_ALLOWLIST:
+        value = os.environ.get(key)
+        if value and "\x00" not in value:
+            env[key] = value
+    return env
+
+
+def resolve_system_binary(name: str) -> Optional[str]:
+    """Resolve an allowlisted tool on the clean PATH. Relative names only."""
+    base = os.path.basename(name or "")
+    if not base or base != name or base in {".", ".."} or "/" in name:
+        return None
+    found = shutil.which(base, path=CLEAN_SUBPROCESS_ENV["PATH"])
+    if not found or not os.path.isabs(found):
+        return None
+    real = os.path.realpath(found)
+    if not real.startswith(SYSTEM_BIN_PREFIXES):
+        return None
+    return real
+
+
+# lsblk TRAN / Disk.bus tokens for storage that is not a local disk.
+# nbd is also excluded by WHOLE_DISK_RE; iscsi/fc still appear as /dev/sdX.
+REMOTE_BUS_TOKENS = frozenset(
+    {
+        "iscsi",
+        "fc",
+        "fcoe",
+        "nbd",
+        "nvmeof",
+        "nvme-of",
+        "nvmf",
+        "tcp",
+        "rdma",
+    }
+)
+# lsblk TRAN tokens that prove a local (or VM) bus. Empty/"other" on
+# SCSI names is not proof: iSCSI often still appears as /dev/sdX.
+PROVEN_LOCAL_BUS_TOKENS = frozenset({"sata", "nvme", "usb", "sas", "virtio"})
+SCSI_DISK_NAME_RE = re.compile(r"^(?:sd|hd|dasd)[a-z]+$")
+REMOTE_SYSFS_TOKENS = (
+    "iscsi", "rport-", "nvme-fabrics", "/fc/", "/vhci_hcd",
+    # A virtual SCSI host gives no evidence that its backing store is local.
+    "/sys/devices/virtual/",
+)
+# open-iscsi names its session device sessionN. The block device path is
+# .../hostN/sessionN/targetN:... and does not contain the word "iscsi".
+REMOTE_SYSFS_SESSION_RE = re.compile(r"/session\d+(?:/|$)")
+
+
+class SafetyError(Exception):
+    """Abort. Do not wipe."""
+
+
+def is_preview_env(env: Optional[Mapping[str, str]] = None) -> bool:
+    if env is None:
+        env = os.environ
+    return env.get("BEAMO_WIPE_DRY_RUN") == "1" or env.get("BEAMO_WIPE_DEMO") == "1"
+
+
+def is_protected_mountpoint(mountpoint: str) -> bool:
+    """True if this mount is the running OS or the live medium."""
+    mp = (mountpoint or "").strip()
+    if not mp:
+        return False
+    if mp == "/":
+        return True
+    for prefix in PROTECTED_MOUNT_PREFIXES:
+        if mp == prefix or mp.startswith(prefix + "/"):
+            return True
+    return False
+
+
+def has_protected_mount(disk: Disk) -> bool:
+    return any(is_protected_mountpoint(mp) for mp in disk.mountpoints)
+
+
+def has_any_mount(disk: Disk) -> bool:
+    """True if any filesystem is mounted from this disk (or a partition)."""
+    return any((mp or "").strip() for mp in disk.mountpoints)
+
+
+def is_remote_disk(disk: Disk) -> bool:
+    """True for iSCSI / FC / NBD (and similar) that can point at remote storage."""
+    bus = (disk.bus or "").casefold()
+    if bus in REMOTE_BUS_TOKENS:
+        return True
+    name = (disk.name or "").casefold()
+    if name.startswith("nbd"):
+        return True
+    path = (disk.path or "").casefold()
+    return "/nbd" in path
+
+
+def is_unproven_scsi_transport(disk: Disk) -> bool:
+    """True when a SCSI-like node has no proven local or remote bus.
+
+    lsblk TRAN is untrusted padding-wise and may be empty. virtio is a
+    real local (VM) bus and is not "other". Empty/"other" on sd/hd/dasd
+    must not become a wipe target.
+    """
+    # NAME is metadata from lsblk and may be empty even when PATH names an
+    # sd/hd/dasd node. Check both so missing NAME cannot waive this gate.
+    names = {
+        (disk.name or "").casefold(),
+        os.path.basename(os.path.realpath(disk.path or "")).casefold(),
+    }
+    if not any(SCSI_DISK_NAME_RE.fullmatch(name) for name in names):
+        return False
+    bus = (disk.bus or "").casefold()
+    if bus in REMOTE_BUS_TOKENS or bus in PROVEN_LOCAL_BUS_TOKENS:
+        return False
+    return True
+
+
+def is_live_environment(
+    *,
+    env: Optional[Mapping[str, str]] = None,
+    cmdline: str = "",
+    paths_exist: Optional[Sequence[str]] = None,
+    live_medium_mounted: Optional[bool] = None,
+    mountinfo_text: Optional[str] = None,
+) -> bool:
+    """True only on a real live session: cmdline token AND a live-medium mount.
+
+    Preview flags, BEAMO_WIPE_LIVE=1, and a directory like /run/live are not
+    enough. `mkdir /run/live` on a running desktop must never enable wipes.
+    Adding `boot=live` to a desktop GRUB line is also not enough — the live
+    medium must actually be mounted (mountinfo, not a mkdir'd folder).
+    """
+    del env
+    if not LIVE_BOOT_RE.search(cmdline or ""):
+        return False
+    if live_medium_mounted is not None:
+        return live_medium_mounted is True
+    # Explicit paths_exist is the old "directory present" hook. Directories
+    # are not mounts; treating them as live would re-open the mkdir bypass.
+    if paths_exist is not None:
+        return False
+    from beamo_wipe.discover import live_medium_is_mounted
+
+    return live_medium_is_mounted(text=mountinfo_text)
+
+
+def running_on_live_usb(env: Optional[Mapping[str, str]] = None) -> bool:
+    """True on the real live USB even if a preview env var was injected.
+
+    A fake Finished screen on the kiosk is a safety bug: operators will
+    unplug a disk that was never erased. Live-medium detection wins.
+    """
+    if sys.platform != "linux":
+        return False
+    if env is None:
+        env = os.environ
+    from beamo_wipe.discover import read_cmdline
+
+    return is_live_environment(env=env, cmdline=read_cmdline())
+
+
+def require_live_or_dry_run(
+    env: Optional[Mapping[str, str]] = None,
+    cmdline: Optional[str] = None,
+    live_medium_mounted: Optional[bool] = None,
+) -> None:
+    if env is None:
+        env = os.environ
+    if is_preview_env(env):
+        return
+    if cmdline is None:
+        from beamo_wipe.discover import read_cmdline
+
+        cmdline = read_cmdline()
+    if is_live_environment(
+        env=env, cmdline=cmdline, live_medium_mounted=live_medium_mounted
+    ):
+        return
+    raise SafetyError(_copy.NOT_LIVE_ERROR)
+
+
+def require_real_live_for_nwipe(env: Optional[Mapping[str, str]] = None) -> None:
+    """nwipe may run only on the live USB, never in preview/dry-run."""
+    if env is None:
+        env = os.environ
+    if is_preview_env(env):
+        raise SafetyError("Refusing to exec nwipe in preview or dry-run.")
+    require_live_or_dry_run(env=env)
+
+
+def is_wipeable_disk(disk: Disk) -> bool:
+    """True if this node is a whole-disk wipe target (same gate as nwipe argv)."""
+    if disk.is_boot or disk.size_bytes <= 0:
+        return False
+    if disk.read_only:
+        return False
+    if has_any_mount(disk) or is_remote_disk(disk) or is_unproven_scsi_transport(disk):
+        return False
+    try:
+        normalize_whole_disk(disk.path)
+    except SafetyError:
+        return False
+    if not is_preview_env():
+        # lsblk TRAN can say "nvme" for an NVMe-over-Fabrics namespace. Do
+        # not offer it to the owner only to refuse it at the final exec gate.
+        try:
+            assert_local_device_transport(disk.path)
+        except SafetyError:
+            return False
+    return True
+
+
+def selectable_disks(discovery: DiscoveryResult) -> Tuple[Disk, ...]:
+    if discovery.boot_identified is not True or discovery.error or discovery.boot is None:
+        return tuple()
+    return tuple(d for d in discovery.selectable if is_wipeable_disk(d))
+
+
+def listed_disks(discovery: DiscoveryResult) -> Tuple[Disk, ...]:
+    """Selectable targets plus every disk marked boot. Same set the pick list shows."""
+    seen = set()
+    out = []
+    for disk in selectable_disks(discovery):
+        key = os.path.realpath(disk.path)
+        if key not in seen:
+            seen.add(key)
+            out.append(disk)
+    for disk in discovery.disks:
+        if not disk.is_boot:
+            continue
+        key = os.path.realpath(disk.path)
+        if key not in seen:
+            seen.add(key)
+            out.append(disk)
+    return tuple(out)
+
+
+def boot_device_in_selectable(discovery: DiscoveryResult) -> bool:
+    boot = discovery.boot
+    if boot is None:
+        return False
+    boot_real = os.path.realpath(boot.path)
+    return any(
+        os.path.realpath(d.path) == boot_real and not d.is_boot
+        for d in discovery.selectable
+    )
+
+
+def confirm_spec(disk: Disk, selectable: Sequence[Disk]) -> ConfirmSpec:
+    """
+    Default token is the size label (e.g. 256).
+    If two listed disks share that size, use last 4 of serial when that
+    suffix is unique in the same-size set, else the full serial if unique,
+    else a unique hardware ID. Kernel device names are never tokens.
+    """
+    from beamo_wipe.identity import AMBIGUOUS_IDENTITY
+
+    want = os.path.realpath(disk.path)
+    peers = [item for item in selectable if os.path.realpath(item.path) != want]
+    peers.append(disk)
+    same = [item for item in peers if item.size_gb_label == disk.size_gb_label]
+    banned = _cross_disk_tokens(disk, peers)
+    # A serial can itself be "sda" (or another kernel name). Never ask the
+    # owner to type a device name, including our own or a different-size disk.
+    for item in peers:
+        for raw in (item.name, os.path.basename(os.path.realpath(item.path))):
+            name_token = _safe_token(raw or "")
+            if name_token:
+                banned.add(name_token.casefold())
+    if len(same) == 1:
+        token = _safe_token((disk.size_gb_label or "").strip())
+        if token and token.casefold() not in banned:
+            return ConfirmSpec(token=token, prompt=confirm_type_size(token))
+    spec = _stable_same_size_token(disk, same, banned=banned)
+    if spec is None:
+        raise SafetyError(AMBIGUOUS_IDENTITY)
+    return spec
+
+
+def _cross_disk_tokens(disk: Disk, peers: Sequence[Disk]) -> set[str]:
+    """Size labels and serial/WWN values another listed disk can show.
+
+    A confirmation token has to name one disk. The 1 TB size ``1000`` must
+    not also be the last four characters of a different disk's serial.
+    """
+    banned: set[str] = set()
+    want = os.path.realpath(disk.path)
+    for other in peers:
+        if os.path.realpath(other.path) == want:
+            continue
+        size = _safe_token((other.size_gb_label or "").strip())
+        if size:
+            banned.add(size.casefold())
+        for raw in (meaningful_serial(other.serial), meaningful_wwn(other.wwn)):
+            value = (raw or "").strip()
+            token = _safe_token(value)
+            if token:
+                banned.add(token.casefold())
+            if len(value) >= 4:
+                suffix = _safe_token(value[-4:])
+                if suffix:
+                    banned.add(suffix.casefold())
+    return banned
+
+
+def _stable_same_size_token(
+    disk: Disk, same: Sequence[Disk], *, banned: Optional[set[str]] = None
+) -> Optional[ConfirmSpec]:
+    peer_names = _peer_name_tokens(disk, same)
+    want = os.path.realpath(disk.path)
+    # A peer may confirm by serial or WWN. Suffixes must avoid both its full
+    # values and suffixes; full values must avoid its full values. This lets
+    # a short full ID remain usable while forcing its peer to use a longer ID.
+    peer_full = set(peer_names)
+    peer_suffixes = set()
+    if banned:
+        peer_full |= banned
+        peer_suffixes |= banned
+    for other in same:
+        if os.path.realpath(other.path) == want:
+            continue
+        for value in (meaningful_serial(other.serial), meaningful_wwn(other.wwn)):
+            value = (value or "").strip()
+            peer_full.add(_safe_token(value).casefold())
+            if len(value) >= 4:
+                peer_suffixes.add(_safe_token(value[-4:]).casefold())
+    for field in ("serial", "wwn"):
+        value = (
+            meaningful_wwn(disk.wwn)
+            if field == "wwn"
+            else meaningful_serial(disk.serial)
+        )
+        candidates = []
+        if len(value) >= 4:
+            candidates.append((_safe_token(value[-4:]), confirm_type_four, peer_full | peer_suffixes))
+        candidates.append((_safe_token(value), confirm_type_chars, peer_full))
+        for token, prompt, conflicts in candidates:
+            if token and token.casefold() not in conflicts:
+                return ConfirmSpec(token=token, prompt=prompt(token), identity_field=field)
+    return None
+
+
+def _peer_name_tokens(disk: Disk, same: Sequence[Disk]) -> set[str]:
+    """Kernel names of the other same-size disks. A serial must not reuse one."""
+    names = set()
+    want = os.path.realpath(disk.path)
+    for other in same:
+        if os.path.realpath(other.path) == want:
+            continue
+        token = _safe_token((other.name or "").strip()) or _safe_token(
+            os.path.basename(other.path or "")
+        )
+        if token:
+            names.add(token.casefold())
+    return names
+
+
+def _safe_token(text: str) -> str:
+    got = (text or "").strip()
+    if not got or got in {".", ".."}:
+        return ""
+    if not SAFE_TOKEN_RE.fullmatch(got):
+        return ""
+    return got
+
+
+def token_matches(typed: str, spec: ConfirmSpec) -> bool:
+    got = (typed or "").strip()
+    want = (spec.token or "").strip()
+    if not got or not want:
+        return False
+    return got.casefold() == want.casefold()
+
+
+BOOT_APPEARED_SELECTABLE = "Boot USB appeared as a selectable disk. Refusing to continue."
+BOOT_APPEARED_ALIAS = "Boot USB appeared through another device path. Refusing to continue."
+TOKEN_MISMATCH = "Confirm token does not match."  # noqa: S105 — UI message, not a secret
+
+
+def meaningful_wwn(value: str) -> str:
+    """Normalize a LUN identifier, ignoring all-zero device padding."""
+    text = (value or "").strip().casefold()
+    body = text[2:] if text.startswith("0x") else text
+    if _missing_hardware_identifier(body):
+        return ""
+    return text
+
+
+def canonical_wwn(value: str) -> str:
+    """WWN comparison key; lsblk may include or omit its ``0x`` prefix."""
+    text = meaningful_wwn(value)
+    return text[2:] if text.startswith("0x") else text
+
+
+def _missing_hardware_identifier(body: str) -> bool:
+    compact = "".join(char.casefold() for char in body if char.isalnum())
+    return (
+        not compact
+        or set(compact) <= {"0"}
+        or compact in {
+            "unknown", "none", "na", "null", "notavailable", "notapplicable",
+            "noserial", "unspecified", "notspecified",
+        }
+    )
+
+
+def meaningful_serial(value: str) -> str:
+    """Return a reported serial, ignoring all-zero device padding."""
+    text = (value or "").strip()
+    body = text[2:] if text.casefold().startswith("0x") else text
+    if _missing_hardware_identifier(body):
+        return ""
+    return text
+
+
+def possible_hardware_alias(left: Disk, right: Disk) -> bool:
+    """True when two disk paths share an ID without stronger contrary evidence.
+
+    Some devices reuse serials. Distinct reported WWNs disambiguate them;
+    when either WWN is missing, a shared serial remains an ambiguous alias.
+    """
+    left_wwn, right_wwn = canonical_wwn(left.wwn), canonical_wwn(right.wwn)
+    if left_wwn and right_wwn:
+        return left_wwn == right_wwn
+    left_serial = meaningful_serial(left.serial).casefold()
+    right_serial = meaningful_serial(right.serial).casefold()
+    return bool(left_serial and left_serial == right_serial)
+
+
+def protected_hardware_aliases(anchor: Disk, observations: Sequence[Disk]) -> Tuple[Disk, ...]:
+    """Follow ambiguous identifiers without overriding the anchor's known WWN.
+
+    A serial-only path can lead to a WWN alias with a different serial.
+    Checking only pairs against the protected path misses that later alias.
+    Distinct known WWNs still disambiguate a reused serial, including when a
+    missing-WWN observation sits between them.
+    """
+    anchor_wwn = canonical_wwn(anchor.wwn)
+    reached: set[int] = set()
+    pending = [anchor]
+    while pending:
+        current = pending.pop()
+        for index, candidate in enumerate(observations):
+            if index in reached:
+                continue
+            candidate_wwn = canonical_wwn(candidate.wwn)
+            if anchor_wwn and candidate_wwn and anchor_wwn != candidate_wwn:
+                continue
+            if possible_hardware_alias(current, candidate):
+                reached.add(index)
+                pending.append(candidate)
+    return tuple(candidate for index, candidate in enumerate(observations) if index in reached)
+
+
+def assert_boot_excluded(discovery: DiscoveryResult) -> None:
+    if discovery.boot_identified is not True or discovery.boot is None:
+        raise SafetyError(_copy.IDENTIFY_ERROR)
+    if boot_device_in_selectable(discovery):
+        raise SafetyError(BOOT_APPEARED_SELECTABLE)
+    selectable_paths = {os.path.realpath(s.path) for s in discovery.selectable}
+    if any(d.is_boot and os.path.realpath(d.path) in selectable_paths for d in discovery.disks):
+        raise SafetyError(BOOT_APPEARED_SELECTABLE)
+    aliases = protected_hardware_aliases(
+        discovery.boot,
+        (*discovery.disks, *discovery.selectable, *discovery.physical_observations),
+    )
+    alias_paths = {os.path.realpath(disk.path) for disk in aliases}
+    if selectable_paths & alias_paths:
+        raise SafetyError(BOOT_APPEARED_ALIAS)
+
+
+def assert_not_boot(device: str, boot_path: str, *, required: bool = False) -> None:
+    if not device or not boot_path:
+        raise SafetyError("Missing device or boot path.")
+    if os.path.realpath(device) == os.path.realpath(boot_path):
+        raise SafetyError("Refusing to erase the Beamo boot device.")
+    dev = os.path.realpath(device)
+    boot = os.path.realpath(boot_path)
+    if _is_partition_of(dev, boot) or _is_partition_of(boot, dev):
+        raise SafetyError("Refusing to erase the Beamo boot device.")
+    # Same underlying block device under two names (by-id vs sdX, etc.).
+    # Informational rdev check: if lstat fails we cannot prove alias, but the
+    # realpath+partition checks above already passed. Log and return visible
+    # diagnostic instead of silently skipping.
+    try:
+        dst = os.lstat(dev)
+        bst = os.lstat(boot)
+    except OSError as exc:
+        if required:
+            raise SafetyError("Cannot prove target and boot device are distinct.") from exc
+        try:
+            from beamo_wipe.diagnostics import log_diag
+
+            log_diag("safety", "rdev_check_skipped", type(exc).__name__)
+        except Exception:
+            pass
+        try:
+            import sys
+
+            print(f"beamo-wipe [safety] rdev_check_skipped: {type(exc).__name__}", file=sys.stderr)
+        except Exception:
+            pass
+        return
+    if (
+        stat.S_ISBLK(dst.st_mode)
+        and stat.S_ISBLK(bst.st_mode)
+        and dst.st_rdev == bst.st_rdev
+    ):
+        raise SafetyError("Refusing to erase the Beamo boot device.")
+
+
+def _is_partition_of(device: str, parent: str) -> bool:
+    """True if `device` is a partition of `parent` (sda1 of sda, nvme0n1p1 of nvme0n1).
+
+    Sibling NVMe namespaces (nvme0n1 vs nvme0n11) are not partitions.
+    """
+    if not device.startswith(parent) or len(device) <= len(parent):
+        return False
+    rest = device[len(parent) :]
+    parent_name = os.path.basename(parent)
+    if parent_name.startswith("nvme") or parent_name.startswith("mmcblk"):
+        return len(rest) > 1 and rest[0] in "pP" and rest[1:].isdigit()
+    return rest.isdigit()
+
+
+def normalize_whole_disk(path: str, *, allow_optical: bool = False) -> str:
+    """Return a canonical whole-disk /dev path, or raise.
+
+    Optical nodes (`/dev/srN`) may be the live ISO (boot/exclude) but are
+    never a wipe target.
+    """
+    if not path or not path.startswith("/dev/"):
+        raise SafetyError("Target must be a /dev/ path.")
+    if any(ch in path for ch in " \t\n\r\0,;"):
+        raise SafetyError("Device path contains whitespace or delimiter.")
+    if ".." in path.split("/"):
+        raise SafetyError("Device path must not contain '..'.")
+    real = os.path.realpath(path)
+    if not real.startswith("/dev/"):
+        raise SafetyError("Device path must resolve under /dev.")
+    if not WHOLE_DISK_RE.fullmatch(real):
+        raise SafetyError("Device path is not a whole-disk /dev node.")
+    if OPTICAL_RE.fullmatch(real) and not allow_optical:
+        raise SafetyError("Refusing to erase an optical drive.")
+    return real
+
+
+def disk_identity(disk: Disk) -> Tuple[str, str, int, str, str, str, str, str, str, str]:
+    # Discovery keeps MODEL separate from its label/"Unknown model" fallback.
+    # Legacy callers without raw metadata still identify by their model field.
+    model = disk.model if disk.raw_model is None else disk.raw_model
+    return (
+        os.path.realpath(disk.path),
+        (disk.serial or "").strip(),
+        disk.size_bytes,
+        (disk.model or "").strip(),
+        (disk.wwn or "").strip(),
+        (disk.vendor or "").strip(),
+        (disk.bus or "").strip(),
+        disk.kind.value if hasattr(disk.kind, "value") else str(disk.kind),
+        (disk.layout_id or "").strip(),
+        (model or "").strip(),
+    )
+
+
+def assert_rediscovered_identity(request: WipeRequest, discovery: DiscoveryResult) -> None:
+    """The disk at this path must still be the one the owner confirmed.
+
+    /dev/sdX keeps the same device number when a different disk takes the
+    name. Size and rdev do not catch that. The rescan has to.
+    """
+    confirmed = tuple(request.device_identity or ())
+    if not confirmed:
+        raise SafetyError("Disk identity changed. Refusing to erase.")
+    boot = discovery.boot
+    boot_confirmed = tuple(request.boot_identity or ())
+    if (
+        discovery.boot_identified is not True
+        or discovery.error
+        or boot is None
+        or os.path.realpath(boot.path) != os.path.realpath(request.boot_device)
+        or not boot_confirmed
+        or disk_identity(boot) != boot_confirmed
+    ):
+        raise SafetyError("Boot device identity changed. Refusing to erase.")
+    matches = [
+        disk
+        for disk in selectable_disks(discovery)
+        if os.path.realpath(disk.path) == os.path.realpath(request.device)
+    ]
+    if len(matches) != 1 or disk_identity(matches[0]) != confirmed:
+        raise SafetyError("Disk identity changed. Refusing to erase.")
+    inventory_confirmed = tuple(request.inventory_identity or ())
+    if inventory_confirmed and inventory_confirmed != tuple(
+        sorted(disk_identity(item) for item in listed_disks(discovery))
+    ):
+        raise SafetyError("Disk inventory changed. Refusing to erase.")
+
+
+def assert_disk_identity(disk: Disk, discovery: DiscoveryResult) -> None:
+    """Selected disk must still be the same device (path + serial + size + model)."""
+    want = os.path.realpath(disk.path)
+    listed = [
+        d
+        for d in selectable_disks(discovery)
+        if os.path.realpath(d.path) == want
+    ]
+    if len(listed) != 1:
+        raise SafetyError("Selected disk is not in the safe list.")
+    fresh = listed[0]
+    if not is_wipeable_disk(fresh):
+        raise SafetyError("Selected disk is not in the safe list.")
+    if disk_identity(fresh) != disk_identity(disk):
+        raise SafetyError("Disk identity changed. Refusing to erase.")
+
+
+def assert_not_system_mounted(disk: Disk) -> None:
+    if has_protected_mount(disk):
+        raise SafetyError(
+            "Refusing to erase a disk that is mounted as the live system."
+        )
+    if has_any_mount(disk):
+        raise SafetyError("Refusing to erase a mounted disk.")
+
+
+def assert_existing_is_block_device(path: str, *, required: bool = False) -> None:
+    """If the path exists, it must be a block device. Missing paths are for tests.
+
+    Production nwipe exec requires the node to exist (`required=True`) so a
+    path cannot be created as a different device between confirm and exec.
+    """
+    try:
+        st = os.lstat(path)
+    except FileNotFoundError as exc:
+        if required:
+            raise SafetyError("Target device is missing.") from exc
+        return
+    except OSError as exc:
+        raise SafetyError("Cannot stat target device.") from exc
+    if stat.S_ISLNK(st.st_mode):
+        raise SafetyError("Target device path is a symlink.")
+    if not stat.S_ISBLK(st.st_mode):
+        raise SafetyError("Target is not a block device.")
+
+
+def block_rdev(path: str) -> Optional[int]:
+    """st_rdev of a whole-disk block node, or None if it cannot be proven."""
+    try:
+        st = os.lstat(path)
+    except OSError:
+        return None
+    if stat.S_ISLNK(st.st_mode) or not stat.S_ISBLK(st.st_mode):
+        return None
+    return int(st.st_rdev)
+
+
+def block_size_bytes(path: str) -> Optional[int]:
+    """Kernel size for `path` via sysfs, or None when sysfs is absent (tests)."""
+    name = os.path.basename(os.path.realpath(path))
+    if not name or name in {".", ".."}:
+        return None
+    sysfs = f"/sys/block/{name}/size"
+    try:
+        with open(sysfs, encoding="ascii") as fh:
+            sectors = int(fh.read().strip(), 10)
+    except (OSError, ValueError):
+        return None
+    if sectors <= 0:
+        return None
+    return sectors * 512
+
+
+def assert_size_unchanged(path: str, expected_bytes: int) -> None:
+    """Refuse if sysfs size disagrees with the size we showed the owner."""
+    if expected_bytes <= 0:
+        raise SafetyError("Refusing to erase a zero-size disk.")
+    # Preview / --lsblk-json / --dry-run use fake lsblk JSON with real-looking
+    # /dev names. Host sysfs for that name is a different disk (or absent).
+    # Comparing them is a false "size changed" and blocks a fake erase.
+    if is_preview_env():
+        return
+    sysfs = block_size_bytes(path)
+    if sysfs is None:
+        raise SafetyError("Cannot read disk size.")
+    if sysfs != expected_bytes:
+        raise SafetyError("Disk size changed. Refusing to erase.")
+
+
+def assert_local_device_transport(path: str) -> None:
+    """Refuse NVMe-over-Fabrics and remote SCSI at the kernel-backed boundary."""
+    if is_preview_env():
+        return
+    try:
+        name = os.path.basename(os.path.realpath(path))
+    except OSError as exc:
+        raise SafetyError("Cannot prove the disk is locally attached.") from exc
+    if not name or name in {".", ".."}:
+        raise SafetyError("Cannot prove the disk is locally attached.")
+    match = re.fullmatch(r"(nvme\d+)n\d+", name)
+    if match:
+        transport_path = Path("/sys/class/nvme") / match.group(1) / "transport"
+        try:
+            transport = transport_path.read_text(encoding="ascii").strip().casefold()
+        except OSError as exc:
+            raise SafetyError("Cannot prove NVMe is locally attached.") from exc
+        if transport != "pcie":
+            raise SafetyError("Refusing a remote or unknown NVMe transport.")
+        return
+    if not SCSI_DISK_NAME_RE.fullmatch(name):
+        return
+    device = Path("/sys/block") / name / "device"
+    try:
+        resolved = os.path.realpath(str(device))
+    except OSError as exc:
+        raise SafetyError("Cannot prove the disk is locally attached.") from exc
+    # A dangling link can resolve to a plausible old PCI path. Its target
+    # can also disappear after realpath() but before this check. Both leave
+    # the local bus unproven, even when `resolved` looks like a PCI path.
+    try:
+        device_present = device.exists()
+    except OSError as exc:
+        raise SafetyError("Cannot prove the disk is locally attached.") from exc
+    if not device_present:
+        raise SafetyError("Cannot prove the disk is locally attached.")
+    lowered = resolved.casefold()
+    if any(token in lowered for token in REMOTE_SYSFS_TOKENS) or REMOTE_SYSFS_SESSION_RE.search(
+        lowered
+    ):
+        raise SafetyError("Refusing a remote or unknown SCSI transport.")
+    # SRP disks can sit below a physical PCI InfiniBand adapter, so their
+    # resolved block-device path need not contain a remote-transport token.
+    # The SCSI host's local_ib_device attribute identifies an SRP initiator.
+    for host in re.findall(r"(?:^|/)(host\d+)(?:/|$)", lowered):
+        try:
+            is_srp = (Path("/sys/class/scsi_host") / host / "local_ib_device").exists()
+        except OSError as exc:
+            raise SafetyError("Cannot prove the disk is locally attached.") from exc
+        if is_srp:
+            raise SafetyError("Refusing a remote or unknown SCSI transport.")
+
+
+def _is_under(path: Path, root: Path) -> bool:
+    try:
+        path.resolve().relative_to(root.resolve())
+        return True
+    except (ValueError, OSError):
+        return False
+
+
+def assert_log_not_on_target(
+    log_path: str, target: str, *, log_dir: Optional[Path] = None
+) -> None:
+    if not log_path:
+        raise SafetyError("Log path is missing.")
+    root_dir = log_dir if log_dir is not None else default_log_dir()
+    raw = Path(log_path).expanduser()
+    if raw.name in {".", "..", ""} or "/" in raw.name:
+        raise SafetyError("Invalid log file name.")
+    parent = raw.parent
+    try:
+        pst = os.lstat(parent)
+    except FileNotFoundError as exc:
+        raise SafetyError("Log directory is missing.") from exc
+    except OSError as exc:
+        raise SafetyError("Cannot stat log directory.") from exc
+    if stat.S_ISLNK(pst.st_mode):
+        raise SafetyError("Refusing to write logs through a symlink.")
+    if not stat.S_ISDIR(pst.st_mode):
+        raise SafetyError("Log parent is not a directory.")
+    try:
+        st = os.lstat(raw)
+    except FileNotFoundError:
+        st = None
+    except OSError as exc:
+        raise SafetyError("Cannot stat log path.") from exc
+    if st is not None:
+        if stat.S_ISLNK(st.st_mode):
+            raise SafetyError("Refusing to write logs through a symlink.")
+        if not stat.S_ISREG(st.st_mode):
+            raise SafetyError("Refusing to write logs onto a special file.")
+        if st.st_nlink != 1:
+            raise SafetyError("Refusing a multiply-linked log file.")
+    try:
+        log = raw.resolve()
+    except OSError as exc:
+        raise SafetyError("Cannot resolve log path.") from exc
+    text = str(log)
+    if text == "/dev" or text.startswith("/dev/"):
+        raise SafetyError("Refusing to write logs onto a block device.")
+    if any(text == root or text.startswith(root + "/") for root in FORBIDDEN_LOG_ROOTS):
+        raise SafetyError("Refusing to write logs onto the target disk.")
+    if target:
+        target_real = os.path.realpath(target)
+        if text == target_real or (target_real != "/" and text.startswith(target_real + "/")):
+            raise SafetyError("Refusing to write logs onto the target disk.")
+    root = root_dir.resolve()
+    if log == root or not _is_under(log, root):
+        raise SafetyError("Log file must live under the Beamo Wipe log directory.")
+    if log.exists():
+        try:
+            st = os.lstat(log)
+        except OSError as exc:
+            raise SafetyError("Cannot stat log file.") from exc
+        if stat.S_ISLNK(st.st_mode) or not stat.S_ISREG(st.st_mode):
+            raise SafetyError("Refusing to write logs onto a special file.")
+        if st.st_nlink != 1:
+            raise SafetyError("Refusing a multiply-linked log file.")
+    if not is_preview_env() and _log_filesystem_is_target(log, target):
+        raise SafetyError("Refusing to write logs onto the target disk.")
+
+
+def _log_filesystem_is_target(log: Path, target: str) -> bool:
+    """True unless mountinfo proves `log` lives on tmpfs.
+
+    Even a different block device is unsuitable for session logs: the live
+    image promises that evidence stays in memory under /tmp. Unreadable or
+    ambiguous mountinfo is fail-closed on live media and ignored in preview.
+    """
+    if not target:
+        return False
+    return not (is_preview_env() or log_location_is_tmpfs(log))
+
+
+def log_location_is_tmpfs(path: Path) -> bool:
+    """Prove a canonical log or journal path is on one effective tmpfs mount.
+
+    This check does not treat a matching device number as proof: a persistent
+    root filesystem can also supply /tmp. Callers must separately constrain
+    and resolve the path and verify their opened directory inode.
+    """
+    from beamo_wipe.discover import MOUNTINFO_PATH, parse_mountinfo
+
+    try:
+        path_text = str(path)
+        with open(MOUNTINFO_PATH, encoding="utf-8") as fh:
+            mountinfo_text = fh.read()
+            pairs = parse_mountinfo(mountinfo_text)
+    except (OSError, ValueError, UnicodeError):
+        return False
+    if len(pairs) != sum(bool(line.strip()) for line in mountinfo_text.splitlines()):
+        # A dropped/truncated row could be a later mount over /tmp. A valid
+        # earlier tmpfs row cannot prove the effective log filesystem then.
+        return False
+    # parse_mountinfo preserves row order. Its completeness check above means
+    # every nonempty row has a separator and a filesystem type, so keep that
+    # type alongside each source when deciding whether /tmp is memory-backed.
+    filesystems = [
+        line.split(" - ", 1)[1].split()[0]
+        for line in mountinfo_text.splitlines()
+        if line.strip()
+    ]
+    best_sources: list[tuple[str, str]] = []
+    best_len = -1
+    for (source, mountpoint), filesystem in zip(pairs, filesystems):
+        mp = mountpoint.rstrip("/") or "/"
+        if path_text == mp or mp == "/" or path_text.startswith(mp + "/"):
+            if len(mp) > best_len:
+                best_sources = [(source, filesystem)]
+                best_len = len(mp)
+            elif len(mp) == best_len:
+                best_sources.append((source, filesystem))
+    if not best_sources:
+        # A readable yet empty/incomplete mount table proves nothing about
+        # where /tmp lives. Treat it like an unreadable table on a live run.
+        return False
+    if len(best_sources) != 1:
+        # Stacked mounts can share the longest mountpoint. The first row may
+        # be hidden by a later target-backed mount, so neither proves where
+        # this log will be written.
+        return False
+    _source, filesystem = best_sources[0]
+    # A tmpfs has no disk backing, regardless of the user-chosen source name
+    # shown in mountinfo. A disk-backed, network, or overlay fs is persistent.
+    return filesystem == "tmpfs"
+
+
+def default_log_dir() -> Path:
+    path = DEFAULT_LOG_DIR
+    try:
+        os.mkdir(path, 0o700)
+    except FileExistsError:
+        pass
+    except OSError as exc:
+        raise SafetyError("Cannot create log directory.") from exc
+    try:
+        fd = os.open(str(path), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    except OSError as exc:
+        raise SafetyError("Refusing unsafe log directory.") from exc
+    try:
+        st = os.fstat(fd)
+        if not stat.S_ISDIR(st.st_mode):
+            raise SafetyError("Refusing unsafe log directory.")
+        if st.st_uid != os.getuid():
+            raise SafetyError("Log directory must be owned by this process.")
+        mode = stat.S_IMODE(st.st_mode)
+        if mode != 0o700:
+            try:
+                os.fchmod(fd, 0o700)
+            except OSError as exc:
+                raise SafetyError("Log directory permissions are unsafe.") from exc
+            st = os.fstat(fd)
+            if stat.S_IMODE(st.st_mode) != 0o700:
+                raise SafetyError("Log directory permissions are unsafe.")
+        try:
+            tmp_st = os.stat("/tmp")
+        except OSError as exc:
+            raise SafetyError("Cannot stat /tmp.") from exc
+        if st.st_dev != tmp_st.st_dev:
+            raise SafetyError("Log directory must be on the /tmp filesystem.")
+    finally:
+        os.close(fd)
+    resolved = path.resolve()
+    tmp = Path("/tmp").resolve()
+    try:
+        resolved.relative_to(tmp)
+    except ValueError as exc:
+        raise SafetyError("Log directory must live under /tmp.") from exc
+    return path
+
+
+def logfile_for(target: str, log_dir: Optional[Path] = None) -> str:
+    directory = log_dir or default_log_dir()
+    safe_name = os.path.basename(target).replace("/", "_")
+    if not safe_name or safe_name in {".", ".."}:
+        raise SafetyError("Cannot build a log name for this device.")
+    path = directory / f"nwipe-{safe_name}-{os.getpid()}-{time.time_ns()}.log"
+    assert_log_not_on_target(str(path), target, log_dir=directory)
+    return str(path)
+
+
+def truncate_log_file(
+    log_path: str, target: str, *, retain_fd: bool = False
+) -> Optional[int]:
+    """Safely truncate a log, optionally transferring its validated descriptor.
+
+    Never follows symlinks or opens devices.
+    """
+    assert_log_not_on_target(log_path, target)
+    directory = os.path.dirname(log_path)
+    name = os.path.basename(log_path)
+    if not directory or not name or name in {".", ".."} or "/" in name:
+        raise SafetyError("Cannot create log file.")
+    flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    try:
+        dirfd = os.open(directory, flags)
+    except OSError as exc:
+        raise SafetyError(f"Cannot open log directory: {exc}") from exc
+    retained_fd = None
+    try:
+        st = os.fstat(dirfd)
+        if not stat.S_ISDIR(st.st_mode):
+            raise SafetyError("Log parent is not a directory.")
+        file_flags = os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW
+        try:
+            fd = os.open(name, file_flags, 0o600, dir_fd=dirfd)
+        except OSError as exc:
+            raise SafetyError(f"Cannot create log file: {exc}") from exc
+        try:
+            stf = os.fstat(fd)
+            if not stat.S_ISREG(stf.st_mode):
+                raise SafetyError("Refusing to write logs to a non-regular file.")
+            if stf.st_uid != os.getuid():
+                raise SafetyError("Log file must be owned by this process.")
+            if stf.st_nlink != 1:
+                raise SafetyError("Refusing a multiply-linked log file.")
+            if stat.S_IMODE(stf.st_mode) != 0o600:
+                os.fchmod(fd, 0o600)
+            # Truncate only after validating the opened inode. O_TRUNC would
+            # destroy a hardlink peer before fstat can reject it.
+            os.ftruncate(fd, 0)
+            if retain_fd:
+                retained_fd = fd
+                fd = -1
+        finally:
+            if fd >= 0:
+                os.close(fd)
+    finally:
+        try:
+            os.close(dirfd)
+        except BaseException:
+            # The caller cannot receive ownership until directory cleanup
+            # succeeds. Close our still-local log handle on a failed transfer.
+            if retained_fd is not None:
+                os.close(retained_fd)
+            raise
+    return retained_fd
+
+
+def assert_ready_to_wipe(
+    *,
+    owner_ok: bool,
+    disk: Optional[Disk],
+    discovery: DiscoveryResult,
+    typed_token: str,
+    countdown_complete: bool,
+    method,
+) -> WipeRequest:
+    from beamo_wipe.methods import METHODS
+
+    require_live_or_dry_run()
+    if owner_ok is not True:
+        raise SafetyError("Owner checkbox is required.")
+    assert_boot_excluded(discovery)
+    if disk is None or disk.is_boot or not is_wipeable_disk(disk):
+        raise SafetyError("No target disk selected.")
+    if disk.size_bytes <= 0:
+        raise SafetyError("Refusing to erase a zero-size disk.")
+    if method not in METHODS:
+        raise SafetyError("Unknown wipe method.")
+    assert_disk_identity(disk, discovery)
+    assert_not_system_mounted(disk)
+    spec = confirm_spec(disk, listed_disks(discovery))
+    if not token_matches(typed_token, spec):
+        raise SafetyError(TOKEN_MISMATCH)
+    if countdown_complete is not True:
+        raise SafetyError("Erase delay has not finished.")
+    boot = discovery.boot
+    if boot is None:
+        raise SafetyError("Boot device missing.")
+    device = normalize_whole_disk(disk.path, allow_optical=False)
+    boot_path = normalize_whole_disk(boot.path, allow_optical=True)
+    need_block = not is_preview_env()
+    assert_not_boot(device, boot_path, required=need_block)
+    assert_existing_is_block_device(device, required=need_block)
+    assert_existing_is_block_device(boot_path, required=need_block)
+    assert_size_unchanged(device, disk.size_bytes)
+    assert_local_device_transport(device)
+    log = logfile_for(device)
+    return WipeRequest(
+        device=device,
+        method=method,
+        boot_device=boot_path,
+        logfile=log,
+        device_rdev=block_rdev(device) or 0,
+        device_size_bytes=disk.size_bytes,
+        boot_rdev=block_rdev(boot_path) or 0,
+        device_identity=disk_identity(disk),
+        boot_identity=disk_identity(boot),
+        inventory_identity=tuple(
+            sorted(disk_identity(item) for item in listed_disks(discovery))
+        ),
+    )
+
+
+def same_size_conflict(selectable: Iterable[Disk]) -> bool:
+    labels = [d.size_gb_label for d in selectable]
+    return len(labels) != len(set(labels))

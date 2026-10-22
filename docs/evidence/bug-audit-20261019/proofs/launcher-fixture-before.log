@@ -1,0 +1,65 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___________ test_readiness_fixture_is_recreated_with_a_warm_go_cache ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-18/test_readiness_fixture_is_recr0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5d301d50f0>
+
+    def test_readiness_fixture_is_recreated_with_a_warm_go_cache(tmp_path, monkeypatch):
+        if not readiness.shutil.which("go"):
+            pytest.skip("The launcher fixture requires the pinned Go toolchain")
+        playwright = pytest.importorskip("playwright.sync_api")
+        monkeypatch.delenv("BEAMO_DESKTOP_NATIVE_INVENTORY_TEST", raising=False)
+        real_which = readiness.shutil.which
+        monkeypatch.setattr(
+            readiness.shutil, "which",
+            lambda name: "/fake/browser" if name in {"google-chrome", "chromium"} else real_which(name),
+        )
+        browser = SimpleNamespace(close=lambda: None)
+        runtime = SimpleNamespace(chromium=SimpleNamespace(launch=lambda **_kwargs: browser))
+        monkeypatch.setattr(playwright, "sync_playwright", lambda: nullcontext(runtime))
+        directory = tmp_path / "readiness"
+        directory.mkdir()
+        # A new container can reuse a pytest temporary path while a mounted Go
+        # cache survives. Reuse that path and remove its output between calls.
+        factory = SimpleNamespace(mktemp=lambda _name: directory)
+        for iteration in range(2):
+            fixture = readiness.browser_cases.__wrapped__(factory)
+>           actual_browser, cases = next(fixture)
+                                    ^^^^^^^^^^^^^
+
+tests/test_launcher_fixture_recreation_20261019.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_launcher_readiness.py:27: in browser_cases
+    yield browser, json.loads(fixtures.read_text())
+                              ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_local.py:548: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-agent/pytest-18/test_readiness_fixture_is_recr0/readiness/fixtures.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-agent/pytest-18/test_readiness_fixture_is_recr0/readiness/fixtures.json'
+
+/usr/lib/python3.13/pathlib/_local.py:539: FileNotFoundError
+----------------------------- Captured stdout call -----------------------------
+ok  	beamo-wipe/desktop	0.014s
+ok  	beamo-wipe/desktop	(cached)
+=========================== short test summary info ============================
+FAILED tests/test_launcher_fixture_recreation_20261019.py::test_readiness_fixture_is_recreated_with_a_warm_go_cache
+1 failed in 0.67s

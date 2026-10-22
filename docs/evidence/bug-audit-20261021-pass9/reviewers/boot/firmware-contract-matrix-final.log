@@ -1,0 +1,4 @@
+=== RUN   TestPass9FirmwareContractMatrix
+--- PASS: TestPass9FirmwareContractMatrix (0.05s)
+PASS
+ok  	beamo-wipe/desktop	1.062s

@@ -1,0 +1,8 @@
+{
+  "baseline": "e28487d7595ee45a53d503fa1a76d8c22979f012",
+  "archive_exact_bytes": {
+    "src/beamo_wipe/app.py": "3bf7e23122e1aefd821f7c9a9d6a0dced4f6757589ea6939c8ac9dc0f8054852",
+    "tests/test_app_live_ownership_pass9_20261021.py": "f3af730fae852b0d3b170387ce0ccaaa45747bb1269598488ef7bab419793e55"
+  },
+  "source_untouched": true
+}

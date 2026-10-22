@@ -1,0 +1,23 @@
+{
+  "source": "/workspace/beamo-wipe/src/beamo_wipe/ui/console_wizard.py",
+  "sha256": "2385cf7f3f105a1a0f8e2266bc4f93145d7b4d8efbb6144f9d84fc9eb3e74ddf",
+  "records": [
+    {
+      "mode": "unscrolled-control",
+      "first_section": "What this tool supports",
+      "first_section_visible": true,
+      "frame": "Beamo Wipe \u2014 Preparation \u2014 Supported storage limits\nPREVIEW on this computer \u2014 fake disks \u2014 nothing is erased\nWhat this tool supports\nBeamo Wipe uses pinned nwipe v0.42 to overwrite a selected whole disk exposed\nto the operating system. It does not issue controller secure-erase or sanitize\ncommands. It does not support Apple Silicon Macs, Chromebooks, or erasing the\nrunning Windows disk.\nSSD and flash storage\nOverwriting reaches only storage the device exposes. It cannot guarantee\ncoverage of inaccessible, remapped, over-provisioned (spare), or\ncontroller-managed flash areas. Additional overwrite passes do not fix these\nlimitations.\nRead-back verification\nRead-back verification checks exposed storage against the final overwrite. It\ndoes not prove that hidden copies were erased.\nHard disks, hidden areas, and damaged media\nHidden HPA/DCO areas, remapped or unreadable sectors, and unexposed NVMe\nnamespaces are outside the overwrite guarantee. A drive can report completion\nF5: Check disks again (clears preparation)    K: Keyboard layout\nUp/Down, PgUp/PgDn: read. Esc: back."
+    },
+    {
+      "mode": "scrolled-before-open",
+      "first_section": "What this tool supports",
+      "first_section_visible": false,
+      "frame": "Beamo Wipe \u2014 Preparation \u2014 Supported storage limits\nPREVIEW on this computer \u2014 fake disks \u2014 nothing is erased\nRead-back verification\nRead-back verification checks exposed storage against the final overwrite. It\ndoes not prove that hidden copies were erased.\nHard disks, hidden areas, and damaged media\nHidden HPA/DCO areas, remapped or unreadable sectors, and unexposed NVMe\nnamespaces are outside the overwrite guarantee. A drive can report completion\nwhile hidden data remains. Read or write errors, missing completion evidence,\nand interruption must not be treated as success.\nUnknown devices and controllers\nA missing device type stays unknown. A USB bridge or RAID controller may hide\nthe media type, physical members, caches, or capacity. An exposed virtual disk\ndoes not establish coverage of every physical member. Do not use a displayed\nSSD or HDD label as proof that hidden areas are absent.\nEncryption and locked devices\nBeamo Wipe does not unlock BitLocker, OPAL, ATA security, or other locked\ndevices; extract keys; reset passwords; or bypass Secure Boot. Overwriting an\nF5: Check disks again (clears preparation)    K: Keyboard layout\nUp/Down, PgUp/PgDn: read. Esc: back."
+    }
+  ]
+}
+Traceback (most recent call last):
+  File "/workspace/beamo-tools/audit-pass2-20261019/ui/curses_scroll_probe.py", line 40, in <module>
+    assert records[1]['first_section_visible'], 'Limits inherited a different screen scroll offset and skipped its opening guidance'
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Limits inherited a different screen scroll offset and skipped its opening guidance

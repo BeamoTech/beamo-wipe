@@ -1,0 +1,42 @@
+{
+  "baseline_commit": "938fe60347c78f2a745d5d5b04e30dfa013da809",
+  "verified_new_defects": 0,
+  "repository_edits": false,
+  "source_sha256": {
+    "src/beamo_wipe/nwipe_runner.py": "a30e375ddb27be5bb9e781f17751586760a178a6822d610e811e1d9c2cb3bbb1",
+    "src/beamo_wipe/progress.py": "fef87a29ceabb1fb97b8abc521d55cea1ceb9428989104973783da6eb52c4fa6",
+    "src/beamo_wipe/methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13",
+    "src/beamo_wipe/sleep_inhibit.py": "b7df5b80f7d87ae0bcac0be2ddcf082ff887e5492fb8da088237b5b02a9bf11d"
+  },
+  "baseline": {
+    "cases": 1355,
+    "passed": 1355,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "adjacent": {
+    "cases": 154,
+    "passed": 154,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "projection_matrix": {
+    "seed": 138077544711,
+    "sequences": 3000,
+    "comparisons": 39000,
+    "targets": 3,
+    "mismatch_count": 0,
+    "source_sha256": {
+      "runner": "a30e375ddb27be5bb9e781f17751586760a178a6822d610e811e1d9c2cb3bbb1"
+    },
+    "native_or_device_actions": 0
+  },
+  "actual_engine_device_inventory_firmware_power_actions": false,
+  "docker_or_network_or_remote_mutation": false,
+  "native_image_hardware_acceptance": false,
+  "supporting_runs_overlap_canonical_gate": true
+}

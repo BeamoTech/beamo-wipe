@@ -1226,10 +1226,20 @@ def _drain_retired_interpreters() -> None:
 
 
 def _drain_retired_native() -> None:
-    # The asset helper must return first: its loop/snapshot tuple references
-    # can otherwise keep the last asset's raw interpreter alive for this pass.
-    _drain_retired_assets()
-    _drain_retired_interpreters()
+    # Building the snapshot can allocate and trigger the GC callback again on
+    # this same thread.  A nested drain must not mutate the dictionary while
+    # the outer drain is copying it.  Other owner threads keep independent
+    # guards and can continue releasing their own buckets.
+    if getattr(_RETIRED_THREAD, "draining", False):
+        return
+    _RETIRED_THREAD.draining = True
+    try:
+        # The asset helper must return first: its loop/snapshot tuple references
+        # can otherwise keep the last asset's raw interpreter alive for this pass.
+        _drain_retired_assets()
+        _drain_retired_interpreters()
+    finally:
+        _RETIRED_THREAD.draining = False
 
 
 def _drain_retired_native_after_gc(phase: str, _info: dict) -> None:
@@ -1345,6 +1355,10 @@ class TkWizard:
             self.w = wizard
             self.root = _new_owned_root(self._native_owner)
             self.root._tk_wizard = self  # type: ignore[attr-defined]
+            # Tk otherwise prints callback exceptions and keeps its event loop
+            # open, even when the failed callback removed Stop or its timer.
+            # This hook belongs only to this owned root/interpreter.
+            self.root.report_callback_exception = self._runtime_failure
             # Set the geometry scale; fonts below use explicit pixel sizes. The layout geometry below is fixed pixels (content
             # column, minimum window, countdown ring), so point-sized fonts must
             # not float with the X server's reported DPI — on a 100+ DPI panel
@@ -1455,6 +1469,7 @@ class TkWizard:
             self._return_release_time: Optional[int] = None
             self._space_held = False
             self._space_release_after: Optional[str] = None
+            self._space_release_generation = 0
             self._space_release_time: Optional[int] = None
             self._space_action_active = False
             self._report_space_release_pending = False
@@ -1587,7 +1602,11 @@ class TkWizard:
             return 1.0
 
     def _on_root_configure(self, event) -> None:
-        if event.widget is not self.root or self._layout_drawing:
+        if (
+            event.widget is not self.root
+            or self._layout_drawing
+            or getattr(self, "_report_space_release_pending", False)
+        ):
             return
         if self._sync_layout():
             self._layout_drawing = True
@@ -1855,7 +1874,8 @@ class TkWizard:
                 self._teardown()
                 return
             self._arm_shutdown_enter_if_idle()
-            self._draw()
+            if not getattr(self, "_report_space_release_pending", False):
+                self._draw()
 
         return wrapped
 
@@ -1908,7 +1928,11 @@ class TkWizard:
             except BaseException as error:
                 cleanup_error = error
             self._cancel_pick_restore()
-            for attr in ("_return_release_after", "_space_release_after", "_after_id"):
+            for attr in (
+                "_return_release_after",
+                "_space_release_after",
+                "_after_id",
+            ):
                 callback = getattr(self, attr, None)
                 if callback is not None and root is not None:
                     try:
@@ -1952,42 +1976,53 @@ class TkWizard:
             if self.w.wants_shutdown or self.w.wants_new_session:
                 self._teardown()
                 return
-            if self.w.screen != prev:
-                self._draw()
-            elif self.w.screen in {Screen.DONE, Screen.DIAGNOSTIC, Screen.WORKING} and (
-                self.w.report_view.revision != self._shown_report_revision
-            ):
-                self._draw()
-            elif self.w.screen in {Screen.DONE, Screen.WORKING} and getattr(self.w, "sound_revision", 0) != getattr(self, "_shown_sound_revision", 0):
-                self._draw()
-            elif self.w.screen == Screen.LAST_CHANCE:
-                self._refresh_last_chance()
-            elif self.w.screen in {Screen.WORKING, Screen.STOPPING}:
-                self._refresh_working()
+            # A report worker changes the view revision immediately after a
+            # keyboard save begins. Preserve the focused Save control until
+            # its physical Space release has reached `_release_space`.
+            if not getattr(self, "_report_space_release_pending", False):
+                if self.w.screen != prev:
+                    self._draw()
+                elif self.w.screen in {Screen.DONE, Screen.DIAGNOSTIC, Screen.WORKING} and (
+                    self.w.report_view.revision != self._shown_report_revision
+                ):
+                    self._draw()
+                elif self.w.screen in {Screen.DONE, Screen.WORKING} and getattr(self.w, "sound_revision", 0) != getattr(self, "_shown_sound_revision", 0):
+                    self._draw()
+                elif self.w.screen == Screen.LAST_CHANCE:
+                    self._refresh_last_chance()
+                elif self.w.screen in {Screen.WORKING, Screen.STOPPING}:
+                    self._refresh_working()
             power_label = getattr(self, "_power_label", None)
             if power_label is not None:
                 power_label.configure(text=self.w.power_text)
             self._after_id = self.root.after(100, self._tick)
-        except Exception as exc:
-            # Tk otherwise swallows callback exceptions and leaves the timer
-            # unscheduled, so a running erase would lose status monitoring.
-            self._after_id = None
-            self._fatal_ui = True
+        except BaseException as exc:
+            self._runtime_failure(type(exc), exc, exc.__traceback__)
+
+    def _runtime_failure(self, _kind, error, _traceback) -> None:
+        """Settle an owned erase before retiring any failed Tk callback."""
+        if getattr(self, "_ui_dead", False) or getattr(self, "_handling_runtime_failure", False):
+            return
+        self._handling_runtime_failure = True
+        self._after_id = None
+        self._fatal_ui = True
+        try:
             try:
                 from beamo_wipe.diagnostics import log_diag
 
-                log_diag("ui", "tk_runtime_failed", type(exc).__name__)
-            except Exception:
+                log_diag("ui", "tk_runtime_failed", type(error).__name__)
+            except BaseException:
                 pass
             try:
                 self.w.settle_failed_interface()
-            except Exception as cancel_exc:
+            except BaseException as cancel_exc:
                 try:
                     from beamo_wipe.diagnostics import log_diag
 
                     log_diag("ui", "tk_failure_cancel_failed", type(cancel_exc).__name__)
-                except Exception:
+                except BaseException:
                     pass
+        finally:
             self._teardown()
 
     def _draw(self) -> None:
@@ -4384,7 +4419,7 @@ class TkWizard:
                 self._click_shutdown,
                 enabled=not report.exporting and not report.saving_evidence,
             )
-        if self._primary is not None and not self._report_space_release_pending:
+        if self._primary is not None and not getattr(self, "_report_space_release_pending", False):
             self._primary.focus_set()
 
     def _advanced(self) -> None:
@@ -4490,12 +4525,16 @@ class TkWizard:
 
     def _claim_space_press(self, event=None) -> bool:
         """Claim a new physical Space press; suppress X11 repeat pairs."""
-        if self._space_release_after is not None:
+        callback = getattr(self, "_space_release_after", None)
+        if callback is not None:
             try:
-                self.root.after_cancel(self._space_release_after)
+                self.root.after_cancel(callback)
             except tk.TclError:
                 pass
             self._space_release_after = None
+        self._space_release_generation = (
+            getattr(self, "_space_release_generation", 0) + 1
+        )
         repeat = (self._space_release_time is not None
                   and self._space_release_time == self._key_event_time(event))
         if self._space_held or repeat:
@@ -4507,26 +4546,46 @@ class TkWizard:
 
     def _on_space_release(self, _event=None) -> str:
         # Queue cleanup without requiring global idle: report redraws can
-        # otherwise starve a delivered release. _claim_space_press cancels
-        # queued cleanup and rejects matching X11 repeat timestamps even
-        # when the timer has already run before the paired press.
-        if self._space_release_after is not None:
+        # otherwise starve a delivered release. Give a queued X11 autorepeat
+        # press time to cancel its paired release before acknowledging key-up.
+        callback = getattr(self, "_space_release_after", None)
+        if callback is not None:
             try:
-                self.root.after_cancel(self._space_release_after)
+                self.root.after_cancel(callback)
             except tk.TclError:
                 pass
+            self._space_release_after = None
         self._space_release_time = self._key_event_time(_event)
         emit_serial_marker("BEAMO_WIPE_KEY_SPACE_RELEASE_RECEIVED")
-        self._space_release_after = self.root.after(0, self._release_space)
+        generation = getattr(self, "_space_release_generation", 0) + 1
+        self._space_release_generation = generation
+        self._space_release_after = self.root.after(
+            25, lambda: self._release_space(generation)
+        )
         return "break"
 
-    def _release_space(self) -> None:
+    def _release_space(self, generation: Optional[int] = None) -> None:
+        current_generation = getattr(self, "_space_release_generation", 0)
+        if generation is not None and generation != current_generation:
+            return
+        self._space_release_generation = current_generation + 1
+        callback = getattr(self, "_space_release_after", None)
         self._space_release_after = None
+        if callback is not None:
+            try:
+                self.root.after_cancel(callback)
+            except (AttributeError, tk.TclError):
+                pass
         self._space_held = False
         restore_done_focus = self._report_space_release_pending
         self._report_space_release_pending = False
         self.w.arm_done_keyboard()
         emit_serial_marker("BEAMO_WIPE_KEY_SPACE_RELEASED")
+        if restore_done_focus:
+            # Keep the Save button alive until the physical key-up has been
+            # routed.  Redrawing at idle after key-down can still destroy the
+            # X11 event target before a QMP or slow hardware release arrives.
+            self._draw()
         if (
             restore_done_focus
             and self.w.screen == Screen.DONE
@@ -4547,18 +4606,13 @@ class TkWizard:
         self.w.begin_evidence_retry()
 
     def _click_save_report(self) -> None:
-        # Space can start export before QMP sends key-up. Focus the stable
-        # toplevel before the report-start marker: a redraw destroys the Save
-        # button, and X11 can otherwise discard a release targeted at it.
+        # Space can start export before QMP sends key-up. Keep the focused Save
+        # control alive until that release so X11 retains the event target.
         keyboard_space = self._space_action_active
-        previous_focus = self.root.focus_get() if keyboard_space else None
-        if keyboard_space:
-            self.root.focus_set()
         if self.w.begin_report_export():
             self._report_space_release_pending = keyboard_space
-            self._draw()
-        elif keyboard_space and previous_focus is not None:
-            previous_focus.focus_set()
+            if not keyboard_space:
+                self._draw()
 
     def _click_shutdown(self) -> None:
         """Button Space/click on Shut down. Ignore until the arriving key is up."""

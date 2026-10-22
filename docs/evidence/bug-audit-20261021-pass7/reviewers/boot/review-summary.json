@@ -1,0 +1,20 @@
+{
+  "baseline_commit": "938fe60347c78f2a745d5d5b04e30dfa013da809",
+  "dev_sha256": "c4874bde932ce71946272e20ef2f5a97efe05375ed087a6263bdc36fbc8f8ae9",
+  "go_race_exit_code": 0,
+  "go_named_pass_events": 338,
+  "go_native_skips": [
+    "TestLinuxInventoryRetainsPartitionParents",
+    "TestWindowsInventoryReportsOnlyLauncherPartitionPass13"
+  ],
+  "go_vet_exit_code": 0,
+  "focused_python_passed": 285,
+  "focused_python_skipped": 0,
+  "focused_python_warning_policy": "error",
+  "candidate": "dev.live_environment invalid UTF8 marker crashes instead of conservative boolean refusal",
+  "candidate_cases": 4,
+  "candidate_failures": 1,
+  "candidate_normal_controls": 3,
+  "repository_edits": false,
+  "native_platform_or_image_or_hardware_qualification": false
+}

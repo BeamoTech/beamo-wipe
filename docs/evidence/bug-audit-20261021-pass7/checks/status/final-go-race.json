@@ -1,0 +1,12 @@
+{
+  "name": "final-go-race",
+  "command": [
+    "/workspace/beamo-tools/beamo-dev",
+    "bash",
+    "-c",
+    "cd desktop; go test -count=1 -race -json ./..."
+  ],
+  "started_utc": "2026-10-21T03:28:39.039553+00:00",
+  "elapsed_seconds": 7.33,
+  "exit_code": 0
+}

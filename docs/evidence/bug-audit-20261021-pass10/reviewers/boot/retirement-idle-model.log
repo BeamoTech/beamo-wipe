@@ -1,0 +1,8 @@
+{"Time":"2026-10-21T05:31:32.183033121Z","Action":"start","Package":"beamo-wipe/desktop"}
+{"Time":"2026-10-21T05:31:32.196774579Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestPass10RetirementIdleMatrix"}
+{"Time":"2026-10-21T05:31:32.196803431Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10RetirementIdleMatrix","Output":"=== RUN   TestPass10RetirementIdleMatrix\n"}
+{"Time":"2026-10-21T05:31:32.224560573Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10RetirementIdleMatrix","Output":"--- PASS: TestPass10RetirementIdleMatrix (0.03s)\n"}
+{"Time":"2026-10-21T05:31:32.224596086Z","Action":"pass","Package":"beamo-wipe/desktop","Test":"TestPass10RetirementIdleMatrix","Elapsed":0.03}
+{"Time":"2026-10-21T05:31:32.224623276Z","Action":"output","Package":"beamo-wipe/desktop","Output":"PASS\n"}
+{"Time":"2026-10-21T05:31:33.22712344Z","Action":"output","Package":"beamo-wipe/desktop","Output":"ok  \tbeamo-wipe/desktop\t1.044s\n"}
+{"Time":"2026-10-21T05:31:33.227196428Z","Action":"pass","Package":"beamo-wipe/desktop","Elapsed":1.044}

@@ -1,0 +1,28 @@
+# PASS7 UI review complete; approved files released
+
+Baseline938fe60347c78f2a745d5d5b04e30dfa013da809/tree45d56d3c562d14b3ba6339174c259a4580dbaff4, /workspace/beamo-wipe, branchfix/safety-audit-20261019. Date2026-10-21UTC; Codex ui_pass7 bounded reviewer.
+
+Read currentAGENTS, memory/backlog, managedruntimeSKILL/currentconnectedrestricted/enforcedstatus. Existing sharedguidewaiverfromroot applies; currentBlacksmithsupersedeslegacyGCP. NoDocker/policy/networkcredential/nativeengine/inventory/mount/device/USB/power/firmware/guest/remote/write/release/stage/commit. OwnedhostXvfb871/87272DPI andordinaryPTY/tempfile/nativeGUItesthelpers only. Nativeapplicationeffectsbanned; tests usefakeinventory/runner/callbacks. Rootownsindependentreplay/permissions/gates/backlog/commit.
+
+## Verified defect1: optional diagnostics interrupt refresh retirement
+
+Wizard.finish_refresh catches failedscan/validation BaseException and attempts optional log_diag, but previouslycaughtExceptiononly. KeyboardInterrupt/SystemExit from optional diagnosticwrite escaped beforecommittingblockedstate. ScreenremainedREFRESHING; Back/shutdownrefused, refreshunavailable. Availability/state-retirement defect; no unsafeeraseclaimed. OriginaloutsideGitproof refresh-diagnostic-before4cases:2FAIL/2controls(None/OSError). Rootindependentlyreplayedandapprovedonlyfinish_refresh+newmodule.
+
+Exactnewtestmodule archivedbeforeproductedit undernew-refresh-before-product/:
+18cases,8FAIL/10controls inrefresh-expanded-before.{log,xml}. Coverssync/confirmed/completioncallers, malformedinventory, stale/duplicate completions, freshretryandclearedauthorization. MinimalrepaircatchesBaseException onlyforoptionaldiagnostics. New18+original4+adjacentrefreshcases=52strictPASS0skip/error/failure inrefresh-expanded-after.*. Initialaftercommandreferencedmissingtest_refresh_failure_logging.py; exit4collectionsetuphistorysavedhistory-refresh-after-missing-path.*then correctedmodulelistpassed. Noassertionchanged.
+
+## Verified defect2: final plaintext review is still buffered when wait ends
+
+Plain LAST_CHANCE printed reviewthenendedoverlaywithoutcheckingstdoutflush. Nativebuiltins.input firstflushesbufferatERASEpromptaftertheclockexpired. WithcanonicalPTYinput, actualTextIOWrapper/BufferedWriter/FileIOordinaryoutput, warningvisible5.2/eraseclaim5.2:0visibleseconds. Linebufferedcontrolvisible0/claim5.2 passes. FirstprivateOutputstubandstrongerrealIOproofsboth1FAIL/1control; rootindependentlyvalidatedbeforeapproval.
+
+RootapprovedplainLAST_CHANCEflushandnewmoduleonly. Exactfinal8casemodule archivedundernew-plain-before-product/beforeproductchange:4FAIL/4controls inplain-expanded-before.*. Includesline/blockoutput, immediate/8s slowflushandENOSPC/permissionrefusals. ImportantlyactualinputsilentlyignoresblockbufferflushOSError/PermissionError; oldsourcealsoacceptederaseinbothfailurecases, asrecordedcalls[5.2]. Initialv1assertedDIDNOTRAISEfirst; finalv2checksnoerasefirstandretainsallv1historyunderhistory-plain-v1-*. Same4fail4controls; no setupfailure.
+
+Repairexplicitlysys.stdout.flush()whilevisible-reviewoverlayisstilheld; successfulwrite precedesfresh5seconds, failureabortsplaincontrollerandretainsnoerase. New8+twooriginal2caseproofs+plainvisibility/typeahead/keyboardadjacency=54strictPASS0skip/error/failure inplain-expanded-after.*. Noexistingtestfile/assertionchanged.
+
+## Broader review and verification
+
+ReadWizardnavigation/owner/token/method/start/Stop/refresh/deadinterface, Tk/GTKgeneration/focus/hold/nativecallbackownership andteardown, curses reviewpaging/inputorigins/clipping, plainconfirm/typeahead/EOF/CtrlC handling, soundmodal focus/lifetime. Recovery/exportinternals belongseparatereviewer. CurrentPASS6clippedpaint/Tkcallbackfixeswerereadandkept; notnewfindings.
+
+Initialfocusedbaseline59PASS0skip/fail/error under72DPI/-Werror. AdditionalnativeGTKfocus/keyrepeat/modalhold/review andTkrefreshdrawcontrols56PASS0skip/fail/error under72DPI/-Werror (native-adjacent-after.*). Theseoverlapcanonicalcoverageandmustnotbeaddedtogetherasunique totals.
+
+DefaultRuff+configuredsecurityrulesonnewmodulesPASS; mypyPASSforeachchangedsource; Python3.10grammarPASS(notruntimeacceptance); gitdiffwhitespacePASS. Exactarchive/newtestbytescomparedmatching. Fourownedpathsfinalhashesinfinal-owned-source-sha256.json. Wizard+refreshmodulepreviouslyreleasedaftertheir52casegreen; allfournowreleasedandfrozen. NoadditionalverifiedUIdefectremains inthisboundedreview. Rootmustperformcompletecanonicalgate andfinalintegration/artifactchecks. Nativeplatform/image/firmware/physicalqualificationisnotprovidedbythesechecks.

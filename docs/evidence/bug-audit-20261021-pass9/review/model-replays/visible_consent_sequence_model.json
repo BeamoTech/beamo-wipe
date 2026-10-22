@@ -1,0 +1,8 @@
+{
+  "sequences": 399,
+  "blocked_erase_calls": 4233,
+  "explicit_fake_starts": 396,
+  "automatic_starts": 0,
+  "nested_overlay_checks": 117,
+  "native_callbacks": 0
+}

@@ -1,0 +1,76 @@
+{
+  "baseline": "e4871239f02e46137fb6d8df64b5880ae2ea4b4d",
+  "status": "ALL OWNED SOURCE/TESTS FROZEN AND RELEASED TO ROOT",
+  "finding": {
+    "id": "LINUX-LIVE-PROBE-READ-ERROR",
+    "trigger": "Bounded no-follow /proc/cmdline read fails on Linux UEFI, while later media and EFI inputs are valid",
+    "original_behavior": "The err==nil conditional silently skips checking boot=live after a read error; valid media/EFI later produce Direct=true and all readiness cards PASS",
+    "root_independent_replay": "Root independently replayed actual platformProbe/makePlan with only fixture path substitutions:1FAIL/2controlsPASS before authorizing repair",
+    "fix": "Return runtime problem before media/inventory/firmware when cmdline read fails. Preserve normal and confirmed-live behavior, platform/legacy precedence, authentication/revision/single-use and firmware ownership. New runtime view keeps all cards unverified and instructs keeping computer on instead of generic boot-menu title; does not claim confirmed live or unsupported CPU.",
+    "product_scope": [
+      "desktop/platform_linux.go",
+      "desktop/main.go owner-facing runtime copy/title only",
+      "desktop/readiness.go runtime unverified guidance only"
+    ]
+  },
+  "new_regression": {
+    "path": "developer_tests/test_desktop_live_probe_pass5_20261021.py",
+    "canonical_python_cases_added": 1,
+    "embedded_go_parent_tests": 1,
+    "embedded_go_named_subtests": 15,
+    "scenario_names": [
+      "normal",
+      "empty",
+      "at-limit",
+      "live",
+      "live-last",
+      "missing",
+      "directory",
+      "symlink",
+      "fifo",
+      "oversized",
+      "ancestor-link",
+      "denied",
+      "platform-error",
+      "platform-other",
+      "legacy"
+    ],
+    "baseline_named_pass": 8,
+    "baseline_named_fail": 7,
+    "baseline_parent_fail": 1,
+    "final_parent_pass": 1,
+    "final_named_pass": 15,
+    "final_fail_or_skip": 0,
+    "note": "One Python integration case drives15 scenarios in a private checked Go overlay. These are not16Python cases or a tracked new Go module. Do not add to canonical suite totals."
+  },
+  "checks": {
+    "focused_baseline_python": "287PASS/0SKIP",
+    "final_adjacent_python": "288PASS/0SKIP",
+    "full_uncached_go_race": {
+      "passing_test_or_subtest_events": 325,
+      "native_skips": [
+        "TestLinuxInventoryRetainsPartitionParents",
+        "TestWindowsInventoryReportsOnlyLauncherPartitionPass13"
+      ],
+      "failures": 0
+    },
+    "go_vet": "PASS",
+    "windows_test_cross_compile": "PASS; not native execution",
+    "ruff_check_and_format": "PASS",
+    "python310_grammar": "PASS; not3.10runtime qualification",
+    "git_diff_check": "PASS"
+  },
+  "edited_files": {
+    "desktop/platform_linux.go": "af416aaabc32eef9251f804015d599c66aa9b33efdc7024a1413bac32317537b",
+    "desktop/main.go": "1cbabac38801e77c2cf741a89eb0f75666ea746e072f9eaf0e8d6628c282ef00",
+    "desktop/readiness.go": "eb67aec9069cede3e29348f2a33b317aa374252090fc433c9d24a41d77d26973",
+    "developer_tests/test_desktop_live_probe_pass5_20261021.py": "e31c839117efa7e10349abc377e6234c7bd935c2caae5163363203733565336d"
+  },
+  "existing_tests_or_assertions_modified": false,
+  "history": [
+    "Initial focused selection named nonexistent test modules; no tests ran. Actual collection error log retained, corrected known files287PASS.",
+    "Initial repair candidate redeclared err; removed obsolete later var declaration, no assertion changed. Diagnostic summary retained and explicitly says original stdout was overwritten.",
+    "Evidence summary command initially had an else0 syntax typo; parse failed before any work; corrected command succeeded."
+  ],
+  "limits": "All inventories/firmware/media use ordinary files and fake printing scripts, no actual native inventory, devices, mounts, nwipe, restart/helper, power, firmware, guest, hosted CI, publication/staging/commit/backlog mutation. Root owns full local gates, final diff/artifact review, canonical backlog and delivery. No additional verified defect proved in the bounded boot/developer review. Prior network/platform/physical qualification remains separate."
+}

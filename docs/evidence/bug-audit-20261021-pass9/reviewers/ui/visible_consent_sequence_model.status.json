@@ -1,0 +1,9 @@
+{
+  "command": [
+    "python",
+    "/workspace/beamo-tools/audit-pass9-20261021/ui/visible_consent_sequence_model.py"
+  ],
+  "started_utc": "2026-10-21T04:46:51.987009+00:00",
+  "elapsed_seconds": 2.79,
+  "exit_code": 0
+}

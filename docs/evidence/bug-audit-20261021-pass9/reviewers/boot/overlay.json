@@ -1,0 +1,5 @@
+{
+  "Replace": {
+    "/workspace/beamo-wipe/desktop/pass9_external_firmware_matrix_test.go": "/workspace/beamo-tools/audit-pass9-20261021/boot/firmware_contract_matrix_test.go"
+  }
+}

@@ -1,0 +1,56 @@
+[
+  {
+    "host_contract": "posix",
+    "target_index": null,
+    "injection_reached": true,
+    "build_error": null,
+    "manifest_written": true,
+    "verify_error": null,
+    "foreign_preserved": false
+  },
+  {
+    "host_contract": "posix",
+    "target_index": 0,
+    "injection_reached": true,
+    "build_error": null,
+    "manifest_written": true,
+    "verify_error": "RuntimeError: desktop launcher checksum mismatch; rebuild launchers",
+    "foreign_preserved": true
+  },
+  {
+    "host_contract": "posix",
+    "target_index": 1,
+    "injection_reached": true,
+    "build_error": null,
+    "manifest_written": true,
+    "verify_error": "RuntimeError: desktop launcher checksum mismatch; rebuild launchers",
+    "foreign_preserved": true
+  },
+  {
+    "host_contract": "nt",
+    "target_index": null,
+    "injection_reached": true,
+    "build_error": null,
+    "manifest_written": true,
+    "verify_error": null,
+    "foreign_preserved": false
+  },
+  {
+    "host_contract": "nt",
+    "target_index": 0,
+    "injection_reached": true,
+    "build_error": null,
+    "manifest_written": true,
+    "verify_error": "RuntimeError: desktop launcher checksum mismatch; rebuild launchers",
+    "foreign_preserved": true
+  },
+  {
+    "host_contract": "nt",
+    "target_index": 1,
+    "injection_reached": true,
+    "build_error": null,
+    "manifest_written": true,
+    "verify_error": "RuntimeError: desktop launcher checksum mismatch; rebuild launchers",
+    "foreign_preserved": true
+  }
+]

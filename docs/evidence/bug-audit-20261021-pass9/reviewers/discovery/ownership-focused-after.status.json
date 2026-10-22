@@ -1,0 +1,20 @@
+{
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "-W",
+    "error",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-q",
+    "tests/test_app_live_ownership_pass9_20261021.py",
+    "/workspace/beamo-tools/audit-pass9-20261021/discovery/test_transient_live_ownership.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass9-20261021/discovery/ownership-focused-after.xml"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.5,
+  "date_utc": "2026-10-21T04:53:26.559552+00:00"
+}

@@ -1,0 +1,52 @@
+{
+  "reviewer": "runner_pass10",
+  "finished_utc": "2026-10-21T05:22:48.457839+00:00",
+  "client_timezone": "America/Chicago",
+  "baseline_commit": "7047dfb8c22d0b17faad2d5de1ec470b2debfaac",
+  "new_verified_defects": 0,
+  "repository_edits": [],
+  "ownership_released": true,
+  "focused_modules": 72,
+  "focused_unique_passed": 1643,
+  "focused_failures_errors_skips": 0,
+  "strict_warning_policy": "-W error",
+  "model": {
+    "cases": 384,
+    "positive_completed_controls": 36,
+    "refusal_controls": 348,
+    "cut_tail_cases": 240,
+    "concurrent_append_scans": 48,
+    "bounded_scan_bytes": 44834192,
+    "native_callbacks": 0,
+    "mismatches": [],
+    "source_sha256": {
+      "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62",
+      "src/beamo_wipe/methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13",
+      "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9"
+    },
+    "scope": "Owned-file reader/scanner snapshot and epoch controls, separate from canonical tests and real-device acceptance."
+  },
+  "reviewed_source_sha256": {
+    "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62",
+    "src/beamo_wipe/progress.py": "fef87a29ceabb1fb97b8abc521d55cea1ceb9428989104973783da6eb52c4fa6",
+    "src/beamo_wipe/engine_checks.py": "7a9d4682ca7d90a0eeb6cff9ae24a520554552c701b2728ab8f9c21895f5e27e",
+    "src/beamo_wipe/evidence.py": "512c9b024b3231bf2625b6c802a8dc2282c275153b62e2995d4d01ba9466b5c5",
+    "src/beamo_wipe/methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13",
+    "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9"
+  },
+  "reviewed_inputs_byte_identical_to_baseline": true,
+  "reviewed_contracts": [
+    "Start reset and retry ownership; duplicate start refusal, process/log/lock identity and Popen uncertainty.",
+    "Polling and Stop arbitration, observed exit versus accepted signal delivery, conservative liveness and terminal retirement.",
+    "Exact launched-method counters/phase/precision; trusted engine records, model continuations, shared status cells and negative evidence.",
+    "Bounded file reads, active inode binding, snapshot signatures, complete records, oversized-line refusal and projection provenance.",
+    "Monotonic and stale progress, estimate/clock constraints; verified versus completed evidence and advisory checks."
+  ],
+  "retained_model_history": "initial-aligned-* files preserve first all-green model with aligned tails. Final script adds a trailing harmless record, requires 240 cut-head controls and preserves all original success/refusal expectations. This is model strengthening, not a product finding.",
+  "replay_command": "source /workspace/beamo-tools/activate.sh; python3 -W error /workspace/beamo-tools/audit-pass10-20261021/runner/log_snapshot_epoch_matrix.py",
+  "limits": [
+    "Fake/owned-file supporting checks overlap canonical suite; do not add their counts to unique Python coverage.",
+    "No actual engine/device/inventory/signal/firmware/power/guest/remote action or native acceptance.",
+    "File epoch mutation verifies the large-log reader/scanner contract, not an atomic OS file-system or hardware guarantee."
+  ]
+}

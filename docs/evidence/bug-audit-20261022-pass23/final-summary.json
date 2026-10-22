@@ -1,0 +1,40 @@
+{
+  "audit": "BW-BUG-AUDIT-PASS23-20261022",
+  "baseline_commit": "da75ef9ce28adc785cfc7236d2b477c24760dded",
+  "branch": "fix/safety-audit-20261019",
+  "completed_utc": "2026-10-22",
+  "final_python": {
+    "deselected_generated_live_config": 2,
+    "deselected_host_gtk_layout": 1,
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "c612941e3aebe2534c22ba029f5497f67ff42201c108ef88bb04caedb82e3698",
+    "passed": 12129,
+    "selected": 12216,
+    "skipped": 87
+  },
+  "focused_release": {
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "af12f835208990bb0fb8bb7379f01d48eb5d2721e4ac906e5bc2d526ba343ad4",
+    "passed": 305,
+    "selected": 318,
+    "skipped": 13
+  },
+  "regressions": {
+    "baseline_failed": 13,
+    "baseline_passed_controls": 1,
+    "baseline_transcript_sha256": "a89abd7b4f11c1fbe0d2a7f463c0705e6c9485112b165a6a8e8be53f2215d2b2",
+    "fixed_passed": 14,
+    "fixed_transcript_sha256": "7c042812ccea0e04cfffe2807b1971d67536b04d0e6426accfe9c3d5367a0737"
+  },
+  "source_freeze_sha256": "ac297dc5d435feaac47c9b04ca12d98f9a013d0e21056fbebc5d3ba77c2cdb73",
+  "source_sha256": {
+    "scripts/fetch_github_draft_release.sh": "699bde4a0742b8687945ca9b417a0c3ccdb1b135e26e8d364addf50444932e33",
+    "scripts/publish-release-blacksmith.sh": "9a3d8c4059d5ff1572bb2681a8b3b61d25ee8d17a62f58b80d0d9aa1361aba46",
+    "scripts/verify_github_release_assets.py": "7727c05a529170cd92ee3dc67c43a51eb2a8ad38db6af7fe149bf9807867c95f",
+    "tests/test_github_release_asset_binding_pass19_20261021.py": "73e5bc8e756b30aca759425f8fc108a37d1c9d4ede699f62c9fcec9c58bec593",
+    "tests/test_github_release_promotion_pass23_20261022.py": "d1e872cc5972431d13e1b9d2e68e3fc9a9918e34b23ce2f5e6806fc26bdc4331"
+  },
+  "static_transcript_sha256": "87f2748e5ecc47a71e24dc0a6cae1f9697e1ffde37c7658d0c2e84609f34b2cf"
+}

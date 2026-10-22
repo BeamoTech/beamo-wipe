@@ -1,0 +1,80 @@
+{
+  "baseline": "7fcd706b44c0d63cf5f2959bcd235968e8300274",
+  "branch": "fix/safety-audit-20261019",
+  "checks": {
+    "focused-after.xml": {
+      "errors": 0,
+      "failures": 0,
+      "skips": 0,
+      "total": 417
+    },
+    "focused.xml": {
+      "errors": 0,
+      "failures": 0,
+      "skips": 0,
+      "total": 333
+    },
+    "publication-before.xml": {
+      "errors": 0,
+      "failures": 3,
+      "skips": 0,
+      "total": 4
+    },
+    "regression-after.xml": {
+      "errors": 0,
+      "failures": 0,
+      "skips": 0,
+      "total": 84
+    },
+    "regression-before.xml": {
+      "errors": 0,
+      "failures": 44,
+      "skips": 0,
+      "total": 63
+    },
+    "regression-final-baseline.xml": {
+      "errors": 0,
+      "failures": 44,
+      "skips": 0,
+      "total": 63
+    },
+    "regression-final.xml": {
+      "errors": 0,
+      "failures": 0,
+      "skips": 0,
+      "total": 63
+    }
+  },
+  "compatibility": "Duplicate descriptor preserves existing pre-link failed-close refusal and old test assertions. Never retry an ambiguous close; cleanup remains identity-bound with the inode pinned.",
+  "coverage_note": "Focused/model/probe counts overlap canonical suite and must not be summed as unique coverage.",
+  "finding": "Atomic evidence writer accepted altered private bytes/mode/link count after fsync and before/after hard-link publication. Public writer then checksummed the altered bytes.",
+  "hashes": {
+    "src/beamo_wipe/evidence.py": "2bd413f113d42e7fd439794958b9b1cc1dcd2cc72f851497ccd7c2a03c9e8d24",
+    "tests/test_evidence_publication_pass13_20261021.py": "85f869342d3acea8c1694b1f1efe7e3595112edad3e4bb347ecc297fc47e74dd"
+  },
+  "independent_proof": "Root confirmed separately at actual file-fsync return boundary before assigning ownership.",
+  "limits": "Fake callbacks/inventory and owned regular files only. Native opt-in unset. No actual device, engine, inventory, sysfs, mount, firmware, power, guest, network, remote, Docker or build operation. Root owns full gate/build/commit/backlog.",
+  "lint": "ruff source/newtest pass after unused import correction; mypy evidence.py pass",
+  "model": {
+    "accepted": 6,
+    "before_after": "pass",
+    "native_callbacks": 0,
+    "refused": 66,
+    "restored_controls": 72,
+    "scenarios": 72,
+    "script": "terminal_provenance_model.py"
+  },
+  "owned_paths": [
+    "src/beamo_wipe/evidence.py",
+    "tests/test_evidence_publication_pass13_20261021.py"
+  ],
+  "ownership": "Released both owned paths to root for independent review; no further product/test edits planned.",
+  "proof_before_edit": {
+    "external_api_trace": "publication-api-before.log",
+    "external_probe": "publication-before.xml",
+    "final_test_only_change": "Removed unused pathlib.Path import for lint; exact final bytes replayed on private archived baseline, unchanged44 failures/19 controls.",
+    "newtests_pre_productedit_sha256": "39adae837bf021bb31e84c3039f35f3ad32e801bea597a5917f6cf4a6536ea7f",
+    "pre_productedit_result": "44 failures,19 controls"
+  },
+  "repair": "Keep an O_RDWR duplicate descriptor pinned through publication and owned cleanup; preserve original one-shot close before link. Verify full descriptor/named metadata and exact bytes before link, while temp+destination account for2 links, and after temp unlink/directory sync with1 link."
+}

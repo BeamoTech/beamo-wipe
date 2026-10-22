@@ -1,0 +1,23 @@
+{
+  "cases": 396,
+  "saved_languages": [
+    "en",
+    "fr",
+    "de"
+  ],
+  "report_languages": [
+    "en",
+    "fr",
+    "de"
+  ],
+  "outcomes": 11,
+  "identifier_forms": 4,
+  "semantic_or_redaction_failures": 0,
+  "native_effects": 0,
+  "original_evidence_mutations": 0,
+  "source_sha256": {
+    "src/beamo_wipe/privacy.py": "bcb9c6ce4764a7e6df54b970aede4003c3f90357535fc42530b831eeef0face2",
+    "src/beamo_wipe/result_summary.py": "b059c558e913348887a24b2ade36b8e34bfa01aa7acb1e64ee8a47e996cdb430",
+    "src/beamo_wipe/outcomes.py": "4af35b516e728d1b46fd8b242346c7ded29e61a0bbb9e827a617d155267bd8ba"
+  }
+}

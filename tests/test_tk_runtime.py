@@ -807,6 +807,7 @@ def test_held_space_does_not_shutdown_pick_empty(ui):
     shut = app._primary
     assert shut is not None
     shut.event_generate("<KeyRelease>", keysym="space")
+    time.sleep(0.03)
     app.root.update()
     shut = app._primary
     assert shut is not None
@@ -855,6 +856,7 @@ def test_held_space_does_not_shutdown_failed_done(ui):
     shut = app._primary
     assert shut is not None
     shut.event_generate("<KeyRelease>", keysym="space")
+    time.sleep(0.03)
     app.root.update()
     shut = app._primary
     assert shut is not None
@@ -888,7 +890,7 @@ def test_x11_space_release_press_pair_does_not_shutdown_done(ui):
     assert app._space_held
 
 
-def test_space_report_export_retargets_focus_before_worker_starts():
+def test_space_report_export_keeps_control_alive_before_release():
     """The report-start marker must never race release to a destroyed button."""
     app = object.__new__(TkWizard)
     events = []
@@ -901,17 +903,26 @@ def test_space_report_export_retargets_focus_before_worker_starts():
             events.append("stable-focus")
 
     class Wizard:
+        screen = Screen.DONE
+
         def begin_report_export(self):
             events.append("report-start")
             return True
 
+        def arm_done_keyboard(self):
+            events.append("keyboard-armed")
+
     app.root = Root()
     app.w = Wizard()
     app._space_action_active = True
+    app._space_release_after = None
+    app._primary = None
     app._draw = lambda: events.append("redraw")
 
     app._click_save_report()
-    assert events == ["stable-focus", "report-start", "redraw"]
+    assert events == ["report-start"]
+    app._release_space()
+    assert events == ["report-start", "keyboard-armed", "redraw"]
 
 
 def test_space_release_finishes_while_idle_queue_is_busy(ui):
@@ -947,9 +958,39 @@ def test_space_release_finishes_while_idle_queue_is_busy(ui):
     assert not wiz.wants_shutdown
 
 
+def test_cancelled_space_release_callback_cannot_clear_repeat_press(monkeypatch):
+    """A timer already dequeued by Tk cannot acknowledge an autorepeat pair."""
+    app = object.__new__(TkWizard)
+    callbacks = {}
+
+    class Root:
+        def after(self, _delay, callback):
+            callbacks["release"] = callback
+            return "release"
+
+        def after_cancel(self, _callback):
+            # Model a callback already dequeued by Tcl when cancellation runs.
+            pass
+
+    app.root = Root()
+    app._space_held = True
+    app._space_release_after = None
+    app._space_release_generation = 0
+    app._space_release_time = None
+    markers = []
+    monkeypatch.setattr("beamo_wipe.ui.tk_wizard.emit_serial_marker", markers.append)
+
+    app._on_space_release(SimpleNamespace(time=123))
+    assert not app._claim_space_press(SimpleNamespace(time=123))
+    callbacks["release"]()
+
+    assert app._space_held
+    assert "BEAMO_WIPE_KEY_SPACE_RELEASED" not in markers
+
+
 @pytest.mark.parametrize("run", range(5))
 def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypatch, run):
-    """Use server-delivered release after Save destroys the initiating control."""
+    """Keep Save alive through a server-delivered release, then redraw."""
     import ctypes
     import ctypes.util
     import os
@@ -967,6 +1008,8 @@ def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypa
     x11.XCloseDisplay.argtypes = [ctypes.c_void_p]
     xtst.XTestFakeKeyEvent.argtypes = [ctypes.c_void_p, ctypes.c_uint, ctypes.c_int, ctypes.c_ulong]
     monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+    markers = []
+    monkeypatch.setattr("beamo_wipe.ui.tk_wizard.emit_serial_marker", markers.append)
     wiz, app = ui(fail=True)
     wiz.preview = False
     wiz.runner.duration_s = 0.05
@@ -1011,13 +1054,16 @@ def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypa
             app.root.update()
             time.sleep(0.01)
         assert app._report_space_release_pending
-        assert not save.winfo_exists()
+        assert save.winfo_exists()
+        assert app.root.focus_get() is save
         assert not wiz.wants_shutdown
+        releases_before_hold = markers.count("BEAMO_WIPE_KEY_SPACE_RELEASED")
         held_until = time.monotonic() + 1.2
         while time.monotonic() < held_until:
             app.root.update()
             time.sleep(0.01)
         assert app._space_held
+        assert markers.count("BEAMO_WIPE_KEY_SPACE_RELEASED") == releases_before_hold
         assert not wiz.wants_shutdown
         xtst.XTestFakeKeyEvent(connection, code, 0, 0)
         x11.XFlush(connection)
@@ -1026,6 +1072,8 @@ def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypa
             app.root.update()
             time.sleep(0.01)
         assert not app._space_held, "server-delivered Space release was lost"
+        assert markers.count("BEAMO_WIPE_KEY_SPACE_RELEASED") == releases_before_hold + 1
+        assert not save.winfo_exists()
         assert not wiz.wants_shutdown
     finally:
         xtst.XTestFakeKeyEvent(connection, code, 0, 0)
@@ -1058,25 +1106,27 @@ def test_held_space_from_save_cannot_repeat_onto_shutdown(ui, tmp_path, monkeypa
     app._draw()
     save = _button_named(app, "Save report to USB")
     save.focus_set()
+    app.root.update()
+    assert app.root.focus_get() is save
     save._key()
-    # QEMU sends key-up after the report-start marker, while the Save control
-    # may already have been destroyed. Keep focus on the stable toplevel until
-    # that physical release has been delivered.
-    assert app.root.focus_get() is app.root
+    # QEMU sends key-up after the report-start marker. Keep the Save control
+    # focused and alive until that physical release has been delivered.
+    assert app.root.focus_get() is save
     deadline = time.monotonic() + 3
     while wiz.report_view.exporting and time.monotonic() < deadline:
         app.root.update()
-    app._draw()
     assert wiz.report_status == "saved"
     assert not wiz._done_keyboard_armed
-    assert app.root.focus_get() is app.root
+    assert app.root.focus_get() is save
+    assert save.winfo_exists()
 
     shut = app._primary
     assert shut is not None
     shut._key()
     assert not wiz.wants_shutdown
 
-    app.root.event_generate("<KeyRelease>", keysym="space")
+    save.event_generate("<KeyRelease>", keysym="space")
+    time.sleep(0.03)
     app.root.update()
     assert not app._space_held
     assert app.root.focus_get() is app._primary
@@ -1966,6 +2016,7 @@ def test_split_space_repeat_does_not_toggle_owner_twice(ui):
     app._owner_key(SimpleNamespace(time=200))
     assert wiz.owner_ok
     app._on_space_release(SimpleNamespace(time=300))
+    time.sleep(0.03)
     app.root.update()
     app._owner_key(SimpleNamespace(time=400))
     assert not wiz.owner_ok

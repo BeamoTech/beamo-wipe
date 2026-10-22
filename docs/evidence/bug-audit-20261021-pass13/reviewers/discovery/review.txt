@@ -1,0 +1,71 @@
+PASS13 discovery / classification / inventory / identity / boot-exclusion review
+2026-10-21 UTC / Codex discovery subagent
+Repository /workspace/beamo-wipe; branch fix/safety-audit-20261019;
+baseline/current HEAD 7fcd706b44c0d63cf5f2959bcd235968e8300274.
+
+PROVED PRODUCTION DEFECTS: none. No repository product, test or backlog edits.
+No source ownership is requested. Root owns the canonical backlog and full gate.
+Read AGENTS.md, relevant memory/backlog, boot-exclusion signal map and PASS12
+review/model evidence. The shared ~/dev/AGENTS.md is absent; existing memory
+records the owner's authorization to continue without inventing its contents.
+Applied cloud-environment-runtime skill for managed-runtime readiness only.
+
+REVIEW
+Inspected typed source and udev alias resolution, physical owner selection,
+partition/tree/PKNAME contradictions, shared filesystem/mounted identity
+coverage, raw layout/metadata identity, final rediscovery checks, confirmation
+tokens and display-only identity/inventory projections. Focused this pass on
+typed identifier collisions and source-to-owner binding rather than repeating
+PASS12's two-snapshot identity freshness model. Existing fail-closed paths held.
+
+FRESH MODEL
+probe_typed_source_ownership.py exercises public discover with injected payloads
+and production require-device-link identify_boot_path. 320 states span four
+identifier kinds (LABEL, PARTLABEL, UUID, PARTUUID), tree/flat layouts, reversed
+order, typed/standard-udev source syntax, and ten ownership/collision conditions:
+normal, same/case/suffixed peer identifier, matching orphan, matching loop,
+same-owner repeated/case-varying identifier, contradictory parent, malformed
+peer identifier. Twelve further link-required states cover missing, wrong-owner
+and agreeing udev links for every identifier kind. Exact total 332 states,
+132 expected positives / 200 refusals, zero mismatches, zero native acquisition
+callbacks; 320 public injected discovery calls plus 332 production identification
+calls. Standard Unicode label text and escaped ASCII spaces remain positive.
+Script and five exact source hashes are embedded in typed-source-ownership.json.
+This is supplemental model evidence, not extra canonical pytest coverage.
+
+ORACLE CORRECTION (retained, not a product failure)
+The initial model mistakenly expected same-owner duplicate PARTUUID to refuse.
+Those 16 states correctly establish one physical boot owner. Filesystem UUID
+duplicates can imply multi-device membership and remain refused. Corrected only
+the external oracle before the final replay. Initial script/JSON/log remain in
+probe_typed_source_ownership-initial.py and typed-source-ownership-initial-oracle.*.
+
+REJECTED CANDIDATE
+test_udev_utf8_candidate.py reports 3 failures / 1 ASCII-space positive on the
+unchanged baseline for manually byte-escaped UTF-8 aliases. The decoder maps
+each byte to a codepoint. A separate pure string call to local libudev's
+udev_util_encode_string proves standard udev preserves valid Unicode literally
+(é, 中, and 💾); it does not produce those aliases. Therefore this synthetic
+trace does not establish a production bug and no product edit is proposed.
+Retained udev-candidate.xml/log/exit and udev-string-encoding.txt make the
+disposition inspectable. This diagnostic is not reported as a passing test.
+
+FOCUSED EXISTING CHECKS
+Fourteen exact existing modules in focused-files.txt were run under -W error,
+--strict-markers and --strict-config with JUnit and a synthetic machine guard.
+176 unique cases passed, zero failures/errors/skips/warnings; process exit 0.
+Actual outcomes, unique IDs and warning status are in focused-summary.json;
+focused.xml/log/exit/nodeids retain the receipts. Before/after SHA-256 checks
+prove all five reviewed product inputs and fourteen existing test files stayed
+byte-identical. Guard records only synthetic realpath/lstat handling, with no
+forbidden native callbacks. These counts overlap root's canonical full gate.
+
+BOUNDARIES / LIMITS
+All work used fake payloads and owned regular evidence files. Native inventory
+opt-in stayed unset. No device/sysfs content acquisition, native inventory,
+actual mount/engine/firmware/power/guest/network/remote/Docker/build action,
+dependency installation, hosted gate, release, or backlog export retry occurred.
+The libudev check was pure string encoding, with no device/context enumeration.
+Actual native/image/firmware/physical/reconnect qualification remains unverified
+under the root-owned acceptance record. Models cannot qualify real hardware.
+artifact-sha256.txt hashes retained external artifacts except itself.

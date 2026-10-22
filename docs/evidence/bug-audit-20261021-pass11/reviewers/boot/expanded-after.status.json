@@ -1,0 +1,16 @@
+{
+  "name": "expanded-after",
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-json",
+    "-run",
+    "^TestBoundedOutput(OwnedHelper|BoundsInheritedPipes|CaptureControls|DrainLimitControls|EnforcesCaptureBudget)Pass11$",
+    "."
+  ],
+  "started_utc": "2026-10-21T06:06:39.096400+00:00",
+  "elapsed_seconds": 12.56,
+  "exit_code": 0
+}

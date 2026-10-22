@@ -1,0 +1,17 @@
+{
+  "name": "final-firmware-model",
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-overlay",
+    "/workspace/beamo-tools/audit-pass9-20261021/root/firmware-overlay.json",
+    "-run=^TestPass9FirmwareContractMatrix$",
+    "-json",
+    "./..."
+  ],
+  "started_utc": "2026-10-21T04:55:14.054374+00:00",
+  "elapsed_seconds": 2.05,
+  "exit_code": 0
+}

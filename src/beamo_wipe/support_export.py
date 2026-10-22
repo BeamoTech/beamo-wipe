@@ -1347,7 +1347,10 @@ def _request_dict(
     log_status: str,
     privacy_reduced: bool = False,
 ) -> dict[str, Any]:
+    from beamo_wipe import lang
+
     return {
+        "language": lang.current(),
         "evidence": base64.b64encode(evidence.data).decode("ascii"),
         "evidence_sha256": evidence.sha256,
         "volume": asdict(volume),
@@ -1662,25 +1665,74 @@ def _write_exclusive(directory_fd: int, name: str, data: bytes) -> None:
     os.rename(temporary, name, src_dir_fd=directory_fd, dst_dir_fd=directory_fd)
 
 
-def _read_at(directory_fd: int, name: str, *, limit: int = MAX_REQUEST_BYTES) -> bytes:
+def _read_at(
+    directory_fd: int,
+    name: str,
+    *,
+    limit: int = MAX_REQUEST_BYTES,
+    private: bool = False,
+) -> bytes:
     if not re.fullmatch(r"[A-Za-z0-9_][A-Za-z0-9_.-]{0,100}", name) or name in {".", ".."}:
         raise SafetyError(REPORT_FILENAME_INVALID)
     fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory_fd)
     try:
         opened = os.fstat(fd)
-        if not stat.S_ISREG(opened.st_mode) or opened.st_size > limit:
+        if (
+            not stat.S_ISREG(opened.st_mode)
+            or (
+                private
+                and (
+                    opened.st_uid != os.getuid()
+                    or stat.S_IMODE(opened.st_mode) != 0o600
+                    or opened.st_nlink != 1
+                )
+            )
+            or opened.st_size > limit
+        ):
             raise SafetyError(REPORT_UNSAFE_FILE)
-        chunks: list[bytes] = []
-        remaining = limit + 1
-        while remaining:
-            chunk = os.read(fd, min(65536, remaining))
-            if not chunk:
-                break
-            chunks.append(chunk)
-            remaining -= len(chunk)
-        if remaining == 0:
-            raise SafetyError(REPORT_TOO_BIG)
-        return b"".join(chunks)
+
+        def read_once() -> bytes:
+            chunks: list[bytes] = []
+            remaining = limit + 1
+            while remaining:
+                chunk = os.read(fd, min(65536, remaining))
+                if not chunk:
+                    break
+                chunks.append(chunk)
+                remaining -= len(chunk)
+            if remaining == 0:
+                raise SafetyError(REPORT_TOO_BIG)
+            return b"".join(chunks)
+
+        data = read_once()
+        os.lseek(fd, 0, os.SEEK_SET)
+        repeated = read_once()
+        after = os.fstat(fd)
+        named = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
+        fields = (
+            "st_dev", "st_ino", "st_size", "st_mode", "st_uid", "st_nlink",
+            "st_mtime_ns", "st_ctime_ns",
+        )
+        if (
+            data != repeated
+            or len(data) != opened.st_size
+            or (
+                private
+                and any(
+                    snapshot.st_uid != os.getuid()
+                    or stat.S_IMODE(snapshot.st_mode) != 0o600
+                    or snapshot.st_nlink != 1
+                    for snapshot in (after, named)
+                )
+            )
+            or any(
+                getattr(opened, field) != getattr(after, field)
+                or getattr(after, field) != getattr(named, field)
+                for field in fields
+            )
+        ):
+            raise SafetyError(REPORT_READBACK_FAILED)
+        return data
     finally:
         os.close(fd)
 
@@ -1969,8 +2021,12 @@ def verify_report_bundle(mountpoint: Path, session_name: str, files: Mapping[str
         if names != sorted(files):
             raise SafetyError(REPORT_FILES_CHANGED)
         for name, expected in files.items():
-            if _read_at(directory_fd, name, limit=len(expected)) != expected:
+            if _read_at(
+                directory_fd, name, limit=len(expected), private=True
+            ) != expected:
                 raise SafetyError(REPORT_READBACK_FAILED)
+        if sorted(os.listdir(directory_fd)) != names:
+            raise SafetyError(REPORT_FILES_CHANGED)
     finally:
         _close_directory_fds(directory_fd, reports_fd, mount_fd)
 
@@ -2074,13 +2130,15 @@ def _decode_worker_request(
     str,
     bool,
 ]:
+    from beamo_wipe import lang
+
     if not raw or len(raw) > MAX_REQUEST_BYTES:
         raise SafetyError(REQUEST_SIZE_INVALID)
     try:
         payload = json.loads(
             raw.decode("utf-8"), object_pairs_hook=_unique_request_fields
         )
-        if not isinstance(payload, dict) or set(payload) != {
+        if not isinstance(payload, dict) or set(payload) - {"language"} != {
             "evidence",
             "evidence_sha256",
             "volume",
@@ -2091,6 +2149,12 @@ def _decode_worker_request(
             "privacy_reduced",
         }:
             raise TypeError("unexpected request fields")
+        # Older controller requests were implicitly English. New controllers
+        # carry their language explicitly; translated report prose is never
+        # used to guess a language or to widen this allowlist.
+        language = payload.get("language", "en")
+        if not lang.is_supported(language):
+            raise TypeError("invalid report language")
         evidence_data = base64.b64decode(payload["evidence"], validate=True)
         evidence_payload = json.loads(
             evidence_data, object_pairs_hook=_unique_request_fields
@@ -2126,12 +2190,6 @@ def _decode_worker_request(
     evidence_hash = hashlib.sha256(evidence_data).hexdigest()
     if payload.get("evidence_sha256") != evidence_hash:
         raise SafetyError(REQUEST_CHECKSUM)
-    is_diagnostic = evidence_payload.get("report_type") == "startup_diagnostic"
-    if is_diagnostic:
-        from beamo_wipe.diagnostic_report import validate_report
-        validate_report(evidence_data)
-        if log_data or log_status != "unavailable":
-            raise SafetyError(DIAG_NO_RAW_LOGS)
     if not isinstance(log_status, str) or log_status not in {
         "complete",
         "tail",
@@ -2140,6 +2198,16 @@ def _decode_worker_request(
         raise SafetyError(LOG_STATUS_MALFORMED)
     if (log_status == "unavailable") != (not log_data):
         raise SafetyError(LOG_PAYLOAD_MALFORMED)
+    # The private process starts with English module globals. Restore the
+    # controller's validated choice before validating diagnostic copy and
+    # rendering owner/sharing files, without changing the original bytes.
+    lang.set_language(language)
+    is_diagnostic = evidence_payload.get("report_type") == "startup_diagnostic"
+    if is_diagnostic:
+        from beamo_wipe.diagnostic_report import validate_report
+        validate_report(evidence_data)
+        if log_data or log_status != "unavailable":
+            raise SafetyError(DIAG_NO_RAW_LOGS)
     return (
         VerifiedEvidence(evidence_data, evidence_hash, "", "", "", 0),
         volume,
@@ -2236,7 +2304,10 @@ def _persist_and_verify_report(
         os.mkdir(mount_name, 0o700, dir_fd=root_fd)
         mountpoint = MOUNT_ROOT / mount_name
         stable_source = f"/proc/self/fd/{volume_fd}"
-        rw_options = "rw,nodev,nosuid,noexec,nosymfollow,umask=077"
+        # VFAT synthesizes permissions from mount masks. Keep directories
+        # owner-only and regular report members exactly 0600 on both mounts.
+        permission_options = "fmask=0177,dmask=0077"
+        rw_options = f"rw,nodev,nosuid,noexec,nosymfollow,{permission_options}"
         proc = _run_command(
             [MOUNT_BIN, "-t", volume.fstype, "-o", rw_options, stable_source, str(mountpoint)],
             pass_fds=(volume_fd,),
@@ -2263,7 +2334,7 @@ def _persist_and_verify_report(
         mounted = False
         _emit_export_marker("BEAMO_WIPE_EXPORT_RW_UNMOUNTED")
 
-        ro_options = "ro,nodev,nosuid,noexec,nosymfollow"
+        ro_options = f"ro,nodev,nosuid,noexec,nosymfollow,{permission_options}"
         proc = _run_command(
             [MOUNT_BIN, "-t", volume.fstype, "-o", ro_options, stable_source, str(mountpoint)],
             pass_fds=(volume_fd,),

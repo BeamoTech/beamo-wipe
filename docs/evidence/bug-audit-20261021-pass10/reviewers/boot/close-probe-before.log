@@ -1,0 +1,35 @@
+{"Time":"2026-10-21T05:20:27.603858803Z","Action":"start","Package":"beamo-wipe/desktop"}
+{"Time":"2026-10-21T05:20:27.613055757Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe"}
+{"Time":"2026-10-21T05:20:27.613081685Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe","Output":"=== RUN   TestPass10CloseAdmissionProbe\n"}
+{"Time":"2026-10-21T05:20:27.613150005Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/normal-restart"}
+{"Time":"2026-10-21T05:20:27.613154472Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/normal-restart","Output":"=== RUN   TestPass10CloseAdmissionProbe/normal-restart\n"}
+{"Time":"2026-10-21T05:20:27.613600298Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/normal-restart","Output":"--- PASS: TestPass10CloseAdmissionProbe/normal-restart (0.00s)\n"}
+{"Time":"2026-10-21T05:20:27.613610493Z","Action":"pass","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/normal-restart","Elapsed":0}
+{"Time":"2026-10-21T05:20:27.613625105Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/normal-check"}
+{"Time":"2026-10-21T05:20:27.613650572Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/normal-check","Output":"=== RUN   TestPass10CloseAdmissionProbe/normal-check\n"}
+{"Time":"2026-10-21T05:20:27.614767956Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/normal-check","Output":"--- PASS: TestPass10CloseAdmissionProbe/normal-check (0.00s)\n"}
+{"Time":"2026-10-21T05:20:27.614784891Z","Action":"pass","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/normal-check","Elapsed":0}
+{"Time":"2026-10-21T05:20:27.61481832Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/busy-close"}
+{"Time":"2026-10-21T05:20:27.614820493Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/busy-close","Output":"=== RUN   TestPass10CloseAdmissionProbe/busy-close\n"}
+{"Time":"2026-10-21T05:20:27.614948582Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/busy-close","Output":"--- PASS: TestPass10CloseAdmissionProbe/busy-close (0.00s)\n"}
+{"Time":"2026-10-21T05:20:27.614951436Z","Action":"pass","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/busy-close","Elapsed":0}
+{"Time":"2026-10-21T05:20:27.614970424Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/closed-restart"}
+{"Time":"2026-10-21T05:20:27.614972147Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/closed-restart","Output":"=== RUN   TestPass10CloseAdmissionProbe/closed-restart\n"}
+{"Time":"2026-10-21T05:20:27.615142397Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/closed-restart","Output":"    pass10_external_close_probe_test.go:46: restart admitted after successful close: code=200 calls=1\n"}
+{"Time":"2026-10-21T05:20:27.615168966Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/closed-restart","Output":"--- FAIL: TestPass10CloseAdmissionProbe/closed-restart (0.00s)\n"}
+{"Time":"2026-10-21T05:20:27.615207703Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/closed-restart","Elapsed":0}
+{"Time":"2026-10-21T05:20:27.615210147Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/closed-check"}
+{"Time":"2026-10-21T05:20:27.615211719Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/closed-check","Output":"=== RUN   TestPass10CloseAdmissionProbe/closed-check\n"}
+{"Time":"2026-10-21T05:20:27.615483148Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/closed-check","Output":"    pass10_external_close_probe_test.go:49: check admitted after successful close: code=200 calls=1\n"}
+{"Time":"2026-10-21T05:20:27.615508956Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/closed-check","Output":"--- FAIL: TestPass10CloseAdmissionProbe/closed-check (0.00s)\n"}
+{"Time":"2026-10-21T05:20:27.615550808Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/closed-check","Elapsed":0}
+{"Time":"2026-10-21T05:20:27.615553452Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/closed-state"}
+{"Time":"2026-10-21T05:20:27.615555074Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/closed-state","Output":"=== RUN   TestPass10CloseAdmissionProbe/closed-state\n"}
+{"Time":"2026-10-21T05:20:27.61598029Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/closed-state","Output":"    pass10_external_close_probe_test.go:55: successful close retained published restart authority\n"}
+{"Time":"2026-10-21T05:20:27.615999228Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/closed-state","Output":"--- FAIL: TestPass10CloseAdmissionProbe/closed-state (0.00s)\n"}
+{"Time":"2026-10-21T05:20:27.616023714Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe/closed-state","Elapsed":0}
+{"Time":"2026-10-21T05:20:27.616060738Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe","Output":"--- FAIL: TestPass10CloseAdmissionProbe (0.00s)\n"}
+{"Time":"2026-10-21T05:20:27.616063322Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestPass10CloseAdmissionProbe","Elapsed":0}
+{"Time":"2026-10-21T05:20:27.616147907Z","Action":"output","Package":"beamo-wipe/desktop","Output":"FAIL\n"}
+{"Time":"2026-10-21T05:20:27.616360309Z","Action":"output","Package":"beamo-wipe/desktop","Output":"FAIL\tbeamo-wipe/desktop\t0.012s\n"}
+{"Time":"2026-10-21T05:20:27.616370204Z","Action":"fail","Package":"beamo-wipe/desktop","Elapsed":0.013}

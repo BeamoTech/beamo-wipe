@@ -1,0 +1,14 @@
+{
+  "name": "focused-lint",
+  "command": [
+    "python3",
+    "-m",
+    "ruff",
+    "check",
+    "src/beamo_wipe/sleep_inhibit.py",
+    "tests/test_sleep_inhibit_diagnostic_retirement_pass11_20261021.py"
+  ],
+  "started_utc": "2026-10-21T06:04:01.944570+00:00",
+  "elapsed_seconds": 0.026,
+  "exit_code": 0
+}

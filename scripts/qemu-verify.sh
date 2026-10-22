@@ -30,7 +30,7 @@ fi
 BOOT_WAIT_SECONDS=120
 if [[ ! -r /dev/kvm ]]; then BOOT_WAIT_SECONDS=300; fi
 
-VERSION="${BEAMO_WIPE_VERSION:-0.2.13}"
+VERSION="${BEAMO_WIPE_VERSION:-0.2.14}"
 if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "ABORT: invalid BEAMO_WIPE_VERSION" >&2
   exit 2
@@ -1256,10 +1256,10 @@ drive_report_export() {
   # then Save report. Keep this in sync with the real Tk traversal test.
   send_key "$qmp_socket" tab
   send_key "$qmp_socket" tab
-  # Report export can occupy Tk's event loop before its deferred key-release
-  # callback runs. Bound this release wait by the report-save budget; all other
-  # keys retain the shorter 20-second acknowledgment bound.
-  send_key_for_marker "$label" "$qmp_socket" spc BEAMO_WIPE_REPORT_SAVING 20 120
+  # The Save control remains alive until key-up, so a redraw marker cannot be
+  # the condition for sending that key-up. The controller-start marker proves
+  # the focused control accepted the press without depending on a redraw.
+  send_key_for_marker "$label" "$qmp_socket" spc BEAMO_WIPE_EXPORT_CONTROLLER_STARTED 20 120
   wait_for_report_saved "$label"
 }
 
@@ -1689,7 +1689,7 @@ required = (
     "BEAMO_WIPE_SCREEN_LAST_CHANCE",
     "BEAMO_WIPE_SCREEN_WORKING",
     "BEAMO_WIPE_SCREEN_DONE",
-    "BEAMO_WIPE_REPORT_SAVING",
+    "BEAMO_WIPE_EXPORT_CONTROLLER_STARTED",
     "BEAMO_WIPE_REPORT_SAVED",
 )
 path = pathlib.Path(sys.argv[1])

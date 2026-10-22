@@ -33,5 +33,5 @@ sleep() { printf 'wait %s\\n' "$1"; }
     ]
     report = actions.index('wait 5')
     assert actions[report + 1:report + 4] == [
-        'key tab', 'key tab', 'marker spc BEAMO_WIPE_REPORT_SAVING',
+        'key tab', 'key tab', 'marker spc BEAMO_WIPE_EXPORT_CONTROLLER_STARTED',
     ]

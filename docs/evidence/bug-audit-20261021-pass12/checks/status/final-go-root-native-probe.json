@@ -1,0 +1,17 @@
+{
+  "name": "final-go-root-native-probe",
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-overlay",
+    "/workspace/beamo-tools/audit-pass12-20261021/root/native-json-independent-overlay.json",
+    "-run=^TestPass12IndependentNativeJSONBoundary$",
+    "-json",
+    "./..."
+  ],
+  "started_utc": "2026-10-21T06:53:33.032593+00:00",
+  "elapsed_seconds": 1.49,
+  "exit_code": 0
+}

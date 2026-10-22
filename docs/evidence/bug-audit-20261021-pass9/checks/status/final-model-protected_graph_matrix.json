@@ -1,0 +1,15 @@
+{
+  "name": "final-model-protected_graph_matrix",
+  "command": [
+    "env",
+    "PYTHONPATH=/workspace/beamo-wipe/src",
+    "BEAMO_WIPE_DRY_RUN=1",
+    "python3",
+    "-W",
+    "error",
+    "/workspace/beamo-tools/audit-pass9-20261021/root/model-replays/protected_graph_matrix.py"
+  ],
+  "started_utc": "2026-10-21T04:54:37.448310+00:00",
+  "elapsed_seconds": 7.44,
+  "exit_code": 0
+}

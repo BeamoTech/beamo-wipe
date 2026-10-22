@@ -1,0 +1,17 @@
+{"Time":"2026-10-21T05:27:23.038507087Z","Action":"start","Package":"beamo-wipe/desktop"}
+{"Time":"2026-10-21T05:27:23.047365948Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestPass10IdleAdmissionBaselineTrace"}
+{"Time":"2026-10-21T05:27:23.047420308Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10IdleAdmissionBaselineTrace","Output":"=== RUN   TestPass10IdleAdmissionBaselineTrace\n"}
+{"Time":"2026-10-21T05:27:23.047449591Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestPass10IdleAdmissionBaselineTrace/idle-decision"}
+{"Time":"2026-10-21T05:27:23.047452355Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10IdleAdmissionBaselineTrace/idle-decision","Output":"=== RUN   TestPass10IdleAdmissionBaselineTrace/idle-decision\n"}
+{"Time":"2026-10-21T05:27:23.047566924Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10IdleAdmissionBaselineTrace/idle-decision","Output":"    pass10_external_idle_trace_test.go:30: cached idle decision can abandon admitted action: status=200 calls=1\n"}
+{"Time":"2026-10-21T05:27:23.047574835Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10IdleAdmissionBaselineTrace/idle-decision","Output":"--- FAIL: TestPass10IdleAdmissionBaselineTrace/idle-decision (0.00s)\n"}
+{"Time":"2026-10-21T05:27:23.047593062Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestPass10IdleAdmissionBaselineTrace/idle-decision","Elapsed":0}
+{"Time":"2026-10-21T05:27:23.047614664Z","Action":"run","Package":"beamo-wipe/desktop","Test":"TestPass10IdleAdmissionBaselineTrace/busy-control"}
+{"Time":"2026-10-21T05:27:23.047616647Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10IdleAdmissionBaselineTrace/busy-control","Output":"=== RUN   TestPass10IdleAdmissionBaselineTrace/busy-control\n"}
+{"Time":"2026-10-21T05:27:23.047670376Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10IdleAdmissionBaselineTrace/busy-control","Output":"--- PASS: TestPass10IdleAdmissionBaselineTrace/busy-control (0.00s)\n"}
+{"Time":"2026-10-21T05:27:23.047690606Z","Action":"pass","Package":"beamo-wipe/desktop","Test":"TestPass10IdleAdmissionBaselineTrace/busy-control","Elapsed":0}
+{"Time":"2026-10-21T05:27:23.047749442Z","Action":"output","Package":"beamo-wipe/desktop","Test":"TestPass10IdleAdmissionBaselineTrace","Output":"--- FAIL: TestPass10IdleAdmissionBaselineTrace (0.00s)\n"}
+{"Time":"2026-10-21T05:27:23.04778831Z","Action":"fail","Package":"beamo-wipe/desktop","Test":"TestPass10IdleAdmissionBaselineTrace","Elapsed":0}
+{"Time":"2026-10-21T05:27:23.047878362Z","Action":"output","Package":"beamo-wipe/desktop","Output":"FAIL\n"}
+{"Time":"2026-10-21T05:27:23.048066479Z","Action":"output","Package":"beamo-wipe/desktop","Output":"FAIL\tbeamo-wipe/desktop\t0.009s\n"}
+{"Time":"2026-10-21T05:27:23.048079008Z","Action":"fail","Package":"beamo-wipe/desktop","Elapsed":0.01}

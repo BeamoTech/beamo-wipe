@@ -1,0 +1,65 @@
+{
+  "audit": "bug-audit-20261021-pass19",
+  "baseline_commit": "e5ba1f3cb817f706035c03eff043e39d291b0309",
+  "branch": "fix/safety-audit-20261019",
+  "date_utc": "2026-10-21",
+  "baseline_regressions": {
+    "errors": 0,
+    "failures": 10,
+    "passes": 9,
+    "junit_sha256": "f2eb4e22e41161dc7173f877567ac3dcff37efc56db9d50c5603da223243a073"
+  },
+  "fixed_regressions": {
+    "errors": 0,
+    "failures": 0,
+    "passes": 19,
+    "junit_sha256": "bdfb32ef95a7d273a972f62c32b220b8a24e36fe9ab125e59e9bfef62bdf2cfb"
+  },
+  "focused_release": {
+    "errors": 0,
+    "failures": 0,
+    "passes": 293,
+    "selected": 362,
+    "skipped": 69,
+    "junit_sha256": "1136f45057729b207043e61c8c01580050b66a379d26ca4e5731f450ee3638df"
+  },
+  "final_python": {
+    "deselected": 2,
+    "errors": 0,
+    "failures": 0,
+    "passed_unique": 12122,
+    "selected": 12149,
+    "skipped": 27,
+    "warnings_as_errors": true,
+    "full_junit_sha256": "8fe21b160330ae10bfea1f17a1ed3fd10f93263ee082db53170e696d6eb7fd60",
+    "go_path_supplement_junit_sha256": "1d5e23b1725db049942729b0588638990755ff6bd2997b815918b8698f0fd282",
+    "tmpdir_refusal_rerun_junit_sha256": "b65fcad60969e89b363c246a2feae8f898adf4028c4a3a00d549f24e198c0cef"
+  },
+  "desktop_artifacts": {
+    "go_version": "go1.26.8",
+    "linux_sha256": "35b8293a76406b3441e83463364185dfeaa1f7801709ce9446220d19c219aa3d",
+    "manifest_sha256": "6e2b563316542148e88b011427ba688d5171f30d41746ddf0f2b3718005c9a0d",
+    "version": "0.2.13",
+    "windows_sha256": "dc9b8cf8ceb671e51505eb6d6420ec60552cd5b9e334238536686b31c708173e"
+  },
+  "go_cross_compile_sha256": {
+    "darwin_amd64": "1fdc76e0eda18e4ab857f8324adcc5402c9efdf7a78e0c3502d0f5eff78ae93f",
+    "darwin_arm64": "8ff085ce57df3c21216471a6e8e59cd4396cc109193971decc0b32b831491f0f",
+    "windows_amd64": "1ab67f3e6a3cbed10f55bd3a97ca8c6773ea71a8765c9b6545dc144af3887af8",
+    "windows_test_amd64": "3150cefdb3aa2709936104ff6654969aaede77a44c6d34e5d02a5a130414541d"
+  },
+  "preview": {
+    "display": ":250",
+    "dpi": 72,
+    "fake_disks_only": true,
+    "normal_close_returncode": 0,
+    "png_sha256": "922c213939cba144951d70292b63b29baea8fe7d43e4a5f4e7f1e1adc378e5a8"
+  },
+  "source_sha256": {
+    "scripts/prepare_release_assets.py": "917ce9c6708c45cd1860d21dd3a92929935d6436bb6e69304c02bd55c3541d7d",
+    "scripts/verify_github_release_assets.py": "b03f5a442195a725d7d99cb62125defba06a7deabb5df184794ab6f1af9f05b5",
+    "tests/test_blacksmith_release.py": "7443b429ba261339eb39eb15d7bacd9f1a5805df10c97d363b0407018d2a8d59",
+    "tests/test_github_release_asset_binding_pass19_20261021.py": "34564130e90f61d7e729597afcc28a33bb5500f4e338602e3ade27da83aeff1a"
+  },
+  "publication": "local only; no push, PR, merge, deployment, or release"
+}

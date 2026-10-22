@@ -1,0 +1,20 @@
+{
+  "name": "preference-independent-before",
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "-W",
+    "error",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-q",
+    "/workspace/beamo-tools/audit-pass12-20261021/root/test_preference_snapshot_probe.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass12-20261021/root/preference-independent-before.xml"
+  ],
+  "started_utc": "2026-10-21T06:33:57.457031+00:00",
+  "elapsed_seconds": 0.64,
+  "exit_code": 1
+}

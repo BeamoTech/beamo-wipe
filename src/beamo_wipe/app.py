@@ -414,6 +414,11 @@ def _main(argv: list[str] | None = None, *, session_store=None, args=None) -> in
     if args.empty or args.blocked or args.fail_demo or args.scenario != "happy":
         args.demo = True
     apply_live_session_overrides(args)
+    if session_store is None and running_on_live_usb():
+        # A transient metadata failure at the public entry may have looked
+        # like a desktop. Do not discover live disks without owning recovery.
+        print(RECOVERY_UNAVAILABLE, file=sys.stderr)
+        return 3
     if not args.demo:
         try:
             signal.signal(signal.SIGTSTP, signal.SIG_IGN)
@@ -542,6 +547,12 @@ def _run_one_session(args, *, session_store, use_console, want_accessible,
         # kiosk supervisor offers recovery choices).
         return 0
 
+    if not args.demo and not wizard.dry_run and session_store is None:
+        # Live detection can recover again during the staged build. A real
+        # wizard must never reach its interface without session ownership.
+        print(RECOVERY_UNAVAILABLE, file=sys.stderr)
+        return 3
+
     if not args.demo and not wizard.dry_run and running_on_live_usb():
         from beamo_wipe.report_intent import ReportIntentStore
 
@@ -653,8 +664,15 @@ MISSING_FILE = "Missing file: {path}"
 def main(argv: list[str] | None = None) -> int:
     # Help, version and invalid arguments must not create a recovery session.
     args = _parser().parse_args(argv)
-    if not running_on_live_usb():
-        return _main(argv, args=args)
+    try:
+        live = running_on_live_usb()
+        if not live:
+            # A later metadata read can fail after an initial I/O refusal.
+            return _main(argv, args=args)
+    except UnicodeError:
+        # Unknown live state must not fall through to preview or startup.
+        print(RECOVERY_UNAVAILABLE, file=sys.stderr)
+        return 3
     from beamo_wipe.session_recovery import SessionStore
     store = SessionStore()
     try:

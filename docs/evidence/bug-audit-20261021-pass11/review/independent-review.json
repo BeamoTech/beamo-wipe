@@ -1,0 +1,40 @@
+{
+  "baseline_commit": "b46e5642d4c849d503b41d8bf562cfb1f9fad68b",
+  "verified_root_causes": 3,
+  "root_independent_originals": {
+    "pipe_deadline": {
+      "failures": 3,
+      "controls": 2
+    },
+    "capture_budget": {
+      "failures": 4,
+      "controls": 3
+    },
+    "optional_inhibit": {
+      "failures": 6,
+      "controls": 6
+    }
+  },
+  "root_exact_final_baseline": {
+    "python": {
+      "failures": 18,
+      "controls": 38,
+      "cases": 56
+    },
+    "go_leaves": {
+      "failures": 17,
+      "controls": 30,
+      "cases": 47
+    }
+  },
+  "all_existing_test_files_byte_identical": true,
+  "old_assertions_preserved": true,
+  "old_test_file_count": 691,
+  "source_paths_changed": [
+    "desktop/io.go",
+    "desktop/output_deadline_pass11_20261021_test.go",
+    "src/beamo_wipe/sleep_inhibit.py",
+    "tests/test_sleep_inhibit_diagnostic_retirement_pass11_20261021.py"
+  ],
+  "root_review": "Read complete product diffs and new test modules; independently reproduced allthree roots before edits, replayed exact expanded bytes on old source; read all five models; confirmed only output byte/pipe bounds and optional logging boundaries change. Genuine process-control interruptions and uncertain engine/helper ownership remain, no erase/boot/consent/pinned-version change."
+}

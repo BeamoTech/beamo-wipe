@@ -1,0 +1,74 @@
+{
+  "review": "PASS12 recovery report-intent repair",
+  "baseline": "b462e62005a752b0e5f2a066bda19bd9c79bbd8b",
+  "recorded_utc": "2026-10-21T06:47:29.327292+00:00",
+  "owned_paths": [
+    "src/beamo_wipe/report_intent.py",
+    "tests/test_report_intent_named_snapshot_pass12_20261021.py"
+  ],
+  "source_sha256": "e4a1bf94aecfc3926b72973f2319ab3f8394e03a83737d11542c5a3670727c82",
+  "new_test_sha256": "925a31dd06fdbde5b0b95a2dee670bef3a467d917ee1da30ddf2a9ca74ade2d6",
+  "baseline_source_sha256": "872072d5a51c72a01596dea683de7279c6191eb072c733ce8ae475fbef95e9fb",
+  "reports": {
+    "exact-final-regression-before": {
+      "total": 8,
+      "unique_ids": 8,
+      "passed": 2,
+      "failure": 6,
+      "error": 0,
+      "skipped": 0,
+      "junit_sha256": "1be8fe07519c13d47b3dec56b947d506a1cefb2a60a57e410ae6a93c2835fc19"
+    },
+    "exact-final-regression-after": {
+      "total": 8,
+      "unique_ids": 8,
+      "passed": 8,
+      "failure": 0,
+      "error": 0,
+      "skipped": 0,
+      "junit_sha256": "3c46aa65b00b53ea31fe695a0e9ca59457e47f48ba8f867a92cbc646b562ec94"
+    },
+    "archived-baseline-final-test": {
+      "total": 8,
+      "unique_ids": 8,
+      "passed": 2,
+      "failure": 6,
+      "error": 0,
+      "skipped": 0,
+      "junit_sha256": "a3c79aef28df07a2a8d7b9963180757c89e0ee0e23dd418cea9f0220d2b3a47a"
+    },
+    "repair-focused": {
+      "total": 146,
+      "unique_ids": 146,
+      "passed": 146,
+      "failure": 0,
+      "error": 0,
+      "skipped": 0,
+      "junit_sha256": "2c46cf276349abe24699884244f3f16f2a2d04cadf2a07625d5f0058b784cab4"
+    }
+  },
+  "existing_test_files_compared_to_baseline": 644,
+  "changed_existing_test_files": [],
+  "diff_sha256": "525ac70fe9c4a675fb8740f1ab49ad4c32db7d0ed375a011463ce08a2a9af6b9",
+  "model_final": "journal-admission-model.json",
+  "model_final_sha256": "489efe5d3f73fbba16c3e31c2822f9dcccfa3873b6d9da5f27c9820f2f18d3a5",
+  "model_counts": {
+    "states": 288,
+    "valid_admissions": 72,
+    "invalid_refusals": 216,
+    "rotations": 3,
+    "unchanged_refusals": 285,
+    "lock_refusals": 12,
+    "native_callbacks": 0
+  },
+  "history": [
+    "Initial external proof4F/2controls, root independently reproduced6F/2controls before assignment.",
+    "Archived replay initial cache setup warning retained separately; private cache correction did not change tests or warning policy.",
+    "Pre-repair broader focused519 unique passes including two isolated Tk replays overlaps canonical coverage; model counts are supporting evidence, not canonical additions."
+  ],
+  "remaining": [
+    "Root independent final replay and full canonical local gate.",
+    "Native/image/physical/reconnect/browser/network/publication qualification remains root-owned and unverified."
+  ],
+  "ownership_released": true
+}

@@ -144,8 +144,8 @@ def test_retry_preserves_result_times_and_interruption(tmp_path, monkeypatch, ou
 
 
 @pytest.mark.parametrize('checkpoint', [
-    'open', 'write', 'short_write', 'file_fsync', 'link', 'temp_unlink', 'dir_fsync',
-    'sidecar_open', 'sidecar_write', 'sidecar_fsync', 'sidecar_link', 'sidecar_dir_fsync',
+    'open', 'write', 'short_write', 'file_fsync', 'publish', 'post_publish', 'dir_fsync',
+    'sidecar_open', 'sidecar_write', 'sidecar_fsync', 'sidecar_publish', 'sidecar_dir_fsync',
     'readback', 'checksum', 'corrupt_readback',
 ])
 @pytest.mark.parametrize('phase', ['start', 'completed', 'interrupted', 'failed'])
@@ -180,23 +180,34 @@ def test_atomic_checkpoint_failures(tmp_path, monkeypatch, checkpoint, phase):
                 finally:
                     active['enabled'] = False
             fault.setattr(evidence, '_atomic_write_bytes', wrapped)
-            operation = {'short_write': 'write', 'file_fsync': 'fsync', 'dir_fsync': 'fsync',
-                         'temp_unlink': 'unlink'}.get(point, point)
-            original = getattr(os, operation)
             tripped = []
-            def broken(*args, **kwargs):
-                qualifies = True
-                if point == 'open':
-                    qualifies = '.tmp.' in str(args[0])
-                elif point in {'file_fsync', 'dir_fsync'}:
-                    qualifies = stat.S_ISDIR(os.fstat(args[0]).st_mode) == (point == 'dir_fsync')
-                if active['enabled'] and qualifies and not tripped:
-                    tripped.append(True)
-                    if point == 'short_write':
-                        return 0
-                    raise OSError(errno.EIO, 'private-path')
-                return original(*args, **kwargs)
-            fault.setattr(os, operation, broken)
+            if point in {'publish', 'post_publish'}:
+                original_publish = evidence._rename_noreplace
+                def broken_publish(*args, **kwargs):
+                    if active['enabled'] and not tripped:
+                        tripped.append(True)
+                        if point == 'post_publish':
+                            original_publish(*args, **kwargs)
+                        raise OSError(errno.EIO, 'private-path')
+                    return original_publish(*args, **kwargs)
+                fault.setattr(evidence, '_rename_noreplace', broken_publish)
+            else:
+                operation = {'short_write': 'write', 'file_fsync': 'fsync',
+                             'dir_fsync': 'fsync'}.get(point, point)
+                original = getattr(os, operation)
+                def broken(*args, **kwargs):
+                    qualifies = True
+                    if point == 'open':
+                        qualifies = '.tmp.' in str(args[0])
+                    elif point in {'file_fsync', 'dir_fsync'}:
+                        qualifies = stat.S_ISDIR(os.fstat(args[0]).st_mode) == (point == 'dir_fsync')
+                    if active['enabled'] and qualifies and not tripped:
+                        tripped.append(True)
+                        if point == 'short_write':
+                            return 0
+                        raise OSError(errno.EIO, 'private-path')
+                    return original(*args, **kwargs)
+                fault.setattr(os, operation, broken)
         if phase == 'start':
             w, clock = start(tmp_path, monkeypatch)
             assert w.screen == Screen.WORKING and not w.can_retry_evidence

@@ -35,7 +35,7 @@ Two disks: the ISO (live) and a 10G target.
 lab_dir=$(mktemp -d "${TMPDIR:-/tmp}/beamo-wipe-lab.XXXXXX")
 qemu-img create -f qcow2 "$lab_dir/target.qcow2" 10G
 qemu-system-x86_64 -enable-kvm -nic none -m 2048 \
-  -cdrom dist/beamo-wipe-0.2.13-amd64.iso \
+  -cdrom dist/beamo-wipe-0.2.14-amd64.iso \
   -drive "file=$lab_dir/target.qcow2,if=virtio,format=qcow2" \
   -boot order=d
 ```

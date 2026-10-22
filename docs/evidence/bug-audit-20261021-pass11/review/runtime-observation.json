@@ -1,0 +1,16 @@
+{
+  "observations_current": true,
+  "connectivity": "connected",
+  "desired_phase": "running",
+  "observed_phase": "running",
+  "network_policy": {
+    "mode": "restricted",
+    "state": "enforced",
+    "effective_allowed_host_count": 144
+  },
+  "configured_secret_count": 0,
+  "configured_runtime_variable_count": 0,
+  "configured_outbound_identity_count": 0,
+  "vpn_configured": false,
+  "observed_utc": "2026-10-21 05:56:45 UTC"
+}

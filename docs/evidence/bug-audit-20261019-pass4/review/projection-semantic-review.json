@@ -1,0 +1,34 @@
+{
+  "seed": 2026101904,
+  "cases": 5000,
+  "methods_per_case": 3,
+  "outcome_or_check_semantic_mismatches": 0,
+  "metadata_only_differences": 4,
+  "examples": [
+    {
+      "case": 413,
+      "bare_legacy_input": "Model with embedded phrase and random text\n",
+      "difference": "Only unavailable-check provenance changes from nwipe_log to missing when the artificial projection is empty. No outcome, status, summary or detail change."
+    },
+    {
+      "case": 3109,
+      "bare_legacy_input": " sdb | 0 | 0 | 0\n",
+      "difference": "Only unavailable-check provenance changes from nwipe_log to missing when the artificial projection is empty. No outcome, status, summary or detail change."
+    },
+    {
+      "case": 3130,
+      "bare_legacy_input": " sdb | 0 | 0 | 0\n",
+      "difference": "Only unavailable-check provenance changes from nwipe_log to missing when the artificial projection is empty. No outcome, status, summary or detail change."
+    },
+    {
+      "case": 3916,
+      "bare_legacy_input": " sdb | 0 | 0 | 0\n",
+      "difference": "Only unavailable-check provenance changes from nwipe_log to missing when the artificial projection is empty. No outcome, status, summary or detail change."
+    }
+  ],
+  "disposition": "No runtime defect promoted. Direct scanner probes of one-line bare non-native logs below the public poll scan threshold. Real native engine logs retain their first timestamped context record. Original strict failed assertion preserved; no production or existing test change.",
+  "source_sha256": {
+    "src/beamo_wipe/nwipe_runner.py": "53a518cd19001dda8207b6b83526b09c9e8147148a9eb7ee77cb57c1b82e8b66",
+    "src/beamo_wipe/engine_checks.py": "7a9d4682ca7d90a0eeb6cff9ae24a520554552c701b2728ab8f9c21895f5e27e"
+  }
+}

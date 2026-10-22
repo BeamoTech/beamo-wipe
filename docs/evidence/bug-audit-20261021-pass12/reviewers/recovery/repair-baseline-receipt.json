@@ -1,0 +1,10 @@
+{
+  "baseline_commit": "b462e62005a752b0e5f2a066bda19bd9c79bbd8b",
+  "source": "/workspace/beamo-wipe/src/beamo_wipe/report_intent.py",
+  "source_sha256": "872072d5a51c72a01596dea683de7279c6191eb072c733ce8ae475fbef95e9fb",
+  "new_test": "/workspace/beamo-wipe/tests/test_report_intent_named_snapshot_pass12_20261021.py",
+  "new_test_absent_before_edit": true,
+  "proposed_test": "/workspace/beamo-tools/audit-pass12-20261021/recovery/test_report_intent_named_snapshot_pass12_20261021.py",
+  "proposed_test_sha256": "925a31dd06fdbde5b0b95a2dee670bef3a467d917ee1da30ddf2a9ca74ade2d6",
+  "status_before_edit": ""
+}

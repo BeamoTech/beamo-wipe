@@ -1,0 +1,32 @@
+{
+  "results": [
+    {
+      "name": "valid",
+      "expected_status": 0,
+      "status": 0,
+      "structured": true,
+      "pass": true
+    },
+    {
+      "name": "wrong-type",
+      "expected_status": 2,
+      "status": 2,
+      "structured": true,
+      "pass": true
+    },
+    {
+      "name": "deep-json",
+      "expected_status": 2,
+      "exception": "RecursionError",
+      "stdout": "",
+      "pass": false
+    },
+    {
+      "name": "deep-modules",
+      "expected_status": 2,
+      "exception": "RecursionError",
+      "stdout": "",
+      "pass": false
+    }
+  ]
+}

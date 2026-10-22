@@ -1,0 +1,45 @@
+{
+  "baseline_commit": "e28487d7595ee45a53d503fa1a76d8c22979f012",
+  "scope": "wizard/consent/countdown/Tk/accessible/console/result power affordances/lifecycle",
+  "verified_new_defects": 0,
+  "product_edits": [],
+  "old_test_edits": [],
+  "focused_modules": 29,
+  "focused_unique_passes": 310,
+  "focused_skips": 0,
+  "focused_failures": 0,
+  "focused_errors": 0,
+  "warning_policy": "error",
+  "focused_native_ui": "private 72 DPI Xvfb, own D-Bus session; no peer display changes",
+  "model": {
+    "sequences": 399,
+    "blocked_erase_calls": 4233,
+    "explicit_fake_starts": 396,
+    "automatic_starts": 0,
+    "nested_overlay_checks": 117,
+    "native_callbacks": 0
+  },
+  "independence": "Fresh deterministic 399 sequences, 396 actual DryRunRunner start positive controls; imported product methods exercised; all subprocess/native-inventory/real-engine/shutdown/sound launch callbacks forbidden. Counts are supporting overlapping evidence, not canonical suite totals.",
+  "reviewed_contracts": [
+    "owner/token before method transition",
+    "five-second visible countdown and independent explicit action",
+    "countdown restarted after keyboard/advanced/refresh/diagnostic/report exit detours, repeated at multiple delays",
+    "nested modal overlays block launch and restart review after last close",
+    "interface failure remains disarmed even after countdown restart",
+    "UI generation/physical key-hold fences and callback retirement",
+    "stop confirmation, stale completion ownership, result/recovery/power guards"
+  ],
+  "unpromoted_observations": [
+    "Direct internal field corruption or calling preview reset outside its production preview caller is not evidence of a user-reachable defect.",
+    "Optional audio diagnostics interruption repeats an established general diagnostic pattern; no independent new UI product failure promoted."
+  ],
+  "inspection_setup_notes": [
+    "Two initial read batches referred to absent guessed historical filenames. Both were read-only lookups, corrected with rg; no test run was skipped or modified."
+  ],
+  "qualification_limits": [
+    "No actual device inventory or engine execution",
+    "No physical firmware/power/reconnect/native Windows/ISO qualification",
+    "No Orca acceptance in this bounded subset; parent full gate owns canonical Orca run"
+  ],
+  "ownership_released": true
+}

@@ -1,0 +1,20 @@
+{
+  "source": "/workspace/beamo-wipe/src/beamo_wipe/ui/console_wizard.py",
+  "sha256": "7cce42435bc5d87021bb52628fd0cf220c1872941e7cd3b3ddca0f357f7b73a0",
+  "records": [
+    {
+      "start": "CONFIRM",
+      "keyboard_hint": [],
+      "final": "CONFIRM",
+      "typed": "k"
+    },
+    {
+      "start": "METHOD",
+      "keyboard_hint": [
+        "K: Keyboard layout"
+      ],
+      "final": "KEYBOARD",
+      "typed": "3456"
+    }
+  ]
+}

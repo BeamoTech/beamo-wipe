@@ -1,0 +1,58 @@
+{
+  "refresh-diagnostic-independent-before": {
+    "cases": 4,
+    "failures": 2,
+    "normal_controls_passed": 2,
+    "errors": 0,
+    "skipped": 0
+  },
+  "intent-publish-independent-before": {
+    "cases": 2,
+    "failures": 1,
+    "normal_controls_passed": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  "intent-restart-independent-before": {
+    "cases": 2,
+    "failures": 1,
+    "normal_controls_passed": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  "journal-publish-independent-before": {
+    "cases": 2,
+    "failures": 1,
+    "normal_controls_passed": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  "live-filesystem-independent-before": {
+    "cases": 21,
+    "failures": 12,
+    "normal_controls_passed": 9,
+    "errors": 0,
+    "skipped": 0
+  },
+  "plain-buffered-independent-before": {
+    "cases": 2,
+    "failures": 1,
+    "normal_controls_passed": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  "plain-real-buffered-independent-before": {
+    "cases": 2,
+    "failures": 1,
+    "normal_controls_passed": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  "dev-cmdline-independent-before": {
+    "cases": 4,
+    "failures": 1,
+    "normal_controls_passed": 3,
+    "errors": 0,
+    "skipped": 0
+  }
+}

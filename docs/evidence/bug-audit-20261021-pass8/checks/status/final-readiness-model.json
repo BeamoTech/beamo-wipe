@@ -1,0 +1,17 @@
+{
+  "name": "final-readiness-model",
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-overlay",
+    "/workspace/beamo-tools/audit-pass8-20261021/root/readiness-overlay.json",
+    "-run=^TestPass8ReadinessActionModel$",
+    "-json",
+    "./..."
+  ],
+  "started_utc": "2026-10-21T04:18:33.685565+00:00",
+  "elapsed_seconds": 3.23,
+  "exit_code": 0
+}

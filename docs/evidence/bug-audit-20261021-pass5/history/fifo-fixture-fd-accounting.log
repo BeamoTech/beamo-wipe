@@ -1,0 +1,211 @@
+F..FFFF..                                                                [100%]
+=================================== FAILURES ===================================
+___ test_log_refusal_and_retry_do_not_require_a_fifo_reader[regular-runner] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-37/test_log_refusal_and_retry_do_0')
+route = 'runner', replace = False, reader_present = False
+
+    @pytest.mark.parametrize("route", ["runner", "close", "retain"])
+    @pytest.mark.parametrize(
+        "replace,reader_present", [(False, False), (True, False), (True, True)],
+        ids=["regular", "fifo-alone", "fifo-with-reader"],
+    )
+    def test_log_refusal_and_retry_do_not_require_a_fifo_reader(
+        tmp_path, route, replace, reader_present
+    ):
+        path = tmp_path / "engine.log"
+        path.write_bytes(b"prior log bytes")
+        path.chmod(0o600)
+        context = multiprocessing.get_context("fork")
+        ready, done, outcomes = context.Event(), context.Event(), context.Queue()
+        child = context.Process(
+            target=_exercise_log,
+            args=(str(tmp_path), route, replace, reader_present, ready, done, outcomes),
+        )
+        child.start()
+        parent_reader = None
+        try:
+            assert ready.wait(5), "Owned helper did not reach the validated log boundary"
+            refused_without_reader = done.wait(1)
+            if not refused_without_reader and replace and not reader_present:
+                # Release only this owned FIFO so the old-code failure can clean
+                # up naturally. No real engine or host device is involved.
+                parent_reader = os.open(path, os.O_RDONLY | os.O_NONBLOCK)
+            child.join(5)
+            assert not child.is_alive()
+            assert child.exitcode == 0
+            outcome = outcomes.get(timeout=2)
+>           assert outcome["ok"], outcome
+E           AssertionError: {'detail': 'assert not {17}', 'error': 'AssertionError', 'ok': False}
+E           assert False
+
+tests/test_log_fifo_open_pass5_20261021.py:175: AssertionError
+__ test_log_refusal_and_retry_do_not_require_a_fifo_reader[fifo-alone-runner] __
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-37/test_log_refusal_and_retry_do_3')
+route = 'runner', replace = True, reader_present = False
+
+    @pytest.mark.parametrize("route", ["runner", "close", "retain"])
+    @pytest.mark.parametrize(
+        "replace,reader_present", [(False, False), (True, False), (True, True)],
+        ids=["regular", "fifo-alone", "fifo-with-reader"],
+    )
+    def test_log_refusal_and_retry_do_not_require_a_fifo_reader(
+        tmp_path, route, replace, reader_present
+    ):
+        path = tmp_path / "engine.log"
+        path.write_bytes(b"prior log bytes")
+        path.chmod(0o600)
+        context = multiprocessing.get_context("fork")
+        ready, done, outcomes = context.Event(), context.Event(), context.Queue()
+        child = context.Process(
+            target=_exercise_log,
+            args=(str(tmp_path), route, replace, reader_present, ready, done, outcomes),
+        )
+        child.start()
+        parent_reader = None
+        try:
+            assert ready.wait(5), "Owned helper did not reach the validated log boundary"
+            refused_without_reader = done.wait(1)
+            if not refused_without_reader and replace and not reader_present:
+                # Release only this owned FIFO so the old-code failure can clean
+                # up naturally. No real engine or host device is involved.
+                parent_reader = os.open(path, os.O_RDONLY | os.O_NONBLOCK)
+            child.join(5)
+            assert not child.is_alive()
+            assert child.exitcode == 0
+            outcome = outcomes.get(timeout=2)
+>           assert outcome["ok"], outcome
+E           AssertionError: {'detail': 'assert not {21}', 'error': 'AssertionError', 'ok': False}
+E           assert False
+
+tests/test_log_fifo_open_pass5_20261021.py:175: AssertionError
+__ test_log_refusal_and_retry_do_not_require_a_fifo_reader[fifo-alone-close] ___
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-37/test_log_refusal_and_retry_do_4')
+route = 'close', replace = True, reader_present = False
+
+    @pytest.mark.parametrize("route", ["runner", "close", "retain"])
+    @pytest.mark.parametrize(
+        "replace,reader_present", [(False, False), (True, False), (True, True)],
+        ids=["regular", "fifo-alone", "fifo-with-reader"],
+    )
+    def test_log_refusal_and_retry_do_not_require_a_fifo_reader(
+        tmp_path, route, replace, reader_present
+    ):
+        path = tmp_path / "engine.log"
+        path.write_bytes(b"prior log bytes")
+        path.chmod(0o600)
+        context = multiprocessing.get_context("fork")
+        ready, done, outcomes = context.Event(), context.Event(), context.Queue()
+        child = context.Process(
+            target=_exercise_log,
+            args=(str(tmp_path), route, replace, reader_present, ready, done, outcomes),
+        )
+        child.start()
+        parent_reader = None
+        try:
+            assert ready.wait(5), "Owned helper did not reach the validated log boundary"
+            refused_without_reader = done.wait(1)
+            if not refused_without_reader and replace and not reader_present:
+                # Release only this owned FIFO so the old-code failure can clean
+                # up naturally. No real engine or host device is involved.
+                parent_reader = os.open(path, os.O_RDONLY | os.O_NONBLOCK)
+            child.join(5)
+            assert not child.is_alive()
+            assert child.exitcode == 0
+            outcome = outcomes.get(timeout=2)
+            assert outcome["ok"], outcome
+>           assert refused_without_reader, "Log refusal blocked waiting for a FIFO reader"
+E           AssertionError: Log refusal blocked waiting for a FIFO reader
+E           assert False
+
+tests/test_log_fifo_open_pass5_20261021.py:176: AssertionError
+__ test_log_refusal_and_retry_do_not_require_a_fifo_reader[fifo-alone-retain] __
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-37/test_log_refusal_and_retry_do_5')
+route = 'retain', replace = True, reader_present = False
+
+    @pytest.mark.parametrize("route", ["runner", "close", "retain"])
+    @pytest.mark.parametrize(
+        "replace,reader_present", [(False, False), (True, False), (True, True)],
+        ids=["regular", "fifo-alone", "fifo-with-reader"],
+    )
+    def test_log_refusal_and_retry_do_not_require_a_fifo_reader(
+        tmp_path, route, replace, reader_present
+    ):
+        path = tmp_path / "engine.log"
+        path.write_bytes(b"prior log bytes")
+        path.chmod(0o600)
+        context = multiprocessing.get_context("fork")
+        ready, done, outcomes = context.Event(), context.Event(), context.Queue()
+        child = context.Process(
+            target=_exercise_log,
+            args=(str(tmp_path), route, replace, reader_present, ready, done, outcomes),
+        )
+        child.start()
+        parent_reader = None
+        try:
+            assert ready.wait(5), "Owned helper did not reach the validated log boundary"
+            refused_without_reader = done.wait(1)
+            if not refused_without_reader and replace and not reader_present:
+                # Release only this owned FIFO so the old-code failure can clean
+                # up naturally. No real engine or host device is involved.
+                parent_reader = os.open(path, os.O_RDONLY | os.O_NONBLOCK)
+            child.join(5)
+            assert not child.is_alive()
+            assert child.exitcode == 0
+            outcome = outcomes.get(timeout=2)
+            assert outcome["ok"], outcome
+>           assert refused_without_reader, "Log refusal blocked waiting for a FIFO reader"
+E           AssertionError: Log refusal blocked waiting for a FIFO reader
+E           assert False
+
+tests/test_log_fifo_open_pass5_20261021.py:176: AssertionError
+_ test_log_refusal_and_retry_do_not_require_a_fifo_reader[fifo-with-reader-runner] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-37/test_log_refusal_and_retry_do_6')
+route = 'runner', replace = True, reader_present = True
+
+    @pytest.mark.parametrize("route", ["runner", "close", "retain"])
+    @pytest.mark.parametrize(
+        "replace,reader_present", [(False, False), (True, False), (True, True)],
+        ids=["regular", "fifo-alone", "fifo-with-reader"],
+    )
+    def test_log_refusal_and_retry_do_not_require_a_fifo_reader(
+        tmp_path, route, replace, reader_present
+    ):
+        path = tmp_path / "engine.log"
+        path.write_bytes(b"prior log bytes")
+        path.chmod(0o600)
+        context = multiprocessing.get_context("fork")
+        ready, done, outcomes = context.Event(), context.Event(), context.Queue()
+        child = context.Process(
+            target=_exercise_log,
+            args=(str(tmp_path), route, replace, reader_present, ready, done, outcomes),
+        )
+        child.start()
+        parent_reader = None
+        try:
+            assert ready.wait(5), "Owned helper did not reach the validated log boundary"
+            refused_without_reader = done.wait(1)
+            if not refused_without_reader and replace and not reader_present:
+                # Release only this owned FIFO so the old-code failure can clean
+                # up naturally. No real engine or host device is involved.
+                parent_reader = os.open(path, os.O_RDONLY | os.O_NONBLOCK)
+            child.join(5)
+            assert not child.is_alive()
+            assert child.exitcode == 0
+            outcome = outcomes.get(timeout=2)
+>           assert outcome["ok"], outcome
+E           AssertionError: {'detail': 'assert not {33}', 'error': 'AssertionError', 'ok': False}
+E           assert False
+
+tests/test_log_fifo_open_pass5_20261021.py:175: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_log_fifo_open_pass5_20261021.py::test_log_refusal_and_retry_do_not_require_a_fifo_reader[regular-runner]
+FAILED tests/test_log_fifo_open_pass5_20261021.py::test_log_refusal_and_retry_do_not_require_a_fifo_reader[fifo-alone-runner]
+FAILED tests/test_log_fifo_open_pass5_20261021.py::test_log_refusal_and_retry_do_not_require_a_fifo_reader[fifo-alone-close]
+FAILED tests/test_log_fifo_open_pass5_20261021.py::test_log_refusal_and_retry_do_not_require_a_fifo_reader[fifo-alone-retain]
+FAILED tests/test_log_fifo_open_pass5_20261021.py::test_log_refusal_and_retry_do_not_require_a_fifo_reader[fifo-with-reader-runner]
+5 failed, 4 passed in 3.35s

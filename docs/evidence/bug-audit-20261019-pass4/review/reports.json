@@ -1,0 +1,47 @@
+{
+  "baseline_commit": "7f839e50e63db27a787eeabd758579352b6b3a3a",
+  "reviewed": [
+    "session_recovery.py journal/schema, same-boot/build, lock ownership, terminal evidence/log binding and refusal to restore execution authority",
+    "evidence.py checksums, atomic bytes, completion/failed/interrupted records and recovery",
+    "report_intent.py ownership/readback of volatile preference",
+    "support_export.py controller/worker request, protected baseline/volume identity, mount/write/readback/unmount receipts, sharing generation",
+    "privacy.py allowlisted sharing redaction and unchanged owner bytes",
+    "diagnostic_report.py strict schema/application/copy validation",
+    "result_summary.py/outcomes.py locale, canonical method/outcome, original and sharing report prose"
+  ],
+  "finding": {
+    "id": "REPORT-PASS4-WORKER-LANGUAGE",
+    "trigger": "A French/German kiosk controller sends reports to a new private worker, whose module language defaults to English.",
+    "original_effects": [
+      "French/German diagnostic bytes are validated by the controller but refused by worker before inventory because translated title and notice differ.",
+      "Ordinary wipe export succeeds while owner/sharing report headings and HTML language silently use worker startup English."
+    ],
+    "production_route": "create_report or prepare_terminal_evidence -> _request_dict -> _worker/_decode_worker_request -> _persist_and_verify_report -> write_report_bundle/verify_report_bundle (I/O boundaries faked).",
+    "root_independent_validation": "Root independently replayed both isolated proofs before authorizing source changes.",
+    "original_isolated_proofs": "Diagnostic2 FAIL/3 controls PASS; ordinary2 FAIL/3 controls PASS.",
+    "new_regressions_original": "29 FAIL/11 controls PASS.",
+    "fix": "Controller request carries its exact current language. Worker permits only supported values and applies that choice before diagnostic validation and report rendering. Old eight-field requests remain English. Unknown/malformed or duplicate language refuses before inventory; return tuple remains unchanged.",
+    "scope": "Only support_export.py and one new regression module; diagnostic_report.py schema unchanged.",
+    "current_regressions": "40 PASS; all9controller/worker locale combinations for diagnostic/owner/sharing, malformed language plus valid retry, duplicate language and legacy requests."
+  },
+  "checks": {
+    "adjacent_final": "523 PASS in7.39s including40 new cases; no skips/failures. Log adjacent-export-recovery-umask022-fixed.log.",
+    "original_proofs_fixed": "10 PASS in0.34s; log original-proofs-fixed.log.",
+    "lint": "Targeted Ruff PASS.",
+    "types": "mypy support_export.py PASS.",
+    "python310": "Both changed Python files parse with3.10grammar; not separate3.10runtime acceptance.",
+    "diff": "git diff --check PASS.",
+    "initial_environment_failure": "Earlier adjacent run522PASS/1FAIL: shell umask0077 made requested0755 fixture directory0700 before any worker call. Original/current mounted-worker AST identical. Explicit process-local umask022 control and complete rerun passed; assertions/source not changed. Initial/control logs retained.",
+    "initial_test_authoring_correction": "An early new-test draft compared RESULT.txt bytes with original JSON instead of result.json; corrected fixture assertion before recording29FAIL/11PASS original baseline. Draft failure log retained separately."
+  },
+  "source_original_sha256": "23308f130079eb98cc8f77c597e227efbbf1cdb06234dd1336b2e034660bcc04",
+  "final_sha256": {
+    "src/beamo_wipe/support_export.py": "f1cdd6c5c21caeb237d4c2c3837d14abd99a4c254d3fcf02ad0edbb6285ba0f1",
+    "tests/test_export_worker_locale_pass4_20261019.py": "6e05aa51077e2de3a3cd0f97a2d62fa4a3e866d5aac595925e0b1c4af299b99d"
+  },
+  "limits": [
+    "All inventories, identity selection and mount/unmount/sync processes were injected fakes; ordinary temporary files exercised actual write/readback.",
+    "No actual device/engine/power/firmware, hosted CI, staging, commit, push or publication performed.",
+    "No additional new report/recovery/privacy defect was proved in the bounded review. Root owns integrated final gate, backlog and publication decisions."
+  ]
+}

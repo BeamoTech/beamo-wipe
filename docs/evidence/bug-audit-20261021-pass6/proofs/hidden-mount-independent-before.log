@@ -1,0 +1,46 @@
+..FF                                                                     [100%]
+=================================== FAILURES ===================================
+_____________ test_mount_evidence_is_reachable[hidden-child-live] ______________
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-61/test_mount_evidence_is_reachab2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7135c3da30>
+kind = 'live', cover = True
+
+    @pytest.mark.parametrize("kind", ["live", "log"])
+    @pytest.mark.parametrize("cover", [False, True], ids=["normal", "hidden-child"])
+    def test_mount_evidence_is_reachable(tmp_path, monkeypatch, kind, cover):
+        mountinfo = _table(kind, cover)
+        if kind == "live":
+>           assert discovery.live_medium_is_mounted(text=mountinfo) is (not cover)
+E           AssertionError: assert True is not True
+E            +  where True = <function live_medium_is_mounted at 0x7f7135c69440>(text='1 0 0:1 / / rw - overlay overlay rw\n3 1 8:1 / /run/live/medium rw - ext4 /dev/sdz1 rw\n4 1 0:4 / /run/live rw - tmpfs tmpfs rw\n')
+E            +    where <function live_medium_is_mounted at 0x7f7135c69440> = discovery.live_medium_is_mounted
+
+../beamo-tools/audit-pass6-20261021/discovery/test_hidden_descendant_mount_probe.py:29: AssertionError
+______________ test_mount_evidence_is_reachable[hidden-child-log] ______________
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-61/test_mount_evidence_is_reachab3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7135c6c9e0>
+kind = 'log', cover = True
+
+    @pytest.mark.parametrize("kind", ["live", "log"])
+    @pytest.mark.parametrize("cover", [False, True], ids=["normal", "hidden-child"])
+    def test_mount_evidence_is_reachable(tmp_path, monkeypatch, kind, cover):
+        mountinfo = _table(kind, cover)
+        if kind == "live":
+            assert discovery.live_medium_is_mounted(text=mountinfo) is (not cover)
+            assert is_live_environment(cmdline="boot=live", mountinfo_text=mountinfo) is (not cover)
+        else:
+            table = tmp_path / "mountinfo"
+            table.write_text(mountinfo, encoding="utf-8")
+            monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+>           assert log_location_is_tmpfs(Path("/tmp/beamo-wipe/nwipe-sda.log")) is (not cover)
+E           AssertionError: assert True is not True
+E            +  where True = log_location_is_tmpfs(PosixPath('/tmp/beamo-wipe/nwipe-sda.log'))
+E            +    where PosixPath('/tmp/beamo-wipe/nwipe-sda.log') = Path('/tmp/beamo-wipe/nwipe-sda.log')
+
+../beamo-tools/audit-pass6-20261021/discovery/test_hidden_descendant_mount_probe.py:35: AssertionError
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass6-20261021/discovery/test_hidden_descendant_mount_probe.py::test_mount_evidence_is_reachable[hidden-child-live]
+FAILED ../beamo-tools/audit-pass6-20261021/discovery/test_hidden_descendant_mount_probe.py::test_mount_evidence_is_reachable[hidden-child-log]
+2 failed, 2 passed in 0.13s

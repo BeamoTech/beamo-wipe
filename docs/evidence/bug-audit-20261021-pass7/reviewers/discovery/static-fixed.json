@@ -1,0 +1,26 @@
+{
+  "lint": {
+    "exit": 0,
+    "output": "All checks passed!\n"
+  },
+  "source-security": {
+    "exit": 0,
+    "output": "All checks passed!\n"
+  },
+  "test-security": {
+    "exit": 0,
+    "output": "All checks passed!\n"
+  },
+  "mypy": {
+    "exit": 0,
+    "output": "Success: no issues found in 1 source file\n"
+  },
+  "diff-check": {
+    "exit": 0,
+    "output": ""
+  },
+  "python310-grammar": {
+    "exit": 0,
+    "scope": "syntax only, not native Python 3.10 runtime qualification"
+  }
+}

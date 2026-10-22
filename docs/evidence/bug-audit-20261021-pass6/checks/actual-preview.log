@@ -1,0 +1,1 @@
+{"command": ["./preview"], "fake_disks_only": true, "display": ":763", "dpi": 72, "window_title": "Beamo Wipe \u2014 PREVIEW (nothing is erased)", "welcome_content_observed_before_capture": true, "normal_close_acceptance": true, "returncode": 0, "teardown": "Invoked actual registered WM_DELETE_WINDOW callback"}

@@ -1,0 +1,279 @@
+{
+  "recorded_at_utc": "2026-10-21T03:57:37.675994+00:00",
+  "source_manifest_sha256": "d57686503509b70773b42e6827d496c07f237ac807c74006f9ad9a6cc546faf1",
+  "canonical_tests": {
+    "name": "final-tests",
+    "command": [
+      "/workspace/beamo-tools/beamo-dev",
+      "env",
+      "BEAMO_GATE_CHILD=1",
+      "BEAMO_GATE_JUNIT=/workspace/beamo-tools/audit-pass7-20261021/root/final-tests.xml",
+      "bash",
+      "scripts/ci-hosted.sh",
+      "tests"
+    ],
+    "started_utc": "2026-10-21T03:37:48.415180+00:00",
+    "elapsed_seconds": 1115.78,
+    "exit_code": 0,
+    "python_warning_count": 0,
+    "main_passed": 11524,
+    "main_skipped": 28,
+    "separate_orca_passed": 1
+  },
+  "completed_groups": [
+    {
+      "name": "final-new-regressions",
+      "command": [
+        "/workspace/beamo-tools/beamo-dev",
+        "env",
+        "BEAMO_ISOLATED_X11_TEST=1",
+        "BEAMO_WIPE_DRY_RUN=1",
+        "dbus-run-session",
+        "--",
+        "xvfb-run",
+        "-a",
+        "-n",
+        "881",
+        "-s",
+        "-screen 0 1600x1000x24 -dpi 72",
+        "python3",
+        "-m",
+        "pytest",
+        "-W",
+        "error",
+        "-p",
+        "no:cacheprovider",
+        "-o",
+        "addopts=",
+        "-o",
+        "pythonpath=src tests",
+        "-q",
+        "tests/test_live_filesystem_kind_pass7_20261021.py",
+        "tests/test_refresh_diagnostic_retirement_pass7_20261021.py",
+        "tests/test_plain_review_flush_pass7_20261021.py",
+        "tests/test_recovery_publication_binding_pass7_20261021.py",
+        "developer_tests/test_dev_runtime_decode_pass7_20261021.py",
+        "--junitxml=/workspace/beamo-tools/audit-pass7-20261021/root/final-new-regressions.xml"
+      ],
+      "started_utc": "2026-10-21T03:35:21.195032+00:00",
+      "elapsed_seconds": 14.92,
+      "exit_code": 0
+    },
+    {
+      "name": "final-original-probes",
+      "command": [
+        "/workspace/beamo-tools/beamo-dev",
+        "env",
+        "BEAMO_ISOLATED_X11_TEST=1",
+        "BEAMO_WIPE_DRY_RUN=1",
+        "dbus-run-session",
+        "--",
+        "xvfb-run",
+        "-a",
+        "-n",
+        "881",
+        "-s",
+        "-screen 0 1600x1000x24 -dpi 72",
+        "python3",
+        "-m",
+        "pytest",
+        "-W",
+        "error",
+        "-p",
+        "no:cacheprovider",
+        "-o",
+        "addopts=",
+        "-o",
+        "pythonpath=src tests",
+        "-q",
+        "/workspace/beamo-tools/audit-pass7-20261021/ui/test_refresh_diagnostic_interruption_probe.py",
+        "/workspace/beamo-tools/audit-pass7-20261021/recovery/test_report_intent_publish_probe.py",
+        "/workspace/beamo-tools/audit-pass7-20261021/recovery/test_report_intent_restart_probe.py",
+        "/workspace/beamo-tools/audit-pass7-20261021/recovery/test_journal_publish_probe.py",
+        "/workspace/beamo-tools/audit-pass7-20261021/discovery/test_live_filesystem_source_probe.py",
+        "/workspace/beamo-tools/audit-pass7-20261021/ui/test_plain_buffered_visibility_probe.py",
+        "/workspace/beamo-tools/audit-pass7-20261021/ui/test_plain_real_buffered_visibility_probe.py",
+        "/workspace/beamo-tools/audit-pass7-20261021/boot/test_dev_cmdline_decode_probe.py",
+        "--junitxml=/workspace/beamo-tools/audit-pass7-20261021/root/final-original-probes.xml"
+      ],
+      "started_utc": "2026-10-21T03:35:36.145086+00:00",
+      "elapsed_seconds": 15.19,
+      "exit_code": 0
+    },
+    {
+      "name": "final-lint",
+      "command": [
+        "/workspace/beamo-tools/beamo-dev",
+        "env",
+        "BEAMO_GATE_CHILD=1",
+        "bash",
+        "scripts/ci-hosted.sh",
+        "lint"
+      ],
+      "started_utc": "2026-10-21T03:35:51.364497+00:00",
+      "elapsed_seconds": 17.72,
+      "exit_code": 0
+    },
+    {
+      "name": "final-preview",
+      "command": [
+        "/workspace/beamo-tools/beamo-dev",
+        "env",
+        "BEAMO_GATE_CHILD=1",
+        "bash",
+        "scripts/ci-hosted.sh",
+        "preview"
+      ],
+      "started_utc": "2026-10-21T03:36:09.110764+00:00",
+      "elapsed_seconds": 15.99,
+      "exit_code": 0
+    },
+    {
+      "name": "final-negative",
+      "command": [
+        "/workspace/beamo-tools/beamo-dev",
+        "env",
+        "BEAMO_GATE_CHILD=1",
+        "bash",
+        "scripts/ci-hosted.sh",
+        "negative"
+      ],
+      "started_utc": "2026-10-21T03:36:25.125424+00:00",
+      "elapsed_seconds": 16.96,
+      "exit_code": 0
+    },
+    {
+      "name": "final-go-race",
+      "command": [
+        "/workspace/beamo-tools/beamo-dev",
+        "bash",
+        "-c",
+        "cd desktop; go test -count=1 -race -json ./..."
+      ],
+      "started_utc": "2026-10-21T03:28:39.039553+00:00",
+      "elapsed_seconds": 7.33,
+      "exit_code": 0
+    },
+    {
+      "name": "final-go-vet",
+      "command": [
+        "/workspace/beamo-tools/beamo-dev",
+        "bash",
+        "-c",
+        "cd desktop; go vet ./..."
+      ],
+      "started_utc": "2026-10-21T03:28:46.393355+00:00",
+      "elapsed_seconds": 13.82,
+      "exit_code": 0
+    },
+    {
+      "name": "final-go-fuzz",
+      "command": [
+        "/workspace/beamo-tools/beamo-dev",
+        "bash",
+        "-c",
+        "cd desktop; go test -run=\"^$\" -fuzz=FuzzBootOption -fuzztime=350000x -parallel=2"
+      ],
+      "started_utc": "2026-10-21T03:29:00.247504+00:00",
+      "elapsed_seconds": 25.51,
+      "exit_code": 0
+    },
+    {
+      "name": "final-windows-test-build",
+      "command": [
+        "/workspace/beamo-tools/beamo-dev",
+        "bash",
+        "-c",
+        "cd desktop; GOOS=windows GOARCH=amd64 go test -c -o /workspace/beamo-tools/audit-pass7-20261021/root/desktop-windows.test.exe"
+      ],
+      "started_utc": "2026-10-21T03:29:25.795833+00:00",
+      "elapsed_seconds": 15.55,
+      "exit_code": 0
+    },
+    {
+      "name": "final-desktop-build",
+      "command": [
+        "/workspace/beamo-tools/beamo-dev",
+        "python3",
+        "scripts/build_desktop.py"
+      ],
+      "started_utc": "2026-10-21T03:29:41.371782+00:00",
+      "elapsed_seconds": 15.22,
+      "exit_code": 0
+    },
+    {
+      "name": "actual-preview-inspect",
+      "command": [
+        "/workspace/beamo-tools/beamo-dev",
+        "env",
+        "BEAMO_ISOLATED_X11_TEST=1",
+        "BEAMO_WIPE_DRY_RUN=1",
+        "dbus-run-session",
+        "--",
+        "xvfb-run",
+        "-a",
+        "-n",
+        "881",
+        "-s",
+        "-screen 0 1600x1000x24 -dpi 72",
+        "python3",
+        "/workspace/beamo-tools/audit-pass7-20261021/root/inspect_live_preview.py"
+      ],
+      "started_utc": "2026-10-21T03:37:11.517505+00:00",
+      "elapsed_seconds": 14.98,
+      "exit_code": 0
+    },
+    {
+      "name": "system-browser-tests",
+      "command": [
+        "/workspace/beamo-tools/beamo-dev",
+        "python3",
+        "/workspace/beamo-tools/audit-pass7-20261021/root/system_browser_check.py"
+      ],
+      "started_utc": "2026-10-21T03:37:26.525391+00:00",
+      "elapsed_seconds": 21.86,
+      "exit_code": 0
+    },
+    {
+      "name": "doctor-test",
+      "command": [
+        "/workspace/beamo-tools/beamo-dev",
+        "python3",
+        "dev.py",
+        "doctor",
+        "--for",
+        "test"
+      ],
+      "started_utc": "2026-10-21T03:36:42.110591+00:00",
+      "elapsed_seconds": 15.01,
+      "exit_code": 0
+    },
+    {
+      "name": "doctor-desktop",
+      "command": [
+        "/workspace/beamo-tools/beamo-dev",
+        "python3",
+        "dev.py",
+        "doctor",
+        "--for",
+        "desktop"
+      ],
+      "started_utc": "2026-10-21T03:36:57.149712+00:00",
+      "elapsed_seconds": 14.34,
+      "exit_code": 0
+    },
+    {
+      "name": "artifact-inspection",
+      "command": [
+        "python3",
+        "/workspace/beamo-tools/audit-pass7-20261021/root/review_artifacts.py"
+      ],
+      "started_utc": "2026-10-21T03:39:04.349510+00:00",
+      "elapsed_seconds": 0.11,
+      "exit_code": 0
+    }
+  ],
+  "history": "Initial final-lint E731 in new test helper corrected without changing assertions; exact final baseline proof rechecked; earlier gate receipts retained as history only. No canonical suite was canceled or replaced.",
+  "actual_device_or_power_actions": false,
+  "remote_write_or_release": false
+}

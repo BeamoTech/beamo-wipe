@@ -1,0 +1,25 @@
+{
+  "command": [
+    "./preview"
+  ],
+  "display": ":250",
+  "dpi": 72,
+  "fake_disks_only": true,
+  "focus_observed": "Continue control",
+  "normal_close_acceptance": true,
+  "preview_warning_observed_before_capture": true,
+  "returncode": 0,
+  "screen": [
+    1600,
+    1000
+  ],
+  "screenshot_sha256": "922c213939cba144951d70292b63b29baea8fe7d43e4a5f4e7f1e1adc378e5a8",
+  "teardown": "Invoked registered WM_DELETE_WINDOW callback",
+  "title": "Beamo Wipe \u2014 PREVIEW (nothing is erased)",
+  "visual_inspection": "No clipping; preview warning, title, guidance, and focused Continue control are visible.",
+  "welcome_content_observed_before_capture": true,
+  "window": [
+    1280,
+    820
+  ]
+}

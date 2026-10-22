@@ -1,0 +1,18 @@
+{
+  "name": "idle-trace-before",
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-overlay",
+    "/workspace/beamo-tools/audit-pass10-20261021/boot/idle-trace-overlay.json",
+    "-run",
+    "^TestPass10IdleAdmissionBaselineTrace$",
+    "-json",
+    "."
+  ],
+  "started_utc": "2026-10-21T05:27:21.959168+00:00",
+  "elapsed_seconds": 1.09,
+  "exit_code": 1
+}

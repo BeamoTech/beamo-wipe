@@ -1,0 +1,826 @@
+...FFF......FFF......FFF......FFF............                            [100%]
+=================================== FAILURES ===================================
+_ test_inner_popen_poll_exit_is_not_an_owner_cancellation[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inside-terminate-everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-71/test_inner_popen_poll_exit_is_3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc38bd7cc00>
+method = <MethodId.EVERYDAY: 'everyday'>, timing = 'inside-terminate'
+log = '[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n'
+code = 1, reason = 'engine_failed'
+
+    @pytest.mark.parametrize("method", tuple(MethodId))
+    @pytest.mark.parametrize("timing", ("before-stop", "inside-terminate", "signal-delivered"))
+    @pytest.mark.parametrize("log,code,reason", CASES)
+    def test_inner_popen_poll_exit_is_not_an_owner_cancellation(
+        tmp_path, monkeypatch, method, timing, log, code, reason
+    ):
+        monkeypatch.setattr(module, "_try_log_diag", lambda *_args: None)
+        logfile = tmp_path / "fake.log"
+        logfile.write_text(log, encoding="utf-8")
+        request = WipeRequest("/dev/vda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+        events = []
+    
+        class Process:
+            # Real stdlib signal-delivery logic, without creating any process.
+            terminate = subprocess.Popen.terminate
+            send_signal = subprocess.Popen.send_signal
+            returncode = None
+            pid = 987654321
+            polls = 0
+    
+            def poll(self):
+                self.polls += 1
+                if timing == "before-stop" or (
+                    timing == "inside-terminate" and self.polls >= 2
+                ):
+                    self.returncode = code
+                events.append(("poll", self.returncode))
+                return self.returncode
+    
+            def wait(self, timeout):
+                events.append(("wait", timeout))
+                assert self.returncode is not None
+                return self.returncode
+    
+        proc = runner._proc = Process()
+    
+        def fake_kill(pid, sig):
+            assert pid == proc.pid
+            events.append(("signal", sig))
+            proc.returncode = -15
+    
+        monkeypatch.setattr(os, "kill", fake_kill)
+        runner.cancel()
+        signals = [event for event in events if event[0] == "signal"]
+        assert bool(signals) is (timing == "signal-delivered"), events
+        expected = "cancelled" if timing == "signal-delivered" else reason
+        assert runner.result is not None
+>       assert runner.result.reason == expected, {
+            "expected": expected, "actual": runner.result.reason, "events": events,
+        }
+E       AssertionError: {'actual': 'cancelled', 'events': [('poll', None), ('poll', 1), ('wait', 8)], 'expected': 'engine_failed'}
+E       assert 'cancelled' == 'engine_failed'
+E         
+E         - engine_failed
+E         + cancelled
+
+../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py:76: AssertionError
+_ test_inner_popen_poll_exit_is_not_an_owner_cancellation[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inside-terminate-extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-71/test_inner_popen_poll_exit_is_4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc38bd7ce20>
+method = <MethodId.EXTRA: 'extra'>, timing = 'inside-terminate'
+log = '[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n'
+code = 1, reason = 'engine_failed'
+
+    @pytest.mark.parametrize("method", tuple(MethodId))
+    @pytest.mark.parametrize("timing", ("before-stop", "inside-terminate", "signal-delivered"))
+    @pytest.mark.parametrize("log,code,reason", CASES)
+    def test_inner_popen_poll_exit_is_not_an_owner_cancellation(
+        tmp_path, monkeypatch, method, timing, log, code, reason
+    ):
+        monkeypatch.setattr(module, "_try_log_diag", lambda *_args: None)
+        logfile = tmp_path / "fake.log"
+        logfile.write_text(log, encoding="utf-8")
+        request = WipeRequest("/dev/vda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+        events = []
+    
+        class Process:
+            # Real stdlib signal-delivery logic, without creating any process.
+            terminate = subprocess.Popen.terminate
+            send_signal = subprocess.Popen.send_signal
+            returncode = None
+            pid = 987654321
+            polls = 0
+    
+            def poll(self):
+                self.polls += 1
+                if timing == "before-stop" or (
+                    timing == "inside-terminate" and self.polls >= 2
+                ):
+                    self.returncode = code
+                events.append(("poll", self.returncode))
+                return self.returncode
+    
+            def wait(self, timeout):
+                events.append(("wait", timeout))
+                assert self.returncode is not None
+                return self.returncode
+    
+        proc = runner._proc = Process()
+    
+        def fake_kill(pid, sig):
+            assert pid == proc.pid
+            events.append(("signal", sig))
+            proc.returncode = -15
+    
+        monkeypatch.setattr(os, "kill", fake_kill)
+        runner.cancel()
+        signals = [event for event in events if event[0] == "signal"]
+        assert bool(signals) is (timing == "signal-delivered"), events
+        expected = "cancelled" if timing == "signal-delivered" else reason
+        assert runner.result is not None
+>       assert runner.result.reason == expected, {
+            "expected": expected, "actual": runner.result.reason, "events": events,
+        }
+E       AssertionError: {'actual': 'cancelled', 'events': [('poll', None), ('poll', 1), ('wait', 8)], 'expected': 'engine_failed'}
+E       assert 'cancelled' == 'engine_failed'
+E         
+E         - engine_failed
+E         + cancelled
+
+../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py:76: AssertionError
+_ test_inner_popen_poll_exit_is_not_an_owner_cancellation[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inside-terminate-quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-71/test_inner_popen_poll_exit_is_5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc38bd70e50>
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, timing = 'inside-terminate'
+log = '[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n'
+code = 1, reason = 'engine_failed'
+
+    @pytest.mark.parametrize("method", tuple(MethodId))
+    @pytest.mark.parametrize("timing", ("before-stop", "inside-terminate", "signal-delivered"))
+    @pytest.mark.parametrize("log,code,reason", CASES)
+    def test_inner_popen_poll_exit_is_not_an_owner_cancellation(
+        tmp_path, monkeypatch, method, timing, log, code, reason
+    ):
+        monkeypatch.setattr(module, "_try_log_diag", lambda *_args: None)
+        logfile = tmp_path / "fake.log"
+        logfile.write_text(log, encoding="utf-8")
+        request = WipeRequest("/dev/vda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+        events = []
+    
+        class Process:
+            # Real stdlib signal-delivery logic, without creating any process.
+            terminate = subprocess.Popen.terminate
+            send_signal = subprocess.Popen.send_signal
+            returncode = None
+            pid = 987654321
+            polls = 0
+    
+            def poll(self):
+                self.polls += 1
+                if timing == "before-stop" or (
+                    timing == "inside-terminate" and self.polls >= 2
+                ):
+                    self.returncode = code
+                events.append(("poll", self.returncode))
+                return self.returncode
+    
+            def wait(self, timeout):
+                events.append(("wait", timeout))
+                assert self.returncode is not None
+                return self.returncode
+    
+        proc = runner._proc = Process()
+    
+        def fake_kill(pid, sig):
+            assert pid == proc.pid
+            events.append(("signal", sig))
+            proc.returncode = -15
+    
+        monkeypatch.setattr(os, "kill", fake_kill)
+        runner.cancel()
+        signals = [event for event in events if event[0] == "signal"]
+        assert bool(signals) is (timing == "signal-delivered"), events
+        expected = "cancelled" if timing == "signal-delivered" else reason
+        assert runner.result is not None
+>       assert runner.result.reason == expected, {
+            "expected": expected, "actual": runner.result.reason, "events": events,
+        }
+E       AssertionError: {'actual': 'cancelled', 'events': [('poll', None), ('poll', 1), ('wait', 8)], 'expected': 'engine_failed'}
+E       assert 'cancelled' == 'engine_failed'
+E         
+E         - engine_failed
+E         + cancelled
+
+../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py:76: AssertionError
+_ test_inner_popen_poll_exit_is_not_an_owner_cancellation[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inside-terminate-everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-71/test_inner_popen_poll_exit_is_12')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc38bea2750>
+method = <MethodId.EVERYDAY: 'everyday'>, timing = 'inside-terminate'
+log = "[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n"
+code = 1, reason = 'verification_failed'
+
+    @pytest.mark.parametrize("method", tuple(MethodId))
+    @pytest.mark.parametrize("timing", ("before-stop", "inside-terminate", "signal-delivered"))
+    @pytest.mark.parametrize("log,code,reason", CASES)
+    def test_inner_popen_poll_exit_is_not_an_owner_cancellation(
+        tmp_path, monkeypatch, method, timing, log, code, reason
+    ):
+        monkeypatch.setattr(module, "_try_log_diag", lambda *_args: None)
+        logfile = tmp_path / "fake.log"
+        logfile.write_text(log, encoding="utf-8")
+        request = WipeRequest("/dev/vda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+        events = []
+    
+        class Process:
+            # Real stdlib signal-delivery logic, without creating any process.
+            terminate = subprocess.Popen.terminate
+            send_signal = subprocess.Popen.send_signal
+            returncode = None
+            pid = 987654321
+            polls = 0
+    
+            def poll(self):
+                self.polls += 1
+                if timing == "before-stop" or (
+                    timing == "inside-terminate" and self.polls >= 2
+                ):
+                    self.returncode = code
+                events.append(("poll", self.returncode))
+                return self.returncode
+    
+            def wait(self, timeout):
+                events.append(("wait", timeout))
+                assert self.returncode is not None
+                return self.returncode
+    
+        proc = runner._proc = Process()
+    
+        def fake_kill(pid, sig):
+            assert pid == proc.pid
+            events.append(("signal", sig))
+            proc.returncode = -15
+    
+        monkeypatch.setattr(os, "kill", fake_kill)
+        runner.cancel()
+        signals = [event for event in events if event[0] == "signal"]
+        assert bool(signals) is (timing == "signal-delivered"), events
+        expected = "cancelled" if timing == "signal-delivered" else reason
+        assert runner.result is not None
+>       assert runner.result.reason == expected, {
+            "expected": expected, "actual": runner.result.reason, "events": events,
+        }
+E       AssertionError: {'actual': 'cancelled', 'events': [('poll', None), ('poll', 1), ('wait', 8)], 'expected': 'verification_failed'}
+E       assert 'cancelled' == 'verification_failed'
+E         
+E         - verification_failed
+E         + cancelled
+
+../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py:76: AssertionError
+_ test_inner_popen_poll_exit_is_not_an_owner_cancellation[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inside-terminate-extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-71/test_inner_popen_poll_exit_is_13')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc38bea2150>
+method = <MethodId.EXTRA: 'extra'>, timing = 'inside-terminate'
+log = "[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n"
+code = 1, reason = 'verification_failed'
+
+    @pytest.mark.parametrize("method", tuple(MethodId))
+    @pytest.mark.parametrize("timing", ("before-stop", "inside-terminate", "signal-delivered"))
+    @pytest.mark.parametrize("log,code,reason", CASES)
+    def test_inner_popen_poll_exit_is_not_an_owner_cancellation(
+        tmp_path, monkeypatch, method, timing, log, code, reason
+    ):
+        monkeypatch.setattr(module, "_try_log_diag", lambda *_args: None)
+        logfile = tmp_path / "fake.log"
+        logfile.write_text(log, encoding="utf-8")
+        request = WipeRequest("/dev/vda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+        events = []
+    
+        class Process:
+            # Real stdlib signal-delivery logic, without creating any process.
+            terminate = subprocess.Popen.terminate
+            send_signal = subprocess.Popen.send_signal
+            returncode = None
+            pid = 987654321
+            polls = 0
+    
+            def poll(self):
+                self.polls += 1
+                if timing == "before-stop" or (
+                    timing == "inside-terminate" and self.polls >= 2
+                ):
+                    self.returncode = code
+                events.append(("poll", self.returncode))
+                return self.returncode
+    
+            def wait(self, timeout):
+                events.append(("wait", timeout))
+                assert self.returncode is not None
+                return self.returncode
+    
+        proc = runner._proc = Process()
+    
+        def fake_kill(pid, sig):
+            assert pid == proc.pid
+            events.append(("signal", sig))
+            proc.returncode = -15
+    
+        monkeypatch.setattr(os, "kill", fake_kill)
+        runner.cancel()
+        signals = [event for event in events if event[0] == "signal"]
+        assert bool(signals) is (timing == "signal-delivered"), events
+        expected = "cancelled" if timing == "signal-delivered" else reason
+        assert runner.result is not None
+>       assert runner.result.reason == expected, {
+            "expected": expected, "actual": runner.result.reason, "events": events,
+        }
+E       AssertionError: {'actual': 'cancelled', 'events': [('poll', None), ('poll', 1), ('wait', 8)], 'expected': 'verification_failed'}
+E       assert 'cancelled' == 'verification_failed'
+E         
+E         - verification_failed
+E         + cancelled
+
+../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py:76: AssertionError
+_ test_inner_popen_poll_exit_is_not_an_owner_cancellation[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inside-terminate-quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-71/test_inner_popen_poll_exit_is_14')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc38bed3540>
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, timing = 'inside-terminate'
+log = "[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n"
+code = 1, reason = 'verification_failed'
+
+    @pytest.mark.parametrize("method", tuple(MethodId))
+    @pytest.mark.parametrize("timing", ("before-stop", "inside-terminate", "signal-delivered"))
+    @pytest.mark.parametrize("log,code,reason", CASES)
+    def test_inner_popen_poll_exit_is_not_an_owner_cancellation(
+        tmp_path, monkeypatch, method, timing, log, code, reason
+    ):
+        monkeypatch.setattr(module, "_try_log_diag", lambda *_args: None)
+        logfile = tmp_path / "fake.log"
+        logfile.write_text(log, encoding="utf-8")
+        request = WipeRequest("/dev/vda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+        events = []
+    
+        class Process:
+            # Real stdlib signal-delivery logic, without creating any process.
+            terminate = subprocess.Popen.terminate
+            send_signal = subprocess.Popen.send_signal
+            returncode = None
+            pid = 987654321
+            polls = 0
+    
+            def poll(self):
+                self.polls += 1
+                if timing == "before-stop" or (
+                    timing == "inside-terminate" and self.polls >= 2
+                ):
+                    self.returncode = code
+                events.append(("poll", self.returncode))
+                return self.returncode
+    
+            def wait(self, timeout):
+                events.append(("wait", timeout))
+                assert self.returncode is not None
+                return self.returncode
+    
+        proc = runner._proc = Process()
+    
+        def fake_kill(pid, sig):
+            assert pid == proc.pid
+            events.append(("signal", sig))
+            proc.returncode = -15
+    
+        monkeypatch.setattr(os, "kill", fake_kill)
+        runner.cancel()
+        signals = [event for event in events if event[0] == "signal"]
+        assert bool(signals) is (timing == "signal-delivered"), events
+        expected = "cancelled" if timing == "signal-delivered" else reason
+        assert runner.result is not None
+>       assert runner.result.reason == expected, {
+            "expected": expected, "actual": runner.result.reason, "events": events,
+        }
+E       AssertionError: {'actual': 'cancelled', 'events': [('poll', None), ('poll', 1), ('wait', 8)], 'expected': 'verification_failed'}
+E       assert 'cancelled' == 'verification_failed'
+E         
+E         - verification_failed
+E         + cancelled
+
+../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py:76: AssertionError
+_ test_inner_popen_poll_exit_is_not_an_owner_cancellation[Nwipe successfully completed.\n-0-completion_missing-inside-terminate-everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-71/test_inner_popen_poll_exit_is_21')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc38bd83c40>
+method = <MethodId.EVERYDAY: 'everyday'>, timing = 'inside-terminate'
+log = 'Nwipe successfully completed.\n', code = 0, reason = 'completion_missing'
+
+    @pytest.mark.parametrize("method", tuple(MethodId))
+    @pytest.mark.parametrize("timing", ("before-stop", "inside-terminate", "signal-delivered"))
+    @pytest.mark.parametrize("log,code,reason", CASES)
+    def test_inner_popen_poll_exit_is_not_an_owner_cancellation(
+        tmp_path, monkeypatch, method, timing, log, code, reason
+    ):
+        monkeypatch.setattr(module, "_try_log_diag", lambda *_args: None)
+        logfile = tmp_path / "fake.log"
+        logfile.write_text(log, encoding="utf-8")
+        request = WipeRequest("/dev/vda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+        events = []
+    
+        class Process:
+            # Real stdlib signal-delivery logic, without creating any process.
+            terminate = subprocess.Popen.terminate
+            send_signal = subprocess.Popen.send_signal
+            returncode = None
+            pid = 987654321
+            polls = 0
+    
+            def poll(self):
+                self.polls += 1
+                if timing == "before-stop" or (
+                    timing == "inside-terminate" and self.polls >= 2
+                ):
+                    self.returncode = code
+                events.append(("poll", self.returncode))
+                return self.returncode
+    
+            def wait(self, timeout):
+                events.append(("wait", timeout))
+                assert self.returncode is not None
+                return self.returncode
+    
+        proc = runner._proc = Process()
+    
+        def fake_kill(pid, sig):
+            assert pid == proc.pid
+            events.append(("signal", sig))
+            proc.returncode = -15
+    
+        monkeypatch.setattr(os, "kill", fake_kill)
+        runner.cancel()
+        signals = [event for event in events if event[0] == "signal"]
+        assert bool(signals) is (timing == "signal-delivered"), events
+        expected = "cancelled" if timing == "signal-delivered" else reason
+        assert runner.result is not None
+>       assert runner.result.reason == expected, {
+            "expected": expected, "actual": runner.result.reason, "events": events,
+        }
+E       AssertionError: {'actual': 'cancelled', 'events': [('poll', None), ('poll', 0), ('wait', 8)], 'expected': 'completion_missing'}
+E       assert 'cancelled' == 'completion_missing'
+E         
+E         - completion_missing
+E         + cancelled
+
+../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py:76: AssertionError
+_ test_inner_popen_poll_exit_is_not_an_owner_cancellation[Nwipe successfully completed.\n-0-completion_missing-inside-terminate-extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-71/test_inner_popen_poll_exit_is_22')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc38bd82430>
+method = <MethodId.EXTRA: 'extra'>, timing = 'inside-terminate'
+log = 'Nwipe successfully completed.\n', code = 0, reason = 'completion_missing'
+
+    @pytest.mark.parametrize("method", tuple(MethodId))
+    @pytest.mark.parametrize("timing", ("before-stop", "inside-terminate", "signal-delivered"))
+    @pytest.mark.parametrize("log,code,reason", CASES)
+    def test_inner_popen_poll_exit_is_not_an_owner_cancellation(
+        tmp_path, monkeypatch, method, timing, log, code, reason
+    ):
+        monkeypatch.setattr(module, "_try_log_diag", lambda *_args: None)
+        logfile = tmp_path / "fake.log"
+        logfile.write_text(log, encoding="utf-8")
+        request = WipeRequest("/dev/vda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+        events = []
+    
+        class Process:
+            # Real stdlib signal-delivery logic, without creating any process.
+            terminate = subprocess.Popen.terminate
+            send_signal = subprocess.Popen.send_signal
+            returncode = None
+            pid = 987654321
+            polls = 0
+    
+            def poll(self):
+                self.polls += 1
+                if timing == "before-stop" or (
+                    timing == "inside-terminate" and self.polls >= 2
+                ):
+                    self.returncode = code
+                events.append(("poll", self.returncode))
+                return self.returncode
+    
+            def wait(self, timeout):
+                events.append(("wait", timeout))
+                assert self.returncode is not None
+                return self.returncode
+    
+        proc = runner._proc = Process()
+    
+        def fake_kill(pid, sig):
+            assert pid == proc.pid
+            events.append(("signal", sig))
+            proc.returncode = -15
+    
+        monkeypatch.setattr(os, "kill", fake_kill)
+        runner.cancel()
+        signals = [event for event in events if event[0] == "signal"]
+        assert bool(signals) is (timing == "signal-delivered"), events
+        expected = "cancelled" if timing == "signal-delivered" else reason
+        assert runner.result is not None
+>       assert runner.result.reason == expected, {
+            "expected": expected, "actual": runner.result.reason, "events": events,
+        }
+E       AssertionError: {'actual': 'cancelled', 'events': [('poll', None), ('poll', 0), ('wait', 8)], 'expected': 'completion_missing'}
+E       assert 'cancelled' == 'completion_missing'
+E         
+E         - completion_missing
+E         + cancelled
+
+../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py:76: AssertionError
+_ test_inner_popen_poll_exit_is_not_an_owner_cancellation[Nwipe successfully completed.\n-0-completion_missing-inside-terminate-quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-71/test_inner_popen_poll_exit_is_23')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc38bdd0210>
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, timing = 'inside-terminate'
+log = 'Nwipe successfully completed.\n', code = 0, reason = 'completion_missing'
+
+    @pytest.mark.parametrize("method", tuple(MethodId))
+    @pytest.mark.parametrize("timing", ("before-stop", "inside-terminate", "signal-delivered"))
+    @pytest.mark.parametrize("log,code,reason", CASES)
+    def test_inner_popen_poll_exit_is_not_an_owner_cancellation(
+        tmp_path, monkeypatch, method, timing, log, code, reason
+    ):
+        monkeypatch.setattr(module, "_try_log_diag", lambda *_args: None)
+        logfile = tmp_path / "fake.log"
+        logfile.write_text(log, encoding="utf-8")
+        request = WipeRequest("/dev/vda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+        events = []
+    
+        class Process:
+            # Real stdlib signal-delivery logic, without creating any process.
+            terminate = subprocess.Popen.terminate
+            send_signal = subprocess.Popen.send_signal
+            returncode = None
+            pid = 987654321
+            polls = 0
+    
+            def poll(self):
+                self.polls += 1
+                if timing == "before-stop" or (
+                    timing == "inside-terminate" and self.polls >= 2
+                ):
+                    self.returncode = code
+                events.append(("poll", self.returncode))
+                return self.returncode
+    
+            def wait(self, timeout):
+                events.append(("wait", timeout))
+                assert self.returncode is not None
+                return self.returncode
+    
+        proc = runner._proc = Process()
+    
+        def fake_kill(pid, sig):
+            assert pid == proc.pid
+            events.append(("signal", sig))
+            proc.returncode = -15
+    
+        monkeypatch.setattr(os, "kill", fake_kill)
+        runner.cancel()
+        signals = [event for event in events if event[0] == "signal"]
+        assert bool(signals) is (timing == "signal-delivered"), events
+        expected = "cancelled" if timing == "signal-delivered" else reason
+        assert runner.result is not None
+>       assert runner.result.reason == expected, {
+            "expected": expected, "actual": runner.result.reason, "events": events,
+        }
+E       AssertionError: {'actual': 'cancelled', 'events': [('poll', None), ('poll', 0), ('wait', 8)], 'expected': 'completion_missing'}
+E       assert 'cancelled' == 'completion_missing'
+E         
+E         - completion_missing
+E         + cancelled
+
+../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py:76: AssertionError
+_ test_inner_popen_poll_exit_is_not_an_owner_cancellation[-5-process_failed-inside-terminate-everyday] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-71/test_inner_popen_poll_exit_is_30')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc38bdd0d00>
+method = <MethodId.EVERYDAY: 'everyday'>, timing = 'inside-terminate', log = ''
+code = 5, reason = 'process_failed'
+
+    @pytest.mark.parametrize("method", tuple(MethodId))
+    @pytest.mark.parametrize("timing", ("before-stop", "inside-terminate", "signal-delivered"))
+    @pytest.mark.parametrize("log,code,reason", CASES)
+    def test_inner_popen_poll_exit_is_not_an_owner_cancellation(
+        tmp_path, monkeypatch, method, timing, log, code, reason
+    ):
+        monkeypatch.setattr(module, "_try_log_diag", lambda *_args: None)
+        logfile = tmp_path / "fake.log"
+        logfile.write_text(log, encoding="utf-8")
+        request = WipeRequest("/dev/vda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+        events = []
+    
+        class Process:
+            # Real stdlib signal-delivery logic, without creating any process.
+            terminate = subprocess.Popen.terminate
+            send_signal = subprocess.Popen.send_signal
+            returncode = None
+            pid = 987654321
+            polls = 0
+    
+            def poll(self):
+                self.polls += 1
+                if timing == "before-stop" or (
+                    timing == "inside-terminate" and self.polls >= 2
+                ):
+                    self.returncode = code
+                events.append(("poll", self.returncode))
+                return self.returncode
+    
+            def wait(self, timeout):
+                events.append(("wait", timeout))
+                assert self.returncode is not None
+                return self.returncode
+    
+        proc = runner._proc = Process()
+    
+        def fake_kill(pid, sig):
+            assert pid == proc.pid
+            events.append(("signal", sig))
+            proc.returncode = -15
+    
+        monkeypatch.setattr(os, "kill", fake_kill)
+        runner.cancel()
+        signals = [event for event in events if event[0] == "signal"]
+        assert bool(signals) is (timing == "signal-delivered"), events
+        expected = "cancelled" if timing == "signal-delivered" else reason
+        assert runner.result is not None
+>       assert runner.result.reason == expected, {
+            "expected": expected, "actual": runner.result.reason, "events": events,
+        }
+E       AssertionError: {'actual': 'cancelled', 'events': [('poll', None), ('poll', 5), ('wait', 8)], 'expected': 'process_failed'}
+E       assert 'cancelled' == 'process_failed'
+E         
+E         - process_failed
+E         + cancelled
+
+../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py:76: AssertionError
+_ test_inner_popen_poll_exit_is_not_an_owner_cancellation[-5-process_failed-inside-terminate-extra] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-71/test_inner_popen_poll_exit_is_31')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc38bd83310>
+method = <MethodId.EXTRA: 'extra'>, timing = 'inside-terminate', log = ''
+code = 5, reason = 'process_failed'
+
+    @pytest.mark.parametrize("method", tuple(MethodId))
+    @pytest.mark.parametrize("timing", ("before-stop", "inside-terminate", "signal-delivered"))
+    @pytest.mark.parametrize("log,code,reason", CASES)
+    def test_inner_popen_poll_exit_is_not_an_owner_cancellation(
+        tmp_path, monkeypatch, method, timing, log, code, reason
+    ):
+        monkeypatch.setattr(module, "_try_log_diag", lambda *_args: None)
+        logfile = tmp_path / "fake.log"
+        logfile.write_text(log, encoding="utf-8")
+        request = WipeRequest("/dev/vda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+        events = []
+    
+        class Process:
+            # Real stdlib signal-delivery logic, without creating any process.
+            terminate = subprocess.Popen.terminate
+            send_signal = subprocess.Popen.send_signal
+            returncode = None
+            pid = 987654321
+            polls = 0
+    
+            def poll(self):
+                self.polls += 1
+                if timing == "before-stop" or (
+                    timing == "inside-terminate" and self.polls >= 2
+                ):
+                    self.returncode = code
+                events.append(("poll", self.returncode))
+                return self.returncode
+    
+            def wait(self, timeout):
+                events.append(("wait", timeout))
+                assert self.returncode is not None
+                return self.returncode
+    
+        proc = runner._proc = Process()
+    
+        def fake_kill(pid, sig):
+            assert pid == proc.pid
+            events.append(("signal", sig))
+            proc.returncode = -15
+    
+        monkeypatch.setattr(os, "kill", fake_kill)
+        runner.cancel()
+        signals = [event for event in events if event[0] == "signal"]
+        assert bool(signals) is (timing == "signal-delivered"), events
+        expected = "cancelled" if timing == "signal-delivered" else reason
+        assert runner.result is not None
+>       assert runner.result.reason == expected, {
+            "expected": expected, "actual": runner.result.reason, "events": events,
+        }
+E       AssertionError: {'actual': 'cancelled', 'events': [('poll', None), ('poll', 5), ('wait', 8)], 'expected': 'process_failed'}
+E       assert 'cancelled' == 'process_failed'
+E         
+E         - process_failed
+E         + cancelled
+
+../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py:76: AssertionError
+_ test_inner_popen_poll_exit_is_not_an_owner_cancellation[-5-process_failed-inside-terminate-quick_zero] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-71/test_inner_popen_poll_exit_is_32')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc38bdd0600>
+method = <MethodId.QUICK_ZERO: 'quick_zero'>, timing = 'inside-terminate'
+log = '', code = 5, reason = 'process_failed'
+
+    @pytest.mark.parametrize("method", tuple(MethodId))
+    @pytest.mark.parametrize("timing", ("before-stop", "inside-terminate", "signal-delivered"))
+    @pytest.mark.parametrize("log,code,reason", CASES)
+    def test_inner_popen_poll_exit_is_not_an_owner_cancellation(
+        tmp_path, monkeypatch, method, timing, log, code, reason
+    ):
+        monkeypatch.setattr(module, "_try_log_diag", lambda *_args: None)
+        logfile = tmp_path / "fake.log"
+        logfile.write_text(log, encoding="utf-8")
+        request = WipeRequest("/dev/vda", method, "/dev/sr0", str(logfile))
+        runner = module.NwipeRunner()
+        runner._active_request = request
+        runner._last_logfile = str(logfile)
+        events = []
+    
+        class Process:
+            # Real stdlib signal-delivery logic, without creating any process.
+            terminate = subprocess.Popen.terminate
+            send_signal = subprocess.Popen.send_signal
+            returncode = None
+            pid = 987654321
+            polls = 0
+    
+            def poll(self):
+                self.polls += 1
+                if timing == "before-stop" or (
+                    timing == "inside-terminate" and self.polls >= 2
+                ):
+                    self.returncode = code
+                events.append(("poll", self.returncode))
+                return self.returncode
+    
+            def wait(self, timeout):
+                events.append(("wait", timeout))
+                assert self.returncode is not None
+                return self.returncode
+    
+        proc = runner._proc = Process()
+    
+        def fake_kill(pid, sig):
+            assert pid == proc.pid
+            events.append(("signal", sig))
+            proc.returncode = -15
+    
+        monkeypatch.setattr(os, "kill", fake_kill)
+        runner.cancel()
+        signals = [event for event in events if event[0] == "signal"]
+        assert bool(signals) is (timing == "signal-delivered"), events
+        expected = "cancelled" if timing == "signal-delivered" else reason
+        assert runner.result is not None
+>       assert runner.result.reason == expected, {
+            "expected": expected, "actual": runner.result.reason, "events": events,
+        }
+E       AssertionError: {'actual': 'cancelled', 'events': [('poll', None), ('poll', 5), ('wait', 8)], 'expected': 'process_failed'}
+E       assert 'cancelled' == 'process_failed'
+E         
+E         - process_failed
+E         + cancelled
+
+../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py:76: AssertionError
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py::test_inner_popen_poll_exit_is_not_an_owner_cancellation[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inside-terminate-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py::test_inner_popen_poll_exit_is_not_an_owner_cancellation[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inside-terminate-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py::test_inner_popen_poll_exit_is_not_an_owner_cancellation[[2026/10/21 12:00:00] error: /dev/vda: >>> FAILURE! <<<: code 1\n-1-engine_failed-inside-terminate-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py::test_inner_popen_poll_exit_is_not_an_owner_cancellation[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inside-terminate-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py::test_inner_popen_poll_exit_is_not_an_owner_cancellation[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inside-terminate-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py::test_inner_popen_poll_exit_is_not_an_owner_cancellation[[2026/10/21 12:00:00] error: Verification mismatch on '/dev/vda'\n-1-verification_failed-inside-terminate-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py::test_inner_popen_poll_exit_is_not_an_owner_cancellation[Nwipe successfully completed.\n-0-completion_missing-inside-terminate-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py::test_inner_popen_poll_exit_is_not_an_owner_cancellation[Nwipe successfully completed.\n-0-completion_missing-inside-terminate-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py::test_inner_popen_poll_exit_is_not_an_owner_cancellation[Nwipe successfully completed.\n-0-completion_missing-inside-terminate-quick_zero]
+FAILED ../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py::test_inner_popen_poll_exit_is_not_an_owner_cancellation[-5-process_failed-inside-terminate-everyday]
+FAILED ../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py::test_inner_popen_poll_exit_is_not_an_owner_cancellation[-5-process_failed-inside-terminate-extra]
+FAILED ../beamo-tools/audit-pass6-20261021/runner/test_cancel_inner_poll_probe.py::test_inner_popen_poll_exit_is_not_an_owner_cancellation[-5-process_failed-inside-terminate-quick_zero]
+12 failed, 33 passed in 0.22s

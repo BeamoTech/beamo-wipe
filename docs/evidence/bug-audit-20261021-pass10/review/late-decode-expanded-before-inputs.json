@@ -1,0 +1,11 @@
+{
+  "baseline": "7047dfb8c22d0b17faad2d5de1ec470b2debfaac",
+  "app_sha256": "03f394a55c33e835686ba50818b623443fca2321f06f7e418dbd91ad8b9718bc",
+  "test_sha256": "dc101f5418e023b725fd0bbe74932c3d2805975c8c2f32d0e4a1148f81b7b245",
+  "cases": 38,
+  "failures": 16,
+  "positive_controls": 22,
+  "errors": 0,
+  "skips": 0,
+  "native_actions": false
+}

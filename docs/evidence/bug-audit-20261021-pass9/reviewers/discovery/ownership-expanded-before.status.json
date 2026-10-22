@@ -1,0 +1,23 @@
+{
+  "command": [
+    "/workspace/beamo-wipe/.venv-linux/bin/python3",
+    "-m",
+    "pytest",
+    "-W",
+    "error",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-q",
+    "tests/test_app_live_ownership_pass9_20261021.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass9-20261021/discovery/ownership-expanded-before.xml"
+  ],
+  "cwd": "/workspace/beamo-tools/audit-pass9-20261021/discovery/ownership-baseline",
+  "PYTHONPATH": "/workspace/beamo-tools/audit-pass9-20261021/discovery/ownership-baseline/src",
+  "exit_code": 1,
+  "elapsed_seconds": 0.84,
+  "date_utc": "2026-10-21T04:52:44.583424+00:00",
+  "app_sha256": "3bf7e23122e1aefd821f7c9a9d6a0dced4f6757589ea6939c8ac9dc0f8054852",
+  "test_sha256": "f3af730fae852b0d3b170387ce0ccaaa45747bb1269598488ef7bab419793e55"
+}

@@ -1,0 +1,206 @@
+{
+  "status": "pass",
+  "supplemental_cases": 792,
+  "rows": [
+    {
+      "language": "en",
+      "result": "verified",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "en",
+      "result": "unverified",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "en",
+      "result": "occupied",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "en",
+      "result": "open_failed",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "en",
+      "result": "geometry_unusable",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "en",
+      "result": "interrupted",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "en",
+      "result": "cancelled",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "en",
+      "result": "completion_missing",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "en",
+      "result": "verification_failed",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "en",
+      "result": "process_failed",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "en",
+      "result": "engine_failed",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "fr",
+      "result": "verified",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "fr",
+      "result": "unverified",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "fr",
+      "result": "occupied",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "fr",
+      "result": "open_failed",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "fr",
+      "result": "geometry_unusable",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "fr",
+      "result": "interrupted",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "fr",
+      "result": "cancelled",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "fr",
+      "result": "completion_missing",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "fr",
+      "result": "verification_failed",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "fr",
+      "result": "process_failed",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "fr",
+      "result": "engine_failed",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "de",
+      "result": "verified",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "de",
+      "result": "unverified",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "de",
+      "result": "occupied",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "de",
+      "result": "open_failed",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "de",
+      "result": "geometry_unusable",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "de",
+      "result": "interrupted",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "de",
+      "result": "cancelled",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "de",
+      "result": "completion_missing",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "de",
+      "result": "verification_failed",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "de",
+      "result": "process_failed",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    },
+    {
+      "language": "de",
+      "result": "engine_failed",
+      "sharing_and_bundle_variants": 12,
+      "malformed_core_variants": 12
+    }
+  ],
+  "canonical_test_count": false,
+  "limits": "Fixture-based report checks; no device, mount or USB operation"
+}

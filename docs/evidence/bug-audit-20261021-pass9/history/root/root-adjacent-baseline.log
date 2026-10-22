@@ -1,0 +1,493 @@
+.......................................................FFFFFFFFFFF...... [ 20%]
+........................................................................ [ 40%]
+.................................................ssss................... [ 60%]
+......................................................................ss [ 80%]
+ssss....FF............................................................   [100%]
+=================================== FAILURES ===================================
+_________ test_output_selection_and_following_controls_agree[success] __________
+
+ui = <function ui.<locals>.build at 0x7f5a0d512f20>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5a10bacd00>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7f5a0d4f9350>
+outcome = 'success'
+
+    @pytest.mark.parametrize("outcome", ["success", "refused", "exception", "timeout", "cancelled"])
+    def test_output_selection_and_following_controls_agree(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+>       app, controller, calls, state = _open(ui, monkeypatch)
+                                        ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_sound_output_selection_pass10.py:96: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_sound_output_selection_pass10.py:70: in _open
+    app = build_ui()
+          ^^^^^^^^^^
+tests/test_accessible_runtime.py:135: in build
+    app = AccessibleWizard(wizard or make_demo_wizard())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/ui/accessible_wizard.py:58: in __init__
+    self.window = Gtk.Window(title=C.ACCESSIBLE_TITLE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Gtk.Window object at 0x7f5a0d527100 (uninitialized at 0x(nil))>
+args = (), kwargs = {'title': 'Beamo Wipe — screen-reader view'}
+
+    def __init__(self, *args, **kwargs):
+        if not initialized:
+>           raise RuntimeError(
+                "Gtk couldn't be initialized. "
+                "Use Gtk.init_check() if you want to handle this case.")
+E           RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.
+
+/usr/lib/python3/dist-packages/gi/overrides/Gtk.py:505: RuntimeError
+_________ test_output_selection_and_following_controls_agree[refused] __________
+
+ui = <function ui.<locals>.build at 0x7f5a0d5132e0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5a10a77cb0>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7f5a0d4cbdd0>
+outcome = 'refused'
+
+    @pytest.mark.parametrize("outcome", ["success", "refused", "exception", "timeout", "cancelled"])
+    def test_output_selection_and_following_controls_agree(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+>       app, controller, calls, state = _open(ui, monkeypatch)
+                                        ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_sound_output_selection_pass10.py:96: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_sound_output_selection_pass10.py:70: in _open
+    app = build_ui()
+          ^^^^^^^^^^
+tests/test_accessible_runtime.py:135: in build
+    app = AccessibleWizard(wizard or make_demo_wizard())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/ui/accessible_wizard.py:58: in __init__
+    self.window = Gtk.Window(title=C.ACCESSIBLE_TITLE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Gtk.Window object at 0x7f5a0c3ac900 (uninitialized at 0x(nil))>
+args = (), kwargs = {'title': 'Beamo Wipe — screen-reader view'}
+
+    def __init__(self, *args, **kwargs):
+        if not initialized:
+>           raise RuntimeError(
+                "Gtk couldn't be initialized. "
+                "Use Gtk.init_check() if you want to handle this case.")
+E           RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.
+
+/usr/lib/python3/dist-packages/gi/overrides/Gtk.py:505: RuntimeError
+________ test_output_selection_and_following_controls_agree[exception] _________
+
+ui = <function ui.<locals>.build at 0x7f5a0d5128e0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5a0d5207c0>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7f5a0c16b450>
+outcome = 'exception'
+
+    @pytest.mark.parametrize("outcome", ["success", "refused", "exception", "timeout", "cancelled"])
+    def test_output_selection_and_following_controls_agree(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+>       app, controller, calls, state = _open(ui, monkeypatch)
+                                        ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_sound_output_selection_pass10.py:96: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_sound_output_selection_pass10.py:70: in _open
+    app = build_ui()
+          ^^^^^^^^^^
+tests/test_accessible_runtime.py:135: in build
+    app = AccessibleWizard(wizard or make_demo_wizard())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/ui/accessible_wizard.py:58: in __init__
+    self.window = Gtk.Window(title=C.ACCESSIBLE_TITLE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Gtk.Window object at 0x7f5a07f53580 (uninitialized at 0x(nil))>
+args = (), kwargs = {'title': 'Beamo Wipe — screen-reader view'}
+
+    def __init__(self, *args, **kwargs):
+        if not initialized:
+>           raise RuntimeError(
+                "Gtk couldn't be initialized. "
+                "Use Gtk.init_check() if you want to handle this case.")
+E           RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.
+
+/usr/lib/python3/dist-packages/gi/overrides/Gtk.py:505: RuntimeError
+_________ test_output_selection_and_following_controls_agree[timeout] __________
+
+ui = <function ui.<locals>.build at 0x7f5a0d5107c0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5a10be7380>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7f5a07ac94d0>
+outcome = 'timeout'
+
+    @pytest.mark.parametrize("outcome", ["success", "refused", "exception", "timeout", "cancelled"])
+    def test_output_selection_and_following_controls_agree(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+>       app, controller, calls, state = _open(ui, monkeypatch)
+                                        ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_sound_output_selection_pass10.py:96: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_sound_output_selection_pass10.py:70: in _open
+    app = build_ui()
+          ^^^^^^^^^^
+tests/test_accessible_runtime.py:135: in build
+    app = AccessibleWizard(wizard or make_demo_wizard())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/ui/accessible_wizard.py:58: in __init__
+    self.window = Gtk.Window(title=C.ACCESSIBLE_TITLE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Gtk.Window object at 0x7f5a0c36c080 (uninitialized at 0x(nil))>
+args = (), kwargs = {'title': 'Beamo Wipe — screen-reader view'}
+
+    def __init__(self, *args, **kwargs):
+        if not initialized:
+>           raise RuntimeError(
+                "Gtk couldn't be initialized. "
+                "Use Gtk.init_check() if you want to handle this case.")
+E           RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.
+
+/usr/lib/python3/dist-packages/gi/overrides/Gtk.py:505: RuntimeError
+________ test_output_selection_and_following_controls_agree[cancelled] _________
+
+ui = <function ui.<locals>.build at 0x7f5a0d512340>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5a07f1ea50>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7f5a0d4a3f50>
+outcome = 'cancelled'
+
+    @pytest.mark.parametrize("outcome", ["success", "refused", "exception", "timeout", "cancelled"])
+    def test_output_selection_and_following_controls_agree(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+>       app, controller, calls, state = _open(ui, monkeypatch)
+                                        ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_sound_output_selection_pass10.py:96: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_sound_output_selection_pass10.py:70: in _open
+    app = build_ui()
+          ^^^^^^^^^^
+tests/test_accessible_runtime.py:135: in build
+    app = AccessibleWizard(wizard or make_demo_wizard())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/ui/accessible_wizard.py:58: in __init__
+    self.window = Gtk.Window(title=C.ACCESSIBLE_TITLE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Gtk.Window object at 0x7f5a0d527f40 (uninitialized at 0x(nil))>
+args = (), kwargs = {'title': 'Beamo Wipe — screen-reader view'}
+
+    def __init__(self, *args, **kwargs):
+        if not initialized:
+>           raise RuntimeError(
+                "Gtk couldn't be initialized. "
+                "Use Gtk.init_check() if you want to handle this case.")
+E           RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.
+
+/usr/lib/python3/dist-packages/gi/overrides/Gtk.py:505: RuntimeError
+________ test_failed_output_selection_can_retry_the_same_radio[refused] ________
+
+ui = <function ui.<locals>.build at 0x7f5a0d510900>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5a07f1f930>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7f5a0d4c8550>
+outcome = 'refused'
+
+    @pytest.mark.parametrize("outcome", ["refused", "exception", "timeout", "cancelled"])
+    def test_failed_output_selection_can_retry_the_same_radio(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+>       app, controller, calls, state = _open(ui, monkeypatch)
+                                        ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_sound_output_selection_pass10.py:117: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_sound_output_selection_pass10.py:70: in _open
+    app = build_ui()
+          ^^^^^^^^^^
+tests/test_accessible_runtime.py:135: in build
+    app = AccessibleWizard(wizard or make_demo_wizard())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/ui/accessible_wizard.py:58: in __init__
+    self.window = Gtk.Window(title=C.ACCESSIBLE_TITLE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Gtk.Window object at 0x7f5a0d56b980 (uninitialized at 0x(nil))>
+args = (), kwargs = {'title': 'Beamo Wipe — screen-reader view'}
+
+    def __init__(self, *args, **kwargs):
+        if not initialized:
+>           raise RuntimeError(
+                "Gtk couldn't be initialized. "
+                "Use Gtk.init_check() if you want to handle this case.")
+E           RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.
+
+/usr/lib/python3/dist-packages/gi/overrides/Gtk.py:505: RuntimeError
+_______ test_failed_output_selection_can_retry_the_same_radio[exception] _______
+
+ui = <function ui.<locals>.build at 0x7f5a0d510860>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5a0d554590>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7f5a1056a5d0>
+outcome = 'exception'
+
+    @pytest.mark.parametrize("outcome", ["refused", "exception", "timeout", "cancelled"])
+    def test_failed_output_selection_can_retry_the_same_radio(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+>       app, controller, calls, state = _open(ui, monkeypatch)
+                                        ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_sound_output_selection_pass10.py:117: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_sound_output_selection_pass10.py:70: in _open
+    app = build_ui()
+          ^^^^^^^^^^
+tests/test_accessible_runtime.py:135: in build
+    app = AccessibleWizard(wizard or make_demo_wizard())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/ui/accessible_wizard.py:58: in __init__
+    self.window = Gtk.Window(title=C.ACCESSIBLE_TITLE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Gtk.Window object at 0x7f5a10b39d80 (uninitialized at 0x(nil))>
+args = (), kwargs = {'title': 'Beamo Wipe — screen-reader view'}
+
+    def __init__(self, *args, **kwargs):
+        if not initialized:
+>           raise RuntimeError(
+                "Gtk couldn't be initialized. "
+                "Use Gtk.init_check() if you want to handle this case.")
+E           RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.
+
+/usr/lib/python3/dist-packages/gi/overrides/Gtk.py:505: RuntimeError
+________ test_failed_output_selection_can_retry_the_same_radio[timeout] ________
+
+ui = <function ui.<locals>.build at 0x7f5a0d513b00>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5a0d555710>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7f5a10917f50>
+outcome = 'timeout'
+
+    @pytest.mark.parametrize("outcome", ["refused", "exception", "timeout", "cancelled"])
+    def test_failed_output_selection_can_retry_the_same_radio(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+>       app, controller, calls, state = _open(ui, monkeypatch)
+                                        ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_sound_output_selection_pass10.py:117: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_sound_output_selection_pass10.py:70: in _open
+    app = build_ui()
+          ^^^^^^^^^^
+tests/test_accessible_runtime.py:135: in build
+    app = AccessibleWizard(wizard or make_demo_wizard())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/ui/accessible_wizard.py:58: in __init__
+    self.window = Gtk.Window(title=C.ACCESSIBLE_TITLE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Gtk.Window object at 0x7f5a10afe1c0 (uninitialized at 0x(nil))>
+args = (), kwargs = {'title': 'Beamo Wipe — screen-reader view'}
+
+    def __init__(self, *args, **kwargs):
+        if not initialized:
+>           raise RuntimeError(
+                "Gtk couldn't be initialized. "
+                "Use Gtk.init_check() if you want to handle this case.")
+E           RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.
+
+/usr/lib/python3/dist-packages/gi/overrides/Gtk.py:505: RuntimeError
+_______ test_failed_output_selection_can_retry_the_same_radio[cancelled] _______
+
+ui = <function ui.<locals>.build at 0x7f5a0d4e5e40>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5a0d556200>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7f5a0c16b850>
+outcome = 'cancelled'
+
+    @pytest.mark.parametrize("outcome", ["refused", "exception", "timeout", "cancelled"])
+    def test_failed_output_selection_can_retry_the_same_radio(
+        ui, monkeypatch, selection_audio_worker, outcome  # noqa: F811
+    ):
+>       app, controller, calls, state = _open(ui, monkeypatch)
+                                        ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_sound_output_selection_pass10.py:117: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_sound_output_selection_pass10.py:70: in _open
+    app = build_ui()
+          ^^^^^^^^^^
+tests/test_accessible_runtime.py:135: in build
+    app = AccessibleWizard(wizard or make_demo_wizard())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/ui/accessible_wizard.py:58: in __init__
+    self.window = Gtk.Window(title=C.ACCESSIBLE_TITLE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Gtk.Window object at 0x7f5a103a9640 (uninitialized at 0x(nil))>
+args = (), kwargs = {'title': 'Beamo Wipe — screen-reader view'}
+
+    def __init__(self, *args, **kwargs):
+        if not initialized:
+>           raise RuntimeError(
+                "Gtk couldn't be initialized. "
+                "Use Gtk.init_check() if you want to handle this case.")
+E           RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.
+
+/usr/lib/python3/dist-packages/gi/overrides/Gtk.py:505: RuntimeError
+_____________ test_closing_output_selection_discards_late_success ______________
+
+ui = <function ui.<locals>.build at 0x7f5a0d4bc900>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5a07f1e350>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7f5a104b44d0>
+
+    def test_closing_output_selection_discards_late_success(
+        ui, monkeypatch, selection_audio_worker  # noqa: F811
+    ):
+>       app, controller, _calls, _state = _open(ui, monkeypatch)
+                                          ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_sound_output_selection_pass10.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_sound_output_selection_pass10.py:70: in _open
+    app = build_ui()
+          ^^^^^^^^^^
+tests/test_accessible_runtime.py:135: in build
+    app = AccessibleWizard(wizard or make_demo_wizard())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/ui/accessible_wizard.py:58: in __init__
+    self.window = Gtk.Window(title=C.ACCESSIBLE_TITLE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Gtk.Window object at 0x7f5a10b7d680 (uninitialized at 0x(nil))>
+args = (), kwargs = {'title': 'Beamo Wipe — screen-reader view'}
+
+    def __init__(self, *args, **kwargs):
+        if not initialized:
+>           raise RuntimeError(
+                "Gtk couldn't be initialized. "
+                "Use Gtk.init_check() if you want to handle this case.")
+E           RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.
+
+/usr/lib/python3/dist-packages/gi/overrides/Gtk.py:505: RuntimeError
+________ test_failed_duplicate_label_choice_restores_the_accepted_radio ________
+
+ui = <function ui.<locals>.build at 0x7f5a0d4e6700>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5a07f1e200>
+selection_audio_worker = <beamo_wipe.audio_jobs.AudioWorker object at 0x7f5a10580150>
+
+    def test_failed_duplicate_label_choice_restores_the_accepted_radio(
+        ui, monkeypatch, selection_audio_worker  # noqa: F811
+    ):
+>       app, controller, calls, state = _open(ui, monkeypatch, duplicate_labels=True)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_sound_output_selection_pass10.py:163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_sound_output_selection_pass10.py:70: in _open
+    app = build_ui()
+          ^^^^^^^^^^
+tests/test_accessible_runtime.py:135: in build
+    app = AccessibleWizard(wizard or make_demo_wizard())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/ui/accessible_wizard.py:58: in __init__
+    self.window = Gtk.Window(title=C.ACCESSIBLE_TITLE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Gtk.Window object at 0x7f5a10690f00 (uninitialized at 0x(nil))>
+args = (), kwargs = {'title': 'Beamo Wipe — screen-reader view'}
+
+    def __init__(self, *args, **kwargs):
+        if not initialized:
+>           raise RuntimeError(
+                "Gtk couldn't be initialized. "
+                "Use Gtk.init_check() if you want to handle this case.")
+E           RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.
+
+/usr/lib/python3/dist-packages/gi/overrides/Gtk.py:505: RuntimeError
+____________ test_spoken_startup_status_uses_selected_language[fr] _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5a10126d60>
+language = 'fr'
+
+    @pytest.mark.parametrize("language", ["fr", "de"])
+    def test_spoken_startup_status_uses_selected_language(monkeypatch, language):
+        pytest.importorskip("gi")
+        from beamo_wipe.ui import accessible_wizard as ui
+    
+        lang.set_language(language)
+        captured = []
+>       unrelated = ui.Gtk.Window(title="Unrelated existing window")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_startup_language_refresh_regression.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Gtk.Window object at 0x7f5a1084b2c0 (uninitialized at 0x(nil))>
+args = (), kwargs = {'title': 'Unrelated existing window'}
+
+    def __init__(self, *args, **kwargs):
+        if not initialized:
+>           raise RuntimeError(
+                "Gtk couldn't be initialized. "
+                "Use Gtk.init_check() if you want to handle this case.")
+E           RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.
+
+/usr/lib/python3/dist-packages/gi/overrides/Gtk.py:505: RuntimeError
+____________ test_spoken_startup_status_uses_selected_language[de] _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5a101257f0>
+language = 'de'
+
+    @pytest.mark.parametrize("language", ["fr", "de"])
+    def test_spoken_startup_status_uses_selected_language(monkeypatch, language):
+        pytest.importorskip("gi")
+        from beamo_wipe.ui import accessible_wizard as ui
+    
+        lang.set_language(language)
+        captured = []
+>       unrelated = ui.Gtk.Window(title="Unrelated existing window")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_startup_language_refresh_regression.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Gtk.Window object at 0x7f5a0d61a180 (uninitialized at 0x(nil))>
+args = (), kwargs = {'title': 'Unrelated existing window'}
+
+    def __init__(self, *args, **kwargs):
+        if not initialized:
+>           raise RuntimeError(
+                "Gtk couldn't be initialized. "
+                "Use Gtk.init_check() if you want to handle this case.")
+E           RuntimeError: Gtk couldn't be initialized. Use Gtk.init_check() if you want to handle this case.
+
+/usr/lib/python3/dist-packages/gi/overrides/Gtk.py:505: RuntimeError
+=========================== short test summary info ============================
+FAILED tests/test_sound_output_selection_pass10.py::test_output_selection_and_following_controls_agree[success]
+FAILED tests/test_sound_output_selection_pass10.py::test_output_selection_and_following_controls_agree[refused]
+FAILED tests/test_sound_output_selection_pass10.py::test_output_selection_and_following_controls_agree[exception]
+FAILED tests/test_sound_output_selection_pass10.py::test_output_selection_and_following_controls_agree[timeout]
+FAILED tests/test_sound_output_selection_pass10.py::test_output_selection_and_following_controls_agree[cancelled]
+FAILED tests/test_sound_output_selection_pass10.py::test_failed_output_selection_can_retry_the_same_radio[refused]
+FAILED tests/test_sound_output_selection_pass10.py::test_failed_output_selection_can_retry_the_same_radio[exception]
+FAILED tests/test_sound_output_selection_pass10.py::test_failed_output_selection_can_retry_the_same_radio[timeout]
+FAILED tests/test_sound_output_selection_pass10.py::test_failed_output_selection_can_retry_the_same_radio[cancelled]
+FAILED tests/test_sound_output_selection_pass10.py::test_closing_output_selection_discards_late_success
+FAILED tests/test_sound_output_selection_pass10.py::test_failed_duplicate_label_choice_restores_the_accepted_radio
+FAILED tests/test_startup_language_refresh_regression.py::test_spoken_startup_status_uses_selected_language[fr]
+FAILED tests/test_startup_language_refresh_regression.py::test_spoken_startup_status_uses_selected_language[de]
+13 failed, 335 passed, 10 skipped in 11.45s

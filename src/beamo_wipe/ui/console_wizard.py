@@ -306,8 +306,8 @@ def _paint_paged(
         for i, line in enumerate(lines):
             if y + i >= y_max:
                 break
-            _add(stdscr, y + i, 0, line)
-            if visible is not None:
+            painted = _add(stdscr, y + i, 0, line)
+            if visible is not None and painted is not False:
                 visible.add(i)
         return 0
     page = max(1, avail - 2)
@@ -320,8 +320,8 @@ def _paint_paged(
     for index, line in enumerate(lines[offset:], offset):
         if y >= inner:
             break
-        _add(stdscr, y, 0, line)
-        if visible is not None:
+        painted = _add(stdscr, y, 0, line)
+        if visible is not None and painted is not False:
             visible.add(index)
         y += 1
     if need_below:
@@ -1015,6 +1015,10 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 ident = _support_identity_text(wizard)
                 if ident:
                     print(ident)
+                # A redirected or buffered terminal stream may not display
+                # print() output until input() flushes it at the final prompt.
+                # Complete this write while the visible-review hold is active.
+                sys.stdout.flush()
             finally:
                 if review:
                     wizard.end_review_overlay()
@@ -1211,8 +1215,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
     escape_quiet_since = None
     space_held = False
     space_quiet_since = None
-    share_held = False
-    share_quiet_since = None
+    action_s_held = False
+    action_s_quiet_since = None
     limits_offset = 0
     inventory_open = False
     comparison_open = False
@@ -1227,24 +1231,22 @@ def _loop(stdscr, wizard: Wizard) -> int:
     review_seen: set[int] = set()
     while not wizard.wants_shutdown and not wizard.wants_new_session:
         wizard.tick()
-        first_review_frame = wizard.screen == Screen.LAST_CHANCE and shown_screen != Screen.LAST_CHANCE
+        screen_changed = wizard.screen != shown_screen
+        first_review_frame = wizard.screen == Screen.LAST_CHANCE and screen_changed
+        if screen_changed:
+            # A different page starts with its own opening guidance, even when
+            # both screens use the same paged-body scroll variable.
+            limits_offset = 0
         if wizard.screen != Screen.LAST_CHANCE and review_overlay_held:
             wizard.end_review_overlay()
             review_overlay_held = False
             review_seen.clear()
             review_lines = ()
         if first_review_frame:
-            limits_offset = 0
             review_seen.clear()
             review_lines = ()
             review_overlay_held = wizard.begin_review_overlay()
         shown_screen = wizard.screen
-        if wizard.screen not in {Screen.WHAT, Screen.OWNER, Screen.REPORT_HELP}:
-            space_held = False
-            space_quiet_since = None
-        if wizard.screen != Screen.REPORT_HELP:
-            share_held = False
-            share_quiet_since = None
         stdscr.erase()
         h, w = stdscr.getmaxyx()
         h, w = max(2, h), max(20, w)
@@ -1491,12 +1493,28 @@ def _loop(stdscr, wizard: Wizard) -> int:
             if ch == KEY_RESIZE:
                 continue
             if ch == -1:
+                enter_held, enter_quiet_since, _ = _advance_enter_quiet(
+                    enter_held, enter_quiet_since, time.monotonic()
+                )
                 escape_held, escape_quiet_since, _ = _advance_enter_quiet(
                     escape_held, escape_quiet_since, time.monotonic()
                 )
+                space_held, space_quiet_since, _ = _advance_enter_quiet(
+                    space_held, space_quiet_since, time.monotonic()
+                )
+                action_s_held, action_s_quiet_since, _ = _advance_enter_quiet(
+                    action_s_held, action_s_quiet_since, time.monotonic()
+                )
                 continue
-            if escape_held:
-                escape_quiet_since = None
+            # Confirm reads outside the shared input path. Carry Enter's hold
+            # and the origin of action keys through its literal token edits.
+            enter_quiet_since = escape_quiet_since = None
+            space_quiet_since = action_s_quiet_since = None
+            space_held = space_held or ch == ord(" ")
+            action_s_held = action_s_held or ch in (ord("s"), ord("S"))
+            if _is_enter_repeat(enter_held, ch):
+                continue
+            enter_held = enter_held or ch in (curses.KEY_ENTER, 10, 13)
             if ch == curses.KEY_F5 and wizard.can_refresh:
                 wizard.open_refresh_confirm()
                 continue
@@ -1721,16 +1739,54 @@ def _loop(stdscr, wizard: Wizard) -> int:
         ch = stdscr.getch()
         if ch == KEY_RESIZE:
             continue
+        enter_repeat = space_repeat = action_s_repeat = False
+        if ch != -1:
+            # Every queued key interrupts release evidence before a shortcut,
+            # overlay or suppressed repeat can return early. Remember action
+            # keys even on screens where they only type text or have no action.
+            enter_quiet_since = escape_quiet_since = None
+            space_quiet_since = action_s_quiet_since = None
+            enter_repeat = _is_enter_repeat(enter_held, ch)
+            enter_held = enter_held or ch in (curses.KEY_ENTER, 10, 13)
+            space_repeat = space_held and ch == ord(" ")
+            space_held = space_held or ch == ord(" ")
+            action_s_repeat = action_s_held and ch in (ord("s"), ord("S"))
+            action_s_held = action_s_held or ch in (ord("s"), ord("S"))
         # Handle Escape before inventory overlays and shortcut actions. A
         # held key can close an overlay and then repeat on the picker, which
         # would otherwise back out of the disk selection as a second action.
         if ch != -1:
             if escape_held:
-                escape_quiet_since = None
                 if ch == 27:
                     continue
             elif ch == 27:
                 escape_held = True
+        if ch == -1:
+            enter_held, enter_quiet_since, released = _advance_enter_quiet(
+                enter_held, enter_quiet_since, time.monotonic()
+            )
+            # Curses reports presses but no releases. A held Esc otherwise
+            # opens Stop confirmation and its next repeat dismisses it.
+            escape_held, escape_quiet_since, _ = _advance_enter_quiet(
+                escape_held, escape_quiet_since, time.monotonic()
+            )
+            # Space toggles owner consent and report preferences. Curses has
+            # no key-up event, so repeated presses from one hold need the
+            # same quiet interval as Enter and Escape.
+            space_held, space_quiet_since, _ = _advance_enter_quiet(
+                space_held, space_quiet_since, time.monotonic()
+            )
+            action_s_held, action_s_quiet_since, _ = _advance_enter_quiet(
+                action_s_held, action_s_quiet_since, time.monotonic()
+            )
+            if released and wizard.screen in (
+                Screen.DONE,
+                Screen.PICK_EMPTY,
+                Screen.PICK_BLOCKED,
+            ):
+                wizard.arm_done_keyboard()
+            time.sleep(0.08)
+            continue
         if wizard.screen == Screen.SHUTDOWN_CONFIRM and ch in (ord("d"), ord("D")):
             _confirm_report_discard(stdscr, wizard)
             continue
@@ -1752,8 +1808,6 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 delta = {curses.KEY_UP: -1, curses.KEY_DOWN: 1,
                          curses.KEY_PPAGE: -page_size, curses.KEY_NPAGE: page_size}[ch]
                 inventory_offset = max(0, inventory_offset + delta)
-            elif ch == -1:
-                time.sleep(0.08)
             continue
         if wizard.screen == Screen.PICK and ch in (ord("c"), ord("C")) and len(wizard.selectable) > 1:
             inventory_open = True
@@ -1773,56 +1827,14 @@ def _loop(stdscr, wizard: Wizard) -> int:
             inventory_open = True
             inventory_offset = 0
             continue
-        if ch == -1:
-            enter_held, enter_quiet_since, released = _advance_enter_quiet(
-                enter_held, enter_quiet_since, time.monotonic()
-            )
-            # Curses reports presses but no releases. A held Esc otherwise
-            # opens Stop confirmation and its next repeat dismisses it.
-            escape_held, escape_quiet_since, _ = _advance_enter_quiet(
-                escape_held, escape_quiet_since, time.monotonic()
-            )
-            # Space toggles owner consent and report preferences. Curses has
-            # no key-up event, so repeated presses from one hold need the
-            # same quiet interval as Enter and Escape.
-            space_held, space_quiet_since, _ = _advance_enter_quiet(
-                space_held, space_quiet_since, time.monotonic()
-            )
-            share_held, share_quiet_since, _ = _advance_enter_quiet(
-                share_held, share_quiet_since, time.monotonic()
-            )
-            if released and wizard.screen in (
-                Screen.DONE,
-                Screen.PICK_EMPTY,
-                Screen.PICK_BLOCKED,
-            ):
-                wizard.arm_done_keyboard()
-            time.sleep(0.08)
+        if wizard.screen in {Screen.WHAT, Screen.OWNER, Screen.REPORT_HELP} and space_repeat:
             continue
-        if wizard.screen in {Screen.WHAT, Screen.OWNER, Screen.REPORT_HELP}:
-            if space_held:
-                space_quiet_since = None
-                if ch == ord(" "):
-                    continue
-            elif ch == ord(" "):
-                space_held = True
-        if wizard.screen == Screen.REPORT_HELP:
-            if share_held:
-                share_quiet_since = None
-                if ch in (ord("s"), ord("S")):
-                    continue
-            elif ch in (ord("s"), ord("S")):
-                share_held = True
-        if enter_held:
-            # Any queued event breaks the quiet interval. A repeat Enter is
-            # still part of the same physical hold and remains suppressed.
-            enter_quiet_since = None
-        if _is_enter_repeat(enter_held, ch):
+        if wizard.screen == Screen.REPORT_HELP and action_s_repeat:
             continue
-        # Curses has no key release event. Another key interleaved with an
-        # auto-repeating Enter does not prove that Enter was released; only
-        # the observed quiet interval may rearm it.
-        enter_held = enter_held or ch in (curses.KEY_ENTER, 10, 13)
+        if enter_repeat:
+            continue
+        if wizard.screen == Screen.WORKING and action_s_repeat:
+            continue
         if (
             wizard.screen == Screen.DONE
             and not wizard.preview
@@ -2087,17 +2099,24 @@ def _handle(wizard: Wizard, ch: int) -> None:
         wizard.set_method(mapping[ch])
 
 
-def _add(stdscr, y, x, text, attr=curses.A_NORMAL) -> None:
+def _add(stdscr, y, x, text, attr=curses.A_NORMAL) -> bool:
+    """Return False when a native write was missed, clipped or failed.
+
+    Review painting uses an explicit False failure sentinel. Existing injected
+    paint boundaries may return None for success; this native boundary always
+    returns a bool. An intentional empty in-bounds row needs no native write.
+    """
     h, w = stdscr.getmaxyx()
-    if y < 0 or y >= h:
-        return
+    if y < 0 or y >= h or x < 0 or x >= w:
+        return False
     fitted = _fit_cols(text or "", max(0, w - 1 - x))
     if not fitted:
-        return
+        return not bool(text)
     try:
         stdscr.addstr(y, x, fitted, attr)
     except curses.error:
-        pass
+        return False
+    return fitted == text
 
 
 def _wrap(stdscr, y, text, width, y_max=None) -> int:

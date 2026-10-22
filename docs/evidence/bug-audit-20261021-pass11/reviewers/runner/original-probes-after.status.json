@@ -1,0 +1,17 @@
+{
+  "name": "original-probes-after",
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "-q",
+    "-W",
+    "error",
+    "--junitxml=/workspace/beamo-tools/audit-pass11-20261021/runner/original-probes-after.xml",
+    "/workspace/beamo-tools/audit-pass11-20261021/runner/test_inhibitor_diagnostic_retirement_probe.py",
+    "/workspace/beamo-tools/audit-pass11-20261021/root/test_inhibit_optional_probe.py"
+  ],
+  "started_utc": "2026-10-21T06:03:00.860616+00:00",
+  "elapsed_seconds": 0.447,
+  "exit_code": 0
+}

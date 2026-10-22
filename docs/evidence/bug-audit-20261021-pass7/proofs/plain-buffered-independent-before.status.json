@@ -1,0 +1,20 @@
+{
+  "name": "plain-buffered-independent-before",
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-o",
+    "pythonpath=src",
+    "-q",
+    "/workspace/beamo-tools/audit-pass7-20261021/ui/test_plain_buffered_visibility_probe.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass7-20261021/root/plain-buffered-independent-before.xml"
+  ],
+  "started_utc": "2026-10-21T03:20:43.783115+00:00",
+  "elapsed_seconds": 0.42,
+  "exit_code": 1
+}

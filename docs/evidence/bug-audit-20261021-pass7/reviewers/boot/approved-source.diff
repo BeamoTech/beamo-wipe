@@ -1,0 +1,13 @@
+diff --git a/dev.py b/dev.py
+index a250afb..de48c6d 100644
+--- a/dev.py
++++ b/dev.py
+@@ -53,7 +53,7 @@ def live_environment():
+             "boot=live" in Path("/proc/cmdline").read_text().split()
+             or Path("/run/live/medium").is_mount()
+         )
+-    except OSError:
++    except (OSError, UnicodeError):
+         return True  # Unknown Linux runtime: refuse to start a preview/test.
+ 
+ 

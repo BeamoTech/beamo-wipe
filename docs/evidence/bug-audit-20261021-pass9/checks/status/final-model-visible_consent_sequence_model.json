@@ -1,0 +1,15 @@
+{
+  "name": "final-model-visible_consent_sequence_model",
+  "command": [
+    "env",
+    "PYTHONPATH=/workspace/beamo-wipe/src",
+    "BEAMO_WIPE_DRY_RUN=1",
+    "python3",
+    "-W",
+    "error",
+    "/workspace/beamo-tools/audit-pass9-20261021/root/model-replays/visible_consent_sequence_model.py"
+  ],
+  "started_utc": "2026-10-21T04:54:51.923825+00:00",
+  "elapsed_seconds": 3.55,
+  "exit_code": 0
+}

@@ -1,0 +1,48 @@
+{
+  "seed_base": 702026,
+  "base_commit": "938fe60347c78f2a745d5d5b04e30dfa013da809",
+  "counts": {
+    "sessions": 360,
+    "actions": 9528,
+    "accepted_shutdown_intents": 234,
+    "authorized_starts": 102,
+    "completed_sessions": 102
+  },
+  "screens": {
+    "splash": 468,
+    "owner": 1824,
+    "keyboard": 120,
+    "pick": 180,
+    "confirm": 138,
+    "method": 144,
+    "last_chance": 300,
+    "working": 222,
+    "done": 102,
+    "advanced": 204,
+    "refresh_confirm": 2982,
+    "pick_blocked": 1920,
+    "pick_empty": 1260
+  },
+  "scenarios": [
+    "happy",
+    "blocked",
+    "empty"
+  ],
+  "methods": [
+    "everyday",
+    "extra",
+    "quick_zero"
+  ],
+  "runner_fail_modes": [
+    false,
+    true
+  ],
+  "native_callbacks": 0,
+  "failures": [],
+  "source_sha256": {
+    "src/beamo_wipe/wizard.py": "be375a0861ec569a652e15f9f572bfa689f40048d736c5bedef641453d464bbb",
+    "src/beamo_wipe/safety.py": "5cc1eeee4b220bc3f133b5933a1cd6aec382d14247156d3b4977b6b4af2e14f6",
+    "src/beamo_wipe/nwipe_runner.py": "a30e375ddb27be5bb9e781f17751586760a178a6822d610e811e1d9c2cb3bbb1"
+  },
+  "scope": "Public authorization transitions with fake physical acquisition; no claim of native device acceptance"
+}

@@ -1,0 +1,68 @@
+Built Windows and Linux desktop launchers. Runtime and firmware tests remain separate gates.
+Built Windows and Linux desktop launchers. Runtime and firmware tests remain separate gates.
+Built Windows and Linux desktop launchers. Runtime and firmware tests remain separate gates.
+Built Windows and Linux desktop launchers. Runtime and firmware tests remain separate gates.
+Built Windows and Linux desktop launchers. Runtime and firmware tests remain separate gates.
+Built Windows and Linux desktop launchers. Runtime and firmware tests remain separate gates.
+[
+  {
+    "host_contract": "posix",
+    "target_index": null,
+    "injection_reached": true,
+    "build_error": null,
+    "manifest_written": true,
+    "verify_error": null,
+    "foreign_preserved": false
+  },
+  {
+    "host_contract": "posix",
+    "target_index": 0,
+    "injection_reached": true,
+    "build_error": null,
+    "manifest_written": true,
+    "verify_error": "RuntimeError: desktop launcher checksum mismatch; rebuild launchers",
+    "foreign_preserved": true
+  },
+  {
+    "host_contract": "posix",
+    "target_index": 1,
+    "injection_reached": true,
+    "build_error": null,
+    "manifest_written": true,
+    "verify_error": "RuntimeError: desktop launcher checksum mismatch; rebuild launchers",
+    "foreign_preserved": true
+  },
+  {
+    "host_contract": "nt",
+    "target_index": null,
+    "injection_reached": true,
+    "build_error": null,
+    "manifest_written": true,
+    "verify_error": null,
+    "foreign_preserved": false
+  },
+  {
+    "host_contract": "nt",
+    "target_index": 0,
+    "injection_reached": true,
+    "build_error": null,
+    "manifest_written": true,
+    "verify_error": "RuntimeError: desktop launcher checksum mismatch; rebuild launchers",
+    "foreign_preserved": true
+  },
+  {
+    "host_contract": "nt",
+    "target_index": 1,
+    "injection_reached": true,
+    "build_error": null,
+    "manifest_written": true,
+    "verify_error": "RuntimeError: desktop launcher checksum mismatch; rebuild launchers",
+    "foreign_preserved": true
+  }
+]
+
+Traceback (most recent call last):
+  File "/workspace/beamo-tools/audit-pass3-20261019/boot/reproduce_final_manifest_gap.py", line 62, in <module>
+    assert all(row['build_error'] is not None and not row['manifest_written'] and row['foreign_preserved'] for row in results if row['target_index'] is not None), 'BUG: builder reported success and emitted a false launcher receipt after final source-hash interval mutation'
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: BUG: builder reported success and emitted a false launcher receipt after final source-hash interval mutation

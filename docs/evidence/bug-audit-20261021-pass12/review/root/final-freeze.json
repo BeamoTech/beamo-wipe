@@ -1,0 +1,34 @@
+{
+  "baseline_commit": "b462e62005a752b0e5f2a066bda19bd9c79bbd8b",
+  "frozen_at_utc": "2026-10-21T06:50:49.447573+00:00",
+  "client_timezone": "America/Chicago",
+  "source_files": 825,
+  "source_manifest_sha256": "12c39f4dd3b21e4ae33cc298ba46466af866833ab374c8f02493d9e5757d83b1",
+  "new_case_breakdown": {
+    "developer_tests/test_doctor_decode_depth_pass12_20261021.py": 20,
+    "tests/test_report_intent_named_snapshot_pass12_20261021.py": 8
+  },
+  "new_python_cases": 28,
+  "new_go_test_pattern": "^TestNativeInventoryJSONEvidencePass12$",
+  "new_go_leaf_cases": 40,
+  "new_go_top_level_tests": 1,
+  "new_go_named_pass_events": 41,
+  "go_full_expected_named_pass_events": 459,
+  "expected_canonical_main_passes": 11797,
+  "expected_canonical_main_ids": 11825,
+  "expected_canonical_unique_python_passes": 11798,
+  "unchanged_python_skips": 28,
+  "changed_paths": [
+    "desktop/native_inventory_json_pass12_20261021_linux_test.go",
+    "desktop/platform_linux.go",
+    "dev.py",
+    "developer_tests/test_doctor_decode_depth_pass12_20261021.py",
+    "src/beamo_wipe/report_intent.py",
+    "tests/test_report_intent_named_snapshot_pass12_20261021.py"
+  ],
+  "verified_root_causes": 3,
+  "all_existing_test_files_byte_identical": true,
+  "old_assertions_preserved": true,
+  "all_source_ownership_released": true,
+  "actual_native_device_engine_power_guest_actions": false
+}

@@ -1,0 +1,12 @@
+{
+  "name": "cancellation-ownership-matrix",
+  "command": [
+    "python3",
+    "-W",
+    "error",
+    "/workspace/beamo-tools/audit-pass11-20261021/runner/cancellation_ownership_matrix.py"
+  ],
+  "started_utc": "2026-10-21T06:03:25.399512+00:00",
+  "elapsed_seconds": 0.199,
+  "exit_code": 0
+}

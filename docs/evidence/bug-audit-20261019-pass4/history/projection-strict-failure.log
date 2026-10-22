@@ -1,0 +1,6 @@
+{"seed": 2026101904, "cases": 5000, "methods_per_case": 3, "source_sha256": {"src/beamo_wipe/nwipe_runner.py": "53a518cd19001dda8207b6b83526b09c9e8147148a9eb7ee77cb57c1b82e8b66", "src/beamo_wipe/engine_checks.py": "7a9d4682ca7d90a0eeb6cff9ae24a520554552c701b2728ab8f9c21895f5e27e"}, "mismatches": 4, "fake_files_only": true}
+Traceback (most recent call last):
+  File "/workspace/beamo-tools/audit-pass4-20261019/root/projection_review.py", line 86, in <module>
+    assert not differences
+           ^^^^^^^^^^^^^^^
+AssertionError

@@ -1,0 +1,179 @@
+{
+  "baseline_commit": "e4871239f02e46137fb6d8df64b5880ae2ea4b4d",
+  "root_independent_and_expanded_baseline_only": true,
+  "not_additive_to_final_pass_count": true,
+  "reports": {
+    "root/recovery-named-independent-before.xml": {
+      "baseline_failures": 2,
+      "baseline_controls_passed": 1,
+      "failed_ids": [
+        "beamo-tools.audit-pass5-20261021.reports.test_recovery_named_open::test_recovery_open_binds_current_journal_name[replace]",
+        "beamo-tools.audit-pass5-20261021.reports.test_recovery_named_open::test_recovery_open_binds_current_journal_name[symlink]"
+      ],
+      "passed_ids": [
+        "beamo-tools.audit-pass5-20261021.reports.test_recovery_named_open::test_recovery_open_binds_current_journal_name[unchanged]"
+      ]
+    },
+    "root/enter-shortcut-independent-before.xml": {
+      "baseline_failures": 1,
+      "baseline_controls_passed": 1,
+      "failed_ids": [
+        "beamo-tools.audit-pass5-20261021.ui.test_enter_shortcut_quiet::test_refresh_requires_fresh_enter_after_f5[False]"
+      ],
+      "passed_ids": [
+        "beamo-tools.audit-pass5-20261021.ui.test_enter_shortcut_quiet::test_refresh_requires_fresh_enter_after_f5[True]"
+      ]
+    },
+    "root/owner-key-independent-before.xml": {
+      "baseline_failures": 1,
+      "baseline_controls_passed": 1,
+      "failed_ids": [
+        "beamo-tools.audit-pass5-20261021.ui.test_owner_key_origin::test_owner_space_must_originate_after_setup[True]"
+      ],
+      "passed_ids": [
+        "beamo-tools.audit-pass5-20261021.ui.test_owner_key_origin::test_owner_space_must_originate_after_setup[False]"
+      ]
+    },
+    "root/stop-origin-independent-before-fixedpaths.xml": {
+      "baseline_failures": 1,
+      "baseline_controls_passed": 1,
+      "failed_ids": [
+        "beamo-tools.audit-pass5-20261021.ui.test_stop_key_screen_origin::test_stop_s_must_originate_in_new_modal[True]"
+      ],
+      "passed_ids": [
+        "beamo-tools.audit-pass5-20261021.ui.test_stop_key_screen_origin::test_stop_s_must_originate_in_new_modal[False]"
+      ]
+    },
+    "root/fifo-log-independent-before.xml": {
+      "baseline_failures": 1,
+      "baseline_controls_passed": 1,
+      "failed_ids": [
+        "beamo-tools.audit-pass5-20261021.runner.late-log-open.test_fifo_log_open::test_runner_refuses_invalid_log_without_waiting_for_a_reader[fifo-replacement]"
+      ],
+      "passed_ids": [
+        "beamo-tools.audit-pass5-20261021.runner.late-log-open.test_fifo_log_open::test_runner_refuses_invalid_log_without_waiting_for_a_reader[regular-control]"
+      ]
+    },
+    "reports/regressions-original.xml": {
+      "baseline_failures": 29,
+      "baseline_controls_passed": 18,
+      "failed_ids": [
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[replace-open-session-recovery.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[replace-open-result-sda-1.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[replace-open-result-sda-1.json.sha256]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[replace-final-metadata-session-recovery.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[replace-final-metadata-result-sda-1.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[replace-final-metadata-result-sda-1.json.sha256]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[symlink-open-session-recovery.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[symlink-open-result-sda-1.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[symlink-open-result-sda-1.json.sha256]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[symlink-final-metadata-session-recovery.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[symlink-final-metadata-result-sda-1.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[symlink-final-metadata-result-sda-1.json.sha256]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[directory-open-session-recovery.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[directory-open-result-sda-1.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[directory-open-result-sda-1.json.sha256]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[directory-final-metadata-session-recovery.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[directory-final-metadata-result-sda-1.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[directory-final-metadata-result-sda-1.json.sha256]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[remove-open-session-recovery.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[remove-open-result-sda-1.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[remove-open-result-sda-1.json.sha256]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[remove-final-metadata-session-recovery.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[remove-final-metadata-result-sda-1.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[remove-final-metadata-result-sda-1.json.sha256]",
+        "tests.test_recovery_named_read_pass5_20261021::test_journal_change_after_open_is_invalid_and_corrected_retry_releases_owner[replace]",
+        "tests.test_recovery_named_read_pass5_20261021::test_journal_change_after_open_is_invalid_and_corrected_retry_releases_owner[symlink]",
+        "tests.test_recovery_named_read_pass5_20261021::test_journal_change_after_open_is_invalid_and_corrected_retry_releases_owner[directory]",
+        "tests.test_recovery_named_read_pass5_20261021::test_journal_change_after_open_is_invalid_and_corrected_retry_releases_owner[remove]",
+        "tests.test_recovery_named_read_pass5_20261021::test_read_rechecks_name_after_file_validation_returns"
+      ],
+      "passed_ids": [
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[replace-read-session-recovery.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[replace-read-result-sda-1.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[replace-read-result-sda-1.json.sha256]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[symlink-read-session-recovery.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[symlink-read-result-sda-1.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[symlink-read-result-sda-1.json.sha256]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[directory-read-session-recovery.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[directory-read-result-sda-1.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[directory-read-result-sda-1.json.sha256]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[remove-read-session-recovery.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[remove-read-result-sda-1.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_named_recovery_read_rejects_replacement_and_closes_file[remove-read-result-sda-1.json.sha256]",
+        "tests.test_recovery_named_read_pass5_20261021::test_unchanged_named_reads_keep_short_read_and_repeated_read_support[1-session-recovery.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_unchanged_named_reads_keep_short_read_and_repeated_read_support[1-result-sda-1.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_unchanged_named_reads_keep_short_read_and_repeated_read_support[1-result-sda-1.json.sha256]",
+        "tests.test_recovery_named_read_pass5_20261021::test_unchanged_named_reads_keep_short_read_and_repeated_read_support[7-session-recovery.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_unchanged_named_reads_keep_short_read_and_repeated_read_support[7-result-sda-1.json]",
+        "tests.test_recovery_named_read_pass5_20261021::test_unchanged_named_reads_keep_short_read_and_repeated_read_support[7-result-sda-1.json.sha256]"
+      ]
+    },
+    "ui/final-regression-before.xml": {
+      "baseline_failures": 18,
+      "baseline_controls_passed": 22,
+      "failed_ids": [
+        "tests.test_console_key_origin_pass5_20261021::test_f5_interrupts_enters_quiet_interval[False-10]",
+        "tests.test_console_key_origin_pass5_20261021::test_f5_interrupts_enters_quiet_interval[False-13]",
+        "tests.test_console_key_origin_pass5_20261021::test_f5_interrupts_enters_quiet_interval[False-343]",
+        "tests.test_console_key_origin_pass5_20261021::test_suppressed_escape_also_interrupts_enters_quiet_interval[False-10]",
+        "tests.test_console_key_origin_pass5_20261021::test_suppressed_escape_also_interrupts_enters_quiet_interval[False-13]",
+        "tests.test_console_key_origin_pass5_20261021::test_suppressed_escape_also_interrupts_enters_quiet_interval[False-343]",
+        "tests.test_console_key_origin_pass5_20261021::test_enter_pressed_in_inventory_overlay_cannot_advance_picker[False]",
+        "tests.test_console_key_origin_pass5_20261021::test_space_from_setup_does_not_acknowledge_owner[False-splash]",
+        "tests.test_console_key_origin_pass5_20261021::test_space_from_setup_does_not_acknowledge_owner[False-keyboard]",
+        "tests.test_console_key_origin_pass5_20261021::test_owner_keyboard_detour_keeps_unchecked_consent",
+        "tests.test_console_key_origin_pass5_20261021::test_s_from_review_cannot_confirm_stop_after_start[False-115]",
+        "tests.test_console_key_origin_pass5_20261021::test_s_from_review_cannot_confirm_stop_after_start[False-83]",
+        "tests.test_console_key_origin_pass5_20261021::test_s_from_owner_does_not_toggle_sharing_after_help_opens[False-115]",
+        "tests.test_console_key_origin_pass5_20261021::test_s_from_owner_does_not_toggle_sharing_after_help_opens[False-83]",
+        "tests.test_console_key_origin_pass5_20261021::test_refresh_detour_does_not_repeat_report_preference[32]",
+        "tests.test_console_key_origin_pass5_20261021::test_refresh_detour_does_not_repeat_report_preference[115]",
+        "tests.test_console_key_origin_pass5_20261021::test_literal_confirm_key_cannot_become_consent_after_refresh[False-32]",
+        "tests.test_console_key_origin_pass5_20261021::test_literal_confirm_key_cannot_become_consent_after_refresh[False-115]"
+      ],
+      "passed_ids": [
+        "tests.test_console_key_origin_pass5_20261021::test_f5_interrupts_enters_quiet_interval[True-10]",
+        "tests.test_console_key_origin_pass5_20261021::test_f5_interrupts_enters_quiet_interval[True-13]",
+        "tests.test_console_key_origin_pass5_20261021::test_f5_interrupts_enters_quiet_interval[True-343]",
+        "tests.test_console_key_origin_pass5_20261021::test_suppressed_escape_also_interrupts_enters_quiet_interval[True-10]",
+        "tests.test_console_key_origin_pass5_20261021::test_suppressed_escape_also_interrupts_enters_quiet_interval[True-13]",
+        "tests.test_console_key_origin_pass5_20261021::test_suppressed_escape_also_interrupts_enters_quiet_interval[True-343]",
+        "tests.test_console_key_origin_pass5_20261021::test_enter_pressed_in_inventory_overlay_cannot_advance_picker[True]",
+        "tests.test_console_key_origin_pass5_20261021::test_quiet_inside_inventory_overlay_releases_enter[10]",
+        "tests.test_console_key_origin_pass5_20261021::test_quiet_inside_inventory_overlay_releases_enter[13]",
+        "tests.test_console_key_origin_pass5_20261021::test_quiet_inside_inventory_overlay_releases_enter[343]",
+        "tests.test_console_key_origin_pass5_20261021::test_space_from_setup_does_not_acknowledge_owner[True-splash]",
+        "tests.test_console_key_origin_pass5_20261021::test_space_from_setup_does_not_acknowledge_owner[True-keyboard]",
+        "tests.test_console_key_origin_pass5_20261021::test_fresh_owner_space_still_acknowledges",
+        "tests.test_console_key_origin_pass5_20261021::test_s_from_review_cannot_confirm_stop_after_start[True-115]",
+        "tests.test_console_key_origin_pass5_20261021::test_s_from_review_cannot_confirm_stop_after_start[True-83]",
+        "tests.test_console_key_origin_pass5_20261021::test_fresh_stop_s_after_start_still_cancels",
+        "tests.test_console_key_origin_pass5_20261021::test_s_from_owner_does_not_toggle_sharing_after_help_opens[True-115]",
+        "tests.test_console_key_origin_pass5_20261021::test_s_from_owner_does_not_toggle_sharing_after_help_opens[True-83]",
+        "tests.test_console_key_origin_pass5_20261021::test_literal_input_keeps_repeated_space_s_and_backspace[keyboard]",
+        "tests.test_console_key_origin_pass5_20261021::test_literal_input_keeps_repeated_space_s_and_backspace[confirm]",
+        "tests.test_console_key_origin_pass5_20261021::test_literal_confirm_key_cannot_become_consent_after_refresh[True-32]",
+        "tests.test_console_key_origin_pass5_20261021::test_literal_confirm_key_cannot_become_consent_after_refresh[True-115]"
+      ]
+    },
+    "runner/late-log-open/spawn-expanded-before.xml": {
+      "baseline_failures": 3,
+      "baseline_controls_passed": 6,
+      "failed_ids": [
+        "tests.test_log_fifo_open_pass5_20261021::test_log_refusal_and_retry_do_not_require_a_fifo_reader[fifo-alone-runner]",
+        "tests.test_log_fifo_open_pass5_20261021::test_log_refusal_and_retry_do_not_require_a_fifo_reader[fifo-alone-close]",
+        "tests.test_log_fifo_open_pass5_20261021::test_log_refusal_and_retry_do_not_require_a_fifo_reader[fifo-alone-retain]"
+      ],
+      "passed_ids": [
+        "tests.test_log_fifo_open_pass5_20261021::test_log_refusal_and_retry_do_not_require_a_fifo_reader[regular-runner]",
+        "tests.test_log_fifo_open_pass5_20261021::test_log_refusal_and_retry_do_not_require_a_fifo_reader[regular-close]",
+        "tests.test_log_fifo_open_pass5_20261021::test_log_refusal_and_retry_do_not_require_a_fifo_reader[regular-retain]",
+        "tests.test_log_fifo_open_pass5_20261021::test_log_refusal_and_retry_do_not_require_a_fifo_reader[fifo-with-reader-runner]",
+        "tests.test_log_fifo_open_pass5_20261021::test_log_refusal_and_retry_do_not_require_a_fifo_reader[fifo-with-reader-close]",
+        "tests.test_log_fifo_open_pass5_20261021::test_log_refusal_and_retry_do_not_require_a_fifo_reader[fifo-with-reader-retain]"
+      ]
+    }
+  },
+  "fifo_proof_current_test_sha256": "cc7b15ffd0ffaa989ffb32bd658437c46d8356f3420c81358aec97a5e27291c6"
+}

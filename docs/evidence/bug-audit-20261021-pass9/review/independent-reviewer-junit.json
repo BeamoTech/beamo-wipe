@@ -1,0 +1,38 @@
+{
+  "discovery/focused.xml": {
+    "unique_passed": 2320,
+    "skipped_unverified": 6,
+    "failures": 0,
+    "errors": 0
+  },
+  "runner/adjacent.xml": {
+    "unique_passed": 1430,
+    "skipped_unverified": 0,
+    "failures": 0,
+    "errors": 0
+  },
+  "runner/engine-evidence-adjacent.xml": {
+    "unique_passed": 213,
+    "skipped_unverified": 0,
+    "failures": 0,
+    "errors": 0
+  },
+  "ui/focused-ui.xml": {
+    "unique_passed": 310,
+    "skipped_unverified": 0,
+    "failures": 0,
+    "errors": 0
+  },
+  "recovery/focused.xml": {
+    "unique_passed": 714,
+    "skipped_unverified": 0,
+    "failures": 0,
+    "errors": 0
+  },
+  "boot/python-adjacent.xml": {
+    "unique_passed": 255,
+    "skipped_unverified": 0,
+    "failures": 0,
+    "errors": 0
+  }
+}

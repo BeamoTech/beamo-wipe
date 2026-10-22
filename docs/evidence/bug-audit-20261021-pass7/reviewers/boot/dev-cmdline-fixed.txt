@@ -1,0 +1,11 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.0.3, pluggy-1.7.0
+rootdir: /workspace
+plugins: hypothesis-6.130.5
+collected 4 items
+
+../beamo-tools/audit-pass7-20261021/boot/test_dev_cmdline_decode_probe.py . [ 25%]
+...                                                                      [100%]
+
+- generated xml file: /workspace/beamo-tools/audit-pass7-20261021/boot/dev-cmdline-fixed.xml -
+============================== 4 passed in 0.11s ===============================

@@ -1,0 +1,1358 @@
+{
+  "seed": 2026102105,
+  "equivalent_flat_nested_scenarios": 192,
+  "token_ownership": {
+    "inventories": 3000,
+    "views": 10509,
+    "confirmable": 7436,
+    "ambiguous_refused": 3073
+  },
+  "cross_disk_token_collisions": 0,
+  "native_acquisition_guard": "PASS",
+  "equivalence": [
+    {
+      "route": "direct",
+      "kind": "part",
+      "mounted": false,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "part",
+      "mounted": false,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "part",
+      "mounted": false,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "part",
+      "mounted": false,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "part",
+      "mounted": false,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "part",
+      "mounted": false,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "part",
+      "mounted": false,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "part",
+      "mounted": false,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "part",
+      "mounted": true,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "part",
+      "mounted": true,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "part",
+      "mounted": true,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "part",
+      "mounted": true,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "part",
+      "mounted": true,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "part",
+      "mounted": true,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "part",
+      "mounted": true,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "part",
+      "mounted": true,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "crypt",
+      "mounted": false,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "crypt",
+      "mounted": true,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "lvm",
+      "mounted": false,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "lvm",
+      "mounted": true,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "unknown",
+      "mounted": false,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "unknown",
+      "mounted": true,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "direct",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "part",
+      "mounted": false,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "part",
+      "mounted": false,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "part",
+      "mounted": false,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "part",
+      "mounted": false,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "part",
+      "mounted": false,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "part",
+      "mounted": false,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "part",
+      "mounted": false,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "part",
+      "mounted": false,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "part",
+      "mounted": true,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "part",
+      "mounted": true,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "part",
+      "mounted": true,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "part",
+      "mounted": true,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "part",
+      "mounted": true,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "part",
+      "mounted": true,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "part",
+      "mounted": true,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "part",
+      "mounted": true,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "crypt",
+      "mounted": false,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "crypt",
+      "mounted": true,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "lvm",
+      "mounted": false,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "lvm",
+      "mounted": true,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "unknown",
+      "mounted": false,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "unknown",
+      "mounted": true,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "injected",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "part",
+      "mounted": false,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "part",
+      "mounted": false,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "part",
+      "mounted": false,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "part",
+      "mounted": false,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "part",
+      "mounted": false,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "part",
+      "mounted": false,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "part",
+      "mounted": false,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "part",
+      "mounted": false,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "part",
+      "mounted": true,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "part",
+      "mounted": true,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "part",
+      "mounted": true,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "part",
+      "mounted": true,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "part",
+      "mounted": true,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "part",
+      "mounted": true,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "part",
+      "mounted": true,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "part",
+      "mounted": true,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "crypt",
+      "mounted": false,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "crypt",
+      "mounted": false,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "crypt",
+      "mounted": true,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "crypt",
+      "mounted": true,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "lvm",
+      "mounted": false,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "lvm",
+      "mounted": false,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "lvm",
+      "mounted": true,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "lvm",
+      "mounted": true,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "unknown",
+      "mounted": false,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "unknown",
+      "mounted": false,
+      "label": "",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "unknown",
+      "mounted": true,
+      "label": " Owner Data",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "Owner Data ",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "Donn\u00e9es",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "A|B",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "[data]",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "EFI",
+      "equivalent": true
+    },
+    {
+      "route": "production-metadata-stub",
+      "kind": "unknown",
+      "mounted": true,
+      "label": "",
+      "equivalent": true
+    }
+  ]
+}

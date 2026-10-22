@@ -1,0 +1,16 @@
+{
+  "name": "final-model-probe_typed_source_ownership",
+  "command": [
+    "env",
+    "PYTHONPATH=/workspace/beamo-wipe/src:/workspace/beamo-wipe/tests",
+    "BEAMO_WIPE_DRY_RUN=1",
+    "BEAMO_WIPE_DEMO=1",
+    "python3",
+    "-W",
+    "error",
+    "/workspace/beamo-tools/audit-pass13-20261021/root/model-replays/probe_typed_source_ownership.py"
+  ],
+  "started_utc": "2026-10-21T07:30:57.601856+00:00",
+  "elapsed_seconds": 0.3,
+  "exit_code": 0
+}

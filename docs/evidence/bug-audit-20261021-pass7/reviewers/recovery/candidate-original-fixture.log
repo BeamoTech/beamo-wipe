@@ -1,0 +1,55 @@
+............................................F...........                 [100%]
+=================================== FAILURES ===================================
+___________ test_cleanup_failure_still_closes_directory[preference] ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-135/test_cleanup_failure_still_clo1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd95c850130>
+kind = 'preference'
+
+    @pytest.mark.parametrize("kind", ["evidence", "preference"])
+    def test_cleanup_failure_still_closes_directory(tmp_path, monkeypatch, kind):
+        close = Mock()
+        write = Mock(side_effect=OSError(errno.ENOSPC, "storage full"))
+        unlink = Mock(side_effect=OSError(errno.EIO, "cleanup failed"))
+        store = ReportIntentStore(tmp_path)
+        with monkeypatch.context() as patch:
+            patch.setattr(store, "_directory_fd", lambda: 90)
+            patch.setattr(
+                os, "open", Mock(side_effect=[90, 91] if kind == "evidence" else [91])
+            )
+            if kind == "evidence":
+                identity = SimpleNamespace(st_dev=1, st_ino=2)
+                patch.setattr(os, "fstat", Mock(return_value=identity))
+                patch.setattr(os, "stat", Mock(return_value=identity))
+            patch.setattr(os, "write", write)
+            patch.setattr(os, "close", close)
+            patch.setattr(os, "unlink", unlink)
+            with pytest.raises(OSError):
+                if kind == "evidence":
+                    evidence._atomic_write_bytes(tmp_path / "result.json", b"{}")
+                else:
+                    store.save(True)
+        assert close.call_args_list == [call(91), call(90)]
+        write.assert_called_once()
+>       unlink.assert_called_once()
+
+tests/test_storage_io_recovery.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Mock id='140571537162656'>
+
+    def assert_called_once(self):
+        """assert that the mock was called only once.
+        """
+        if not self.call_count == 1:
+            msg = ("Expected '%s' to have been called once. Called %s times.%s"
+                   % (self._mock_name or 'mock',
+                      self.call_count,
+                      self._calls_repr()))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'mock' to have been called once. Called 0 times.
+
+/usr/lib/python3.13/unittest/mock.py:958: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_storage_io_recovery.py::test_cleanup_failure_still_closes_directory[preference]
+1 failed, 55 passed in 0.41s

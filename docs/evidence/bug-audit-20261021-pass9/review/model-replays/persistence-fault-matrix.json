@@ -1,0 +1,14 @@
+{
+  "cases": 360,
+  "successful_operations": 124,
+  "injected_refusals": 236,
+  "clean_retries": 208,
+  "reopens": 360,
+  "post_error_visible_new_records": 80,
+  "native_callbacks": 0,
+  "unexpected": [],
+  "source_sha256": {
+    "src/beamo_wipe/report_intent.py": "872072d5a51c72a01596dea683de7279c6191eb072c733ce8ae475fbef95e9fb",
+    "src/beamo_wipe/session_recovery.py": "cf2443e391e184677b12c9d4356eb4314621aecb45244a425d6736823dd47948"
+  }
+}

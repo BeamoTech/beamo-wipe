@@ -1,0 +1,11 @@
+{
+  "command": [
+    "python3",
+    "/workspace/beamo-tools/audit-pass11-20261021/ui/review_detour_layout_matrix.py"
+  ],
+  "started_utc": "2026-10-21T06:01:41.583857+00:00",
+  "elapsed_seconds": 1.04,
+  "exit_code": 0,
+  "fake_only": true,
+  "fake_dev_lstat_injected": true
+}

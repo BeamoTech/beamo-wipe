@@ -1,0 +1,74 @@
+{"created": "en", "reader": "en", "saved_locale": "en", "presentation_code": "verified", "reader_verdict": "verified"}
+.{"created": "fr", "reader": "en", "saved_locale": "en", "presentation_code": "verified", "reader_verdict": "indeterminate"}
+F{"created": "en", "reader": "fr", "saved_locale": "en", "presentation_code": "verified", "reader_verdict": "indeterminate"}
+F{"created": "fr", "reader": "fr", "saved_locale": "en", "presentation_code": "verified", "reader_verdict": "verified"}
+.
+=================================== FAILURES ===================================
+__ test_saved_sharing_verdict_is_not_lost_when_reader_language_changes[en-fr] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f0fa12d4d60>
+created = 'fr', reader = 'en'
+request = <FixtureRequest for <Function test_saved_sharing_verdict_is_not_lost_when_reader_language_changes[en-fr]>>
+
+    @pytest.mark.parametrize('created', ['en','fr'])
+    @pytest.mark.parametrize('reader', ['en','fr'])
+    def test_saved_sharing_verdict_is_not_lost_when_reader_language_changes(monkeypatch, created, reader, request):
+        monkeypatch.setenv('BEAMO_WIPE_DRY_RUN','1')
+        old=lang.current()
+        try:
+            lang.set_language('en')
+            _wizard,evidence,_log=case_evidence(CASES[0])
+            assert present_evidence(evidence).code=='verified'
+            lang.set_language(created)
+            sharing=json.loads(json.dumps(make_sharing_copy(evidence)))
+            assert present_evidence(sharing).code=='verified'
+            lang.set_language(reader)
+            assert present_evidence(evidence).code=='verified'
+            code=present_evidence(sharing).code
+            trace={'created':created,'reader':reader,'saved_locale':sharing['locale']['language'],
+                   'presentation_code':sharing['presentation']['code'],'reader_verdict':code}
+            request.node.user_properties.append(('trace',json.dumps(trace)));print(json.dumps(trace))
+>           assert code=='verified',trace
+E           AssertionError: {'created': 'fr', 'presentation_code': 'verified', 'reader': 'en', 'reader_verdict': 'indeterminate', ...}
+E           assert 'indeterminate' == 'verified'
+E             
+E             - verified
+E             + indeterminate
+
+../beamo-tools/audit-pass7-20261021/recovery/test_sharing_locale_read_probe.py:31: AssertionError
+__ test_saved_sharing_verdict_is_not_lost_when_reader_language_changes[fr-en] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f0fa0978950>
+created = 'en', reader = 'fr'
+request = <FixtureRequest for <Function test_saved_sharing_verdict_is_not_lost_when_reader_language_changes[fr-en]>>
+
+    @pytest.mark.parametrize('created', ['en','fr'])
+    @pytest.mark.parametrize('reader', ['en','fr'])
+    def test_saved_sharing_verdict_is_not_lost_when_reader_language_changes(monkeypatch, created, reader, request):
+        monkeypatch.setenv('BEAMO_WIPE_DRY_RUN','1')
+        old=lang.current()
+        try:
+            lang.set_language('en')
+            _wizard,evidence,_log=case_evidence(CASES[0])
+            assert present_evidence(evidence).code=='verified'
+            lang.set_language(created)
+            sharing=json.loads(json.dumps(make_sharing_copy(evidence)))
+            assert present_evidence(sharing).code=='verified'
+            lang.set_language(reader)
+            assert present_evidence(evidence).code=='verified'
+            code=present_evidence(sharing).code
+            trace={'created':created,'reader':reader,'saved_locale':sharing['locale']['language'],
+                   'presentation_code':sharing['presentation']['code'],'reader_verdict':code}
+            request.node.user_properties.append(('trace',json.dumps(trace)));print(json.dumps(trace))
+>           assert code=='verified',trace
+E           AssertionError: {'created': 'en', 'presentation_code': 'verified', 'reader': 'fr', 'reader_verdict': 'indeterminate', ...}
+E           assert 'indeterminate' == 'verified'
+E             
+E             - verified
+E             + indeterminate
+
+../beamo-tools/audit-pass7-20261021/recovery/test_sharing_locale_read_probe.py:31: AssertionError
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass7-20261021/recovery/test_sharing_locale_read_probe.py::test_saved_sharing_verdict_is_not_lost_when_reader_language_changes[en-fr]
+FAILED ../beamo-tools/audit-pass7-20261021/recovery/test_sharing_locale_read_probe.py::test_saved_sharing_verdict_is_not_lost_when_reader_language_changes[fr-en]
+2 failed, 2 passed in 0.19s

@@ -141,7 +141,20 @@ def test_package_list_installs_espeak_ng():
     assert re.search(r"(?m)^espeak-ng$", text)
 
 
-def test_main_starts_reader_before_startup_stages(monkeypatch):
+@pytest.fixture
+def _owned_live_entry(monkeypatch):
+    from functools import partial
+    from types import SimpleNamespace
+
+    from beamo_wipe import app
+
+    # These internal-entry tests supply the ownership normally acquired by
+    # public main() before testing reader/startup ordering.
+    store = SimpleNamespace(previous=False, invalid=False)
+    monkeypatch.setattr(app, "_main", partial(app._main, session_store=store))
+
+
+def test_main_starts_reader_before_startup_stages(monkeypatch, _owned_live_entry):
     import beamo_wipe.app as app
     pytest.importorskip("gi", reason="GTK bindings are validated on the hosted Linux image")
     from beamo_wipe.ui import accessible_wizard
@@ -167,7 +180,7 @@ def test_main_starts_reader_before_startup_stages(monkeypatch):
     assert events.count(("stop", handle)) == 1
 
 
-def test_main_passes_reader_to_run_accessible_and_stops_once(monkeypatch):
+def test_main_passes_reader_to_run_accessible_and_stops_once(monkeypatch, _owned_live_entry):
     import beamo_wipe.app as app
     from beamo_wipe.demo import make_demo_wizard
     pytest.importorskip("gi", reason="GTK bindings are validated on the hosted Linux image")

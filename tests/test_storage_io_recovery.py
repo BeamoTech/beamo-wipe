@@ -70,10 +70,9 @@ def test_cleanup_failure_still_closes_directory(tmp_path, monkeypatch, kind):
         patch.setattr(
             os, "open", Mock(side_effect=[90, 91] if kind == "evidence" else [91])
         )
-        if kind == "evidence":
-            identity = SimpleNamespace(st_dev=1, st_ino=2)
-            patch.setattr(os, "fstat", Mock(return_value=identity))
-            patch.setattr(os, "stat", Mock(return_value=identity))
+        identity = SimpleNamespace(st_dev=1, st_ino=2)
+        patch.setattr(os, "fstat", Mock(return_value=identity))
+        patch.setattr(os, "stat", Mock(return_value=identity))
         patch.setattr(os, "write", write)
         patch.setattr(os, "close", close)
         patch.setattr(os, "unlink", unlink)
@@ -84,7 +83,10 @@ def test_cleanup_failure_still_closes_directory(tmp_path, monkeypatch, kind):
                 store.save(True)
     assert close.call_args_list == [call(91), call(90)]
     write.assert_called_once()
-    unlink.assert_called_once()
+    if kind == "evidence":
+        unlink.assert_not_called()
+    else:
+        unlink.assert_called_once()
 
 
 @pytest.mark.parametrize("chunk_size", [1, 7])

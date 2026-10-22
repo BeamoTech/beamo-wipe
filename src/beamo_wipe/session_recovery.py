@@ -150,12 +150,34 @@ class SessionStore:
             raise
         return fd
 
+    def _verify_named_read(self, name, opened):
+        """An opened private file must still be the regular inode at its name."""
+        try:
+            named = os.stat(name, dir_fd=self.fd, follow_symlinks=False)
+            fields = (
+                "st_dev", "st_ino", "st_size", "st_mode", "st_uid", "st_nlink",
+                "st_mtime_ns", "st_ctime_ns",
+            )
+            if (
+                any(getattr(opened, key) != getattr(named, key) for key in fields)
+                or not stat.S_ISREG(named.st_mode)
+                or named.st_uid != os.getuid()
+                or stat.S_IMODE(named.st_mode) != 0o600
+                or named.st_nlink != 1
+            ):
+                raise SafetyError(RECOVERY_UNSAFE_RECOVERY_FILE)
+        except OSError as exc:
+            # An entry lost after open is unsafe, not an initially absent
+            # journal that open() may replace with a new preflight record.
+            raise SafetyError(RECOVERY_UNSAFE_RECOVERY_FILE) from exc
+
     def read(self, name):
         if Path(name).name != name or name in {".", ".."}:
             raise SafetyError(RECOVERY_INVALID_RECOVERY_FILENAME)
         fd = self._file(name)
         try:
             opened = os.fstat(fd)
+            self._verify_named_read(name, opened)
             chunks = []
             remaining = LIMIT + 1
             while remaining:
@@ -189,6 +211,7 @@ class SessionStore:
                 or sum(map(len, chunks)) != opened.st_size
             ):
                 raise SafetyError(RECOVERY_UNSAFE_RECOVERY_FILE)
+            self._verify_named_read(name, after)
             self._verify_directory()
             return b"".join(chunks)
         finally:
@@ -356,7 +379,10 @@ class SessionStore:
             or context["target"] not in paths
             or context["boot"] not in paths
             or context["target"] == context["boot"]
-            or [d.path for d in disks if d.is_boot] != [context["boot"]]
+            # Discovery also protects boot aliases and system-mounted disks.
+            # Retain those flags while binding the actual boot and target.
+            or not any(d.path == context["boot"] and d.is_boot for d in disks)
+            or any(d.path == context["target"] and d.is_boot for d in disks)
         ):
             raise ValueError("Contradictory disk identities")
         # Empty readers belong in the baseline, but neither the authorized
@@ -386,6 +412,29 @@ class SessionStore:
         ):
             raise ValueError("Invalid terminal reference")
 
+    def _verify_publication(self, name, fd, data):
+        """Check the named owned inode and exact record at publication boundaries."""
+        opened = os.fstat(fd)
+        self._verify_named_read(name, opened)
+        if opened.st_size != len(data):
+            raise SafetyError(RECOVERY_UNSAFE_RECOVERY_FILE)
+        received = b""
+        while len(received) <= len(data):
+            chunk = os.pread(fd, min(65536, len(data) + 1 - len(received)), len(received))
+            if not chunk:
+                break
+            received += chunk
+        after = os.fstat(fd)
+        fields = (
+            "st_dev", "st_ino", "st_size", "st_mode", "st_uid", "st_nlink",
+            "st_mtime_ns", "st_ctime_ns",
+        )
+        if received != data or any(
+            getattr(opened, key) != getattr(after, key) for key in fields
+        ):
+            raise SafetyError(RECOVERY_UNSAFE_RECOVERY_FILE)
+        self._verify_named_read(name, after)
+
     def save(self, changes):
         if self.invalid or self.owner < 0:
             raise SafetyError(RECOVERY_RECOVERY_IS_UNAVAILABLE)
@@ -406,16 +455,18 @@ class SessionStore:
         if len(data) > LIMIT:
             raise SafetyError(RECOVERY_RECOVERY_RECORD_TOO_LARGE)
         name = ".recovery-" + secrets.token_hex(12)
-        fd = self._file(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL)
+        fd = self._file(name, os.O_RDWR | os.O_CREAT | os.O_EXCL)
         replaced = False
         try:
-            while data:
-                n = os.write(fd, data)
+            pending = data
+            while pending:
+                n = os.write(fd, pending)
                 if n <= 0:
                     raise OSError("Incomplete recovery write")
-                data = data[n:]
+                pending = pending[n:]
             os.fsync(fd)
             self._verify_named_lock("interface.lock", self.owner)
+            self._verify_publication(name, fd, data)
             os.replace(name, NAME, src_dir_fd=self.fd, dst_dir_fd=self.fd)
             replaced = True
             # The new journal is now visible. A failed directory sync makes
@@ -424,22 +475,30 @@ class SessionStore:
             self.record = record
             os.fsync(self.fd)
             self._verify_named_lock("interface.lock", self.owner)
+            self._verify_publication(NAME, fd, data)
         except BaseException:
             if replaced:
                 self.invalid = True
             raise
         finally:
             try:
-                os.close(fd)
+                opened = os.fstat(fd)
+                try:
+                    named = os.stat(name, dir_fd=self.fd, follow_symlinks=False)
+                except FileNotFoundError:
+                    pass
+                else:
+                    # The live descriptor pins the owned inode throughout
+                    # cleanup; never remove a replacement at the temp name.
+                    if (opened.st_dev, opened.st_ino) == (named.st_dev, named.st_ino):
+                        os.unlink(name, dir_fd=self.fd)
             except BaseException:
                 if replaced:
                     self.invalid = True
                 raise
             finally:
                 try:
-                    os.unlink(name, dir_fd=self.fd)
-                except FileNotFoundError:
-                    pass
+                    os.close(fd)
                 except BaseException:
                     if replaced:
                         self.invalid = True

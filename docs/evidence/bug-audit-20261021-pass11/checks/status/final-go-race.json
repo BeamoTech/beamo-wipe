@@ -1,0 +1,14 @@
+{
+  "name": "final-go-race",
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-json",
+    "./..."
+  ],
+  "started_utc": "2026-10-21T06:09:11.304413+00:00",
+  "elapsed_seconds": 11.89,
+  "exit_code": 0
+}

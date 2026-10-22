@@ -1,0 +1,9 @@
+{
+  "command": [
+    "/workspace/beamo-wipe/.venv-linux/bin/python3",
+    "/workspace/beamo-tools/audit-pass11-20261021/recovery/volatile_transaction_matrix.py"
+  ],
+  "started_utc": "2026-10-21T05:59:51.398782+00:00",
+  "elapsed_seconds": 0.39,
+  "exit_code": 0
+}

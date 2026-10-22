@@ -1,0 +1,6 @@
+{
+  "baseline": "938fe60347c78f2a745d5d5b04e30dfa013da809",
+  "test_sha256": "b33f5cfe335f6f7e701dee196a957d73f5cad151d3eb18901e8665a6b0a97f59",
+  "product_source_sha256": "e6df18dc533bb9f98f55b7832fea7cace7772cea5d5a23f71803020fb60922fd",
+  "archive_note": "Exact final new module updated after lint-only direct monkeypatch reference change; archived baseline src remains untouched. Initial pre-product-edit exact module/run retained in history-before-lint/."
+}

@@ -1,0 +1,20 @@
+{
+  "name": "refresh-diagnostic-independent-before",
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-o",
+    "pythonpath=src",
+    "-q",
+    "/workspace/beamo-tools/audit-pass7-20261021/ui/test_refresh_diagnostic_interruption_probe.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass7-20261021/root/refresh-diagnostic-independent-before.xml"
+  ],
+  "started_utc": "2026-10-21T03:18:17.823531+00:00",
+  "elapsed_seconds": 0.33,
+  "exit_code": 1
+}

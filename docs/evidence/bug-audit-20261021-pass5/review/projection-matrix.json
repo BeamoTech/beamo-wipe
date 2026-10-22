@@ -1,0 +1,7 @@
+{
+  "seed": 2026102105,
+  "fake_logs": 2000,
+  "methods_per_log": 3,
+  "differences": [],
+  "actual_native_actions": false
+}

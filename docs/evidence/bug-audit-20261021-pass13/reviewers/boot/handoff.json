@@ -1,0 +1,47 @@
+{
+  "owned_paths": {
+    "scripts/build_desktop.py": "7159bfb30130ef3ce88f19c1a3ee5373d6c85df7d720524af55af40651ad04ac",
+    "desktop/media.go": "0080e9c118fcb38baa7978445408f33e21b7484790f5a56a99ef6f6ecf4a3d33",
+    "developer_tests/test_desktop_manifest_interrupt_pass13_20261021.py": "6b7581f38cde314548979f89c399b2c48e1e4775fc9ec9c3dc8c209dd77092fa",
+    "desktop/media_snapshot_pass13_20261021_test.go": "17e37301aeff6e7139263c1e557ff7d8c7047a0ffc2674ceaea8d39bf463d537"
+  },
+  "native_inventory_override_set": false,
+  "go_reports": {
+    "media-exact-final-baseline.jsonl": {
+      "pass": 2,
+      "fail": 6,
+      "skip": 0
+    },
+    "focused-go-exact-final.jsonl": {
+      "pass": 174,
+      "fail": 0,
+      "skip": 0
+    },
+    "media-model-final.jsonl": {
+      "pass": 50,
+      "fail": 0,
+      "skip": 0
+    }
+  },
+  "model_summary": "media_epoch_model_test.go:49: states=40 accepted=17 refused=23 native_callbacks=0",
+  "python_focused": "133 passed; strict configuration and markers; JUnit retained",
+  "builder_baseline": "4 failures / 15 passing controls on exact final regression bytes",
+  "go_baseline": "5 failing leaves / 2 passing controls, parent is sixth named failure",
+  "checks": {
+    "go_race_focused": "pass",
+    "go_vet": "pass",
+    "python_ruff": "pass",
+    "python_format": "pass",
+    "windows_amd64_test_crosscompile": "pass; not native acceptance",
+    "darwin_arm64_test_crosscompile": "pass; not native acceptance",
+    "diff_whitespace": "pass"
+  },
+  "scope": "Only owned regular-file fixtures, fake firmware/media strings and mocked compiler/Git callbacks. No native inventory/firmware/power/engine/device/mount/guest/network/remote/Docker/actual launcher build.",
+  "limitations": [
+    "Second bounded hash and metadata checks prove agreement during verification; they do not establish immutable media after verification.",
+    "Media readback doubles content reads within existing 60-second context budget; slow media conservatively falls back to manual boot.",
+    "Native Windows and other platform runtime acceptance remains unverified.",
+    "Initial Python focused attempt referenced nonexistent tests/test_development_workflow.py and collected no tests; retained as setup history, corrected focused run passed.",
+    "Initial external model required rejection even when changed bytes were fully observed before first read; corrected oracle accepts current-content digest with restored metadata; original model retained as history."
+  ]
+}

@@ -1,0 +1,77 @@
+diff --git a/desktop/main.go b/desktop/main.go
+index 9f496ed..e672a39 100644
+--- a/desktop/main.go
++++ b/desktop/main.go
+@@ -137,6 +137,7 @@ type app struct {
+ 	token, host string
+ 	preview     bool
+ 	busy        bool
++	closed      bool
+ 	p           Plan
+ 	revision    uint64
+ 	current     view
+@@ -147,6 +148,32 @@ type app struct {
+ 	lastSeen    time.Time
+ }
+ 
++// Retire session authority before releasing the mutex or ending the server.
++// Existing handlers may still be decoding requests while teardown begins.
++func (a *app) retireLocked() {
++	if a.closed {
++		return
++	}
++	a.closed = true
++	a.p = Plan{}
++	a.revision++
++	a.current = planView(Plan{Problem: "cancelled"}, a.preview)
++	a.current.Revision = a.revision
++}
++
++func (a *app) retireIfIdle(now time.Time) bool {
++	a.mu.Lock()
++	defer a.mu.Unlock()
++	if a.closed {
++		return true
++	}
++	if now.Sub(a.lastSeen) <= 5*time.Minute || a.busy {
++		return false
++	}
++	a.retireLocked()
++	return true
++}
++
+ type apiRequest struct {
+ 	Confirm  bool   `json:"confirm"`
+ 	Revision uint64 `json:"revision"`
+@@ -220,6 +247,11 @@ func (a *app) serve(w http.ResponseWriter, r *http.Request) {
+ 			return
+ 		}
+ 		a.mu.Lock()
++		if a.closed {
++			a.mu.Unlock()
++			http.Error(w, "This session has ended", 403)
++			return
++		}
+ 		if r.URL.Path == "/api/state" {
+ 			v := a.current
+ 			a.mu.Unlock()
+@@ -234,6 +266,7 @@ func (a *app) serve(w http.ResponseWriter, r *http.Request) {
+ 		}
+ 		switch r.URL.Path {
+ 		case "/api/close":
++			a.retireLocked()
+ 			a.mu.Unlock()
+ 			sendJSON(w, map[string]bool{"closed": true})
+ 			if flusher, ok := w.(http.Flusher); ok {
+@@ -405,10 +438,7 @@ func run() error {
+ 		case <-a.close:
+ 			return nil
+ 		case <-ticker.C:
+-			a.mu.Lock()
+-			idle := time.Since(a.lastSeen) > 5*time.Minute && !a.busy
+-			a.mu.Unlock()
+-			if idle {
++			if a.retireIfIdle(time.Now()) {
+ 				return nil
+ 			}
+ 		}

@@ -1,0 +1,13 @@
+{
+  "status": "COMPLETED WITH9 NEW FORK WARNINGS; SUPERSEDED PENDING FIX",
+  "exec_session": 75910,
+  "exit_code": 0,
+  "main_passed": 11154,
+  "main_skipped": 28,
+  "separate_orca_passed": 1,
+  "warnings": 9,
+  "warning": "Python3.13 multiprocessing fork after GUI threads; fresh-process spawn helper requested; no warning suppression",
+  "source_files": 804,
+  "source_manifest": "warning-final-source-sha256.json",
+  "at_utc": "2026-10-21T01:32:23.559236+00:00"
+}

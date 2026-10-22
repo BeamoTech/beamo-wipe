@@ -1,0 +1,10 @@
+{
+  "status": "CANCELLED / SUPERSEDED, NOT PASS",
+  "stopped_at_utc": "2026-10-21T01:06:55.004961+00:00",
+  "owned_container": "eb49abdf837df39595befbb080936d153386799525740a4ba4f2ce9922c93233",
+  "ownership_match": "BEAMO_GATE_JUNIT=/workspace/beamo-tools/audit-pass5-20261021/root/final-tests.xml",
+  "exec_session": 56895,
+  "reason": "Late independently proved blocking FIFO log-open requires safety.py repair and a fresh exact-source gate",
+  "source_manifest": "superseded-source-sha256.json",
+  "old_source_files": 803
+}

@@ -1,0 +1,56 @@
+{
+  "discovery": {
+    "path": "/workspace/beamo-tools/audit-pass11-20261021/discovery/focused.xml",
+    "cases": 2604,
+    "unique": 2604,
+    "passes": 2598,
+    "unchanged_prior_skips": 6,
+    "errors_failures": 0,
+    "junit_sha256": "f398f5c81b7ad368e2a678a3a85709afd80390c4096a57c90c1175558ce0f7a8"
+  },
+  "runner": {
+    "path": "/workspace/beamo-tools/audit-pass11-20261021/runner/focused.xml",
+    "cases": 1744,
+    "unique": 1744,
+    "passes": 1744,
+    "unchanged_prior_skips": 0,
+    "errors_failures": 0,
+    "junit_sha256": "372e9160c57f69e753cd0801d6771f3da0f3f88ea7b369e968617329258316ae"
+  },
+  "ui": {
+    "path": "/workspace/beamo-tools/audit-pass11-20261021/ui/focused-ui.xml",
+    "cases": 444,
+    "unique": 444,
+    "passes": 444,
+    "unchanged_prior_skips": 0,
+    "errors_failures": 0,
+    "junit_sha256": "380c3690004ca24bbb8d0de875e2298a6b77345bb8e4c83d3439b9850d18118b"
+  },
+  "recovery": {
+    "path": "/workspace/beamo-tools/audit-pass11-20261021/recovery/focused.xml",
+    "cases": 1063,
+    "unique": 1063,
+    "passes": 1063,
+    "unchanged_prior_skips": 0,
+    "errors_failures": 0,
+    "junit_sha256": "8769cead7cc84334b9695bfe6788801c7e20bc6d3a9a3254f2a4675b165e2159"
+  },
+  "recovery-adjacent": {
+    "path": "/workspace/beamo-tools/audit-pass11-20261021/recovery/adjacent.xml",
+    "cases": 449,
+    "unique": 449,
+    "passes": 449,
+    "unchanged_prior_skips": 0,
+    "errors_failures": 0,
+    "junit_sha256": "035a509f55b560937b6655a324c508063b47d397fabac8bc36c4febd3f670cea"
+  },
+  "boot": {
+    "path": "/workspace/beamo-tools/audit-pass11-20261021/boot/python-focused.xml",
+    "cases": 465,
+    "unique": 465,
+    "passes": 464,
+    "unchanged_prior_skips": 1,
+    "errors_failures": 0,
+    "junit_sha256": "3d5546786f9f9ec006b361ed7a9ecb3fa801378dba978f4f75600da5f162b4fd"
+  }
+}

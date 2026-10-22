@@ -1,0 +1,33 @@
+{
+  "counts": {
+    "events": 29304,
+    "no_transition_controls": 21318,
+    "scenarios": 9636,
+    "shutdown_positive_controls": 2728,
+    "new_session_positive_controls": 2057,
+    "stale_confirmation_refusals": 4884,
+    "busy_admission_refusals": 88,
+    "busy_confirmation_refusals": 88,
+    "restored_positive_controls": 88,
+    "concurrent_admission_scenarios": 64
+  },
+  "mismatches": 0,
+  "native_callbacks": 0,
+  "source_sha256": {
+    "src/beamo_wipe/wizard.py": "bb8d5ed38a749c07538107ad9a75fa3fa24b1c07de2f8a5eedecb05df8811ca0",
+    "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+    "src/beamo_wipe/demo.py": "00fa36bb9078c7a81efce7b08a1b8d4a646a4e224dd7f141df822fb45810426a",
+    "src/beamo_wipe/app.py": "1ed6964181276463d5c7b7bdd59818d7ce57a31bb9fef77f3ad1ff1c76f7cf65",
+    "src/beamo_wipe/ui/tk_wizard.py": "0c8b457bfdc1946ce4ea66d611b025df11884cbf044f5d548f2b0f3b7b174e7f",
+    "src/beamo_wipe/ui/accessible_wizard.py": "8b9dae8e6faff4f2ef61532c43a9ad210a4cb45b60c1b2807b17d6dfb97b0b6f",
+    "src/beamo_wipe/ui/console_wizard.py": "26afac6583e25e9c8eabbecb2d01324d6be1848ac405529c93646371ba317400",
+    "tests/test_result_presentations.py": "1b57533a72672408ee5630736c3693ccf894456d822e7ae6d04843550a8693d0",
+    "tests/test_erase_another.py": "860e4fa209c95e7672d05ed270dde65f0cf2c8810dc75b143362066aad875c86"
+  },
+  "model_sha256": "074c9132f026bed6a2ec3bf0c5237fd77ab6f0814c814caa52576d9f4b497cda",
+  "limits": [
+    "fake terminal result sessions only",
+    "no GUI import or native renderer event loop",
+    "concurrent admission checks support product invariants; not canonical pytest cases"
+  ]
+}

@@ -1,0 +1,45 @@
+.F                                                                       [100%]
+=================================== FAILURES ===================================
+_ test_runner_refuses_invalid_log_without_waiting_for_a_reader[fifo-replacement] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-36/test_runner_refuses_invalid_lo1')
+replace_with_fifo = True
+
+    @pytest.mark.parametrize('replace_with_fifo', [False, True], ids=['regular-control', 'fifo-replacement'])
+    def test_runner_refuses_invalid_log_without_waiting_for_a_reader(tmp_path, replace_with_fifo):
+        # This directory, ordinary file, FIFO and helper are owned test fixtures.
+        # The helper never receives an actual engine, disk or mount callback.
+        log = tmp_path / 'owned-engine.log'
+        log.write_bytes(b'ordinary prior log')
+        log.chmod(0o600)
+        context = multiprocessing.get_context('fork')
+        ready, done, outcomes = context.Event(), context.Event(), context.Queue()
+        child = context.Process(target=_child, args=(str(tmp_path), replace_with_fifo, ready, done, outcomes))
+        child.start()
+        completed_before_reader = False
+        reader = None
+        try:
+            assert ready.wait(5), 'helper did not reach validated log boundary'
+            started = time.monotonic()
+            completed_before_reader = done.wait(1)
+            elapsed = time.monotonic() - started
+            if not completed_before_reader and replace_with_fifo:
+                # Release only this owned FIFO. fstat can now reject it and run
+                # cleanup; no arbitrary process or host operation is targeted.
+                reader = os.open(log, os.O_RDONLY | os.O_NONBLOCK)
+            child.join(5)
+            assert not child.is_alive()
+            assert child.exitcode == 0
+            outcome = outcomes.get(timeout=2)
+            print({'replacement': replace_with_fifo, 'completed_before_reader': completed_before_reader,
+                   'wait_seconds': elapsed, 'outcome': outcome})
+>           assert completed_before_reader, 'validated log replaced by FIFO blocks runner.start while holding wipe lock'
+E           AssertionError: validated log replaced by FIFO blocks runner.start while holding wipe lock
+E           assert False
+
+../beamo-tools/audit-pass5-20261021/runner/late-log-open/test_fifo_log_open.py:104: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{'replacement': True, 'completed_before_reader': False, 'wait_seconds': 1.0001397129999532, 'outcome': {'result': 'SafetyError', 'message': 'Refusing to write logs to a non-regular file.', 'spawn_calls': 0, 'lock_released': True}}
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass5-20261021/runner/late-log-open/test_fifo_log_open.py::test_runner_refuses_invalid_log_without_waiting_for_a_reader[fifo-replacement]
+1 failed, 1 passed in 1.19s

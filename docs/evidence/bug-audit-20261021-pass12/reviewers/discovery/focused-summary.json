@@ -1,0 +1,12 @@
+{
+  "branch": "fix/safety-audit-20261019",
+  "errors": 0,
+  "exit": "0",
+  "failures": 0,
+  "head": "b462e62005a752b0e5f2a066bda19bd9c79bbd8b",
+  "passed": 973,
+  "skips": [],
+  "source_hash_check": "src/beamo_wipe/discover.py: OK\nsrc/beamo_wipe/safety.py: OK\nsrc/beamo_wipe/identity.py: OK\nsrc/beamo_wipe/inventory.py: OK\nsrc/beamo_wipe/models.py: OK\ntests/test_discovery_observation_fallback_pass16.py: OK\ntests/test_discovery_nonfinite_size_pass21.py: OK\ntests/test_descendant_holder_filesystem_pass19.py: OK\ntests/test_duplicate_bcache_filesystem_pass19.py: OK\ntests/test_disk_name_layout_pass21.py: OK\ntests/test_disk_name_alias_layout_pass21.py: OK\ntests/test_unbound_bcache_filesystem_pass19.py: OK\ntests/test_holder_ancestor_contradiction_pass19.py: OK\ntests/test_holder_ancestor_mount_pass20.py: OK\ntests/test_mounted_holder_type_pass20.py: OK\ntests/test_raw_model_revalidation_20261019.py: OK\ntests/test_unknown_layout_ancestry_pass2_20261019.py: OK\n",
+  "testcases": 973,
+  "unique_ids": 973
+}

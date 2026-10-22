@@ -1,0 +1,99 @@
+{
+  "recorded_utc": "2026-10-21T06:08:47.292396+00:00",
+  "client_timezone": "America/Chicago",
+  "baseline": "b46e5642d4c849d503b41d8bf562cfb1f9fad68b",
+  "verified_root_causes": 2,
+  "owned_paths": [
+    "desktop/io.go",
+    "desktop/output_deadline_pass11_20261021_test.go"
+  ],
+  "owned_sha256": {
+    "desktop/io.go": "8ebffd9d5b5e4ae4f4742669c2b0f7edc32f272e5d4514e737d3e2aeb4dd4553",
+    "desktop/output_deadline_pass11_20261021_test.go": "baa3336f6b8dcc971da79931290978b223c507f3479696c43167b028eaa39890"
+  },
+  "source_ownership_released": true,
+  "all_existing_test_files_byte_identical": true,
+  "expanded_baseline": {
+    "named_outcomes": 52,
+    "unique_named_outcomes": 52,
+    "named_passes": 31,
+    "named_failures": 21,
+    "leaf_cases": 47,
+    "passing_leaves": 30,
+    "failing_leaves": 17,
+    "skips": 0,
+    "data_race_reported": false
+  },
+  "expanded_after": {
+    "named_outcomes": 52,
+    "unique_named_outcomes": 52,
+    "named_passes": 52,
+    "named_failures": 0,
+    "leaf_cases": 47,
+    "passing_leaves": 47,
+    "failing_leaves": 0,
+    "skips": 0,
+    "data_race_reported": false
+  },
+  "root_original_probes_after": {
+    "named_outcomes": 14,
+    "unique_named_outcomes": 14,
+    "named_passes": 14,
+    "named_failures": 0,
+    "leaf_cases": 12,
+    "passing_leaves": 12,
+    "failing_leaves": 0,
+    "skips": 0,
+    "data_race_reported": false
+  },
+  "fresh_model_go_result": {
+    "named_outcomes": 1,
+    "unique_named_outcomes": 1,
+    "named_passes": 1,
+    "named_failures": 0,
+    "leaf_cases": 0,
+    "passing_leaves": 0,
+    "failing_leaves": 0,
+    "skips": 0,
+    "data_race_reported": false
+  },
+  "fresh_model": {
+    "counts": {
+      "mismatches": 0,
+      "native_callbacks": 0,
+      "order_controls": 162,
+      "positive_plans": 162,
+      "refusals": 1620,
+      "restored_controls": 1620,
+      "sensitive_field_changes": 161,
+      "states": 162,
+      "unrelated_entry_controls": 162
+    },
+    "scope": "Actual plan/readiness functions; fake EFI entries and snapshots only; supporting model, not extra canonical coverage",
+    "source_sha256": {
+      "desktop/boot.go": "be7a7469ca9ae3109e3c6f3cbe48bf6f07139f20f3c1fb7db8b149d30bf90e89",
+      "desktop/boot_test.go": "f880928130cce761cf2eef223adff386d2c82148692b87447bbe4b4623fd8502",
+      "desktop/readiness.go": "eb67aec9069cede3e29348f2a33b317aa374252090fc433c9d24a41d77d26973"
+    }
+  },
+  "python_focused": {
+    "modules": 32,
+    "unique_cases": 465,
+    "passed": 464,
+    "skipped_unverified": [
+      {
+        "id": "tests.test_ci_hosted::test_cloud_upload_excludes_local_captures_and_env_files",
+        "reason": "gcloud CLI is unavailable"
+      }
+    ]
+  },
+  "native_callbacks": 0,
+  "real_device_engine_firmware_power_actions": false,
+  "remote_write_hosted_ci_release": false,
+  "full_go_race_vet_fuzz_crossbuilds": "Root central final gate; not duplicated by this bounded reviewer",
+  "limitations": [
+    "Native Windows execution, inventory opt-in, ISO/KVM and physical/firmware/reconnect qualification remain unverified",
+    "Python focused subset retains one preexisting unavailable legacy gcloud skip",
+    "Finite WaitDelay bounds incomplete pipe capture; it does not claim process-tree termination"
+  ]
+}

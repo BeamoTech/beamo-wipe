@@ -320,6 +320,7 @@ def _parse_io_media(log_text: str, device: str) -> CheckResult:
             _provenance(parser, source="missing"),
         )
     from beamo_wipe.nwipe_runner import (
+        _iter_negative_log_lines,
         _line_reports_target_failure,
         _line_reports_target_verification_mismatch,
         _status_column_is_shared,
@@ -328,9 +329,11 @@ def _parse_io_media(log_text: str, device: str) -> CheckResult:
     if _status_column_is_shared(log_text, device):
         explicit_failures = [
             line
-            for line in (log_text or "").split("\n")
-            if _line_reports_target_failure(line, device, shared=True)
-            or _line_reports_target_verification_mismatch(line, device)
+            for line, trusted in _iter_negative_log_lines(log_text)
+            if trusted and (
+                _line_reports_target_failure(line, device, shared=True)
+                or _line_reports_target_verification_mismatch(line, device)
+            )
         ]
         if explicit_failures:
             return _check(
@@ -342,13 +345,20 @@ def _parse_io_media(log_text: str, device: str) -> CheckResult:
             "The nwipe status column is shared by another logged disk.",
             _provenance(parser, source="nwipe_log"),
         )
-    fail_lines = [
-        line
-        for line in (log_text or "").split("\n")
+    failure_records = [
+        (line, trusted)
+        for line, trusted in _iter_negative_log_lines(log_text)
         if _line_reports_target_failure(line, device, shared=False)
         or _line_reports_target_verification_mismatch(line, device)
     ]
+    fail_lines = [line for line, trusted in failure_records if trusted]
     row = _error_summary_row(log_text, names)
+    if failure_records and not fail_lines and (row is None or not any(row)):
+        return _check(
+            "io_media", "unavailable", IO_UNAVAILABLE,
+            "A failure-like line could not be attributed to an engine record.",
+            _provenance(parser, source="nwipe_log"),
+        )
     if row is None and not fail_lines:
         return _check(
             "io_media",
@@ -391,16 +401,23 @@ def _parse_io_media(log_text: str, device: str) -> CheckResult:
 def _error_summary_row(
     log_text: str, names: frozenset[str]
 ) -> Optional[tuple[int, int, int]]:
+    from beamo_wipe.nwipe_runner import NWIPE_RECORD_PREFIX_RE
+
+    lines = (log_text or "").split("\n")
+    native = any(NWIPE_RECORD_PREFIX_RE.match(line) for line in lines)
     in_table = False
     malformed = False
+    ambiguous_errors = False
     found = None
     trusted_table = False
+    attributable_table = False
     trusted_zero = False
-    for raw in (log_text or "").split("\n"):
+    for raw in lines:
         body = _body(raw)
         if _ERROR_SUMMARY.fullmatch(body.strip()):
             in_table = True
             trusted_table = raw.rstrip("\r\n") == _ERROR_SUMMARY_HEADER
+            attributable_table = not native or body == _ERROR_SUMMARY_HEADER
             continue
         if in_table and body.startswith("***"):
             in_table = False
@@ -412,6 +429,15 @@ def _error_summary_row(
         if set(body) <= {"-", " "}:
             continue
         match = _ERROR_ROW.match(body)
+        if not attributable_table:
+            # Model-supplied tables may not prove errors or contradict a
+            # genuine nonzero table. They still prevent a zero-error pass.
+            row_name = re.match(r"^[! ]\s*([A-Za-z0-9._+-]+)\s*\|", body)
+            if row_name and row_name.group(1) in names and (
+                match is None or any(int(match.group(i)) for i in (2, 3, 4))
+            ):
+                ambiguous_errors = True
+            continue
         if not match:
             if body.strip():
                 malformed = True
@@ -428,6 +454,8 @@ def _error_summary_row(
         if trusted_table and not any(counts):
             trusted_zero = True
     if malformed:
+        return None
+    if ambiguous_errors and (found is None or not any(found)):
         return None
     # The exact 80-character engine banner cannot fit inside a device model.
     # Keep conservative nonzero/error parsing, but do not bless a forged

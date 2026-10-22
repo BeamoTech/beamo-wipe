@@ -1,0 +1,16 @@
+{
+  "name": "expanded-before",
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "-q",
+    "-W",
+    "error",
+    "--junitxml=/workspace/beamo-tools/audit-pass11-20261021/runner/expanded-before.xml",
+    "tests/test_sleep_inhibit_diagnostic_retirement_pass11_20261021.py"
+  ],
+  "started_utc": "2026-10-21T06:02:39.947366+00:00",
+  "elapsed_seconds": 1.095,
+  "exit_code": 1
+}

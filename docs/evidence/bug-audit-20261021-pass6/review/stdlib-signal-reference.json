@@ -1,0 +1,24 @@
+{
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "methods": [
+    {
+      "name": "send_signal",
+      "file": "/usr/lib/python3.13/subprocess.py",
+      "sha256": "4d9a77155fddf56437eaf76ba686ff074d32045519ee3f36b1629d36ea765212",
+      "source": "        def send_signal(self, sig):\n            \"\"\"Send a signal to the process.\"\"\"\n            # bpo-38630: Polling reduces the risk of sending a signal to the\n            # wrong process if the process completed, the Popen.returncode\n            # attribute is still None, and the pid has been reassigned\n            # (recycled) to a new different process. This race condition can\n            # happens in two cases.\n            #\n            # Case 1. Thread A calls Popen.poll(), thread B calls\n            # Popen.send_signal(). In thread A, waitpid() succeed and returns\n            # the exit status. Thread B calls kill() because poll() in thread A\n            # did not set returncode yet. Calling poll() in thread B prevents\n            # the race condition thanks to Popen._waitpid_lock.\n            #\n            # Case 2. waitpid(pid, 0) has been called directly, without\n            # using Popen methods: returncode is still None is this case.\n            # Calling Popen.poll() will set returncode to a default value,\n            # since waitpid() fails with ProcessLookupError.\n            self.poll()\n            if self.returncode is not None:\n                # Skip signalling a process that we know has already died.\n                return\n\n            # The race condition can still happen if the race condition\n            # described above happens between the returncode test\n            # and the kill() call.\n            try:\n                os.kill(self.pid, sig)\n            except ProcessLookupError:\n                # Suppress the race condition error; bpo-40550.\n                pass\n"
+    },
+    {
+      "name": "terminate",
+      "file": "/usr/lib/python3.13/subprocess.py",
+      "sha256": "4d33bc785acfec01de70ebef56e6a1b27ae47f7ff04e20dcb3807284dd2a9a36",
+      "source": "        def terminate(self):\n            \"\"\"Terminate the process with SIGTERM\n            \"\"\"\n            self.send_signal(signal.SIGTERM)\n"
+    },
+    {
+      "name": "kill",
+      "file": "/usr/lib/python3.13/subprocess.py",
+      "sha256": "7d868d04cbc03d0d2555f3a39b594f46499464b4b2d3c5a0350a4f92cc1e31d8",
+      "source": "        def kill(self):\n            \"\"\"Kill the process with SIGKILL\n            \"\"\"\n            self.send_signal(signal.SIGKILL)\n"
+    }
+  ]
+}

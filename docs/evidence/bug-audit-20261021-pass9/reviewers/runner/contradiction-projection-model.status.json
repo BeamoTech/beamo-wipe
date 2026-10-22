@@ -1,0 +1,10 @@
+{
+  "name": "contradiction-projection-model",
+  "command": [
+    "python3",
+    "/workspace/beamo-tools/audit-pass9-20261021/runner/contradiction_projection_matrix.py"
+  ],
+  "started_utc": "2026-10-21T04:47:36.213314+00:00",
+  "elapsed_seconds": 5.8,
+  "exit_code": 0
+}

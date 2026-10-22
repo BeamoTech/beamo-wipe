@@ -1,0 +1,872 @@
+FFFFFFFFFFFFFFFF...FFFFFFFF..FF.F                                        [100%]
+=================================== FAILURES ===================================
+______________ test_f5_interrupts_enters_quiet_interval[False-10] ______________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739c735fd0>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739c8068b0>
+enter = 10, fresh = False
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_f5_interrupts_enters_quiet_interval(session, monkeypatch, enter, fresh):
+        w = session.wizard
+>       prepare(w, Screen.METHOD)
+
+tests/test_console_key_origin_pass5_20261021.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739c735fd0>
+screen = <Screen.METHOD: 'method'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+______________ test_f5_interrupts_enters_quiet_interval[False-13] ______________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739c7c1450>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739c806520>
+enter = 13, fresh = False
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_f5_interrupts_enters_quiet_interval(session, monkeypatch, enter, fresh):
+        w = session.wizard
+>       prepare(w, Screen.METHOD)
+
+tests/test_console_key_origin_pass5_20261021.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739c7c1450>
+screen = <Screen.METHOD: 'method'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+_____________ test_f5_interrupts_enters_quiet_interval[False-343] ______________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739bf23b10>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bf69010>
+enter = 343, fresh = False
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_f5_interrupts_enters_quiet_interval(session, monkeypatch, enter, fresh):
+        w = session.wizard
+>       prepare(w, Screen.METHOD)
+
+tests/test_console_key_origin_pass5_20261021.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739bf23b10>
+screen = <Screen.METHOD: 'method'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+______________ test_f5_interrupts_enters_quiet_interval[True-10] _______________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739bfac410>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bf39f20>
+enter = 10, fresh = True
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_f5_interrupts_enters_quiet_interval(session, monkeypatch, enter, fresh):
+        w = session.wizard
+>       prepare(w, Screen.METHOD)
+
+tests/test_console_key_origin_pass5_20261021.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739bfac410>
+screen = <Screen.METHOD: 'method'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+______________ test_f5_interrupts_enters_quiet_interval[True-13] _______________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739bfac7d0>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bf3a250>
+enter = 13, fresh = True
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_f5_interrupts_enters_quiet_interval(session, monkeypatch, enter, fresh):
+        w = session.wizard
+>       prepare(w, Screen.METHOD)
+
+tests/test_console_key_origin_pass5_20261021.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739bfac7d0>
+screen = <Screen.METHOD: 'method'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+______________ test_f5_interrupts_enters_quiet_interval[True-343] ______________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739bfac910>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bf17850>
+enter = 343, fresh = True
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_f5_interrupts_enters_quiet_interval(session, monkeypatch, enter, fresh):
+        w = session.wizard
+>       prepare(w, Screen.METHOD)
+
+tests/test_console_key_origin_pass5_20261021.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739bfac910>
+screen = <Screen.METHOD: 'method'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+____ test_suppressed_escape_also_interrupts_enters_quiet_interval[False-10] ____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739bfaca50>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bf17d50>
+enter = 10, fresh = False
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_suppressed_escape_also_interrupts_enters_quiet_interval(
+        session, monkeypatch, enter, fresh
+    ):
+        w = session.wizard
+>       prepare(w, Screen.METHOD)
+
+tests/test_console_key_origin_pass5_20261021.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739bfaca50>
+screen = <Screen.METHOD: 'method'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+____ test_suppressed_escape_also_interrupts_enters_quiet_interval[False-13] ____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739bfacb90>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bf97980>
+enter = 13, fresh = False
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_suppressed_escape_also_interrupts_enters_quiet_interval(
+        session, monkeypatch, enter, fresh
+    ):
+        w = session.wizard
+>       prepare(w, Screen.METHOD)
+
+tests/test_console_key_origin_pass5_20261021.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739bfacb90>
+screen = <Screen.METHOD: 'method'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+___ test_suppressed_escape_also_interrupts_enters_quiet_interval[False-343] ____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739bfaccd0>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bdc46e0>
+enter = 343, fresh = False
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_suppressed_escape_also_interrupts_enters_quiet_interval(
+        session, monkeypatch, enter, fresh
+    ):
+        w = session.wizard
+>       prepare(w, Screen.METHOD)
+
+tests/test_console_key_origin_pass5_20261021.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739bfaccd0>
+screen = <Screen.METHOD: 'method'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+____ test_suppressed_escape_also_interrupts_enters_quiet_interval[True-10] _____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739bface10>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bfab770>
+enter = 10, fresh = True
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_suppressed_escape_also_interrupts_enters_quiet_interval(
+        session, monkeypatch, enter, fresh
+    ):
+        w = session.wizard
+>       prepare(w, Screen.METHOD)
+
+tests/test_console_key_origin_pass5_20261021.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739bface10>
+screen = <Screen.METHOD: 'method'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+____ test_suppressed_escape_also_interrupts_enters_quiet_interval[True-13] _____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739c92e710>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bfab5b0>
+enter = 13, fresh = True
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_suppressed_escape_also_interrupts_enters_quiet_interval(
+        session, monkeypatch, enter, fresh
+    ):
+        w = session.wizard
+>       prepare(w, Screen.METHOD)
+
+tests/test_console_key_origin_pass5_20261021.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739c92e710>
+screen = <Screen.METHOD: 'method'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+____ test_suppressed_escape_also_interrupts_enters_quiet_interval[True-343] ____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739c92e990>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bf92750>
+enter = 343, fresh = True
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_suppressed_escape_also_interrupts_enters_quiet_interval(
+        session, monkeypatch, enter, fresh
+    ):
+        w = session.wizard
+>       prepare(w, Screen.METHOD)
+
+tests/test_console_key_origin_pass5_20261021.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739c92e990>
+screen = <Screen.METHOD: 'method'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+_____ test_enter_pressed_in_inventory_overlay_cannot_advance_picker[False] _____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739bf23b10>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bef3f50>
+fresh = False
+
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_enter_pressed_in_inventory_overlay_cannot_advance_picker(
+        session, monkeypatch, fresh
+    ):
+        w = session.wizard
+>       prepare(w, Screen.PICK)
+
+tests/test_console_key_origin_pass5_20261021.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739bf23b10>
+screen = <Screen.PICK: 'pick'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+_____ test_enter_pressed_in_inventory_overlay_cannot_advance_picker[True] ______
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739bf23c50>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bef3650>
+fresh = True
+
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_enter_pressed_in_inventory_overlay_cannot_advance_picker(
+        session, monkeypatch, fresh
+    ):
+        w = session.wizard
+>       prepare(w, Screen.PICK)
+
+tests/test_console_key_origin_pass5_20261021.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739bf23c50>
+screen = <Screen.PICK: 'pick'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+________ test_space_from_setup_does_not_acknowledge_owner[False-splash] ________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739bf23ed0>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bf73280>
+origin = <Screen.SPLASH: 'splash'>, fresh = False
+
+    @pytest.mark.parametrize("origin", [Screen.SPLASH, Screen.KEYBOARD])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_space_from_setup_does_not_acknowledge_owner(
+        session, monkeypatch, origin, fresh
+    ):
+        w = session.wizard
+        prepare(w, origin)
+        events = [(0, 32), (.1, 10)]
+        events += [(.2, -1), (1.3, -1), (1.4, 32)] if fresh else [(.2, 32)]
+        run_keys(monkeypatch, w, events)
+        assert w.screen is Screen.OWNER
+>       assert w.owner_ok is fresh
+E       assert True is False
+E        +  where True = <beamo_wipe.wizard.Wizard object at 0x7f739bf23ed0>.owner_ok
+
+tests/test_console_key_origin_pass5_20261021.py:165: AssertionError
+_______ test_space_from_setup_does_not_acknowledge_owner[False-keyboard] _______
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739bf22fd0>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bf73800>
+origin = <Screen.KEYBOARD: 'keyboard'>, fresh = False
+
+    @pytest.mark.parametrize("origin", [Screen.SPLASH, Screen.KEYBOARD])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_space_from_setup_does_not_acknowledge_owner(
+        session, monkeypatch, origin, fresh
+    ):
+        w = session.wizard
+        prepare(w, origin)
+        events = [(0, 32), (.1, 10)]
+        events += [(.2, -1), (1.3, -1), (1.4, 32)] if fresh else [(.2, 32)]
+        run_keys(monkeypatch, w, events)
+        assert w.screen is Screen.OWNER
+>       assert w.owner_ok is fresh
+E       assert True is False
+E        +  where True = <beamo_wipe.wizard.Wizard object at 0x7f739bf22fd0>.owner_ok
+
+tests/test_console_key_origin_pass5_20261021.py:165: AssertionError
+______________ test_owner_keyboard_detour_keeps_unchecked_consent ______________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739c7c3610>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bf896d0>
+
+    def test_owner_keyboard_detour_keeps_unchecked_consent(session, monkeypatch):
+        w = session.wizard
+        prepare(w, Screen.OWNER)
+        w.set_owner(True)
+        run_keys(monkeypatch, w, [(0, 32), (.1, ord("k")), (.2, 10), (.3, 32)])
+>       assert w.screen is Screen.OWNER and not w.owner_ok
+E       AssertionError: assert (<Screen.OWNER: 'owner'> is <Screen.OWNER: 'owner'> and not True)
+E        +  where <Screen.OWNER: 'owner'> = <beamo_wipe.wizard.Wizard object at 0x7f739c7c3610>.screen
+E        +  and   <Screen.OWNER: 'owner'> = Screen.OWNER
+E        +  and   True = <beamo_wipe.wizard.Wizard object at 0x7f739c7c3610>.owner_ok
+
+tests/test_console_key_origin_pass5_20261021.py:181: AssertionError
+________ test_s_from_review_cannot_confirm_stop_after_start[False-115] _________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739c7c1310>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bdc2f50>
+letter = 115, fresh = False
+
+    @pytest.mark.parametrize("letter", [ord("s"), ord("S")])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_s_from_review_cannot_confirm_stop_after_start(
+        session, monkeypatch, letter, fresh
+    ):
+        w = session.wizard
+>       prepare(w, Screen.LAST_CHANCE)
+
+tests/test_console_key_origin_pass5_20261021.py:190: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739c7c1310>
+screen = <Screen.LAST_CHANCE: 'last_chance'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+_________ test_s_from_review_cannot_confirm_stop_after_start[False-83] _________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739bf23390>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bdd2a50>
+letter = 83, fresh = False
+
+    @pytest.mark.parametrize("letter", [ord("s"), ord("S")])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_s_from_review_cannot_confirm_stop_after_start(
+        session, monkeypatch, letter, fresh
+    ):
+        w = session.wizard
+>       prepare(w, Screen.LAST_CHANCE)
+
+tests/test_console_key_origin_pass5_20261021.py:190: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739bf23390>
+screen = <Screen.LAST_CHANCE: 'last_chance'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+_________ test_s_from_review_cannot_confirm_stop_after_start[True-115] _________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739c7c34d0>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bdd3d20>
+letter = 115, fresh = True
+
+    @pytest.mark.parametrize("letter", [ord("s"), ord("S")])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_s_from_review_cannot_confirm_stop_after_start(
+        session, monkeypatch, letter, fresh
+    ):
+        w = session.wizard
+>       prepare(w, Screen.LAST_CHANCE)
+
+tests/test_console_key_origin_pass5_20261021.py:190: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739c7c34d0>
+screen = <Screen.LAST_CHANCE: 'last_chance'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+_________ test_s_from_review_cannot_confirm_stop_after_start[True-83] __________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739c7c1450>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bdd24a0>
+letter = 83, fresh = True
+
+    @pytest.mark.parametrize("letter", [ord("s"), ord("S")])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_s_from_review_cannot_confirm_stop_after_start(
+        session, monkeypatch, letter, fresh
+    ):
+        w = session.wizard
+>       prepare(w, Screen.LAST_CHANCE)
+
+tests/test_console_key_origin_pass5_20261021.py:190: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739c7c1450>
+screen = <Screen.LAST_CHANCE: 'last_chance'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+_________________ test_fresh_stop_s_after_start_still_cancels __________________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739bfaccd0>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bdd2820>
+
+    def test_fresh_stop_s_after_start_still_cancels(session, monkeypatch):
+        w = session.wizard
+>       prepare(w, Screen.LAST_CHANCE)
+
+tests/test_console_key_origin_pass5_20261021.py:201: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739bfaccd0>
+screen = <Screen.LAST_CHANCE: 'last_chance'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+____ test_s_from_owner_does_not_toggle_sharing_after_help_opens[False-115] _____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739c7c1450>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bdd2c10>
+letter = 115, fresh = False
+
+    @pytest.mark.parametrize("letter", [ord("s"), ord("S")])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_s_from_owner_does_not_toggle_sharing_after_help_opens(
+        session, monkeypatch, letter, fresh
+    ):
+        w = session.wizard
+        prepare(w, Screen.OWNER)
+        events = [(0, letter), (.1, ord("r"))]
+        events += [(.2, -1), (1.3, -1), (1.4, letter)] if fresh else [(.2, letter)]
+        run_keys(monkeypatch, w, events)
+        assert w.screen is Screen.REPORT_HELP
+>       assert w.report_share_redacted is fresh
+E       assert True is False
+E        +  where True = <beamo_wipe.wizard.Wizard object at 0x7f739c7c1450>.report_share_redacted
+
+tests/test_console_key_origin_pass5_20261021.py:217: AssertionError
+_____ test_s_from_owner_does_not_toggle_sharing_after_help_opens[False-83] _____
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739c7c1310>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bf7bee0>
+letter = 83, fresh = False
+
+    @pytest.mark.parametrize("letter", [ord("s"), ord("S")])
+    @pytest.mark.parametrize("fresh", [False, True])
+    def test_s_from_owner_does_not_toggle_sharing_after_help_opens(
+        session, monkeypatch, letter, fresh
+    ):
+        w = session.wizard
+        prepare(w, Screen.OWNER)
+        events = [(0, letter), (.1, ord("r"))]
+        events += [(.2, -1), (1.3, -1), (1.4, letter)] if fresh else [(.2, letter)]
+        run_keys(monkeypatch, w, events)
+        assert w.screen is Screen.REPORT_HELP
+>       assert w.report_share_redacted is fresh
+E       assert True is False
+E        +  where True = <beamo_wipe.wizard.Wizard object at 0x7f739c7c1310>.report_share_redacted
+
+tests/test_console_key_origin_pass5_20261021.py:217: AssertionError
+__________ test_refresh_detour_does_not_repeat_report_preference[32] ___________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739c7c34d0>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bdd3d20>
+letter = 32
+
+    @pytest.mark.parametrize("letter", [32, ord("s")])
+    def test_refresh_detour_does_not_repeat_report_preference(session, monkeypatch, letter):
+        w = session.wizard
+        prepare(w, Screen.OWNER)
+        w.open_report_help()
+        run_keys(monkeypatch, w, [
+            (0, letter), (.1, -1), (.9, curses.KEY_F5), (1.0, 27), (1.1, letter),
+        ])
+        assert w.screen is Screen.REPORT_HELP
+>       assert (w.report_wanted if letter == 32 else w.report_share_redacted) is True
+E       assert False is True
+
+tests/test_console_key_origin_pass5_20261021.py:229: AssertionError
+__________ test_refresh_detour_does_not_repeat_report_preference[115] __________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739c7c3390>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bdd1e10>
+letter = 115
+
+    @pytest.mark.parametrize("letter", [32, ord("s")])
+    def test_refresh_detour_does_not_repeat_report_preference(session, monkeypatch, letter):
+        w = session.wizard
+        prepare(w, Screen.OWNER)
+        w.open_report_help()
+        run_keys(monkeypatch, w, [
+            (0, letter), (.1, -1), (.9, curses.KEY_F5), (1.0, 27), (1.1, letter),
+        ])
+        assert w.screen is Screen.REPORT_HELP
+>       assert (w.report_wanted if letter == 32 else w.report_share_redacted) is True
+E       assert False is True
+
+tests/test_console_key_origin_pass5_20261021.py:229: AssertionError
+_______ test_literal_input_keeps_repeated_space_s_and_backspace[confirm] _______
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f739c92e990>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f739bdd0d00>
+screen = <Screen.CONFIRM: 'confirm'>
+
+    @pytest.mark.parametrize("screen", [Screen.KEYBOARD, Screen.CONFIRM])
+    def test_literal_input_keeps_repeated_space_s_and_backspace(session, monkeypatch, screen):
+        w = session.wizard
+>       prepare(w, screen)
+
+tests/test_console_key_origin_pass5_20261021.py:235: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+wizard = <beamo_wipe.wizard.Wizard object at 0x7f739c92e990>
+screen = <Screen.CONFIRM: 'confirm'>
+
+    def prepare(wizard, screen):
+        if screen is Screen.SPLASH:
+            return
+        wizard.skip_splash()
+        if screen is Screen.KEYBOARD:
+            return
+        wizard.accept_keyboard()
+        if screen is Screen.OWNER:
+            return
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+tests/test_console_key_origin_pass5_20261021.py:70: IndexError
+=========================== short test summary info ============================
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_f5_interrupts_enters_quiet_interval[False-10]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_f5_interrupts_enters_quiet_interval[False-13]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_f5_interrupts_enters_quiet_interval[False-343]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_f5_interrupts_enters_quiet_interval[True-10]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_f5_interrupts_enters_quiet_interval[True-13]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_f5_interrupts_enters_quiet_interval[True-343]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_suppressed_escape_also_interrupts_enters_quiet_interval[False-10]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_suppressed_escape_also_interrupts_enters_quiet_interval[False-13]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_suppressed_escape_also_interrupts_enters_quiet_interval[False-343]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_suppressed_escape_also_interrupts_enters_quiet_interval[True-10]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_suppressed_escape_also_interrupts_enters_quiet_interval[True-13]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_suppressed_escape_also_interrupts_enters_quiet_interval[True-343]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_enter_pressed_in_inventory_overlay_cannot_advance_picker[False]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_enter_pressed_in_inventory_overlay_cannot_advance_picker[True]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_space_from_setup_does_not_acknowledge_owner[False-splash]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_space_from_setup_does_not_acknowledge_owner[False-keyboard]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_owner_keyboard_detour_keeps_unchecked_consent
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_s_from_review_cannot_confirm_stop_after_start[False-115]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_s_from_review_cannot_confirm_stop_after_start[False-83]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_s_from_review_cannot_confirm_stop_after_start[True-115]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_s_from_review_cannot_confirm_stop_after_start[True-83]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_fresh_stop_s_after_start_still_cancels
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_s_from_owner_does_not_toggle_sharing_after_help_opens[False-115]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_s_from_owner_does_not_toggle_sharing_after_help_opens[False-83]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_refresh_detour_does_not_repeat_report_preference[32]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_refresh_detour_does_not_repeat_report_preference[115]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_literal_input_keeps_repeated_space_s_and_backspace[confirm]
+27 failed, 6 passed in 0.74s

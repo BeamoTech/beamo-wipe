@@ -1,0 +1,1264 @@
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF................         [100%]
+=================================== FAILURES ===================================
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---demo-console] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 1, 'live': True}, calls=['cmdline-OSError', 'fake-discovery', 'repo...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 4}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---demo-console]>>
+route = 'console', preview = '--demo', failures = 1, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---demo-plain-console] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 1, 'live': True}, calls=['cmdline-OSError', 'fake-discovery', 'repo...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 4}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---demo-plain-console]>>
+route = 'plain-console', preview = '--demo', failures = 1, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---demo-graphical] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 1, 'live': True}, calls=['cmdline-OSError', 'fake-discovery', 'repo...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 4}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---demo-graphical]>>
+route = 'graphical', preview = '--demo', failures = 1, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---demo-accessible] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 1, 'live': True}, calls=['cmdline-OSError', 'reader-start', 'fake-d...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 6, 'mountinfo': 5}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---demo-accessible]>>
+route = 'accessible', preview = '--demo', failures = 1, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---dry-run-console] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 1, 'live': True}, calls=['cmdline-OSError', 'fake-discovery', 'repo...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 4}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---dry-run-console]>>
+route = 'console', preview = '--dry-run', failures = 1, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---dry-run-plain-console] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 1, 'live': True}, calls=['cmdline-OSError', 'fake-discovery', 'repo...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 4}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---dry-run-plain-console]>>
+route = 'plain-console', preview = '--dry-run', failures = 1
+location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---dry-run-graphical] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 1, 'live': True}, calls=['cmdline-OSError', 'fake-discovery', 'repo...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 4}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---dry-run-graphical]>>
+route = 'graphical', preview = '--dry-run', failures = 1, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---dry-run-accessible] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 1, 'live': True}, calls=['cmdline-OSError', 'reader-start', 'fake-d...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 6, 'mountinfo': 5}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---dry-run-accessible]>>
+route = 'accessible', preview = '--dry-run', failures = 1, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---demo-console] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 2, 'live': True}, calls=['cmdline-OSError', 'cmdline-OSError', 'fak...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 3}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---demo-console]>>
+route = 'console', preview = '--demo', failures = 2, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---demo-plain-console] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 2, 'live': True}, calls=['cmdline-OSError', 'cmdline-OSError', 'fak...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 3}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---demo-plain-console]>>
+route = 'plain-console', preview = '--demo', failures = 2, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---demo-graphical] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 2, 'live': True}, calls=['cmdline-OSError', 'cmdline-OSError', 'fak...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 3}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---demo-graphical]>>
+route = 'graphical', preview = '--demo', failures = 2, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---demo-accessible] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 2, 'live': True}, calls=['cmdline-OSError', 'cmdline-OSError', 'fak...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 3}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---demo-accessible]>>
+route = 'accessible', preview = '--demo', failures = 2, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---dry-run-console] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 2, 'live': True}, calls=['cmdline-OSError', 'cmdline-OSError', 'fak...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 3}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---dry-run-console]>>
+route = 'console', preview = '--dry-run', failures = 2, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---dry-run-plain-console] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 2, 'live': True}, calls=['cmdline-OSError', 'cmdline-OSError', 'fak...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 3}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---dry-run-plain-console]>>
+route = 'plain-console', preview = '--dry-run', failures = 2
+location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---dry-run-graphical] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 2, 'live': True}, calls=['cmdline-OSError', 'cmdline-OSError', 'fak...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 3}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---dry-run-graphical]>>
+route = 'graphical', preview = '--dry-run', failures = 2, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---dry-run-accessible] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 2, 'live': True}, calls=['cmdline-OSError', 'cmdline-OSError', 'rea...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 6, 'mountinfo': 4}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---dry-run-accessible]>>
+route = 'accessible', preview = '--dry-run', failures = 2, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---demo-console] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 3, 'live': True}, calls=['cmdline-OSError', 'cmdline-OSError', 'cmd...y_run': True, 'runner': 'DryRunRunner', 'has_session_store': False}], reads={'cmdline': 3, 'mountinfo': 0}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---demo-console]>>
+route = 'console', preview = '--demo', failures = 3, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---demo-plain-console] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 3, 'live': True}, calls=['cmdline-OSError', 'cmdline-OSError', 'cmd...y_run': True, 'runner': 'DryRunRunner', 'has_session_store': False}], reads={'cmdline': 3, 'mountinfo': 0}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---demo-plain-console]>>
+route = 'plain-console', preview = '--demo', failures = 3, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---demo-graphical] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 3, 'live': True}, calls=['cmdline-OSError', 'cmdline-OSError', 'cmd...y_run': True, 'runner': 'DryRunRunner', 'has_session_store': False}], reads={'cmdline': 3, 'mountinfo': 0}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---demo-graphical]>>
+route = 'graphical', preview = '--demo', failures = 3, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---demo-accessible] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 3, 'live': True}, calls=['cmdline-OSError', 'cmdline-OSError', 'cmd...y_run': True, 'runner': 'DryRunRunner', 'has_session_store': False}], reads={'cmdline': 3, 'mountinfo': 0}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---demo-accessible]>>
+route = 'accessible', preview = '--demo', failures = 3, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---dry-run-console] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 3, 'live': True}, calls=['cmdline-OSError', 'cmdline-OSError', 'cmd...y_run': True, 'runner': 'DryRunRunner', 'has_session_store': False}], reads={'cmdline': 3, 'mountinfo': 0}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---dry-run-console]>>
+route = 'console', preview = '--dry-run', failures = 3, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---dry-run-plain-console] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 3, 'live': True}, calls=['cmdline-OSError', 'cmdline-OSError', 'cmd...y_run': True, 'runner': 'DryRunRunner', 'has_session_store': False}], reads={'cmdline': 3, 'mountinfo': 0}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---dry-run-plain-console]>>
+route = 'plain-console', preview = '--dry-run', failures = 3
+location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---dry-run-graphical] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 3, 'live': True}, calls=['cmdline-OSError', 'cmdline-OSError', 'cmd...y_run': True, 'runner': 'DryRunRunner', 'has_session_store': False}], reads={'cmdline': 3, 'mountinfo': 0}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---dry-run-graphical]>>
+route = 'graphical', preview = '--dry-run', failures = 3, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---dry-run-accessible] _
+
+machine = namespace(mode={'location': 'cmdline', 'failures': 3, 'live': True}, calls=['cmdline-OSError', 'cmdline-OSError', 'rea...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 6, 'mountinfo': 3}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---dry-run-accessible]>>
+route = 'accessible', preview = '--dry-run', failures = 3, location = 'cmdline'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---demo-console] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 1, 'live': True}, calls=['mountinfo-OSError', 'fake-discovery', '...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 5}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---demo-console]>>
+route = 'console', preview = '--demo', failures = 1, location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---demo-plain-console] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 1, 'live': True}, calls=['mountinfo-OSError', 'fake-discovery', '...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 5}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---demo-plain-console]>>
+route = 'plain-console', preview = '--demo', failures = 1
+location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---demo-graphical] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 1, 'live': True}, calls=['mountinfo-OSError', 'fake-discovery', '...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 5}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---demo-graphical]>>
+route = 'graphical', preview = '--demo', failures = 1, location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---demo-accessible] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 1, 'live': True}, calls=['mountinfo-OSError', 'reader-start', 'fa...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 6, 'mountinfo': 6}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---demo-accessible]>>
+route = 'accessible', preview = '--demo', failures = 1, location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---dry-run-console] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 1, 'live': True}, calls=['mountinfo-OSError', 'fake-discovery', '...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 5}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---dry-run-console]>>
+route = 'console', preview = '--dry-run', failures = 1, location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---dry-run-plain-console] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 1, 'live': True}, calls=['mountinfo-OSError', 'fake-discovery', '...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 5}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---dry-run-plain-console]>>
+route = 'plain-console', preview = '--dry-run', failures = 1
+location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---dry-run-graphical] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 1, 'live': True}, calls=['mountinfo-OSError', 'fake-discovery', '...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 5}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---dry-run-graphical]>>
+route = 'graphical', preview = '--dry-run', failures = 1, location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---dry-run-accessible] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 1, 'live': True}, calls=['mountinfo-OSError', 'reader-start', 'fa...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 6, 'mountinfo': 6}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---dry-run-accessible]>>
+route = 'accessible', preview = '--dry-run', failures = 1
+location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---demo-console] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 2, 'live': True}, calls=['mountinfo-OSError', 'mountinfo-OSError'...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 5}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---demo-console]>>
+route = 'console', preview = '--demo', failures = 2, location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---demo-plain-console] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 2, 'live': True}, calls=['mountinfo-OSError', 'mountinfo-OSError'...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 5}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---demo-plain-console]>>
+route = 'plain-console', preview = '--demo', failures = 2
+location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---demo-graphical] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 2, 'live': True}, calls=['mountinfo-OSError', 'mountinfo-OSError'...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 5}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---demo-graphical]>>
+route = 'graphical', preview = '--demo', failures = 2, location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---demo-accessible] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 2, 'live': True}, calls=['mountinfo-OSError', 'mountinfo-OSError'...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 5}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---demo-accessible]>>
+route = 'accessible', preview = '--demo', failures = 2, location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---dry-run-console] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 2, 'live': True}, calls=['mountinfo-OSError', 'mountinfo-OSError'...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 5}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---dry-run-console]>>
+route = 'console', preview = '--dry-run', failures = 2, location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---dry-run-plain-console] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 2, 'live': True}, calls=['mountinfo-OSError', 'mountinfo-OSError'...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 5}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---dry-run-plain-console]>>
+route = 'plain-console', preview = '--dry-run', failures = 2
+location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---dry-run-graphical] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 2, 'live': True}, calls=['mountinfo-OSError', 'mountinfo-OSError'...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 5, 'mountinfo': 5}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---dry-run-graphical]>>
+route = 'graphical', preview = '--dry-run', failures = 2, location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---dry-run-accessible] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 2, 'live': True}, calls=['mountinfo-OSError', 'mountinfo-OSError'...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 6, 'mountinfo': 6}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---dry-run-accessible]>>
+route = 'accessible', preview = '--dry-run', failures = 2
+location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---demo-console] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 3, 'live': True}, calls=['mountinfo-OSError', 'mountinfo-OSError'...y_run': True, 'runner': 'DryRunRunner', 'has_session_store': False}], reads={'cmdline': 3, 'mountinfo': 3}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---demo-console]>>
+route = 'console', preview = '--demo', failures = 3, location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---demo-plain-console] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 3, 'live': True}, calls=['mountinfo-OSError', 'mountinfo-OSError'...y_run': True, 'runner': 'DryRunRunner', 'has_session_store': False}], reads={'cmdline': 3, 'mountinfo': 3}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---demo-plain-console]>>
+route = 'plain-console', preview = '--demo', failures = 3
+location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---demo-graphical] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 3, 'live': True}, calls=['mountinfo-OSError', 'mountinfo-OSError'...y_run': True, 'runner': 'DryRunRunner', 'has_session_store': False}], reads={'cmdline': 3, 'mountinfo': 3}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---demo-graphical]>>
+route = 'graphical', preview = '--demo', failures = 3, location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---demo-accessible] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 3, 'live': True}, calls=['mountinfo-OSError', 'mountinfo-OSError'...y_run': True, 'runner': 'DryRunRunner', 'has_session_store': False}], reads={'cmdline': 3, 'mountinfo': 3}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---demo-accessible]>>
+route = 'accessible', preview = '--demo', failures = 3, location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---dry-run-console] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 3, 'live': True}, calls=['mountinfo-OSError', 'mountinfo-OSError'...y_run': True, 'runner': 'DryRunRunner', 'has_session_store': False}], reads={'cmdline': 3, 'mountinfo': 3}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---dry-run-console]>>
+route = 'console', preview = '--dry-run', failures = 3, location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---dry-run-plain-console] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 3, 'live': True}, calls=['mountinfo-OSError', 'mountinfo-OSError'...y_run': True, 'runner': 'DryRunRunner', 'has_session_store': False}], reads={'cmdline': 3, 'mountinfo': 3}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---dry-run-plain-console]>>
+route = 'plain-console', preview = '--dry-run', failures = 3
+location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---dry-run-graphical] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 3, 'live': True}, calls=['mountinfo-OSError', 'mountinfo-OSError'...y_run': True, 'runner': 'DryRunRunner', 'has_session_store': False}], reads={'cmdline': 3, 'mountinfo': 3}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---dry-run-graphical]>>
+route = 'graphical', preview = '--dry-run', failures = 3, location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+_ test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---dry-run-accessible] _
+
+machine = namespace(mode={'location': 'mountinfo', 'failures': 3, 'live': True}, calls=['mountinfo-OSError', 'mountinfo-OSError'...y_run': False, 'runner': 'NwipeRunner', 'has_session_store': False}], reads={'cmdline': 6, 'mountinfo': 6}, effects=[])
+request = <FixtureRequest for <Function test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---dry-run-accessible]>>
+route = 'accessible', preview = '--dry-run', failures = 3
+location = 'mountinfo'
+
+    @pytest.mark.parametrize("route", ROUTES)
+    @pytest.mark.parametrize("preview", ["--demo", "--dry-run"])
+    @pytest.mark.parametrize("failures", [1, 2, 3])
+    @pytest.mark.parametrize("location", ["cmdline", "mountinfo"])
+    def test_transient_classification_never_exposes_unowned_live_controls(
+        machine, request, route, preview, failures, location,
+    ):
+        machine.mode.update(location=location, failures=failures)
+        code = app.main(argv_for(route, preview))
+        request.node.user_properties.append(("ownership_trace", json.dumps({
+            "location": location, "failures": failures, "route": route,
+            "preview": preview, "code": code, "calls": machine.calls,
+            "reads": machine.reads, "ui": machine.observations,
+            "native_callbacks": len(machine.effects),
+        })))
+>       assert code == 3
+E       assert 23 == 3
+
+tests/test_app_live_ownership_pass9_20261021.py:177: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---demo-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---demo-plain-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---demo-graphical]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---demo-accessible]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---dry-run-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---dry-run-plain-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---dry-run-graphical]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-1---dry-run-accessible]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---demo-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---demo-plain-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---demo-graphical]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---demo-accessible]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---dry-run-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---dry-run-plain-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---dry-run-graphical]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-2---dry-run-accessible]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---demo-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---demo-plain-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---demo-graphical]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---demo-accessible]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---dry-run-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---dry-run-plain-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---dry-run-graphical]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[cmdline-3---dry-run-accessible]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---demo-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---demo-plain-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---demo-graphical]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---demo-accessible]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---dry-run-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---dry-run-plain-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---dry-run-graphical]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-1---dry-run-accessible]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---demo-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---demo-plain-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---demo-graphical]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---demo-accessible]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---dry-run-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---dry-run-plain-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---dry-run-graphical]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-2---dry-run-accessible]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---demo-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---demo-plain-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---demo-graphical]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---demo-accessible]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---dry-run-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---dry-run-plain-console]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---dry-run-graphical]
+FAILED tests/test_app_live_ownership_pass9_20261021.py::test_transient_classification_never_exposes_unowned_live_controls[mountinfo-3---dry-run-accessible]
+48 failed, 16 passed in 0.48s

@@ -1,0 +1,26 @@
+{
+  "baseline_commit": "d8a941adc16cf0650d482f512e4b921d702373c5",
+  "frozen_at_utc": "2026-10-21T04:17:10.902494+00:00",
+  "source_files": 817,
+  "source_manifest_sha256": "7cf60bb07b56282c50a329b6a7906561fa0944689465d24bf1acf1f9070da430",
+  "new_case_breakdown": {
+    "tests/test_power_acceptance_retirement_pass8_20261021.py": 28,
+    "tests/test_app_live_decode_refusal_pass8_20261021.py": 34,
+    "tests/test_cancel_diagnostic_retirement_pass8_20261021.py": 25
+  },
+  "new_python_cases": 87,
+  "changed_paths": [
+    "src/beamo_wipe/app.py",
+    "src/beamo_wipe/nwipe_runner.py",
+    "src/beamo_wipe/power.py",
+    "tests/test_app_live_decode_refusal_pass8_20261021.py",
+    "tests/test_cancel_diagnostic_retirement_pass8_20261021.py",
+    "tests/test_power_acceptance_retirement_pass8_20261021.py"
+  ],
+  "all_old_test_files_byte_identical": true,
+  "all_old_assertions_preserved": true,
+  "all_reviewers_released": true,
+  "verified_root_causes": 3,
+  "root_review": "Root read every product diff and all three new test modules, independently replayed each original failing proof, verified normal controls; UI reviewer independently reproduced root power defect. Unknown startup never becomes desktop fallback; only optional runner diagnostic catches change; power acceptance revoked before decision release.",
+  "native_device_power_engine_guest_actions": false
+}

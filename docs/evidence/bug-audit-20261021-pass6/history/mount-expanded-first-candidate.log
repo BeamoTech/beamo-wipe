@@ -1,0 +1,150 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_ test_visible_new_child_is_not_confused_with_old_hidden_submount[live-forward] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-89/test_visible_new_child_is_not_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3389c74c30>
+log = False, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("log", [False, True], ids=["live", "log"])
+    def test_visible_new_child_is_not_confused_with_old_hidden_submount(tmp_path: Path, monkeypatch, log, reverse):
+        parent, old_sub, child = (
+            ("/tmp", "/tmp/beamo-wipe", "/tmp/beamo-wipe/logs")
+            if log else ("/run", "/run/live", "/run/live/medium")
+        )
+        filesystem, source = ("tmpfs", "tmpfs") if log else ("iso9660", "/dev/sdz1")
+        rows = [
+            "101 0 0:1 / / rw - overlay overlay rw",
+            f"7 101 0:7 / {parent} rw - tmpfs tmpfs rw",
+            f"13 7 8:13 / {old_sub} rw - ext4 /dev/sdb1 rw",
+            f"9 7 0:9 / {parent} rw - tmpfs tmpfs rw",
+            f"42 9 0:42 / {child} rw - {filesystem} {source} rw",
+        ]
+        if reverse:
+            rows.reverse()
+        text = "\n".join(rows) + "\n"
+        if log:
+            table = tmp_path / "mountinfo"
+            table.write_text(text)
+            monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+            assert safety.log_location_is_tmpfs(Path(child) / "engine.log")
+        else:
+>           assert discovery.live_medium_is_mounted(text=text)
+E           AssertionError: assert False
+E            +  where False = <function live_medium_is_mounted at 0x7f3389c93880>(text='101 0 0:1 / / rw - overlay overlay rw\n7 101 0:7 / /run rw - tmpfs tmpfs rw\n13 7 8:13 / /run/live rw - ext4 /dev/sdb1 rw\n9 7 0:9 / /run rw - tmpfs tmpfs rw\n42 9 0:42 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n')
+E            +    where <function live_medium_is_mounted at 0x7f3389c93880> = discovery.live_medium_is_mounted
+
+tests/test_mount_visibility_pass6_20261021.py:153: AssertionError
+_ test_visible_new_child_is_not_confused_with_old_hidden_submount[live-reordered] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-89/test_visible_new_child_is_not_1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3389c74770>
+log = False, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("log", [False, True], ids=["live", "log"])
+    def test_visible_new_child_is_not_confused_with_old_hidden_submount(tmp_path: Path, monkeypatch, log, reverse):
+        parent, old_sub, child = (
+            ("/tmp", "/tmp/beamo-wipe", "/tmp/beamo-wipe/logs")
+            if log else ("/run", "/run/live", "/run/live/medium")
+        )
+        filesystem, source = ("tmpfs", "tmpfs") if log else ("iso9660", "/dev/sdz1")
+        rows = [
+            "101 0 0:1 / / rw - overlay overlay rw",
+            f"7 101 0:7 / {parent} rw - tmpfs tmpfs rw",
+            f"13 7 8:13 / {old_sub} rw - ext4 /dev/sdb1 rw",
+            f"9 7 0:9 / {parent} rw - tmpfs tmpfs rw",
+            f"42 9 0:42 / {child} rw - {filesystem} {source} rw",
+        ]
+        if reverse:
+            rows.reverse()
+        text = "\n".join(rows) + "\n"
+        if log:
+            table = tmp_path / "mountinfo"
+            table.write_text(text)
+            monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+            assert safety.log_location_is_tmpfs(Path(child) / "engine.log")
+        else:
+>           assert discovery.live_medium_is_mounted(text=text)
+E           AssertionError: assert False
+E            +  where False = <function live_medium_is_mounted at 0x7f3389c93880>(text='42 9 0:42 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n9 7 0:9 / /run rw - tmpfs tmpfs rw\n13 7 8:13 / /run/live rw - ext4 /dev/sdb1 rw\n7 101 0:7 / /run rw - tmpfs tmpfs rw\n101 0 0:1 / / rw - overlay overlay rw\n')
+E            +    where <function live_medium_is_mounted at 0x7f3389c93880> = discovery.live_medium_is_mounted
+
+tests/test_mount_visibility_pass6_20261021.py:153: AssertionError
+_ test_visible_new_child_is_not_confused_with_old_hidden_submount[log-forward] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-89/test_visible_new_child_is_not_2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3389cc0dd0>
+log = True, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("log", [False, True], ids=["live", "log"])
+    def test_visible_new_child_is_not_confused_with_old_hidden_submount(tmp_path: Path, monkeypatch, log, reverse):
+        parent, old_sub, child = (
+            ("/tmp", "/tmp/beamo-wipe", "/tmp/beamo-wipe/logs")
+            if log else ("/run", "/run/live", "/run/live/medium")
+        )
+        filesystem, source = ("tmpfs", "tmpfs") if log else ("iso9660", "/dev/sdz1")
+        rows = [
+            "101 0 0:1 / / rw - overlay overlay rw",
+            f"7 101 0:7 / {parent} rw - tmpfs tmpfs rw",
+            f"13 7 8:13 / {old_sub} rw - ext4 /dev/sdb1 rw",
+            f"9 7 0:9 / {parent} rw - tmpfs tmpfs rw",
+            f"42 9 0:42 / {child} rw - {filesystem} {source} rw",
+        ]
+        if reverse:
+            rows.reverse()
+        text = "\n".join(rows) + "\n"
+        if log:
+            table = tmp_path / "mountinfo"
+            table.write_text(text)
+            monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+>           assert safety.log_location_is_tmpfs(Path(child) / "engine.log")
+E           AssertionError: assert False
+E            +  where False = <function log_location_is_tmpfs at 0x7f3389c902c0>((PosixPath('/tmp/beamo-wipe/logs') / 'engine.log'))
+E            +    where <function log_location_is_tmpfs at 0x7f3389c902c0> = safety.log_location_is_tmpfs
+E            +    and   PosixPath('/tmp/beamo-wipe/logs') = Path('/tmp/beamo-wipe/logs')
+
+tests/test_mount_visibility_pass6_20261021.py:151: AssertionError
+_ test_visible_new_child_is_not_confused_with_old_hidden_submount[log-reordered] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-89/test_visible_new_child_is_not_3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3389cda360>
+log = True, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("log", [False, True], ids=["live", "log"])
+    def test_visible_new_child_is_not_confused_with_old_hidden_submount(tmp_path: Path, monkeypatch, log, reverse):
+        parent, old_sub, child = (
+            ("/tmp", "/tmp/beamo-wipe", "/tmp/beamo-wipe/logs")
+            if log else ("/run", "/run/live", "/run/live/medium")
+        )
+        filesystem, source = ("tmpfs", "tmpfs") if log else ("iso9660", "/dev/sdz1")
+        rows = [
+            "101 0 0:1 / / rw - overlay overlay rw",
+            f"7 101 0:7 / {parent} rw - tmpfs tmpfs rw",
+            f"13 7 8:13 / {old_sub} rw - ext4 /dev/sdb1 rw",
+            f"9 7 0:9 / {parent} rw - tmpfs tmpfs rw",
+            f"42 9 0:42 / {child} rw - {filesystem} {source} rw",
+        ]
+        if reverse:
+            rows.reverse()
+        text = "\n".join(rows) + "\n"
+        if log:
+            table = tmp_path / "mountinfo"
+            table.write_text(text)
+            monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+>           assert safety.log_location_is_tmpfs(Path(child) / "engine.log")
+E           AssertionError: assert False
+E            +  where False = <function log_location_is_tmpfs at 0x7f3389c902c0>((PosixPath('/tmp/beamo-wipe/logs') / 'engine.log'))
+E            +    where <function log_location_is_tmpfs at 0x7f3389c902c0> = safety.log_location_is_tmpfs
+E            +    and   PosixPath('/tmp/beamo-wipe/logs') = Path('/tmp/beamo-wipe/logs')
+
+tests/test_mount_visibility_pass6_20261021.py:151: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_visible_new_child_is_not_confused_with_old_hidden_submount[live-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_visible_new_child_is_not_confused_with_old_hidden_submount[live-reordered]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_visible_new_child_is_not_confused_with_old_hidden_submount[log-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_visible_new_child_is_not_confused_with_old_hidden_submount[log-reordered]
+4 failed, 59 deselected in 0.26s

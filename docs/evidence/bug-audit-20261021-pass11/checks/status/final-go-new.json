@@ -1,0 +1,15 @@
+{
+  "name": "final-go-new",
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-run=^TestBoundedOutput(OwnedHelper|BoundsInheritedPipes|CaptureControls|DrainLimitControls|EnforcesCaptureBudget)Pass11$",
+    "-json",
+    "./..."
+  ],
+  "started_utc": "2026-10-21T06:08:53.571264+00:00",
+  "elapsed_seconds": 11.45,
+  "exit_code": 0
+}

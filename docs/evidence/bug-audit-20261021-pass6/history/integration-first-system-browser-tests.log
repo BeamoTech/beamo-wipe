@@ -1,0 +1,35 @@
+Supplemental browser: Chromium 155.0.8059.79 built on Debian GNU/Linux 13 (trixie)
+E........                                                                [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of test_browser_inventory_count_is_visible[1024-happy-pick-3 disks available to erase \xb7 Beamo USB protected \xb7 1 other device not available] _
+
+self = PosixPath('/tmp/pytest-of-beamo'), mode = 448, parents = False
+exist_ok = True
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           OSError: [Errno 28] No space left on device: '/tmp/pytest-of-beamo'
+
+/usr/lib/python3.13/pathlib/_local.py:724: OSError
+
+During handling of the above exception, another exception occurred:
+
+self = PosixPath('/tmp/pytest-of-unknown'), mode = 448, parents = False
+exist_ok = True
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           OSError: [Errno 28] No space left on device: '/tmp/pytest-of-unknown'
+
+/usr/lib/python3.13/pathlib/_local.py:724: OSError
+=========================== short test summary info ============================
+ERROR tests/test_inventory_count.py::test_browser_inventory_count_is_visible[1024-happy-pick-3 disks available to erase \xb7 Beamo USB protected \xb7 1 other device not available]
+8 passed, 1 error in 9.69s

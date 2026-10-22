@@ -1,0 +1,32 @@
+{
+  "power-acceptance-independent-before": {
+    "cases": 4,
+    "failures": 3,
+    "errors": 0,
+    "skipped": 0
+  },
+  "live-decode-independent-before": {
+    "cases": 4,
+    "failures": 2,
+    "errors": 0,
+    "skipped": 0
+  },
+  "cancel-diagnostic-independent-before": {
+    "cases": 4,
+    "failures": 2,
+    "errors": 0,
+    "skipped": 0
+  },
+  "power-expanded-before": {
+    "cases": 28,
+    "failures": 12,
+    "errors": 0,
+    "skipped": 0
+  },
+  "power-fixed-adjacent": {
+    "cases": 229,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

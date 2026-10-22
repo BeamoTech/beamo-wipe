@@ -1,0 +1,6 @@
+........................................................................ [ 34%]
+.dbus-daemon[130451]: [session uid=1000 pid=130451 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=130465 comm="python3 -m pytest -W error -p no:cacheprovider -o" label="kernel")
+dbus-daemon[130451]: [session uid=1000 pid=130451 pidfd=5] Successfully activated service 'org.a11y.Bus'
+....................................................................... [ 68%]
+..................................................................       [100%]
+210 passed in 3.16s

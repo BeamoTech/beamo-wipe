@@ -1,0 +1,8 @@
+{
+  "baseline": "b46e5642d4c849d503b41d8bf562cfb1f9fad68b",
+  "product_sha256": "84dedc2a582ed89f245b1b880200ccfbeab15fb8bd1655ddd9c2b2891166e0d3",
+  "test_sha256": "9c83cf9743a6d31a7365878f0af5e76c8c79cf3fc137d6a04c3756044f50c396",
+  "new_test": "desktop/output_deadline_pass11_20261021_test.go",
+  "proof": "Exact final test bytes run against baseline io.go using Go overlay; other existing desktop sources unchanged",
+  "native_callbacks": 0
+}

@@ -1,0 +1,30 @@
+{
+  "python_modules": 25,
+  "python_unique_passed": 255,
+  "python_failures_errors_skips": 0,
+  "go_named_pass_events": 338,
+  "go_native_skips": [
+    "TestLinuxInventoryRetainsPartitionParents",
+    "TestWindowsInventoryReportsOnlyLauncherPartitionPass13"
+  ],
+  "go_race_exit": 0,
+  "go_vet_exit": 0,
+  "firmware_model": {
+    "foreign_request_preservation_controls": 288,
+    "inventory_cases": 150,
+    "inventory_success_controls": 40,
+    "mismatches": 0,
+    "native_callbacks": 0,
+    "restart_success_controls": 9,
+    "transaction_cases": 6048,
+    "transaction_refusals": 6039
+  },
+  "source_edits": [],
+  "native_callbacks": 0,
+  "read_only_review_finished": true,
+  "ownership_released": true,
+  "new_verified_defects": 0,
+  "model_final_after_gofmt_exit": 0,
+  "model_sha256": "aec6bd2480328f50dff08c4b0de9943727eedae04ef7e15245c16b98f1023986",
+  "reviewed_input_files": 60
+}

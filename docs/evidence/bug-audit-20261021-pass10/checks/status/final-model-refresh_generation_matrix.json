@@ -1,0 +1,15 @@
+{
+  "name": "final-model-refresh_generation_matrix",
+  "command": [
+    "env",
+    "PYTHONPATH=/workspace/beamo-wipe/src",
+    "BEAMO_WIPE_DRY_RUN=1",
+    "python3",
+    "-W",
+    "error",
+    "/workspace/beamo-tools/audit-pass10-20261021/root/model-replays/refresh_generation_matrix.py"
+  ],
+  "started_utc": "2026-10-21T05:33:49.945502+00:00",
+  "elapsed_seconds": 1.02,
+  "exit_code": 0
+}

@@ -1,0 +1,12 @@
+[
+  "tests/test_power_monitor_launch_pass8.py",
+  "tests/test_laptop_power.py",
+  "tests/test_audio_launch_acceptance_pass20.py",
+  "tests/test_audio_launch_interruptions_pass20.py",
+  "tests/test_audio_launch_ownership_pass14.py",
+  "tests/test_app_poweroff_recheck_pass7.py",
+  "tests/test_live_session_power.py",
+  "tests/test_diagnostics_line_separators_pass21.py",
+  "tests/test_diagnostics_directory_binding_regression.py",
+  "tests/test_startup_diagnostics.py"
+]

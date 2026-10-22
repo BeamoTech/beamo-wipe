@@ -1,0 +1,12 @@
+{
+  "command": [
+    "./preview"
+  ],
+  "display": ":350",
+  "dpi": 72,
+  "fake_disks_only": true,
+  "capture": "tk-preview-72dpi.png",
+  "teardown": "SIGTERM to owned preview child after capture",
+  "normal_close_acceptance": false,
+  "returncode": -15
+}

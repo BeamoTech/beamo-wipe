@@ -1,0 +1,14 @@
+tests/test_discovery_typed_source_pass9.py
+tests/test_discovery_udev_alias_pass10.py
+tests/test_discovery_alias_brackets_pass10.py
+tests/test_missing_udev_link_pass14_discovery.py
+tests/test_boot_label_exact_pass33.py
+tests/test_cmdline_boot_competition_regression.py
+tests/test_discovery_unresolved_override_pass20.py
+tests/test_discovery_label_whitespace_pass13.py
+tests/test_inventory_boot_alias_pass34.py
+tests/test_boot_wwn_alias_pass12_discovery.py
+tests/test_boot_serial_alias_pass7.py
+tests/test_identity.py
+tests/test_excluded_inventory.py
+tests/test_contents_efi_token_pass13.py

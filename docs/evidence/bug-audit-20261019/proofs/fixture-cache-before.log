@@ -1,0 +1,5 @@
+{'iteration': 1, 'stdout': 'ok  \tbeamo-wipe/desktop\t0.004s', 'fixture_exists': True}
+{'iteration': 2, 'stdout': 'ok  \tbeamo-wipe/desktop\t(cached)', 'fixture_exists': False}
+Traceback (most recent call last):
+  File "<stdin>", line 13, in <module>
+AssertionError: cached Go fixture test did not recreate required JSON

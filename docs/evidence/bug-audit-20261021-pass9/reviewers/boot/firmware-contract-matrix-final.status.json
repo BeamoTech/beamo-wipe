@@ -1,0 +1,17 @@
+{
+  "name": "firmware-contract-matrix-final",
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-race",
+    "-overlay=/workspace/beamo-tools/audit-pass9-20261021/boot/overlay.json",
+    "-run",
+    "^TestPass9FirmwareContractMatrix$",
+    "-v",
+    "."
+  ],
+  "started_utc": "2026-10-21T04:47:45.100531+00:00",
+  "elapsed_seconds": 2.19,
+  "exit_code": 0
+}

@@ -1,0 +1,123 @@
+FF..                                                                     [100%]
+=================================== FAILURES ===================================
+__________ test_narrow_native_review_cannot_credit_clipped_warning[5] __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f8eb4f4f5c0>
+columns = 5
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-93/test_narrow_native_review_cann0')
+
+    @pytest.mark.parametrize("columns", [5, 19, 20, 200])
+    def test_narrow_native_review_cannot_credit_clipped_warning(monkeypatch, columns, tmp_path):
+        failure = "none"
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+        effects = []
+    
+        def forbidden(*_args, **_kwargs):
+            effects.append(True)
+            raise AssertionError("Native device/process/power action forbidden")
+    
+        for boundary in (
+            "subprocess.run", "subprocess.Popen", "beamo_wipe.discover.run_lsblk",
+            "beamo_wipe.discover.read_cmdline", "beamo_wipe.discover.read_mount_sources",
+            "beamo_wipe.nwipe_runner.NwipeRunner.start", "beamo_wipe.app._shutdown",
+            "beamo_wipe.sound._run", "beamo_wipe.sound._popen",
+        ):
+            monkeypatch.setattr(boundary, forbidden)
+        clock = [0.0]
+        wizard = Wizard(discovery_for_scenario("happy"), DryRunRunner(clock=lambda: clock[0]),
+                        clock=lambda: clock[0], dry_run=True)
+        wizard.skip_intro()
+        wizard.set_owner(True)
+        wizard.continue_owner()
+>       wizard.select_disk(wizard.selectable[0].path)
+                           ^^^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+../beamo-tools/audit-pass6-20261021/root/test_curses_clipped_review_probe.py:36: IndexError
+_________ test_narrow_native_review_cannot_credit_clipped_warning[19] __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f8eb5935940>
+columns = 19
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-93/test_narrow_native_review_cann1')
+
+    @pytest.mark.parametrize("columns", [5, 19, 20, 200])
+    def test_narrow_native_review_cannot_credit_clipped_warning(monkeypatch, columns, tmp_path):
+        failure = "none"
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+        effects = []
+    
+        def forbidden(*_args, **_kwargs):
+            effects.append(True)
+            raise AssertionError("Native device/process/power action forbidden")
+    
+        for boundary in (
+            "subprocess.run", "subprocess.Popen", "beamo_wipe.discover.run_lsblk",
+            "beamo_wipe.discover.read_cmdline", "beamo_wipe.discover.read_mount_sources",
+            "beamo_wipe.nwipe_runner.NwipeRunner.start", "beamo_wipe.app._shutdown",
+            "beamo_wipe.sound._run", "beamo_wipe.sound._popen",
+        ):
+            monkeypatch.setattr(boundary, forbidden)
+        clock = [0.0]
+        wizard = Wizard(discovery_for_scenario("happy"), DryRunRunner(clock=lambda: clock[0]),
+                        clock=lambda: clock[0], dry_run=True)
+        wizard.skip_intro()
+        wizard.set_owner(True)
+        wizard.continue_owner()
+        wizard.select_disk(wizard.selectable[0].path)
+        wizard.continue_pick()
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+        wizard.continue_method()
+        assert wizard.screen == Screen.LAST_CHANCE
+        monkeypatch.setattr(console, "_curses_opt", lambda *_args: None)
+        monkeypatch.setattr(console.time, "sleep", lambda _seconds: clock.__setitem__(0, clock[0] + 6))
+        launches = []
+        monkeypatch.setattr(wizard, "confirm_erase", lambda: launches.append(clock[0]))
+    
+        class Terminal:
+            def __init__(self):
+                self.frames = []
+                self.lines = []
+                self.errors = 0
+                self.height = 200
+    
+            def keypad(self, *_args): pass
+            def nodelay(self, *_args): pass
+            def getmaxyx(self): return (self.height, columns)
+            def erase(self): self.lines = []
+    
+            def addstr(self, y, x, text, *_args):
+                if failure == "resize":
+                    # The frame measured a roomy terminal; the first native write
+                    # arrives after it shrinks. Later review rows are now absent.
+                    self.height = 5
+                if failure == "write-error" and C.SEVERITY_WARNING in text:
+                    self.errors += 1
+                    raise console.curses.error("Fake native write failed")
+                self.lines.append((y, x, text))
+    
+            def refresh(self):
+                self.frames.append(tuple(self.lines))
+    
+            def getch(self):
+                if len(self.frames) == 1:
+                    return -1
+                if len(self.frames) == 2:
+                    return 10
+                wizard.wants_shutdown = True
+                return -1
+    
+        terminal = Terminal()
+        assert console._run_loop_guarded(terminal, wizard) == 0
+        warnings_seen = any(C.SEVERITY_WARNING in text for frame in terminal.frames
+                            for _y, _x, text in frame)
+        assert not effects
+        if columns < 20:
+>           assert not warnings_seen
+E           assert not True
+
+../beamo-tools/audit-pass6-20261021/root/test_curses_clipped_review_probe.py:86: AssertionError
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass6-20261021/root/test_curses_clipped_review_probe.py::test_narrow_native_review_cannot_credit_clipped_warning[5]
+FAILED ../beamo-tools/audit-pass6-20261021/root/test_curses_clipped_review_probe.py::test_narrow_native_review_cannot_credit_clipped_warning[19]
+2 failed, 2 passed in 0.23s

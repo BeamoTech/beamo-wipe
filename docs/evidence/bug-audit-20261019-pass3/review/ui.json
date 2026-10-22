@@ -1,0 +1,85 @@
+{
+  "baseline_commit": "fa2ca72b648ef373c6215699e883296bc8db551d",
+  "result": "No new proven defect in this bounded fresh UI/state pass. No tracked source/test edits.",
+  "reviewed": {
+    "wizard.py": [
+      "start claim and late abort ownership",
+      "stop consent and terminal result race",
+      "refresh claim and stale scan sequence",
+      "evidence retry busy/result binding",
+      "keyboard layout invalidates consent; language preserves typed keys",
+      "shutdown/new-session export and recovery gates",
+      "help/keyboard/diagnostic/modal detours restart final review"
+    ],
+    "ui/tk_wizard.py": [
+      "screen/draw-generation callback rejection",
+      "Return/Space/Escape/F5 press lifetime",
+      "asynchronous refresh publication and destroyed-root discard",
+      "first review render restarts countdown",
+      "stable controls while progress/report updates"
+    ],
+    "ui/accessible_wizard.py": [
+      "queued control generation binding",
+      "modal key ownership across return to parent",
+      "focus selection and enabled-control Erase guard",
+      "refresh wake/launch failures finish claimed scan",
+      "owned startup source/window cleanup and optional exception notes"
+    ],
+    "ui/console_wizard.py": [
+      "Confirm special input loop carries hold state",
+      "per-screen body paging resets",
+      "paged review requires all details before countdown",
+      "plain fallback flushes queued erase consent",
+      "busy input loss settles fake runner before returning"
+    ],
+    "supporting": [
+      "sound_dialog.py screen epochs and review overlay release",
+      "audio_jobs.py ticket cancellation/timeout and single worker ownership",
+      "lang.py translation snapshot and rebuild hooks"
+    ]
+  },
+  "rejected_candidate": {
+    "idea": "Confirm might advertise K for Keyboard while treating K as token input",
+    "proof": "Actual Wizard/fake80x24 terminal confirms optional K hint is intentionally absent on Confirm and literal input is preserved. Method control advertises K and opens Keyboard.",
+    "log": "curses-keyboard-hint-original.log",
+    "status": "Rejected; no code change"
+  },
+  "checks": [
+    {
+      "log": "focused-state-parity.log",
+      "result": "174 passed;22 display-dependent skips in3.61s"
+    },
+    {
+      "log": "headless-state-skip-review.log",
+      "result": "174 passed;1 Tk display skip in3.73s; native-modal module excluded for its separate run"
+    },
+    {
+      "log": "native-modal-keys.log",
+      "result": "21 native GTK modal-key cases passed in12.74s on owned private72-DPI Xvfb/D-Bus"
+    },
+    {
+      "log": "native-keyboard.log",
+      "result": "1 native Tk keyboard/layout test passed in0.56s on owned private72-DPI Xvfb"
+    }
+  ],
+  "unique_selected_cases": {
+    "passed": 196,
+    "remaining_skipped": 0,
+    "failed": 0
+  },
+  "limits": [
+    "This is a bounded focused UI/state review, not proof of absence of all bugs.",
+    "No broad new GUI geometry sweep, pinned browser, physical media, real nwipe, native OS/hardware qualification or hosted CI performed.",
+    "Known6px scrollable Tk extra-text geometry was not reclassified or changed.",
+    "Root owns integrated final gates, canonical backlog, source freeze and any commit/push."
+  ],
+  "reviewed_source_sha256": {
+    "src/beamo_wipe/wizard.py": "be375a0861ec569a652e15f9f572bfa689f40048d736c5bedef641453d464bbb",
+    "src/beamo_wipe/ui/tk_wizard.py": "028e13c7d64c230aaaabfbd806ae900c41c64acd8e07334d3d38abd8af6c901f",
+    "src/beamo_wipe/ui/accessible_wizard.py": "8b9dae8e6faff4f2ef61532c43a9ad210a4cb45b60c1b2807b17d6dfb97b0b6f",
+    "src/beamo_wipe/ui/console_wizard.py": "7cce42435bc5d87021bb52628fd0cf220c1872941e7cd3b3ddca0f357f7b73a0",
+    "src/beamo_wipe/ui/sound_dialog.py": "9165731d320e6f19de3e6632a7b0c43a4c688a72dbd6558b39ba46c0052aed9e",
+    "src/beamo_wipe/audio_jobs.py": "07e34b995a4df7424e6e1c5cd1a345856cd6b9ff622606fa74a79af2688597e0",
+    "src/beamo_wipe/lang.py": "490786bbd8971678d82969b2180ecb5aa94f86785b52323f1dddbec1353878ba"
+  }
+}

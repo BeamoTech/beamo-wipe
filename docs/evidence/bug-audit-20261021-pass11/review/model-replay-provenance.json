@@ -1,0 +1,36 @@
+{
+  "protected_alias_capacity_matrix.py": {
+    "reviewer": "discovery",
+    "exact_script_sha256": "d2071fccf49161f6106244a43675788147c4ba5cd4f7af15ae9066c6eb1c0def",
+    "reviewed_by_root": true,
+    "replay_path": "/workspace/beamo-tools/audit-pass11-20261021/root/model-replays/protected_alias_capacity_matrix.py"
+  },
+  "cancellation_ownership_matrix.py": {
+    "reviewer": "runner",
+    "exact_script_sha256": "17753f6ce8bf1c89580ec2d552f33bd2ba23b2e764756ecad1ba3c3726b0f14c",
+    "reviewed_by_root": true,
+    "replay_path": "/workspace/beamo-tools/audit-pass11-20261021/root/model-replays/cancellation_ownership_matrix.py"
+  },
+  "review_detour_layout_matrix.py": {
+    "reviewer": "ui",
+    "exact_script_sha256": "c7f7464caa8d63b8a57201faf159018418b796b7eab74a2f8b9fdbee821c41b1",
+    "reviewed_by_root": true,
+    "replay_path": "/workspace/beamo-tools/audit-pass11-20261021/root/model-replays/review_detour_layout_matrix.py"
+  },
+  "volatile_transaction_matrix.py": {
+    "reviewer": "recovery",
+    "exact_script_sha256": "1a26bfedc52b2b5e53e1a70719a1770ef1553ecda9654ce03f7a2e0041669321",
+    "reviewed_by_root": true,
+    "replay_path": "/workspace/beamo-tools/audit-pass11-20261021/root/model-replays/volatile_transaction_matrix.py"
+  },
+  "plan_freshness_matrix_test.go": {
+    "reviewer": "boot",
+    "original_sha256": "359f90d5b08eed7087e858eef06537cae4599d9746042988b58b2f4c65be12c7",
+    "replay_sha256": "17aa2b00a8697d624ec17db0ce9f820f809f75c4bb01f4680c8738f9ad2e3be5",
+    "only_change": {
+      "from": "/workspace/beamo-tools/audit-pass11-20261021/boot/plan-freshness-matrix.json",
+      "to": "/workspace/beamo-tools/audit-pass11-20261021/root/plan-freshness-matrix.json"
+    },
+    "reviewed_by_root": true
+  }
+}

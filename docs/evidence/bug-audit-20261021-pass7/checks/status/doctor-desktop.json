@@ -1,0 +1,14 @@
+{
+  "name": "doctor-desktop",
+  "command": [
+    "/workspace/beamo-tools/beamo-dev",
+    "python3",
+    "dev.py",
+    "doctor",
+    "--for",
+    "desktop"
+  ],
+  "started_utc": "2026-10-21T03:36:57.149712+00:00",
+  "elapsed_seconds": 14.34,
+  "exit_code": 0
+}

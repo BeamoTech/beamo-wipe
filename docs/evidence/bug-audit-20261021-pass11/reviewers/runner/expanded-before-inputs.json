@@ -1,0 +1,13 @@
+{
+  "baseline": "b46e5642d4c849d503b41d8bf562cfb1f9fad68b",
+  "product_path": "src/beamo_wipe/sleep_inhibit.py",
+  "product_sha256": "b7df5b80f7d87ae0bcac0be2ddcf082ff887e5492fb8da088237b5b02a9bf11d",
+  "test_path": "tests/test_sleep_inhibit_diagnostic_retirement_pass11_20261021.py",
+  "test_sha256": "de5db5ec84438c821e5c0cd6995d48392df274f9045ad36668d2149d15923542",
+  "test_cases": 56,
+  "failures": 18,
+  "passing_controls": 38,
+  "errors": 0,
+  "skips": 0,
+  "real_native_actions": false
+}

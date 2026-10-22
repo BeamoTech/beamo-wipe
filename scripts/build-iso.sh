@@ -5,7 +5,7 @@ set -eu
 
 ROOT="$(CDPATH='' cd -- "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
-VERSION="${BEAMO_WIPE_VERSION:-0.2.13}"
+VERSION="${BEAMO_WIPE_VERSION:-0.2.14}"
 case "$VERSION" in
   ''|*[!0-9.]*|.*|*..*|*.) echo "Invalid BEAMO_WIPE_VERSION" >&2; exit 2 ;;
 esac
@@ -93,26 +93,49 @@ names = (iso, manifest, manifest + ".sha256", iso + ".sha256", "SHA256SUMS")
 
 def read_regular(name, limit=None, base=directory):
     path = base / name
+    named_before = os.lstat(path)
     fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     with os.fdopen(fd, "rb") as stream:
         opened = os.fstat(stream.fileno())
         if not stat.S_ISREG(opened.st_mode):
             raise ValueError("non-regular bundle entry")
-        if limit is None:
+
+        def read_once():
+            stream.seek(0)
+            if limit is not None:
+                value = stream.read(limit + 1)
+                if len(value) > limit:
+                    raise ValueError("oversized bundle entry")
+                return value
             digest = hashlib.sha256()
             size = 0
             for chunk in iter(lambda: stream.read(1024 * 1024), b""):
                 digest.update(chunk)
                 size += len(chunk)
-            result = (digest.hexdigest(), size)
-        else:
-            result = stream.read(limit + 1)
-            if len(result) > limit:
-                raise ValueError("oversized bundle entry")
-    current = os.lstat(path)
-    if not stat.S_ISREG(current.st_mode) or (
-        opened.st_dev, opened.st_ino, opened.st_size
-    ) != (current.st_dev, current.st_ino, current.st_size):
+            return (digest.hexdigest(), size)
+
+        result = read_once()
+        middle = os.fstat(stream.fileno())
+        repeated = read_once()
+        finished = os.fstat(stream.fileno())
+        named_after = os.lstat(path)
+
+    fields = (
+        "st_dev", "st_ino", "st_mode", "st_uid", "st_nlink", "st_size",
+        "st_mtime_ns", "st_ctime_ns",
+    )
+    snapshots = (named_before, opened, middle, finished, named_after)
+    if (
+        result != repeated
+        or (limit is None and result[1] != opened.st_size)
+        or (limit is not None and len(result) != opened.st_size)
+        or any(not stat.S_ISREG(item.st_mode) for item in snapshots)
+        or any(
+            tuple(getattr(item, field) for field in fields)
+            != tuple(getattr(opened, field) for field in fields)
+            for item in snapshots
+        )
+    ):
         raise ValueError("bundle entry changed while checking")
     return result
 

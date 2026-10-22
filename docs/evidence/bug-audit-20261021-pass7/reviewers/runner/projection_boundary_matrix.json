@@ -1,0 +1,12 @@
+{
+  "seed": 138077544711,
+  "sequences": 3000,
+  "comparisons": 39000,
+  "targets": 3,
+  "mismatch_count": 0,
+  "mismatches": [],
+  "source_sha256": {
+    "runner": "a30e375ddb27be5bb9e781f17751586760a178a6822d610e811e1d9c2cb3bbb1"
+  },
+  "native_or_device_actions": 0
+}

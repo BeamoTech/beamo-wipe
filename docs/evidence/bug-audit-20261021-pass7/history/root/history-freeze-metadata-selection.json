@@ -1,0 +1,1 @@
+{"exit_code":1,"reason":"Initial root freeze selected recovery baseline hashes instead of candidate receipt; no source mismatch or product edit. Corrected receipt selection before final gates."}

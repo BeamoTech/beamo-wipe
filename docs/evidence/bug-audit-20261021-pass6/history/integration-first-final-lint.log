@@ -1,0 +1,63 @@
+[ci-hosted] blocking syntax, shell and security lint
+All checks passed!
+10 files already formatted
+All checks passed!
+All checks passed!
+[ci-hosted] blocking full lint and type checks
+tests/test_tk_callback_ownership_pass6_20261021.py:8:1: E402 Module level import not at top of file
+   |
+ 6 | tk = pytest.importorskip("tkinter")
+ 7 |
+ 8 | from beamo_wipe import copy as C
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E402
+ 9 | from beamo_wipe.demo import discovery_for_scenario
+10 | from beamo_wipe.models import Screen
+   |
+
+tests/test_tk_callback_ownership_pass6_20261021.py:9:1: E402 Module level import not at top of file
+   |
+ 8 | from beamo_wipe import copy as C
+ 9 | from beamo_wipe.demo import discovery_for_scenario
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E402
+10 | from beamo_wipe.models import Screen
+11 | from beamo_wipe.nwipe_runner import DryRunRunner
+   |
+
+tests/test_tk_callback_ownership_pass6_20261021.py:10:1: E402 Module level import not at top of file
+   |
+ 8 | from beamo_wipe import copy as C
+ 9 | from beamo_wipe.demo import discovery_for_scenario
+10 | from beamo_wipe.models import Screen
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E402
+11 | from beamo_wipe.nwipe_runner import DryRunRunner
+12 | from beamo_wipe.ui.tk_wizard import TkWizard, _Button
+   |
+
+tests/test_tk_callback_ownership_pass6_20261021.py:11:1: E402 Module level import not at top of file
+   |
+ 9 | from beamo_wipe.demo import discovery_for_scenario
+10 | from beamo_wipe.models import Screen
+11 | from beamo_wipe.nwipe_runner import DryRunRunner
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E402
+12 | from beamo_wipe.ui.tk_wizard import TkWizard, _Button
+13 | from beamo_wipe.wizard import Wizard
+   |
+
+tests/test_tk_callback_ownership_pass6_20261021.py:12:1: E402 Module level import not at top of file
+   |
+10 | from beamo_wipe.models import Screen
+11 | from beamo_wipe.nwipe_runner import DryRunRunner
+12 | from beamo_wipe.ui.tk_wizard import TkWizard, _Button
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E402
+13 | from beamo_wipe.wizard import Wizard
+   |
+
+tests/test_tk_callback_ownership_pass6_20261021.py:13:1: E402 Module level import not at top of file
+   |
+11 | from beamo_wipe.nwipe_runner import DryRunRunner
+12 | from beamo_wipe.ui.tk_wizard import TkWizard, _Button
+13 | from beamo_wipe.wizard import Wizard
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E402
+   |
+
+Found 6 errors.

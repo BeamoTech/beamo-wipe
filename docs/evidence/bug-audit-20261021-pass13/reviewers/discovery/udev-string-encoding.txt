@@ -1,0 +1,4 @@
+('Live USB', 0, 'Live\\x20USB')
+('Live-é', 0, 'Live-é')
+('Live-中', 0, 'Live-中')
+('Live-💾', 0, 'Live-💾')

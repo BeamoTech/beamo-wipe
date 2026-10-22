@@ -1,0 +1,7 @@
+{
+  "copied_package": "/workspace/beamo-tools/audit-pass5-20261021/runner/late-log-open/spawn-baseline/src/beamo_wipe/__init__.py",
+  "test_sha256": "cc7b15ffd0ffaa989ffb32bd658437c46d8356f3420c81358aec97a5e27291c6",
+  "source_test_sha256": "cc7b15ffd0ffaa989ffb32bd658437c46d8356f3420c81358aec97a5e27291c6",
+  "original_safety_sha256": "57cd7c7d051f21a04785e11c156164db384e9c9a0d40b9d113ddfc8d62941eb2",
+  "all_copied_paths_regular_or_directory": true
+}

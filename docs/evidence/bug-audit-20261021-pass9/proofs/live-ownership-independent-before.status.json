@@ -1,0 +1,22 @@
+{
+  "name": "live-ownership-independent-before",
+  "command": [
+    "python3",
+    "-m",
+    "pytest",
+    "-W",
+    "error",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-o",
+    "pythonpath=src tests",
+    "-q",
+    "/workspace/beamo-tools/audit-pass9-20261021/root/test_live_ownership_probe.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass9-20261021/root/live-ownership-independent-before.xml"
+  ],
+  "started_utc": "2026-10-21T04:48:49.370305+00:00",
+  "elapsed_seconds": 0.76,
+  "exit_code": 1
+}

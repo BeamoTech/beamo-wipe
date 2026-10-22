@@ -1,0 +1,16 @@
+{
+  "name": "final-windows-test-build",
+  "command": [
+    "env",
+    "GOOS=windows",
+    "GOARCH=amd64",
+    "go",
+    "test",
+    "-c",
+    "-o",
+    "/workspace/beamo-tools/audit-pass8-20261021/root/desktop-windows.test.exe"
+  ],
+  "started_utc": "2026-10-21T04:18:36.943696+00:00",
+  "elapsed_seconds": 0.35,
+  "exit_code": 0
+}

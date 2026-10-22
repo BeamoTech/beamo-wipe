@@ -1,0 +1,22 @@
+{
+  "name": "expanded-independent-before",
+  "command": [
+    "env",
+    "PYTHONPATH=/workspace/beamo-tools/audit-pass9-20261021/discovery/ownership-baseline/src",
+    "python3",
+    "-m",
+    "pytest",
+    "-W",
+    "error",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "addopts=",
+    "-q",
+    "tests/test_app_live_ownership_pass9_20261021.py",
+    "--junitxml=/workspace/beamo-tools/audit-pass9-20261021/root/expanded-independent-before.xml"
+  ],
+  "started_utc": "2026-10-21T04:59:25.236102+00:00",
+  "elapsed_seconds": 0.79,
+  "exit_code": 1
+}

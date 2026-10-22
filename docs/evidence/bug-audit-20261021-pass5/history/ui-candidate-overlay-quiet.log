@@ -1,0 +1,64 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+____________ test_quiet_inside_inventory_overlay_releases_enter[10] ____________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f628f0b63c0>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f628efce9e0>
+enter = 10
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    def test_quiet_inside_inventory_overlay_releases_enter(session, monkeypatch, enter):
+        w = session.wizard
+        prepare(w, Screen.PICK)
+        run_keys(monkeypatch, w, [
+            (0, ord("b")), (.1, enter), (.2, -1), (1.3, -1), (1.4, 27), (1.5, enter),
+        ])
+>       assert w.screen is Screen.CONFIRM and not w.runner.started
+E       AssertionError: assert (<Screen.PICK: 'pick'> is <Screen.CONFIRM: 'confirm'>)
+E        +  where <Screen.PICK: 'pick'> = <beamo_wipe.wizard.Wizard object at 0x7f628f0b63c0>.screen
+E        +  and   <Screen.CONFIRM: 'confirm'> = Screen.CONFIRM
+
+tests/test_console_key_origin_pass5_20261021.py:186: AssertionError
+____________ test_quiet_inside_inventory_overlay_releases_enter[13] ____________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f628f2e2850>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f628efce520>
+enter = 13
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    def test_quiet_inside_inventory_overlay_releases_enter(session, monkeypatch, enter):
+        w = session.wizard
+        prepare(w, Screen.PICK)
+        run_keys(monkeypatch, w, [
+            (0, ord("b")), (.1, enter), (.2, -1), (1.3, -1), (1.4, 27), (1.5, enter),
+        ])
+>       assert w.screen is Screen.CONFIRM and not w.runner.started
+E       AssertionError: assert (<Screen.PICK: 'pick'> is <Screen.CONFIRM: 'confirm'>)
+E        +  where <Screen.PICK: 'pick'> = <beamo_wipe.wizard.Wizard object at 0x7f628f2e2850>.screen
+E        +  and   <Screen.CONFIRM: 'confirm'> = Screen.CONFIRM
+
+tests/test_console_key_origin_pass5_20261021.py:186: AssertionError
+___________ test_quiet_inside_inventory_overlay_releases_enter[343] ____________
+
+session = namespace(wizard=<beamo_wipe.wizard.Wizard object at 0x7f628f06fb10>, scans=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f628f095c70>
+enter = 343
+
+    @pytest.mark.parametrize("enter", [10, 13, curses.KEY_ENTER])
+    def test_quiet_inside_inventory_overlay_releases_enter(session, monkeypatch, enter):
+        w = session.wizard
+        prepare(w, Screen.PICK)
+        run_keys(monkeypatch, w, [
+            (0, ord("b")), (.1, enter), (.2, -1), (1.3, -1), (1.4, 27), (1.5, enter),
+        ])
+>       assert w.screen is Screen.CONFIRM and not w.runner.started
+E       AssertionError: assert (<Screen.PICK: 'pick'> is <Screen.CONFIRM: 'confirm'>)
+E        +  where <Screen.PICK: 'pick'> = <beamo_wipe.wizard.Wizard object at 0x7f628f06fb10>.screen
+E        +  and   <Screen.CONFIRM: 'confirm'> = Screen.CONFIRM
+
+tests/test_console_key_origin_pass5_20261021.py:186: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_quiet_inside_inventory_overlay_releases_enter[10]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_quiet_inside_inventory_overlay_releases_enter[13]
+FAILED tests/test_console_key_origin_pass5_20261021.py::test_quiet_inside_inventory_overlay_releases_enter[343]
+3 failed, 37 deselected in 0.26s

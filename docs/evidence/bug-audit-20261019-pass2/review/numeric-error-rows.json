@@ -1,0 +1,22 @@
+[
+  {
+    "digits": 20,
+    "reason": "engine_failed",
+    "io_media": "unavailable"
+  },
+  {
+    "digits": 21,
+    "reason": "indeterminate",
+    "io_media": "unavailable"
+  },
+  {
+    "digits": 5000,
+    "reason": "indeterminate",
+    "io_media": "unavailable"
+  },
+  {
+    "digits": 70000,
+    "reason": "indeterminate",
+    "io_media": "unavailable"
+  }
+]

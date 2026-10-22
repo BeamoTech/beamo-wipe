@@ -2,6 +2,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
@@ -10,6 +11,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -59,6 +61,40 @@ type contextReader struct {
 	r   io.Reader
 }
 
+// FileInfo has no portable change-time method. Extract the common Unix
+// Stat_t spellings without referring to platform-specific fields at compile
+// time. On platforms that do not expose one, the two complete content reads
+// and the remaining portable metadata checks still apply.
+func mediaChangeTime(info os.FileInfo) (int64, int64, bool) {
+	value := reflect.ValueOf(info.Sys())
+	if !value.IsValid() {
+		return 0, 0, false
+	}
+	if value.Kind() == reflect.Pointer {
+		if value.IsNil() {
+			return 0, 0, false
+		}
+		value = value.Elem()
+	}
+	if value.Kind() != reflect.Struct {
+		return 0, 0, false
+	}
+	for _, name := range []string{"Ctim", "Ctimespec"} {
+		stamp := value.FieldByName(name)
+		if stamp.IsValid() && stamp.Kind() == reflect.Struct {
+			sec, nsec := stamp.FieldByName("Sec"), stamp.FieldByName("Nsec")
+			if sec.IsValid() && nsec.IsValid() && sec.CanInt() && nsec.CanInt() {
+				return sec.Int(), nsec.Int(), true
+			}
+		}
+	}
+	sec, nsec := value.FieldByName("Ctime"), value.FieldByName("Ctimensec")
+	if sec.IsValid() && nsec.IsValid() && sec.CanInt() && nsec.CanInt() {
+		return sec.Int(), nsec.Int(), true
+	}
+	return 0, 0, false
+}
+
 func (r contextReader) Read(p []byte) (int, error) {
 	if err := r.ctx.Err(); err != nil {
 		return 0, err
@@ -81,12 +117,18 @@ func mediaDigest(ctx context.Context, path string, max int64) ([]byte, error) {
 		return nil, err
 	}
 	defer f.Close()
+	beforeCTimeSec, beforeCTimeNSec, beforeHasCTime := mediaChangeTime(before)
+	unchanged := func(info os.FileInfo) bool {
+		ctimeSec, ctimeNSec, hasCTime := mediaChangeTime(info)
+		return os.SameFile(before, info) && before.Mode() == info.Mode() && before.Size() == info.Size() && before.ModTime().Equal(info.ModTime()) && beforeHasCTime == hasCTime && (!beforeHasCTime || (beforeCTimeSec == ctimeSec && beforeCTimeNSec == ctimeNSec))
+	}
 	opened, err := f.Stat()
-	if err != nil || !os.SameFile(before, opened) {
+	if err != nil || !unchanged(opened) {
 		return nil, errors.New("media file changed")
 	}
+	buffer := make([]byte, 1<<20)
 	h := sha256.New()
-	n, err := io.CopyBuffer(h, contextReader{ctx, io.LimitReader(f, max+1)}, make([]byte, 1<<20))
+	n, err := io.CopyBuffer(h, contextReader{ctx, io.LimitReader(f, max+1)}, buffer)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +136,28 @@ func mediaDigest(ctx context.Context, path string, max int64) ([]byte, error) {
 		return nil, err
 	}
 	after, err := os.Lstat(path)
-	if err != nil || !os.SameFile(opened, after) || n != before.Size() {
+	if err != nil || !unchanged(after) || n != before.Size() {
+		return nil, errors.New("media file changed")
+	}
+	// A same-size edit on FAT may retain the original coarse timestamp.
+	// Read the pinned file again before accepting the first digest.
+	if _, err := f.Seek(0, io.SeekStart); err != nil {
+		return nil, err
+	}
+	verify := sha256.New()
+	verified, err := io.CopyBuffer(verify, contextReader{ctx, io.LimitReader(f, max+1)}, buffer)
+	if err != nil {
+		return nil, err
+	}
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+	finalOpened, err := f.Stat()
+	if err != nil || !unchanged(finalOpened) {
+		return nil, errors.New("media file changed")
+	}
+	finalNamed, err := os.Lstat(path)
+	if err != nil || !unchanged(finalNamed) || verified != n || !bytes.Equal(h.Sum(nil), verify.Sum(nil)) {
 		return nil, errors.New("media file changed")
 	}
 	return h.Sum(nil), nil

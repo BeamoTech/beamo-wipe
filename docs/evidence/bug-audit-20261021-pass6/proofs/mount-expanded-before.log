@@ -1,0 +1,606 @@
+..FFFF........FFFFFFFFFFFF..FFFF........FFFFFFFF......FF.......          [100%]
+=================================== FAILURES ===================================
+_ test_live_mount_evidence_requires_visible_parent_tree[hidden_sibling-False-forward] _
+
+topology = 'hidden_sibling', visible = False, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_live_mount_evidence_requires_visible_parent_tree(topology, visible, reverse):
+        table = _table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse)
+>       assert discovery.live_medium_is_mounted(text=table) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function live_medium_is_mounted at 0x7fefb4397d80>(text='101 0 0:1 / / rw - overlay overlay rw\n42 101 0:3 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n7 101 8:2 / /run/live rw - ext4 /dev/sda1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7fefb4397d80> = discovery.live_medium_is_mounted
+
+tests/test_mount_visibility_pass6_20261021.py:71: AssertionError
+_ test_live_mount_evidence_requires_visible_parent_tree[hidden_sibling-False-reordered] _
+
+topology = 'hidden_sibling', visible = False, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_live_mount_evidence_requires_visible_parent_tree(topology, visible, reverse):
+        table = _table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse)
+>       assert discovery.live_medium_is_mounted(text=table) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function live_medium_is_mounted at 0x7fefb4397d80>(text='7 101 8:2 / /run/live rw - ext4 /dev/sda1 rw\n42 101 0:3 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n101 0 0:1 / / rw - overlay overlay rw\n')
+E        +    where <function live_medium_is_mounted at 0x7fefb4397d80> = discovery.live_medium_is_mounted
+
+tests/test_mount_visibility_pass6_20261021.py:71: AssertionError
+_ test_live_mount_evidence_requires_visible_parent_tree[hidden_stacked_ancestor-False-forward] _
+
+topology = 'hidden_stacked_ancestor', visible = False, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_live_mount_evidence_requires_visible_parent_tree(topology, visible, reverse):
+        table = _table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse)
+>       assert discovery.live_medium_is_mounted(text=table) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function live_medium_is_mounted at 0x7fefb4397d80>(text='101 0 0:1 / / rw - overlay overlay rw\n7 101 8:2 / /run/live rw - ext4 /dev/sda1 rw\n42 7 0:3 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n9 7 8:4 / /run/live rw - ext4 /dev/sdb1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7fefb4397d80> = discovery.live_medium_is_mounted
+
+tests/test_mount_visibility_pass6_20261021.py:71: AssertionError
+_ test_live_mount_evidence_requires_visible_parent_tree[hidden_stacked_ancestor-False-reordered] _
+
+topology = 'hidden_stacked_ancestor', visible = False, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_live_mount_evidence_requires_visible_parent_tree(topology, visible, reverse):
+        table = _table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse)
+>       assert discovery.live_medium_is_mounted(text=table) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function live_medium_is_mounted at 0x7fefb4397d80>(text='9 7 8:4 / /run/live rw - ext4 /dev/sdb1 rw\n42 7 0:3 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n7 101 8:2 / /run/live rw - ext4 /dev/sda1 rw\n101 0 0:1 / / rw - overlay overlay rw\n')
+E        +    where <function live_medium_is_mounted at 0x7fefb4397d80> = discovery.live_medium_is_mounted
+
+tests/test_mount_visibility_pass6_20261021.py:71: AssertionError
+_ test_live_mount_evidence_requires_visible_parent_tree[duplicate_mount_id-False-forward] _
+
+topology = 'duplicate_mount_id', visible = False, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_live_mount_evidence_requires_visible_parent_tree(topology, visible, reverse):
+        table = _table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse)
+>       assert discovery.live_medium_is_mounted(text=table) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function live_medium_is_mounted at 0x7fefb4397d80>(text='101 0 0:1 / / rw - overlay overlay rw\n7 101 8:2 / /run/live rw - ext4 /dev/sda1 rw\n42 7 0:3 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n42 101 8:4 / /unrelated rw - ext4 /dev/sdb1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7fefb4397d80> = discovery.live_medium_is_mounted
+
+tests/test_mount_visibility_pass6_20261021.py:71: AssertionError
+_ test_live_mount_evidence_requires_visible_parent_tree[duplicate_mount_id-False-reordered] _
+
+topology = 'duplicate_mount_id', visible = False, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_live_mount_evidence_requires_visible_parent_tree(topology, visible, reverse):
+        table = _table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse)
+>       assert discovery.live_medium_is_mounted(text=table) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function live_medium_is_mounted at 0x7fefb4397d80>(text='42 101 8:4 / /unrelated rw - ext4 /dev/sdb1 rw\n42 7 0:3 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n7 101 8:2 / /run/live rw - ext4 /dev/sda1 rw\n101 0 0:1 / / rw - overlay overlay rw\n')
+E        +    where <function live_medium_is_mounted at 0x7fefb4397d80> = discovery.live_medium_is_mounted
+
+tests/test_mount_visibility_pass6_20261021.py:71: AssertionError
+_ test_live_mount_evidence_requires_visible_parent_tree[parent_cycle-False-forward] _
+
+topology = 'parent_cycle', visible = False, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_live_mount_evidence_requires_visible_parent_tree(topology, visible, reverse):
+        table = _table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse)
+>       assert discovery.live_medium_is_mounted(text=table) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function live_medium_is_mounted at 0x7fefb4397d80>(text='101 0 0:1 / / rw - overlay overlay rw\n7 42 8:2 / /run/live rw - ext4 /dev/sda1 rw\n42 7 0:3 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7fefb4397d80> = discovery.live_medium_is_mounted
+
+tests/test_mount_visibility_pass6_20261021.py:71: AssertionError
+_ test_live_mount_evidence_requires_visible_parent_tree[parent_cycle-False-reordered] _
+
+topology = 'parent_cycle', visible = False, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_live_mount_evidence_requires_visible_parent_tree(topology, visible, reverse):
+        table = _table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse)
+>       assert discovery.live_medium_is_mounted(text=table) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function live_medium_is_mounted at 0x7fefb4397d80>(text='42 7 0:3 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n7 42 8:2 / /run/live rw - ext4 /dev/sda1 rw\n101 0 0:1 / / rw - overlay overlay rw\n')
+E        +    where <function live_medium_is_mounted at 0x7fefb4397d80> = discovery.live_medium_is_mounted
+
+tests/test_mount_visibility_pass6_20261021.py:71: AssertionError
+_ test_live_mount_evidence_requires_visible_parent_tree[malformed_mount_id-False-forward] _
+
+topology = 'malformed_mount_id', visible = False, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_live_mount_evidence_requires_visible_parent_tree(topology, visible, reverse):
+        table = _table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse)
+>       assert discovery.live_medium_is_mounted(text=table) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function live_medium_is_mounted at 0x7fefb4397d80>(text='101 0 0:1 / / rw - overlay overlay rw\n7 101 8:2 / /run/live rw - ext4 /dev/sda1 rw\ninvalid 7 0:3 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7fefb4397d80> = discovery.live_medium_is_mounted
+
+tests/test_mount_visibility_pass6_20261021.py:71: AssertionError
+_ test_live_mount_evidence_requires_visible_parent_tree[malformed_mount_id-False-reordered] _
+
+topology = 'malformed_mount_id', visible = False, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_live_mount_evidence_requires_visible_parent_tree(topology, visible, reverse):
+        table = _table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse)
+>       assert discovery.live_medium_is_mounted(text=table) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function live_medium_is_mounted at 0x7fefb4397d80>(text='invalid 7 0:3 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n7 101 8:2 / /run/live rw - ext4 /dev/sda1 rw\n101 0 0:1 / / rw - overlay overlay rw\n')
+E        +    where <function live_medium_is_mounted at 0x7fefb4397d80> = discovery.live_medium_is_mounted
+
+tests/test_mount_visibility_pass6_20261021.py:71: AssertionError
+_ test_live_mount_evidence_requires_visible_parent_tree[contradictory_parent_path-False-forward] _
+
+topology = 'contradictory_parent_path', visible = False, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_live_mount_evidence_requires_visible_parent_tree(topology, visible, reverse):
+        table = _table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse)
+>       assert discovery.live_medium_is_mounted(text=table) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function live_medium_is_mounted at 0x7fefb4397d80>(text='101 0 0:1 / / rw - overlay overlay rw\n7 101 8:2 / /unrelated rw - ext4 /dev/sda1 rw\n42 7 0:3 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n')
+E        +    where <function live_medium_is_mounted at 0x7fefb4397d80> = discovery.live_medium_is_mounted
+
+tests/test_mount_visibility_pass6_20261021.py:71: AssertionError
+_ test_live_mount_evidence_requires_visible_parent_tree[contradictory_parent_path-False-reordered] _
+
+topology = 'contradictory_parent_path', visible = False, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_live_mount_evidence_requires_visible_parent_tree(topology, visible, reverse):
+        table = _table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse)
+>       assert discovery.live_medium_is_mounted(text=table) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function live_medium_is_mounted at 0x7fefb4397d80>(text='42 7 0:3 / /run/live/medium rw - iso9660 /dev/sdz1 rw\n7 101 8:2 / /unrelated rw - ext4 /dev/sda1 rw\n101 0 0:1 / / rw - overlay overlay rw\n')
+E        +    where <function live_medium_is_mounted at 0x7fefb4397d80> = discovery.live_medium_is_mounted
+
+tests/test_mount_visibility_pass6_20261021.py:71: AssertionError
+_ test_live_mount_evidence_requires_visible_parent_tree[same_path_stack-False-forward] _
+
+topology = 'same_path_stack', visible = False, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_live_mount_evidence_requires_visible_parent_tree(topology, visible, reverse):
+        table = _table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse)
+        assert discovery.live_medium_is_mounted(text=table) is visible
+        assert safety.is_live_environment(cmdline="boot=live", mountinfo_text=table) is visible
+        if visible:
+            assert discovery.read_mountinfo_sources(text=table) == ["/dev/sdz1"]
+        else:
+>           with pytest.raises(ValueError):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'ValueError'>
+
+tests/test_mount_visibility_pass6_20261021.py:76: Failed
+_ test_live_mount_evidence_requires_visible_parent_tree[same_path_stack-False-reordered] _
+
+topology = 'same_path_stack', visible = False, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_live_mount_evidence_requires_visible_parent_tree(topology, visible, reverse):
+        table = _table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse)
+        assert discovery.live_medium_is_mounted(text=table) is visible
+        assert safety.is_live_environment(cmdline="boot=live", mountinfo_text=table) is visible
+        if visible:
+            assert discovery.read_mountinfo_sources(text=table) == ["/dev/sdz1"]
+        else:
+>           with pytest.raises(ValueError):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'ValueError'>
+
+tests/test_mount_visibility_pass6_20261021.py:76: Failed
+_ test_live_mount_evidence_requires_visible_parent_tree[partial_table-False-forward] _
+
+topology = 'partial_table', visible = False, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_live_mount_evidence_requires_visible_parent_tree(topology, visible, reverse):
+        table = _table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse)
+        assert discovery.live_medium_is_mounted(text=table) is visible
+        assert safety.is_live_environment(cmdline="boot=live", mountinfo_text=table) is visible
+        if visible:
+            assert discovery.read_mountinfo_sources(text=table) == ["/dev/sdz1"]
+        else:
+>           with pytest.raises(ValueError):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'ValueError'>
+
+tests/test_mount_visibility_pass6_20261021.py:76: Failed
+_ test_live_mount_evidence_requires_visible_parent_tree[partial_table-False-reordered] _
+
+topology = 'partial_table', visible = False, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_live_mount_evidence_requires_visible_parent_tree(topology, visible, reverse):
+        table = _table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse)
+        assert discovery.live_medium_is_mounted(text=table) is visible
+        assert safety.is_live_environment(cmdline="boot=live", mountinfo_text=table) is visible
+        if visible:
+            assert discovery.read_mountinfo_sources(text=table) == ["/dev/sdz1"]
+        else:
+>           with pytest.raises(ValueError):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'ValueError'>
+
+tests/test_mount_visibility_pass6_20261021.py:76: Failed
+_ test_log_guard_requires_visible_tmpfs_parent_tree[hidden_sibling-False-forward] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fefb445a270>
+topology = 'hidden_sibling', visible = False, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_log_guard_requires_visible_tmpfs_parent_tree(tmp_path: Path, monkeypatch, topology, visible, reverse):
+        monkeypatch.delenv("BEAMO_WIPE_DRY_RUN", raising=False)
+        monkeypatch.delenv("BEAMO_WIPE_DEMO", raising=False)
+        directory = tmp_path / "logs"
+        directory.mkdir()
+        table = tmp_path / "mountinfo"
+        table.write_text(_table(str(tmp_path), str(directory), topology, log=True, reverse=reverse))
+        monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+        logfile = directory / "engine.log"
+>       assert safety.log_location_is_tmpfs(logfile) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function log_location_is_tmpfs at 0x7fefb4394860>(PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl2/logs/engine.log'))
+E        +    where <function log_location_is_tmpfs at 0x7fefb4394860> = safety.log_location_is_tmpfs
+
+tests/test_mount_visibility_pass6_20261021.py:91: AssertionError
+_ test_log_guard_requires_visible_tmpfs_parent_tree[hidden_sibling-False-reordered] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fefb4459010>
+topology = 'hidden_sibling', visible = False, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_log_guard_requires_visible_tmpfs_parent_tree(tmp_path: Path, monkeypatch, topology, visible, reverse):
+        monkeypatch.delenv("BEAMO_WIPE_DRY_RUN", raising=False)
+        monkeypatch.delenv("BEAMO_WIPE_DEMO", raising=False)
+        directory = tmp_path / "logs"
+        directory.mkdir()
+        table = tmp_path / "mountinfo"
+        table.write_text(_table(str(tmp_path), str(directory), topology, log=True, reverse=reverse))
+        monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+        logfile = directory / "engine.log"
+>       assert safety.log_location_is_tmpfs(logfile) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function log_location_is_tmpfs at 0x7fefb4394860>(PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl3/logs/engine.log'))
+E        +    where <function log_location_is_tmpfs at 0x7fefb4394860> = safety.log_location_is_tmpfs
+
+tests/test_mount_visibility_pass6_20261021.py:91: AssertionError
+_ test_log_guard_requires_visible_tmpfs_parent_tree[hidden_stacked_ancestor-False-forward] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fefb4953a80>
+topology = 'hidden_stacked_ancestor', visible = False, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_log_guard_requires_visible_tmpfs_parent_tree(tmp_path: Path, monkeypatch, topology, visible, reverse):
+        monkeypatch.delenv("BEAMO_WIPE_DRY_RUN", raising=False)
+        monkeypatch.delenv("BEAMO_WIPE_DEMO", raising=False)
+        directory = tmp_path / "logs"
+        directory.mkdir()
+        table = tmp_path / "mountinfo"
+        table.write_text(_table(str(tmp_path), str(directory), topology, log=True, reverse=reverse))
+        monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+        logfile = directory / "engine.log"
+>       assert safety.log_location_is_tmpfs(logfile) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function log_location_is_tmpfs at 0x7fefb4394860>(PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl4/logs/engine.log'))
+E        +    where <function log_location_is_tmpfs at 0x7fefb4394860> = safety.log_location_is_tmpfs
+
+tests/test_mount_visibility_pass6_20261021.py:91: AssertionError
+_ test_log_guard_requires_visible_tmpfs_parent_tree[hidden_stacked_ancestor-False-reordered] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fefb444b310>
+topology = 'hidden_stacked_ancestor', visible = False, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_log_guard_requires_visible_tmpfs_parent_tree(tmp_path: Path, monkeypatch, topology, visible, reverse):
+        monkeypatch.delenv("BEAMO_WIPE_DRY_RUN", raising=False)
+        monkeypatch.delenv("BEAMO_WIPE_DEMO", raising=False)
+        directory = tmp_path / "logs"
+        directory.mkdir()
+        table = tmp_path / "mountinfo"
+        table.write_text(_table(str(tmp_path), str(directory), topology, log=True, reverse=reverse))
+        monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+        logfile = directory / "engine.log"
+>       assert safety.log_location_is_tmpfs(logfile) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function log_location_is_tmpfs at 0x7fefb4394860>(PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl5/logs/engine.log'))
+E        +    where <function log_location_is_tmpfs at 0x7fefb4394860> = safety.log_location_is_tmpfs
+
+tests/test_mount_visibility_pass6_20261021.py:91: AssertionError
+_ test_log_guard_requires_visible_tmpfs_parent_tree[duplicate_mount_id-False-forward] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl14')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fefb444a660>
+topology = 'duplicate_mount_id', visible = False, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_log_guard_requires_visible_tmpfs_parent_tree(tmp_path: Path, monkeypatch, topology, visible, reverse):
+        monkeypatch.delenv("BEAMO_WIPE_DRY_RUN", raising=False)
+        monkeypatch.delenv("BEAMO_WIPE_DEMO", raising=False)
+        directory = tmp_path / "logs"
+        directory.mkdir()
+        table = tmp_path / "mountinfo"
+        table.write_text(_table(str(tmp_path), str(directory), topology, log=True, reverse=reverse))
+        monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+        logfile = directory / "engine.log"
+>       assert safety.log_location_is_tmpfs(logfile) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function log_location_is_tmpfs at 0x7fefb4394860>(PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl14/logs/engine.log'))
+E        +    where <function log_location_is_tmpfs at 0x7fefb4394860> = safety.log_location_is_tmpfs
+
+tests/test_mount_visibility_pass6_20261021.py:91: AssertionError
+_ test_log_guard_requires_visible_tmpfs_parent_tree[duplicate_mount_id-False-reordered] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl15')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fefb444ad60>
+topology = 'duplicate_mount_id', visible = False, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_log_guard_requires_visible_tmpfs_parent_tree(tmp_path: Path, monkeypatch, topology, visible, reverse):
+        monkeypatch.delenv("BEAMO_WIPE_DRY_RUN", raising=False)
+        monkeypatch.delenv("BEAMO_WIPE_DEMO", raising=False)
+        directory = tmp_path / "logs"
+        directory.mkdir()
+        table = tmp_path / "mountinfo"
+        table.write_text(_table(str(tmp_path), str(directory), topology, log=True, reverse=reverse))
+        monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+        logfile = directory / "engine.log"
+>       assert safety.log_location_is_tmpfs(logfile) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function log_location_is_tmpfs at 0x7fefb4394860>(PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl15/logs/engine.log'))
+E        +    where <function log_location_is_tmpfs at 0x7fefb4394860> = safety.log_location_is_tmpfs
+
+tests/test_mount_visibility_pass6_20261021.py:91: AssertionError
+_ test_log_guard_requires_visible_tmpfs_parent_tree[parent_cycle-False-forward] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl16')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fefb4448c90>
+topology = 'parent_cycle', visible = False, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_log_guard_requires_visible_tmpfs_parent_tree(tmp_path: Path, monkeypatch, topology, visible, reverse):
+        monkeypatch.delenv("BEAMO_WIPE_DRY_RUN", raising=False)
+        monkeypatch.delenv("BEAMO_WIPE_DEMO", raising=False)
+        directory = tmp_path / "logs"
+        directory.mkdir()
+        table = tmp_path / "mountinfo"
+        table.write_text(_table(str(tmp_path), str(directory), topology, log=True, reverse=reverse))
+        monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+        logfile = directory / "engine.log"
+>       assert safety.log_location_is_tmpfs(logfile) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function log_location_is_tmpfs at 0x7fefb4394860>(PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl16/logs/engine.log'))
+E        +    where <function log_location_is_tmpfs at 0x7fefb4394860> = safety.log_location_is_tmpfs
+
+tests/test_mount_visibility_pass6_20261021.py:91: AssertionError
+_ test_log_guard_requires_visible_tmpfs_parent_tree[parent_cycle-False-reordered] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl17')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fefb4448280>
+topology = 'parent_cycle', visible = False, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_log_guard_requires_visible_tmpfs_parent_tree(tmp_path: Path, monkeypatch, topology, visible, reverse):
+        monkeypatch.delenv("BEAMO_WIPE_DRY_RUN", raising=False)
+        monkeypatch.delenv("BEAMO_WIPE_DEMO", raising=False)
+        directory = tmp_path / "logs"
+        directory.mkdir()
+        table = tmp_path / "mountinfo"
+        table.write_text(_table(str(tmp_path), str(directory), topology, log=True, reverse=reverse))
+        monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+        logfile = directory / "engine.log"
+>       assert safety.log_location_is_tmpfs(logfile) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function log_location_is_tmpfs at 0x7fefb4394860>(PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl17/logs/engine.log'))
+E        +    where <function log_location_is_tmpfs at 0x7fefb4394860> = safety.log_location_is_tmpfs
+
+tests/test_mount_visibility_pass6_20261021.py:91: AssertionError
+_ test_log_guard_requires_visible_tmpfs_parent_tree[malformed_mount_id-False-forward] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl18')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fefb444b5b0>
+topology = 'malformed_mount_id', visible = False, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_log_guard_requires_visible_tmpfs_parent_tree(tmp_path: Path, monkeypatch, topology, visible, reverse):
+        monkeypatch.delenv("BEAMO_WIPE_DRY_RUN", raising=False)
+        monkeypatch.delenv("BEAMO_WIPE_DEMO", raising=False)
+        directory = tmp_path / "logs"
+        directory.mkdir()
+        table = tmp_path / "mountinfo"
+        table.write_text(_table(str(tmp_path), str(directory), topology, log=True, reverse=reverse))
+        monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+        logfile = directory / "engine.log"
+>       assert safety.log_location_is_tmpfs(logfile) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function log_location_is_tmpfs at 0x7fefb4394860>(PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl18/logs/engine.log'))
+E        +    where <function log_location_is_tmpfs at 0x7fefb4394860> = safety.log_location_is_tmpfs
+
+tests/test_mount_visibility_pass6_20261021.py:91: AssertionError
+_ test_log_guard_requires_visible_tmpfs_parent_tree[malformed_mount_id-False-reordered] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl19')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fefb444b0e0>
+topology = 'malformed_mount_id', visible = False, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_log_guard_requires_visible_tmpfs_parent_tree(tmp_path: Path, monkeypatch, topology, visible, reverse):
+        monkeypatch.delenv("BEAMO_WIPE_DRY_RUN", raising=False)
+        monkeypatch.delenv("BEAMO_WIPE_DEMO", raising=False)
+        directory = tmp_path / "logs"
+        directory.mkdir()
+        table = tmp_path / "mountinfo"
+        table.write_text(_table(str(tmp_path), str(directory), topology, log=True, reverse=reverse))
+        monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+        logfile = directory / "engine.log"
+>       assert safety.log_location_is_tmpfs(logfile) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function log_location_is_tmpfs at 0x7fefb4394860>(PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl19/logs/engine.log'))
+E        +    where <function log_location_is_tmpfs at 0x7fefb4394860> = safety.log_location_is_tmpfs
+
+tests/test_mount_visibility_pass6_20261021.py:91: AssertionError
+_ test_log_guard_requires_visible_tmpfs_parent_tree[contradictory_parent_path-False-forward] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl20')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fefb444a5f0>
+topology = 'contradictory_parent_path', visible = False, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_log_guard_requires_visible_tmpfs_parent_tree(tmp_path: Path, monkeypatch, topology, visible, reverse):
+        monkeypatch.delenv("BEAMO_WIPE_DRY_RUN", raising=False)
+        monkeypatch.delenv("BEAMO_WIPE_DEMO", raising=False)
+        directory = tmp_path / "logs"
+        directory.mkdir()
+        table = tmp_path / "mountinfo"
+        table.write_text(_table(str(tmp_path), str(directory), topology, log=True, reverse=reverse))
+        monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+        logfile = directory / "engine.log"
+>       assert safety.log_location_is_tmpfs(logfile) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function log_location_is_tmpfs at 0x7fefb4394860>(PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl20/logs/engine.log'))
+E        +    where <function log_location_is_tmpfs at 0x7fefb4394860> = safety.log_location_is_tmpfs
+
+tests/test_mount_visibility_pass6_20261021.py:91: AssertionError
+_ test_log_guard_requires_visible_tmpfs_parent_tree[contradictory_parent_path-False-reordered] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl21')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fefb444ab30>
+topology = 'contradictory_parent_path', visible = False, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", TOPOLOGIES)
+    def test_log_guard_requires_visible_tmpfs_parent_tree(tmp_path: Path, monkeypatch, topology, visible, reverse):
+        monkeypatch.delenv("BEAMO_WIPE_DRY_RUN", raising=False)
+        monkeypatch.delenv("BEAMO_WIPE_DEMO", raising=False)
+        directory = tmp_path / "logs"
+        directory.mkdir()
+        table = tmp_path / "mountinfo"
+        table.write_text(_table(str(tmp_path), str(directory), topology, log=True, reverse=reverse))
+        monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+        logfile = directory / "engine.log"
+>       assert safety.log_location_is_tmpfs(logfile) is visible
+E       AssertionError: assert True is False
+E        +  where True = <function log_location_is_tmpfs at 0x7fefb4394860>(PosixPath('/tmp/pytest-of-agent/pytest-88/test_log_guard_requires_visibl21/logs/engine.log'))
+E        +    where <function log_location_is_tmpfs at 0x7fefb4394860> = safety.log_location_is_tmpfs
+
+tests/test_mount_visibility_pass6_20261021.py:91: AssertionError
+_ test_production_discovery_refuses_hidden_live_evidence[hidden_sibling-False-forward] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-88/test_production_discovery_refu2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fefb444bd90>
+topology = 'hidden_sibling', visible = False, reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", [TOPOLOGIES[index] for index in (0, 1, 5)])
+    def test_production_discovery_refuses_hidden_live_evidence(tmp_path: Path, monkeypatch, topology, visible, reverse):
+        boot = _disk("sdz", "FAKE-BOOT", "usb")
+        boot["children"] = [dict(name="sdz1", path="/dev/sdz1", type="part", pkname="sdz",
+                                 size=16_000_000_000, ro=False, mountpoints=[], fstype="iso9660")]
+        payload = {"blockdevices": [boot, _disk("sda", "FAKE-TARGET", "sata")]}
+        table = tmp_path / "mountinfo"
+        table.write_text(_table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse))
+        monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+        monkeypatch.setattr(discovery, "run_lsblk", lambda: payload)
+        monkeypatch.setattr(discovery, "_run_findmnt", lambda path: None)
+        monkeypatch.setattr(discovery, "read_cmdline", lambda: "boot=live")
+        monkeypatch.setattr(safety, "assert_local_device_transport", lambda path: None)
+        result = discovery.discover(env={})
+>       assert [disk.path for disk in result.selectable] == (["/dev/sda"] if visible else [])
+E       AssertionError: assert ['/dev/sda'] == []
+E         
+E         Left contains one more item: '/dev/sda'
+E         Use -v to get more diff
+
+tests/test_mount_visibility_pass6_20261021.py:120: AssertionError
+_ test_production_discovery_refuses_hidden_live_evidence[hidden_sibling-False-reordered] _
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-88/test_production_discovery_refu3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fefb445b1c0>
+topology = 'hidden_sibling', visible = False, reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["forward", "reordered"])
+    @pytest.mark.parametrize("topology,visible", [TOPOLOGIES[index] for index in (0, 1, 5)])
+    def test_production_discovery_refuses_hidden_live_evidence(tmp_path: Path, monkeypatch, topology, visible, reverse):
+        boot = _disk("sdz", "FAKE-BOOT", "usb")
+        boot["children"] = [dict(name="sdz1", path="/dev/sdz1", type="part", pkname="sdz",
+                                 size=16_000_000_000, ro=False, mountpoints=[], fstype="iso9660")]
+        payload = {"blockdevices": [boot, _disk("sda", "FAKE-TARGET", "sata")]}
+        table = tmp_path / "mountinfo"
+        table.write_text(_table("/run/live", "/run/live/medium", topology, log=False, reverse=reverse))
+        monkeypatch.setattr(discovery, "MOUNTINFO_PATH", str(table))
+        monkeypatch.setattr(discovery, "run_lsblk", lambda: payload)
+        monkeypatch.setattr(discovery, "_run_findmnt", lambda path: None)
+        monkeypatch.setattr(discovery, "read_cmdline", lambda: "boot=live")
+        monkeypatch.setattr(safety, "assert_local_device_transport", lambda path: None)
+        result = discovery.discover(env={})
+>       assert [disk.path for disk in result.selectable] == (["/dev/sda"] if visible else [])
+E       AssertionError: assert ['/dev/sda'] == []
+E         
+E         Left contains one more item: '/dev/sda'
+E         Use -v to get more diff
+
+tests/test_mount_visibility_pass6_20261021.py:120: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_live_mount_evidence_requires_visible_parent_tree[hidden_sibling-False-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_live_mount_evidence_requires_visible_parent_tree[hidden_sibling-False-reordered]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_live_mount_evidence_requires_visible_parent_tree[hidden_stacked_ancestor-False-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_live_mount_evidence_requires_visible_parent_tree[hidden_stacked_ancestor-False-reordered]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_live_mount_evidence_requires_visible_parent_tree[duplicate_mount_id-False-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_live_mount_evidence_requires_visible_parent_tree[duplicate_mount_id-False-reordered]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_live_mount_evidence_requires_visible_parent_tree[parent_cycle-False-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_live_mount_evidence_requires_visible_parent_tree[parent_cycle-False-reordered]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_live_mount_evidence_requires_visible_parent_tree[malformed_mount_id-False-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_live_mount_evidence_requires_visible_parent_tree[malformed_mount_id-False-reordered]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_live_mount_evidence_requires_visible_parent_tree[contradictory_parent_path-False-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_live_mount_evidence_requires_visible_parent_tree[contradictory_parent_path-False-reordered]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_live_mount_evidence_requires_visible_parent_tree[same_path_stack-False-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_live_mount_evidence_requires_visible_parent_tree[same_path_stack-False-reordered]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_live_mount_evidence_requires_visible_parent_tree[partial_table-False-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_live_mount_evidence_requires_visible_parent_tree[partial_table-False-reordered]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_log_guard_requires_visible_tmpfs_parent_tree[hidden_sibling-False-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_log_guard_requires_visible_tmpfs_parent_tree[hidden_sibling-False-reordered]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_log_guard_requires_visible_tmpfs_parent_tree[hidden_stacked_ancestor-False-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_log_guard_requires_visible_tmpfs_parent_tree[hidden_stacked_ancestor-False-reordered]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_log_guard_requires_visible_tmpfs_parent_tree[duplicate_mount_id-False-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_log_guard_requires_visible_tmpfs_parent_tree[duplicate_mount_id-False-reordered]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_log_guard_requires_visible_tmpfs_parent_tree[parent_cycle-False-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_log_guard_requires_visible_tmpfs_parent_tree[parent_cycle-False-reordered]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_log_guard_requires_visible_tmpfs_parent_tree[malformed_mount_id-False-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_log_guard_requires_visible_tmpfs_parent_tree[malformed_mount_id-False-reordered]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_log_guard_requires_visible_tmpfs_parent_tree[contradictory_parent_path-False-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_log_guard_requires_visible_tmpfs_parent_tree[contradictory_parent_path-False-reordered]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_production_discovery_refuses_hidden_live_evidence[hidden_sibling-False-forward]
+FAILED tests/test_mount_visibility_pass6_20261021.py::test_production_discovery_refuses_hidden_live_evidence[hidden_sibling-False-reordered]
+30 failed, 33 passed in 0.49s

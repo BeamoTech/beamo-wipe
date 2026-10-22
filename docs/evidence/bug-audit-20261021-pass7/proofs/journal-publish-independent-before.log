@@ -1,0 +1,48 @@
+.F                                                                       [100%]
+=================================== FAILURES ===================================
+___ test_arm_cannot_return_with_preflight_still_persisted[swapped-temporary] ___
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-117/test_arm_cannot_return_with_pr1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f79650a56e0>
+swap = True
+request = <FixtureRequest for <Function test_arm_cannot_return_with_preflight_still_persisted[swapped-temporary]>>
+
+    @pytest.mark.parametrize('swap', [False, True], ids=['normal-control','swapped-temporary'])
+    def test_arm_cannot_return_with_preflight_still_persisted(tmp_path, monkeypatch, swap, request):
+        monkeypatch.setenv('BEAMO_WIPE_DRY_RUN','1')
+        directory=tmp_path/'private'
+        store=SessionStore(directory,boot=BOOT,build=BUILD).open()
+        old=(directory/NAME).read_bytes()
+        original_sync=os.fsync
+        changed=[]
+        def sync(fd):
+            original_sync(fd)
+            for path in directory.glob('.recovery-*'):
+                if os.fstat(fd).st_ino==path.stat().st_ino and swap and not changed:
+                    changed.append(path.name)
+                    path.rename(directory/'retired-owned-temporary')
+                    path.write_bytes(old);path.chmod(0o600)
+        monkeypatch.setattr(os,'fsync',sync)
+        error=None
+        try:
+            try:
+                armed(store)
+            except SafetyError as exc:
+                error=str(exc)
+            disk_record=json.loads((directory/NAME).read_bytes())['payload']
+            trace={'swap':swap,'changed':changed,'save_error':error,
+                   'memory_phase':store.record['phase'],'persisted_phase':disk_record['phase']}
+            request.node.user_properties.append(('trace',json.dumps(trace)));print(json.dumps(trace))
+>           assert error is not None or disk_record['phase']=='armed',trace
+E           AssertionError: {'changed': ['.recovery-f2fe3689749614fddd83f1e8'], 'memory_phase': 'armed', 'persisted_phase': 'preflight', 'save_error': None, ...}
+E           assert (None is not None or 'preflight' == 'armed'
+E             
+E             - armed
+E             + preflight)
+
+../beamo-tools/audit-pass7-20261021/recovery/test_journal_publish_probe.py:40: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{"swap": true, "changed": [".recovery-f2fe3689749614fddd83f1e8"], "save_error": null, "memory_phase": "armed", "persisted_phase": "preflight"}
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass7-20261021/recovery/test_journal_publish_probe.py::test_arm_cannot_return_with_preflight_still_persisted[swapped-temporary]
+1 failed, 1 passed in 0.14s

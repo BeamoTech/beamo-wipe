@@ -1,0 +1,142 @@
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+Fbeamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+F
+=================================== FAILURES ===================================
+______ test_stop_callback_keeps_a_usable_owned_interface[normal-control] _______
+
+fail_label = False
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc2fdfad940>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-59/test_stop_callback_keeps_a_usa0')
+request = <FixtureRequest for <Function test_stop_callback_keeps_a_usable_owned_interface[normal-control]>>
+
+    @pytest.mark.parametrize("fail_label", [False, True], ids=["normal-control", "label-failed"])
+    def test_stop_callback_keeps_a_usable_owned_interface(fail_label, monkeypatch, tmp_path, request):
+        monkeypatch.setenv("BEAMO_WIPE_DRY_RUN", "1")
+        monkeypatch.delenv("BEAMO_WIPE_LIVE", raising=False)
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+        native_calls = []
+    
+        def forbidden(*_args, **_kwargs):
+            native_calls.append(True)
+            raise AssertionError("native action forbidden")
+    
+        for boundary in (
+            "subprocess.run", "subprocess.Popen", "beamo_wipe.discover.run_lsblk",
+            "beamo_wipe.discover.read_cmdline", "beamo_wipe.discover.read_mount_sources",
+            "beamo_wipe.nwipe_runner.NwipeRunner.start", "beamo_wipe.app._shutdown",
+            "beamo_wipe.sound._run", "beamo_wipe.sound._popen",
+        ):
+            monkeypatch.setattr(boundary, forbidden)
+        clock = [0.0]
+        runner = DryRunRunner(clock=lambda: clock[0], duration_s=100)
+        wizard = Wizard(discovery_for_scenario("happy"), runner, clock=lambda: clock[0], dry_run=True)
+        wizard.skip_intro()
+        wizard.set_owner(True)
+        wizard.continue_owner()
+        wizard.select_disk(wizard.selectable[0].path)
+        wizard.continue_pick()
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+        wizard.continue_method()
+        clock[0] = 6.0
+        wizard.confirm_erase()
+        assert wizard.screen == Screen.WORKING
+        app = TkWizard(wizard)
+        callback_errors = []
+        app.root.report_callback_exception = lambda kind, value, tb: callback_errors.append(kind.__name__)
+        try:
+            app.root.update()
+>           stop = next(widget for widget in descendants(app.root)
+                        if isinstance(widget, _Button) and widget.cget("text") == C.STOP_ASK)
+
+../beamo-tools/audit-pass6-20261021/ui/test_tk_stop_render_failure_candidate.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../beamo-tools/audit-pass6-20261021/ui/test_tk_stop_render_failure_candidate.py:60: in <genexpr>
+    if isinstance(widget, _Button) and widget.cget("text") == C.STOP_ASK)
+                                       ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <beamo_wipe.ui.tk_wizard._Button object .!frame.!frame.!frame3.!frame.!frame.!_button>
+key = 'text'
+
+    def cget(self, key):
+        """Return the resource value for a KEY given as string."""
+>       return self.tk.call(self._w, 'cget', '-' + key)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       _tkinter.TclError: unknown option "-text"
+
+/usr/lib/python3.13/tkinter/__init__.py:1831: TclError
+_______ test_stop_callback_keeps_a_usable_owned_interface[label-failed] ________
+
+fail_label = True
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc2ff16e3f0>
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-59/test_stop_callback_keeps_a_usa1')
+request = <FixtureRequest for <Function test_stop_callback_keeps_a_usable_owned_interface[label-failed]>>
+
+    @pytest.mark.parametrize("fail_label", [False, True], ids=["normal-control", "label-failed"])
+    def test_stop_callback_keeps_a_usable_owned_interface(fail_label, monkeypatch, tmp_path, request):
+        monkeypatch.setenv("BEAMO_WIPE_DRY_RUN", "1")
+        monkeypatch.delenv("BEAMO_WIPE_LIVE", raising=False)
+        monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+        native_calls = []
+    
+        def forbidden(*_args, **_kwargs):
+            native_calls.append(True)
+            raise AssertionError("native action forbidden")
+    
+        for boundary in (
+            "subprocess.run", "subprocess.Popen", "beamo_wipe.discover.run_lsblk",
+            "beamo_wipe.discover.read_cmdline", "beamo_wipe.discover.read_mount_sources",
+            "beamo_wipe.nwipe_runner.NwipeRunner.start", "beamo_wipe.app._shutdown",
+            "beamo_wipe.sound._run", "beamo_wipe.sound._popen",
+        ):
+            monkeypatch.setattr(boundary, forbidden)
+        clock = [0.0]
+        runner = DryRunRunner(clock=lambda: clock[0], duration_s=100)
+        wizard = Wizard(discovery_for_scenario("happy"), runner, clock=lambda: clock[0], dry_run=True)
+        wizard.skip_intro()
+        wizard.set_owner(True)
+        wizard.continue_owner()
+        wizard.select_disk(wizard.selectable[0].path)
+        wizard.continue_pick()
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+        wizard.continue_method()
+        clock[0] = 6.0
+        wizard.confirm_erase()
+        assert wizard.screen == Screen.WORKING
+        app = TkWizard(wizard)
+        callback_errors = []
+        app.root.report_callback_exception = lambda kind, value, tb: callback_errors.append(kind.__name__)
+        try:
+            app.root.update()
+>           stop = next(widget for widget in descendants(app.root)
+                        if isinstance(widget, _Button) and widget.cget("text") == C.STOP_ASK)
+
+../beamo-tools/audit-pass6-20261021/ui/test_tk_stop_render_failure_candidate.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../beamo-tools/audit-pass6-20261021/ui/test_tk_stop_render_failure_candidate.py:60: in <genexpr>
+    if isinstance(widget, _Button) and widget.cget("text") == C.STOP_ASK)
+                                       ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <beamo_wipe.ui.tk_wizard._Button object .!frame.!frame.!frame3.!frame.!frame.!_button>
+key = 'text'
+
+    def cget(self, key):
+        """Return the resource value for a KEY given as string."""
+>       return self.tk.call(self._w, 'cget', '-' + key)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       _tkinter.TclError: unknown option "-text"
+
+/usr/lib/python3.13/tkinter/__init__.py:1831: TclError
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass6-20261021/ui/test_tk_stop_render_failure_candidate.py::test_stop_callback_keeps_a_usable_owned_interface[normal-control]
+FAILED ../beamo-tools/audit-pass6-20261021/ui/test_tk_stop_render_failure_candidate.py::test_stop_callback_keeps_a_usable_owned_interface[label-failed]
+2 failed in 0.47s

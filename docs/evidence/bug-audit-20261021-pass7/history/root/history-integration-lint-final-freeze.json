@@ -1,0 +1,7 @@
+{
+  "baseline_commit": "938fe60347c78f2a745d5d5b04e30dfa013da809",
+  "source_files": 814,
+  "source_manifest_sha256": "615c721a4bb71e8ade45ab3130c348838f21e294d0603b2b67df893f1208f284",
+  "new_regression_cases": 170,
+  "frozen_at_utc": "2026-10-21T03:33:26.806309+00:00"
+}

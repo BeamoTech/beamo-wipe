@@ -1,0 +1,59 @@
+PASS12 discovery / inventory / safety / identity review — completed
+2026-10-21 / Codex discovery subagent
+Repository /workspace/beamo-wipe; branch fix/safety-audit-20261019;
+baseline/current HEAD b462e62005a752b0e5f2a066bda19bd9c79bbd8b.
+
+PROVED DEFECTS: none. No product or test edits proposed or made. Source ownership
+released. Canonical backlog changes are root-owned; this handoff is outside Git.
+
+Inspected AGENTS.md, unfinished-work record, PASS11 ledger and discover.py source
+resolution/real-metadata validation/physical observations/duplicate reconciliation/
+layout hashing, safety.py eligibility/whole-disk/permission/identity boundaries,
+and identity.py/inventory.py display projections. Parent-authoritative WWN and
+serial fallback, malformed/duplicate metadata and typed-source handling remain
+conservative in reviewed paths. No speculative suspicion promoted to a bug.
+
+FRESH MODEL
+probe_identity_freshness.py exercises public discover(lsblk_payload=...) followed
+by public assert_rediscovered_identity. 696 identity-transition states span sd,
+NVMe and eMMC names; nested and flat partition metadata; original/reversed order;
+direct partition and PARTUUID live sources; and 29 snapshot transitions. These
+cover unchanged/reordered controls, target/boot/peer metadata changes, partition
+UUID/label/type/size/assignment, mount/read-only exclusion, malformed fields,
+duplicate physical observations and peer arrival/removal. Eight NVMe ROTA-only
+states remain positive because explicit NVMe kind and transport are unchanged.
+24 additional precedence states cover live mount over stale cmdline, agreeing
+and conflicting override, unresolved second source, multiple physical owners,
+and duplicate same-owner source. Exact total 720 states / 1,416 public discover
+calls, 68 expected positive controls / 652 expected refusals, zero mismatches,
+zero native acquisition callbacks. Source hashes are embedded in result JSON.
+The script protects /dev and /sys realpath/stat with synthetic metadata and
+forbids native inventory, mount/cmdline collection and transport callbacks.
+This is an external model, not 720 additional pytest tests or unique coverage.
+
+FOCUSED EXISTING CHECKS
+12 exact existing guarded fake-machine modules listed in focused-files.txt.
+973 unique pytest IDs passed; zero failed/errors/skips; focused.log has no
+warning summary. focused.xml retains JUnit; focused-nodeids.txt retains the
+canonical IDs; focused-summary.json retains exact empty skip list and ref.
+focused-before.sha256 plus focused-after-hash-check.log prove the five reviewed
+product inputs and twelve test modules stayed byte-identical during the run.
+These cases overlap the complete root gate and must not be added to its unique
+coverage. No GUI dependencies/display were needed for this focused subset.
+
+EVIDENCE
+identity-freshness.json, identity-freshness.jsonl, identity-freshness.log,
+identity-freshness.exit, probe_identity_freshness.py;
+focused.xml, focused.log, focused.exit, focused-files.txt,
+focused-nodeids.txt, focused-summary.json, focused-before.sha256,
+focused-after-hash-check.log; and checkpoint.txt. artifact-sha256.txt hashes all
+retained artifacts existing at handoff, except itself.
+
+LIMITS
+Model/focused checks use fake metadata and owned regular report files only.
+No real lsblk/findmnt/native inventory, device/sysfs acquisition, engine, mount,
+firmware, power, guest, Docker/build, network/remote write, dependency or policy
+action. Native/image/firmware/physical/reconnect and pinned-browser qualification
+remain root-recorded unverified gaps. Models cannot establish behavior of real
+hardware, kernel timing or physical reconnect. Earlier internal-backlog export
+approval rejection remains untouched; no remote retry.

@@ -1,0 +1,3775 @@
+.FFF.FFF.FFFFFFFFFFFFFFFFFFFFFFFFFFF.FF.                                 [100%]
+=================================== FAILURES ===================================
+__________ test_worker_exports_controller_language[diagnostic-en-fr] ___________
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b208f68e0>, submit=<function worker.<locals>.submit at 0x7f7b208f6980>, folder=<function worker.<locals>.folder at 0x7f7b208f6d40>, commands=[])
+controller_language = 'fr', worker_language = 'en', kind = 'diagnostic'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+>       receipt = worker.submit(wire)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Invalid or unsanitized diagnostic report.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+__________ test_worker_exports_controller_language[diagnostic-en-de] ___________
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...":"unverified","wall_provenance":"os_utc"},"title":"Diagnosebericht \\u2014 das L\\u00f6schen konnte nicht starten"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b2093d080>, submit=<function worker.<locals>.submit at 0x7f7b2093dc60>, folder=<function worker.<locals>.folder at 0x7f7b2093dda0>, commands=[])
+controller_language = 'de', worker_language = 'en', kind = 'diagnostic'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+>       receipt = worker.submit(wire)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...":"unverified","wall_provenance":"os_utc"},"title":"Diagnosebericht \\u2014 das L\\u00f6schen konnte nicht starten"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Invalid or unsanitized diagnostic report.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+__________ test_worker_exports_controller_language[diagnostic-fr-en] ___________
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663..."wall_confidence":"unverified","wall_provenance":"os_utc"},"title":"Diagnostic report \\u2014 wipe could not start"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b2093ff60>, submit=<function worker.<locals>.submit at 0x7f7b2093e2a0>, folder=<function worker.<locals>.folder at 0x7f7b207ec360>, commands=[])
+controller_language = 'en', worker_language = 'fr', kind = 'diagnostic'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+>       receipt = worker.submit(wire)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663..."wall_confidence":"unverified","wall_provenance":"os_utc"},"title":"Diagnostic report \\u2014 wipe could not start"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Rapport de diagnostic invalide ou non désinfecté.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+__________ test_worker_exports_controller_language[diagnostic-fr-de] ___________
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...":"unverified","wall_provenance":"os_utc"},"title":"Diagnosebericht \\u2014 das L\\u00f6schen konnte nicht starten"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b207ec180>, submit=<function worker.<locals>.submit at 0x7f7b207eccc0>, folder=<function worker.<locals>.folder at 0x7f7b207ecd60>, commands=[])
+controller_language = 'de', worker_language = 'fr', kind = 'diagnostic'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+>       receipt = worker.submit(wire)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...":"unverified","wall_provenance":"os_utc"},"title":"Diagnosebericht \\u2014 das L\\u00f6schen konnte nicht starten"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Rapport de diagnostic invalide ou non désinfecté.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+__________ test_worker_exports_controller_language[diagnostic-de-en] ___________
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663..."wall_confidence":"unverified","wall_provenance":"os_utc"},"title":"Diagnostic report \\u2014 wipe could not start"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b207ec220>, submit=<function worker.<locals>.submit at 0x7f7b207ecea0>, folder=<function worker.<locals>.folder at 0x7f7b207ec900>, commands=[])
+controller_language = 'en', worker_language = 'de', kind = 'diagnostic'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+>       receipt = worker.submit(wire)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663..."wall_confidence":"unverified","wall_provenance":"os_utc"},"title":"Diagnostic report \\u2014 wipe could not start"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Ungültiger oder nicht bereinigter Diagnosebericht.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+__________ test_worker_exports_controller_language[diagnostic-de-fr] ___________
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b207ed800>, submit=<function worker.<locals>.submit at 0x7f7b207ed4e0>, folder=<function worker.<locals>.folder at 0x7f7b207ec360>, commands=[])
+controller_language = 'fr', worker_language = 'de', kind = 'diagnostic'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+>       receipt = worker.submit(wire)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Ungültiger oder nicht bereinigter Diagnosebericht.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+_____________ test_worker_exports_controller_language[owner-en-en] _____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b207ed080>, submit=<function worker.<locals>.submit at 0x7...f/fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller9/mount-root/mount-9df9ff3b590d53c94da44254']])
+controller_language = 'en', worker_language = 'en', kind = 'owner'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'Beamo Wipe ...available\r\n' == b'{"schema_ve...ot finish"}\n'
+E         
+E         At index 0 diff: b'B' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+_____________ test_worker_exports_controller_language[owner-en-fr] _____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b207d8040>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller10/mount-root/mount-2013e194ab0769f9bf97885a']])
+controller_language = 'fr', worker_language = 'en', kind = 'owner'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'Beamo Wipe ...available\r\n' == b'{"schema_ve...in\\u00e9"}\n'
+E         
+E         At index 0 diff: b'B' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+_____________ test_worker_exports_controller_language[owner-en-de] _____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b203234c0>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller11/mount-root/mount-35e0af8d82e8710ce5149d92']])
+controller_language = 'de', worker_language = 'en', kind = 'owner'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'Beamo Wipe ...available\r\n' == b'{"schema_ve...t beendet"}\n'
+E         
+E         At index 0 diff: b'B' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+_____________ test_worker_exports_controller_language[owner-fr-en] _____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b207d8040>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller12/mount-root/mount-51c7dfe0f19605166c8d1219']])
+controller_language = 'en', worker_language = 'fr', kind = 'owner'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'R\xc3\xa9su...isponible\r\n' == b'{"schema_ve...ot finish"}\n'
+E         
+E         At index 0 diff: b'R' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+_____________ test_worker_exports_controller_language[owner-fr-fr] _____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b207ed620>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller13/mount-root/mount-9589f708ac227a1b94b8f812']])
+controller_language = 'fr', worker_language = 'fr', kind = 'owner'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'R\xc3\xa9su...isponible\r\n' == b'{"schema_ve...in\\u00e9"}\n'
+E         
+E         At index 0 diff: b'R' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+_____________ test_worker_exports_controller_language[owner-fr-de] _____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b207ed4e0>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller14/mount-root/mount-6437ec93852c5656fe2ccd07']])
+controller_language = 'de', worker_language = 'fr', kind = 'owner'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'R\xc3\xa9su...isponible\r\n' == b'{"schema_ve...t beendet"}\n'
+E         
+E         At index 0 diff: b'R' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+_____________ test_worker_exports_controller_language[owner-de-en] _____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b20323060>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller15/mount-root/mount-4ccf281b4f11b5359ff2e701']])
+controller_language = 'en', worker_language = 'de', kind = 'owner'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'Beamo-Wipe-...3\xbcgbar\r\n' == b'{"schema_ve...ot finish"}\n'
+E         
+E         At index 0 diff: b'B' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+_____________ test_worker_exports_controller_language[owner-de-fr] _____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b207ec9a0>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller16/mount-root/mount-e7adcf770e728675b9541ad1']])
+controller_language = 'fr', worker_language = 'de', kind = 'owner'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'Beamo-Wipe-...3\xbcgbar\r\n' == b'{"schema_ve...in\\u00e9"}\n'
+E         
+E         At index 0 diff: b'B' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+_____________ test_worker_exports_controller_language[owner-de-de] _____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a62a0>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller17/mount-root/mount-a2091ac602c5f92b024f308b']])
+controller_language = 'de', worker_language = 'de', kind = 'owner'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'Beamo-Wipe-...3\xbcgbar\r\n' == b'{"schema_ve...t beendet"}\n'
+E         
+E         At index 0 diff: b'B' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+____________ test_worker_exports_controller_language[sharing-en-en] ____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a6840>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller18/mount-root/mount-34ee1ead489d2bdb16660131']])
+controller_language = 'en', worker_language = 'en', kind = 'sharing'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'Beamo Wipe ...available\r\n' == b'{"schema_ve...ot finish"}\n'
+E         
+E         At index 0 diff: b'B' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+____________ test_worker_exports_controller_language[sharing-en-fr] ____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a6de0>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller19/mount-root/mount-489603c6a57bfe1e1c65bae4']])
+controller_language = 'fr', worker_language = 'en', kind = 'sharing'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'Beamo Wipe ...available\r\n' == b'{"schema_ve...in\\u00e9"}\n'
+E         
+E         At index 0 diff: b'B' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+____________ test_worker_exports_controller_language[sharing-en-de] ____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a7380>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller20/mount-root/mount-a69aa5f7185e0524272d7a37']])
+controller_language = 'de', worker_language = 'en', kind = 'sharing'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'Beamo Wipe ...available\r\n' == b'{"schema_ve...t beendet"}\n'
+E         
+E         At index 0 diff: b'B' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+____________ test_worker_exports_controller_language[sharing-fr-en] ____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a77e0>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller21/mount-root/mount-77d0edc6c762929758a5e356']])
+controller_language = 'en', worker_language = 'fr', kind = 'sharing'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'R\xc3\xa9su...isponible\r\n' == b'{"schema_ve...ot finish"}\n'
+E         
+E         At index 0 diff: b'R' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+____________ test_worker_exports_controller_language[sharing-fr-fr] ____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a6c00>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller22/mount-root/mount-7f012976432e203889486fbf']])
+controller_language = 'fr', worker_language = 'fr', kind = 'sharing'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'R\xc3\xa9su...isponible\r\n' == b'{"schema_ve...in\\u00e9"}\n'
+E         
+E         At index 0 diff: b'R' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+____________ test_worker_exports_controller_language[sharing-fr-de] ____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a7e20>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller23/mount-root/mount-c4cca998f777b74223e35fbc']])
+controller_language = 'de', worker_language = 'fr', kind = 'sharing'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'R\xc3\xa9su...isponible\r\n' == b'{"schema_ve...t beendet"}\n'
+E         
+E         At index 0 diff: b'R' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+____________ test_worker_exports_controller_language[sharing-de-en] ____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b20323e20>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller24/mount-root/mount-7a950a7c5e1e8116c5105642']])
+controller_language = 'en', worker_language = 'de', kind = 'sharing'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'Beamo-Wipe-...3\xbcgbar\r\n' == b'{"schema_ve...ot finish"}\n'
+E         
+E         At index 0 diff: b'B' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+____________ test_worker_exports_controller_language[sharing-de-fr] ____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a6ca0>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller25/mount-root/mount-bff7c550b676f074185cccb6']])
+controller_language = 'fr', worker_language = 'de', kind = 'sharing'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'Beamo-Wipe-...3\xbcgbar\r\n' == b'{"schema_ve...in\\u00e9"}\n'
+E         
+E         At index 0 diff: b'B' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+____________ test_worker_exports_controller_language[sharing-de-de] ____________
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a77e0>, submit=<function worker.<locals>.submit at 0x7.../fd/12', '/tmp/pytest-of-agent/pytest-73/test_worker_exports_controller26/mount-root/mount-66318be3c02cbc486953b56d']])
+controller_language = 'de', worker_language = 'de', kind = 'sharing'
+
+    @pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+    @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
+    def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
+        lang.set_language(controller_language)
+        wire, original = worker.request(kind)
+        expected_header = result_summary.HEADER_RESULT
+        expected_notice = privacy.NOTICE
+        lang.set_language(worker_language)  # Models a fresh or differently initialized process.
+        receipt = worker.submit(wire)
+        assert receipt.ok and receipt.safe_to_remove
+        folder = worker.folder(receipt)
+>       assert (folder / receipt.owner_file).read_bytes() == original
+E       assert b'Beamo-Wipe-...3\xbcgbar\r\n' == b'{"schema_ve...t beendet"}\n'
+E         
+E         At index 0 diff: b'B' != b'{'
+E         Use -v to get more diff
+
+tests/test_export_worker_locale_pass4_20261019.py:116: AssertionError
+_ test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[None] _
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a42c0>, submit=<function worker.<locals>.submit at 0x7f7b202a7380>, folder=<function worker.<locals>.folder at 0x7f7b202a7600>, commands=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7b207f3930>
+bad_language = None
+
+    @pytest.mark.parametrize("bad_language", [None, True, 1, [], {}, "es", "FR", " fr", "en\x00"])
+    def test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry(
+        worker, monkeypatch, bad_language
+    ):
+        lang.set_language("fr")
+        good, _original = worker.request("diagnostic")
+        bad = dict(good, language=bad_language)
+        lang.set_language("en")
+        scans = []
+        real_scan = export.run_lsblk
+        monkeypatch.setattr(export, "run_lsblk", lambda: scans.append(True) or real_scan())
+        with pytest.raises(SafetyError):
+            worker.submit(bad)
+        assert not scans and not worker.commands
+        assert lang.current() == "en"
+>       receipt = worker.submit(good)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Invalid or unsanitized diagnostic report.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+_ test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[True] _
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a4720>, submit=<function worker.<locals>.submit at 0x7f7b202a4540>, folder=<function worker.<locals>.folder at 0x7f7b202a5440>, commands=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7b202d3e70>
+bad_language = True
+
+    @pytest.mark.parametrize("bad_language", [None, True, 1, [], {}, "es", "FR", " fr", "en\x00"])
+    def test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry(
+        worker, monkeypatch, bad_language
+    ):
+        lang.set_language("fr")
+        good, _original = worker.request("diagnostic")
+        bad = dict(good, language=bad_language)
+        lang.set_language("en")
+        scans = []
+        real_scan = export.run_lsblk
+        monkeypatch.setattr(export, "run_lsblk", lambda: scans.append(True) or real_scan())
+        with pytest.raises(SafetyError):
+            worker.submit(bad)
+        assert not scans and not worker.commands
+        assert lang.current() == "en"
+>       receipt = worker.submit(good)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Invalid or unsanitized diagnostic report.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+_ test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[1] _
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a6160>, submit=<function worker.<locals>.submit at 0x7f7b202a7c40>, folder=<function worker.<locals>.folder at 0x7f7b202a4180>, commands=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7b202d1b70>
+bad_language = 1
+
+    @pytest.mark.parametrize("bad_language", [None, True, 1, [], {}, "es", "FR", " fr", "en\x00"])
+    def test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry(
+        worker, monkeypatch, bad_language
+    ):
+        lang.set_language("fr")
+        good, _original = worker.request("diagnostic")
+        bad = dict(good, language=bad_language)
+        lang.set_language("en")
+        scans = []
+        real_scan = export.run_lsblk
+        monkeypatch.setattr(export, "run_lsblk", lambda: scans.append(True) or real_scan())
+        with pytest.raises(SafetyError):
+            worker.submit(bad)
+        assert not scans and not worker.commands
+        assert lang.current() == "en"
+>       receipt = worker.submit(good)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Invalid or unsanitized diagnostic report.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+_ test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[bad_language3] _
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a58a0>, submit=<function worker.<locals>.submit at 0x7f7b202a44a0>, folder=<function worker.<locals>.folder at 0x7f7b202a4400>, commands=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7b209777e0>
+bad_language = []
+
+    @pytest.mark.parametrize("bad_language", [None, True, 1, [], {}, "es", "FR", " fr", "en\x00"])
+    def test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry(
+        worker, monkeypatch, bad_language
+    ):
+        lang.set_language("fr")
+        good, _original = worker.request("diagnostic")
+        bad = dict(good, language=bad_language)
+        lang.set_language("en")
+        scans = []
+        real_scan = export.run_lsblk
+        monkeypatch.setattr(export, "run_lsblk", lambda: scans.append(True) or real_scan())
+        with pytest.raises(SafetyError):
+            worker.submit(bad)
+        assert not scans and not worker.commands
+        assert lang.current() == "en"
+>       receipt = worker.submit(good)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Invalid or unsanitized diagnostic report.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+_ test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[bad_language4] _
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a7380>, submit=<function worker.<locals>.submit at 0x7f7b202a6ac0>, folder=<function worker.<locals>.folder at 0x7f7b202a5440>, commands=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7b202d0600>
+bad_language = {}
+
+    @pytest.mark.parametrize("bad_language", [None, True, 1, [], {}, "es", "FR", " fr", "en\x00"])
+    def test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry(
+        worker, monkeypatch, bad_language
+    ):
+        lang.set_language("fr")
+        good, _original = worker.request("diagnostic")
+        bad = dict(good, language=bad_language)
+        lang.set_language("en")
+        scans = []
+        real_scan = export.run_lsblk
+        monkeypatch.setattr(export, "run_lsblk", lambda: scans.append(True) or real_scan())
+        with pytest.raises(SafetyError):
+            worker.submit(bad)
+        assert not scans and not worker.commands
+        assert lang.current() == "en"
+>       receipt = worker.submit(good)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Invalid or unsanitized diagnostic report.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+_ test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[es] _
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a6ca0>, submit=<function worker.<locals>.submit at 0x7f7b202a76a0>, folder=<function worker.<locals>.folder at 0x7f7b202a4e00>, commands=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7b202d2f20>
+bad_language = 'es'
+
+    @pytest.mark.parametrize("bad_language", [None, True, 1, [], {}, "es", "FR", " fr", "en\x00"])
+    def test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry(
+        worker, monkeypatch, bad_language
+    ):
+        lang.set_language("fr")
+        good, _original = worker.request("diagnostic")
+        bad = dict(good, language=bad_language)
+        lang.set_language("en")
+        scans = []
+        real_scan = export.run_lsblk
+        monkeypatch.setattr(export, "run_lsblk", lambda: scans.append(True) or real_scan())
+        with pytest.raises(SafetyError):
+            worker.submit(bad)
+        assert not scans and not worker.commands
+        assert lang.current() == "en"
+>       receipt = worker.submit(good)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Invalid or unsanitized diagnostic report.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+_ test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[FR] _
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a72e0>, submit=<function worker.<locals>.submit at 0x7f7b202a6520>, folder=<function worker.<locals>.folder at 0x7f7b202a4900>, commands=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7b202cf7e0>
+bad_language = 'FR'
+
+    @pytest.mark.parametrize("bad_language", [None, True, 1, [], {}, "es", "FR", " fr", "en\x00"])
+    def test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry(
+        worker, monkeypatch, bad_language
+    ):
+        lang.set_language("fr")
+        good, _original = worker.request("diagnostic")
+        bad = dict(good, language=bad_language)
+        lang.set_language("en")
+        scans = []
+        real_scan = export.run_lsblk
+        monkeypatch.setattr(export, "run_lsblk", lambda: scans.append(True) or real_scan())
+        with pytest.raises(SafetyError):
+            worker.submit(bad)
+        assert not scans and not worker.commands
+        assert lang.current() == "en"
+>       receipt = worker.submit(good)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Invalid or unsanitized diagnostic report.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+_ test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[ fr] _
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a6f20>, submit=<function worker.<locals>.submit at 0x7f7b202a6480>, folder=<function worker.<locals>.folder at 0x7f7b202a7f60>, commands=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7b202d33f0>
+bad_language = ' fr'
+
+    @pytest.mark.parametrize("bad_language", [None, True, 1, [], {}, "es", "FR", " fr", "en\x00"])
+    def test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry(
+        worker, monkeypatch, bad_language
+    ):
+        lang.set_language("fr")
+        good, _original = worker.request("diagnostic")
+        bad = dict(good, language=bad_language)
+        lang.set_language("en")
+        scans = []
+        real_scan = export.run_lsblk
+        monkeypatch.setattr(export, "run_lsblk", lambda: scans.append(True) or real_scan())
+        with pytest.raises(SafetyError):
+            worker.submit(bad)
+        assert not scans and not worker.commands
+        assert lang.current() == "en"
+>       receipt = worker.submit(good)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Invalid or unsanitized diagnostic report.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+_ test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[en\x00] _
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a4400>, submit=<function worker.<locals>.submit at 0x7f7b202a6980>, folder=<function worker.<locals>.folder at 0x7f7b202a7380>, commands=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7b202cc670>
+bad_language = 'en\x00'
+
+    @pytest.mark.parametrize("bad_language", [None, True, 1, [], {}, "es", "FR", " fr", "en\x00"])
+    def test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry(
+        worker, monkeypatch, bad_language
+    ):
+        lang.set_language("fr")
+        good, _original = worker.request("diagnostic")
+        bad = dict(good, language=bad_language)
+        lang.set_language("en")
+        scans = []
+        real_scan = export.run_lsblk
+        monkeypatch.setattr(export, "run_lsblk", lambda: scans.append(True) or real_scan())
+        with pytest.raises(SafetyError):
+            worker.submit(bad)
+        assert not scans and not worker.commands
+        assert lang.current() == "en"
+>       receipt = worker.submit(good)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663...ll_provenance":"os_utc"},"title":"Rapport de diagnostic \\u2014 l\\u2019effacement n\\u2019a pas pu d\\u00e9marrer"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Invalid or unsanitized diagnostic report.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+_____________ test_legacy_request_without_language_is_english[fr] ______________
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663..."wall_confidence":"unverified","wall_provenance":"os_utc"},"title":"Diagnostic report \\u2014 wipe could not start"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a6e80>, submit=<function worker.<locals>.submit at 0x7f7b202a4220>, folder=<function worker.<locals>.folder at 0x7f7b202a6340>, commands=[])
+startup_language = 'fr'
+
+    @pytest.mark.parametrize("startup_language", ["en", "fr", "de"])
+    def test_legacy_request_without_language_is_english(worker, startup_language):
+        lang.set_language("en")
+        wire, original = worker.request("diagnostic")
+        wire.pop("language", None)
+        lang.set_language(startup_language)
+>       receipt = worker.submit(wire)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:160: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663..."wall_confidence":"unverified","wall_provenance":"os_utc"},"title":"Diagnostic report \\u2014 wipe could not start"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Rapport de diagnostic invalide ou non désinfecté.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+_____________ test_legacy_request_without_language_is_english[de] ______________
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663..."wall_confidence":"unverified","wall_provenance":"os_utc"},"title":"Diagnostic report \\u2014 wipe could not start"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+>               raise ValueError()
+E               ValueError
+
+src/beamo_wipe/diagnostic_report.py:220: ValueError
+
+The above exception was the direct cause of the following exception:
+
+worker = namespace(request=<function worker.<locals>.request at 0x7f7b202a7100>, submit=<function worker.<locals>.submit at 0x7f7b202a5940>, folder=<function worker.<locals>.folder at 0x7f7b202a5b20>, commands=[])
+startup_language = 'de'
+
+    @pytest.mark.parametrize("startup_language", ["en", "fr", "de"])
+    def test_legacy_request_without_language_is_english(worker, startup_language):
+        lang.set_language("en")
+        wire, original = worker.request("diagnostic")
+        wire.pop("language", None)
+        lang.set_language(startup_language)
+>       receipt = worker.submit(wire)
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_export_worker_locale_pass4_20261019.py:160: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_export_worker_locale_pass4_20261019.py:92: in submit
+    return export._worker()
+           ^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2317: in _worker
+    evidence, expected, baseline, protected, log_data, log_status, privacy_reduced = _decode_worker_request(raw)
+                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/beamo_wipe/support_export.py:2132: in _decode_worker_request
+    validate_report(evidence_data)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'{"application":{"build":{},"build_status":"unavailable","name":"Beamo Wipe","nwipe_pinned_commit":"6082bde060091e663..."wall_confidence":"unverified","wall_provenance":"os_utc"},"title":"Diagnostic report \\u2014 wipe could not start"}\n'
+
+    def validate_report(data: bytes) -> dict:
+        """Reject added fields, raw logs and identifiers even at the worker boundary."""
+        try:
+            if not isinstance(data, bytes) or not 0 < len(data) <= MAX_BYTES:
+                raise ValueError()
+            # The original bytes are exported. Reject duplicate fields at every
+            # depth so an overwritten value cannot hide private text from validation.
+            p = json.loads(data, object_pairs_hook=_unique_report_fields)
+            if set(p) != {
+                "schema_version",
+                "report_type",
+                "title",
+                "notice",
+                "application",
+                "error_code",
+                "discovery",
+                "time",
+                "environment",
+                "events",
+                "raw_logs",
+            }:
+                raise ValueError()
+            if (
+                type(p["schema_version"]) is not int
+                or p["schema_version"] != SCHEMA_VERSION
+                or p["report_type"] != "startup_diagnostic"
+                or p["title"] != report_title(p["error_code"])
+                or p["notice"] != NOTICE
+                or p["raw_logs"] != "omitted"
+                or p["error_code"] not in CODES
+            ):
+                raise ValueError()
+            # Reconstruct the permitted nested schema; equality prevents any
+            # extension from silently becoming an identifier-export channel.
+            app = p["application"]
+            if set(app) != {
+                "name",
+                "version",
+                "nwipe_pinned_version",
+                "nwipe_pinned_commit",
+                "build_status",
+                "build",
+                "runtime_source_sha256",
+            }:
+                raise ValueError()
+            if (
+                app["name"] != "Beamo Wipe"
+                or app["version"] != __version__
+                or app["nwipe_pinned_version"] != NWIPE_PINNED_VERSION
+                or app["nwipe_pinned_commit"] != NWIPE_PINNED_COMMIT
+            ):
+                raise ValueError()
+            if app != application_identity():
+                raise ValueError()
+            d = p["discovery"]
+            if (
+                set(d) != {"status", "boot_identified"}
+                or type(d["boot_identified"]) is not bool
+                or d["status"]
+                not in {"failed", "boot_unidentified", "no_eligible_disks", "ready"}
+                or (
+                    d["status"] in {"ready", "no_eligible_disks"}
+                    and not d["boot_identified"]
+                )
+                or (d["status"] == "boot_unidentified" and d["boot_identified"])
+            ):
+                raise ValueError()
+            e = p["environment"]
+            if (
+                set(e) != {"ui", "architecture", "system"}
+                or e["ui"] not in {"graphical", "accessible", "console"}
+                or e["architecture"] not in {"x86_64", "aarch64", "arm64", "i686", "other"}
+                or e["system"] not in {"Linux", "Darwin", "Windows", "other"}
+            ):
+                raise ValueError()
+            t = p["time"]
+            if set(t) != {
+                "recorded_at_utc",
+                "wall_confidence",
+                "wall_provenance",
+                "session_elapsed_seconds",
+                "elapsed_source",
+            }:
+                raise ValueError()
+            wall = t["recorded_at_utc"]
+            if wall is not None:
+                if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", wall
+                ):
+                    raise ValueError()
+                datetime.datetime.fromisoformat(wall.replace("Z", "+00:00"))
+            if (
+                t["wall_confidence"] != ("unverified" if wall else "unavailable")
+                or t["wall_provenance"] != ("os_utc" if wall else "unavailable")
+                or t["elapsed_source"] != "monotonic"
+                or t["wall_confidence"] == "verified"
+            ):
+                raise ValueError()
+            elapsed = t["session_elapsed_seconds"]
+            if elapsed is not None and (
+                type(elapsed) not in {int, float}
+                or not math.isfinite(elapsed)
+                or elapsed < 0
+            ):
+                raise ValueError()
+            if not isinstance(p["events"], list) or not 1 <= len(p["events"]) <= MAX_EVENTS:
+                raise ValueError()
+            if any(
+                set(event) != {"code"} or event["code"] not in CODES
+                for event in p["events"]
+            ):
+                raise ValueError()
+            if p["events"][-1]["code"] != p["error_code"]:
+                raise ValueError()
+            return p
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError) as exc:
+>           raise SafetyError(INVALID_REPORT) from exc
+E           beamo_wipe.safety.SafetyError: Ungültiger oder nicht bereinigter Diagnosebericht.
+
+src/beamo_wipe/diagnostic_report.py:305: SafetyError
+=========================== short test summary info ============================
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[diagnostic-en-fr]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[diagnostic-en-de]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[diagnostic-fr-en]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[diagnostic-fr-de]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[diagnostic-de-en]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[diagnostic-de-fr]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[owner-en-en]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[owner-en-fr]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[owner-en-de]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[owner-fr-en]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[owner-fr-fr]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[owner-fr-de]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[owner-de-en]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[owner-de-fr]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[owner-de-de]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[sharing-en-en]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[sharing-en-fr]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[sharing-en-de]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[sharing-fr-en]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[sharing-fr-fr]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[sharing-fr-de]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[sharing-de-en]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[sharing-de-fr]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_worker_exports_controller_language[sharing-de-de]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[None]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[True]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[1]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[bad_language3]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[bad_language4]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[es]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[FR]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[ fr]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry[en\x00]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_legacy_request_without_language_is_english[fr]
+FAILED tests/test_export_worker_locale_pass4_20261019.py::test_legacy_request_without_language_is_english[de]
+35 failed, 5 passed in 1.50s

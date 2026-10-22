@@ -1,0 +1,11 @@
+{
+  "name": "final-go-vet",
+  "command": [
+    "go",
+    "vet",
+    "./..."
+  ],
+  "started_utc": "2026-10-21T05:34:05.278381+00:00",
+  "elapsed_seconds": 0.08,
+  "exit_code": 0
+}

@@ -1,0 +1,76 @@
+{
+  "reviewer": "runner_pass12",
+  "finished_utc": "2026-10-21T06:36:41.773918+00:00",
+  "baseline_commit": "b462e62005a752b0e5f2a066bda19bd9c79bbd8b",
+  "new_verified_defects": 0,
+  "unproved_candidates": [],
+  "repository_edits": [],
+  "ownership_released": true,
+  "reviewed_paths": [
+    "src/beamo_wipe/nwipe_runner.py",
+    "src/beamo_wipe/progress.py",
+    "src/beamo_wipe/engine_checks.py",
+    "src/beamo_wipe/models.py",
+    "src/beamo_wipe/methods.py",
+    "src/beamo_wipe/sleep_inhibit.py"
+  ],
+  "source_sha256": {
+    "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62",
+    "src/beamo_wipe/progress.py": "fef87a29ceabb1fb97b8abc521d55cea1ceb9428989104973783da6eb52c4fa6",
+    "src/beamo_wipe/engine_checks.py": "7a9d4682ca7d90a0eeb6cff9ae24a520554552c701b2728ab8f9c21895f5e27e",
+    "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+    "src/beamo_wipe/methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13",
+    "src/beamo_wipe/sleep_inhibit.py": "e04816215c0347980d03effed9afd75a1716a44a9471683dc7c83eb4a58eac55"
+  },
+  "focused": {
+    "cases": 1744,
+    "unique_ids": 1744,
+    "failures": 0,
+    "errors": 0,
+    "skips": [],
+    "child_umask": "022",
+    "private_72dpi_x11": true,
+    "tests_byte_identical": true,
+    "elapsed_seconds": 71.04
+  },
+  "focused_modules": 75,
+  "focused_warning_policy": "-W error",
+  "model": {
+    "states": 120,
+    "accepted_generations": 360,
+    "verified_success": 72,
+    "negative_terminal": 288,
+    "injected_refusals": 120,
+    "retained_uncertain": 30,
+    "duplicate_start_refusals": 360,
+    "mismatched_poll_refusals": 360,
+    "stale_generation_polls": 240,
+    "clean_retries": 360,
+    "native_callbacks": 0,
+    "mismatches": [],
+    "source_sha256": {
+      "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62",
+      "src/beamo_wipe/progress.py": "fef87a29ceabb1fb97b8abc521d55cea1ceb9428989104973783da6eb52c4fa6",
+      "src/beamo_wipe/engine_checks.py": "7a9d4682ca7d90a0eeb6cff9ae24a520554552c701b2728ab8f9c21895f5e27e",
+      "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+      "src/beamo_wipe/methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13",
+      "src/beamo_wipe/sleep_inhibit.py": "e04816215c0347980d03effed9afd75a1716a44a9471683dc7c83eb4a58eac55"
+    },
+    "scope": "Supporting fake process and owned regular-file model; overlaps focused/canonical tests. No engine, device, subprocess, signals or native callbacks."
+  },
+  "source_review": [
+    "Launch rejects duplicate active or ambiguous ownership before touching its log; known executable errors release ownership and new attempts clear previous verdicts.",
+    "Under-lock descriptor/log identity validation precedes fake Popen; log descriptor lifetime and cleanup refusal prevent reuse of unconfirmed ownership.",
+    "Progress read sequence and expected process binding reject stale generation updates; threaded ordering is covered by existing focused regressions.",
+    "Completion evaluation rejects non-int exit codes, malformed record endings, conflicting method counters, skip/activity contradictions, failures and unverifiable log identity.",
+    "Bounded completion scans retain relevant table/progress/native context; existing strict-warning focused tests cover snapshot growth and exact scan boundary sizes.",
+    "Sleep-inhibitor genuine process interruptions still propagate while optional diagnostics cannot interrupt confirmed engine retirement; all56PASS11regressions retained."
+  ],
+  "limits": [
+    "No fresh product defect proved; no speculative fix or old assertion change.",
+    "Supporting model/focused scenarios overlap canonical full-suite coverage; never sum counts as unique tests.",
+    "Model callbacks are scripted fakes and owned regular files. Focused existing tests use their fake fixtures and finite harmless helpers; no actual engine/device/inventory/mount/firmware/power/guest/network/remote/Docker operation.",
+    "Native, real-device, physical reconnect, firmware, full image qualification and pinned-browser verification are outside this bounded review.",
+    "Root retains independent validation and one serial full build/gate ownership."
+  ]
+}

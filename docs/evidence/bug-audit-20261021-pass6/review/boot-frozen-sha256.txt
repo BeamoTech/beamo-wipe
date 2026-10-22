@@ -1,0 +1,2 @@
+d38e14e8113763127decfb86c71420eeec42989ad6ed07655a58b94869317360  desktop/identity.go
+c6c22776ef992b4c75f6afe2ad3e587b04f7cf6d3870900349ea134f4f9bb38e  desktop/identity_dirty_null_pass6_20261021_test.go

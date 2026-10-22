@@ -1,0 +1,15 @@
+{
+  "name": "final-model-review_detour_layout_matrix",
+  "command": [
+    "env",
+    "PYTHONPATH=/workspace/beamo-wipe/src:/workspace/beamo-wipe/tests",
+    "BEAMO_WIPE_DRY_RUN=1",
+    "python3",
+    "-W",
+    "error",
+    "/workspace/beamo-tools/audit-pass11-20261021/root/model-replays/review_detour_layout_matrix.py"
+  ],
+  "started_utc": "2026-10-21T06:08:46.003306+00:00",
+  "elapsed_seconds": 0.97,
+  "exit_code": 0
+}

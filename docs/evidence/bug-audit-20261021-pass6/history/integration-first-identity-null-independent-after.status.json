@@ -1,0 +1,12 @@
+{
+  "name": "identity-null-independent-after",
+  "command": [
+    "/workspace/beamo-tools/beamo-dev",
+    "bash",
+    "-c",
+    "cd desktop; go test -count=1 -race -json -overlay=/workspace/beamo-tools/audit-pass6-20261021/root/identity-null-overlay.json -run=TestAuditRootIdentityNull ."
+  ],
+  "started_utc": "2026-10-21T02:25:33.877563+00:00",
+  "elapsed_seconds": 8.0,
+  "exit_code": 0
+}

@@ -1,0 +1,103 @@
+Beamo Wipe PASS3 boot/build/launcher review
+2026-10-19 UTC / boot_build_audit subagent
+Repository:/workspace/beamo-wipe
+Baseline:fa2ca72b648ef373c6215699e883296bc8db551d
+Instructions:current AGENTS.md, unfinished-work context and docs/ci.md; Blacksmith
+is current CI. Root owns the backlog and complete final gate.
+
+Reviewed contracts:
+- Desktop build source snapshots, prior ownership, per-launcher publication,
+  final output/source checks, manifest creation/readback and cleanup identity.
+- Live wrapper/kiosk startup and bounded recovery, executable staging/copy checks,
+  current boot menus, explicit power confirmations and no automatic erase.
+- Go CLI/HTTP readiness, exact firmware routes, stale revisions, busy/single-use
+  requests, pending BootNext refusal, rollback and Windows manual-only behavior.
+- Existing remote-only and native/hardware qualification boundaries remain.
+
+Original verified issue:final launcher receipt could describe different bytes.
+After both launcher hashes were verified, build() rehashed source inputs and then
+wrote the success receipt without checking outputs again. Editing either output
+in that interval produced build success plus desktop-build.json; the builder's
+own immediate verify_desktop_bundle then failed. Editing an output or replacing
+the receipt during receipt write/close likewise produced false success.
+
+Evidence before edits:
+- reproduce_final_manifest_gap.py initially proved4 failures/2 normal controls
+  across both outputs and dir_fd/path-fallback implementations. JSON retained at
+  final-manifest-gap-before.json; root independently replayed before approval.
+- reproduce_manifest_write_gap.py proved4 failures/2 controls for output or receipt
+  mutation during write; manifest-write-gap-before.json.
+- Original scripts/build_desktop.py archived in originals/build_desktop.py and
+  byte-compared to exact baseline HEAD successfully.
+- New receipt regression suite was run red before production edits:34 failed,
+  4 controls passed; final-receipt-red.txt. These38 cases cover final source
+  interval, receipt write/close, changed receipt inode or bytes, leaf links,
+  missing receipts, normal retries and failure of owned-receipt removal.
+
+Repair:
+- Revalidate every published launcher immediately before receipt creation and
+  after receipt close, retaining source, directory and lock checks.
+- Capture owned receipt identity on path fallback as well as dir_fd hosts.
+- Validate exact receipt bytes and unchanged regular inode before reporting
+  success; a late failure removes only unchanged bytes on the created inode.
+- Preserve foreign replacement paths and in-place edits. If deletion of a proven
+  owned receipt fails, retain the primary error and emit a cleanup warning.
+- Existing error contracts preserved. The first focused candidate had150 passes
+  and1 failure solely because an output-directory-change message differed;
+  production message corrected without changing that existing assertion.
+  Historical log:final-receipt-candidate-failure.txt.
+
+Intermediate candidate review (not a separate original-baseline bug class):
+Root requested bounded read-change controls. The initial receipt helper compared
+only inode before/after its read. A real regular-file edit during that read could
+therefore be accepted, or deleted during cleanup. The candidate reproduction
+proved4 bad cases/4 controls across both I/O implementations; root independently
+replayed it before the narrow amendment. Added8 regressions,4 red/4 controls;
+receipt-read-change-red.txt. Candidate source preserved at
+originals/build_desktop-before-read-span.py. The final helper compares
+(dev,inode,mode,uid,size,mtime_ns,ctime_ns) before/after the read; atime is excluded.
+The OSError catch remains narrow. The investigated RuntimeError hypothesis was
+not applicable to _read_output_file, which explicitly raises OSError for its
+native unsafe-output conditions; no arbitrary exception was promoted to a bug.
+
+Replays:
+- reproduce_final_manifest_original.py and reproduce_manifest_write_original.py
+  load archived baseline code and still reproduce expected assertion failures;
+  matching .log files retained.
+- Current reproduce_final_manifest_gap.py and reproduce_manifest_write_gap.py
+  pass and write only their respective after JSON files/logs, preserving original
+  evidence. Current source refuses false success and preserves foreign bytes.
+- reproduce_receipt_read_candidate.py loads the archived rejected intermediate
+  candidate and reproduces its expected failure; receipt-read-candidate.log.
+  Current reproduce_receipt_read_change.py passes; receipt-read-change-after.json
+  and receipt-read-change-after.log.
+
+Final affected gate:
+source /workspace/beamo-tools/activate.sh
+python -m pytest -o addopts= -q developer_tests/test_desktop_final_receipt_pass3_20261019.py developer_tests/test_desktop_output_replacement_pass2_20261019.py developer_tests/test_desktop_portability.py developer_tests/test_dev.py tests/test_desktop_output_swap_pass16.py tests/test_desktop_manifest_preserve_pass17_build.py tests/test_desktop_lock_pass11.py tests/test_desktop_prior_bundle_pass22_build.py tests/test_desktop_source_swap_pass36_build.py tests/test_desktop_windows_output_parent.py tests/test_desktop_recipe_digest_pass25_build.py tests/test_desktop_manifest_pass10.py tests/test_desktop_go_environment_20260924.py tests/test_build_desktop_pass9.py --junitxml=/workspace/beamo-tools/audit-pass3-20261019/boot/final-receipt-after.xml
+Result:159 passed in1.31s; final-receipt-after.txt and XML.
+New suite:46 cases total (38 original repair cases +8 candidate read-span cases).
+python -m ruff check scripts/build_desktop.py developer_tests/test_desktop_final_receipt_pass3_20261019.py
+python -m ruff format --check scripts/build_desktop.py developer_tests/test_desktop_final_receipt_pass3_20261019.py
+git diff --check
+Results:passed;2 files already formatted.
+
+Read-only adjacent checks:
+- Boot/kiosk/staging/copy/menu modules:67passed in2.74s;
+  boot-staging-adjacent.txt/XML.
+- Pinned Go race selection for restart/media/readiness/probe/manual/request
+  handling:PASS; go-focused.txt. Native inventory opt-in remained unset.
+
+Final tracked ownership/freeze hashes:
+2b782dd45085c37b04b0c63cdc79022d4bd49bfd1288caaee2b425eda5b7db75  scripts/build_desktop.py
+e210ad9f5e646b21418ff5a85678a5f939634e57d4567c900ef4434330fac778  developer_tests/test_desktop_final_receipt_pass3_20261019.py
+Only these two tracked files changed by this subagent; released to root for full
+integration review and final gates. No backlog, commit or push edits performed.
+
+Limits:
+These checks reject observed changes across the substantive source-hash,
+publication and receipt-read intervals; they do not claim atomic filesystem CAS.
+All probes use owned regular temp files, safe links/directories and fake compiler
+commands. No physical disk/USB, native inventory, firmware/power/erase action,
+Docker/ISO/QEMU, hosted CI, publication or native Windows acceptance executed.
+No broader platform or hardware acceptance claim follows from this review.

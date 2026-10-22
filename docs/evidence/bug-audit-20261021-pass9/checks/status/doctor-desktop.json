@@ -1,0 +1,13 @@
+{
+  "name": "doctor-desktop",
+  "command": [
+    "python3",
+    "dev.py",
+    "doctor",
+    "--for",
+    "desktop"
+  ],
+  "started_utc": "2026-10-21T04:55:00.803029+00:00",
+  "elapsed_seconds": 0.06,
+  "exit_code": 0
+}

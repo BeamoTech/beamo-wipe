@@ -179,7 +179,11 @@ def generate_keypair() -> tuple:
 
 
 def _b64decode(value: object, *, what: str) -> bytes:
-    if not isinstance(value, str) or not value.strip() or not B64_RE.fullmatch(value.strip()):
+    if (
+        not isinstance(value, str)
+        or not value.strip()
+        or not B64_RE.fullmatch(value.strip())
+    ):
         raise RuntimeError(f"{what} is not valid base64")
     try:
         return base64.b64decode(value.strip(), validate=True)
@@ -240,12 +244,16 @@ def verify_signature(
     if key_id(bytes(public_raw)) != key:
         raise RuntimeError("signature sidecar is for a different key")
     expected_fingerprint = signature.get("key_fingerprint")
-    if expected_fingerprint is not None and expected_fingerprint != fingerprint(bytes(public_raw)):
+    if expected_fingerprint is not None and expected_fingerprint != fingerprint(
+        bytes(public_raw)
+    ):
         raise RuntimeError("signature sidecar fingerprint does not match its key")
     ed25519, InvalidSignature = _ed25519()
     try:
         verifier = ed25519.Ed25519PublicKey.from_public_bytes(bytes(public_raw))
-        verifier.verify(_b64decode(blob, what="signature sidecar"), bytes(manifest_bytes))
+        verifier.verify(
+            _b64decode(blob, what="signature sidecar"), bytes(manifest_bytes)
+        )
     except (ValueError, InvalidSignature) as exc:
         raise RuntimeError("manifest signature is invalid") from exc
     return {"key_id": key, "manifest_sha256": digest}
@@ -281,13 +289,19 @@ def load_key_registry(data: Mapping[str, Any]) -> Dict[str, Dict[str, Any]]:
         status = entry.get("status")
         if status not in KEY_STATUSES:
             raise RuntimeError(f"key registry entry {key_id_text!r} has a bad status")
-        raw = _b64decode(entry.get("public_key"), what=f"key registry entry {key_id_text!r}")
+        raw = _b64decode(
+            entry.get("public_key"), what=f"key registry entry {key_id_text!r}"
+        )
         if len(raw) != 32:
             raise RuntimeError(f"key registry entry {key_id_text!r} is not 32 bytes")
         if key_id(raw) != key_id_text:
-            raise RuntimeError(f"key registry entry {key_id_text!r} id does not match its key")
+            raise RuntimeError(
+                f"key registry entry {key_id_text!r} id does not match its key"
+            )
         if fingerprint(raw) != entry.get("fingerprint"):
-            raise RuntimeError(f"key registry entry {key_id_text!r} fingerprint mismatch")
+            raise RuntimeError(
+                f"key registry entry {key_id_text!r} fingerprint mismatch"
+            )
         clean[key_id_text] = {
             "fingerprint": fingerprint(raw),
             "public_key": raw,
@@ -299,7 +313,9 @@ def load_key_registry(data: Mapping[str, Any]) -> Dict[str, Dict[str, Any]]:
 
 
 def verify_with_registry(
-    manifest_bytes: bytes, signature: Mapping[str, Any], registry: Mapping[str, Dict[str, Any]]
+    manifest_bytes: bytes,
+    signature: Mapping[str, Any],
+    registry: Mapping[str, Dict[str, Any]],
 ) -> Dict[str, Any]:
     """Verify a sidecar against the registry. Only active keys count.
 
@@ -366,29 +382,179 @@ def verify_release_acceptance(
     return {**result, "beamo_wipe_version": version}
 
 
-def _read_regular_bytes(path: Path, *, what: str, limit: int) -> bytes:
-    """Bound CLI input and refuse links or special files before reading."""
-    path = Path(path)
-    if os.name != "posix" and path.is_symlink():
-        raise RuntimeError(f"{what} cannot be safely read: {path}")
+_FILE_METADATA_FIELDS = (
+    "st_dev",
+    "st_ino",
+    "st_size",
+    "st_mode",
+    "st_uid",
+    "st_nlink",
+    "st_mtime_ns",
+    "st_ctime_ns",
+)
+_PARENT_IDENTITY_FIELDS = ("st_dev", "st_ino", "st_mode", "st_uid")
+
+
+def _metadata_values(metadata: os.stat_result, fields: tuple[str, ...]) -> tuple:
+    return tuple(getattr(metadata, field, None) for field in fields)
+
+
+def _validate_windows_parent(path: Path, *, what: str) -> os.stat_result:
+    """Reject links/reparse points in a non-POSIX parent path."""
+    current = Path(path.anchor)
     try:
-        fd = os.open(
-            path,
-            os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0),
+        for component in path.parent.parts[1:]:
+            current /= component
+            metadata = os.lstat(current)
+            attributes = getattr(metadata, "st_file_attributes", 0)
+            reparse = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400)
+            if not stat.S_ISDIR(metadata.st_mode) or attributes & reparse:
+                raise RuntimeError(f"{what} parent cannot be safely opened: {path}")
+        metadata = os.lstat(path.parent)
+    except OSError as exc:
+        raise RuntimeError(f"{what} parent cannot be safely opened: {path}") from exc
+    if not stat.S_ISDIR(metadata.st_mode):
+        raise RuntimeError(f"{what} parent cannot be safely opened: {path}")
+    return metadata
+
+
+def _open_pinned_parent(path: Path, *, what: str) -> tuple[Path, Optional[int], tuple]:
+    """Open every POSIX parent component without following a link."""
+    absolute = Path(os.path.abspath(os.fspath(Path(path))))
+    if not absolute.name or absolute.name in {".", ".."}:
+        raise RuntimeError(f"{what} path has no safe file name: {path}")
+    if os.name != "posix":
+        metadata = _validate_windows_parent(absolute, what=what)
+        return (
+            absolute,
+            None,
+            _metadata_values(metadata, _PARENT_IDENTITY_FIELDS),
         )
-    except OSError as exc:
-        raise RuntimeError(f"{what} cannot be safely read: {path}") from exc
+
+    flags = (
+        os.O_RDONLY
+        | getattr(os, "O_DIRECTORY", 0)
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_CLOEXEC", 0)
+    )
     try:
-        with os.fdopen(fd, "rb") as stream:
-            metadata = os.fstat(stream.fileno())
-            if not stat.S_ISREG(metadata.st_mode) or metadata.st_size > limit:
-                raise RuntimeError(f"{what} is not a bounded regular file: {path}")
-            raw = stream.read(limit + 1)
+        directory_fd = os.open(os.sep, flags)
     except OSError as exc:
-        raise RuntimeError(f"{what} cannot be safely read: {path}") from exc
-    if len(raw) > limit:
-        raise RuntimeError(f"{what} exceeds the input size limit: {path}")
-    return raw
+        raise RuntimeError(f"{what} parent cannot be safely opened: {path}") from exc
+    try:
+        for component in absolute.parent.parts[1:]:
+            next_fd = os.open(component, flags, dir_fd=directory_fd)
+            os.close(directory_fd)
+            directory_fd = next_fd
+        metadata = os.fstat(directory_fd)
+        if not stat.S_ISDIR(metadata.st_mode):
+            raise RuntimeError(f"{what} parent cannot be safely opened: {path}")
+        return (
+            absolute,
+            directory_fd,
+            _metadata_values(metadata, _PARENT_IDENTITY_FIELDS),
+        )
+    except (OSError, RuntimeError) as exc:
+        os.close(directory_fd)
+        if isinstance(exc, RuntimeError):
+            raise
+        raise RuntimeError(f"{what} parent cannot be safely opened: {path}") from exc
+
+
+def _require_parent_binding(
+    path: Path, directory_fd: Optional[int], identity: tuple, *, what: str
+) -> None:
+    """Require the requested parent path to still name the opened directory."""
+    _, current_fd, current_identity = _open_pinned_parent(path, what=what)
+    try:
+        if current_identity != identity:
+            raise RuntimeError(f"{what} parent changed while in use: {path}")
+        if directory_fd is not None and current_fd is not None:
+            opened_identity = _metadata_values(
+                os.fstat(directory_fd), _PARENT_IDENTITY_FIELDS
+            )
+            if opened_identity != current_identity:
+                raise RuntimeError(f"{what} parent changed while in use: {path}")
+    finally:
+        if current_fd is not None:
+            os.close(current_fd)
+
+
+def _named_metadata(path: Path, directory_fd: Optional[int]) -> os.stat_result:
+    if directory_fd is None:
+        return os.lstat(path)
+    return os.stat(path.name, dir_fd=directory_fd, follow_symlinks=False)
+
+
+def _read_descriptor(fd: int, limit: int) -> bytes:
+    os.lseek(fd, 0, os.SEEK_SET)
+    chunks = []
+    remaining = limit + 1
+    while remaining:
+        chunk = os.read(fd, min(1024 * 1024, remaining))
+        if not chunk:
+            break
+        chunks.append(chunk)
+        remaining -= len(chunk)
+    return b"".join(chunks)
+
+
+def _regular_metadata_is_bound(opened: os.stat_result, current: os.stat_result) -> bool:
+    return (
+        stat.S_ISREG(opened.st_mode)
+        and opened.st_nlink == 1
+        and _metadata_values(opened, _FILE_METADATA_FIELDS)
+        == _metadata_values(current, _FILE_METADATA_FIELDS)
+    )
+
+
+def _read_regular_bytes(path: Path, *, what: str, limit: int) -> bytes:
+    """Read one bounded inode through a parent path that stays link-free."""
+    absolute, directory_fd, parent_identity = _open_pinned_parent(path, what=what)
+    fd = None
+    try:
+        flags = (
+            os.O_RDONLY
+            | getattr(os, "O_NOFOLLOW", 0)
+            | getattr(os, "O_NONBLOCK", 0)
+            | getattr(os, "O_CLOEXEC", 0)
+        )
+        if directory_fd is None:
+            fd = os.open(absolute, flags)
+        else:
+            fd = os.open(absolute.name, flags, dir_fd=directory_fd)
+        # Read once before the first descriptor metadata handoff. A writer
+        # racing that handoff is then exposed by the required second read even
+        # on filesystems whose change timestamps advance only once per second.
+        first = _read_descriptor(fd, limit)
+        opened = os.fstat(fd)
+        if not stat.S_ISREG(opened.st_mode) or opened.st_size > limit:
+            raise RuntimeError(f"{what} is not a bounded regular file: {absolute}")
+        if opened.st_nlink != 1:
+            raise RuntimeError(f"{what} is not safely bound to its path: {absolute}")
+        middle = os.fstat(fd)
+        second = _read_descriptor(fd, limit)
+        final = os.fstat(fd)
+        named = _named_metadata(absolute, directory_fd)
+        _require_parent_binding(absolute, directory_fd, parent_identity, what=what)
+    except OSError as exc:
+        raise RuntimeError(f"{what} cannot be safely read: {absolute}") from exc
+    finally:
+        if fd is not None:
+            os.close(fd)
+        if directory_fd is not None:
+            os.close(directory_fd)
+    if len(first) > limit or len(second) > limit:
+        raise RuntimeError(f"{what} exceeds the input size limit: {absolute}")
+    if (
+        first != second
+        or len(first) != opened.st_size
+        or not _regular_metadata_is_bound(opened, middle)
+        or not _regular_metadata_is_bound(opened, final)
+        or not _regular_metadata_is_bound(opened, named)
+    ):
+        raise RuntimeError(f"{what} changed while being read: {absolute}")
+    return first
 
 
 def _read_json_file(path: Path, *, what: str) -> Any:
@@ -409,26 +575,74 @@ def _read_bytes_file(path: Path, *, what: str) -> bytes:
 
 
 def _write_new_file(path: Path, data: bytes, mode: int) -> None:
-    """Create a key file with final permissions before writing any bytes."""
-    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0)
-    fd = os.open(path, flags, mode)
-    with os.fdopen(fd, "wb") as stream:
+    """Create and verify one new file through a pinned, link-free parent."""
+    absolute, directory_fd, parent_identity = _open_pinned_parent(
+        path, what="output file"
+    )
+    payload = bytes(data)
+    flags = (
+        os.O_RDWR
+        | os.O_CREAT
+        | os.O_EXCL
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_CLOEXEC", 0)
+    )
+    fd = None
+    try:
+        if directory_fd is None:
+            fd = os.open(absolute, flags, mode)
+        else:
+            fd = os.open(absolute.name, flags, mode, dir_fd=directory_fd)
+        if os.name == "posix":
+            os.fchmod(fd, mode)
+        view = memoryview(payload)
+        while view:
+            written = os.write(fd, view)
+            if written <= 0:
+                raise OSError("short write")
+            view = view[written:]
+        os.fsync(fd)
+        opened = os.fstat(fd)
+        named = _named_metadata(absolute, directory_fd)
         if (
-            mode == 0o600
-            and os.name == "posix"
-            and stat.S_IMODE(os.fstat(stream.fileno()).st_mode) != 0o600
+            not _regular_metadata_is_bound(opened, named)
+            or opened.st_size != len(payload)
+            or (os.name == "posix" and stat.S_IMODE(opened.st_mode) != mode)
+            or _read_descriptor(fd, len(payload)) != payload
+            or _read_descriptor(fd, len(payload)) != payload
         ):
-            raise RuntimeError("key file permissions were not private at creation")
-        stream.write(data)
-        stream.flush()
-        os.fsync(stream.fileno())
+            raise RuntimeError(f"output file changed while being written: {absolute}")
+        if directory_fd is not None:
+            os.fsync(directory_fd)
+        _require_parent_binding(
+            absolute, directory_fd, parent_identity, what="output file"
+        )
+        final = os.fstat(fd)
+        current = _named_metadata(absolute, directory_fd)
+        if (
+            not _regular_metadata_is_bound(opened, final)
+            or not _regular_metadata_is_bound(opened, current)
+            or _read_descriptor(fd, len(payload)) != payload
+        ):
+            raise RuntimeError(f"output file changed while being written: {absolute}")
+    except FileExistsError:
+        raise
+    except OSError as exc:
+        raise RuntimeError(f"output file cannot be safely written: {absolute}") from exc
+    finally:
+        if fd is not None:
+            os.close(fd)
+        if directory_fd is not None:
+            os.close(directory_fd)
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(prog="release-signing")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    keygen = sub.add_parser("keygen", help="generate an operator key pair (ceremony use)")
+    keygen = sub.add_parser(
+        "keygen", help="generate an operator key pair (ceremony use)"
+    )
     keygen.add_argument("--private-out", required=True)
     keygen.add_argument("--public-out", required=True)
 

@@ -1,0 +1,10 @@
+{
+  "name": "artifact-inspection",
+  "command": [
+    "python3",
+    "/workspace/beamo-tools/audit-pass10-20261021/root/review_artifacts.py"
+  ],
+  "started_utc": "2026-10-21T05:34:34.567594+00:00",
+  "elapsed_seconds": 0.1,
+  "exit_code": 0
+}

@@ -33,6 +33,7 @@ STAGE_DONE_MARKER = "BEAMO_WIPE_STAGE_DONE"
 STAGE_FAILED_MARKER = "BEAMO_WIPE_STAGE_FAILED"
 STAGE_STALLED_MARKER = "BEAMO_WIPE_STAGE_STALLED"
 
+
 def _stage_copy():
     # A subsequent erase uses the owner's retained language. Resolve text
     # when rendering, rather than keeping the module's import-time English.
@@ -99,12 +100,7 @@ class StartupStages:
 
     def stalled(self) -> bool:
         """True once while the active stage overruns, for a 'still working' note."""
-        if (
-            self.done
-            or self.failed
-            or self._active is None
-            or self._stalled_reported
-        ):
+        if self.done or self.failed or self._active is None or self._stalled_reported:
             return False
         if self._clock() - self._active_since < self._stall_after:
             return False
@@ -139,24 +135,62 @@ class StartupRun:
     (Tk ``after``, GTK timeout, console sleep loop) shares one discipline.
     """
 
-    def __init__(self, build, *, clock=time.monotonic, stall_after_s: float = STALL_AFTER_S):
+    def __init__(
+        self, build, *, clock=time.monotonic, stall_after_s: float = STALL_AFTER_S
+    ):
         self.stages = StartupStages(clock=clock, stall_after_s=stall_after_s)
         self._build = build
         self._clock = clock
         self._queue: queue.Queue = queue.Queue()
         self._lock = threading.Lock()
         self._outcome = _MISSING
+        # Thread.start() may raise after the OS thread already exists.  Keep
+        # the target behind a decision gate until start() has returned and the
+        # caller can safely treat this run as accepted.
+        self._launch_lock = threading.Lock()
+        self._launch_decided = threading.Event()
+        self._launch_allowed = False
         self.thread = threading.Thread(
-            target=self._run, daemon=True, name="beamo-startup"
+            target=self._thread_entry, daemon=True, name="beamo-startup"
         )
 
     def start(self) -> None:
-        self.thread.start()
+        try:
+            self.thread.start()
+            # set() may wake the target before returning.  The shared lock
+            # keeps it from observing acceptance until both operations finish.
+            with self._launch_lock:
+                self._launch_decided.set()
+                self._launch_allowed = True
+        except BaseException as exc:
+            # A rejected native thread must not perform discovery after the
+            # presenter has closed and opened the blocked support route.
+            with self._launch_lock:
+                self._launch_allowed = False
+                try:
+                    self._launch_decided.set()
+                except BaseException as cleanup:
+                    add_note = getattr(exc, "add_note", None)
+                    if callable(add_note):
+                        add_note(
+                            "Startup worker rejection wake also failed: "
+                            f"{type(cleanup).__name__}"
+                        )
+            raise
 
     def report(self, stage: str) -> None:
         self._queue.put(stage)
 
+    def _thread_entry(self) -> None:
+        self._launch_decided.wait()
+        with self._launch_lock:
+            accepted = self._launch_allowed
+        if not accepted:
+            return
+        self._run()
+
     def _run(self) -> None:
+        """Build synchronously after admission; test presenters may call this."""
         try:
             outcome = self._build(self.report)
         except BaseException as exc:

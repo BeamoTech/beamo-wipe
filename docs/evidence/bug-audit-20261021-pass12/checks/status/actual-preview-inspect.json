@@ -1,0 +1,21 @@
+{
+  "name": "actual-preview-inspect",
+  "command": [
+    "env",
+    "BEAMO_ISOLATED_X11_TEST=1",
+    "BEAMO_WIPE_DRY_RUN=1",
+    "dbus-run-session",
+    "--",
+    "xvfb-run",
+    "-a",
+    "-n",
+    "1251",
+    "-s",
+    "-screen 0 1600x1000x24 -dpi 72",
+    "python3",
+    "/workspace/beamo-tools/audit-pass12-20261021/root/inspect_live_preview.py"
+  ],
+  "started_utc": "2026-10-21T06:54:07.284155+00:00",
+  "elapsed_seconds": 0.64,
+  "exit_code": 0
+}

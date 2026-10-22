@@ -1,0 +1,45 @@
+.F                                                                       [100%]
+=================================== FAILURES ===================================
+________________ test_stop_s_must_originate_in_new_modal[True] _________________
+
+ready = <beamo_wipe.wizard.Wizard object at 0x7fa1c2eb3610>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fa1c38256e0>
+prior_hold = True
+
+    @pytest.mark.parametrize('prior_hold',[False,True])
+    def test_stop_s_must_originate_in_new_modal(ready,monkeypatch,prior_hold):
+        w=ready
+        now=[0.]
+        w._clock=lambda:now[0]
+        original=w.confirm_stop
+        monkeypatch.setattr(w,'confirm_stop',lambda consent:original(consent,asynchronous=False))
+        events=[(5.1,-1)]+([(5.2,ord('s'))]if prior_hold else[])+[(5.3,10),(5.4,27),(5.5,ord('s'))]
+        class Terminal:
+            def __init__(self):self.events=iter(events)
+            def getmaxyx(self):return 1000,200
+            def getch(self):
+                try:now[0],ch=next(self.events);return ch
+                except StopIteration:w.wants_shutdown=True;return -1
+            def __getattr__(self,_name):return lambda *_a,**_kw:None
+        for name in ('_footer_lines','_chrome_lines'):
+            monkeypatch.setattr(console,name,lambda *_a:[])
+        for name in ('_curses_opt','_add','_paint_footer'):
+            monkeypatch.setattr(console,name,lambda *_a,**_kw:None)
+        monkeypatch.setattr(console.time,'monotonic',lambda:now[0])
+        monkeypatch.setattr(console.time,'sleep',lambda _seconds:None)
+        assert console._loop(Terminal(),w)==0
+        assert w.runner.started
+>       assert w.runner.cancelled is (not prior_hold)
+E       assert True is not True
+E        +  where True = <beamo_wipe.nwipe_runner.DryRunRunner object at 0x7fa1c2eb34d0>.cancelled
+E        +    where <beamo_wipe.nwipe_runner.DryRunRunner object at 0x7fa1c2eb34d0> = <beamo_wipe.wizard.Wizard object at 0x7fa1c2eb3610>.runner
+
+../beamo-tools/audit-pass5-20261021/ui/test_stop_key_screen_origin.py:32: AssertionError
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-pass5-20261021/ui/test_stop_key_screen_origin.py::test_stop_s_must_originate_in_new_modal[True]
+1 failed, 1 passed in 0.21s

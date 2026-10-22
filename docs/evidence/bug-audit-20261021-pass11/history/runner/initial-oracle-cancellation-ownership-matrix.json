@@ -1,0 +1,127 @@
+{
+  "states": 240,
+  "initial_positive_completions": 30,
+  "initial_negative_terminal_results": 96,
+  "cancelled_results": 66,
+  "uncertain_ownership_preserved": 48,
+  "recovery_terminal_classifications": 48,
+  "duplicate_terminal_calls": 222,
+  "native_callbacks": 0,
+  "mismatches": [
+    {
+      "method": "everyday",
+      "kind": "missing",
+      "mode": "natural_on_stop",
+      "error": "((False, 'completion_missing'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "everyday",
+      "kind": "partial",
+      "mode": "natural_on_stop",
+      "error": "((False, 'completion_missing'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "everyday",
+      "kind": "foreign",
+      "mode": "natural_on_stop",
+      "error": "((False, 'completion_missing'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "everyday",
+      "kind": "wrong_method",
+      "mode": "natural_on_stop",
+      "error": "((False, 'indeterminate'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "everyday",
+      "kind": "verify_failure",
+      "mode": "natural_on_stop",
+      "error": "((False, 'verification_failed'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "everyday",
+      "kind": "truncated",
+      "mode": "natural_on_stop",
+      "error": "((False, 'indeterminate'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "extra",
+      "kind": "missing",
+      "mode": "natural_on_stop",
+      "error": "((False, 'completion_missing'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "extra",
+      "kind": "partial",
+      "mode": "natural_on_stop",
+      "error": "((False, 'completion_missing'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "extra",
+      "kind": "foreign",
+      "mode": "natural_on_stop",
+      "error": "((False, 'completion_missing'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "extra",
+      "kind": "wrong_method",
+      "mode": "natural_on_stop",
+      "error": "((False, 'indeterminate'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "extra",
+      "kind": "verify_failure",
+      "mode": "natural_on_stop",
+      "error": "((False, 'verification_failed'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "extra",
+      "kind": "truncated",
+      "mode": "natural_on_stop",
+      "error": "((False, 'indeterminate'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "quick_zero",
+      "kind": "missing",
+      "mode": "natural_on_stop",
+      "error": "((False, 'completion_missing'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "quick_zero",
+      "kind": "partial",
+      "mode": "natural_on_stop",
+      "error": "((False, 'completion_missing'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "quick_zero",
+      "kind": "foreign",
+      "mode": "natural_on_stop",
+      "error": "((False, 'completion_missing'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "quick_zero",
+      "kind": "wrong_method",
+      "mode": "natural_on_stop",
+      "error": "((False, 'indeterminate'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "quick_zero",
+      "kind": "verify_failure",
+      "mode": "natural_on_stop",
+      "error": "((False, 'verification_failed'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    },
+    {
+      "method": "quick_zero",
+      "kind": "truncated",
+      "mode": "natural_on_stop",
+      "error": "((False, 'indeterminate'), WipeResult(ok=False, exit_code=0, summary='cancelled', logfile='/tmp/beamo-pass11-cancel-jvft1okc/owned.log', reason='cancelled'))"
+    }
+  ],
+  "source_sha256": {
+    "src/beamo_wipe/nwipe_runner.py": "6df52ba1d4a530d9cebdf5c0356d20e32c1c9de67fc3efddf0de635705b5be62",
+    "src/beamo_wipe/methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13",
+    "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+    "src/beamo_wipe/sleep_inhibit.py": "b7df5b80f7d87ae0bcac0be2ddcf082ff887e5492fb8da088237b5b02a9bf11d"
+  },
+  "scope": "Supporting scripted-fake process state-space through actual cancel/poll APIs. No actual subprocess, signal, engine, device or physical qualification. Not extra canonical tests."
+}

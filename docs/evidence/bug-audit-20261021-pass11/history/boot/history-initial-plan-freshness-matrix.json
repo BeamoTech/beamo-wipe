@@ -1,0 +1,18 @@
+{
+  "counts": {
+    "mismatches": 0,
+    "native_callbacks": 0,
+    "order_controls": 162,
+    "positive_plans": 162,
+    "refusals": 1620,
+    "sensitive_field_changes": 161,
+    "states": 162,
+    "unrelated_entry_controls": 162
+  },
+  "scope": "Actual plan/readiness functions; fake EFI entries and snapshots only; supporting model, not extra canonical coverage",
+  "source_sha256": {
+    "desktop/boot.go": "be7a7469ca9ae3109e3c6f3cbe48bf6f07139f20f3c1fb7db8b149d30bf90e89",
+    "desktop/boot_test.go": "f880928130cce761cf2eef223adff386d2c82148692b87447bbe4b4623fd8502",
+    "desktop/readiness.go": "eb67aec9069cede3e29348f2a33b317aa374252090fc433c9d24a41d77d26973"
+  }
+}

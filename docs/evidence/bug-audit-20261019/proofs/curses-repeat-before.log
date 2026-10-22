@@ -1,0 +1,33 @@
+{
+  "source": "/workspace/beamo-wipe/src/beamo_wipe/ui/console_wizard.py",
+  "sha256": "d9f78e2470823629b31c9e7b755a76efc61b03a06f03153834b27c47661e2fd8",
+  "records": [
+    {
+      "mode": "held-enter",
+      "screens_before_reads": [
+        "KEYBOARD",
+        "CONFIRM",
+        "METHOD"
+      ],
+      "final": "METHOD",
+      "runner_started": false
+    },
+    {
+      "mode": "fresh-enter-control",
+      "screens_before_reads": [
+        "KEYBOARD",
+        "CONFIRM",
+        "CONFIRM",
+        "CONFIRM",
+        "METHOD"
+      ],
+      "final": "METHOD",
+      "runner_started": false
+    }
+  ]
+}
+Traceback (most recent call last):
+  File "/workspace/beamo-tools/audit-20261019/wizard/curses_confirm_repeat_probe.py", line 52, in <module>
+    assert records[0]['final']=='CONFIRM', 'held Enter closed Keyboard and also accepted retained token'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: held Enter closed Keyboard and also accepted retained token

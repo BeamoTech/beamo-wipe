@@ -1,0 +1,6 @@
+{
+  "baseline": "d8a941adc16cf0650d482f512e4b921d702373c5",
+  "product_source_sha256": "30e005d148b07415b57fa293762f142a491fa1ec012661cf02ed2739bfb261e5",
+  "test_sha256": "be0b5f9e40ee3222fb96801a3db44ee7a1460b6bcb010816f2565ef912c2a12c",
+  "history": "Initial exact34-case module proved16failures/18controls before product edit. Canonical candidate exposed suite autouse app.live stub; final fixture restores actual classifier with proc/native guards unchanged. Final exact bytes replay untouched archived baseline source; all assertions preserved."
+}

@@ -1,0 +1,14 @@
+{
+  "name": "final-preview",
+  "command": [
+    "/workspace/beamo-tools/beamo-dev",
+    "env",
+    "BEAMO_GATE_CHILD=1",
+    "bash",
+    "scripts/ci-hosted.sh",
+    "preview"
+  ],
+  "started_utc": "2026-10-21T02:26:38.490529+00:00",
+  "elapsed_seconds": 16.58,
+  "exit_code": 0
+}

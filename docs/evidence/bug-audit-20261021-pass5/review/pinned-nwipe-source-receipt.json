@@ -1,0 +1,32 @@
+[
+  {
+    "name": "nwipe.c",
+    "url": "https://raw.githubusercontent.com/martijnvanbrummelen/nwipe/6082bde060091e66365d852a1877f2ee80c67105/src/nwipe.c",
+    "sha256": "c99b07ec9d60ca02238ee6c4a88ed8effe85f46dc4f3b07fbcab1d27ec429284",
+    "bytes": 56291
+  },
+  {
+    "name": "device.c",
+    "url": "https://raw.githubusercontent.com/martijnvanbrummelen/nwipe/6082bde060091e66365d852a1877f2ee80c67105/src/device.c",
+    "sha256": "38fcd1dc871fe1a11da43919c7dc440c8083898e77c4c67311b4bf1177820a42",
+    "bytes": 52132
+  },
+  {
+    "name": "logging.c",
+    "url": "https://raw.githubusercontent.com/martijnvanbrummelen/nwipe/6082bde060091e66365d852a1877f2ee80c67105/src/logging.c",
+    "sha256": "4c728df936f13aa808ca15d3a0cb9330582949d13b79a33b079c1c741d636bad",
+    "bytes": 43356
+  },
+  {
+    "name": "context.h",
+    "url": "https://raw.githubusercontent.com/martijnvanbrummelen/nwipe/6082bde060091e66365d852a1877f2ee80c67105/src/context.h",
+    "sha256": "44c359b176eb85cf010cf4c5822c4f8f40703810889a87ae56df47ec1b7eab5c",
+    "bytes": 16241
+  },
+  {
+    "name": "nwipe.h",
+    "url": "https://raw.githubusercontent.com/martijnvanbrummelen/nwipe/6082bde060091e66365d852a1877f2ee80c67105/src/nwipe.h",
+    "sha256": "14101028bc49e4ed30048175d824330592381caf368443a3836d97ea4b8f2bbb",
+    "bytes": 2759
+  }
+]

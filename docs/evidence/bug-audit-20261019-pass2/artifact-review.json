@@ -1,0 +1,73 @@
+{
+  "starting_head": "32819accc77f6ed1090c6f9f0e82800d9db7b7a2",
+  "files": {
+    "Start Beamo Wipe Linux": {
+      "bytes": 6574242,
+      "sha256": "76135498180e9d5de2cc4ab19d7f10ca8cfdcf6382461e474a4084a52b1f8b36",
+      "header_hex": "7f454c46",
+      "format": {
+        "kind": "ELF64 little-endian",
+        "machine": "x86_64",
+        "execution_tested": false
+      }
+    },
+    "Start Beamo Wipe.exe": {
+      "bytes": 6761472,
+      "sha256": "66743d4851850080018994cb5b799731597929686c1d7fb7d968f11746b1dc3a",
+      "header_hex": "4d5a9000",
+      "format": {
+        "kind": "PE32+",
+        "machine": "x86_64",
+        "execution_tested": false
+      }
+    },
+    "desktop-windows.test.exe": {
+      "bytes": 8971776,
+      "sha256": "4dac4bc741bed2201a9568567cbc3814fb8bed7d965e451666b4dca51bc94db0",
+      "header_hex": "4d5a9000",
+      "format": {
+        "kind": "PE32+",
+        "machine": "x86_64",
+        "execution_tested": false
+      }
+    }
+  },
+  "desktop_build_receipt": {
+    "files": {
+      "Start Beamo Wipe Linux": "76135498180e9d5de2cc4ab19d7f10ca8cfdcf6382461e474a4084a52b1f8b36",
+      "Start Beamo Wipe.exe": "66743d4851850080018994cb5b799731597929686c1d7fb7d968f11746b1dc3a"
+    },
+    "go": "go1.26.8",
+    "source_commit": "32819accc77f6ed1090c6f9f0e82800d9db7b7a2",
+    "source_dirty": true,
+    "source_sha256": "5a80aa88fbb8dd875ff4af95c49d1f0da9d1d869eac282e408588a5aa1fa129f",
+    "version": "0.2.13"
+  },
+  "native_execution_acceptance": false,
+  "source_frozen_files": 792,
+  "preview_normal_close": {
+    "command": [
+      "./preview"
+    ],
+    "fake_disks_only": true,
+    "display": ":450",
+    "dpi": 72,
+    "window_title": "Beamo Wipe \u2014 PREVIEW (nothing is erased)",
+    "normal_close_acceptance": true,
+    "returncode": 0,
+    "teardown": "Invoked actual registered WM_DELETE_WINDOW callback"
+  },
+  "preview_image": {
+    "local_path": "/workspace/beamo-tools/audit-pass2-20261019/root/actual-preview-72dpi.png",
+    "bytes": 34807,
+    "sha256": "922c213939cba144951d70292b63b29baea8fe7d43e4a5f4e7f1e1adc378e5a8",
+    "visually_inspected": true,
+    "fake_preview_only": true,
+    "included_in_public_artifacts": false
+  },
+  "critical_entrypoint_modes": {
+    "packaging/live/config/includes.chroot/usr/local/bin/beamo-wipe": "0o700",
+    "packaging/live/config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk": "0o700",
+    "packaging/live/config/hooks/normal/0500-build-nwipe.hook.chroot": "0o700"
+  }
+}

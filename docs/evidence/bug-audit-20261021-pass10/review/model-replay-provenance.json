@@ -1,0 +1,18 @@
+{
+  "typed_source_contract_matrix.py": {
+    "reviewer": "discovery",
+    "exact_script_sha256": "cc11c3e0a31326ead42c1011f655b7ebca45b60e6542d75b81068baaee09f448"
+  },
+  "log_snapshot_epoch_matrix.py": {
+    "reviewer": "runner",
+    "exact_script_sha256": "af46c1d46f9ca7eb8919839a7fddcfb3d7e76d2042367340d053acf2d2b513cd"
+  },
+  "refresh_generation_matrix.py": {
+    "reviewer": "ui",
+    "exact_script_sha256": "3446c959beac98f72cae86016a45b186df5c781fc385ed7de9fdfcc5c4a01bd6"
+  },
+  "bundle_readback_matrix.py": {
+    "reviewer": "recovery",
+    "exact_script_sha256": "6de28959a36705f23999a0dc6a5825edad599ad7100f907a59a639b0bcef480b"
+  }
+}

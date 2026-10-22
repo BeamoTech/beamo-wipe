@@ -1,0 +1,125 @@
+FFFFFF...                                                                [100%]
+=================================== FAILURES ===================================
+_ test_raw_model_change_hidden_by_presentation_is_refused[Owner Data-Owner Data-direct] _
+
+route = 'direct', label = 'Owner Data', fallback = 'Owner Data'
+
+    @pytest.mark.parametrize('route', ('direct', 'injected', 'production-metadata-stub'))
+    @pytest.mark.parametrize('label,fallback', (('Owner Data', 'Owner Data'), ('', 'Unknown model')))
+    def test_raw_model_change_hidden_by_presentation_is_refused(route, label, fallback):
+        old = scan(payload('', label), route)
+        new = scan(payload(fallback, label), route)
+        assert old.boot_identified and new.boot_identified
+        before, after = old.selectable[0], new.selectable[0]
+        assert before.model == after.model == fallback
+        assert before.raw_model == '' and after.raw_model == fallback
+        with patch.dict(os.environ, {'BEAMO_WIPE_DRY_RUN': '1'}):
+>           with pytest.raises(SafetyError, match='identity changed'):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+
+../beamo-tools/audit-20261019/storage/test_model_fallback_identity.py:53: Failed
+_ test_raw_model_change_hidden_by_presentation_is_refused[Owner Data-Owner Data-injected] _
+
+route = 'injected', label = 'Owner Data', fallback = 'Owner Data'
+
+    @pytest.mark.parametrize('route', ('direct', 'injected', 'production-metadata-stub'))
+    @pytest.mark.parametrize('label,fallback', (('Owner Data', 'Owner Data'), ('', 'Unknown model')))
+    def test_raw_model_change_hidden_by_presentation_is_refused(route, label, fallback):
+        old = scan(payload('', label), route)
+        new = scan(payload(fallback, label), route)
+        assert old.boot_identified and new.boot_identified
+        before, after = old.selectable[0], new.selectable[0]
+        assert before.model == after.model == fallback
+        assert before.raw_model == '' and after.raw_model == fallback
+        with patch.dict(os.environ, {'BEAMO_WIPE_DRY_RUN': '1'}):
+>           with pytest.raises(SafetyError, match='identity changed'):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+
+../beamo-tools/audit-20261019/storage/test_model_fallback_identity.py:53: Failed
+_ test_raw_model_change_hidden_by_presentation_is_refused[Owner Data-Owner Data-production-metadata-stub] _
+
+route = 'production-metadata-stub', label = 'Owner Data'
+fallback = 'Owner Data'
+
+    @pytest.mark.parametrize('route', ('direct', 'injected', 'production-metadata-stub'))
+    @pytest.mark.parametrize('label,fallback', (('Owner Data', 'Owner Data'), ('', 'Unknown model')))
+    def test_raw_model_change_hidden_by_presentation_is_refused(route, label, fallback):
+        old = scan(payload('', label), route)
+        new = scan(payload(fallback, label), route)
+        assert old.boot_identified and new.boot_identified
+        before, after = old.selectable[0], new.selectable[0]
+        assert before.model == after.model == fallback
+        assert before.raw_model == '' and after.raw_model == fallback
+        with patch.dict(os.environ, {'BEAMO_WIPE_DRY_RUN': '1'}):
+>           with pytest.raises(SafetyError, match='identity changed'):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+
+../beamo-tools/audit-20261019/storage/test_model_fallback_identity.py:53: Failed
+_ test_raw_model_change_hidden_by_presentation_is_refused[-Unknown model-direct] _
+
+route = 'direct', label = '', fallback = 'Unknown model'
+
+    @pytest.mark.parametrize('route', ('direct', 'injected', 'production-metadata-stub'))
+    @pytest.mark.parametrize('label,fallback', (('Owner Data', 'Owner Data'), ('', 'Unknown model')))
+    def test_raw_model_change_hidden_by_presentation_is_refused(route, label, fallback):
+        old = scan(payload('', label), route)
+        new = scan(payload(fallback, label), route)
+        assert old.boot_identified and new.boot_identified
+        before, after = old.selectable[0], new.selectable[0]
+        assert before.model == after.model == fallback
+        assert before.raw_model == '' and after.raw_model == fallback
+        with patch.dict(os.environ, {'BEAMO_WIPE_DRY_RUN': '1'}):
+>           with pytest.raises(SafetyError, match='identity changed'):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+
+../beamo-tools/audit-20261019/storage/test_model_fallback_identity.py:53: Failed
+_ test_raw_model_change_hidden_by_presentation_is_refused[-Unknown model-injected] _
+
+route = 'injected', label = '', fallback = 'Unknown model'
+
+    @pytest.mark.parametrize('route', ('direct', 'injected', 'production-metadata-stub'))
+    @pytest.mark.parametrize('label,fallback', (('Owner Data', 'Owner Data'), ('', 'Unknown model')))
+    def test_raw_model_change_hidden_by_presentation_is_refused(route, label, fallback):
+        old = scan(payload('', label), route)
+        new = scan(payload(fallback, label), route)
+        assert old.boot_identified and new.boot_identified
+        before, after = old.selectable[0], new.selectable[0]
+        assert before.model == after.model == fallback
+        assert before.raw_model == '' and after.raw_model == fallback
+        with patch.dict(os.environ, {'BEAMO_WIPE_DRY_RUN': '1'}):
+>           with pytest.raises(SafetyError, match='identity changed'):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+
+../beamo-tools/audit-20261019/storage/test_model_fallback_identity.py:53: Failed
+_ test_raw_model_change_hidden_by_presentation_is_refused[-Unknown model-production-metadata-stub] _
+
+route = 'production-metadata-stub', label = '', fallback = 'Unknown model'
+
+    @pytest.mark.parametrize('route', ('direct', 'injected', 'production-metadata-stub'))
+    @pytest.mark.parametrize('label,fallback', (('Owner Data', 'Owner Data'), ('', 'Unknown model')))
+    def test_raw_model_change_hidden_by_presentation_is_refused(route, label, fallback):
+        old = scan(payload('', label), route)
+        new = scan(payload(fallback, label), route)
+        assert old.boot_identified and new.boot_identified
+        before, after = old.selectable[0], new.selectable[0]
+        assert before.model == after.model == fallback
+        assert before.raw_model == '' and after.raw_model == fallback
+        with patch.dict(os.environ, {'BEAMO_WIPE_DRY_RUN': '1'}):
+>           with pytest.raises(SafetyError, match='identity changed'):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'beamo_wipe.safety.SafetyError'>
+
+../beamo-tools/audit-20261019/storage/test_model_fallback_identity.py:53: Failed
+=========================== short test summary info ============================
+FAILED ../beamo-tools/audit-20261019/storage/test_model_fallback_identity.py::test_raw_model_change_hidden_by_presentation_is_refused[Owner Data-Owner Data-direct]
+FAILED ../beamo-tools/audit-20261019/storage/test_model_fallback_identity.py::test_raw_model_change_hidden_by_presentation_is_refused[Owner Data-Owner Data-injected]
+FAILED ../beamo-tools/audit-20261019/storage/test_model_fallback_identity.py::test_raw_model_change_hidden_by_presentation_is_refused[Owner Data-Owner Data-production-metadata-stub]
+FAILED ../beamo-tools/audit-20261019/storage/test_model_fallback_identity.py::test_raw_model_change_hidden_by_presentation_is_refused[-Unknown model-direct]
+FAILED ../beamo-tools/audit-20261019/storage/test_model_fallback_identity.py::test_raw_model_change_hidden_by_presentation_is_refused[-Unknown model-injected]
+FAILED ../beamo-tools/audit-20261019/storage/test_model_fallback_identity.py::test_raw_model_change_hidden_by_presentation_is_refused[-Unknown model-production-metadata-stub]
+6 failed, 3 passed in 0.17s

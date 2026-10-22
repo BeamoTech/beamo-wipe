@@ -1,0 +1,24 @@
+{
+  "counts": {
+    "age_refusals": 48,
+    "busy_preservations": 72,
+    "cases": 216,
+    "manual_restart_refusals": 4,
+    "mismatches": 0,
+    "native_callbacks": 0,
+    "new_idle_retirements": 24,
+    "normal_checks": 12,
+    "normal_closes": 12,
+    "normal_restarts": 4,
+    "post_retirement_refusals": 96,
+    "preclosed_idempotence": 72,
+    "preview_restarts": 4,
+    "repeated_retirements": 96,
+    "state_reads": 12
+  },
+  "scope": "Pure fake API and clock retirement law; no native qualification",
+  "source_sha256": {
+    "desktop/close_admission_pass10_20261021_test.go": "c08c7abcffa401780e3ab5a2157ef981d78039607ce5b128acd48db1919e581f",
+    "desktop/main.go": "2ada8ea89c8f1ca41cdfe9b5007c38d9c0386d880843ca9519459112d9713b60"
+  }
+}

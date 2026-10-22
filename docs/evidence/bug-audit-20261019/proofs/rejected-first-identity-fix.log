@@ -1,0 +1,41 @@
+........................................................................ [  9%]
+........................................................................ [ 19%]
+........................................................................ [ 29%]
+...................................F.................................... [ 39%]
+........................................................................ [ 49%]
+........................................................................ [ 58%]
+........................................................................ [ 68%]
+........................................................................ [ 78%]
+........................................................................ [ 88%]
+........................................................................ [ 98%]
+.............                                                            [100%]
+=================================== FAILURES ===================================
+_______________ test_toctou_wwn_vendor_model_change_fails_closed _______________
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-8/test_toctou_wwn_vendor_model_c0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fe15ecfeeb0>
+
+    def test_toctou_wwn_vendor_model_change_fails_closed(tmp_path, monkeypatch):
+        from dataclasses import replace
+    
+        for field, value in [("wwn", "WWN-CHANGED"), ("vendor", "VENDOR-CHANGED"), ("model", "MODEL-CHANGED")]:
+            wiz, spy, _, target = _make_wizard_ready_for_erase(tmp_path, monkeypatch)
+            mutated = replace(target, **{field: value})
+            from beamo_wipe.models import DiscoveryResult
+    
+            fresh = DiscoveryResult(disks=tuple(mutated if d.path == target.path else d for d in wiz.discovery.disks), selectable=tuple(mutated if d.path == target.path else d for d in wiz.discovery.selectable), boot=wiz.discovery.boot, boot_identified=True)
+            wiz._rediscover = lambda f=fresh: f  # type: ignore[attr-defined]
+            wiz.confirm_erase()
+>           assert spy.start_calls == []
+E           AssertionError: assert [WipeRequest(...172c9914f4'))] == []
+E             
+E             Left contains one more item: WipeRequest(device='/dev/nvme0n1', method=<MethodId.EVERYDAY: 'everyday'>, boot_device='/dev/sdb', logfile='/tmp/pytes..., 16000000000, 'Beamo Wipe', '', '', 'USB', 'HDD', '244acd9b5a0011a3b9b66fc72686d1290839534f3db53eeb56b815172c9914f4'))
+E             Use -v to get more diff
+
+tests/test_boot_exclusion_fails_closed.py:1224: AssertionError
+----------------------------- Captured stderr call -----------------------------
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+beamo-wipe [safety] rdev_check_skipped: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_boot_exclusion_fails_closed.py::test_toctou_wwn_vendor_model_change_fails_closed

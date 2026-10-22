@@ -1,0 +1,48 @@
+{
+  "agent": "runner_pass5",
+  "baseline": "e4871239f02e46137fb6d8df64b5880ae2ea4b4d",
+  "outcome": "NO NEW VERIFIED DEFECT",
+  "tracked_edits": false,
+  "source_hashes": {
+    "src/beamo_wipe/nwipe_runner.py": "53a518cd19001dda8207b6b83526b09c9e8147148a9eb7ee77cb57c1b82e8b66",
+    "src/beamo_wipe/engine_checks.py": "7a9d4682ca7d90a0eeb6cff9ae24a520554552c701b2728ab8f9c21895f5e27e",
+    "src/beamo_wipe/progress.py": "fef87a29ceabb1fb97b8abc521d55cea1ceb9428989104973783da6eb52c4fa6",
+    "src/beamo_wipe/methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13",
+    "src/beamo_wipe/sleep_inhibit.py": "b7df5b80f7d87ae0bcac0be2ddcf082ff887e5492fb8da088237b5b02a9bf11d",
+    "src/beamo_wipe/evidence.py": "512c9b024b3231bf2625b6c802a8dc2282c275153b62e2995d4d01ba9466b5c5"
+  },
+  "checks": {
+    "focused-baseline.xml": {
+      "failure": 0,
+      "error": 0,
+      "skipped": 0,
+      "passed": 165
+    },
+    "final-adjacent.xml": {
+      "failure": 0,
+      "error": 0,
+      "skipped": 0,
+      "passed": 1380
+    }
+  },
+  "projection_matrix": {
+    "seed": 2026102105,
+    "fake_logs": 2000,
+    "methods_per_log": 3,
+    "outcome_or_check_payload_differences": 0
+  },
+  "pinned_source_review": {
+    "commit": "6082bde060091e66365d852a1877f2ee80c67105",
+    "source_receipt": "pinned-source/receipt.json",
+    "serial_limit": 20,
+    "serial_control_normalization": true,
+    "status_model_limit": 17,
+    "status_serial_limit": 20
+  },
+  "limits": [
+    "No actual inventory, device read/write, nwipe, mount, firmware, power, guest or hosted action.",
+    "Test harnesses use fake engine callbacks/ordinary files. Existing lightweight test helper subprocesses do not execute nwipe.",
+    "No staging/commit/backlog/remote write or delegated subtasks.",
+    "Focused selections overlap canonical tests and are not extra unique canonical passes."
+  ]
+}

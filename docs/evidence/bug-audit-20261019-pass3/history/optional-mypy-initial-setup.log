@@ -1,0 +1,13 @@
+/workspace/beamo-tools/audit-pass3-20261019/reports/baseline/session_recovery.py:18: error: Skipping analyzing "beamo_wipe": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+/workspace/beamo-tools/audit-pass3-20261019/reports/baseline/session_recovery.py:19: error: Skipping analyzing "beamo_wipe.models": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+/workspace/beamo-tools/audit-pass3-20261019/reports/baseline/session_recovery.py:19: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+/workspace/beamo-tools/audit-pass3-20261019/reports/baseline/session_recovery.py:20: error: Skipping analyzing "beamo_wipe.safety": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+/workspace/beamo-tools/audit-pass3-20261019/reports/baseline/session_recovery.py:94: error: Skipping analyzing "beamo_wipe.support_export": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+/workspace/beamo-tools/audit-pass3-20261019/reports/baseline/session_recovery.py:254: error: Skipping analyzing "beamo_wipe.diagnostic_report": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+/workspace/beamo-tools/audit-pass3-20261019/reports/baseline/session_recovery.py:467: error: Skipping analyzing "beamo_wipe.nwipe_runner": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+/workspace/beamo-tools/audit-pass3-20261019/reports/baseline/session_recovery.py:570: error: Value of type "dict[Any, Any] | None" is not indexable  [index]
+/workspace/beamo-tools/audit-pass3-20261019/reports/baseline/session_recovery.py:581: error: Skipping analyzing "beamo_wipe.evidence": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+/workspace/beamo-tools/audit-pass3-20261019/reports/baseline/session_recovery.py:582: error: Skipping analyzing "beamo_wipe.outcomes": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+/workspace/beamo-tools/audit-pass3-20261019/reports/baseline/session_recovery.py:584: error: Value of type "dict[Any, Any] | None" is not indexable  [index]
+/workspace/beamo-tools/audit-pass3-20261019/reports/baseline/session_recovery.py:615: error: Value of type "dict[Any, Any] | None" is not indexable  [index]
+Found 11 errors in 1 file (checked 1 source file)

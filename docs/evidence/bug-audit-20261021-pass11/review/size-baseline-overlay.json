@@ -1,0 +1,6 @@
+{
+  "Replace": {
+    "/workspace/beamo-wipe/desktop/io.go": "/workspace/beamo-tools/audit-pass11-20261021/root/baseline-io.go",
+    "/workspace/beamo-wipe/desktop/output_size_root_external_test.go": "/workspace/beamo-tools/audit-pass11-20261021/root/output_size_probe_test.go"
+  }
+}

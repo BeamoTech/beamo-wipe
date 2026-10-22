@@ -1,0 +1,16 @@
+{
+  "name": "final-model-discovery",
+  "command": [
+    "env",
+    "PYTHONPATH=/workspace/beamo-wipe/src:/workspace/beamo-wipe/tests",
+    "python3",
+    "-W",
+    "error",
+    "/workspace/beamo-tools/audit-pass12-20261021/root/model-replays/probe_identity_freshness.py",
+    "--output",
+    "/workspace/beamo-tools/audit-pass12-20261021/root/model-replays/identity-freshness.json"
+  ],
+  "started_utc": "2026-10-21T06:51:56.288102+00:00",
+  "elapsed_seconds": 2.28,
+  "exit_code": 0
+}

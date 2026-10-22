@@ -1,0 +1,35 @@
+{
+  "baseline_commit": "32819accc77f6ed1090c6f9f0e82800d9db7b7a2",
+  "reviewed": [
+    "wizard.py: start claim, stop consent, asynchronous retries, shutdown/recovery ownership, keyboard layout invalidation, language and countdown state",
+    "ui/tk_wizard.py: callback generations, key repeat, refresh handoff, review rendering and geometry",
+    "ui/accessible_wizard.py: key input, refresh wake/claim ownership, GTK startup and cleanup lifecycle",
+    "ui/console_wizard.py: independent confirm loop, paged review, natural navigation, per-screen scroll lifetime"
+  ],
+  "finding": {
+    "id": "UI-PASS2-CURSES-SCROLL",
+    "source_original_sha256": "2385cf7f3f105a1a0f8e2266bc4f93145d7b4d8efbb6144f9d84fc9eb3e74ddf",
+    "trigger": "Page down Method, open Limits with L; shared body offset opens the new page midway through its warnings. Limits back and Keyboard detours likewise retain unrelated scroll.",
+    "fix": "Reset shared body offset whenever screen changes; preserve same-screen paging and the existing visible-review overlay/countdown.",
+    "original_regressions": "4 failed, 3 within-screen controls passed",
+    "fixed_focused": "90 passed in 6.39s",
+    "verification": [
+      "Ruff targeted PASS",
+      "mypy console_wizard.py PASS",
+      "git diff --check PASS",
+      "Original isolated actual-Wizard fake-terminal reproduction now PASS"
+    ]
+  },
+  "additional_geometry_evidence": {
+    "status": "Recorded; not promoted to a separate authorization finding",
+    "source": "ui/tk_wizard.py",
+    "source_sha256": "028e13c7d64c230aaaabfbd806ae900c41c64acd8e07334d3d38abd8af6c901f",
+    "results": "Destructive warning fully visible at 1600x1000 standard and 800x600 standard. At 800x600 extra text its final 6 vertical pixels extend beyond the scroll viewport; warning remains partly visible and scroll is available.",
+    "log": "tk-review-visibility-original.log"
+  },
+  "final_sha256": {
+    "src/beamo_wipe/ui/console_wizard.py": "7cce42435bc5d87021bb52628fd0cf220c1872941e7cd3b3ddca0f357f7b73a0",
+    "tests/test_console_scroll_transition_pass2_20261019.py": "211c26483b990a474e204378faaa40f936550e3c048909c8bf28ae2f5994c49b"
+  },
+  "safety": "Only fake devices, inert terminal frames and owned private 72-DPI Xvfb used. No real wipe, device writes, power actions, CI, commits or pushes. Root owns integrated gates and backlog."
+}

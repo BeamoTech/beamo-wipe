@@ -1,0 +1,8 @@
+{
+  "initial_shell_umask": "0077",
+  "requested_fixture_directory_mode": "0755",
+  "actual_fixture_mode_before_product": "0700",
+  "isolated_rerun_umask": "0022",
+  "repository_edits": false,
+  "initial_history": "focused.log / focused.xml / focused.status.json"
+}

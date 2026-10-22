@@ -1,0 +1,14 @@
+{
+  "name": "final-lint",
+  "command": [
+    "/workspace/beamo-tools/beamo-dev",
+    "env",
+    "BEAMO_GATE_CHILD=1",
+    "bash",
+    "scripts/ci-hosted.sh",
+    "lint"
+  ],
+  "started_utc": "2026-10-21T03:35:51.364497+00:00",
+  "elapsed_seconds": 17.72,
+  "exit_code": 0
+}

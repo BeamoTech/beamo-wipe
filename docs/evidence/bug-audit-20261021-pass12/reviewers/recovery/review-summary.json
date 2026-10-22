@@ -1,0 +1,64 @@
+{
+  "review": "PASS12 recovery/report/privacy/support/signing",
+  "baseline": "b462e62005a752b0e5f2a066bda19bd9c79bbd8b",
+  "recorded_utc": "2026-10-21T06:36:33.788209+00:00",
+  "reports": {
+    "focused-before": {
+      "total": 519,
+      "unique_ids": 519,
+      "passed": 517,
+      "failure": 0,
+      "error": 0,
+      "skipped": 2,
+      "junit_sha256": "eb09d2bc04cd404c3a666291a05bf4cf098691802339bcdfc3e7769ffbd45c24"
+    },
+    "tk-focused": {
+      "total": 2,
+      "unique_ids": 2,
+      "passed": 2,
+      "failure": 0,
+      "error": 0,
+      "skipped": 0,
+      "junit_sha256": "d719c26616325c1dce091432227c4492bb7f0935a19307b730d74eac8c058d7c"
+    },
+    "report-intent-proof-before": {
+      "total": 6,
+      "unique_ids": 6,
+      "passed": 2,
+      "failure": 4,
+      "error": 0,
+      "skipped": 0,
+      "junit_sha256": "509083fac88be5b6793a13516a9f2e5fcf73bb1d00734f8bad7909bc026fd6ce"
+    }
+  },
+  "existing_unique_final_passes": 519,
+  "existing_final_skips": [],
+  "repository_edits": [
+    "src/beamo_wipe/report_intent.py",
+    "tests/test_report_intent_named_snapshot_pass12_20261021.py"
+  ],
+  "proved_candidates": [
+    {
+      "source": "src/beamo_wipe/report_intent.py",
+      "defect": "load final named stat ignores mode/nlink/ctime changes after final fstat",
+      "proof": "test_report_intent_final_named_metadata.py",
+      "before": "4 failed refusal expectations; 2 normal controls passed",
+      "status": "root independently reproduced; minimal repair implemented with 8 strict passing new regression cases"
+    }
+  ],
+  "model": "journal-admission-model.json",
+  "canonical_coverage_addition": 0,
+  "limits": [
+    "Owned regular files and fake process/engine data only.",
+    "No device/inventory/engine/mount/firmware/power/guest/network/remote writes.",
+    "Native physical image browser and publication remain root-owned/unverified."
+  ],
+  "ownership_released": true,
+  "artifact_sha256": {
+    "journal_admission_model.py": "9fe23718bdc251a6974fd0e02c39916fce6704967a64a1408288c346dfd7f744",
+    "journal-admission-model.json": "10682ffd62b7547014e4f4e78d34e4a94349952f31d74ece1d5ee6e00ed5cf11",
+    "test_report_intent_final_named_metadata.py": "251c6ef72e656592e590e494477fa10fefea0e96103605d5d7e3624104df572b",
+    "source-sha256-before.json": "867018f78274dd3f9af5993b327475471ed1c03ae93aeeb15765556138422cb6"
+  },
+  "repair_summary": "repair-summary.json"
+}

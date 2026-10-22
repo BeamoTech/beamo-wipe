@@ -1,0 +1,36 @@
+{
+  "audit": "bug-audit-20261021-pass14",
+  "baseline_commit": "30e91206af8d176e7c8881dd0d5ed91c52f11168",
+  "branch": "fix/safety-audit-20261019",
+  "date_utc": "2026-10-21",
+  "baseline_regressions": {
+    "go_controls": 1,
+    "go_failures": 1,
+    "python_controls": 15,
+    "python_failures": 83
+  },
+  "desktop_artifacts": {
+    "go_version": "go1.26.8",
+    "linux_sha256": "29af764ea12e5e22db5bb52b1dc0f25cc00301bfff8c742824774e6d54a72b02",
+    "version": "0.2.13",
+    "windows_sha256": "e74d00004331ce20363a1949dae00235fe1f79916cd31fe24eac5f4a7b00212f"
+  },
+  "final_python": {
+    "deselected": 2,
+    "errors": 0,
+    "failures": 0,
+    "junit_sha256": "d46c8f709c5b466b040cc40b7ed56e914f28840cbd0941b6c276e71e3391cf78",
+    "passed": 12065,
+    "selected": 12092,
+    "skipped": 27,
+    "warnings_as_errors": true
+  },
+  "preview": {
+    "display": ":250",
+    "dpi": 72,
+    "fake_disks_only": true,
+    "normal_close_returncode": 0,
+    "png_sha256": "922c213939cba144951d70292b63b29baea8fe7d43e4a5f4e7f1e1adc378e5a8"
+  },
+  "publication": "local only; no push, PR, merge, deployment, or release"
+}

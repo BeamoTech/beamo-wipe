@@ -653,7 +653,8 @@ def test_orca_announces_every_result(tmp_path, request):
         assert "warning" not in result.stdout.lower(), result.stdout
         return
     ui = request.getfixturevalue("ui")
-    assert shutil.which("orca"), "The supported Linux image requires Orca"
+    orca_executable = shutil.which("orca")
+    assert orca_executable, "The supported Linux image requires Orca"
     assert os.environ.get("DBUS_SESSION_BUS_ADDRESS"), "Use dbus-run-session"
     audio = subprocess.Popen(
         ["pulseaudio", "--daemonize=no", "--exit-idle-time=30"],
@@ -666,7 +667,7 @@ def test_orca_announces_every_result(tmp_path, request):
             sys.executable,
             "-c",
             """import runpy, sys
-entry = runpy.run_path('/usr/bin/orca', run_name='orca_entry')
+entry = runpy.run_path(sys.argv[2], run_name='orca_entry')
 from orca import debug
 # Line buffering changes only diagnostic delivery, not Orca speech generation.
 debug.debugFile = open(sys.argv[1], 'w', buffering=1)
@@ -676,6 +677,7 @@ sys.argv = ['orca']
 sys.exit(entry['main']())
 """,
             str(logfile),
+            orca_executable,
         ],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
