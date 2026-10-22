@@ -976,6 +976,8 @@ def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypa
     x11.XCloseDisplay.argtypes = [ctypes.c_void_p]
     xtst.XTestFakeKeyEvent.argtypes = [ctypes.c_void_p, ctypes.c_uint, ctypes.c_int, ctypes.c_ulong]
     monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
+    markers = []
+    monkeypatch.setattr("beamo_wipe.ui.tk_wizard.emit_serial_marker", markers.append)
     wiz, app = ui(fail=True)
     wiz.preview = False
     wiz.runner.duration_s = 0.05
@@ -1022,11 +1024,13 @@ def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypa
         assert app._report_space_release_pending
         assert save.winfo_exists()
         assert not wiz.wants_shutdown
+        releases_before_hold = markers.count("BEAMO_WIPE_KEY_SPACE_RELEASED")
         held_until = time.monotonic() + 1.2
         while time.monotonic() < held_until:
             app.root.update()
             time.sleep(0.01)
         assert app._space_held
+        assert markers.count("BEAMO_WIPE_KEY_SPACE_RELEASED") == releases_before_hold
         assert not wiz.wants_shutdown
         xtst.XTestFakeKeyEvent(connection, code, 0, 0)
         x11.XFlush(connection)
@@ -1035,6 +1039,7 @@ def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypa
             app.root.update()
             time.sleep(0.01)
         assert not app._space_held, "server-delivered Space release was lost"
+        assert markers.count("BEAMO_WIPE_KEY_SPACE_RELEASED") == releases_before_hold + 1
         assert not save.winfo_exists()
         assert not wiz.wants_shutdown
     finally:

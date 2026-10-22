@@ -1469,6 +1469,7 @@ class TkWizard:
             self._return_release_time: Optional[int] = None
             self._space_held = False
             self._space_release_after: Optional[str] = None
+            self._space_release_timeout_after: Optional[str] = None
             self._space_release_time: Optional[int] = None
             self._space_action_active = False
             self._report_space_release_pending = False
@@ -1927,7 +1928,12 @@ class TkWizard:
             except BaseException as error:
                 cleanup_error = error
             self._cancel_pick_restore()
-            for attr in ("_return_release_after", "_space_release_after", "_after_id"):
+            for attr in (
+                "_return_release_after",
+                "_space_release_after",
+                "_space_release_timeout_after",
+                "_after_id",
+            ):
                 callback = getattr(self, attr, None)
                 if callback is not None and root is not None:
                     try:
@@ -4520,12 +4526,15 @@ class TkWizard:
 
     def _claim_space_press(self, event=None) -> bool:
         """Claim a new physical Space press; suppress X11 repeat pairs."""
-        if self._space_release_after is not None:
+        for attr in ("_space_release_after", "_space_release_timeout_after"):
+            callback = getattr(self, attr, None)
+            if callback is None:
+                continue
             try:
-                self.root.after_cancel(self._space_release_after)
+                self.root.after_cancel(callback)
             except tk.TclError:
                 pass
-            self._space_release_after = None
+            setattr(self, attr, None)
         repeat = (self._space_release_time is not None
                   and self._space_release_time == self._key_event_time(event))
         if self._space_held or repeat:
@@ -4537,21 +4546,35 @@ class TkWizard:
 
     def _on_space_release(self, _event=None) -> str:
         # Queue cleanup without requiring global idle: report redraws can
-        # otherwise starve a delivered release. _claim_space_press cancels
-        # queued cleanup and rejects matching X11 repeat timestamps even
-        # when the timer has already run before the paired press.
-        if self._space_release_after is not None:
+        # otherwise starve a delivered release. Give a queued X11 autorepeat
+        # press time to cancel its paired release before acknowledging key-up.
+        for attr in ("_space_release_after", "_space_release_timeout_after"):
+            callback = getattr(self, attr, None)
+            if callback is None:
+                continue
             try:
-                self.root.after_cancel(self._space_release_after)
+                self.root.after_cancel(callback)
             except tk.TclError:
                 pass
+            setattr(self, attr, None)
         self._space_release_time = self._key_event_time(_event)
         emit_serial_marker("BEAMO_WIPE_KEY_SPACE_RELEASE_RECEIVED")
-        self._space_release_after = self.root.after(0, self._release_space)
+        after_idle = getattr(self.root, "after_idle", None)
+        self._space_release_after = (
+            after_idle(self._release_space) if callable(after_idle) else None
+        )
+        self._space_release_timeout_after = self.root.after(25, self._release_space)
         return "break"
 
     def _release_space(self) -> None:
-        self._space_release_after = None
+        for attr in ("_space_release_after", "_space_release_timeout_after"):
+            callback = getattr(self, attr, None)
+            setattr(self, attr, None)
+            if callback is not None:
+                try:
+                    self.root.after_cancel(callback)
+                except (AttributeError, tk.TclError):
+                    pass
         self._space_held = False
         restore_done_focus = self._report_space_release_pending
         self._report_space_release_pending = False
