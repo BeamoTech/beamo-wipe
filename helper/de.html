@@ -247,13 +247,14 @@
       <p>Für 64-Bit-Intel/AMD-PCs mit Windows oder Linux, die von diesem USB-Stick starten. <strong>Nicht für Apple-Silicon-Macs oder Chromebooks.</strong> Manche Intel-Macs zeigen diesen Stick an, viele nicht.</p>
       <p>Dieser USB-Stick verwendet die signierten Startdateien von Debian. Ob er startet, hängt von den Vertrauenseinstellungen der Firmware und deren Sperrlisten-Updates ab. Beamo Wipe ändert Secure Boot nicht und umgeht keine Ablehnung.</p>
       <p>Die Seiten auf diesem Stick beschreiben dieses Abbild. Ältere Sticks können andere Startdateien verwenden.</p>
+      <p>Das Bootmenü und der Wiederherstellungsbildschirm von Beamo Wipe sind auf Englisch. Sobald Beamo Wipe gestartet ist, können Sie auf dem Bildschirm „Prüfen Sie Ihre Tastatur“ Deutsch wählen.</p>
     </div>
     <div class="card guide" id="guide">
       <h2>Wenn etwas nicht funktioniert</h2>
       <p>Wählen Sie das beobachtete Problem. Alle Schritte stehen ohne Internetverbindung auf diesem USB-Stick.</p>
       <nav aria-label="Startprobleme"><ul class="chooser">
         <li><a href="#trouble-usb">Der USB-Stick fehlt in der Liste</a></li>
-        <li><a href="#trouble-key">Die Bootmenütaste funktioniert nicht</a></li>
+        <li><a href="#trouble-key">Die Bootmenü-Taste funktioniert nicht</a></li>
         <li><a href="#trouble-firmware">Der Computer lehnt den USB-Stick ab</a></li>
         <li><a href="#trouble-launcher">Der Starter öffnet sich nicht</a></li>
       </ul></nav>
@@ -261,13 +262,13 @@
         <h2 id="trouble-usb-title">Der USB-Stick fehlt in der Liste</h2>
         <ol>
           <li>Lassen Sie den Stick beim Neustart eingesteckt. Nutzen Sie einen USB-A- oder USB-C-Anschluss direkt am Computer und probieren Sie einen anderen Anschluss.</li>
-          <li>Suchen Sie den Stick im Bootmenü oder auf UEFI-PCs unter Gerät verwenden. Folgen Sie den Schritten für <a href="#windows-11">Windows 11</a> oder <a href="#windows-10">Windows 10</a>.</li>
-          <li>Wenn er weiter fehlt, prüfen Sie auf einem Computer, der die Dateien anzeigt, ob <strong>START-HERE.html</strong> auf dem Stick liegt. Ändern Sie die Firmware nicht automatisch.</li>
+          <li>Suchen Sie den Stick im Bootmenü oder auf UEFI-PCs unter Ein Gerät verwenden. Folgen Sie den Schritten für <a href="#windows-11">Windows 11</a> oder <a href="#windows-10">Windows 10</a>.</li>
+          <li>Wenn er weiter fehlt, prüfen Sie auf einem Computer, der die Dateien anzeigt, ob <strong>START-HERE.html</strong> auf dem Stick liegt. Eine Firmwareänderung ist nicht der nächste automatische Schritt.</li>
         </ol>
         <p><a href="#guide">Zurück zu den Problemen</a></p>
       </article>
       <article class="panel" id="trouble-key" tabindex="-1" aria-labelledby="trouble-key-title">
-        <h2 id="trouble-key-title">Die Bootmenütaste funktioniert nicht</h2>
+        <h2 id="trouble-key-title">Die Bootmenü-Taste funktioniert nicht</h2>
         <ol>
           <li>Sehen Sie in der <a href="#keys">Tabelle mit typischen Tasten</a> nach. Drücken Sie die Taste ab dem Neustart, bevor Windows lädt.</li>
           <li>Bei HP versuchen Sie zuerst Esc, dann F9. Die Taste kann je nach Modell anders sein; prüfen Sie die Herstelleranleitung.</li>
@@ -278,33 +279,33 @@
       <article class="panel" id="trouble-firmware" tabindex="-1" aria-labelledby="trouble-firmware-title">
         <h2 id="trouble-firmware-title">Der Computer lehnt den USB-Stick ab</h2>
         <ol>
-          <li>Falls Sie dieses Windows vielleicht wieder nutzen, stellen Sie vor einer Firmwareänderung sicher, dass Sie den <a href="#bitlocker">BitLocker-Wiederherstellungsschlüssel</a> erreichen können. Wenn Sie ihn nicht finden, halten Sie an.</li>
-          <li>Notieren Sie die genaue Meldung. Das Bootmenü bedeutet nicht, dass ein Löschen begonnen hat.</li>
+          <li>Falls Sie dieses Windows vielleicht wieder nutzen, stellen Sie vor einer Firmwareänderung sicher, dass Sie den <a href="#bitlocker">BitLocker-Wiederherstellungsschlüssel</a> erreichen können. Wenn Sie ihn nicht finden, brechen Sie hier ab.</li>
+          <li>Notieren Sie die genaue Meldung. Das Erreichen des Bootmenüs bedeutet nicht, dass ein Löschen begonnen hat.</li>
           <li>Probieren Sie einen anderen direkten USB-Anschluss und die Startanleitung des Herstellers. Diese Seite ändert Secure Boot nicht und umgeht keine Ablehnung.</li>
         </ol>
-        <p>Im Abschnitt <a href="#secure-boot">Secure Boot</a> steht, welche Startkomponenten sich auf diesem USB-Stick befinden.</p>
+        <p>Im Abschnitt <a href="#secure-boot">Secure Boot</a> steht, welche Startdateien sich auf diesem USB-Stick befinden. Eine Firmware- oder Secure-Boot-Änderung ist nicht der nächste automatische Schritt.</p>
         <p><a href="#guide">Zurück zu den Problemen</a></p>
       </article>
       <article class="panel" id="trouble-launcher" tabindex="-1" aria-labelledby="trouble-launcher-title">
         <h2 id="trouble-launcher-title">Der Starter öffnet sich nicht</h2>
         <ol>
           <li>Das Einstecken startet nichts automatisch. Öffnen Sie unter Windows <strong>Start Beamo Wipe.exe</strong> oder auf einem unterstützten Linux-Desktop <strong>Start Beamo Wipe Linux</strong>.</li>
-          <li>Berechtigungsabfragen können erscheinen. Wenn sich die Anwendung nicht öffnet, verwenden Sie die <a href="#keys">Bootmenütasten</a> oder die Windows-Schritte unten.</li>
+          <li>Berechtigungsabfragen können erscheinen. Wenn sich die Anwendung nicht öffnet, verwenden Sie die <a href="#keys">Bootmenü-Tasten</a> oder die Windows-Schritte unten.</li>
           <li>Falls Beamo Wipe bereits vom Stick gestartet ist und sich dann wiederholt schließt, nutzen Sie den <a href="#kiosk-recovery">Wiederherstellungsbildschirm</a>. Der Starter selbst löscht nichts.</li>
         </ol>
         <p><a href="#guide">Zurück zu den Problemen</a></p>
       </article>
     </div>
     <div class="card">
-      <h2>Nachdem dieser USB-Stick startet</h2>
+      <h2>Nachdem dieser USB-Stick gestartet ist</h2>
       <p>Datenträger wählen → Identität bestätigen → Prüfen und löschen. Nichts wird gelöscht, bis Sie bestätigen.</p>
     </div>
     <div class="card">
       <h2>Vom Desktop starten</h2>
       <p>Öffnen Sie unter Windows <strong>Start Beamo Wipe.exe</strong> auf diesem USB-Stick. Auf einem unterstützten Linux-Desktop öffnen Sie <strong>Start Beamo Wipe Linux</strong>. Der Starter zeigt getrennte Prüfungen für den Original-USB-Stick, ob Starteinstellungen gelesen werden können und ob ein unterstützter Neustartweg verfügbar ist. Jede Prüfung erklärt das weitere Vorgehen; Technische Details zeigt die Nachweise.</p>
-      <p>Eine nicht bestätigte Prüfung ist kein Bestehen. Unter Windows speichern Sie Ihre Arbeit und verwenden Neu starten; wählen Sie dann diesen USB-Stick im Bootmenü. Auf unterstützten Linux-Desktops kann nach erfolgreichen Prüfungen ein geführter Neustart angeboten werden; dafür kann eine Administratorberechtigung nötig sein. Diese Prüfungen garantieren nicht, dass der USB-Stick startet.</p>
+      <p>Eine nicht bestätigte Prüfung gilt nicht als bestanden. Unter Windows speichern Sie Ihre Arbeit und verwenden Neu starten; wählen Sie dann diesen USB-Stick im Bootmenü. Auf unterstützten Linux-Desktops kann nach erfolgreichen Prüfungen ein geführter Neustart angeboten werden; dafür kann eine Administratorberechtigung nötig sein. Diese Prüfungen garantieren nicht, dass der USB-Stick startet.</p>
       <p>Das Öffnen der Anwendung erfordert Ihre Handlung; das Einstecken des USB-Sticks führt sie nicht automatisch aus. Berechtigungs- oder Vertrauensabfragen können erscheinen. Linux-Desktop- und Einhänge-Einstellungen können die direkte Ausführung verhindern.</p>
-      <p>Der Starter löscht nichts. Gelöscht wird nach dem Neustart in diesen USB-Stick, wo Sie den Datenträger wählen und bestätigen. Sie können die Startanweisungen unten auch ohne Öffnen einer Anwendung verwenden.</p>
+      <p>Der Starter löscht nichts. Gelöscht wird nach dem Neustart von diesem USB-Stick, wo Sie den Datenträger wählen und bestätigen. Sie können die Startanweisungen unten auch ohne Öffnen einer Anwendung verwenden.</p>
     </div>
 
     <div class="card" id="keys">
@@ -323,68 +324,68 @@
           <tr><td>Acer</td><td class="key"><span class="kbd">F12</span></td></tr>
           <tr><td>MSI</td><td class="key"><span class="kbd">F11</span></td></tr>
           <tr><td>Gigabyte</td><td class="key"><span class="kbd">F12</span></td></tr>
-          <tr><td>Intel Mac</td><td class="key"><span class="kbd">Option (⌥)</span> beim Start. Kein Apple Silicon.</td></tr>
+          <tr><td>Intel-Mac</td><td class="key"><span class="kbd">Option (⌥)</span> beim Start. Nicht für Apple Silicon.</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="card warn" id="bitlocker">
-      <h2>Wenn Sie diese Windows-Installation vielleicht wieder verwenden</h2>
+      <h2>Wenn Sie diese Windows-Installation vielleicht wieder verwenden möchten</h2>
       <p>Stellen Sie sicher, dass Sie den BitLocker-Wiederherstellungsschlüssel für diesen PC erreichen, <strong>bevor</strong> Sie Firmware, Bootreihenfolge, Secure Boot oder TPM-Einstellungen ändern. Diese Änderungen können dazu führen, dass Windows beim nächsten Start den 48-stelligen Wiederherstellungsschlüssel verlangt.</p>
       <p>Der Microsoft-Support kann einen verlorenen Schlüssel weder abrufen noch bereitstellen noch neu erstellen. Der Schlüssel ist möglicherweise in einem Microsoft-Konto auf einem anderen Gerät gespeichert, bei der IT von Arbeit oder Schule hinterlegt, ausgedruckt oder auf einem USB-Stick gespeichert, den Sie beim Aktivieren der Verschlüsselung gesichert haben.</p>
-      <p>Dieser Helfer schaltet BitLocker nicht aus, extrahiert keine Schlüssel und empfiehlt keine Secure-Boot-Änderung. Wenn Sie dieses Windows später noch brauchen und den Schlüssel nicht finden, ändern Sie keine Firmware. Verwenden Sie stattdessen die Windows-Schritte unten, einen anderen USB-Anschluss oder die Startanweisungen des Herstellers.</p>
+      <p>Diese Hilfeseite schaltet BitLocker nicht aus, extrahiert keine Schlüssel und empfiehlt keine Secure-Boot-Änderung. Wenn Sie dieses Windows später noch brauchen und den Schlüssel nicht finden, ändern Sie keine Firmware. Verwenden Sie stattdessen die Windows-Schritte unten, einen anderen USB-Anschluss oder die Startanweisungen des Herstellers.</p>
     </div>
 
     <div class="card" id="screen-reader">
       <h2>Wenn Sie einen Screenreader verwenden</h2>
-      <p>Das Startmenü hat einen Eintrag <strong>Beamo Wipe: Sprachausgabe für Screenreader</strong>. Sobald das Menü erscheint, drücken Sie <span class="kbd">S</span>. UEFI-Computer mit eingebautem Lautsprecher geben zwei kurze Pieptöne, solange das Menü angezeigt wird; viele Notebooks und das ältere BIOS-Menü geben keinen Ton, also drücken Sie nach dem Firmware-Logo mehrmals <span class="kbd">S</span>.</p>
-      <p>Das Menü wartet fünf Sekunden und startet dann die normale Anleitung. Drücken Sie in dem Fall in der Anleitung <span class="kbd">F8</span>, um zur gesprochenen Ansicht zu wechseln. Sprache braucht funktionierende Lautsprecher oder Kopfhörer. Beide Einträge löschen nichts.</p>
+      <p>Das Bootmenü hat einen Eintrag <strong>Beamo Wipe: speech for screen readers</strong> (Sprachausgabe für Screenreader). Sobald das Menü erscheint, drücken Sie <span class="kbd">S</span>. UEFI-Computer mit eingebautem Lautsprecher geben zwei kurze Pieptöne, solange das Menü angezeigt wird; viele Notebooks und das ältere BIOS-Menü geben keinen Ton, also drücken Sie nach dem Firmware-Logo mehrmals <span class="kbd">S</span>.</p>
+      <p>Das Menü wartet fünf Sekunden und startet dann die normale Anleitung. Drücken Sie in dem Fall in der Anleitung <span class="kbd">F8</span>, um zur gesprochenen Ansicht zu wechseln. Die Sprachausgabe braucht funktionierende Lautsprecher oder Kopfhörer. Beide Einträge löschen nichts.</p>
     </div>
 
     <div class="card" id="windows-11">
       <h2>Windows 11: diesen USB-Stick aus den Einstellungen starten</h2>
-      <p>Diese Schritte verwenden die Windows-Wiederherstellungsumgebung. <strong>Gerät verwenden</strong> wird auf UEFI-PCs angeboten. Auf Legacy-BIOS kann es fehlen.</p>
+      <p>Diese Schritte verwenden die Windows-Wiederherstellungsumgebung. <strong>Ein Gerät verwenden</strong> wird auf UEFI-PCs angeboten. Auf Legacy-BIOS kann es fehlen.</p>
       <ol>
         <li>Lassen Sie diesen USB-Stick in einem Anschluss am Computer, möglichst nicht in einem Tastatur-Hub.</li>
         <li>Einstellungen → System → Wiederherstellung</li>
         <li>Wählen Sie unter Erweiterter Start die Option Jetzt neu starten</li>
-        <li>Option auswählen → Gerät verwenden → dieser USB-Stick, falls er aufgeführt ist</li>
+        <li>Option auswählen → Ein Gerät verwenden → dieser USB-Stick, falls er aufgeführt ist</li>
       </ol>
     </div>
 
     <div class="card" id="windows-10">
       <h2>Windows 10: diesen USB-Stick aus den Einstellungen starten</h2>
-      <p>Diese Schritte verwenden die Windows-Wiederherstellungsumgebung. <strong>Gerät verwenden</strong> wird auf UEFI-PCs angeboten. Auf Legacy-BIOS kann es fehlen.</p>
+      <p>Diese Schritte verwenden die Windows-Wiederherstellungsumgebung. <strong>Ein Gerät verwenden</strong> wird auf UEFI-PCs angeboten. Auf Legacy-BIOS kann es fehlen.</p>
       <ol>
         <li>Lassen Sie diesen USB-Stick in einem Anschluss am Computer, möglichst nicht in einem Tastatur-Hub.</li>
         <li>Einstellungen → Update und Sicherheit → Wiederherstellung</li>
         <li>Wählen Sie unter Erweiterter Start die Option Jetzt neu starten</li>
-        <li>Option auswählen → Gerät verwenden → dieser USB-Stick, falls er aufgeführt ist</li>
+        <li>Option auswählen → Ein Gerät verwenden → dieser USB-Stick, falls er aufgeführt ist</li>
       </ol>
     </div>
 
     <div class="card" id="fallbacks">
       <h2>Wenn Einstellungen nicht verfügbar sind</h2>
       <ul>
-        <li>Halten Sie auf dem Anmeldebildschirm oder im Energiemenü <span class="kbd">Shift</span> gedrückt, während Sie Neu starten wählen. Verwenden Sie dann Option auswählen → Gerät verwenden, falls angeboten.</li>
+        <li>Halten Sie auf dem Anmeldebildschirm oder im Ein/Aus-Menü <span class="kbd">Shift</span> (Umschalttaste) gedrückt, während Sie Neu starten wählen. Verwenden Sie dann Option auswählen → Ein Gerät verwenden, falls angeboten.</li>
         <li>Manche PCs haben eine Hersteller-Wiederherstellungstaste oder Tastenkombination. Das ist unterschiedlich. Lesen Sie die Anweisungen des Computers.</li>
         <li>Starten Sie neu und versuchen Sie die typische Bootmenü-Taste für Ihren PC. Wenn der USB-Stick fehlt, versuchen Sie einen anderen direkten USB-Anschluss.</li>
       </ul>
-      <p>Betrachten Sie Firmware-, Bootreihenfolge- oder Secure-Boot-Änderungen nicht als nächsten automatischen Schritt. Wenn Sie vielleicht zu dieser Windows-Installation zurückkehren, bestätigen Sie zuerst den BitLocker-Wiederherstellungsschlüssel.</p>
+      <p>Betrachten Sie Firmware-, Bootreihenfolge- oder Secure-Boot-Änderungen nicht als nächsten automatischen Schritt. Wenn Sie vielleicht zu dieser Windows-Installation zurückkehren möchten, bestätigen Sie zuerst den BitLocker-Wiederherstellungsschlüssel.</p>
     </div>
 
     <div class="card" id="secure-boot">
       <h2>Wenn der Computer meldet, dass Secure Boot diesen USB-Stick nicht startet</h2>
-      <p>Dieser Build verwendet Debians signierte Startkomponenten. Ob Ihr Computer sie akzeptiert, hängt von seinen Firmware-Vertrauenseinstellungen und Sperrlisten-Updates ab.</p>
-      <p>Wenn er den USB-Stick ablehnt, versuchen Sie einen anderen direkten USB-Anschluss und lesen Sie die Startanweisungen des Computerherstellers. Der Starter ändert keine Secure-Boot-Einstellungen und umgeht keine Ablehnung. Nehmen Sie nicht an, dass das Erreichen eines Startmenüs bedeutet, dass ein Löschen begonnen hat.</p>
+      <p>Dieser USB-Stick verwendet die signierten Startdateien von Debian. Ob er startet, hängt von den Vertrauenseinstellungen der Firmware und deren Sperrlisten-Updates ab. Beamo Wipe ändert Secure Boot nicht und umgeht keine Ablehnung.</p>
+      <p>Wenn er den USB-Stick ablehnt, versuchen Sie einen anderen direkten USB-Anschluss und lesen Sie die Startanweisungen des Computerherstellers. Nehmen Sie nicht an, dass das Erreichen eines Bootmenüs bedeutet, dass ein Löschen begonnen hat.</p>
     </div>
 
     <div class="card" id="kiosk-recovery">
       <h2>Wenn sich Beamo Wipe immer wieder schließt</h2>
-      <p>Nach drei fehlgeschlagenen Versuchen stoppen die automatischen Wiederholungen. Der Beamo-Wipe-Wiederherstellungsbildschirm lässt Sie es erneut versuchen, Tastatur-Textbildschirme verwenden oder technische Details ansehen. Tippen Sie die Auswahlzahl und drücken Sie Enter.</p>
+      <p>Nach drei fehlgeschlagenen Versuchen stoppen die automatischen Wiederholungen. Der Beamo-Wipe-Wiederherstellungsbildschirm (auf Englisch) lässt Sie es erneut versuchen, Tastatur-Textbildschirme verwenden oder technische Details ansehen. Geben Sie die Nummer der Auswahl ein und drücken Sie Enter.</p>
       <p>Ein früheres Löschen läuft möglicherweise noch oder ist unvollständig. Lassen Sie alle Datenträger angeschlossen. Dieser Wiederherstellungsbildschirm kann weder Datenträger identifizieren noch ein Löschergebnis bestätigen. Erneutes Versuchen startet kein neues Löschen.</p>
-      <p>Neu starten und Herunterfahren erfordern eine Bestätigung. Sie sind blockiert, wenn das Löschen möglicherweise noch läuft oder die Prüfung scheitert. Ein Neustart verliert ungespeicherte Berichte und temporäre Protokolle. Notieren Sie zuerst die technischen Details.</p>
-      <p>Wenn Sie beim Start Sprache gewählt haben, werden Wiederherstellungsauswahlen gesprochen, wenn die Sprachwerkzeuge verfügbar sind. Der Tastatur-Textassistent selbst hat keine Sprache. Wenn Sprache nicht starten kann, bitten Sie jemanden, den Wiederherstellungsbildschirm vorzulesen.</p>
+      <p>Die Auswahlen Restart computer und Shut down erfordern eine Bestätigung. Sie sind blockiert, wenn das Löschen möglicherweise noch läuft oder die Prüfung scheitert. Bei einem Neustart gehen ungespeicherte Berichte und temporäre Protokolle verloren. Notieren Sie zuerst die technischen Details.</p>
+      <p>Wenn Sie beim Start die Sprachausgabe gewählt haben, werden die Wiederherstellungsauswahlen vorgelesen, wenn die Sprachwerkzeuge verfügbar sind. Der Tastatur-Textassistent selbst hat keine Sprachausgabe. Wenn die Sprachausgabe nicht startet, bitten Sie jemanden, den Wiederherstellungsbildschirm vorzulesen.</p>
     </div>
 
     <div class="card" id="error-recovery">
@@ -395,20 +396,20 @@
         <li><strong>Was das für Ihren Datenträger bedeutet</strong> — ob etwas gelöscht wurde, und was Sie nicht annehmen sollten.</li>
         <li><strong>Was Sie als Nächstes tun</strong> — sichere Schritte. Umgehen Sie den Schutz nicht. Lassen Sie Datenträger angeschlossen, wenn Sie unsicher sind.</li>
       </ol>
-      <p><strong>Technische Angaben</strong> (Ergebniscodes, Exportmarkierungen, Protokolle) sind auf Anfrage verfügbar. Sie ersetzen die drei Abschnitte nicht. Das Live-USB-Wiederherstellungsmenü nach wiederholten Startfehlern ist getrennt: die Wahl Technische Details und Protokolle ist nicht dieses Assistentenlayout.</p>
+      <p><strong>Technische Angaben</strong> (Ergebniscodes, Exportmarkierungen, Protokolle) sind auf Anfrage verfügbar. Sie ersetzen die drei Abschnitte nicht. Das Live-USB-Wiederherstellungsmenü nach wiederholten Startfehlern ist getrennt: Die Auswahl Technical details and logs ist nicht dieses Assistentenlayout.</p>
     </div>
 
     <div class="card">
       <h2>Was dieser USB-Stick tut</h2>
       <p>Stellen Sie sicher, dass Sie die Kopien haben, die Sie brauchen. Sie wählen einen Datenträger. Alles auf diesem Datenträger wird gelöscht. Sie bekommen die Dateien nicht zurück.</p>
       <p>Wenn dieser Datenträger ein Betriebssystem enthält, entfernt das Löschen auch Windows oder Linux, Anwendungen, Dateien und Wiederherstellungspartitionen auf diesem Datenträger. Nur der von Ihnen bestätigte Datenträger wird gelöscht. Andere nicht. Ein Betriebssystem wieder aufzuspielen ist eine separate Aufgabe.</p>
-      <p>Wenn dieser Computer einen Akku hat, schließen Sie ihn vor dem Löschen ans Stromnetz an. Lassen Sie den Deckel offen. Ein Stromausfall stoppt das Löschen. Der Bildschirm kann dunkel werden; drücken Sie eine Taste oder bewegen Sie die Maus, um ihn zurückzuholen. Das ist die Anzeige, kein Ruhezustand.</p>
+      <p>Wenn dieser Computer einen Akku hat, schließen Sie ihn vor dem Löschen ans Stromnetz an. Lassen Sie den Deckel offen. Ein Stromausfall stoppt das Löschen. Der Bildschirm kann dunkel werden; drücken Sie eine Taste oder bewegen Sie die Maus, um ihn wieder einzuschalten. Das ist die Anzeige, kein Ruhezustand.</p>
       <p>Wenn Sie danach einen Bericht möchten, brauchen Sie einen separaten FAT32-USB-Stick mit einem Volume (jede Größe). Lassen Sie ihn abgezogen, bis der Ergebnisbildschirm danach fragt. Ein bereits angesteckter USB-Stick kann nicht für den Bericht verwendet werden.</p>
-      <p>Der Live-USB-Stick bittet Linux, das Schließen des Deckels und kurzes Drücken des Netzschalters zu ignorieren, und deaktiviert den Ruhezustand. Firmware oder ein gehaltener Netzschalter können das Löschen trotzdem stoppen. Verwenden Sie Löschen abbrechen und warten Sie auf das Ergebnis, bevor Sie herunterfahren. Ein Stromausfall kann den Datenträger teilweise gelöscht zurücklassen und ungespeicherte Berichte verlieren; ein unterbrochenes Löschen wird nicht automatisch fortgesetzt.</p>
-      <p>Dieser Offline-Helfer kann Akku- oder Netzstromstatus nicht lesen. Der Live-Assistent zeigt gemeldete Messwerte, wenn verfügbar; unbekannte Messwerte beweisen weder Anschluss noch Dauer des Stroms.</p>
-      <p>Für 64-Bit-Intel/AMD-Windows- oder -Linux-PCs, die von USB starten. <strong>Keine Apple-Silicon-Macs. Keine Chromebooks.</strong> Manche Intel-Macs zeigen diesen USB-Stick; viele nicht.</p>
+      <p>Der Live-USB-Stick bittet Linux, das Schließen des Deckels und kurzes Drücken des Netzschalters zu ignorieren, und deaktiviert den Ruhezustand. Firmware oder ein gedrückt gehaltener Netzschalter können das Löschen trotzdem stoppen. Verwenden Sie Löschen stoppen und warten Sie auf das Ergebnis, bevor Sie herunterfahren. Bei einem Stromausfall kann der Datenträger teilweise gelöscht zurückbleiben, und ungespeicherte Berichte können verloren gehen; ein unterbrochenes Löschen wird nicht automatisch fortgesetzt.</p>
+      <p>Diese Offline-Hilfeseite kann den Akku- oder Netzstromstatus nicht lesen. Der Live-Assistent zeigt gemeldete Messwerte, wenn verfügbar; unbekannte Messwerte beweisen nicht, dass Strom angeschlossen ist oder reicht.</p>
+      <p>Für 64-Bit-Intel/AMD-Windows- oder -Linux-PCs, die von diesem USB-Stick starten. <strong>Keine Apple-Silicon-Macs. Keine Chromebooks.</strong> Manche Intel-Macs zeigen diesen USB-Stick an, viele nicht.</p>
       <p class="small">Quelle: <a href="https://github.com/BeamoTech/beamo-wipe">github.com/BeamoTech/beamo-wipe</a></p>
-      <p class="small">Windows-Wiederherstellungsumgebung, BitLocker-Wiederherstellung und Schlüsselablagen folgen der Microsoft-Dokumentation. Die Schritte oben bleiben ohne Netzwerk auf diesem USB-Stick. Optionale Referenzen: <a href="https://support.microsoft.com/en-us/windows/experience/backup-recovery/windows-recovery-environment">Windows Recovery Environment</a>, <a href="https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/windows-recovery-environment--windows-re--technical-reference?view=windows-11">WinRE technical reference</a>, <a href="https://learn.microsoft.com/en-us/windows/security/operating-system-security/data-protection/bitlocker/recovery-overview">BitLocker recovery overview</a>, <a href="https://support.microsoft.com/en-us/windows/security/encryption/find-your-bitlocker-recovery-key">Find your BitLocker recovery key</a>.</p>
+      <p class="small">Windows-Wiederherstellungsumgebung, BitLocker-Wiederherstellung und Schlüsselablagen folgen der Microsoft-Dokumentation. Die Schritte oben stehen auch ohne Netzwerk auf diesem USB-Stick bereit. Optionale Referenzen: <a href="https://support.microsoft.com/en-us/windows/experience/backup-recovery/windows-recovery-environment">Windows Recovery Environment</a>, <a href="https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/windows-recovery-environment--windows-re--technical-reference?view=windows-11">WinRE technical reference</a>, <a href="https://learn.microsoft.com/en-us/windows/security/operating-system-security/data-protection/bitlocker/recovery-overview">BitLocker recovery overview</a>, <a href="https://support.microsoft.com/en-us/windows/security/encryption/find-your-bitlocker-recovery-key">Find your BitLocker recovery key</a>.</p>
     </div>
     <div class="card" id="after-erasing">
       <h2>Wenn der Computer nach dem Löschen nicht startet</h2>
@@ -419,17 +420,17 @@
     <div class="card" id="saving-report">
       <h2>Bericht speichern</h2>
       <ol>
-        <li>Stecken Sie den Berichts-USB-Stick ein, nur wenn der Ergebnisbildschirm danach fragt.</li>
+        <li>Stecken Sie den Berichts-USB-Stick erst ein, wenn der Ergebnisbildschirm danach fragt.</li>
         <li>Prüfen: Der Assistent akzeptiert genau einen neuen FAT32-USB-Stick.</li>
         <li>Speichern Sie den Bericht auf diesem Stick. Auf einem langsamen Stick kann das ein paar Minuten dauern; ziehen Sie währenddessen keinen USB-Stick ab.</li>
         <li>Verifizieren Sie die Kopie durch Zurücklesen, bevor sie als gespeichert gilt.</li>
-        <li>Sicheres Abziehen: Erst die gespeicherte Meldung macht den Berichts-USB-Stick sicher entfernbar.</li>
+        <li>Sicheres Abziehen: Erst die Speicherbestätigung macht den Berichts-USB-Stick sicher entfernbar.</li>
       </ol>
-      <p>Wenn das Speichern fehlschlägt, lesen Sie die genaue Fehlermeldung, beheben Sie das Problem und wählen Sie Bericht auf USB speichern erneut. Wenn der Berichts-USB-Stick noch angesteckt ist, müssen Sie ihn nicht zuerst abziehen.</p>
+      <p>Wenn das Speichern fehlschlägt, lesen Sie die genaue Fehlermeldung, beheben Sie das Problem und wählen Sie erneut Bericht auf USB speichern. Wenn der Berichts-USB-Stick noch angesteckt ist, müssen Sie ihn nicht zuerst abziehen.</p>
       <p>Wenn ein Bericht überhaupt nicht gespeichert werden kann, lesen Sie die Zeilen Supportcode und Build-Kennung auf dem Bildschirm und nennen Sie dem Support genau diese Werte. Sie enthalten keine Datenträger-Seriennummern oder Pfade.</p>
       <p>Wenn der USB-Stick abgelehnt wird:</p>
       <ul>
-        <li>Falsches Dateisystem oder Layout: Verwenden Sie einen anderen USB-Stick mit einem FAT32-Volume.</li>
+        <li>Falsches Dateisystem oder falsche Partitionierung: Verwenden Sie einen anderen USB-Stick mit einem FAT32-Volume.</li>
         <li>Bereits eingehängt: Ziehen Sie nur den Berichts-USB-Stick ab, stecken Sie ihn wieder an und versuchen Sie es erneut.</li>
         <li>Mehr als ein neuer USB-Stick: Ziehen Sie die übrigen ab, sodass genau einer bleibt.</li>
         <li>Start- oder ausgewählter Datenträger betroffen: Fahren Sie zuerst herunter und sortieren Sie die USB-Sticks, während der Computer aus ist.</li>
@@ -438,7 +439,7 @@
     <div class="card" id="removing-usb">
       <h2>Herunterfahren und USB-Sticks abziehen</h2>
       <ol>
-        <li>Bericht zuerst: lassen Sie die Sitzung offen, speichern Sie den Bericht und warten Sie auf die gespeicherte Meldung. Erst dann darf der Berichts-USB-Stick abgezogen werden.</li>
+        <li>Bericht zuerst: Lassen Sie die Sitzung offen, speichern Sie den Bericht und warten Sie auf die Speicherbestätigung. Erst dann darf der Berichts-USB-Stick abgezogen werden.</li>
         <li>Lassen Sie den Beamo-USB-Stick und den gelöschten Datenträger angeschlossen, solange Beamo Wipe läuft.</li>
         <li>Der Beamo-USB-Stick darf erst abgezogen werden, wenn der Computer vollständig ausgeschaltet ist. Früheres Abziehen beendet die Sitzung sofort.</li>
         <li>Wenn Sie neu starten statt herunterzufahren, lassen Sie den Beamo-USB-Stick angeschlossen, um zu Beamo Wipe zurückzukehren. Alles Ungespeicherte geht trotzdem verloren.</li>
