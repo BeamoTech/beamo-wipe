@@ -90,6 +90,10 @@ cd /build/packaging/live
 
 lb clean --all || true
 
+# The troubleshoot entry means safe video: nomodeset keeps the firmware
+# framebuffer (X then uses fbdev or vesa) instead of a GPU driver that can
+# leave a black screen. It omits live-build's legacy failsafe flags
+# (noapic, nolapic, nosmp, memtest), which can hang or stall modern UEFI PCs.
 lb config \
   --ignore-system-defaults \
   --mode debian \
@@ -112,7 +116,7 @@ lb config \
   --firmware-chroot false \
   --initsystem systemd \
   --bootappend-live "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin" \
-  --bootappend-live-failsafe "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin memtest noapic noapm nodma nomce nolapic nosmp nosplash vga=788" \
+  --bootappend-live-failsafe "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin nomodeset nosplash vga=788" \
   --mirror-bootstrap "https://deb.debian.org/debian/" \
   --mirror-chroot "https://deb.debian.org/debian/" \
   --mirror-binary "https://deb.debian.org/debian/" \

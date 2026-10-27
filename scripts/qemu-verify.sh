@@ -341,9 +341,15 @@ uefi_failsafe_linux="$(awk '
 ' "$EFI_GRUB")"
 for boot_line in "$bios_failsafe_append" "$uefi_failsafe_linux"; do
   for required in boot=live nopersistence noswap ip=frommedia nox11autologin \
-                  memtest noapic noapm nodma nomce nolapic nosmp nosplash vga=788; do
+                  nomodeset nosplash vga=788; do
     if ! printf '%s\n' "$boot_line" | grep -Eq "(^|[[:space:]])${required}([[:space:]]|$)"; then
       echo "ISO troubleshooting kernel line lost required flag: $required" >&2; exit 2
+    fi
+  done
+  # Legacy live-build failsafe flags can hang or stall modern UEFI PCs.
+  for forbidden in memtest noapic nolapic nosmp; do
+    if printf '%s\n' "$boot_line" | grep -Eq "(^|[[:space:]])${forbidden}([[:space:]]|$)"; then
+      echo "ISO troubleshooting kernel line has unsafe flag: $forbidden" >&2; exit 2
     fi
   done
 done
@@ -478,6 +484,20 @@ do
     exit 2
   }
 done
+[[ "$(readlink "$SQUASH_MOUNT/etc/systemd/system/ctrl-alt-del.target" 2>/dev/null || true)" == /dev/null ]] || {
+  echo "Ctrl+Alt+Del reboot target is not masked" >&2
+  exit 2
+}
+grep -q '^CtrlAltDelBurstAction=none$' \
+  "$SQUASH_MOUNT/etc/systemd/system.conf.d/beamo-kiosk.conf" 2>/dev/null || {
+  echo "Ctrl+Alt+Del burst reboot is not disabled" >&2
+  exit 2
+}
+grep -Eq '^kernel\.sysrq[[:space:]]*=[[:space:]]*0$' \
+  "$SQUASH_MOUNT/etc/sysctl.d/90-beamo-kiosk.conf" 2>/dev/null || {
+  echo "Magic SysRq is not disabled" >&2
+  exit 2
+}
 if grep -R -l 'xfce4-power-manager\|gnome-settings-daemon-power\|power-profiles-daemon' \
   "$SQUASH_MOUNT/var/lib/dpkg/status" 2>/dev/null | grep -q .; then
   echo "desktop power manager present in ISO" >&2
@@ -942,6 +962,7 @@ report_marker_summary() {
     BEAMO_WIPE_RECOVERY_TMP_NOT_VOLATILE \
     BEAMO_WIPE_RECOVERY_UNAVAILABLE \
     BEAMO_WIPE_UI_MODE=accessible \
+    BEAMO_WIPE_SAFE_VIDEO=1 \
     BEAMO_WIPE_ACCESSIBLE_SCREEN_KEYBOARD \
     BEAMO_WIPE_SCREEN_SPLASH \
     BEAMO_WIPE_SCREEN_KEYBOARD \
@@ -1286,6 +1307,24 @@ drive_speech_boot() {
   log "$label speech entry completed discovery and rendered the accessible wizard"
 }
 
+drive_troubleshoot_boot() {
+  local label="$1" qmp_socket="$2" deadline
+  deadline=$((SECONDS + BOOT_WAIT_SECONDS))
+  # Same shipped hotkey pattern as speech: T, plus Return on BIOS. Stop
+  # sending keys at the supervisor's safe-video marker, before X starts.
+  while [[ "$(marker_count "$label" BEAMO_WIPE_SAFE_VIDEO=1)" == 0 ]]; do
+    if (( SECONDS >= deadline )); then
+      report_marker_summary "$label"
+      echo "QEMU $label never selected the troubleshoot boot entry" >&2
+      return 1
+    fi
+    send_key "$qmp_socket" t
+    if [[ "$label" == bios* ]]; then send_key "$qmp_socket" ret; fi
+    sleep 1
+  done
+  log "$label troubleshoot entry booted with safe video settings"
+}
+
 qemu_machine() {
   local acceleration=kvm:tcg
   # Blacksmith validation requires actual KVM, with no silent TCG fallback.
@@ -1346,6 +1385,10 @@ boot_probe() {
     stop_pid "$pid"
     if [[ "$label" == bios* ]]; then BIOS_PID=""; else UEFI_PID=""; fi
     return 0
+  fi
+  if [[ "$label" == *-troubleshoot-usb ]]; then
+    # Safe video must still render the full Tk guide and reach Confirm.
+    drive_troubleshoot_boot "$label" "$qmp_socket"
   fi
   wait_for_marker "$label" BEAMO_WIPE_SCREEN_KEYBOARD "$BOOT_WAIT_SECONDS"
   send_key_for_marker "$label" "$qmp_socket" ret BEAMO_WIPE_SCREEN_OWNER 20
@@ -1764,6 +1807,11 @@ uefi_boot_probe uefi-usb ovmf-usb-vars.fd
 boot_probe bios-speech-usb no
 uefi_boot_probe uefi-speech-usb ovmf-speech-vars.fd
 
+# The troubleshoot entry (nomodeset) must boot to the same guide on the
+# firmware framebuffer, without a GPU driver, and reach the exact Confirm.
+boot_probe bios-troubleshoot-usb no
+uefi_boot_probe uefi-troubleshoot-usb ovmf-troubleshoot-vars.fd
+
 # Enrolled Microsoft keys and SMM enforcement. A bare OVMF boot is not
 # Secure Boot evidence. The guest must report the actual firmware variable.
 SECURE_CODE=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd
@@ -1780,7 +1828,7 @@ if [[ "$(sha256sum "$USB_IMAGE" | awk '{print $1}')" != "$QEMU_USB_SHA" ]]; then
   exit 2
 fi
 log "usb_image_sha256=$QEMU_USB_SHA"
-printf 'iso_sha256=%s\nusb_image_sha256=%s\nnwipe_sha256=%s\nsource_commit=%s\nbuild_id=%s\nrepetitions=2\ncases=%s\neveryday=pass\nextra=pass\nquick_zero=pass\nbios=pass\nuefi=pass\nbios_usb=pass\nuefi_usb=pass\nsecureboot_usb=pass\nspeech_bios_usb=pass\nspeech_uefi_usb=pass\nreport_export=pass\n' \
+printf 'iso_sha256=%s\nusb_image_sha256=%s\nnwipe_sha256=%s\nsource_commit=%s\nbuild_id=%s\nrepetitions=2\ncases=%s\neveryday=pass\nextra=pass\nquick_zero=pass\nbios=pass\nuefi=pass\nbios_usb=pass\nuefi_usb=pass\nsecureboot_usb=pass\nspeech_bios_usb=pass\nspeech_uefi_usb=pass\ntroubleshoot_bios_usb=pass\ntroubleshoot_uefi_usb=pass\nreport_export=pass\n' \
   "$(sha256sum "$ISO" | awk '{print $1}')" "$QEMU_USB_SHA" "$shipped_sha" \
   "$(tr -d '\n' <"$EVIDENCE_DIR/source-commit.txt")" \
   "${BUILD_ID:-local}" "${EXECUTED_CASES}" \

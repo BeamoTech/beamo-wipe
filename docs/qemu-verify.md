@@ -70,6 +70,11 @@ The gate fails unless all of these pass:
    `OVMF_VARS_4M.ms.fd`, Secure Boot code, SMM enforcement and the guest's
    actual `BEAMO_WIPE_SECURE_BOOT=1` marker. This is an acceptance probe for
    that virtual policy, not a refusal test or physical-firmware guarantee.
+10. The USB image's speech and troubleshoot entries are each selected with
+   their shipped menu hotkey under SeaBIOS and OVMF. Speech must render the
+   accessible wizard. Troubleshoot must report `BEAMO_WIPE_SAFE_VIDEO=1`
+   (`nomodeset`, no GPU driver) and still reach the exact Confirm token on the
+   firmware framebuffer. QEMU's standard VGA is not a physical GPU.
 
 ```sh
 BEAMO_WIPE_VERSION=0.2.14 ./scripts/qemu-verify.sh

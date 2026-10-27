@@ -45,6 +45,8 @@ def _qemu_gate_output_names() -> set[str]:
         "secureboot-usb",
         "bios-speech-usb",
         "uefi-speech-usb",
+        "bios-troubleshoot-usb",
+        "uefi-troubleshoot-usb",
     ):
         names.update(
             f"{label}-{suffix}.txt" for suffix in ("serial", "qemu", "cmdline")

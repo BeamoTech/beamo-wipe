@@ -710,6 +710,8 @@ def _qemu_evidence_names() -> list[str]:
         "secureboot-usb",
         "bios-speech-usb",
         "uefi-speech-usb",
+        "bios-troubleshoot-usb",
+        "uefi-troubleshoot-usb",
     ):
         names.extend(f"{label}-{suffix}.txt" for suffix in ("serial", "qemu", "cmdline"))
     for method in ("everyday", "extra", "quick_zero"):
