@@ -29,6 +29,7 @@ from beamo_wipe.diagnostics import emit_serial_marker
 from beamo_wipe.methods import DEFAULT_METHOD
 from beamo_wipe import storage_limits as limits
 from beamo_wipe import inventory
+from beamo_wipe import progress as _progress
 from beamo_wipe import keyboard as _keyboard
 from beamo_wipe.keyboard import LAYOUT_ORDER
 from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER
@@ -655,6 +656,40 @@ def _soft_break_tokens(
                     cur = trial
         out.append(cur)
     return "\n".join(out)
+
+
+def _label_line_cuts(widget: tk.Misc, top: float, height: float) -> tuple[float, ...]:
+    """Offsets between the wrapped lines of a Label, where a view edge may cut.
+
+    Single-line labels, and any other widget, are whole: no safe cut inside.
+    Tk centres a label's text block vertically unless it is anchored to the
+    top or bottom edge.
+    """
+    if widget.winfo_class() != "Label":
+        return ()
+    try:
+        if not str(widget.cget("text")):
+            return ()
+        line = float(widget.tk.call("font", "metrics", widget.cget("font"), "-linespace"))
+        inset = sum(
+            float(widget.cget(option))
+            for option in ("borderwidth", "highlightthickness", "pady")
+        )
+        anchor = str(widget.cget("anchor"))
+    except (tk.TclError, ValueError):
+        return ()
+    if line <= 0:
+        return ()
+    lines = int(round((widget.winfo_reqheight() - 2 * inset) / line))
+    if lines < 2:
+        return ()
+    if anchor in ("n", "ne", "nw"):
+        first = top + inset
+    elif anchor in ("s", "se", "sw"):
+        first = top + height - inset - lines * line
+    else:
+        first = top + (height - lines * line) / 2.0
+    return tuple(first + index * line for index in range(1, lines))
 
 
 class _Button(tk.Canvas):
@@ -1359,7 +1394,7 @@ def _new_owned_native(native_root, factory, *args, **kwargs):
 
 
 class TkWizard:
-    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_bar', '_match_label', '_match_icon', '_match_pill', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
+    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_match_label', '_match_icon', '_match_pill', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
     _NATIVE_ASSETS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_confirm_var', '_typing_var', '_owner_var')
     def __init__(self, wizard: Wizard, fullscreen: bool = False) -> None:
         _collect_retired_interpreters()
@@ -1380,10 +1415,8 @@ class TkWizard:
             # The kiosk window owns the whole display; deterministic type beats
             # DPI fidelity. (macOS Tk already renders at scaling 1.0.)
             self.root.tk.call("tk", "scaling", 1.0)
-            title = C.APP_NAME
-            if wizard.preview:
-                title = f"{C.APP_NAME} — PREVIEW (nothing is erased)"
-            self.root.title(title)
+            self._preview_label: Optional[tk.Label] = None
+            self.root.title(self._window_title())
             # Familiar arrow over ordinary content. The bare startx kiosk has
             # no window manager or cursor theme, so an unset root inherits the
             # X-server X cursor. Children inherit this; explicit hand2/xterm
@@ -1453,6 +1486,7 @@ class TkWizard:
             self._countdown_label: Optional[tk.Label] = None
             self._progress_label: Optional[tk.Label] = None
             self._progress_pct: Optional[tk.Label] = None
+            self._progress_wait: Optional[tk.Label] = None
             self._progress_bar: Optional[tk.Canvas] = None
             self._indet = 0.0
             self._match_label: Optional[tk.Label] = None
@@ -1498,6 +1532,8 @@ class TkWizard:
             self._show_more = False
             self._body_inner: Optional[tk.Frame] = None
             self._body_canvas: Optional[tk.Canvas] = None
+            self._body_follow_focus = True
+            self._body_slack = 0
             self._ring_px = self.lay.ring
             self._layout_drawing = False
             self._build_chrome()
@@ -1531,13 +1567,18 @@ class TkWizard:
             # Linux Tk, where DejaVu metrics run taller than macOS.
             stripe = tk.Frame(self.root, bg=PREVIEW_BG)
             stripe.pack(fill=tk.X)
-            tk.Label(
+            # Chrome outlives screens: _sync_preview_copy re-reads the text
+            # on every draw so a language change reaches the stripe too.
+            self._preview_label = tk.Label(
                 stripe,
                 text=C.PREVIEW_BANNER,
                 fg=PREVIEW_FG,
                 bg=PREVIEW_BG,
                 font=self.font_s_bold,
-            ).pack(side=tk.LEFT, padx=24, pady=7)
+                anchor="w",
+                justify=tk.LEFT,
+            )
+            self._preview_label.pack(side=tk.LEFT, padx=24, pady=7)
         self._header = tk.Canvas(
             self.root, height=self.lay.header_h, bg=BG, highlightthickness=0, bd=0
         )
@@ -1554,6 +1595,25 @@ class TkWizard:
         self._body = tk.Frame(self.root, bg=BG)
         self._body.pack(fill=tk.BOTH, expand=True, side=tk.TOP)
         self._apply_grid()
+
+    def _window_title(self) -> str:
+        if getattr(self.w, "preview", False):
+            return f"{C.APP_NAME} — {C.PREVIEW_BANNER}"
+        return C.APP_NAME
+
+    def _sync_preview_copy(self) -> None:
+        """Re-translate the preview stripe and window title after a language change."""
+        label = getattr(self, "_preview_label", None)
+        root = getattr(self, "root", None)
+        try:
+            if label is not None and str(label.cget("text")) != C.PREVIEW_BANNER:
+                label.configure(text=C.PREVIEW_BANNER)
+            if root is not None and hasattr(root, "title"):
+                title = self._window_title()
+                if root.title() != title:
+                    root.title(title)
+        except tk.TclError:
+            return
 
     def _apply_grid(self) -> None:
         for area, expand in ((self._body, True), (self._footer, False)):
@@ -1773,7 +1833,14 @@ class TkWizard:
         host = tk.Frame(self._body, bg=BG)
         host.grid(row=0, column=1, sticky="nsew")
         canvas = tk.Canvas(host, bg=BG, highlightthickness=0, bd=0)
-        scroll = _Scrollbar(host, canvas.yview)
+
+        def user_yview(*args):
+            # Drag, track click and wheel on the bar: the owner now owns the
+            # position, so settling layout no longer re-places the view.
+            self._body_follow_focus = False
+            return canvas.yview(*args)
+
+        scroll = _Scrollbar(host, user_yview)
         scroll.pack(side=tk.RIGHT, fill=tk.Y)
         canvas.configure(yscrollcommand=scroll.set)
         canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -1784,23 +1851,61 @@ class TkWizard:
 
         def on_inner(_event=None) -> None:
             nonlocal inner_size
-            canvas.configure(scrollregion=canvas.bbox("all") or (0, 0, 0, 0))
+            self._sync_body_scroll(canvas)
             size = (inner.winfo_width(), inner.winfo_height())
             if size != inner_size:
                 inner_size = size
                 # Wrapping can finish after focus arrived. React to content
                 # size changes, not position changes caused by manual scroll.
-                self._schedule_body_focus_reveal(self.root.focus_get())
+                self._schedule_body_focus_reveal(self.root.focus_get(), layout=True)
 
         def on_canvas(event) -> None:
             canvas.itemconfigure(window, width=max(1, event.width))
-            self._schedule_body_focus_reveal(self.root.focus_get())
+            self._sync_body_scroll(canvas)
+            self._schedule_body_focus_reveal(self.root.focus_get(), layout=True)
 
         inner.bind("<Configure>", on_inner)
         canvas.bind("<Configure>", on_canvas)
 
         self._body_canvas = canvas
         self._body_inner = inner
+        # A new screen opens at the top and follows its initial focus until
+        # the owner scrolls (see _schedule_body_focus_reveal).
+        self._body_follow_focus = True
+        self._body_slack = 0
+
+    def _sync_body_scroll(self, canvas: Optional[tk.Canvas] = None) -> None:
+        """Keep the body scroll region and offset inside the current content.
+
+        Tk never configures a canvas window lying wholly outside the view, so
+        content that shrank while scrolled far down kept its old region and
+        offset: a blank view. A negative offset on content shorter than the
+        view bottom-aligned it instead, leaving blank space at the top.
+        The region may extend past the content by the small slack a focus
+        reveal needed to avoid slicing a title.
+        """
+        canvas = canvas if canvas is not None else getattr(self, "_body_canvas", None)
+        if canvas is None:
+            return
+        try:
+            x0, y0, x1, y1 = canvas.bbox("all") or (0, 0, 0, 0)
+            bounds = (x0, y0, x1, y1 + max(0, int(getattr(self, "_body_slack", 0))))
+            region = tuple(
+                int(round(float(value)))
+                for value in str(canvas.cget("scrollregion")).split()
+            )
+            if region != bounds:
+                canvas.configure(scrollregion=bounds)
+            viewport = canvas.winfo_height()
+            if viewport <= 1:
+                return
+            content = bounds[3] - bounds[1]
+            top = float(canvas.canvasy(0))
+            limit = float(max(0, content - viewport))
+            if top < -0.5 or top > limit + 0.5:
+                canvas.yview_moveto(min(max(0.0, top), limit) / max(1, content))
+        except (tk.TclError, ValueError):
+            return
 
     def _on_body_wheel(self, event) -> Optional[str]:
         canvas = self._body_canvas
@@ -1827,15 +1932,29 @@ class TkWizard:
             steps = int(-event.delta / 120) if event.delta else 0
         if not steps:
             return None
+        self._body_follow_focus = False
         canvas.yview_scroll(steps, "units")
         return "break"
 
     def _on_body_focus(self, event) -> None:
         self._schedule_body_focus_reveal(event.widget)
 
-    def _schedule_body_focus_reveal(self, widget: tk.Misc | None) -> None:
+    def _schedule_body_focus_reveal(
+        self, widget: tk.Misc | None, *, layout: bool = False
+    ) -> None:
+        """Scroll the body so the focused control is fully visible.
+
+        A focus change moves the view only when the control is not already
+        fully visible. Layout settling (wrapping, resize) re-places the view
+        from scratch while it still follows focus: at the top when the
+        control fits there, otherwise just far enough. Either way the top
+        edge never slices a title or a line of text in half. Once the owner
+        scrolls, settling layout leaves the position alone.
+        """
         canvas = self._body_canvas
         if canvas is None or widget is None:
+            return
+        if layout and not getattr(self, "_body_follow_focus", True):
             return
         parent: tk.Misc | None = widget
         while parent is not None and parent is not canvas:
@@ -1847,20 +1966,116 @@ class TkWizard:
             try:
                 if self._body_canvas is not canvas or self.root.focus_get() is not widget:
                     return
+                if layout and not getattr(self, "_body_follow_focus", True):
+                    return
+                self._sync_body_scroll(canvas)
+                target = self._body_reveal_top(canvas, widget, settle=layout)
+                if not layout:
+                    self._body_follow_focus = True
+                if target is None:
+                    return
                 bounds = canvas.bbox("all")
                 if not bounds:
                     return
-                top = widget.winfo_rooty() - canvas.winfo_rooty()
-                height = widget.winfo_height()
-                viewport = canvas.winfo_height()
-                offset = top if top < 0 else max(0, top + height - viewport)
-                if offset:
-                    canvas.yview_moveto((canvas.canvasy(0) + offset) / max(1, bounds[3]))
+                content = bounds[3] - bounds[1]
+                self._body_slack = 0 if target <= 0 else max(
+                    0, int(round(target + canvas.winfo_height() - content))
+                )
+                self._sync_body_scroll(canvas)
+                if abs(float(canvas.canvasy(0)) - target) > 0.5:
+                    canvas.yview_moveto(target / max(1, content + self._body_slack))
             except tk.TclError:
                 # A redraw can destroy the focused widget before its idle job.
                 return
 
         canvas.after_idle(reveal)
+
+    def _body_reveal_top(
+        self, canvas: tk.Canvas, widget: tk.Misc, *, settle: bool
+    ) -> Optional[float]:
+        """Content offset to show at the top of the body view, or None to stay.
+
+        Offsets come from geometry (winfo_y), which stays valid while Tk keeps
+        an off-view canvas window unmapped. Candidate offsets are the edges of
+        body rows and the gaps between lines of wrapped labels.
+        """
+        inner = self._body_inner
+        if inner is None:
+            return None
+        top = 0.0
+        node: tk.Misc | None = widget
+        while node is not None and node is not inner:
+            top += node.winfo_y()
+            node = node.master
+        if node is not inner:
+            return None
+        bottom = top + widget.winfo_height()
+        viewport = float(canvas.winfo_height())
+        bounds = canvas.bbox("all")
+        if not bounds or viewport <= 1:
+            return None
+        current = float(canvas.canvasy(0))
+        if not settle and top >= current - 0.5 and bottom <= current + viewport + 0.5:
+            return None
+        low = bottom - viewport
+        # The offset may pass the content end by a little slack (blank below
+        # the last control) when that is the only clean edge, e.g. a final
+        # consent card one title-height too tall for the view.
+        high = min(top, max(0.0, float(bounds[3] - bounds[1]) - viewport) + viewport / 3.0)
+        if low <= 0:
+            return 0.0
+        if low >= high:
+            # Taller than the view: show its top edge.
+            return min(top, high)
+        rows = self._body_rows(inner)
+
+        def clean(y: float) -> bool:
+            for row_top, row_bottom, cuts in rows:
+                if row_top + 1 < y < row_bottom - 1 and not any(
+                    abs(y - cut) <= 1 for cut in cuts
+                ):
+                    return False
+            return True
+
+        points = {low, high}
+        for row_top, row_bottom, cuts in rows:
+            points.update((row_top, row_bottom, *cuts))
+        candidates = sorted(point for point in points if low <= point <= high)
+        if not settle and current > high:
+            # Moving up: the nearest clean edge keeps the control at the top.
+            candidates.reverse()
+        for candidate in candidates:
+            if clean(candidate):
+                return candidate
+        return max(low, min(top, max(0.0, float(bounds[3] - bounds[1]) - viewport)))
+
+    def _body_rows(self, inner: tk.Misc) -> list[tuple[float, float, tuple[float, ...]]]:
+        """Content-y extent of every text, entry, icon and button in the body.
+
+        Frames and boxes are containers; a view edge may cut through them.
+        Multi-line labels may also be cut exactly between two lines.
+        """
+        rows: list[tuple[float, float, tuple[float, ...]]] = []
+
+        def visit(node: tk.Misc, y: float) -> None:
+            for child in node.winfo_children():
+                try:
+                    if not child.winfo_manager():
+                        continue
+                    top = y + child.winfo_y()
+                    height = child.winfo_height()
+                    container = isinstance(child, _Box) or child.winfo_class() == "Frame"
+                except tk.TclError:
+                    continue
+                if height <= 1:
+                    continue
+                if container:
+                    visit(child, top)
+                else:
+                    rows.append((top, top + height, _label_line_cuts(child, top, height)))
+
+        visit(inner, 0.0)
+        return rows
 
     def _cancel_widget_callbacks(self, widget: tk.Misc, *, include_self: bool = True) -> None:
         """Retire pending Python callbacks owned by widgets being destroyed."""
@@ -2022,6 +2237,9 @@ class TkWizard:
             power_label = getattr(self, "_power_label", None)
             if power_label is not None:
                 power_label.configure(text=self.w.power_text)
+            # In-place updates above can shrink a scrolled body without any
+            # Configure event reaching it (see _sync_body_scroll).
+            self._sync_body_scroll()
             self._after_id = self.root.after(100, self._tick)
         except BaseException as exc:
             self._runtime_failure(type(exc), exc, exc.__traceback__)
@@ -2087,6 +2305,7 @@ class TkWizard:
         self._countdown_label = None
         self._progress_label = None
         self._progress_pct = None
+        self._progress_wait = None
         self._progress_bar = None
         self._match_label = None
         self._match_icon = None
@@ -2098,6 +2317,9 @@ class TkWizard:
         working_revision = self.w.report_view.revision if screen == Screen.WORKING else None
         diagnostic_view = self.w.diagnostic_view if screen == Screen.DIAGNOSTIC else None
         self._sync_chrome(screen == Screen.SPLASH)
+        sync_preview = getattr(self, "_sync_preview_copy", None)
+        if callable(sync_preview):
+            sync_preview()
         self._body.configure(bg=BG)
         dispatch = {
             Screen.SPLASH: self._splash,
@@ -2467,7 +2689,13 @@ class TkWizard:
             bg=bg,
         ).pack(fill=tk.X, pady=(4, 0))
 
-    def _more_link(self, parent: tk.Widget, *, bg: str = BG) -> bool:
+    def _more_link(
+        self,
+        parent: tk.Widget,
+        *,
+        bg: str = BG,
+        side: Optional[Literal["left", "right", "top", "bottom"]] = None,
+    ) -> bool:
         """Optional details use the shared, keyboard-accessible control."""
         open_ = self._show_more
 
@@ -2482,7 +2710,10 @@ class TkWizard:
             parent, text=C.BTN_LESS if open_ else C.BTN_MORE,
             command=toggle, font=self.font_s_bold, variant="ghost", compact=True,
         )
-        self._more_button.pack(anchor="w", pady=(4, 0))
+        if side is not None:
+            self._more_button.pack(side=side, anchor="n")
+        else:
+            self._more_button.pack(anchor="w", pady=(4, 0))
         return open_
 
     def _wrapping_label(self, parent: tk.Widget, text: str, *, font, bg: str,
@@ -2564,17 +2795,34 @@ class TkWizard:
             )
         return meta
 
-    def _disk_summary(self, parent: tk.Widget, disk: Disk) -> _Box:
-        """The selected disk, shared across confirmation, method, and result screens."""
+    def _disk_summary(self, parent: tk.Widget, disk: Disk, *, more: bool = False) -> _Box:
+        """The selected disk, shared across confirmation, method, and result screens.
+
+        Short windows tighten its padding so the step's own controls start
+        above the fold. With ``more`` the optional-details toggle shares the
+        caption row instead of taking a row of its own below the box.
+        """
+        short = self.lay.short
         box = _Box(
             parent, radius=RADIUS, fill=PRIMARY_TINT, outline=PRIMARY, ow=1,
-            padx=18, pady=12, shadow=False,
+            padx=18, pady=8 if short else 12, shadow=False,
         )
         inner = box.inner
-        tk.Label(inner, text=C.SELECTED_DISK, font=self.font_tiny,
-                 fg=PRIMARY, bg=PRIMARY_TINT, anchor="w").pack(fill=tk.X, pady=(0, 6))
+        caption: tk.Widget = inner
+        if more:
+            # The toggle is taller than the caption text and brings its own
+            # padding; no extra gap below it on short windows.
+            caption = tk.Frame(inner, bg=PRIMARY_TINT)
+            caption.pack(fill=tk.X, pady=(0, 0 if short else 6))
+        label = tk.Label(caption, text=C.SELECTED_DISK, font=self.font_tiny,
+                         fg=PRIMARY, bg=PRIMARY_TINT, anchor="w")
+        if more:
+            label.pack(side=tk.LEFT)
+            self._more_link(caption, bg=PRIMARY_TINT, side=tk.RIGHT)
+        else:
+            label.pack(fill=tk.X, pady=(0, 2 if short else 6))
         self._disk_heading(inner, disk, PRIMARY_TINT)
-        self._meta_line(inner, disk, PRIMARY_TINT).pack(fill=tk.X, pady=(4, 0))
+        self._meta_line(inner, disk, PRIMARY_TINT).pack(fill=tk.X, pady=(2 if short else 4, 0))
         return box
 
     # -- footer / buttons -----------------------------------------------------
@@ -3224,8 +3472,12 @@ class TkWizard:
         # footer retain their full height on short screens.
         guidance = tk.Frame(cards, bg=BG)
         guidance.pack(fill=tk.X)
+        # Short windows (800x600, 1024x600, 720p) must show a disk without
+        # scrolling: warnings stay first but compact, and the protected boot
+        # USB plus the notes about the current selection follow the disks.
+        short = self.lay.short
         if same_size_conflict(self.w.listed_disks):
-            self._panel(guidance, kind="warn", text=C.SAME_SIZE_HINT).pack(fill=tk.X, pady=(0, 12))
+            self._panel(guidance, kind="warn", text=C.SAME_SIZE_HINT, compact=short).pack(fill=tk.X, pady=(0, 8 if short else 12))
         if self.w.error:
             sections = recovery_for_wizard_error(self.w.error)
             if sections:
@@ -3237,11 +3489,16 @@ class TkWizard:
         elif any(not self.w.disk_view(disk).confirmable for disk in self.w.selectable):
             from beamo_wipe.identity import AMBIGUOUS_IDENTITY
 
-            self._panel(guidance, kind="warn", text=AMBIGUOUS_IDENTITY).pack(fill=tk.X, pady=(0, 12))
-        if self.w.selected and self.w.selected.kind in (DiskKind.SSD, DiskKind.NVME):
-            self._panel(guidance, kind="limits", text=C.SSD_FOOTER, compact=True).pack(fill=tk.X, pady=(0, 8))
-        if self.w.report_wanted:
-            self._panel(guidance, kind="info", text=C.REPORT_MEDIA_WANTED, compact=True).pack(fill=tk.X, pady=(0, 8))
+            self._panel(guidance, kind="warn", text=AMBIGUOUS_IDENTITY, compact=short).pack(fill=tk.X, pady=(0, 8 if short else 12))
+
+        def selection_notes(parent: tk.Widget) -> None:
+            if self.w.selected and self.w.selected.kind in (DiskKind.SSD, DiskKind.NVME):
+                self._panel(parent, kind="limits", text=C.SSD_FOOTER, compact=True).pack(fill=tk.X, pady=(0, 8))
+            if self.w.report_wanted:
+                self._panel(parent, kind="info", text=C.REPORT_MEDIA_WANTED, compact=True).pack(fill=tk.X, pady=(0, 8))
+
+        if not short:
+            selection_notes(guidance)
 
         def bind_wheel(widget):
             for sequence in ("<MouseWheel>", "<Button-4>", "<Button-5>"):
@@ -3250,9 +3507,10 @@ class TkWizard:
                 bind_wheel(child)
 
         bind_wheel(guidance)
-        boot_card = self._protected_boot(cards)
-        if boot_card is not None:
-            bind_wheel(boot_card)
+        if not short:
+            boot_card = self._protected_boot(cards)
+            if boot_card is not None:
+                bind_wheel(boot_card)
         self._comparison(cards)
         items: List = sorted(self.w.selectable, key=lambda d: d.path)
         for disk in items:
@@ -3285,6 +3543,12 @@ class TkWizard:
             canvas.after(90, lambda: self._pick_restore_tick(gen)),
             canvas.after(180, lambda: self._pick_restore_tick(gen, final=True)),
         ]
+        if short:
+            trailing = tk.Frame(cards, bg=BG)
+            trailing.pack(fill=tk.X)
+            selection_notes(trailing)
+            self._protected_boot(trailing)
+            bind_wheel(trailing)
         # Keep the informational inventory in the same scrolling region.
         # It must not consume the picker viewport on short laptop screens.
         self._other_devices(cards)
@@ -3301,7 +3565,7 @@ class TkWizard:
         if len(entries) < 2:
             return
         section = tk.Frame(parent, bg=BG)
-        section.pack(fill=tk.X, pady=(0, 10))
+        section.pack(fill=tk.X, pady=(0, 6 if self.lay.short else 10))
         content = tk.Frame(section, bg=BG)
         opened = _new_owned_native(self.root, tk.BooleanVar, master=self.root, value=False)
         def toggle():
@@ -3356,7 +3620,9 @@ class TkWizard:
                     if bounds:
                         top = event.widget.winfo_rooty() - canvas.winfo_rooty()
                         if top < 0 or top + event.widget.winfo_height() > canvas.winfo_height():
-                            canvas.yview_moveto((canvas.canvasy(0) + top) / max(1, bounds[3]))
+                            # Never negative: on a list shorter than its view
+                            # Tk would bottom-align it, blank above.
+                            canvas.yview_moveto(max(0.0, (canvas.canvasy(0) + top) / max(1, bounds[3])))
             reader.bind("<FocusIn>", reveal)
         def reflow(event):
             columns = 1 if (event.width < 700 or self._type_scale() > 1.05) else 2
@@ -4041,21 +4307,33 @@ class TkWizard:
         # Identity is informational only; method changes keep the bound target.
         # The shared scrolling body accommodates long identities and small screens.
         self._title_block(col, C.TITLE_METHOD, C.METHOD_LEAD, compact=True)
+        # Short windows (800x600, 1024x600, 720p) put the three choices right
+        # under the disk: details share the summary's caption row and the
+        # general limits follow the cards. Each card keeps its own limits note.
+        short = self.lay.short
         if self.w.selected:
-            self._disk_summary(col, self.w.selected).pack(fill=tk.X)
-            self._more_link(col)
-        notice = self.w.storage_notice
-        if notice:
-            self._panel(col, kind="limits", text=notice, compact=True).pack(
-                fill=tk.X, pady=(8, 0)
-            )
-        _Button(
-            col, text=limits.BUTTON, command=self._nav(self.w.open_limits),
-            font=self.font_s_bold, variant="ghost", compact=True,
-        ).pack(anchor="w", pady=(4, 4))
+            self._disk_summary(col, self.w.selected, more=short).pack(fill=tk.X)
+            if not short:
+                self._more_link(col)
+
+        def storage_limits(parent: tk.Widget) -> None:
+            notice = self.w.storage_notice
+            if notice:
+                self._panel(parent, kind="limits", text=notice, compact=True).pack(
+                    fill=tk.X, pady=(8, 0)
+                )
+            _Button(
+                parent, text=limits.BUTTON, command=self._nav(self.w.open_limits),
+                font=self.font_s_bold, variant="ghost", compact=True,
+            ).pack(anchor="w", pady=(4, 4))
+
+        if not short:
+            storage_limits(col)
         zone = self._center_zone(col)
         for method in (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO):
             self._method_card(zone, method)
+        if short:
+            storage_limits(zone)
         row = self._footer_shell(C.HINT_METHOD)
         self._back_btn(row)
         self._primary_btn(row, C.primary_action(Screen.METHOD), self.w.continue_method)
@@ -4176,11 +4454,14 @@ class TkWizard:
         self._title_block(col, C.TITLE_LAST, C.LAST_LEAD)
         review = tk.Frame(col, bg=BG)
         review.pack(fill=tk.X, pady=(8, 0))
-        zone = tk.Frame(review, bg=BG)
+        # Stacked (short, narrow or enlarged text): the countdown is one row,
+        # ring beside its caption, directly under the erase warning. Below
+        # the whole review it fell under the fold at 800x600.
+        stacked = self.lay.stack_review
+        zone = None if stacked else tk.Frame(review, bg=BG)
         details = tk.Frame(review, bg=BG)
-        if self.lay.stack_review:
+        if zone is None:
             details.pack(fill=tk.X, anchor="n")
-            zone.pack(fill=tk.X, pady=(8, 0), anchor="n")
         else:
             zone.pack(side=tk.RIGHT, padx=(24, 0), anchor="n")
             details.pack(side=tk.LEFT, fill=tk.X, expand=True, anchor="n")
@@ -4197,6 +4478,9 @@ class TkWizard:
         ).pack_configure(pady=(12, 0))
         self._wrapping_label(details, f"{C.SEVERITY_WARNING}: {self.w.erase_label()}",
                              font=self.font_bold, bg=BG, fg=DANGER).pack_configure(pady=(16, 8))
+        if zone is None:
+            zone = tk.Frame(details, bg=BG)
+            zone.pack(fill=tk.X, pady=(0, 8), anchor="n")
         self._wrapping_label(details, self.w.method_summary, font=self.font_s, bg=BG)
         if self.w.error:
             sections = recovery_for_wizard_error(self.w.error)
@@ -4211,18 +4495,27 @@ class TkWizard:
         ring = tk.Canvas(
             zone, width=ring_px, height=ring_px, bg=BG, highlightthickness=0
         )
-        ring.pack()
+        if stacked:
+            ring.pack(side=tk.LEFT, anchor="n")
+        else:
+            ring.pack()
         self._countdown_ring = ring
         self._countdown_num = tk.Label(
             ring, text="", font=self.font_bold, fg=INK, bg=BG, anchor="center"
         )
         ring.create_window(ring_px / 2, ring_px / 2, window=self._countdown_num)
         self._countdown_label = tk.Label(
-            zone, text="", font=self.font_b, fg=MUTED, bg=BG, anchor="center",
-            justify=tk.CENTER, wraplength=max(120, ring_px + 40),
+            zone, text="", font=self.font_b, fg=MUTED, bg=BG,
+            anchor="w" if stacked else "center",
+            justify=tk.LEFT if stacked else tk.CENTER,
+            wraplength=max(120, ring_px + 40),
         )
-        self._flow_wrap(self._countdown_label, zone)
-        self._countdown_label.pack(fill=tk.X, pady=(12, 0))
+        if stacked:
+            self._flow_wrap(self._countdown_label, zone, pad=ring_px + 24)
+            self._countdown_label.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(16, 0))
+        else:
+            self._flow_wrap(self._countdown_label, zone)
+            self._countdown_label.pack(fill=tk.X, pady=(12, 0))
         row = self._footer_shell(C.HINT_LAST_CHANCE_TK)
         back = self._back_btn(row)
         self._primary_btn(
@@ -4315,10 +4608,22 @@ class TkWizard:
         zone = progress_card.inner
         tk.Label(zone, text=C.ERASE_PROGRESS_LABEL, font=self.font_s_bold,
                  fg=MUTED, bg=SURFACE_ALT, anchor="w").pack(fill=tk.X, pady=(0, 8))
+        # One fixed-height slot: the large percentage once the engine reports
+        # one, and until then the same honest "not reported" state the
+        # screen-reader and console views speak. No empty block, no jump.
+        slot = tk.Frame(zone, bg=SURFACE_ALT)
         self._progress_pct = tk.Label(
-            zone, text="", font=self.font_stat, fg=INK, bg=SURFACE_ALT, anchor="w"
+            slot, text="", font=self.font_stat, fg=INK, bg=SURFACE_ALT, anchor="w"
         )
-        self._progress_pct.pack(fill=tk.X, pady=(0, 12))
+        self._progress_wait = tk.Label(
+            slot, text=_progress.PROGRESS_UNKNOWN, font=self.font_lead, fg=MUTED,
+            bg=SURFACE_ALT, anchor="w", justify=tk.LEFT,
+            wraplength=max(200, self.lay.wrap - 80),
+        )
+        slot.configure(height=self._progress_pct.winfo_reqheight())
+        slot.pack_propagate(False)
+        slot.pack(fill=tk.X, pady=(0, 12))
+        self._progress_wait.pack(fill=tk.BOTH, expand=True)
         bar = tk.Canvas(zone, height=BAR_H, bg=SURFACE_ALT, highlightthickness=0)
         bar.pack(fill=tk.X)
         bar.bind("<Configure>", lambda _e: self._refresh_working())
@@ -4359,6 +4664,7 @@ class TkWizard:
             self._progress_pct.configure(
                 text=shown, fg=MUTED if view.percent_is_old else INK
             )
+        self._show_progress_slot(bool(shown))
         if self._progress_label.cget("text") != pulse:
             self._progress_label.configure(text=pulse)
         if view.animate:
@@ -4371,6 +4677,17 @@ class TkWizard:
             self._paint_bar(0.0)
         else:
             self._paint_bar(max(0.02, pct / 100.0))
+
+    def _show_progress_slot(self, has_percent: bool) -> None:
+        """Percentage or the not-reported line, in the same fixed slot."""
+        pct = self._progress_pct
+        wait = getattr(self, "_progress_wait", None)
+        if pct is None or wait is None:
+            return
+        shown, hidden = (pct, wait) if has_percent else (wait, pct)
+        if not shown.winfo_manager():
+            hidden.pack_forget()
+            shown.pack(fill=tk.BOTH, expand=True)
 
     def _paint_bar(self, frac: Optional[float], indet_pos: float = 0.0) -> None:
         bar = self._progress_bar
@@ -4962,6 +5279,7 @@ class TkWizard:
                 self._click_refresh()
             return "break"
         if self._body_canvas is not None and event.keysym in ("Prior", "Next"):
+            self._body_follow_focus = False
             self._body_canvas.yview_scroll(-1 if event.keysym == "Prior" else 1, "pages")
             return "break"
         if event.keysym in ("Return", "KP_Enter", "Escape", "Tab"):

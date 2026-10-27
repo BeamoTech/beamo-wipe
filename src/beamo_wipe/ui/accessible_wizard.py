@@ -470,7 +470,6 @@ class AccessibleWizard:
         elif screen == Screen.METHOD:
             heading.set_text(C.TITLE_METHOD)
             self.identity()
-            self.label(f"{C.SEVERITY_LIMITS}: {self.w.storage_notice}", focusable=True)
             group = None
             guides = []
             for method, spec in METHODS.items():
@@ -504,6 +503,10 @@ class AccessibleWizard:
                     if widget.get_active() and generation == self.generation
                     else None,
                 )
+            # The general storage limits follow the choices (the next Tab
+            # stop after them): above the radios this notice pushed the third
+            # choice under the footer at 800x600 for hard disks and German.
+            self.label(f"{C.SEVERITY_LIMITS}: {self.w.storage_notice}", focusable=True)
             for text in guides:
                 self.label(text)
             for spec in METHODS.values():
