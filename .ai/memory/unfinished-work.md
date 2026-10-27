@@ -1850,3 +1850,77 @@
   `fix/release-readiness-20261026` (starts the hosted CI gate) after or with
   PR93's fix; then follow BW-RR-RELEASE. Translation wording (FR/DE) for the
   three new sentences should get a native-speaker review.
+
+### BW-RR-UX-POLISH-20261027 — LOCAL, UNCOMMITTED (subagent, Claude Opus 5.5)
+
+- Same clone/branch, working tree only (not staged/committed). Done locally:
+  HiDPI readable mode in `usr/local/bin/beamo-wipe` (xrandr, fake-fixture
+  tests `tests/test_launcher_readable_mode.py`); method-screen rough time guide
+  (`progress.time_guide`, `copy.method_time_guide`, Tk/GTK/console, FR/DE; ES
+  added by the locale agent; `tests/test_method_time_guide.py`,
+  `tests/test_time_guide_other_views.py`); Tk polish pinned by
+  `tests/test_ui_polish_20261027.py`; docs progress-timing + DISP-12 row.
+- OPEN: BW-RR-HIDPI-QEMU/PHYS — run the readable-mode launcher in QEMU (e.g.
+  virtio-vga xres=3840) and on real 4K/2560x1600 panels incl. Orca view; NOT
+  TESTED. Native-speaker review of the FR/DE/ES guide strings.
+- OPEN (outside this task's files): wizard.py `elapsed_text` hardcodes English
+  "Elapsed:" on FR/DE/ES result screens; build identity "unavailable" is not
+  translated; initial focus reveal slices the Owner/Confirm title on 1280x720
+  (EN) and 800x600 (DE); GTK view at 800x600 leaves the third method radio
+  below the footer for the 1 TB demo HDD and in German (identical on base).
+
+## BW-COMPAT-UX-20261027 — LOCAL VERIFIED / HOSTED, NATIVE-REVIEW AND PHYSICAL GATES OPEN
+
+- 2026-10-27 / Claude (Opus 5.5) for the owner's request: more devices, smoother
+  and better-looking experience without breaking anything. Branch
+  `fix/release-readiness-20261026`, commits `261cf58`, `2fb1176`, `5fb9d90`,
+  `2d1c434`, `f42acd0` after `317914d`. Clone and WSL copies as in
+  BW-READINESS-WORK-20261026. No PR, hosted CI, release or device operation.
+- Done locally: console-data (console layouts actually load); non-free
+  graphics/audio/USB firmware + microcode; Debian-signed 6.12 kernel and
+  firmware 20250410 from bookworm-backports via a chroot-only apt pin (apt
+  resolution simulated against the live archive, no unmet deps); quiet normal
+  boot; usbcore.autosuspend=-1 and NVMe APST off on every entry; QEMU gate
+  checks for kernel >= 6.12, firmware packages/dirs, no radio firmware, and an
+  X layout + console keymap for every offered layout; GPL plan adds linux/grub2/
+  shim sources behind signed wrappers; HiDPI xrandr mode switch; Spanish UI and
+  helper; UK/ES/LatAm/IT layouts; per-disk time guide; eight visual fixes;
+  curses Left/Right layout choice; localized Elapsed label.
+- Verification: full suite in three fresh sessions (private 72 DPI Xvfb,
+  RAM /tmp): 96 failures, every one also failing on pristine main (no .git /
+  no docs/evidence in the copy); 71 re-run on base gave the identical set.
+  Note tests/test_usb_image_readback.py alone needs ~1.5 GB of /tmp (builds a
+  2 GiB image) — size test temp space accordingly. ruff, security lint, mypy
+  53 modules, shellcheck, git diff --check PASS.
+
+### Open items
+
+- BW-CU-HOSTED — NEXT CANDIDATE GATE. None of the image changes has been built:
+  backports pin, archive areas, firmware/microcode/console-data, boot params,
+  troubleshoot probes, squashfs/keymap/firmware checks, keyboard-layouts.txt
+  evidence. The first hosted ISO/QEMU run may need iteration; ISO size grows
+  (~+80–100 MB est.). Needs owner authorization for the PR/hosted gate.
+- BW-CU-SB — REQUIRED BEFORE RELEASE. New image boots linux-image-6.12.95+deb12
+  (backports, Debian-signed): repeat the Secure Boot component inspection
+  (docs/secure-boot-acceptance.md) for the exact new image.
+- BW-CU-PHYS — BLOCKED (hardware). Firmware effect on AMD/Intel/NVIDIA panels
+  (incl. nouveau GSP on RTX), SOF/Cirrus audio and speech, Renesas USB 3, the
+  6.12 kernel on 2023–2025 laptops, HiDPI xrandr switch on real 4K/2560x1600
+  panels and docks, autosuspend/APST effect, console keymaps and all seven
+  layouts typed on physical keyboards.
+- BW-CU-L10N-REVIEW — NATIVE REVIEW. Spanish (choices: memoria USB, equipo,
+  cuenta regresiva vs cuenta atrás, ratón, presione, Habitual, Compilación,
+  omitido; SOUND_SELECTED phrasing) and every new FR/DE string (time guide,
+  RST/VMD hint, power restart, keyboard limits/footer, Elapsed).
+- BW-CU-VOICE — FEATURE. No language→voice mapping: Spanish (and FR/DE) text
+  is spoken by Orca/espeak-ng with the default English voice; boot menu and
+  kiosk recovery screens stay English.
+- BW-CU-UI-LEFTOVERS — OPEN. Focus scroll clips the title (Owner 1280x720 EN,
+  Confirm 800x600 DE); GTK view at 800x600 puts the third method below the
+  footer (also on base); Working screen empty block before first percent;
+  800x600 method cards/pick list start below the fold; Last-chance ring half
+  visible at 800x600; body-scroll stale offset race when content grows then
+  shrinks; preview-only banner does not re-translate; support build ID token
+  "unavailable" stays English by design (support readback).
+- BW-CU-QEMU-COVERAGE — unchanged from BW-RR-QEMU-COVERAGE (NVMe/AHCI targets,
+  writable boot stick); a QEMU 4K VGA probe for the xrandr path is also open.
