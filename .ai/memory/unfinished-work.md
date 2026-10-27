@@ -1,5 +1,25 @@
 # Unfinished work
 
+## BW-SECURITY-RESUME-READY-20261027 - HANDOFF PUSHED / MAIN STILL BLOCKED
+
+2026-10-27 UTC / Codex. Latest owner request is to preserve everything for
+resumption on another machine and push to main. All task source changes are
+already pushed on fix/security-audit-handoff-20261027 atbf2b490; the complete
+resumption source plus current diagnosis and bootstrap instructions is on
+handoff/security-review-blocked-20261027. This documentation-only follow-up
+adds the exact clone command, compact next-thread prompt and existing-PR
+branch sequence in docs/security-review-handoff.md. No runtime/test edit.
+
+Main remains58c677f: PR93 is BLOCKED with failed required CI, strict status
+checks and administrator enforcement. No protection bypass or release is
+authorized. The current main request does not make the GTK failure a pass.
+Next useful action remains the isolated native diagnosis in BW-SECURITY-PR93-CI2,
+then fix/regression, exact-final-head checks/review and protected merge. No
+additional hosted run is needed for this unshipped handoff-document update.
+Current machine worktree is clean after the handoff commit; original audit
+worktrees/evidence remain preserved. Private raw evidence availability and
+worker-access blockers remain explicitly recorded, without credentials.
+
 ## BW-SECURITY-PR93-CI2 - BLOCKED / NATIVE GTK CRASH UNRESOLVED
 
 2026-10-27 UTC / Codex. PR93 source bf2b490909c01b91b1fd209c430ce40d3dcfc721;

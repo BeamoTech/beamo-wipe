@@ -9,6 +9,64 @@ preserves the accumulated audit fixes and regression tests. It does not waive
 the current `AGENTS.md` review rules, required `CI gate`, device protections or
 separate release authorization. Do not bypass protection to merge it.
 
+## Start on the next machine
+
+Clone the resumption branch into a new normal checkout. It contains all of
+the proposed source fixes, regression tests and the latest failure handoff;
+checking out `main` alone would omit the unmerged work.
+
+```bash
+git clone --branch handoff/security-review-blocked-20261027 \
+  https://github.com/BeamoTech/beamo-wipe.git beamo-wipe-resume
+cd beamo-wipe-resume
+git status --short
+git log -3 --oneline
+```
+
+Read `AGENTS.md`, this file and `.ai/memory/unfinished-work.md`. Then follow
+[the development setup](development.md) for that machine and run its doctor.
+Use a new environment; do not copy the Windows venv, executable caches or SSH
+material. A checkout and passing doctor do not admit a worker for ISO/QEMU.
+No installation, login, worker admission or native check on the next machine
+has been performed by this handoff.
+
+The product/test revision is `bf2b490909c01b91b1fd209c430ce40d3dcfc721`;
+later handoff commits contain documentation only. PR #93 is the existing
+implementation PR. At the last verification, main was
+`58c677f7316b5e2fc0cbb3ee4b502681c80338c1`, required `CI gate` was failing,
+and strict branch protection applied to administrators too. Main is not the
+resumption source until that PR is correctly qualified and merged.
+
+A concise prompt for the new thread:
+
+> Continue the Beamo Wipe security review from this resumption checkout.
+> Read current AGENTS.md, docs/security-review-handoff.md and the canonical
+> unfinished-work record first. All proposed source fixes and regressions are
+> pushed; PR #93 remains unmerged at bf2b490. Required CI run 40433850969 failed
+> because the main GTK pytest process segfaulted during garbage collection.
+> The boot-guard mutation and unmodified control passed their intended gate.
+> Preserve all assertions and safety controls. Reproduce the GTK failure on
+> an admitted isolated x86_64 Linux worker, capture a native backtrace, prove
+> and fix the cause, add a causal regression, then qualify the exact final PR
+> head and review before merge. Windows/CodeQL passed at the recorded source;
+> Linux, image and physical acceptance remain incomplete. Do not publish a
+> release or touch the unattended Windows host or its physical disks.
+
+When a proven fix is ready to prepare on the existing PR branch, the linear
+handoff commits can be brought forward locally without opening another PR:
+
+```bash
+git fetch origin
+git switch --track origin/fix/security-audit-handoff-20261027
+git merge --ff-only origin/handoff/security-review-blocked-20261027
+```
+
+First inspect the fetched refs; if either branch has changed, reconcile it
+without resetting other work. Make the confirmed fix and batch the handoff
+documentation with it before pushing that PR branch. Such a push starts
+required hosted qualification. Do not push an unchanged candidate merely to
+retry the failure or dispatch a duplicate workflow. No extra PR is needed.
+
 ## Current blocker: native GTK crash in required CI
 
 The corrected source `bf2b490909c01b91b1fd209c430ce40d3dcfc721` failed
