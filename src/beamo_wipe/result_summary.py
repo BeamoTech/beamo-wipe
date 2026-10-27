@@ -350,7 +350,12 @@ def _warnings(evidence: Mapping[str, Any], secrets: tuple[str, ...]) -> str:
 
 def _limitations(evidence: Mapping[str, Any]) -> str:
     view = present_evidence(evidence)
-    step = sanitize_value(view.next_step) if view.next_step else UNAVAILABLE
+    # next_step is canonical result copy, never saved prose. The length cap
+    # bounds untrusted values; it must not cut a translated next step short.
+    step = (
+        sanitize_value(view.next_step, limit=max(MAX_VALUE, len(view.next_step)))
+        if view.next_step else UNAVAILABLE
+    )
     if step != UNAVAILABLE:
         return step
     verification = (

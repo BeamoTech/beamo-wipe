@@ -25,9 +25,47 @@ class ResultView:
 
 STOP_WARNING = "Stopping cannot restore files already erased."
 
-SUPPORT = (
-    "Files may still be on the disk. Save the report if available and contact support. "
-    "Shut down before disconnecting."
+# Every result that does not prove a finished erase leads its next steps with
+# this sentence. Each outcome then names its own actions; the report is
+# volatile, so saving it comes before any shutdown.
+FILES_MAY_REMAIN = "Files may still be on the disk."
+NEXT_OPEN_FAILED = (
+    "Save the report if available. Shut down, check the disk's connection and "
+    "avoid USB hubs, then start again. If this repeats, contact support."
+)
+NEXT_GEOMETRY = (
+    "Save the report if available and contact support before trying this disk "
+    "again. Shut down before disconnecting."
+)
+NEXT_VERIFICATION_FAILED = (
+    "The disk may be unreliable; do not treat or sell it as erased. Consider "
+    "replacing or physically destroying it. Save the report if available and "
+    "contact support. Shut down before disconnecting."
+)
+NEXT_ENGINE_FAILED = (
+    "The disk may be failing; do not treat or sell it as erased. Consider "
+    "replacing or physically destroying it. Save the report if available and "
+    "contact support. Shut down before disconnecting."
+)
+NEXT_INTERRUPTED = (
+    "Save the report if available. To erase the whole disk, shut down and start "
+    "again from the beginning. If this repeats, contact support."
+)
+NEXT_CANCELLED = (
+    "Save the report if available. To erase the whole disk, shut down and start "
+    "again from the beginning. For help, contact support."
+)
+NEXT_COMPLETION_MISSING = (
+    "Save the report if available. Shut down, then start again from the "
+    "beginning. If the result is the same, contact support."
+)
+NEXT_PROCESS_FAILED = (
+    "Save the report if available. Shut down, then start again from the "
+    "beginning. If it fails again, contact support."
+)
+NEXT_INDETERMINATE = (
+    "Save the report if available and contact support. Do not sell or give away "
+    "the disk until an erase is confirmed. Shut down before disconnecting."
 )
 AFTERCARE_SUCCESS = (
     "Only this validated selected disk was processed. Other disks were not. "
@@ -59,7 +97,12 @@ PREVIEW_NEXT = "Nothing on this computer was erased. No overwrite or verificatio
 
 
 def _build_views() -> dict[str, ResultView]:
-    stop_next = STOP_WARNING + " " + SUPPORT
+    def remains(step: str) -> str:
+        return FILES_MAY_REMAIN + " " + step
+
+    def stopped(step: str) -> str:
+        return STOP_WARNING + " " + remains(step)
+
     return {
         "start_failed": ResultView(
             "start_failed",
@@ -92,41 +135,63 @@ def _build_views() -> dict[str, ResultView]:
             "danger",
         ),
         "open_failed": ResultView(
-            "open_failed", MSG_OPEN_FAILED, SUPPORT, "danger", "danger"
+            "open_failed",
+            MSG_OPEN_FAILED,
+            remains(NEXT_OPEN_FAILED),
+            "danger",
+            "danger",
         ),
         "geometry_unusable": ResultView(
             "geometry_unusable",
             MSG_GEOMETRY,
-            SUPPORT,
+            remains(NEXT_GEOMETRY),
             "danger",
             "danger",
         ),
         "verification_failed": ResultView(
             "verification_failed",
             MSG_VERIFICATION_FAILED,
-            SUPPORT,
+            remains(NEXT_VERIFICATION_FAILED),
             "danger",
             "danger",
         ),
         "interrupted": ResultView(
-            "interrupted", MSG_INTERRUPTED, stop_next, "warn", "warn"
+            "interrupted",
+            MSG_INTERRUPTED,
+            stopped(NEXT_INTERRUPTED),
+            "warn",
+            "warn",
         ),
-        "cancelled": ResultView("cancelled", MSG_CANCELLED, stop_next, "warn", "warn"),
+        "cancelled": ResultView(
+            "cancelled", MSG_CANCELLED, stopped(NEXT_CANCELLED), "warn", "warn"
+        ),
         "completion_missing": ResultView(
             "completion_missing",
             MSG_COMPLETION_MISSING,
-            SUPPORT,
+            remains(NEXT_COMPLETION_MISSING),
             "warn",
             "warn",
         ),
         "process_failed": ResultView(
-            "process_failed", MSG_PROCESS_FAILED, SUPPORT, "danger", "danger"
+            "process_failed",
+            MSG_PROCESS_FAILED,
+            remains(NEXT_PROCESS_FAILED),
+            "danger",
+            "danger",
         ),
         "engine_failed": ResultView(
-            "engine_failed", MSG_ENGINE_FAILED, SUPPORT, "danger", "danger"
+            "engine_failed",
+            MSG_ENGINE_FAILED,
+            remains(NEXT_ENGINE_FAILED),
+            "danger",
+            "danger",
         ),
         "indeterminate": ResultView(
-            "indeterminate", MSG_INDETERMINATE, SUPPORT, "warn", "warn"
+            "indeterminate",
+            MSG_INDETERMINATE,
+            remains(NEXT_INDETERMINATE),
+            "warn",
+            "warn",
         ),
         "stop_unconfirmed": ResultView(
             "stop_unconfirmed",

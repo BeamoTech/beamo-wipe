@@ -174,15 +174,15 @@ consistent method/verification facts, and no conflicting failure or interruption
 | `verified` | Erase completed; verification passed. Read-back checked exposed storage only. Hidden copies may remain. Save the report if needed. Only this validated selected disk was processed. Other disks were not. Putting an operating system back on is a separate task. |
 | `unverified` | Erase completed; verification was not performed. The erase was not checked by a read-back pass. Save the report if needed. Only this validated selected disk was processed. Other disks were not. Putting an operating system back on is a separate task. |
 | `occupied` | The disk is in use. The erase did not complete. Save the report and ask support what is using the disk. Do not force access. |
-| `open_failed` | The disk could not be opened. Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting. |
-| `geometry_unusable` | The disk could not be used safely. Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting. |
-| `verification_failed` | Read-back verification failed. Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting. |
-| `interrupted` | The erase was interrupted. Stopping cannot restore files already erased. Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting. |
-| `cancelled` | Stopped by you. Stopping cannot restore files already erased. Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting. |
-| `completion_missing` | Erase completion could not be confirmed. Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting. |
-| `process_failed` | The erase did not finish. Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting. |
-| `engine_failed` | The disk reported an erase error. Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting. |
-| `indeterminate` | The result could not be confirmed. Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting. |
+| `open_failed` | The disk could not be opened. Files may still be on the disk. Save the report if available. Shut down, check the disk's connection and avoid USB hubs, then start again. If this repeats, contact support. |
+| `geometry_unusable` | The disk could not be used safely. Files may still be on the disk. Save the report if available and contact support before trying this disk again. Shut down before disconnecting. |
+| `verification_failed` | Read-back verification failed. Files may still be on the disk. The disk may be unreliable; do not treat or sell it as erased. Consider replacing or physically destroying it. Save the report if available and contact support. Shut down before disconnecting. |
+| `interrupted` | The erase was interrupted. Stopping cannot restore files already erased. Files may still be on the disk. Save the report if available. To erase the whole disk, shut down and start again from the beginning. If this repeats, contact support. |
+| `cancelled` | Stopped by you. Stopping cannot restore files already erased. Files may still be on the disk. Save the report if available. To erase the whole disk, shut down and start again from the beginning. For help, contact support. |
+| `completion_missing` | Erase completion could not be confirmed. Files may still be on the disk. Save the report if available. Shut down, then start again from the beginning. If the result is the same, contact support. |
+| `process_failed` | The erase did not finish. Files may still be on the disk. Save the report if available. Shut down, then start again from the beginning. If it fails again, contact support. |
+| `engine_failed` | The disk reported an erase error. Files may still be on the disk. The disk may be failing; do not treat or sell it as erased. Consider replacing or physically destroying it. Save the report if available and contact support. Shut down before disconnecting. |
+| `indeterminate` | The result could not be confirmed. Files may still be on the disk. Save the report if available and contact support. Do not sell or give away the disk until an erase is confirmed. Shut down before disconnecting. |
 | `stop_unconfirmed` | Stop could not be confirmed. The erase may still be running. Keep the disk and Beamo USB connected. Do not start another erase. Contact support. |
 
 Diagnostic markers include `is reported as IN USE`, `Nwipe was aborted by the user`,

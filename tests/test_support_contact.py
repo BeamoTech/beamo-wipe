@@ -95,7 +95,17 @@ def test_trigger_strings_still_say_contact_support():
     from beamo_wipe.support_export import NEXT_SUPPORT, NEXT_TRY_SUPPORT
 
     triggers = [
-        outcomes.SUPPORT,
+        # Each outcome-specific step replaced the former shared SUPPORT text;
+        # every one of them must still send the owner to support.
+        outcomes.NEXT_OPEN_FAILED,
+        outcomes.NEXT_GEOMETRY,
+        outcomes.NEXT_VERIFICATION_FAILED,
+        outcomes.NEXT_ENGINE_FAILED,
+        outcomes.NEXT_INTERRUPTED,
+        outcomes.NEXT_CANCELLED,
+        outcomes.NEXT_COMPLETION_MISSING,
+        outcomes.NEXT_PROCESS_FAILED,
+        outcomes.NEXT_INDETERMINATE,
         outcomes.NEXT_START_FAILED,
         outcomes.NEXT_STOP_UNCONFIRMED,
         W.RECOVERY_MAY_RUNNING,

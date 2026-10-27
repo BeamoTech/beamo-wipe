@@ -12,10 +12,10 @@ Elapsed: unavailable
 Result: The result could not be confirmed
 What happened: The result could not be confirmed
 What it means for your disk: The result could not be confirmed. Treat the disk as still containing data.
-What to do next: Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting.
+What to do next: Files may still be on the disk. Save the report if available and contact support. Do not sell or give away the disk until an erase is confirmed. Shut down before disconnecting.
 Verification: unavailable
 Warnings: unavailable
-Limitations: Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting.
+Limitations: Files may still be on the disk. Save the report if available and contact support. Do not sell or give away the disk until an erase is confirmed. Shut down before disconnecting.
 Application: Beamo Wipe
 Wrapper commit: unavailable
 Release build: unavailable
