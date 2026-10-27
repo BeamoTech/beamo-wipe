@@ -1,5 +1,21 @@
 # Unfinished work
 
+## BW-SECURITY-PR93-G1 - FIXED IN SOURCE / FINAL-HEAD REVIEW AND CI PENDING
+
+2026-10-27 UTC / Codex; BeamoTech/beamo-wipe,
+fix/security-audit-handoff-20261027, isolated 20261027-main-handoff checkout.
+Greptile's first review at7f2f2a4 scored4/5 and raised one valid P2:
+handoff close errors skip later handles and mask primary failures. No finding
+was disputed. The corrected ownership/cleanup and member-write paths are in
+scripts/handoff_ci_outputs.py; portable regressions are in
+developer_tests/test_ci_handoff_cleanup.py. Original192-case matrix:
+148 failures /44 controls; corrected240-case matrix:240 passes, no skips.
+Canonical follow-up: docs/evidence/security-main-handoff-20261027/greptile-r1.json.
+Next: verify the pushed correction, read the final-head review and all required
+CI results, and merge only after current protections and safety gates pass.
+First-head native Windows CI passed; Linux was still running when read.
+That result does not qualify the corrected head. No release or physical action.
+
 ## BW-SECURITY-MAIN-HANDOFF-20261027 - CHECKPOINT / MERGE PENDING
 
 Date/author: 2026-10-27 UTC / Codex. Canonical current status and exact next

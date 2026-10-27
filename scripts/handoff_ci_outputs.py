@@ -20,16 +20,60 @@ import tempfile
 from build_desktop import LAUNCHERS, _read_output_file, _require_output_directory
 
 
+def _close_handoff_fds(primary: BaseException | None, *descriptors: int | None) -> None:
+    """Attempt each owned close once without replacing an operation failure."""
+    first_error = None
+    for descriptor in descriptors:
+        if descriptor is None:
+            continue
+        try:
+            os.close(descriptor)
+        except BaseException as error:
+            if first_error is None:
+                first_error = error
+    if primary is None and first_error is not None:
+        raise first_error
+
+
 def _same_directory(path: Path, descriptor: int) -> None:
-    current = _require_output_directory(path)
+    current = None
+    primary = None
     try:
+        current = _require_output_directory(path)
         assert current is not None
         before, after = os.fstat(descriptor), os.fstat(current)
         if (before.st_dev, before.st_ino) != (after.st_dev, after.st_ino):
             raise RuntimeError("CI output directory changed during handoff")
+    except BaseException as error:
+        primary = error
+        raise
     finally:
-        if current is not None:
-            os.close(current)
+        _close_handoff_fds(primary, current)
+
+
+def _write_new_file(directory_fd: int, name: str, raw: bytes, mode: int) -> None:
+    descriptor = None
+    primary = None
+    try:
+        descriptor = os.open(
+            name,
+            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+            mode,
+            dir_fd=directory_fd,
+        )
+        pending = memoryview(raw)
+        while pending:
+            written = os.write(descriptor, pending)
+            if written <= 0:
+                raise OSError("CI output handoff write made no progress")
+            pending = pending[written:]
+        os.fchmod(descriptor, mode)
+        os.fsync(descriptor)
+    except BaseException as error:
+        primary = error
+        raise
+    finally:
+        _close_handoff_fds(primary, descriptor)
 
 
 def _rename_new(directory_fd: int, source: str, destination: str) -> None:
@@ -76,10 +120,11 @@ def _state(directory_fd: int, name: str) -> tuple[int, ...]:
 def handoff(source: Path, destination: Path, gate: str, desktop: bool) -> None:
     if os.name != "posix" or re.fullmatch(r"[a-z][a-z-]*", gate) is None:
         raise RuntimeError("invalid CI output handoff")
-    source_fd = _require_output_directory(source)
-    parent_fd = destination_fd = None
+    source_fd = parent_fd = destination_fd = None
+    primary = None
     output = destination
     try:
+        source_fd = _require_output_directory(source)
         assert source_fd is not None
         if desktop:
             parent_fd = _require_output_directory(destination.parent, create=True)
@@ -141,17 +186,9 @@ def handoff(source: Path, destination: Path, gate: str, desktop: bool) -> None:
             metadata = os.stat(name, dir_fd=source_fd, follow_symlinks=False)
             _same_directory(source, source_fd)
             _same_directory(output, destination_fd)
-            descriptor = os.open(
-                name,
-                os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
-                stat.S_IMODE(metadata.st_mode) & 0o777,
-                dir_fd=destination_fd,
+            _write_new_file(
+                destination_fd, name, raw, stat.S_IMODE(metadata.st_mode) & 0o777
             )
-            with os.fdopen(descriptor, "wb") as stream:
-                stream.write(raw)
-                stream.flush()
-                os.fchmod(stream.fileno(), stat.S_IMODE(metadata.st_mode) & 0o777)
-                os.fsync(stream.fileno())
             if _read_output_file(output, destination_fd, name, len(raw)) != raw:
                 raise RuntimeError("CI output handoff readback mismatch")
             if _read_output_file(source, source_fd, name, len(raw)) != raw:
@@ -170,10 +207,11 @@ def handoff(source: Path, destination: Path, gate: str, desktop: bool) -> None:
             _same_directory(destination, destination_fd)
             verify_copied()
             os.fsync(parent_fd)
+    except BaseException as error:
+        primary = error
+        raise
     finally:
-        for descriptor in (destination_fd, parent_fd, source_fd):
-            if descriptor is not None:
-                os.close(descriptor)
+        _close_handoff_fds(primary, destination_fd, parent_fd, source_fd)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,163 @@
+{
+  "schema": "beamo-wipe-security-review-followup/1",
+  "parent": "7f2f2a4847ccfeaf364eea82c6e35a7490a7ee3f",
+  "status": "SOURCE FIX VERIFIED / FINAL-HEAD CI AND REVIEW PENDING",
+  "review": {
+    "reviewer": "greptile-apps[bot]",
+    "summary": "https://github.com/BeamoTech/beamo-wipe/pull/93#issuecomment-6431427749",
+    "first_head_score": "4/5",
+    "findings_received": 1,
+    "findings_fixed": 1,
+    "findings_disputed": 0,
+    "finding": {
+      "id": "PR93-G1",
+      "severity": "P2",
+      "url": "https://github.com/BeamoTech/beamo-wipe/pull/93#discussion_r4384231584",
+      "confirmed": "Close errors skip remaining handles and replace the operation error",
+      "correction": "Attempt all closes once, preserve the original operation error, fail cleanup-only success; protect acquisition and the adjacent directory/member owners"
+    }
+  },
+  "baseline": {
+    "early_matrix": {
+      "tests": 160,
+      "failures": 123,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 37
+    },
+    "extended_matrix": {
+      "tests": 192,
+      "failures": 148,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 44
+    },
+    "exit": 1,
+    "scope": "Exact source functions with fake descriptors and synthetic failures; no native failure or signal reachability claim"
+  },
+  "fixed": {
+    "matching_extended_matrix": {
+      "tests": 192,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 192
+    },
+    "final_boundary_matrix": {
+      "tests": 240,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 240
+    },
+    "exit": 0,
+    "scope": "Exact function AST, fake OS/paths/descriptors, bounded line-trace interruptions; no real devices, mounts, signals or children"
+  },
+  "developer_suite": {
+    "tests": 717,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 4,
+    "passed": 713
+  },
+  "checks": [
+    {
+      "name": "developer-all",
+      "command": [
+        "C:/Users/Jack/beamo-release-work/20261026-security-review/.venv-win32/Scripts/python.exe",
+        "-B",
+        "-m",
+        "pytest",
+        "developer_tests",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "C:\\Users\\Jack\\beamo-release-evidence\\security-main-handoff-20261027\\review-fix\\all-tmp",
+        "--junitxml",
+        "C:\\Users\\Jack\\beamo-release-evidence\\security-main-handoff-20261027\\review-fix\\all.xml"
+      ],
+      "cwd": "C:\\Users\\Jack\\beamo-release-work\\20261027-main-handoff",
+      "exit": 0,
+      "failure": null,
+      "seconds": 134.763
+    },
+    {
+      "name": "lint",
+      "command": [
+        "C:/Users/Jack/dev/BeamoTech/beamo-wipe/.venv-win32/Scripts/ruff.exe",
+        "check",
+        "src/beamo_wipe",
+        "tests",
+        "developer_tests",
+        "dev.py",
+        "scripts/build_desktop.py",
+        "scripts/agent_pr.py",
+        "scripts/handoff_ci_outputs.py"
+      ],
+      "cwd": "C:\\Users\\Jack\\beamo-release-work\\20261027-main-handoff",
+      "exit": 0,
+      "failure": null,
+      "seconds": 0.3
+    },
+    {
+      "name": "format",
+      "command": [
+        "C:/Users/Jack/dev/BeamoTech/beamo-wipe/.venv-win32/Scripts/ruff.exe",
+        "format",
+        "--check",
+        "dev.py",
+        "scripts/build_desktop.py",
+        "scripts/agent_pr.py",
+        "developer_tests",
+        "scripts/handoff_ci_outputs.py"
+      ],
+      "cwd": "C:\\Users\\Jack\\beamo-release-work\\20261027-main-handoff",
+      "exit": 0,
+      "failure": null,
+      "seconds": 0.211
+    },
+    {
+      "name": "security",
+      "command": [
+        "C:/Users/Jack/dev/BeamoTech/beamo-wipe/.venv-win32/Scripts/ruff.exe",
+        "check",
+        "--select",
+        "S102,S103,S104,S105,S106,S107,S113,S307,S501,S506,S508,S602,S604,S605,S606,S608,S609,S610,S611,S612",
+        "src/beamo_wipe",
+        "scripts/handoff_ci_outputs.py"
+      ],
+      "cwd": "C:\\Users\\Jack\\beamo-release-work\\20261027-main-handoff",
+      "exit": 0,
+      "failure": null,
+      "seconds": 0.238
+    }
+  ],
+  "functional_count": 927,
+  "functional_identity": "069925062d49c221eabe8c2821cfced594dfbd0d9be47a809a6288cc270f043a",
+  "functional_definition": "Same relative-path/hash mapping and exclusions as the initial integration record, plus the new developer regression module",
+  "source": {
+    "scripts/handoff_ci_outputs.py": {
+      "bytes": 8646,
+      "sha256": "1307866771d3fe47eeeddfcaf21bbde3e09091e3c2e448ec343632cfd0639e71"
+    },
+    "developer_tests/test_ci_handoff_cleanup.py": {
+      "bytes": 11252,
+      "sha256": "16f6199982aaacf5c259f4df0f6a3739d07ab7c3e2b27cc3c73501967d49be2a"
+    }
+  },
+  "before_helper_sha256": "58d8681b230d7c5e6aff6cc1ec3679dcea2b9b56f939a39b112d85b0715edaa4",
+  "unchanged_production_inputs": 58,
+  "retained_initial_head_ci": {
+    "run_id": 40431989156,
+    "Windows launcher tests": "success",
+    "Linux image gate": "in_progress when last inspected",
+    "qualifies_corrected_head": false
+  },
+  "remaining": [
+    "Final-head review must account for every earlier comment",
+    "Exact-final-head required CI gate and all source/image/native phases",
+    "Main merge and exact main-push qualification",
+    "Physical Task119 remains NOT TESTED/BLOCKED; no release authority"
+  ]
+}
