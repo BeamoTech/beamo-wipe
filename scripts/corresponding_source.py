@@ -80,6 +80,31 @@ def _source_of(entry: Mapping[str, Any]) -> tuple[str, str]:
     return source, version
 
 
+def _unsigned_source(name: str, version: str) -> Optional[tuple[str, str]]:
+    """The real source behind Debian's Secure Boot signed wrapper packages.
+
+    linux-signed-amd64, grub-efi-amd64-signed and shim-signed contain only
+    signatures and packaging; the GPL corresponding source is the unsigned
+    package at the matching version, e.g. linux-signed-amd64 6.12.95+1~bpo12+1
+    -> linux 6.12.95-1~bpo12+1, grub-efi-amd64-signed 1+2.06+13+deb12u2 ->
+    grub2 2.06-13+deb12u2, shim-signed 1.51~1+deb12u1+16.1-2~deb12u1 -> shim
+    16.1-2~deb12u1. fetch() fails if snapshot has no such version.
+    """
+    def first_plus_to_hyphen(value: str) -> Optional[str]:
+        match = re.fullmatch(r"([0-9][0-9.]*)\+(.+)", value)
+        return f"{match.group(1)}-{match.group(2)}" if match else None
+
+    if re.fullmatch(r"linux-signed-[a-z0-9]+", name):
+        derived = first_plus_to_hyphen(version)
+        return ("linux", derived) if derived else None
+    if re.fullmatch(r"grub-efi-[a-z0-9]+-signed", name):
+        derived = first_plus_to_hyphen(version.split("+", 1)[1]) if "+" in version else None
+        return ("grub2", derived) if derived else None
+    if name == "shim-signed" and "+" in version:
+        return "shim", version.rsplit("+", 1)[1]
+    return None
+
+
 def plan(manifest: Mapping[str, Any]) -> Dict[str, Any]:
     """Derive the deterministic corresponding-source set from a manifest."""
     inventory = manifest.get("installed_packages")
@@ -97,7 +122,14 @@ def plan(manifest: Mapping[str, Any]) -> Dict[str, Any]:
         raise SourceError("package inventory belongs to another source commit")
     groups: Dict[tuple[str, str], List[str]] = {}
     for entry in inventory["packages"]:
-        groups.setdefault(_source_of(entry), []).append(f"{entry['name']}:{entry['arch']}")
+        identity = _source_of(entry)
+        binary = f"{entry['name']}:{entry['arch']}"
+        groups.setdefault(identity, []).append(binary)
+        unsigned = _unsigned_source(*identity)
+        if unsigned is not None:
+            if not VERSION_RE.fullmatch(unsigned[1]):
+                raise SourceError(f"cannot derive unsigned source for {identity}")
+            groups.setdefault(unsigned, []).append(f"{binary} (signed from)")
     debian = [
         {"name": name, "version": version, "binaries": sorted(binaries)}
         for (name, version), binaries in sorted(groups.items())

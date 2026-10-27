@@ -298,3 +298,24 @@ def test_cli_plan_writes_new_file_and_refuses_overwrite(tmp_path, capsys):
     assert json.loads(out.read_text())["schema"] == cs.SCHEMA
     assert "Debian source packages" in capsys.readouterr().out
     assert cs.main(["plan", str(manifest), "--out", str(out)]) == 2
+
+
+@pytest.mark.parametrize("binary,source,expected", [
+    ("linux-image-6.12.95+deb12-amd64", "linux-signed-amd64 (6.12.95+1~bpo12+1)", ("linux", "6.12.95-1~bpo12+1")),
+    ("linux-image-6.1.0-54-amd64", "linux-signed-amd64 (6.1.190+1)", ("linux", "6.1.190-1")),
+    ("grub-efi-amd64-signed", "grub-efi-amd64-signed (1+2.06+13+deb12u2)", ("grub2", "2.06-13+deb12u2")),
+    ("shim-signed", "shim-signed (1.51~1+deb12u1+16.1-2~deb12u1)", ("shim", "16.1-2~deb12u1")),
+])
+def test_signed_boot_wrappers_also_pull_their_real_gpl_source(binary, source, expected):
+    packages = [{"name": binary, "version": "0-1", "arch": "amd64", "source": source}]
+    result = cs.plan(_manifest(packages))
+    sources = {(s["name"], s["version"]): s["binaries"] for s in result["debian_sources"]}
+    wrapper = source.split(" ", 1)[0]
+    assert any(name == wrapper for name, _ in sources)
+    assert sources[expected] == [f"{binary}:amd64 (signed from)"]
+    assert result["debian_source_count"] == 2
+
+
+def test_ordinary_sources_get_no_unsigned_companion():
+    assert cs._unsigned_source("glibc", "2.36-9") is None
+    assert cs._unsigned_source("shim-signed", "1.51") is None
