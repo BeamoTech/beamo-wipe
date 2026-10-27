@@ -87,6 +87,13 @@ def test_normal_boot_is_quiet_and_troubleshoot_stays_verbose():
         assert flag in normal and flag in failsafe
 
 
+def test_usb_and_nvme_stay_awake_on_every_entry():
+    for option in ("bootappend-live", "bootappend-live-failsafe"):
+        flags = _lb_option(option).split()
+        assert "usbcore.autosuspend=-1" in flags, option
+        assert "nvme_core.default_ps_max_latency_us=0" in flags, option
+
+
 def test_qemu_gate_inspects_kernel_firmware_and_every_offered_keymap():
     source = QEMU.read_text(encoding="utf-8")
     for name in (*FIRMWARE, "console-data"):

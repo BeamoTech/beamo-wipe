@@ -101,6 +101,11 @@ lb clean --all || true
 # (--firmware-chroot stays false: no Wi-Fi or Bluetooth blobs). Backports are
 # enabled only so config/archives/backports.pref.chroot can pin the
 # Debian-signed 6.12 kernel and matching firmware; userland stays bookworm.
+#
+# Every entry keeps USB devices and NVMe drives fully awake for the session:
+# the live system runs from the stick, and some sticks, USB bridges and NVMe
+# drives drop off the bus when resuming from autosuspend or deep power states
+# during long erases.
 lb config \
   --ignore-system-defaults \
   --mode debian \
@@ -124,8 +129,8 @@ lb config \
   --firmware-binary false \
   --firmware-chroot false \
   --initsystem systemd \
-  --bootappend-live "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin quiet loglevel=3" \
-  --bootappend-live-failsafe "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin nomodeset nosplash vga=788" \
+  --bootappend-live "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin usbcore.autosuspend=-1 nvme_core.default_ps_max_latency_us=0 quiet loglevel=3" \
+  --bootappend-live-failsafe "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin usbcore.autosuspend=-1 nvme_core.default_ps_max_latency_us=0 nomodeset nosplash vga=788" \
   --mirror-bootstrap "https://deb.debian.org/debian/" \
   --mirror-chroot "https://deb.debian.org/debian/" \
   --mirror-binary "https://deb.debian.org/debian/" \
