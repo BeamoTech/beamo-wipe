@@ -141,12 +141,20 @@ def test_finalize_requires_all_executed_gates_and_image_inventory(build_provenan
     (image / "var/lib/dpkg/status").write_text("Package: base-files\nStatus: install ok installed\nVersion: 1\nArchitecture: amd64\n")
     (image / "etc/apt/sources.list").write_text("deb https://deb.debian.org/debian bookworm main\n")
     collect_inventory(image, evidence / "packages.json", "a" * 40)
+    qemu = root / "qemu-evidence"
+    qemu.mkdir()
+    (qemu / "summary.txt").write_bytes(b"fixture guest checks passed\n")
+    qemu_digest = hashlib.sha256(json.dumps(
+        {"summary.txt": hashlib.sha256((qemu / "summary.txt").read_bytes()).hexdigest()},
+        sort_keys=True, separators=(",", ":"),
+    ).encode()).hexdigest()
     for gate in REQUIRED_GATES:
         log = f"fixture execution of {gate}\n".encode()
         (evidence / f"{gate}.log").write_bytes(log)
         receipt = build_gate_receipt(
             gate=gate, status="pass", command=f"fixture {gate}", source_commit="a" * 40,
-            build_id=rm.build_env()["release_build_id"], environment={"runner": "fixture"},
+            build_id=rm.build_env()["release_build_id"],
+            environment={"runner": "fixture", **({"qemu_evidence_sha256": qemu_digest} if gate == "qemu" else {})},
             measured=dict(passed=1, failed=0, errors=0, skipped=0, xfailed=0, deselected=0, total=1),
             skips=[], log_sha256=hashlib.sha256(log).hexdigest(),
         )

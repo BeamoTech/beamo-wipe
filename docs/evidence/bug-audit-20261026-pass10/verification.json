@@ -1,0 +1,276 @@
+{
+  "artifact_acceptance": false,
+  "base": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+  "branch": "codex/wipe-audit-20261024",
+  "canonical_hashes": {
+    ".ai/memory/unfinished-work.md": "2f0cd4a2eac409f06872fe263235bdf25358bcd64ef1e5867c86337dff8588d8",
+    "docs/evidence/bug-audit-20261026-pass10/README.md": "617965fc7fc6bacda9541f3747ed6409d4dce1f33dc3f3c01cf16bde57c2dd9f",
+    "docs/evidence/bug-audit-20261026-pass10/reviews.json": "5406a62599ab0d1e4e0ff08fc88d04835a6792e9a9a5aebf3463b69ccfc85503"
+  },
+  "changed_paths": [
+    "developer_tests/test_optional_helper_cleanup.py",
+    "src/beamo_wipe/diagnostics.py",
+    "src/beamo_wipe/sound.py"
+  ],
+  "checks": {
+    "closure_pending_reviews": false,
+    "original_checkpoint": {
+      "fresh_portable_pytest_nodes": 13,
+      "fresh_portable_pytest_subtests": 29,
+      "fresh_static_commands": 5,
+      "fresh_static_receipt_sha256": "7532cf4885217565ce80113265bdb06e8748072732a1616365f25bbb038bc36b",
+      "fresh_syntax_files": 747,
+      "functional_count": 936,
+      "functional_identity": "682501409de92473b4cdb44505358a4dda83a24514b75bb4fd0eec5b7e8d77f7",
+      "historical_checks": [
+        {
+          "label": "portable-core",
+          "path": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r7\\portable-core\\receipt.json",
+          "rerun": false,
+          "reusable_for_original_scoped_inputs": true,
+          "sha256": "335ebfbd15a75c46e09f1d8c73775f819a22cc400458695629e2780b8c122a7e",
+          "source_drift": []
+        },
+        {
+          "label": "portable-readers-a",
+          "path": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r7\\portable-readers-a\\receipt.json",
+          "rerun": false,
+          "reusable_for_original_scoped_inputs": true,
+          "sha256": "9f12d213a116fa1dd9cc5276deab809e645f92f40780c5dc6ac6ece62dda856a",
+          "source_drift": []
+        },
+        {
+          "label": "portable-readers-b",
+          "path": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r7\\portable-readers-b\\receipt.json",
+          "rerun": false,
+          "reusable_for_original_scoped_inputs": true,
+          "sha256": "1d3c5e18d99b1b280ef80e730a6ffcc5a65ad6a0b4c00ccf1f88e7993870a205",
+          "source_drift": []
+        },
+        {
+          "label": "kiosk",
+          "path": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r7\\portable-kiosk\\receipt.json",
+          "rerun": false,
+          "reusable_for_original_scoped_inputs": true,
+          "sha256": "0706d8473fe0e5ca7d0972101cce69f59c6f7a8990c377612fc6348aa1257589",
+          "source_drift": []
+        },
+        {
+          "label": "types",
+          "path": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r7\\types-after-startup\\receipt.json",
+          "rerun": false,
+          "reusable_for_original_scoped_inputs": false,
+          "sha256": "4038449f6597b477d9622c7996f3ee7ef83c279ebf1ad2f530110a9197d3eba7",
+          "source_drift": [
+            "src/beamo_wipe/build_identity.py",
+            "src/beamo_wipe/diagnostics.py",
+            "src/beamo_wipe/sound.py"
+          ]
+        },
+        {
+          "label": "ruff",
+          "path": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r7\\static-shared-fixture.json",
+          "rerun": false,
+          "reusable_for_original_scoped_inputs": false,
+          "sha256": "a57242882bf6c01565cbfe4d2590cbbe3df0e80b5dc098c27cd5223be57b7540",
+          "source_drift": [
+            "src/beamo_wipe/build_identity.py",
+            "src/beamo_wipe/diagnostics.py",
+            "src/beamo_wipe/sound.py"
+          ]
+        }
+      ],
+      "historical_r9_identity_checks_rerun": false,
+      "historical_r9_identity_nodes": 11,
+      "historical_r9_identity_subtests": 21,
+      "pending": "Three original reviews plus fresh independent helper correction review and parent validation/closure",
+      "qualification": "Historical results retain exact declared source/config/fake-dependency scope. Old whole-source static passes are stale and superseded by current checks. No full/Linux/native/artifact/physical qualification.",
+      "r9_identity_production_and_test_bytes_unchanged": true,
+      "utc": "2026-10-26T05:25:42.781261+00:00"
+    },
+    "receipt_sha256": "bc0547ec395c5eac1792877cbef2313099d4933be33050ac0c8e1b9f617a4cfc"
+  },
+  "functional_count": 936,
+  "functional_identity": "682501409de92473b4cdb44505358a4dda83a24514b75bb4fd0eec5b7e8d77f7",
+  "historical_suffix_sha256": "056700a40cab7ce03a21fd64fd0f8e54dee31b63425e4289675e253b48c7066e",
+  "implementation_sha256": "316235fb7543e0a171c0881dbc31d4d17f628622004ca64be04c19ac02a8a66f",
+  "lab_visual_verified": false,
+  "linux_full_acceptance": false,
+  "native_acceptance": false,
+  "observation": {
+    "guide_hashes_unchanged": true,
+    "lab_status_unchanged": true,
+    "peer_captured_input_drift": [],
+    "peer_status_unchanged": true,
+    "resources": {
+      "available_ram_bytes": 4686389248,
+      "free_bytes": 1618214912,
+      "total_ram_bytes": 16946950144
+    },
+    "source_status": " M .ai/memory/unfinished-work.md\n M desktop/platform_windows_test.go\n M desktop/windows_inventory_pass13_test.go\n M developer_tests/test_desktop_final_receipt_pass3_20261019.py\n M developer_tests/test_desktop_output_replacement_pass2_20261019.py\n M developer_tests/test_desktop_output_snapshot_pass14_20261021.py\n M developer_tests/test_desktop_prior_receipt_retirement_pass4_20261019.py\n M docs/report-shutdown.md\n M docs/session-recovery.md\n M packaging/live/config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk\n M packaging/live/inside-docker.sh\n M scripts/build-iso.sh\n M scripts/build_desktop.py\n M scripts/ci-blacksmith.sh\n M scripts/generate-release-manifest.sh\n M src/beamo_wipe/app.py\n M src/beamo_wipe/build_identity.py\n M src/beamo_wipe/ci_evidence.py\n M src/beamo_wipe/diagnostics.py\n M src/beamo_wipe/discover.py\n M src/beamo_wipe/evidence.py\n M src/beamo_wipe/nwipe_runner.py\n M src/beamo_wipe/release_manifest.py\n M src/beamo_wipe/report_intent.py\n M src/beamo_wipe/result_summary.py\n M src/beamo_wipe/safety.py\n M src/beamo_wipe/sound.py\n M src/beamo_wipe/support_export.py\n M src/beamo_wipe/ui/accessible_wizard.py\n M src/beamo_wipe/ui/console_wizard.py\n M src/beamo_wipe/ui/sound_dialog.py\n M src/beamo_wipe/ui/tk_wizard.py\n M src/beamo_wipe/verification_evidence.py\n M src/beamo_wipe/wizard.py\n M tests/test_accessible_runtime.py\n M tests/test_audit_20260905_wizard.py\n M tests/test_ci_evidence_pipeline.py\n M tests/test_discover.py\n M tests/test_export_mount_cleanup_regression.py\n M tests/test_helper_boot_guidance.py\n M tests/test_iso_bundle_ownership_pass8.py\n M tests/test_kiosk_recovery.py\n M tests/test_manifest_sum_output_pass14_build.py\n M tests/test_pass14_final_checksum.py\n M tests/test_report_shutdown.py\n M tests/test_startup_diagnostics.py\n M tests/test_startup_notice_state_pass12.py\n M tests/test_tk_input_scroll_pass13.py\n M tests/test_usb_report_workflow.py\n?? developer_tests/native_mutation.py\n?? developer_tests/test_build_identity_cleanup.py\n?? developer_tests/test_desktop_windows_output_mode.py\n?? developer_tests/test_optional_helper_cleanup.py\n?? docs/evidence/bug-audit-20261024/\n?? docs/evidence/bug-audit-20261025-pass4/\n?? docs/evidence/bug-audit-20261025-pass5/\n?? docs/evidence/bug-audit-20261025-pass6/\n?? docs/evidence/bug-audit-20261025-pass7/\n?? docs/evidence/bug-audit-20261025-repass/\n?? docs/evidence/bug-audit-20261025/\n?? docs/evidence/bug-audit-20261026-pass10/\n?? docs/evidence/bug-audit-20261026-pass8/\n?? docs/evidence/bug-audit-20261026-pass9/\n?? scripts/handoff_ci_outputs.py\n?? tests/test_build_failure_propagation.py\n?? tests/test_build_output_handoff_20261023.py\n?? tests/test_build_reader_cleanup.py\n?? tests/test_cancel_observed_exit.py\n?? tests/test_ci_handoff_boundaries.py\n?? tests/test_ci_handoff_publication_races.py\n?? tests/test_ci_qemu_final_binding.py\n?? tests/test_completion_projection_byte_budget.py\n?? tests/test_curses_discard_unicode.py\n?? tests/test_evidence_fd_cleanup.py\n?? tests/test_finalizer_output_binding.py\n?? tests/test_iso_rollback_collision.py\n?? tests/test_kiosk_identity_guard.py\n?? tests/test_malformed_terminal_progress.py\n?? tests/test_manifest_checksum_publication_races.py\n?? tests/test_manifest_writer_cleanup.py\n?? tests/test_nvme_surviving_transport.py\n?? tests/test_orca_acquisition_interrupt.py\n?? tests/test_orca_parent_failures.py\n?? tests/test_orca_process_cleanup.py\n?? tests/test_progress_activity_projection.py\n?? tests/test_progress_plan_estimate.py\n?? tests/test_raw_disk_ancestry_refusal.py\n?? tests/test_reader_acquisition_interrupt.py\n?? tests/test_reader_replacement_ownership.py\n?? tests/test_report_bundle_cleanup.py\n?? tests/test_report_intent_cleanup.py\n?? tests/test_report_member_cleanup.py\n?? tests/test_report_worker_cleanup.py\n?? tests/test_report_worker_outer_cleanup.py\n?? tests/test_runner_inhibitor_identity_order.py\n?? tests/test_runner_launch_handle_ownership.py\n?? tests/test_runner_read_handle_ownership.py\n?? tests/test_runner_status_whitespace_bound.py\n?? tests/test_shutdown_invalid_journal.py\n?? tests/test_sound_partial_state.py\n?? tests/test_started_terminal_evidence_race.py\n?? tests/test_startup_observation_order.py\n?? tests/test_startup_power_guard.py\n?? tests/test_stop_observed_exit.py\n?? tests/test_terminal_log_snapshot_ownership.py\n?? tests/test_wizard_log_handle_ownership.py\n",
+    "staged": [],
+    "utc": "2026-10-26T05:40:01.552233+00:00",
+    "whitespace": "PASS"
+  },
+  "parent_validations": {
+    "artifact": {
+      "excluded_failed_cli_attempts": 2,
+      "inspection": "Parent read the complete current driver, exact selection and lexical/fake OS guards, synthetic crypto boundary and independent identity/framing/digest/status oracles. No writer or probe rerun.",
+      "limits": "Scoped source and synthetic metadata only. No built artifact, real crypto, native descriptor/filesystem/race, Linux/full/platform or physical acceptance.",
+      "manifest": {
+        "bytes": 3497,
+        "sha256": "71e7875d5d9544a06682edb523d933f150bfc6047513f68994eb8c28645b9173"
+      },
+      "matching_serialized_observations": 74,
+      "packet_bytes": 404783,
+      "payload_bytes": 393775,
+      "payload_files": 40,
+      "recorded_ast_bindings": 103,
+      "scope_identity": "6b19bcd49fe260db8b0f2749f8e94d356d4b6e783e2330bbd85d14a226e32248",
+      "scoped_functional_inputs_current": 23,
+      "status": "PARENT PACKET AND CURRENT SCOPE VALIDATED; BOUNDED NO OBJECTION",
+      "successful_probe_exits": [
+        0,
+        0
+      ],
+      "unique_current_ast_nodes": 87,
+      "validator": {
+        "bytes": 4814,
+        "sha256": "d48ea518cf5de1e0ea5a9753df0b946a756b9cdf5e770d475e7a5ff69e631072"
+      }
+    },
+    "helper": {
+      "current_source_matches": true,
+      "current_test_replay_nodes": 13,
+      "current_test_replay_subtests": 29,
+      "diagnostics_outer_and_main_body_preservation": true,
+      "inspection": "Parent read the complete driver with a focused reread of the truncated MemoryOS section, checked in-memory source/OS/event/process and native guards, independent normal/refusal/cleanup/activity oracles and stale queued reaper behavior. No reviewer writer or probe rerun.",
+      "limits": "Bounded exact AST and fake state, including expected old defects. No universal opcode interruption, native close release, process/thread scheduling, serial/audio, full/native/artifact/physical acceptance.",
+      "manifest": {
+        "bytes": 725,
+        "sha256": "0c5427133971d713eb0c9db686ca2679962025d7b5ceb329f1e9b8b1bb6c0c7b"
+      },
+      "matching_observations": 114,
+      "no_remaining_concrete_objection": true,
+      "original_reproduced_assertion_failures": 19,
+      "original_reproduced_cleanup_errors": 4,
+      "packet_bytes": 139368,
+      "payload_bytes": 135979,
+      "payload_files": 9,
+      "post_execution_receipt": {
+        "disposition": "BOUNDED NO OBJECTION",
+        "driver_actual_exit": 0,
+        "exclusions": [
+          "FILES.sha256 (manifest self)",
+          "READBACK.json (post-seal readback receipt)",
+          "post-execution.json (post-execution actual exit)"
+        ],
+        "finalization_actual_exit": 0,
+        "finalization_command": "py -3 -B C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r10\\helper-fix-review\\finalize.py",
+        "finalization_output": "{\"outcome\": \"SEALED\", \"members\": 9, \"manifest_sha256\": \"0c5427133971d713eb0c9db686ca2679962025d7b5ceb329f1e9b8b1bb6c0c7b\", \"readback_sha256\": \"32ad0b51fd2aec0efb1139785ff149c3b3a21889b1bd60a877f2bb4d76d99055\", \"packet_bytes_before_post_execution\": 138365, \"observations\": 114, \"all_scoped_oracles_match\": true}\r\n",
+        "finalization_wall_time_seconds": 2.5736689999999998,
+        "finalizer_executions": 1,
+        "native_acceptance": false,
+        "parent_validation": "Required; no polling or edits of parent reviews.",
+        "review_probe_executions": 1
+      },
+      "scoped_source_hashes": {
+        "developer_tests/test_optional_helper_cleanup.py": {
+          "bytes": 14389,
+          "sha256": "61644d718c1ce3a9ec5490daa6a446e0728b3fc1cfa1563e7584f728d574c1bb"
+        },
+        "src/beamo_wipe/diagnostics.py": {
+          "bytes": 12239,
+          "sha256": "8ea8c703b74373644b5aaa2e8f96f8e31fe9970ff0562361597f82a5567e6c57"
+        },
+        "src/beamo_wipe/sound.py": {
+          "bytes": 16735,
+          "sha256": "188e203ead4ec3dfdb73ad0d9d1e53d8130a07d5ec275495897d39f123d9299b"
+        }
+      },
+      "sound_single_clear_statement_delta": true,
+      "source_identity": "682501409de92473b4cdb44505358a4dda83a24514b75bb4fd0eec5b7e8d77f7",
+      "status": "PARENT PACKET AND CURRENT CORRECTION VALIDATED; BOUNDED NO OBJECTION",
+      "validator": {
+        "bytes": 6762,
+        "sha256": "64f748900e0fe7d19ab953faa452a1f591757d7d8c9f4b723ea76f9d484a986e"
+      }
+    },
+    "runtime": {
+      "distinct_cases": 22,
+      "inspection": "Parent read both complete drivers, checked guarded fake boundaries, selected AST and independent expected values. No reviewer writer or probe rerun.",
+      "limits": "No full census or real concurrency, durability, toolkit, native, full, artifact or physical acceptance. Diagnostics and sound internals are outside this scope.",
+      "packet_bytes": 191076,
+      "payload_bytes": 184452,
+      "payload_files": 24,
+      "recorded_ast_bindings": 65,
+      "retained_failed_commands": 3,
+      "review_manifest": {
+        "bytes": 1990,
+        "sha256": "e79fb4b474a9c85a4c05fceef8bcfcf41e92dcd088342e0058905bf1b3f5c5f4"
+      },
+      "scoped_functional_inputs_current": 21,
+      "serialized_matching_observations": 49,
+      "status": "PARENT PACKET AND CURRENT SCOPE VALIDATED; BOUNDED NO OBJECTION",
+      "successful_probe_exits": [
+        0,
+        0
+      ],
+      "unique_ast_nodes_current": 64,
+      "validator": {
+        "bytes": 4929,
+        "sha256": "75bcf6aef27bf6f4623036c34b6b283a5c0558dd32e2d8178f580c011a9417f0"
+      }
+    },
+    "truth": {
+      "archive_members_fully_read": 14,
+      "archive_sha256": "478e7bd1cccbd936f553b3f6bfa1f8cc3f32659ec9c17b4a2252bdfc65b11a29",
+      "counted_run": "v7 only",
+      "executed_source_paths": 15,
+      "inspection": "Parent read complete current composition driver and independent failure/success, semantic contradiction, identity privacy, renderer escaping, authenticated-log and journal binding oracles. Memory acquisition, metadata/read/close, identity/advisory/locale and QR matrix are explicit fakes; no reviewer writer or probe rerun.",
+      "limits": "English selected-AST composition only. Three root helper paths outside scope. No real export filesystem, crypto, runtime, native, full, artifact or physical qualification.",
+      "manifest": {
+        "bytes": 5681,
+        "sha256": "45936ea823e9ee5f70aac18515787b4049eba3e67e633627df15a60f4c8b9b18"
+      },
+      "matching_serialized_observations": 29,
+      "packet_bytes": 241433,
+      "payload_bytes": 224753,
+      "payload_files": 56,
+      "retained_probe_exits": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "scoped_current_inputs": 22,
+      "status": "PARENT PACKET AND CURRENT SCOPE VALIDATED; BOUNDED NO OBJECTION",
+      "unique_current_ast_bindings": 550,
+      "validator": {
+        "bytes": 5866,
+        "sha256": "9785ebafb7beb381251cfbd7fb879e0adb954b84953395da420856e47bf09405"
+      }
+    }
+  },
+  "physical_acceptance": false,
+  "prior_seal": {
+    "full_byte_readback": true,
+    "members": 274,
+    "path": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r9\\evidence-seal.json",
+    "sha256": "8e9c09bd5dfc99563bf898d7c0d520b4063b61a8acf5977db8efc46cd808d00f"
+  },
+  "raw_seal": {
+    "bytes": 2693910,
+    "files": 246,
+    "path": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r10\\evidence-seal.json",
+    "readback": true,
+    "sha256": "4b764f6313d9e93fb8c723bc5d2c1508f6bbba698fd42d6ae9167009b759ed0f"
+  },
+  "release_qualified": false,
+  "source": "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2",
+  "status": "AVAILABLE SOURCE AUDIT FINISHED; REQUIRED ACCEPTANCE BLOCKED/INCOMPLETE",
+  "utc": "2026-10-26T05:40:01.552233+00:00"
+}

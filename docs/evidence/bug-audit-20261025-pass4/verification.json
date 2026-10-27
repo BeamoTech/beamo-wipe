@@ -1,0 +1,198 @@
+{
+  "utc": "2026-10-25T23:10:56.159098+00:00",
+  "disposition": "SOURCE FIXES SAVED / REMAINING QUALIFICATION BLOCKED",
+  "source": "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2",
+  "branch": "codex/wipe-audit-20261024",
+  "base": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+  "functional_count": 926,
+  "functional_identity": "fc2d15fdfeebe3aa9d3352f752bf5f1dba0d7deff34042e223b879d2212b829b",
+  "inputs_unchanged": true,
+  "changed_since_entry": [
+    "scripts/generate-release-manifest.sh",
+    "src/beamo_wipe/evidence.py",
+    "src/beamo_wipe/nwipe_runner.py",
+    "src/beamo_wipe/release_manifest.py",
+    "src/beamo_wipe/ui/console_wizard.py",
+    "tests/test_curses_discard_unicode.py",
+    "tests/test_evidence_fd_cleanup.py",
+    "tests/test_manifest_checksum_publication_races.py",
+    "tests/test_manifest_sum_output_pass14_build.py",
+    "tests/test_runner_launch_handle_ownership.py"
+  ],
+  "source_overlay": {
+    "paths": 72,
+    "sha256": "6b81da679f125d044a57d81c897963b7547d4cdd88141d022338c52e37645777",
+    "readback_verified": true
+  },
+  "syntax": {
+    "python_files": 737,
+    "all_passed": true,
+    "embedded_python": "PASS"
+  },
+  "staged": [],
+  "peer_captured_inputs_unchanged": true,
+  "peer_head": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+  "lab_head": "d3d0959bb26b17531464dbd1ba233d4d842ad581",
+  "lab_status_unchanged": true,
+  "git_diff_check_exit": 0,
+  "portable_windows_ast_pytest": {
+    "actual_pytest_exit": 0,
+    "observed_tool_process_exit": 0,
+    "observed_tool_process_exit_source": "Parent retained tool result; driver exits with pytest status after receipt",
+    "counts": {
+      "tests": 124,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "receipt": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r4\\native-inert-inprocess-metadata-corrected\\receipt.json",
+    "receipt_sha256": "7530073d5aac98408c78d7b80b369a6817c8ca042c8db0ec76bcdeeb92b2319d",
+    "junit_sha256": "67ba46c920b53d2db25920009b6447d634768c07000412d9447d398acd0caa8d",
+    "scope": "In-process Windows CPython + existing pytest, exact AST-only tests; fake product OS/process boundaries; external process/network creation refused",
+    "created_children": false,
+    "linux_or_native_application_acceptance": false
+  },
+  "linux": [
+    {
+      "phase": "r4v2-lint",
+      "functional_identity": "fc2d15fdfeebe3aa9d3352f752bf5f1dba0d7deff34042e223b879d2212b829b",
+      "input_count": 926,
+      "inputs_match": true,
+      "actual_queried_exit": 0,
+      "transport_actual_exit": 0,
+      "timed_out": false,
+      "harness_valid": true,
+      "cleanup_errors": [],
+      "counts": null,
+      "passed": true,
+      "artifact_sha256": {
+        "r4v2-lint.result.json": "b0963947a6d5ea3bc8ffc173e355df8a3ed31acff1bedb64eb754f5847411816",
+        "r4v2-lint-source.json": "3d6204a9e4fdd0c56cfbe2bdfd22c22d744014b1a987ceb7b3d73e05e6838ea3",
+        "r4v2-lint.stdout.txt": "c5389a25d5988ddc02033b1bf9ffd03c755a285e361bf5960f13e73aa87b823f",
+        "r4v2-lint.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": "r4v2-lint.result.json",
+      "ownership_scope": "Reviewed bounded process group/session cleanup, namespace guards and private test services; not universal descendant proof"
+    },
+    {
+      "phase": "r4v2-new-regressions",
+      "functional_identity": "fc2d15fdfeebe3aa9d3352f752bf5f1dba0d7deff34042e223b879d2212b829b",
+      "input_count": 926,
+      "inputs_match": true,
+      "actual_queried_exit": 0,
+      "transport_actual_exit": 0,
+      "timed_out": false,
+      "harness_valid": true,
+      "cleanup_errors": [],
+      "counts": {
+        "tests": 504,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "passed": true,
+      "artifact_sha256": {
+        "r4v2-new-regressions.result.json": "c419d47e3bd9368099ba7559bb1812d76c2b8c056615706a534e6b0b50224512",
+        "r4v2-new-regressions-source.json": "ef9230769acfe90c06906165040ace35cec96d225e306c9df111fc62ad89b9e2",
+        "r4v2-new-regressions.stdout.txt": "2db749a4ac89ea4390c37821d6335c566493c294e058be96cd129f7f538ea588",
+        "r4v2-new-regressions.stderr.txt": "0f8b36d195413c65f93b9713bb4613e82a887f215d8eb9bd72a8b56aaa77b3e2",
+        "r4v2-new-regressions.xml": "1dc7916ac6f2b45285dca2d3fdf74c26d0a6b6911bc4b574d4fcbe18744450fb"
+      },
+      "receipt": "r4v2-new-regressions.result.json",
+      "ownership_scope": "Reviewed bounded process group/session cleanup, namespace guards and private test services; not universal descendant proof"
+    }
+  ],
+  "windows_124_included_in_linux_504": true,
+  "distinct_628_test_claim": false,
+  "last_type_correction": {
+    "prior_source": "680a320c8fb693d760e5c9e22b54ae2dddd88d6e712513ce8ce43e1860a7abec",
+    "changed_lines": [
+      "-return",
+      "+return None",
+      "-return",
+      "+return None"
+    ],
+    "meaning": "Only explicit optional None returns; exact latest-source Linux lint passed"
+  },
+  "next_adjacent": {
+    "outcome": "BLOCKED BEFORE WSL / TEST STARTUP",
+    "admission": {
+      "free_bytes": 6432006144,
+      "available_ram_bytes": 811606016,
+      "total_ram_bytes": 16946950144,
+      "admitted": false
+    },
+    "observed_controller_exit": 2,
+    "test_exit": null,
+    "test_counts": null
+  },
+  "final_bounded_admission": {
+    "required_free_bytes": 8589934592,
+    "required_ram_bytes": 1073741824,
+    "observed": {
+      "free_bytes": 3996053504,
+      "available_ram_bytes": 998588416,
+      "total_ram_bytes": 16946950144
+    },
+    "observed_record": "resources-at-report-completion.json",
+    "allowed": false
+  },
+  "resource_cause": "UNKNOWN",
+  "namespace_observation": {
+    "actual_exit": 0,
+    "observations": [],
+    "same_uid_inaccessible": [],
+    "signals_sent": false,
+    "scope": "Only completed phase exact namespace/map/sentinel predicates; not universal descendant or capacity-cause proof"
+  },
+  "full_gate": {
+    "outcome": "BLOCKED / NOT RUN",
+    "resource_ram_floor_bytes": 2147483648,
+    "containment": "PID-init/lifeline/private-proc, endpoint exclusion, aggregate resource/storage envelope and ten inert selftests not implemented/qualified",
+    "review": "full-containment-review/review.md"
+  },
+  "delegated_tasks": {
+    "count": 8,
+    "all_terminal": true,
+    "pending_child_runs": false,
+    "receipt": "completed-review-states.json",
+    "sha256": "8ed5cb3a7a64c41311199eaddcc0f0837496730fcf7eafc934e257c00d2cb857"
+  },
+  "supersedes_provisional": "final-verification.json; original bytes and verification-capacity-erratum.json preserved",
+  "qualification_complete": false,
+  "candidate_acceptance": false,
+  "committed": false,
+  "pushed": false,
+  "hosted_jobs_started": false,
+  "publication": false,
+  "remaining": [
+    {
+      "id": "R4-V1",
+      "status": "BLOCKED",
+      "item": "Adjacent/evidence-build/completion/preview/negative batches",
+      "next_action": "Fresh adequate host/peer preflight, then unique phase names/source chain from r4v2-new-regressions; no consumed-name retry",
+      "acceptance": "Exact current source, actual zero exits, complete required JUnit/assertions, no unexpected skips and valid owned cleanup; includes 21 checksum publication fixtures"
+    },
+    {
+      "id": "R4-V2",
+      "status": "BLOCKED",
+      "item": "Full main plus Orca source gate",
+      "next_action": "Meet resource floors, prepare and independently review full-only containment and ten finite inert selftests; run only after all proofs pass",
+      "acceptance": "Conjunctive containment checklist plus exact-source full gate; prior timeout/incomplete records remain non-passes"
+    },
+    {
+      "id": "R4-V3",
+      "status": "INCOMPLETE",
+      "item": "Native launchers/platform and artifact qualification",
+      "next_action": "Resolve owned native startup/reporting blocker without blind Go retry; use required available native/disposable isolated workers within authorization",
+      "acceptance": "Required real native/artifact evidence; no cross-build/AST substitution; separately authorized public ISO/QEMU/hosted gates before publication"
+    },
+    {
+      "id": "R4-V4",
+      "status": "NOT TESTED / BLOCKED",
+      "item": "Physical media and Secure Boot cases",
+      "next_action": "Wait for explicit owner physical-session update and original equipment, recovery and valuable-disk disconnection prerequisites",
+      "acceptance": "Authenticated flashed-media cold readback/reconnect, firmware trust/revocation/SBAT/enforcement evidence and full physical matrix; no real erase"
+    }
+  ]
+}

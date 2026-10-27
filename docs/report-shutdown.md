@@ -18,11 +18,13 @@ requested, or a current verified export, means normal one-step shutdown.
 In Tk, Enter and Escape keep the session open. Tab focuses either action;
 Space activates the focused button. The screen-reader view announces the
 question and exposes both actions as native keyboard-accessible buttons,
-with Keep first. The plain console requires the exact phrase `SHUT DOWN
-WITHOUT SAVING`; anything else returns. In the menu console, Enter/Escape
+with Keep first. The plain console requires the exact displayed phrase
+(`SHUT DOWN WITHOUT SAVING` in English); anything else returns. In the menu console, Enter/Escape
 keep the session open; D opens the same literal-phrase confirmation.
-EOF/input loss is never a discard confirmation. Console failure returns to
-the supervisor without authorizing poweroff; Ctrl-C cannot confirm discard.
+EOF/input loss is never a discard confirmation. An unsaved requested report
+keeps shutdown blocked on EOF or console failure; Ctrl-C cannot confirm discard.
+When no unsaved requested report remains, EOF follows normal shutdown after the controller's
+operation and ownership checks.
 
 | State | Shutdown behavior |
 | --- | --- |

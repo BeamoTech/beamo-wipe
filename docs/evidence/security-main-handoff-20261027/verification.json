@@ -1,0 +1,252 @@
+{
+  "schema": "beamo-wipe-security-integration/1",
+  "status": "CHECKPOINT / FULL ACCEPTANCE AND MERGE PENDING",
+  "release_qualified": false,
+  "source": {
+    "base": "58c677f7316b5e2fc0cbb3ee4b502681c80338c1",
+    "branch": "fix/security-audit-handoff-20261027",
+    "functional_count": 926,
+    "functional_identity": "70751c88b3c408b51337d959ce80c4e4c8ed3fa605f943c0f9febf72330389e2",
+    "identity_definition": "SHA256 of compact sorted JSON mapping relative path to SHA256; tracked plus selected untracked candidate files, excluding docs/, .ai/, *.md, LICENSE and NOTICE. This definition differs from older census definitions."
+  },
+  "checks": [
+    {
+      "check": "ruff",
+      "command": [
+        "C:/Users/Jack/dev/BeamoTech/beamo-wipe/.venv-win32/Scripts/ruff.exe",
+        "check",
+        "src/beamo_wipe",
+        "tests",
+        "dev.py",
+        "scripts/build_desktop.py",
+        "scripts/agent_pr.py",
+        "developer_tests"
+      ],
+      "cwd": "C:\\Users\\Jack\\beamo-release-work\\20261027-main-handoff",
+      "exit": 0,
+      "failure": null,
+      "seconds": 8.315,
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "check": "format",
+      "command": [
+        "C:/Users/Jack/dev/BeamoTech/beamo-wipe/.venv-win32/Scripts/ruff.exe",
+        "format",
+        "--check",
+        "dev.py",
+        "scripts/build_desktop.py",
+        "scripts/agent_pr.py",
+        "developer_tests"
+      ],
+      "cwd": "C:\\Users\\Jack\\beamo-release-work\\20261027-main-handoff",
+      "exit": 0,
+      "failure": null,
+      "seconds": 0.57,
+      "log_sha256": "793e2905062e677bc49a961cd9fd445b511f01c6196d6dfc46ac854a2639a903"
+    },
+    {
+      "check": "security-source",
+      "command": [
+        "C:/Users/Jack/dev/BeamoTech/beamo-wipe/.venv-win32/Scripts/ruff.exe",
+        "check",
+        "--select",
+        "S102,S103,S104,S105,S106,S107,S113,S307,S501,S506,S508,S602,S604,S605,S606,S608,S609,S610,S611,S612",
+        "src/beamo_wipe"
+      ],
+      "cwd": "C:\\Users\\Jack\\beamo-release-work\\20261027-main-handoff",
+      "exit": 0,
+      "failure": null,
+      "seconds": 2.15,
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "check": "security-tests",
+      "command": [
+        "C:/Users/Jack/dev/BeamoTech/beamo-wipe/.venv-win32/Scripts/ruff.exe",
+        "check",
+        "--select",
+        "S102,S103,S104,S107,S113,S307,S501,S506,S508,S602,S604,S605,S606,S608,S609,S610,S611,S612",
+        "tests"
+      ],
+      "cwd": "C:\\Users\\Jack\\beamo-release-work\\20261027-main-handoff",
+      "exit": 0,
+      "failure": null,
+      "seconds": 7.822,
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "check": "mypy",
+      "command": [
+        "C:/Users/Jack/dev/BeamoTech/beamo-wipe/.venv-win32/Scripts/python.exe",
+        "-B",
+        "-m",
+        "mypy",
+        "--ignore-missing-imports",
+        "--platform",
+        "linux",
+        "--python-version",
+        "3.11",
+        "--cache-dir",
+        "C:\\Users\\Jack\\beamo-release-evidence\\security-main-handoff-20261027\\checks\\mypy-cache",
+        "src/beamo_wipe"
+      ],
+      "cwd": "C:\\Users\\Jack\\beamo-release-work\\20261027-main-handoff",
+      "exit": 0,
+      "failure": null,
+      "seconds": 20.367,
+      "log_sha256": "48f508ae3fee84c2531e8a258d88c6f5fbfd97fe16637b1472dda78fcaa923a6"
+    },
+    {
+      "check": "syntax",
+      "exit": 0,
+      "files": 747,
+      "scope": "Compile without module execution"
+    },
+    {
+      "check": "developer-tests",
+      "command": [
+        "C:/Users/Jack/beamo-release-work/20261026-security-review/.venv-win32/Scripts/python.exe",
+        "-B",
+        "-m",
+        "pytest",
+        "developer_tests",
+        "-q",
+        "--basetemp",
+        "C:\\Users\\Jack\\beamo-release-evidence\\security-main-handoff-20261027\\checks\\native-tmp",
+        "--junitxml",
+        "C:\\Users\\Jack\\beamo-release-evidence\\security-main-handoff-20261027\\checks\\developer-tests.xml",
+        "-p",
+        "no:cacheprovider"
+      ],
+      "cwd": "C:\\Users\\Jack\\beamo-release-work\\20261027-main-handoff",
+      "exit": 0,
+      "failure": null,
+      "seconds": 111.1,
+      "log_sha256": "68b9f03b26d1128fe3cdbbbc0bdada863cbce1651330109f95cfd87d8112fb1f"
+    },
+    {
+      "check": "javascript",
+      "command": [
+        "C:/Program Files/nodejs/node.exe",
+        "--check",
+        "desktop/web/app.js"
+      ],
+      "cwd": "C:\\Users\\Jack\\beamo-release-work\\20261027-main-handoff",
+      "exit": 0,
+      "failure": null,
+      "seconds": 1.685,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "check": "diff",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "C:\\Users\\Jack\\beamo-release-work\\20261027-main-handoff",
+      "exit": 0,
+      "failure": null,
+      "seconds": 1.162,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "check": "ruff-final",
+      "command": [
+        "C:/Users/Jack/dev/BeamoTech/beamo-wipe/.venv-win32/Scripts/ruff.exe",
+        "check",
+        "src/beamo_wipe",
+        "tests",
+        "dev.py",
+        "scripts/build_desktop.py",
+        "scripts/agent_pr.py",
+        "scripts/handoff_ci_outputs.py",
+        "developer_tests"
+      ],
+      "cwd": "C:\\Users\\Jack\\beamo-release-work\\20261027-main-handoff",
+      "exit": 0,
+      "failure": null,
+      "seconds": 0.095,
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    }
+  ],
+  "developer_tests": {
+    "tests": 477,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 4,
+    "passed": 473,
+    "skip_details": [
+      {
+        "name": "developer_tests.test_desktop_live_probe_pass5_20261021.test_unknown_live_runtime_refuses_before_inventory",
+        "reason": "Linux launcher I/O fixture"
+      },
+      {
+        "name": "developer_tests.test_desktop_portability.test_failed_initial_lock_stat_closes_owned_handles[False-posix]",
+        "reason": "POSIX directory descriptors require a POSIX host"
+      },
+      {
+        "name": "developer_tests.test_desktop_portability.test_failed_initial_lock_stat_closes_owned_handles[True-posix]",
+        "reason": "POSIX directory descriptors require a POSIX host"
+      },
+      {
+        "name": "developer_tests.test_doctor.test_legacy_help_exits_before_any_cloud_command",
+        "reason": "legacy POSIX scripts"
+      }
+    ]
+  },
+  "portable_replay": {
+    "exit": 0,
+    "matching": 41,
+    "cases": 41,
+    "level": "source/model, fake boundaries",
+    "source_unchanged": true,
+    "original_integration_result": {
+      "exit": 1,
+      "matching": 39,
+      "cases": 41,
+      "cause": "New idle fixture omitted journal state required by integrated controller",
+      "correction": "Set _session_store=None; preserve assertions"
+    }
+  },
+  "not_qualified": [
+    "final independent combined-diff review",
+    "required CI gate",
+    "actual full Linux pytest and security suite",
+    "GTK/Orca and contained safe end-to-end",
+    "ShellCheck and actual shell transactions",
+    "native Go launcher acceptance",
+    "installed dependency and Debian image vulnerability checks",
+    "ISO and KVM QEMU artifact qualification",
+    "main-push qualification",
+    "Task119 physical Secure Boot and cold media readback"
+  ],
+  "worker": {
+    "status": "BLOCKED",
+    "reason": "No confirmed usable SSH authorization in this Windows session; reported insufficient space and unsupported nested virtualization; isolation not admitted",
+    "authentication_retried": false
+  },
+  "safety": {
+    "host_session_preserved": true,
+    "physical_media_operations": false,
+    "release_publication": false,
+    "workflow_changes": false
+  },
+  "retained_harness_failure": {
+    "operation": "supplemental Ruff invocation",
+    "cwd": "beamo-remote-lab rather than the integration checkout",
+    "ruff_exit": 1,
+    "findings": "Two missing-path diagnostics and two unrelated Lab test formatting diagnostics",
+    "disposition": "Wrong working directory; not a Beamo Wipe product result. Corrected exact invocation on combined source exited 0; no Lab files edited."
+  },
+  "storage_incident": {
+    "operation": "Initial explicit-path Git staging",
+    "exit": 128,
+    "error": "No space left on device",
+    "source_snapshot_preserved": true,
+    "cleanup": "Automatic approval review rejected removal of the owned mypy cache as blocked by policy; no files removed.",
+    "capacity_cause": "UNKNOWN",
+    "disposition": "A later read reported about 48 MB available. Recheck source/index integrity and stage again without cleanup. No acceptance gate relabeled."
+  }
+}

@@ -1,9 +1,11 @@
 """A launcher receipt must describe the bytes present when the build completes."""
 
 from pathlib import Path
+import re
 
 import pytest
 
+from native_mutation import NativeMutation
 from test_desktop_output_replacement_pass2_20261019 import (
     _setup,
     builder as existing_builder_fixture,
@@ -43,7 +45,7 @@ class ManifestStream:
 
 
 def _during_receipt(builder, monkeypatch, host, manifest, phase, callback):
-    if host == "posix":
+    if builder.os.name == "posix":
         original = builder.os.fdopen
 
         def fdopen(fd, mode="r", *args, **kwargs):
@@ -133,30 +135,43 @@ def test_receipt_write_cannot_hide_changed_launcher(
 @pytest.mark.parametrize("phase", ["write", "close"])
 @pytest.mark.parametrize("kind", ["replacement", "in-place", "symlink", "missing"])
 def test_changed_receipt_is_refused_and_foreign_content_preserved(
-    builder, tmp_path, monkeypatch, host, phase, kind
+    builder, tmp_path, monkeypatch, request, host, phase, kind
 ):
     output = _setup(builder, tmp_path, monkeypatch, host, False)
     manifest = output / "desktop-build.json"
     outside = tmp_path / "foreign receipt"
     foreign = b"foreign receipt content must survive"
     outside.write_bytes(foreign)
+    mutation = NativeMutation(request)
 
     def change_receipt():
         if kind != "in-place":
-            manifest.unlink()
+            with mutation.operation(32, unchanged=(manifest, outside)):
+                manifest.unlink()
         if kind == "replacement" or kind == "in-place":
-            manifest.write_bytes(foreign)
+            with mutation.operation():
+                manifest.write_bytes(foreign)
         elif kind == "symlink":
-            manifest.symlink_to(outside)
+            with mutation.operation(1314, unchanged=(outside,)):
+                manifest.symlink_to(outside)
 
     _during_receipt(builder, monkeypatch, host, manifest, phase, change_receipt)
-    with pytest.raises(RuntimeError, match="manifest.*changed"):
+    with pytest.raises((RuntimeError, OSError)) as caught:
         builder.build(output)
 
     assert outside.read_bytes() == foreign
-    if kind == "missing":
+    if mutation.was_denied(caught):
+        assert not manifest.exists()
+        assert not manifest.is_symlink()
+        for name in builder.LAUNCHERS:
+            assert (output / name).read_bytes() == b"new compiled launcher"
+    elif kind == "missing":
+        assert isinstance(caught.value, RuntimeError)
+        assert re.search("manifest.*changed", str(caught.value))
         assert not manifest.exists()
     else:
+        assert isinstance(caught.value, RuntimeError)
+        assert re.search("manifest.*changed", str(caught.value))
         assert manifest.read_bytes() == foreign
         assert manifest.is_symlink() is (kind == "symlink")
     assert not (output / ".build.lock").exists()
@@ -242,7 +257,7 @@ def test_receipt_edit_during_read_is_not_accepted_or_removed(
                 changed = True
             return data
 
-    if host == "posix":
+    if builder.os.name == "posix":
         original = builder.os.fdopen
 
         def fdopen(fd, mode="r", *args, **kwargs):

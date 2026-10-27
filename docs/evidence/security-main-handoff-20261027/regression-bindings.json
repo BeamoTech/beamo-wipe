@@ -1,0 +1,27 @@
+{
+  "scope": "Exact source/test AST with fake OS, descriptor, process and power boundaries; not actual Linux module, VM, image or physical acceptance",
+  "command": [
+    "C:\\Users\\Jack\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "-I",
+    "-B",
+    "C:\\Users\\Jack\\beamo-release-work\\20261027-main-handoff\\docs\\evidence\\security-main-handoff-20261027\\probes\\final-regression-replay.py"
+  ],
+  "exit": 0,
+  "failure": null,
+  "source": {
+    "src/beamo_wipe/models.py": "e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9",
+    "src/beamo_wipe/methods.py": "edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13",
+    "src/beamo_wipe/nwipe_runner.py": "dd2ec1c0f9d391ed599171f1f6f86775299ad688cd95f22d24a86cc2722e56ca",
+    "src/beamo_wipe/wizard.py": "d606c6e2ef791cbf8df11b34973e133a1a8b46c84d43af551cb551c035ecbe17",
+    "src/beamo_wipe/app.py": "a3f2dc9cae7ac8e88c5214849d91e8bcfc34576f87b7fd8de0431e2358e04752",
+    "tests/test_security_terminal_progress.py": "00743f8e9d2fc28765d62516d65c3fb2314025347773b3b354d6a33e8fd9bab3",
+    "tests/test_security_startup_power_guard.py": "de3f6c131255e970971f57970ac17f8b225d3cdef44db38a457d5ff1e852aa6c"
+  },
+  "source_unchanged": true,
+  "harness": {
+    "completion-probe.py": "afcb85044fe27558ffb151ac581ab2d3fb2f2fad77f7b3b456303aedd19b2e4d",
+    "final-regression-replay.py": "b565d4be2cbd473626bb2aa364cdcb3936de53af48f2d9be2162dfd2699615ca",
+    "run.py": "edba28ae23ef9866763294da9ee9bf0f5408684cd0f331d1497981f6b0b7f1d9",
+    "startup-power-probe.py": "3a175c8daec88fd8cf640a811202024579a72a2b94eb78b66b59bd6b9a43ce17"
+  }
+}

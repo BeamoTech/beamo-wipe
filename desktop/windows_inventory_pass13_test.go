@@ -2,11 +2,13 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"os"
 	"os/exec"
 	"strings"
 	"testing"
+	"time"
 )
 
 // Run the inventory body with fake PowerShell disk commands. The real
@@ -54,7 +56,9 @@ function Get-Disk { [CmdletBinding()]param($Number); $disk }
 		{"MBR zero partition number", strings.Replace(mbrFixture, "PartitionNumber=1", "PartitionNumber=0", 1), ""},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			output, err := exec.Command(pwsh, "-NoProfile", "-NonInteractive", "-Command", tc.script+script).CombinedOutput()
+			ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+			defer cancel()
+			output, err := exec.CommandContext(ctx, pwsh, "-NoProfile", "-NonInteractive", "-Command", tc.script+script).CombinedOutput()
 			if err != nil {
 				t.Fatalf("fake Windows inventory failed: %v\n%s", err, output)
 			}

@@ -1,0 +1,239 @@
+{
+  "utc": "2026-10-26T00:48:00.559150+00:00",
+  "status": "BLOCKED / SOURCE FIXES SAVED",
+  "repository": "BeamoTech/beamo-wipe",
+  "worktree": "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2",
+  "branch": "codex/wipe-audit-20261024",
+  "base": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+  "functional_count": 931,
+  "functional_identity": "2a6260d711af5f78442d8a2728fbfe663859ee5d94cea778f196ba6a95b31333",
+  "changed_since_entry": [
+    "src/beamo_wipe/ci_evidence.py",
+    "src/beamo_wipe/release_manifest.py",
+    "src/beamo_wipe/report_intent.py",
+    "src/beamo_wipe/wizard.py",
+    "tests/test_build_reader_cleanup.py",
+    "tests/test_finalizer_output_binding.py",
+    "tests/test_manifest_writer_cleanup.py",
+    "tests/test_pass14_final_checksum.py",
+    "tests/test_progress_plan_estimate.py",
+    "tests/test_report_intent_cleanup.py"
+  ],
+  "overlay_sha256": "2d86f20f4c784ff7373df4883efaa09886f24719d8bced2895e64dcd122930f9",
+  "overlay_path_count": 79,
+  "staged": [],
+  "committed": false,
+  "pushed": false,
+  "merged": false,
+  "hosted_jobs": 0,
+  "released": false,
+  "checks": {
+    "final_functional_identity": "2a6260d711af5f78442d8a2728fbfe663859ee5d94cea778f196ba6a95b31333",
+    "functional_count": 931,
+    "source_inputs_unchanged": true,
+    "overlay_sha256": "2d86f20f4c784ff7373df4883efaa09886f24719d8bced2895e64dcd122930f9",
+    "overlay_readback": true,
+    "syntax_python_files": 742,
+    "embedded_python": "PASS",
+    "delta_from_prior_b310": [
+      "src/beamo_wipe/ci_evidence.py",
+      "tests/test_build_reader_cleanup.py"
+    ],
+    "pytest": {
+      "actual_exits": [
+        0,
+        0,
+        0
+      ],
+      "passed_nodes": 254,
+      "passed_subtests": 37,
+      "junit_suites": [
+        {
+          "batch": "native-r6-core",
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "265",
+          "time": "7.892",
+          "timestamp": "2026-10-25T19:33:40.555256-05:00",
+          "hostname": "WIN-GS570J99SRQ"
+        },
+        {
+          "batch": "native-r6-readers-a",
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "13",
+          "time": "15.571",
+          "timestamp": "2026-10-25T19:35:17.764759-05:00",
+          "hostname": "WIN-GS570J99SRQ"
+        },
+        {
+          "batch": "native-r6-readers-b",
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "13",
+          "time": "6.538",
+          "timestamp": "2026-10-25T19:35:37.460743-05:00",
+          "hostname": "WIN-GS570J99SRQ"
+        }
+      ],
+      "junit_testcases": 254,
+      "junit_outcomes": 291,
+      "unexpected_skips": 0,
+      "batches": [
+        "native-r6-core",
+        "native-r6-readers-a",
+        "native-r6-readers-b"
+      ],
+      "reader_groups_complete_and_disjoint": true,
+      "elapsed_seconds": {
+        "native-r6-core": 9.574170599982608,
+        "native-r6-readers-a": 17.02305809999234,
+        "native-r6-readers-b": 7.733226299984381
+      },
+      "scope": "In-process Windows CPython + existing pytest, exact AST-only tests; fake product OS/process boundaries; external process/network creation refused",
+      "synthetic_modules": [
+        "beamo_wipe.methods",
+        "beamo_wipe.models",
+        "beamo_wipe.nwipe_runner",
+        "beamo_wipe.progress",
+        "beamo_wipe.wizard"
+      ]
+    },
+    "timeout": {
+      "path": "native-r6-readers/timeout.json",
+      "actual_outer_exit": 124,
+      "actual_test_exit": null,
+      "outcome": "INCOMPLETE",
+      "unchanged_deadline_seconds": 45,
+      "response": "All26 reader groups split into two13-group batches, unchanged assertions and45s limit; no blind same-batch retry."
+    },
+    "ruff": {
+      "actual_exits": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "input_count": 809,
+      "tool_sha256": "a3fd92d64e0b23dd27520525b8235d3fa7676e256fe906bdd4a42033bd5c4f8f"
+    },
+    "types": {
+      "actual_exit": 0,
+      "source_files": 52,
+      "scope": "Windows-hosted whole-source static type analysis with Linux/Python3.11 stubs; no product/runtime imports; not canonical actual-Linux execution",
+      "notes": "Five pre-existing annotation-unchecked notes; default untyped bodies remain unchecked."
+    },
+    "supplemental_driver_hashes": {
+      "run_inert_snapshot.py": "97e26eeef6d42b150eda9859956defe74c13dfdd70f665b43c40405abd132a33",
+      "run_inert_split_r6.py": "ef5f3d1c50f900e9c35fb5886a551a66d40b7e6abc9bc482fb4ffdb92495bac0",
+      "run_inert_reader_halves_r6.py": "7718acc9dbe4c9d8a377bae393578981e2c044784592c7026debf089391e4040",
+      "typecheck_snapshot.py": "914b3efe5d282c7e1415425959104784f314006f2d4d227214f3a78851161696"
+    },
+    "actual_linux_acceptance": false,
+    "full_source_acceptance": false,
+    "native_application_acceptance": false
+  },
+  "observation": {
+    "utc": "2026-10-26T00:46:21.299974+00:00",
+    "source": "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2",
+    "branch": "codex/wipe-audit-20261024",
+    "head": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+    "functional_count": 931,
+    "functional_identity": "2a6260d711af5f78442d8a2728fbfe663859ee5d94cea778f196ba6a95b31333",
+    "functional_source_matches_frozen": true,
+    "staged": [],
+    "whitespace": "PASS",
+    "resources": {
+      "free_bytes": 2790412288,
+      "available_ram_bytes": 8449486848,
+      "total_ram_bytes": 16946950144
+    },
+    "peer_captured_input_drift": [],
+    "peer_head": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+    "lab_head": "d3d0959bb26b17531464dbd1ba233d4d842ad581",
+    "lab_status": " M .ai/memory/MEMORY.md\n?? .ai/memory/UNFINISHED-2026-10-14.md\n",
+    "guide_hashes": {
+      "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2\\AGENTS.md": "1e6f980d50267db488a9beb353802242ac57379450c1d9c0ad77c13928509290",
+      "C:\\Users\\Jack\\dev\\AGENTS.md": "3a874239597d7a2a6e41cf4699e8d7d8fec8e3cbb8f2ee55b2a66661bc935d77",
+      "C:\\Users\\Jack\\beamo-remote-lab\\AGENTS.md": "e2f869ea37412be19601585a76abd9a76d29ae8217f1a30beef254128aeb43a0",
+      "C:\\Users\\Jack\\beamo-remote-lab\\README.md": "6d80b332b0e32a611158760ca26e5440876688b780dd3e294e4a94b6f24dfa35",
+      "C:\\Users\\Jack\\beamo-remote-lab\\docs\\runbook.md": "97d892280a1926e5ad68249cd83f288ee9554bdb5454d64e8ec1e29f2e2f9a0e"
+    },
+    "guide_drift": []
+  },
+  "delegated_tasks": 13,
+  "delegated_tasks_terminal": true,
+  "final_review_disposition": "BOUNDED NO OBJECTION; no new findings",
+  "prior_changes_requested": "Retained historical R5 review; its two contracts corrected and independently rereviewed at R7.",
+  "review_observations": {
+    "total": 410,
+    "current": 224,
+    "historical": 186,
+    "scope": "Expected finite exact-AST fake observations; historical defect observations are not product passes."
+  },
+  "packet_readback": {
+    "optional-leaf-implementation-r6": {
+      "files": 28,
+      "sha256_manifest": "cba12ad92417b1e234b8f827bc2091ce1bddc4131fee54b8dcdd351796e0521a",
+      "supplemental_after_termination": {},
+      "readback": "PASS"
+    },
+    "optional-leaf-review-r7": {
+      "files": 43,
+      "sha256_manifest": "3a70c43b5ec92fe1f5ca676e563ac698a8d69041f108a2caaedd9d91bdfb125c",
+      "supplemental_after_termination": {
+        "command-seal.json": "d7650c852d48d8ab34e695215c815cc79b20ac9369927c7377acc1a46c2c79cf"
+      },
+      "readback": "PASS"
+    }
+  },
+  "raw_root": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r5",
+  "retained_evidence_sha256": {
+    "r6-final-inputs.json": "3a1d79a58a68933df7bbb6e620040ecfb1b90a77b4cd4e138c948895a918b9c1",
+    "r6-final-overlay.zip": "2d86f20f4c784ff7373df4883efaa09886f24719d8bced2895e64dcd122930f9",
+    "r6-check-reconciliation.json": "d58634073571001028d288715109dbde759bedd45088e313fbc58270b5486a5a",
+    "r7-final-observation.json": "f271de476c86aee4c945987dd9983e5588f012925b6e37d75581b6218b4f21c8",
+    "reviews-final-r7.json": "6446c18f9b863aab8e6a5a26f00a211aaa8cc38a17f6203573acedf483fb38d8",
+    "native-r6-core/receipt.json": "0a5650ba88b902b4931fa4a2eef0c846a519e051d59ca2fbc98d1fe9415b253d",
+    "native-r6-core/junit.xml": "0f2d791bbafb470a3ee5ec08477caedfeb49a4b50099dce62dc3c3844e0411fb",
+    "native-r6-readers/timeout.json": "85292ff0f4389957e4146f3309d04b497fb28031c25e5d8bb0103d19b1ca76db",
+    "native-r6-readers-a/receipt.json": "fb865a06cfe8e5460e9a60b7fd2f869594b6f0905d15ef7bb92356e2e242efe8",
+    "native-r6-readers-a/junit.xml": "be2d803c4c04d6d991d0e48ab86bf8c8fc33a4121e1bd39c90c268714b884047",
+    "native-r6-readers-b/receipt.json": "a3fc2f4c23daecd3525fd87923c5b75d15ba7356ef99d12abd49b3347ba2e1ed",
+    "native-r6-readers-b/junit.xml": "39bbad765dd1c11ab47c0c7734d34ac2533a5f5a35bc3da2d50c9e3904b28454",
+    "static-r6-final.json": "7f2a81d109bc45e36aed80ae246da88fbd9c107ad79fcf39ac1e2d47655d898d",
+    "types-r6-final/receipt.json": "18754c6a70f3ecd6b024e3ef6500f4a4675ad9d71bb1beb09a045822084dd2c2",
+    "parent-r6-preservation.json": "874ae38374501c943e7eb27d325d437badeeb3cfa53df6f8acb831014b2bf27f",
+    "parent-optional-leaf-implementation-r6.json": "7e13b8efd86584a59afb236acb25a82016cf8b4c555322d020af7d34cb3d4f7e",
+    "parent-leaf-origin-before-r6.json": "fb3684fc127d6987d557914cf60ba5b27d5f94185e9b26b2432ed327a8857055",
+    "parent-reader-findings-after-r6.json": "f247deb0c2d6b2933dc6b2beeffba6646ad0e549b8a90478e54ce90fad752b29",
+    "parent-reader-caller-after-r6.json": "3cd6da956706872c439c60894a32a68254e953d8f8fb49500eaaf527dfd6499b",
+    "parent-retained-reader-after-after-r6.json": "c39b39ddee41341c1ee6dc5ee219b9c31cc7138d17c7d90bff946ff561e60168",
+    "parent-build-corrections-after-r6.json": "59667d03445667a240e0ef152604c2b7f4d5dc05fcfc0d0788cc17812732995f",
+    "parent-optional-cleanup-after-r6.json": "49a351f6fd7f75d15b75f2816da21bfb50e2f85d793cc16dbac6dc18f89f32a2",
+    "optional-leaf-implementation-r6/HANDOFF.md": "2815d716f3c736d0076eb12afb6bcdc2e99427fdfee0fd98702936e118e0705e",
+    "optional-leaf-implementation-r6/FILES.sha256": "cba12ad92417b1e234b8f827bc2091ce1bddc4131fee54b8dcdd351796e0521a",
+    "optional-leaf-review-r7/RESULT.md": "5c3c8db98cee37f73acd77ba2b93149df701fb6926fd66594ac58e4d41714190",
+    "optional-leaf-review-r7/FILES.sha256": "3a70c43b5ec92fe1f5ca676e563ac698a8d69041f108a2caaedd9d91bdfb125c",
+    "optional-leaf-review-r7/command-seal.json": "d7650c852d48d8ab34e695215c815cc79b20ac9369927c7377acc1a46c2c79cf",
+    "r7-report-packet-inventory-inspection.json": "8b0ada05c638fd24ca08d0cc22e32c9e0de64852beb343beb85ced911c4bf202"
+  },
+  "pending": [
+    "Actual-Linux adjacent/build/shell/completion/preview/negative/type/new-module/checksum-fixture gates: disk below unchanged8GiB floor; no R5 WSL tests started.",
+    "Full main/Orca: full mode disabled; containment and ten finite selftests unimplemented/unqualified.",
+    "Native Go/startup/Windows/macOS/platform/artifact and separately authorized final-public isolated ISO/QEMU/hosted gates.",
+    "Physical task119 reconnect/coldreadback/valuable-disk disconnection/firmware/SecureBoot trust-revocation-SBAT-enforcement: NOT TESTED / BLOCKED.",
+    "Commit/push/merge/release after required gates and applicable authorization."
+  ],
+  "actual_linux_acceptance": false,
+  "full_source_acceptance": false,
+  "native_application_acceptance": false,
+  "artifact_acceptance": false,
+  "physical_acceptance": false
+}

@@ -14,6 +14,7 @@ import time
 import unicodedata
 from dataclasses import asdict
 from pathlib import Path
+from typing import Callable
 
 from beamo_wipe import __version__, NWIPE_PINNED_VERSION, NWIPE_PINNED_COMMIT
 from beamo_wipe.models import Disk, DiskKind, DiscoveryResult, MethodId
@@ -98,6 +99,48 @@ def _disk(raw):
     return Disk(**{**raw, "kind": DiskKind(raw["kind"]), "mountpoints": ()})
 
 
+def _cleanup_recovery_file(
+    directory: int | None,
+    fd: int | None,
+    temporary: str | None = None,
+    *,
+    primary: BaseException | None = None,
+) -> None:
+    """Retire a local file once and preserve an existing operation failure."""
+    if fd is None:
+        return
+    failures: list[BaseException] = []
+
+    def attempt(stage: str, action: Callable[[], object]) -> None:
+        try:
+            action()
+        except BaseException as error:
+            failures.append(error)
+            try:
+                from beamo_wipe.diagnostics import log_diag
+
+                log_diag("session_recovery", stage, type(error).__name__)
+            except BaseException:
+                pass
+
+    if directory is not None and temporary is not None:
+        directory_handle, file_handle, name = directory, fd, temporary
+
+        def remove_owned_temporary() -> None:
+            opened = os.fstat(file_handle)
+            try:
+                named = os.stat(name, dir_fd=directory_handle, follow_symlinks=False)
+            except FileNotFoundError:
+                return
+            if (opened.st_dev, opened.st_ino) == (named.st_dev, named.st_ino):
+                os.unlink(name, dir_fd=directory_handle)
+
+        attempt("temporary_cleanup", remove_owned_temporary)
+    attempt("file_close", lambda: os.close(fd))
+    if primary is None and failures:
+        raise failures[0]
+
+
 class SessionStore:
     """One UI owner; a separate, inherited runner lock remains authoritative.
 
@@ -134,8 +177,9 @@ class SessionStore:
             raise SafetyError(RECOVERY_UNSAFE_RECOVERY_DIRECTORY) from exc
 
     def _file(self, name, flags=os.O_RDONLY):
-        fd = os.open(name, flags | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600, dir_fd=self.fd)
+        fd = None
         try:
+            fd = os.open(name, flags | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600, dir_fd=self.fd)
             st = os.fstat(fd)
             if (
                 not stat.S_ISREG(st.st_mode)
@@ -145,8 +189,8 @@ class SessionStore:
             ):
                 raise SafetyError(RECOVERY_UNSAFE_RECOVERY_FILE)
             self._verify_directory()
-        except BaseException:
-            os.close(fd)
+        except BaseException as error:
+            _cleanup_recovery_file(self.fd, fd, primary=error)
             raise
         return fd
 
@@ -174,8 +218,10 @@ class SessionStore:
     def read(self, name):
         if Path(name).name != name or name in {".", ".."}:
             raise SafetyError(RECOVERY_INVALID_RECOVERY_FILENAME)
-        fd = self._file(name)
+        fd = None
+        primary = None
         try:
+            fd = self._file(name)
             opened = os.fstat(fd)
             self._verify_named_read(name, opened)
             chunks = []
@@ -214,8 +260,11 @@ class SessionStore:
             self._verify_named_read(name, after)
             self._verify_directory()
             return b"".join(chunks)
+        except BaseException as error:
+            primary = error
+            raise
         finally:
-            os.close(fd)
+            _cleanup_recovery_file(self.fd, fd, primary=primary)
 
     def _verify_named_lock(self, name, fd):
         """A flock on a replaced inode does not coordinate other callers."""
@@ -455,9 +504,11 @@ class SessionStore:
         if len(data) > LIMIT:
             raise SafetyError(RECOVERY_RECOVERY_RECORD_TOO_LARGE)
         name = ".recovery-" + secrets.token_hex(12)
-        fd = self._file(name, os.O_RDWR | os.O_CREAT | os.O_EXCL)
+        fd = None
+        primary = None
         replaced = False
         try:
+            fd = self._file(name, os.O_RDWR | os.O_CREAT | os.O_EXCL)
             pending = data
             while pending:
                 n = os.write(fd, pending)
@@ -476,33 +527,18 @@ class SessionStore:
             os.fsync(self.fd)
             self._verify_named_lock("interface.lock", self.owner)
             self._verify_publication(NAME, fd, data)
-        except BaseException:
+        except BaseException as error:
+            primary = error
             if replaced:
                 self.invalid = True
             raise
         finally:
             try:
-                opened = os.fstat(fd)
-                try:
-                    named = os.stat(name, dir_fd=self.fd, follow_symlinks=False)
-                except FileNotFoundError:
-                    pass
-                else:
-                    # The live descriptor pins the owned inode throughout
-                    # cleanup; never remove a replacement at the temp name.
-                    if (opened.st_dev, opened.st_ino) == (named.st_dev, named.st_ino):
-                        os.unlink(name, dir_fd=self.fd)
+                _cleanup_recovery_file(self.fd, fd, name, primary=primary)
             except BaseException:
                 if replaced:
                     self.invalid = True
                 raise
-            finally:
-                try:
-                    os.close(fd)
-                except BaseException:
-                    if replaced:
-                        self.invalid = True
-                    raise
 
     def _release_quiescent(self):
         fd = self.quiescent
@@ -612,18 +648,26 @@ class SessionStore:
         if self.quiescent >= 0:
             self._verify_named_lock("wipe.lock", self.quiescent)
             return True
-        fd = self._file("wipe.lock", os.O_RDWR | os.O_CREAT)
+        fd = None
+        primary = None
         try:
+            fd = self._file("wipe.lock", os.O_RDWR | os.O_CREAT)
             fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             self._verify_named_lock("wipe.lock", fd)
-        except BlockingIOError:
-            os.close(fd)
+        except BlockingIOError as error:
+            if fd is None:
+                primary = error
+                raise  # Acquisition failure is not proof of a busy runner lock.
             return False
-        except BaseException:
-            os.close(fd)
+        except BaseException as error:
+            primary = error
             raise
-        self.quiescent = fd  # Retain through recovery/export, never attach or signal.
-        return True
+        else:
+            self.quiescent = fd  # The store now owns the retained runner lock.
+            return True
+        finally:
+            if fd is not None and self.quiescent != fd:
+                _cleanup_recovery_file(self.fd, fd, primary=primary)
 
     def context(self):
         context = self.record["context"]

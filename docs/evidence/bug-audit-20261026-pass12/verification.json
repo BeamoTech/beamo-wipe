@@ -1,0 +1,67 @@
+{
+  "artifact_acceptance": false,
+  "base": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+  "branch": "codex/wipe-audit-20261024",
+  "canonical_hashes": {
+    ".ai/memory/unfinished-work.md": "7879a2bda39690c6c2cf51306a069f23b5f3c887d268a54b4861d488ab027f8a",
+    "docs/evidence/bug-audit-20261026-pass12/README.md": "b1f771f0d635cc27b6793fd8b3a5238f3250e07f3a5086ec0bc02b8a8ac501ba",
+    "docs/evidence/bug-audit-20261026-pass12/reviews.json": "f3ec15de389b300952af963a3c980b130c319021a0695ced78158fcefd545eea"
+  },
+  "changed_production_test_paths": [],
+  "checks_reused_not_rerun": {
+    "direct_unittest_nodes": 13,
+    "portable_pytest_nodes": 13,
+    "portable_subtests": 29,
+    "ruff_commands": 4,
+    "scope": "Exact unchanged936 inputs and pinned interpreter/Ruff bytes only; existing Linux/Python3.11 stub notes/native gaps preserved.",
+    "syntax_files": 747,
+    "types_files": 52
+  },
+  "comprehensive_review_complete": false,
+  "failed_task_count": 4,
+  "fresh_independent_review": "BLOCKED",
+  "functional_count": 936,
+  "functional_identity": "682501409de92473b4cdb44505358a4dda83a24514b75bb4fd0eec5b7e8d77f7",
+  "historical_suffix_sha256": "58c559d1273a8e3282dba7a1ae519b19710caf4701484ea64083901cf64ad67b",
+  "lab_visual_verified": false,
+  "linux_full_acceptance": false,
+  "local_ast_bindings": 41,
+  "local_distinct_matching_cases": 43,
+  "local_reconciliation_sha256": "ae13964ac11781d6b01d0862c9de0835cf5426972b0aa0b9d8d75190c838971b",
+  "native_acceptance": false,
+  "observation": {
+    "guide_hashes_unchanged": true,
+    "index": [],
+    "peer_and_lab_unchanged": true,
+    "resource_observation_is_not_admission_retry": true,
+    "resources": {
+      "available_ram_bytes": 6113026048,
+      "free_bytes": 1136787456,
+      "total_ram_bytes": 16946950144
+    },
+    "source_status": " M .ai/memory/unfinished-work.md\n M desktop/platform_windows_test.go\n M desktop/windows_inventory_pass13_test.go\n M developer_tests/test_desktop_final_receipt_pass3_20261019.py\n M developer_tests/test_desktop_output_replacement_pass2_20261019.py\n M developer_tests/test_desktop_output_snapshot_pass14_20261021.py\n M developer_tests/test_desktop_prior_receipt_retirement_pass4_20261019.py\n M docs/report-shutdown.md\n M docs/session-recovery.md\n M packaging/live/config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk\n M packaging/live/inside-docker.sh\n M scripts/build-iso.sh\n M scripts/build_desktop.py\n M scripts/ci-blacksmith.sh\n M scripts/generate-release-manifest.sh\n M src/beamo_wipe/app.py\n M src/beamo_wipe/build_identity.py\n M src/beamo_wipe/ci_evidence.py\n M src/beamo_wipe/diagnostics.py\n M src/beamo_wipe/discover.py\n M src/beamo_wipe/evidence.py\n M src/beamo_wipe/nwipe_runner.py\n M src/beamo_wipe/release_manifest.py\n M src/beamo_wipe/report_intent.py\n M src/beamo_wipe/result_summary.py\n M src/beamo_wipe/safety.py\n M src/beamo_wipe/sound.py\n M src/beamo_wipe/support_export.py\n M src/beamo_wipe/ui/accessible_wizard.py\n M src/beamo_wipe/ui/console_wizard.py\n M src/beamo_wipe/ui/sound_dialog.py\n M src/beamo_wipe/ui/tk_wizard.py\n M src/beamo_wipe/verification_evidence.py\n M src/beamo_wipe/wizard.py\n M tests/test_accessible_runtime.py\n M tests/test_audit_20260905_wizard.py\n M tests/test_ci_evidence_pipeline.py\n M tests/test_discover.py\n M tests/test_export_mount_cleanup_regression.py\n M tests/test_helper_boot_guidance.py\n M tests/test_iso_bundle_ownership_pass8.py\n M tests/test_kiosk_recovery.py\n M tests/test_manifest_sum_output_pass14_build.py\n M tests/test_pass14_final_checksum.py\n M tests/test_report_shutdown.py\n M tests/test_startup_diagnostics.py\n M tests/test_startup_notice_state_pass12.py\n M tests/test_tk_input_scroll_pass13.py\n M tests/test_usb_report_workflow.py\n?? developer_tests/native_mutation.py\n?? developer_tests/test_build_identity_cleanup.py\n?? developer_tests/test_desktop_windows_output_mode.py\n?? developer_tests/test_optional_helper_cleanup.py\n?? docs/evidence/bug-audit-20261024/\n?? docs/evidence/bug-audit-20261025-pass4/\n?? docs/evidence/bug-audit-20261025-pass5/\n?? docs/evidence/bug-audit-20261025-pass6/\n?? docs/evidence/bug-audit-20261025-pass7/\n?? docs/evidence/bug-audit-20261025-repass/\n?? docs/evidence/bug-audit-20261025/\n?? docs/evidence/bug-audit-20261026-pass10/\n?? docs/evidence/bug-audit-20261026-pass11/\n?? docs/evidence/bug-audit-20261026-pass12/\n?? docs/evidence/bug-audit-20261026-pass8/\n?? docs/evidence/bug-audit-20261026-pass9/\n?? scripts/handoff_ci_outputs.py\n?? tests/test_build_failure_propagation.py\n?? tests/test_build_output_handoff_20261023.py\n?? tests/test_build_reader_cleanup.py\n?? tests/test_cancel_observed_exit.py\n?? tests/test_ci_handoff_boundaries.py\n?? tests/test_ci_handoff_publication_races.py\n?? tests/test_ci_qemu_final_binding.py\n?? tests/test_completion_projection_byte_budget.py\n?? tests/test_curses_discard_unicode.py\n?? tests/test_evidence_fd_cleanup.py\n?? tests/test_finalizer_output_binding.py\n?? tests/test_iso_rollback_collision.py\n?? tests/test_kiosk_identity_guard.py\n?? tests/test_malformed_terminal_progress.py\n?? tests/test_manifest_checksum_publication_races.py\n?? tests/test_manifest_writer_cleanup.py\n?? tests/test_nvme_surviving_transport.py\n?? tests/test_orca_acquisition_interrupt.py\n?? tests/test_orca_parent_failures.py\n?? tests/test_orca_process_cleanup.py\n?? tests/test_progress_activity_projection.py\n?? tests/test_progress_plan_estimate.py\n?? tests/test_raw_disk_ancestry_refusal.py\n?? tests/test_reader_acquisition_interrupt.py\n?? tests/test_reader_replacement_ownership.py\n?? tests/test_report_bundle_cleanup.py\n?? tests/test_report_intent_cleanup.py\n?? tests/test_report_member_cleanup.py\n?? tests/test_report_worker_cleanup.py\n?? tests/test_report_worker_outer_cleanup.py\n?? tests/test_runner_inhibitor_identity_order.py\n?? tests/test_runner_launch_handle_ownership.py\n?? tests/test_runner_read_handle_ownership.py\n?? tests/test_runner_status_whitespace_bound.py\n?? tests/test_shutdown_invalid_journal.py\n?? tests/test_sound_partial_state.py\n?? tests/test_started_terminal_evidence_race.py\n?? tests/test_startup_observation_order.py\n?? tests/test_startup_power_guard.py\n?? tests/test_stop_observed_exit.py\n?? tests/test_terminal_log_snapshot_ownership.py\n?? tests/test_wizard_log_handle_ownership.py\n",
+    "utc": "2026-10-26T12:33:15.497280+00:00",
+    "whitespace": "PASS"
+  },
+  "physical_acceptance": false,
+  "prior_seal": {
+    "bytes": 2708918,
+    "full_byte_readback": true,
+    "members": 160,
+    "path": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r11\\evidence-seal.json",
+    "sha256": "b0f79b3bd460b97c13bf040652dc1720f4867381db2071d53e5535f00ab5fb2d"
+  },
+  "raw_seal": {
+    "bytes": 1260428,
+    "files": 63,
+    "path": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r12\\evidence-seal.json",
+    "readback": true,
+    "sha256": "c26e7b2047427f9dbfba29537214fca0ebfb5482749495ce490dcf1fa75ffd1b"
+  },
+  "release_qualified": false,
+  "source": "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2",
+  "static_ast_bindings": 10,
+  "status": "INCOMPLETE: AVAILABLE LOCAL WORK FINISHED; FRESH INDEPENDENT REVIEW BLOCKED",
+  "successful_new_independent_reviews": 0,
+  "utc": "2026-10-26T12:33:15.497280+00:00"
+}

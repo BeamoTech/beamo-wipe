@@ -19,7 +19,7 @@ KIOSK = CHROOT / "usr/local/sbin/beamo-wipe-kiosk"
 SERVICE = CHROOT / "etc/systemd/system/beamo-wipe-kiosk.service"
 
 
-def prepare_kiosk(tmp_path, *, graphical=1, console=1, engine=1,
+def prepare_kiosk(tmp_path, *, graphical=1, console=1, engine=1, engine_identity=0,
                   power=1, missing=(), accessible=False,
                   persistent_read_failure=False):
     commands = tmp_path / "commands"
@@ -31,6 +31,7 @@ def prepare_kiosk(tmp_path, *, graphical=1, console=1, engine=1,
         "startx": f'exit {graphical}',
         "beamo-wipe": f'exit {console}',
         "pgrep": f'exit {engine}',
+        "python3": f'exit {engine_identity}',
         "systemctl": f'exit {power}',
         "sleep": "command /bin/sleep 0.02; exit 0" if persistent_read_failure else "exit 0",
         "rm": "exit 0",
@@ -151,6 +152,38 @@ def test_missing_process_check_blocks_power(tmp_path):
     result, calls = run_kiosk(tmp_path, "4\nRESTART\n", missing=("pgrep",))
     assert not launches(calls, "systemctl")
     assert "cannot confirm that erasing has stopped" in result.stdout
+
+
+@pytest.mark.parametrize("identity_status", [1, 2, 124, 127])
+@pytest.mark.parametrize("choice,confirmation", [("4", "RESTART"), ("5", "SHUTDOWN")])
+def test_identity_busy_error_or_timeout_blocks_power_despite_absent_name(
+    tmp_path, identity_status, choice, confirmation,
+):
+    result, calls = run_kiosk(
+        tmp_path, f"{choice}\n{confirmation}\n", engine=1, engine_identity=identity_status,
+    )
+    assert launches(calls, "pgrep") == ["pgrep -x nwipe"]
+    assert len(launches(calls, "python3")) == 1
+    assert not launches(calls, "systemctl")
+    assert "cannot confirm that erasing has stopped" in result.stdout
+
+
+@pytest.mark.parametrize("missing", [("python3",), ("timeout",)])
+def test_missing_identity_inspection_dependency_blocks_power(tmp_path, missing):
+    result, calls = run_kiosk(tmp_path, "5\nSHUTDOWN\n", missing=missing)
+    assert not launches(calls, "systemctl")
+    assert "cannot confirm that erasing has stopped" in result.stdout
+
+
+def test_identity_check_is_bounded_and_precedes_power(tmp_path):
+    result, calls = run_kiosk(tmp_path, "5\nSHUTDOWN\n", power=0)
+    identity = launches(calls, "python3")
+    assert len(identity) == 1
+    assert "python3 -I -c " in identity[0]
+    assert "pinned_nwipe_already_running() is False" in identity[0]
+    assert any(line.startswith("timeout 10 python3 -I -c ") for line in calls)
+    assert calls.index(identity[0]) < calls.index("systemctl --no-block poweroff")
+    assert "Power request accepted" in result.stdout
 
 
 def test_accessible_recovery_speaks_safety_and_choices(tmp_path):

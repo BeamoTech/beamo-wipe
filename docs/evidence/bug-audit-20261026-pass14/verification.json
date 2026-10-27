@@ -1,0 +1,106 @@
+{
+  "acceptance": "INCOMPLETE; no independent/native/full approval",
+  "base": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+  "branch": "codex/wipe-audit-20261024",
+  "changed": [
+    "src/beamo_wipe/ci_evidence.py",
+    "tests/test_ci_qemu_directory_race_pass31.py",
+    "tests/test_qemu_member_cleanup.py"
+  ],
+  "changed_records": {
+    "src/beamo_wipe/ci_evidence.py": {
+      "bytes": 39997,
+      "sha256": "ed52e0bd477e80e3b3fa106e653e23d68c59f1411a7e9b59f4dbb6d80bdbb26f"
+    },
+    "tests/test_ci_qemu_directory_race_pass31.py": {
+      "bytes": 3800,
+      "sha256": "bc56ea7b68d66a7069a2e6ca2d0bc7507351275d330b4b9ea764f1304ae6fd9f"
+    },
+    "tests/test_qemu_member_cleanup.py": {
+      "bytes": 4296,
+      "sha256": "2fab9e540c4e42aa45c5f676d017aa05597f6b67c7283021612ded498058fde6"
+    }
+  },
+  "evidence_failures_retained": [
+    "Original19-case baseline red (14 failures)",
+    "All3 provider429 failures",
+    "Initial reader harness8 AttributeErrors then unchanged assertion replay0",
+    "Initial report evaluate15000ms timeout; focused read confirmed loaded report; separate5filter DOM call succeeded",
+    "Initial validator1 missing structuredContent; corrected validator0, later superseded by final source",
+    "First legacy body harness2 missing-alias adapter errors plus diagnostic mismatch; corrected frozen3-case counterexamples and final3passes retained"
+  ],
+  "finding": {
+    "correction": "Reuse protected double-read hash helper and retain its exact opened metadata for directory rebinding; preserve the non-regular/hardlink diagnostic. Existing hash body/cleanup and QEMU outer checks remain intact.",
+    "fixture_update": "Existing race-test hash fake gains digest(); stable metadata fake retains actual uid/nlink. All original assertion/decorator/body semantics otherwise preserved.",
+    "id": "R14-QEMU-MEMBER-CLEANUP",
+    "regressions": {
+      "baseline19": {
+        "actual_exit": 1,
+        "controls": 5,
+        "failed": 14
+      },
+      "causal4": {
+        "baseline_counterexamples": 3,
+        "final_matches": 4,
+        "new_counts_from_replays": 0
+      },
+      "final19": {
+        "actual_exit": 0,
+        "passed": 19
+      },
+      "legacy_fixture_cases": {
+        "final_passed": 3,
+        "frozen_failed": 3,
+        "native": false,
+        "same_oracles": true
+      }
+    },
+    "reproduction": "In-memory member read+close masks primary; post-open trace interruption leaves fake member FD. Native close/signal co-occurrence and release semantics unqualified. No unsafe wipe/false gate pass demonstrated.",
+    "severity": "conditional P3"
+  },
+  "floors": "Unchanged8GiB disk/1GiB RAM; disk below floor. No admission attempt/WSL retry/cleanup/floor reduction.",
+  "functional_count": 939,
+  "functional_identity": "b4458b5c06099ca927a11b06b5f0b9509b350b8031a721fe97ba05f2950088e0",
+  "local_available_work": "FINISHED; conditional P3 locally corrected and source/model validated",
+  "local_git_state": "Unstaged/uncommitted/unpushed; no hosted CI/publication/install/guest/mount/engine/device/USB/host power/session/security/network/firmware action.",
+  "main_orca_containment": "Controlled PID-init/private proc/lifelines, exclusion of service sockets/Windows interop/devices, aggregate resource/bounded writes/log transport and original10 finite selftests remain unqualified.",
+  "other_local_checks": {
+    "audio_ticket_cases": 18,
+    "completion_to_outcome_cases": 13,
+    "matching": 8,
+    "native_denials": [],
+    "ownership_checks": 485,
+    "reader_compatibility_groups": 8,
+    "root_not_independent": true
+  },
+  "peer_lab_refs_status_guides": "Rechecked unchanged",
+  "preparation": {
+    "browser_DOM_filters": 5,
+    "candidate_acceptance": false,
+    "external_resources_observed": [],
+    "lab_doctor_sync_plan_report": "PASS at preparation level;4 integrity verifiers0",
+    "offline_UTF8_CSP_parser": 0,
+    "visual": "NOT QUALIFIED; no screenshot rerun after prior repeated snapshot failures."
+  },
+  "prior_evidence": "R13 sealed payload119/1646414bytes reread unchanged; historical backlog hash validates exact preserved preR14 bytes. Old source checks are not new candidate acceptance.",
+  "prior_unproved_candidates": "R11-C1/optional callback/terminal-leaf/native opcode qualifications retained.",
+  "remaining_acceptance": [
+    "Independent review of the exact final939-input candidate; failed sessions supply no approval.",
+    "Actual Linux pytest, full/main/Orca, native/platform/shell/artifact/ISO/QEMU/required hosted final-candidate gates on separately authorized isolated resources, with all original constraints and no unapproved spend.",
+    "Task119 NOT TESTED/BLOCKED: explicit new owner physical session/spare machine/valuable disks disconnected/authenticated cold media reconnect-readback/independent recovery and complete trust/revocation/SBAT/enforcement. Boot alone insufficient."
+  ],
+  "resource_observation_only": {
+    "available_ram_bytes": 6615064576,
+    "free_bytes": 1232388096,
+    "total_ram_bytes": 16946950144
+  },
+  "static": {
+    "changed_files_syntax_without_execution": 3,
+    "focused_lint": 0,
+    "full_Linux_runtime": false,
+    "mypy52_Linux311_stubs": 0,
+    "untyped_body_notes": "Retained; no claim all untyped bodies checked."
+  },
+  "utc": "2026-10-26T16:26:15.863576+00:00",
+  "worktree": "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2"
+}

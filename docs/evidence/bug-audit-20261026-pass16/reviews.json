@@ -1,0 +1,112 @@
+{
+  "build": {
+    "childNodeId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r16-20261026-build-r1",
+    "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r16-20261026-build-r1:ordinal:1",
+    "childThreadId": "thread:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r16-20261026-build-r1",
+    "hasPendingChildRuns": false,
+    "hasPendingQuestion": false,
+    "latestTerminalResultContextTransferId": null,
+    "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r16-20261026-build-r1:ordinal:1",
+    "latestTerminalStatus": "completed",
+    "latestTerminalSummary": null,
+    "model": "gpt-6.1-sol",
+    "options": [
+      {
+        "id": "reasoningEffort",
+        "value": "xhigh"
+      },
+      {
+        "id": "serviceTier",
+        "value": "default"
+      }
+    ],
+    "pendingApproval": null,
+    "providerInstanceId": "codex",
+    "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r16-20261026-build-r1:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:77f62b93-f458-442a-8841-b7ff5b68bd6d",
+    "status": "completed",
+    "summary": "Bounded no objection. 35 source/model cases passed; 31 scoped functional files matched entry with zero drift. Failed attempts and verified packet readback are retained. Native, release, and physical acceptance remain incomplete/blocked.\n\n[RESULT.md](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261026-r16/build-review/RESULT.md)",
+    "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r16-20261026-build-r1",
+    "waitTimedOut": false,
+    "workState": "result_available"
+  },
+  "lifecycle": {
+    "childNodeId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r16-20261026-lifecycle-r1",
+    "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r16-20261026-lifecycle-r1:ordinal:1",
+    "childThreadId": "thread:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r16-20261026-lifecycle-r1",
+    "hasPendingChildRuns": false,
+    "hasPendingQuestion": false,
+    "latestTerminalResultContextTransferId": null,
+    "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r16-20261026-lifecycle-r1:ordinal:1",
+    "latestTerminalStatus": "completed",
+    "latestTerminalSummary": null,
+    "model": "gpt-6.1-sol",
+    "options": [
+      {
+        "id": "reasoningEffort",
+        "value": "xhigh"
+      },
+      {
+        "id": "serviceTier",
+        "value": "default"
+      }
+    ],
+    "pendingApproval": null,
+    "providerInstanceId": "codex",
+    "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r16-20261026-lifecycle-r1:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:8b7373c3-2592-4285-980b-d535f66cda65",
+    "status": "completed",
+    "summary": "Bounded no objection; no new actionable defect established.\n\n26 fake-source cases passed after documented adapter corrections. Original failures are retained. All 19 scoped functional files match entry; backlog progress drift is documented.\n\nPacket readback passed: 191,364 bytes. Native/full acceptance remains INCOMPLETE/BLOCKED.\n\n[RESULT.md](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261026-r16/lifecycle-review/RESULT.md)",
+    "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r16-20261026-lifecycle-r1",
+    "waitTimedOut": false,
+    "workState": "result_available"
+  },
+  "parent_validation": {
+    "build": {
+      "additional_product_replays": 0,
+      "full_packet_byte_readback": true,
+      "qualification": "Bounded source/model no objection only",
+      "record": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r16\\parent-build-validation.json"
+    },
+    "lifecycle": {
+      "additional_product_replays": 0,
+      "full_packet_byte_readback": true,
+      "qualification": "Bounded source/model no objection only",
+      "record": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r16\\parent-lifecycle-validation.json"
+    },
+    "safety": {
+      "additional_product_replays": 0,
+      "full_packet_byte_readback": true,
+      "qualification": "Bounded source/model no objection only",
+      "record": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r16\\parent-safety-validation.json"
+    }
+  },
+  "safety": {
+    "childNodeId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r16-20261026-safety-r1",
+    "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r16-20261026-safety-r1:ordinal:1",
+    "childThreadId": "thread:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r16-20261026-safety-r1",
+    "hasPendingChildRuns": false,
+    "hasPendingQuestion": false,
+    "latestTerminalResultContextTransferId": null,
+    "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r16-20261026-safety-r1:ordinal:1",
+    "latestTerminalStatus": "completed",
+    "latestTerminalSummary": null,
+    "model": "gpt-6.1-sol",
+    "options": [
+      {
+        "id": "reasoningEffort",
+        "value": "xhigh"
+      },
+      {
+        "id": "serviceTier",
+        "value": "default"
+      }
+    ],
+    "pendingApproval": null,
+    "providerInstanceId": "codex",
+    "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r16-20261026-safety-r1:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:8c47e1e2-98c3-4477-b504-94a78b2c8246",
+    "status": "completed",
+    "summary": "Bounded no objection; no new actionable defect established.\n\n24 final source/fake oracles matched. All 15 scoped source files match entry; the full 939-input census was not repeated. Failures, source/AST bindings, commands, exits, manifest and readback are retained.\n\n[RESULT.md](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261026-r16/safety-review/RESULT.md)\n\nParent validation remains pending. Native/full/release and Task119 acceptance remain INCOMPLETE/BLOCKED.",
+    "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r16-20261026-safety-r1",
+    "waitTimedOut": false,
+    "workState": "result_available"
+  }
+}

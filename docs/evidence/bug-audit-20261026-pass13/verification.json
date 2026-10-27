@@ -1,0 +1,165 @@
+{
+  "Task119": "NOT TESTED/BLOCKED",
+  "available_source_audit": "FINISHED; bounded no new actionable finding",
+  "base": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+  "branch": "codex/wipe-audit-20261024",
+  "browser_report": {
+    "dom_filter_observations": "all match",
+    "dom_filters": 5,
+    "external_resources_observed": [],
+    "failure_retained": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r13\\report-browser-snapshot-failure.json",
+    "offline_check_exit": 0,
+    "visual": "INCOMPLETE: Preview automation snapshot timed out after 15000ms."
+  },
+  "candidate_qualification": false,
+  "changes_scope": "Only R13 canonical audit/backlog/evidence records. No production/test change, staging/commit/push/PR/release/CI/spend/install/WSL/guest/mount/device/session/security/network/firmware action.",
+  "entry_record": {
+    "bytes": 159759,
+    "sha256": "7bf74493eb5ed793bd6b7cb61f66eba6e585f027704ab3615e7022219c5316aa"
+  },
+  "floors": "Unchanged8GiB disk/1GiB RAM; disk entry below floor. No capacity retry, cleanup or lowered floor.",
+  "functional_changes": [],
+  "functional_count": 938,
+  "functional_identity": "f9383493f8bcc6002a7f1d95534ffac1ae7a968cfb1b78081829c8e23fae686e",
+  "historical_exact_source_checks": {
+    "portable_record": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r12-resume1\\final-portable-results.json",
+    "record": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r12-resume1\\applied-static-v2.json",
+    "scope": "17 selected-AST/fake groups,Ruff4/types52/syntax749; exact unchanged source/tool reuse only, not a new gate run or native/full pass"
+  },
+  "independent_reviews": {
+    "build": "13 resolved observations; original exit1 retained; one diagnostic oracle correction; parent validated, no product replay",
+    "recovery": "14 resolved observations; initial setup1 and adapter1 retained; three unchanged-oracle replay cases0; parent validated",
+    "safety": "FAILED HTTP429; zero review evidence"
+  },
+  "lab_preparation": [
+    {
+      "actual_cli_exit": 0,
+      "candidate_acceptance": false,
+      "cli_integrity": "VALID, actual verifier exit0",
+      "level": "preparation",
+      "manifest": {
+        "bytes": 690,
+        "sha256": "d01801b47169b680f12d224e83e05f0e116c7cfe7c42f1aa92e1b2fc3ee557cf"
+      },
+      "operation": "doctor",
+      "recorded_result": "PASS",
+      "result": {
+        "bytes": 184648,
+        "sha256": "ece566bfea9d84cb0859454687ea6a628a54c6489e7f2c01b1b389f7d1f30f64"
+      },
+      "run": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r13\\lab\\20261026T141548Z-0580ee7606fa"
+    },
+    {
+      "actual_cli_exit": 0,
+      "candidate_acceptance": false,
+      "cli_integrity": "VALID, actual verifier exit0",
+      "level": "preparation",
+      "manifest": {
+        "bytes": 688,
+        "sha256": "621b1b9c7058f7b3e3e5e1880a3ef58a112b965afb3aa63cfc876b84e27dffdd"
+      },
+      "operation": "sync",
+      "recorded_result": "PASS",
+      "result": {
+        "bytes": 27867,
+        "sha256": "073d061965cb15a889a57a142f6435c5506a82329bf098cba4a359c764d529f5"
+      },
+      "run": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r13\\lab\\20261026T141847Z-1971414bbddc"
+    },
+    {
+      "actual_cli_exit": 0,
+      "candidate_acceptance": false,
+      "cli_integrity": "VALID, actual verifier exit0",
+      "level": "preparation",
+      "manifest": {
+        "bytes": 686,
+        "sha256": "246560c6d9d1075d45c02ebcda7f40f5d08f7d8ddddcdc391cc7471ff93a81e1"
+      },
+      "operation": "plan",
+      "recorded_result": "PASS",
+      "result": {
+        "bytes": 7633,
+        "sha256": "9c6c0682b5c8b5190850736f001fc7be55b50ce942a845c4470b850068085229"
+      },
+      "run": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r13\\lab\\20261026T142316Z-3f56d1a97248"
+    },
+    {
+      "actual_cli_exit": 0,
+      "candidate_acceptance": false,
+      "cli_integrity": "VALID, actual verifier exit0",
+      "level": "preparation",
+      "manifest": {
+        "bytes": 977,
+        "sha256": "6e8bb82db4daef069f8b8f623cac959e09f0b3c359e056f621cee262be78452e"
+      },
+      "operation": "report",
+      "recorded_result": "PASS",
+      "result": {
+        "bytes": 7671,
+        "sha256": "0143ef98c4e660aec3a767e1a8881983bebe391c651b62228b0b83955c42b99d"
+      },
+      "run": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r13\\lab\\20261026T142351Z-a4a86a80ea5b"
+    }
+  ],
+  "main_orca_containment": "Unqualified controlled PID-init/private proc/lifelines, excluded service sockets/Windows interop/devices, aggregate resources/bounded writes/log transport and original10 finite selftests.",
+  "native_full_platform_artifact": "BLOCKED/INCOMPLETE",
+  "new_static_or_full_gate_execution": false,
+  "overall_independent_coverage": "INCOMPLETE",
+  "peer_lab_refs_status_guides": "Unchanged; all scoped guides rehashed",
+  "prior_R12_evidence_verified": {
+    "canonical_audit_records_unchanged": true,
+    "historical_backlog_verified_against_preserved_preR13_bytes": true,
+    "payload_bytes": 3347567,
+    "payload_members": 271,
+    "postseal": {
+      "bytes": 4583,
+      "sha256": "7705712529c8cb448930d50c31577fdb7d8567efa61b6f198dd57fd032fef499"
+    },
+    "seal": {
+      "bytes": 42262,
+      "sha256": "71e228d0304c26a5009a97ccd565554e0d9f0cc5ee806db42821353cb165bf08"
+    }
+  },
+  "remaining_next_actions": [
+    "Obtain a fresh independently reviewed safety/launch pass when provider availability allows; preserve original failure and do not blind retry. Root35-case model does not replace independent coverage.",
+    "Run required exact-final full Linux/main/Orca/native/platform/shell/artifact/ISO/QEMU gates on separately authorized isolated resources with containment/selftests and original admission floors satisfied.",
+    "Task119 requires an explicit new owner physical session and all original spare-machine, valuable-disk disconnection, authenticated cold reconnect/readback, independent recovery and complete trust/revocation/SBAT/enforcement prerequisites. Successful boot cannot qualify."
+  ],
+  "resource_admission_attempted": false,
+  "resource_observation": {
+    "available_ram_bytes": 7600132096,
+    "free_bytes": 1290539008,
+    "total_ram_bytes": 16946950144
+  },
+  "root_binding_records": 71,
+  "root_matching_cases": 60,
+  "root_observation_groups": [
+    {
+      "binding_records": 13,
+      "distinct_cases": 25,
+      "matching": 25,
+      "record": "root-refresh-results.json",
+      "record_bytes": {
+        "bytes": 46416,
+        "sha256": "1b1488b31e1cf567ebd501ca45254db968a0ef374137dbc8e601583f629c17dc"
+      },
+      "scope": "Selected exact controller/model/Tk poll AST with fake boot validator, locks, Tk timers/callbacks and diagnostics; reentrant validation is causal serial modeling, not actual concurrency or native UI/disk safety acceptance. No old product probe cases executed.",
+      "source_files": 3
+    },
+    {
+      "binding_records": 58,
+      "distinct_cases": 35,
+      "matching": 35,
+      "record": "root-safety-composition-results.json",
+      "record_bytes": {
+        "bytes": 155809,
+        "sha256": "b74912237ccd7d86c6e02efc6d8a3f29eec52af25c2a8f1bb5bd5fc96b3f6aca"
+      },
+      "scope": "Exact authorization/selectability/identity/alias/token/method/argv AST composition; lexical path aliases and fake live/log/transport/block/rdev/size/metadata checks. No Popen, discovery producer, actual filesystem, threads or native device execution. Root review does not replace missing independent safety review.",
+      "source_files": 4
+    }
+  ],
+  "root_unique_bindings": 69,
+  "utc": "2026-10-26T14:40:19.767406+00:00",
+  "worktree": "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2"
+}

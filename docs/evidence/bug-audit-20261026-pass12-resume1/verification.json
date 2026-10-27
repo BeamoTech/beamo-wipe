@@ -1,0 +1,59 @@
+{
+  "utc": "2026-10-26T13:33:57.134928+00:00",
+  "available_source_audit": "FINISHED",
+  "required_full_native_artifact_physical_acceptance": "BLOCKED/INCOMPLETE",
+  "source_count": 938,
+  "source_identity": "f9383493f8bcc6002a7f1d95534ffac1ae7a968cfb1b78081829c8e23fae686e",
+  "source_manifest": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r12-resume1\\final-applied-source.json",
+  "source_manifest_sha256": "dc9f1f6a250dfaadad793575fc6e3cc373987c5bcab3339471b049c2c94094cd",
+  "raw_seal": {
+    "path": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r12-resume1\\evidence-seal.json",
+    "bytes": 42262,
+    "sha256": "71e228d0304c26a5009a97ccd565554e0d9f0cc5ee806db42821353cb165bf08",
+    "payload_members": 271,
+    "payload_bytes": 3347567
+  },
+  "canonical_hashes": {
+    "docs\\evidence\\bug-audit-20261026-pass12-resume1\\README.md": {
+      "bytes": 4721,
+      "sha256": "f9d042348bb97df4b564509a4151e29592a07d0692c74d02eb657a888c7bc0d7"
+    },
+    "docs\\evidence\\bug-audit-20261026-pass12-resume1\\reviews.json": {
+      "bytes": 6529,
+      "sha256": "6341e84956a987f1a5d8846817edb4905935df03036b26439f2ae7e083f31eaf"
+    },
+    ".ai\\memory\\unfinished-work.md": {
+      "bytes": 166886,
+      "sha256": "4e98d46e8e182db5ba7de84b5d03a679cd7d2ab8da19fd790bebacb0afae4f4c"
+    }
+  },
+  "checks": {
+    "portable_groups": 17,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "native_denials": [],
+    "ruff_exits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "mypy_exit": 0,
+    "mypy_source_files": 52,
+    "mypy_scope": "Windows static checker, Linux3.11 stubs, existing untyped-body notes retained; no claim of complete body checking",
+    "syntax_without_execution": 749,
+    "all_bound_to_final_identity": true
+  },
+  "reviews_complete_and_parent_validated": true,
+  "no_pending_review_or_fix": true,
+  "remaining": [
+    "Full Linux main/Orca gate remains blocked: unchanged8GiB disk/1GiB RAM admission floors; entry disk1133289472bytes. No admission retry, cleanup or lower floor. Capacity loss cause remains unknown.",
+    "Controlled main/Orca test containment and original ten finite selftests remain unimplemented/unqualified. Retain reaping PID-init/lifelines/private proc, inherited service/socket/Windows interop/device exclusion, aggregate resources and bounded writable/log transport requirements.",
+    "Actual product-module/Linux/POSIX close, locks, signals, races, UI/GTK/audio and Go/native platform, shell/build/artifact/public ISO/QEMU/hosted gates remain incomplete and require their original separately authorized isolated/native resources and exact final candidate.",
+    "Task119 remains NOT TESTED/BLOCKED until explicit new owner physical session, sparePC, valuable disks disconnected, authenticated cold media reconnect/readback, independent recovery/evidence and full firmware trust/revocation/SBAT/enforcement. Boot alone never qualifies.",
+    "R11-C1 PATH-collision remains an unproved synthetic candidate pending authentic producer/kernel/artifact and reachable race evidence. Optional duplicate sound callback and terminal journal log leaf/arbitrary-opcode interruption remain outside proved correction scope.",
+    "No release, signing, publication, push, PR, staging or commit performed. Existing dirty changes remain local."
+  ],
+  "post_execution_boundary": "Sealing command actual exit recorded in excluded closing-command.json after completion; excluded postseal-verification.json independently rechecks all payload/canonical/source bytes. No self-exit/hash claim."
+}

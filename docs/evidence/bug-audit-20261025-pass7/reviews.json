@@ -1,0 +1,441 @@
+{
+  "utc": "2026-10-26T03:26:13.067597+00:00",
+  "status": "EIGHT TERMINAL; startup and test-fixture findings corrected and reviewed",
+  "tasks": [
+    {
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-completion-r1",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-completion-r1",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-completion-r1:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-completion-r1",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-completion-r1:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "Bounded **NO OBJECTION**; no new actionable finding.\n\n- 355 matching AST/fake observations; final probe exits 0.\n- Eight scoped modules unchanged; 36 sealed files reread and hashes verified.\n- Every adapter/setup failure retained. Source untouched.\n- Native/full/physical qualification remains pending.\n\n[RESULT.md](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261025-r7/completion-review/RESULT.md)\n\nReview stopped.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-completion-r1:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:f9737566-48fe-43cc-8df6-8420c6df7867",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-lifecycle-r1",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-lifecycle-r1",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-lifecycle-r1:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-lifecycle-r1",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-lifecycle-r1:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "One pre-existing P3 documentation mismatch: the recovery table says preflight permits diagnostics only; code intentionally allows a fresh owner flow after safety checks.\n\nBounded no objection to reviewed production paths. Both matrices exited 0: 149 lifecycle observations and 21 preflight controls. All five setup failures retained; 36 scoped inputs and packet bytes read back unchanged. No native/full qualification claimed.\n\n[RESULT.md](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261025-r7/lifecycle-review/RESULT.md). Stopped.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-lifecycle-r1:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:1bcded20-c4d9-4882-9727-21ebbb1188fe",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-build-r1",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-build-r1",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-build-r1:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-build-r1",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-build-r1:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "Bounded **NO OBJECTION**; no new concrete finding.\n\n100 AST/in-memory observations matched expectations. All 40 scoped inputs remained unchanged; packet readback passed. Four setup failures and actual exits are retained. No source edits or native qualification.\n\n[RESULT.md](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261025-r7/build-review/RESULT.md)\n\nReview stopped.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-build-r1:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:402daab9-92dc-4e4c-9816-70dad6ec4ebd",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-kiosk-fix-review-r2",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-kiosk-fix-review-r2",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-kiosk-fix-review-r2:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-kiosk-fix-review-r2",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-kiosk-fix-review-r2:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "Bounded **NO OBJECTION**; no concrete regression found. The narrow guard is justified at the source/model evidence level.\n\nIndependent controls: 370 matching observations, including eight historical-model expectations, plus eight exact-AST staging cases. All 20 scoped functional inputs remained unchanged; root\u2019s backlog-only change and the resulting nonzero stability check are retained.\n\nActual-shell tests, Debian isolated import, and native descriptor/pgrep integration remain unrun.\n\n[RESULT.md](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261025-r7/kiosk-fix-review-r2/RESULT.md) contains the findings, limits, commands, probes, errors, and scoped hashes. Evidence sealed and read back successfully.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-kiosk-fix-review-r2:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:62f2da9e-3162-4eea-946d-505c629e063c",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-startup-power-review-r2",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-startup-power-review-r2",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-startup-power-review-r2:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-startup-power-review-r2",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-startup-power-review-r2:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "**Changes requested: one pre-existing P2 finding.** The integrated fallback path reaches fake power without probing the external engine. Final controls: 34 observations, six expected safety mismatches.\n\nRemove the runner-type exemption from `_live_pinned_engine_busy`; retain dry-run/preview exclusions and fail-closed probe handling.\n\nAll 15 scoped inputs remained unchanged. Evidence sealed; no source edits or native qualification. Review stopped.\n\n[RESULT.md](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261025-r7/startup-power-review-r2/RESULT.md)",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-startup-power-review-r2:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:699c982e-cfd8-46de-9b22-48eac60f29a8",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-startup-fix-review-r3",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-startup-fix-review-r3",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-startup-fix-review-r3:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-startup-fix-review-r3",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-startup-fix-review-r3:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "Production correction: **bounded no objection**. All 30 new regression cases match in AST replay; the original bypass is independently reproduced.\n\nOne **P3 test-fixture regression**: two existing diagnostic-report tests need a clear-engine probe stub. A modeled missing engine causes their unchanged assertions at lines 399 and 420 to fail.\n\n[RESULT.md](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261025-r7/startup-fix-review-r3/RESULT.md) contains proof, controls, failures and limits. Packet sealed/read back; 15 scoped inputs unchanged. No source edits or native acceptance. Review stopped.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-startup-fix-review-r3:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:c92cc44f-78d6-4e4e-9b19-6f39585934a8",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-startup-fixture-review-r4",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-startup-fixture-review-r4",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-startup-fixture-review-r4:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-startup-fixture-review-r4",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-startup-fixture-review-r4:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "**Bounded NO OBJECTION.** The two fixture fixes resolve R3\u2019s remaining P3 objection.\n\nAll 69 assertions and prior module AST/text are preserved. Six corrected invocations and nine independent controls match; both historical fixture failures reproduce. Sixty scoped inputs remain stable, including all 52 production Python files. Linux/native qualification remains unrun.\n\n[RESULT.md](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261025-r7/raw/startup-fixture-review-r4/RESULT.md)\n\nClosure exit: `0`. Eighteen sealed members passed byte readback.\n\nSHA-256:\n\n- Report test: `2cff8305d277f1c1bc9acc759ef6ed5630c02908ee9ab21078ddc6865294fb61`\n- Wizard: `d606c6e2ef791cbf8df11b34973e133a1a8b46c84d43af551cb551c035ecbe17`\n- Packet manifest: `3f33858522ca4abf2f692f3a90b45af0ffae4cae0eb2e2c278c33428edc6c12f`\n\nReview stopped. Root validation and canonical closure remain.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-startup-fixture-review-r4:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:99c46dc6-55c6-4f9b-bf50-d00486e069c9",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-shared-fixture-review-r5",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-shared-fixture-review-r5",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-shared-fixture-review-r5:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r7-20261025-shared-fixture-review-r5",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-shared-fixture-review-r5:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "Bounded **NO OBJECTION** on both fixture additions.\n\nPreserved all 245 original assertions. Independent probes confirm fixture isolation and fail-closed standalone engine guards. All 73 scoped inputs match before/after; the 28-file packet is sealed and readback-verified.\n\n[RESULT.md](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261025-r7/shared-fixture-review-r5/RESULT.md)\n\nNo source edits or pytest/native gates ran. Existing qualification blockers remain unchanged. Review stopped; root validation remains required.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r7-20261025-shared-fixture-review-r5:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:a31a6471-196e-4eaa-b69e-42c0176114e8",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    }
+  ],
+  "parent_validations": {
+    "completion": {
+      "disposition": "BOUNDED NO OBJECTION",
+      "scoped_source_count": 8,
+      "current_source_matches": true,
+      "sealed_files": 36,
+      "supplemental_hashes": {
+        "seal.json": "e077e9af268e32caa08276e77d2b28a7adf562631414d049e4e770a2306efd0b",
+        "seal-command-receipt.json": "44d39da0e5973255628d9f4a60661063a5cf55a4c4666279113aa4a800d99903"
+      },
+      "reviewer_model_observations": 355,
+      "parent_reran_probes": false,
+      "scope": "Parent read report/critical oracle descriptions, checked source and packet hashes; no full/native qualification"
+    },
+    "lifecycle": {
+      "disposition": "BOUNDED NO OBJECTION to production; one preexisting P3 documentation mismatch",
+      "scoped_source_and_context_count": 36,
+      "current_inputs_match": true,
+      "sealed_files": 23,
+      "supplemental_hashes": {
+        "packet-manifest.json": "5aa0df2b84443a2cf91428d86868cdd038a66fa29e1578f07cde7ecc70927cc7"
+      },
+      "reviewer_lifecycle_observations": 149,
+      "reviewer_preflight_controls": 21,
+      "parent_reran_probes": false,
+      "finding": "R7-LIFE-DOC-1: parent independently read exact resume/begin/enable code and existing owner-flow regression; row is stale",
+      "scope": "Source and packet readback before parent documentation correction; native/full checks remain unavailable"
+    },
+    "build": {
+      "disposition": "BOUNDED NO OBJECTION",
+      "scoped_source_count": 40,
+      "current_source_matches": true,
+      "sealed_files": 24,
+      "supplemental_hashes": {
+        "evidence-seal.json": "50a74e74aaea96f3f785407c97c41d6e2ce86501550d19cbf561472a07529f59",
+        "closing-command.json": "43b430d92bc0ff57479f555747026fe33e4aa890543fc3e46de54ad4894c78cc"
+      },
+      "reviewer_model_observations": 100,
+      "parent_reran_probes": false,
+      "scope": "Parent read result/critical contract scope and independently verified current source and packet; no actual shell/build/native qualification"
+    },
+    "kiosk": {
+      "disposition": "BOUNDED NO OBJECTION at source/model level",
+      "packet_files": 21,
+      "sealed_member_hashes_match": true,
+      "current_scoped_inputs_match": true,
+      "scoped_inputs": 43,
+      "complete_input_stability_command_exit": 1,
+      "documented_drift": [
+        "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2\\.ai\\memory\\unfinished-work.md"
+      ],
+      "review_observations": 370,
+      "staging_memory_cases": 8,
+      "parent_reran_probes": false,
+      "product_or_native_qualification": false,
+      "closing_receipt": {
+        "close_command": "py -3 -I -B 'C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r7\\kiosk-fix-review-r2\\close_review.py'",
+        "actual_close_exit": 0,
+        "actual_close_wall_seconds": 2.6089516,
+        "close_stdout": {
+          "unique_scoped_inputs": 43,
+          "functional_inputs": 20,
+          "functional_drift": [],
+          "documentation_drift": [
+            ".ai/memory/unfinished-work.md"
+          ],
+          "sealed_files": 21,
+          "sealed_bytes": 192942,
+          "disposition": "bounded no objection"
+        },
+        "final_readback_command": "py -3 -I -B -c \"from pathlib import Path; import hashlib,json; p=Path(r'C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r7\\kiosk-fix-review-r2'); m=json.loads((p/'manifest.json').read_text()); bad=[n for n,v in m['files'].items() if {'bytes':len((p/n).read_bytes()),'sha256':hashlib.sha256((p/n).read_bytes()).hexdigest()}!=v]; assert not bad,bad; print(json.dumps({'sealed_files':len(m['files']),'mismatches':bad,'manifest_sha256':hashlib.sha256((p/'manifest.json').read_bytes()).hexdigest(),'bytes_before_post_execution_receipt':sum(x.stat().st_size for x in p.iterdir() if x.is_file())}))\"",
+        "actual_readback_exit": 0,
+        "actual_readback_wall_seconds": 5.2667008,
+        "readback": {
+          "sealed_files": 21,
+          "mismatches": [],
+          "manifest_sha256": "93b7990d099cbd5cff1f26121b48d854265aa665bfb6ac0596750636f0b4ae73",
+          "bytes_before_post_execution_receipt": 196250
+        },
+        "excluded_from_manifest": true,
+        "reason": "Post-execution receipt; manifest explicitly excludes it and its own self-hash.",
+        "final_git_observation": {
+          "actual_exit": 0,
+          "head": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+          "branch": "codex/wipe-audit-20261024",
+          "scoped_status": "kiosk/recovery test modified; identity test untracked; no reviewer source writes"
+        }
+      },
+      "manifest_sha256": "93b7990d099cbd5cff1f26121b48d854265aa665bfb6ac0596750636f0b4ae73",
+      "scope": "Parent read the complete result, exact source decisions and staged import reasoning; independently checked packet and scoped byte bindings. Native, Debian import and actual shell checks remain unavailable."
+    },
+    "startup": {
+      "disposition": "CONFIRMED PREEXISTING P2 source finding, corrected separately",
+      "scoped_inputs": 15,
+      "packet_members": 44,
+      "checksum_entries": 45,
+      "all_packet_hashes_match": true,
+      "pre_fix_wizard_retained_and_matches": true,
+      "remaining_current_source_matches": true,
+      "parent_source_readback_before_edit": "parent-startup-prefix-validation.json",
+      "final_probe_actual_exit": 0,
+      "close_actual_exit": 0,
+      "expected_red_cases": 6,
+      "matching_controls": 28,
+      "parent_reran_probe": false,
+      "native_or_real_power_acceptance": false,
+      "closing_binding_sha256": "241d5dc32a399b7d33ea575dd2f8ee4c5c0c7b7555862ed78329338734e708a8",
+      "file_manifest_sha256": "ca173763ea6c92f58fd4ece37fc783112d684643dcb7324721f0cec2e7d21be8"
+    },
+    "startup-fix": {
+      "current_source_matches": true,
+      "production_no_objection": true,
+      "no_remaining_concrete_objection": false,
+      "open_objection": "P3: two existing diagnostic-report tests require explicit fake clear-engine probe",
+      "new_regression_cases": 30,
+      "new_cases_AST_replayed": true,
+      "actual_linux_pytest": false,
+      "scoped_source_inputs": 15,
+      "all_packet_members_match": true,
+      "sealed_files": 59,
+      "actual_successful_exits": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "parent_reran_matrices": false,
+      "manifest_actual_byte_sha256": "5f7e3bc5151e6dac02a2e87f5112f3785fdab6c648e9417dbeb43f163e6efd80",
+      "reviewer_manifest_hash_scope": "LF-normalized text, independently checked; actual Windows manifest byte hash recorded separately",
+      "manifest_normalized_text_sha256": "6c6d5ce713c06667da1a02aa9036b90548944ffa9a6c5f13085f2de4491674c1",
+      "scope": "Parent read full result, exact new test bodies and affected-test proof/source; independently bound all current inputs and packet members before fixture correction",
+      "production_current_sha256": "d606c6e2ef791cbf8df11b34973e133a1a8b46c84d43af551cb551c035ecbe17"
+    },
+    "report-fixture": {
+      "current_source_matches": true,
+      "no_remaining_concrete_objection": true,
+      "scope": "Only the two diagnostic-report fixtures; a separate shared report helper dependency is now independently established by parent and remains open",
+      "current_target_fixtures_and_52_production_inputs_match": true,
+      "subsequent_input_delta": "Shared report fixture changed after R4; exact reviewed bytes recovered and verified against frozen/R4 hashes. No blanket current sixty-input claim.",
+      "scoped_inputs": 60,
+      "production_python_files": 52,
+      "preserved_assertions": 69,
+      "corrected_fixture_invocations": 6,
+      "independent_controls": 9,
+      "all_packet_members_match": true,
+      "sealed_members": 18,
+      "manifest_actual_byte_sha256": "3f33858522ca4abf2f692f3a90b45af0ffae4cae0eb2e2c278c33428edc6c12f",
+      "closure_actual_exit": 0,
+      "parent_reran_reviewer_cases": false,
+      "native_acceptance": false,
+      "actual_linux_pytest": false
+    },
+    "shared-fixture": {
+      "utc": "2026-10-26T03:25:36.200949+00:00",
+      "status": "BOUNDED NO OBJECTION; parent source and packet checks passed",
+      "current_source_matches": true,
+      "no_remaining_concrete_objection": true,
+      "scoped_functional_inputs": 73,
+      "production_python_files": 52,
+      "context_inputs": 28,
+      "original_assertions_preserved": {
+        "tests/test_usb_report_workflow.py": 180,
+        "tests/test_startup_diagnostics.py": 65
+      },
+      "caller_modules": 14,
+      "direct_caller_functions": 59,
+      "indirect_wrapper_users": 2,
+      "exact_shared_consumers": 61,
+      "packet_payload_members": 28,
+      "packet_payload_bytes": 190508,
+      "actual_manifest_receipt": {
+        "bytes": 2515,
+        "sha256": "7bb0258135c6d3eb1172e17a2f40c26dcadea59d061bcdd31874c58da079448f"
+      },
+      "command_exits": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "retained_adapter_failure": true,
+      "parent_count_adapter_attempt1_exit": 1,
+      "parent_count_adapter_correction": "59 direct functions plus 2 separately bound indirect wrapper users, totaling 61; source and AST preservation checks unchanged",
+      "fake_report_observations": 32,
+      "fake_diagnostic_observations": 8,
+      "independent_fake_controls": 19,
+      "assessment": "Instance-only report override and local diagnostic monkeypatch preserve original test AST/assertions; dedicated production engine-refusal tests stay independent. Independent expected outcomes reviewed; no concrete objection within this scope.",
+      "qualification": "Source and packet validation only. Reviewer fake observations were inspected, not rerun or counted as pytest; actual Linux fixture execution/teardown, full/native/artifact/physical acceptance remain unrun or blocked.",
+      "release_qualified": false,
+      "actual_linux_acceptance": false,
+      "native_acceptance": false
+    }
+  },
+  "evidence_level": "Source review and finite fake observations, no full/native acceptance"
+}

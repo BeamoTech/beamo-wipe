@@ -782,6 +782,78 @@ def assert_size_unchanged(path: str, expected_bytes: int) -> None:
         raise SafetyError("Disk size changed. Refusing to erase.")
 
 
+def _assert_local_nvme_subsystem(name: str, original_controller: str) -> None:
+    """Prove a namespace's surviving subsystem members are all PCIe.
+
+    Linux names heads and private namespaces for the subsystem instance,
+    which outlives its original controller. Private namespaces remain below
+    a controller. Verify the actual parent against kernel membership links;
+    a matching subsystem/controller number alone is not evidence.
+    """
+    device = Path("/sys/block") / name / "device"
+    subsystem_class = (
+        Path("/sys/class/nvme-subsystem") / f"nvme-subsys{original_controller[4:]}"
+    )
+    try:
+        namespace_parent = device.resolve(strict=True)
+        subsystem = subsystem_class.resolve(strict=True)
+        if subsystem.name != subsystem_class.name:
+            raise ValueError("Namespace subsystem is not the expected NVMe subsystem")
+        subsystem_stat = subsystem.stat()
+
+        def members() -> dict[str, tuple[Path, int, int]]:
+            result = {}
+            for link in subsystem.iterdir():
+                if not re.fullmatch(r"nvme\d+", link.name):
+                    continue
+                controller = link.resolve(strict=True)
+                controller_class = Path("/sys/class/nvme") / link.name
+                if (
+                    not link.is_symlink()
+                    or controller.name != link.name
+                    or controller != controller_class.resolve(strict=True)
+                ):
+                    raise ValueError("Cannot verify NVMe controller membership")
+                controller_stat = controller.stat()
+                if not stat.S_ISDIR(controller_stat.st_mode):
+                    raise ValueError("NVMe controller is not a directory")
+                transport = (
+                    (link / "transport").read_text(encoding="ascii").strip().casefold()
+                )
+                if transport != "pcie":
+                    raise SafetyError("Refusing a remote or unknown NVMe transport.")
+                result[link.name] = (
+                    controller,
+                    controller_stat.st_dev,
+                    controller_stat.st_ino,
+                )
+            if not result:
+                raise ValueError("NVMe subsystem has no verifiable controllers")
+            return result
+
+        observed = members()
+        if namespace_parent != subsystem and (
+            namespace_parent.name not in observed
+            or observed[namespace_parent.name][0] != namespace_parent
+        ):
+            raise ValueError("Namespace parent is not in the expected NVMe subsystem")
+        # Refuse observed hotplug/replacement rather than retrying a partial
+        # scan. This is a transport observation, not an atomic topology lock.
+        if (
+            members() != observed
+            or device.resolve(strict=True) != namespace_parent
+            or subsystem_class.resolve(strict=True) != subsystem
+        ):
+            raise ValueError("NVMe membership changed during transport check")
+        final_stat = subsystem.stat()
+        if (final_stat.st_dev, final_stat.st_ino) != (
+            subsystem_stat.st_dev, subsystem_stat.st_ino
+        ):
+            raise ValueError("NVMe subsystem changed during transport check")
+    except (OSError, RuntimeError, ValueError) as exc:
+        raise SafetyError("Cannot prove NVMe is locally attached.") from exc
+
+
 def assert_local_device_transport(path: str) -> None:
     """Refuse NVMe-over-Fabrics and remote SCSI at the kernel-backed boundary."""
     if is_preview_env():
@@ -797,8 +869,9 @@ def assert_local_device_transport(path: str) -> None:
         transport_path = Path("/sys/class/nvme") / match.group(1) / "transport"
         try:
             transport = transport_path.read_text(encoding="ascii").strip().casefold()
-        except OSError as exc:
-            raise SafetyError("Cannot prove NVMe is locally attached.") from exc
+        except OSError:
+            _assert_local_nvme_subsystem(name, match.group(1))
+            return
         if transport != "pcie":
             raise SafetyError("Refusing a remote or unknown NVMe transport.")
         return

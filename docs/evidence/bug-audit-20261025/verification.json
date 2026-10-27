@@ -1,0 +1,387 @@
+{
+  "base": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+  "branch": "codex/wipe-audit-20261024",
+  "worktree": "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2",
+  "functional_identity": "ca24d8be91cf1f386d5d9d98573cb0306eb5eb0ea525c74f218bd3141e9ad62d",
+  "functional_files": 913,
+  "peer_integrated_paths": 42,
+  "peer_source_and_status_unchanged": true,
+  "prior_audit_files_preserved": [
+    "src/beamo_wipe/support_export.py",
+    "tests/test_export_mount_cleanup_regression.py",
+    "tests/test_report_bundle_cleanup.py",
+    "tests/test_report_member_cleanup.py",
+    "tests/test_report_worker_cleanup.py",
+    "tests/test_report_worker_outer_cleanup.py",
+    "tests/test_runner_status_whitespace_bound.py",
+    "tests/test_stop_observed_exit.py"
+  ],
+  "changes_limited_by_ast": true,
+  "new_regressions": {
+    "total": 20,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "existing_reader_controls": {
+    "total": 7,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "test_scope": "Native Python with AST-extracted functions, fake handles, no conftest/product platform imports",
+  "lint_components": [
+    {
+      "command": [
+        "C:\\Users\\Jack\\dev\\BeamoTech\\beamo-wipe\\.venv-win32\\Scripts\\ruff.exe",
+        "check",
+        "src",
+        "tests",
+        "scripts",
+        "developer_tests"
+      ],
+      "actual_exit": 0,
+      "stdout_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "C:\\Users\\Jack\\dev\\BeamoTech\\beamo-wipe\\.venv-win32\\Scripts\\ruff.exe",
+        "check",
+        "--select",
+        "S102,S103,S104,S105,S106,S107,S113,S307,S501,S506,S508,S602,S604,S605,S606,S608,S609,S610,S611,S612",
+        "src/beamo_wipe"
+      ],
+      "actual_exit": 0,
+      "stdout_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "C:\\Users\\Jack\\dev\\BeamoTech\\beamo-wipe\\.venv-win32\\Scripts\\ruff.exe",
+        "check",
+        "--select",
+        "S102,S103,S104,S107,S113,S307,S501,S506,S508,S602,S604,S605,S606,S608,S609,S610,S611,S612",
+        "tests"
+      ],
+      "actual_exit": 0,
+      "stdout_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "C:\\Users\\Jack\\dev\\BeamoTech\\beamo-wipe\\.venv-win32\\Scripts\\ruff.exe",
+        "format",
+        "--check",
+        "dev.py",
+        "scripts/build_desktop.py",
+        "scripts/agent_pr.py",
+        "developer_tests"
+      ],
+      "actual_exit": 0,
+      "stdout_sha256": "7ff2df5e4a19c344d6ea2dfc25c25d2370159894cbac570f392753b22180e09c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "full_lint_types_shell_gate": "NOT RUN on combined source",
+  "full_runtime_gate": "BLOCKED: available RAM below 2 GiB admission floor; current combined source has no full pass",
+  "last_resource_snapshot": {
+    "free_bytes": 9139253248,
+    "available_ram_bytes": 1241522176
+  },
+  "full_gate_admission": false,
+  "source_overlay": [
+    {
+      "path": ".ai/memory/unfinished-work.md",
+      "bytes": 135594,
+      "sha256": "8898524e1b4b5b23b369db3f91096a90ecdc311f6dc2b6581f6050f0b00ae771"
+    },
+    {
+      "path": "desktop/platform_windows_test.go",
+      "bytes": 5333,
+      "sha256": "22ab67a9d62e2c1ec26ddb8b836b4ff497621201c7158d134c70052e30189239"
+    },
+    {
+      "path": "desktop/windows_inventory_pass13_test.go",
+      "bytes": 3502,
+      "sha256": "83cd084b09607d936a7b1ec2131a5c543c82d6358d03ee776c9480fd872c389d"
+    },
+    {
+      "path": "developer_tests/test_desktop_final_receipt_pass3_20261019.py",
+      "bytes": 10188,
+      "sha256": "c998921ff5c7c7237967c7e75e03fc6838d8860b7b78b2a732f5befc92d4c5ed"
+    },
+    {
+      "path": "developer_tests/test_desktop_output_replacement_pass2_20261019.py",
+      "bytes": 6943,
+      "sha256": "d406e7609aa8830d096c63c20d4adfa85b32b0a1e339f13f65f417e51266b293"
+    },
+    {
+      "path": "developer_tests/test_desktop_output_snapshot_pass14_20261021.py",
+      "bytes": 4517,
+      "sha256": "2c61d3872b9c1faa9a84d3d0f07000c0cdeb016a96cc706636613fe22192f268"
+    },
+    {
+      "path": "developer_tests/test_desktop_prior_receipt_retirement_pass4_20261019.py",
+      "bytes": 7864,
+      "sha256": "8ab0ea364ca8980cf039c34b364f4d1a85ef24bb7a43717bd3d285a50ccfcb71"
+    },
+    {
+      "path": "packaging/live/inside-docker.sh",
+      "bytes": 5135,
+      "sha256": "38e2cb7b26d6638abe4193f46139cd5d47d5c50491ee2c0c8c2f71540dce8a40"
+    },
+    {
+      "path": "scripts/build-iso.sh",
+      "bytes": 20062,
+      "sha256": "ba50106454e611f019d3bdfdebfc209a088d3313176caf48fec330272ca83d7a"
+    },
+    {
+      "path": "scripts/build_desktop.py",
+      "bytes": 35457,
+      "sha256": "86a0e8a76c2a1b3eacd98e9b4a1e9afe195e1b0bb0a8e1c6d29caba621fd8757"
+    },
+    {
+      "path": "scripts/ci-blacksmith.sh",
+      "bytes": 4352,
+      "sha256": "e3a82fc332c0c5d6a043ede45021e3942946489cc842888a8c343ef8a8425126"
+    },
+    {
+      "path": "src/beamo_wipe/app.py",
+      "bytes": 27825,
+      "sha256": "49455714801f83a3cc126ac3c2516b3655fb25790e08481593220d6d7c1e7e14"
+    },
+    {
+      "path": "src/beamo_wipe/ci_evidence.py",
+      "bytes": 36187,
+      "sha256": "a890cb977dc19ef23146a16ad37c20b3decf7124acc3e49a7ce3cee37055cad5"
+    },
+    {
+      "path": "src/beamo_wipe/nwipe_runner.py",
+      "bytes": 96136,
+      "sha256": "d17e9e2bd0782271402e39f2c4ebdd82bce30f3259a400da4d63297e1d5d6377"
+    },
+    {
+      "path": "src/beamo_wipe/result_summary.py",
+      "bytes": 19895,
+      "sha256": "35ff87e22e9b07eeff346d3dfbb4ecf44f5be34f256143f524e83c71a13e4517"
+    },
+    {
+      "path": "src/beamo_wipe/support_export.py",
+      "bytes": 100185,
+      "sha256": "8e0ec8a30208592c9f542480ed4ee7d983dff74db7ec78096c9e4cfc95aef445"
+    },
+    {
+      "path": "src/beamo_wipe/ui/accessible_wizard.py",
+      "bytes": 62810,
+      "sha256": "c2780178e6f9a6669fac9f9a9b986e4f02ab697851f2e3ca10db7743ab5da80a"
+    },
+    {
+      "path": "src/beamo_wipe/ui/tk_wizard.py",
+      "bytes": 221350,
+      "sha256": "3eafcc0204ac8e519d3fb6650c8f447ec95f91bb43997c3c5ef9814e544ed1e8"
+    },
+    {
+      "path": "src/beamo_wipe/verification_evidence.py",
+      "bytes": 37967,
+      "sha256": "113f2e78607441bd735cbd596ca7d36bd48004c91999894d661d7a80bc893a0c"
+    },
+    {
+      "path": "src/beamo_wipe/wizard.py",
+      "bytes": 141157,
+      "sha256": "a0fe1dfe53d128c55e86be280059164c3035b2ae7b058cb510b2f5f7daed93ae"
+    },
+    {
+      "path": "tests/test_accessible_runtime.py",
+      "bytes": 70014,
+      "sha256": "8a63c03e10e8fd94299e872f97fd206e30df081ad3e6968fb6725720ae76d98f"
+    },
+    {
+      "path": "tests/test_audit_20260905_wizard.py",
+      "bytes": 2360,
+      "sha256": "da3ca27ea4cd27228004602a8b83b34b7512dff6711b49082df5c6361cd47863"
+    },
+    {
+      "path": "tests/test_ci_evidence_pipeline.py",
+      "bytes": 15063,
+      "sha256": "c7cbecca779fe39e20405b793e5d0af1323bf95da2b9494a3bca71f3644cc108"
+    },
+    {
+      "path": "tests/test_discover.py",
+      "bytes": 55534,
+      "sha256": "25e475d69966ca762149c76ce5a914bd42d6327ac0b0833bfdd3e93d6e9a4d29"
+    },
+    {
+      "path": "tests/test_export_mount_cleanup_regression.py",
+      "bytes": 4623,
+      "sha256": "0843c25516d423826933862921ef4c09e928aa5b119f6125de2f94dc12ee7e5c"
+    },
+    {
+      "path": "tests/test_helper_boot_guidance.py",
+      "bytes": 19345,
+      "sha256": "bc6bb855bded1fad32df8348b7968fbdc69ec3b80175e2659ac97a7edc241fdb"
+    },
+    {
+      "path": "tests/test_iso_bundle_ownership_pass8.py",
+      "bytes": 9500,
+      "sha256": "db6630d5be696b1926c6486994a8a05ddaab6dcf35c6c14243860e07b4bb49aa"
+    },
+    {
+      "path": "tests/test_startup_notice_state_pass12.py",
+      "bytes": 8272,
+      "sha256": "ec0bf3c490910bf7219c81de71f7dd45f091e04979ba16b7d494e93138f6e042"
+    },
+    {
+      "path": "tests/test_tk_input_scroll_pass13.py",
+      "bytes": 16826,
+      "sha256": "899e6034d447ff5efa92682e165497d2db6e10a366225f23ce8bf330342e9ce8"
+    },
+    {
+      "path": "developer_tests/native_mutation.py",
+      "bytes": 1486,
+      "sha256": "024dfdf662cc5420e0588c524a6b00543a78beade7d0ab3f92fbdd74a274cd6b"
+    },
+    {
+      "path": "developer_tests/test_desktop_windows_output_mode.py",
+      "bytes": 2625,
+      "sha256": "5fe79d2c980a195c594e87ab26f26fa5d88c4e44db77463e1f2b843b7f842b94"
+    },
+    {
+      "path": "scripts/handoff_ci_outputs.py",
+      "bytes": 7588,
+      "sha256": "58d8681b230d7c5e6aff6cc1ec3679dcea2b9b56f939a39b112d85b0715edaa4"
+    },
+    {
+      "path": "tests/test_build_failure_propagation.py",
+      "bytes": 4502,
+      "sha256": "16d0a53188b5eb7da4fe11636055e036e5870a10d86317a7def6d0ab885eeef2"
+    },
+    {
+      "path": "tests/test_build_output_handoff_20261023.py",
+      "bytes": 14215,
+      "sha256": "33c9321b2ed0980ce446a97306817d3ab4d37b824061aa57ab21be51f242c1c0"
+    },
+    {
+      "path": "tests/test_cancel_observed_exit.py",
+      "bytes": 1913,
+      "sha256": "5e34b194f081384437bc4415ef28e5af1e9904a24812580b95a8f093c0d897a4"
+    },
+    {
+      "path": "tests/test_ci_handoff_boundaries.py",
+      "bytes": 3962,
+      "sha256": "55dfcbc942c21003971bc4c4ee619f7e0c851296d65df3ac111199bc652a2a2d"
+    },
+    {
+      "path": "tests/test_ci_handoff_publication_races.py",
+      "bytes": 9473,
+      "sha256": "558b1821e8cd65b5e223f033c666100db1005ff3de1917720502c47d06f0bd67"
+    },
+    {
+      "path": "tests/test_ci_qemu_final_binding.py",
+      "bytes": 4229,
+      "sha256": "c2dc3d6de9a48cddb324f660e2270e6f236c3e0ef11273178c2e7e08dc053a27"
+    },
+    {
+      "path": "tests/test_iso_rollback_collision.py",
+      "bytes": 6982,
+      "sha256": "d404ac75733ddac9096b93f5920359a8af1b043fefa540498f0fa6c341afb4db"
+    },
+    {
+      "path": "tests/test_orca_acquisition_interrupt.py",
+      "bytes": 3097,
+      "sha256": "c3735796d75fc94c8f7c71fc9df05b8684f6ba9885a3ffbbee7c1b13b12ab3b1"
+    },
+    {
+      "path": "tests/test_orca_parent_failures.py",
+      "bytes": 4406,
+      "sha256": "6a6079980c6af5f002412dbed5490c57cb53e0bc27aeb0f7aedd464609ff3b90"
+    },
+    {
+      "path": "tests/test_orca_process_cleanup.py",
+      "bytes": 3351,
+      "sha256": "161ce88cc8c411625eedd13ee8d333c3b4a4eca92d479ba067bcabf1687e6dd5"
+    },
+    {
+      "path": "tests/test_reader_acquisition_interrupt.py",
+      "bytes": 3049,
+      "sha256": "947d9e9805ff3f34bb8c6cad42f564c8c77386a4b6ad79da14221d8a4af716b7"
+    },
+    {
+      "path": "tests/test_reader_replacement_ownership.py",
+      "bytes": 3210,
+      "sha256": "805ba974b2d488722472d4b9d175d9163736027184150fcb69ac8069fb95273f"
+    },
+    {
+      "path": "tests/test_report_bundle_cleanup.py",
+      "bytes": 5226,
+      "sha256": "cb4e5aec9349776bb73014080e0d7940049c5a6916026488da328f30014312e8"
+    },
+    {
+      "path": "tests/test_report_member_cleanup.py",
+      "bytes": 5696,
+      "sha256": "75bd70f122c7085f401c16911d2b81a3e12ce5482fe7dcf09d4f335a572ad938"
+    },
+    {
+      "path": "tests/test_report_worker_cleanup.py",
+      "bytes": 10345,
+      "sha256": "a66aa49bc5f634fe4862e45c390510b11441e91652747cb5d968548c98508cbd"
+    },
+    {
+      "path": "tests/test_report_worker_outer_cleanup.py",
+      "bytes": 9375,
+      "sha256": "f96bb8d44f493ae10df53feffdb6ecc2fa96cfd85ff6353a211b334e0de0a52b"
+    },
+    {
+      "path": "tests/test_runner_inhibitor_identity_order.py",
+      "bytes": 10628,
+      "sha256": "8415be1d827e8690ac3ed9ebbeda6320083cff5c7a79d615706f9964fa2a41ae"
+    },
+    {
+      "path": "tests/test_runner_status_whitespace_bound.py",
+      "bytes": 7622,
+      "sha256": "70fcc440a23a698b7f0e30ad695d4b9db7c77e8e97d2e4b2613422c111cba1f1"
+    },
+    {
+      "path": "tests/test_started_terminal_evidence_race.py",
+      "bytes": 6317,
+      "sha256": "b0fcfc335f7059c2c9bb9b23f59e685a8b3e262b654c6d79cf8afd45a763938c"
+    },
+    {
+      "path": "tests/test_startup_observation_order.py",
+      "bytes": 3181,
+      "sha256": "b018772000d005fd29bc2a9d45a9ecbf770c03345e421cc712d27372ec70050d"
+    },
+    {
+      "path": "tests/test_stop_observed_exit.py",
+      "bytes": 1625,
+      "sha256": "22d8c4ac6628168e524f668e721d6d48a364c1842f9f1e0c05106da9626f6733"
+    }
+  ],
+  "index_empty": true,
+  "git_diff_check": true,
+  "publication": "LOCAL ONLY: no commit, push, hosted job, guest, release or physical-device operation",
+  "bookkeeping_updated_after_tests": [
+    {
+      "path": ".ai/memory/unfinished-work.md",
+      "bytes": 135594,
+      "sha256": "8898524e1b4b5b23b369db3f91096a90ecdc311f6dc2b6581f6050f0b00ae771"
+    },
+    {
+      "path": "docs/evidence/bug-audit-20261024/README.md",
+      "bytes": 13067,
+      "sha256": "b66e65fe5dda0f98aa5b42c446124288250065f6317a892f5547e2747d43bc14"
+    },
+    {
+      "path": "docs/evidence/bug-audit-20261025/README.md",
+      "bytes": 7922,
+      "sha256": "89b4e8e5b00ebd585fd1b7de2eac4dbf76e33d496c4c08cb62d8da995f4eade6"
+    },
+    {
+      "path": "docs/evidence/bug-audit-20261025/reviews.json",
+      "bytes": 16717,
+      "sha256": "49baa46983f3726b38d099921357e84919028d21191b37feadaad67311f550eb"
+    }
+  ],
+  "all_delegated_reviews_terminal": true,
+  "functional_inputs_rechecked_after_bookkeeping": true
+}

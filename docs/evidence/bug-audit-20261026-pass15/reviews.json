@@ -1,0 +1,128 @@
+{
+  "build": {
+    "childNodeId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r15-20261026-build-r1",
+    "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r15-20261026-build-r1:ordinal:1",
+    "childThreadId": "thread:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r15-20261026-build-r1",
+    "hasPendingChildRuns": false,
+    "hasPendingQuestion": false,
+    "latestTerminalResultContextTransferId": null,
+    "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r15-20261026-build-r1:ordinal:1",
+    "latestTerminalStatus": "completed",
+    "latestTerminalSummary": null,
+    "model": "gpt-6.1-sol",
+    "options": [
+      {
+        "id": "reasoningEffort",
+        "value": "xhigh"
+      },
+      {
+        "id": "serviceTier",
+        "value": "default"
+      }
+    ],
+    "pendingApproval": null,
+    "providerInstanceId": "codex",
+    "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r15-20261026-build-r1:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:e7c2e966-bc30-48f1-aca0-c7e8e8c3af56",
+    "status": "completed",
+    "summary": "**P3 \u2014 dormant race test:** [test_ci_qemu_directory_race_pass31.py:30](/C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/tests/test_ci_qemu_directory_race_pass31.py:30) patches `Path.iterdir`, but the reader uses `os.listdir(fd)`. The exact test passes with zero swaps. A controlled fake trigger fires and the reader refuses the linked path. This is a coverage defect; no unsafe product read was demonstrated.\n\nBounded no objection to the R14 production correction. Current probes matched: 32 QEMU, three image-reader and 38 adjacent contract observations.\n\nAll 21 entry-mapped files remained unchanged. Supplemental backlog drift and both failed reviewer attempts are retained. The full 939-file census was not recomputed.\n\n[Full report and evidence](/C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261026-r15/build-review/RESULT.md): 327,172 bytes, sealed and fully reread. Native/full acceptance and Task119 remain unqualified or blocked.",
+    "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r15-20261026-build-r1",
+    "waitTimedOut": false,
+    "workState": "result_available"
+  },
+  "completion": {
+    "childNodeId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r15-20261026-completion-r1",
+    "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r15-20261026-completion-r1:ordinal:1",
+    "childThreadId": "thread:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r15-20261026-completion-r1",
+    "hasPendingChildRuns": false,
+    "hasPendingQuestion": false,
+    "latestTerminalResultContextTransferId": null,
+    "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r15-20261026-completion-r1:ordinal:1",
+    "latestTerminalStatus": "completed",
+    "latestTerminalSummary": null,
+    "model": "gpt-6.1-sol",
+    "options": [
+      {
+        "id": "reasoningEffort",
+        "value": "xhigh"
+      },
+      {
+        "id": "serviceTier",
+        "value": "default"
+      }
+    ],
+    "pendingApproval": null,
+    "providerInstanceId": "codex",
+    "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r15-20261026-completion-r1:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:c476aa97-5715-4e54-8eb1-c92fea12d7b1",
+    "status": "completed",
+    "summary": "Bounded no objection: no new concrete defect established.\n\n- 127 AST/fake observations matched; final probes, validation, and seal exited 0.\n- No scoped source drift; backlog drift recorded separately.\n- Failed attempts retained. No source edits or native acceptance claimed.\n- Package: 372,142 bytes, manifest and full-byte readback verified.\n\n[Review report](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261026-r15/completion-review/RESULT.md)",
+    "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r15-20261026-completion-r1",
+    "waitTimedOut": false,
+    "workState": "result_available"
+  },
+  "correction_r2": {
+    "childNodeId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r15-20261026-race-test-r2",
+    "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r15-20261026-race-test-r2:ordinal:1",
+    "childThreadId": "thread:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r15-20261026-race-test-r2",
+    "hasPendingChildRuns": false,
+    "hasPendingQuestion": false,
+    "latestTerminalResultContextTransferId": null,
+    "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r15-20261026-race-test-r2:ordinal:1",
+    "latestTerminalStatus": "completed",
+    "latestTerminalSummary": null,
+    "model": "gpt-6.1-sol",
+    "options": [
+      {
+        "id": "reasoningEffort",
+        "value": "xhigh"
+      },
+      {
+        "id": "serviceTier",
+        "value": "default"
+      }
+    ],
+    "pendingApproval": null,
+    "providerInstanceId": "codex",
+    "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r15-20261026-race-test-r2:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:519f354c-30a8-49ea-85b8-4073b36bb88e",
+    "status": "completed",
+    "summary": "Bounded **NO OBJECTION** to the correction. All 12 observations matched their oracles, including suppressed-trigger, early-refusal and private-digest negative controls. Original assertions and decorators are preserved.\n\n[Review evidence and RESULT.md](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261026-r15/race-test-review-r2/RESULT.md)\n\nReader/test bytes remained stable; concurrent backlog drift is recorded. The 121,299-byte packet passed manifest and full-byte readback checks. No repository edits occurred. Native/full acceptance remains unrun; Task119 remains blocked.",
+    "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r15-20261026-race-test-r2",
+    "waitTimedOut": false,
+    "workState": "result_available"
+  },
+  "parent_validation": {
+    "additional_product_replays": 0,
+    "r1": "parent-r1-validation.json",
+    "r2": "parent-r2-validation.json",
+    "scope": "Source/model approval only. No native or release approval."
+  },
+  "safety": {
+    "childNodeId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r15-20261026-safety-r1",
+    "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r15-20261026-safety-r1:ordinal:1",
+    "childThreadId": "thread:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r15-20261026-safety-r1",
+    "hasPendingChildRuns": false,
+    "hasPendingQuestion": false,
+    "latestTerminalResultContextTransferId": null,
+    "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r15-20261026-safety-r1:ordinal:1",
+    "latestTerminalStatus": "completed",
+    "latestTerminalSummary": null,
+    "model": "gpt-6.1-sol",
+    "options": [
+      {
+        "id": "reasoningEffort",
+        "value": "xhigh"
+      },
+      {
+        "id": "serviceTier",
+        "value": "default"
+      }
+    ],
+    "pendingApproval": null,
+    "providerInstanceId": "codex",
+    "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r15-20261026-safety-r1:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:9b8ddcf1-1606-4295-8219-169a25e1c8a6",
+    "status": "completed",
+    "summary": "Bounded no objection: no new actionable defect established in the assigned safety scope.\n\n[Review report](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261026-r15/safety-review/RESULT.md)\n\n- 39/39 exact-AST/fake cases matched; probe and packet validator exited 0. Failed attempts retained.\n- 30 scoped files reread; all 26 entry-bound hashes matched. Four context files lacked entry baselines; no whole-939 census claimed.\n- Packet: 329,639 bytes, manifest and full-byte readback verified.\n- No source edits. Native acceptance remains unqualified; Task119 remains NOT TESTED/BLOCKED.",
+    "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r15-20261026-safety-r1",
+    "waitTimedOut": false,
+    "workState": "result_available"
+  }
+}

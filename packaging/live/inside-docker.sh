@@ -126,7 +126,16 @@ lb config \
 
 lb build
 
-mapfile -t images < <(find /build/packaging/live -maxdepth 2 -type f -name '*.iso' -print)
+image_list="$(mktemp)"
+find_code=0
+find /build/packaging/live -maxdepth 2 -type f -name '*.iso' -print0 > "$image_list" || find_code=$?
+if [ "$find_code" -ne 0 ]; then
+  rm -f -- "$image_list"
+  echo "Cannot enumerate live-build ISO outputs" >&2
+  exit "$find_code"
+fi
+mapfile -d '' -t images < "$image_list"
+rm -f -- "$image_list"
 if [ "${#images[@]}" -ne 1 ]; then
   echo "live-build must produce exactly one ISO (found ${#images[@]})" >&2
   printf '%s\n' "${images[@]}" >&2

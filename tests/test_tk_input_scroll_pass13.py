@@ -2,6 +2,7 @@
 
 import ctypes
 import os
+import time
 from types import SimpleNamespace
 import tkinter as tk
 from tkinter import ttk
@@ -113,6 +114,61 @@ def test_first_native_key_works_with_pointer_outside_window(native, key, fullscr
         assert not wizard.owner_ok
     finally:
         app._teardown()
+
+
+def test_initial_native_input_survives_delayed_loop_entry(native, monkeypatch, request):  # noqa: F811
+    original_mainloop = tk.Misc.mainloop
+    original_run = TkWizard.run
+    original_focus = tk.Misc.focus_force
+    original_key = native.key
+    original_escape = TkWizard._on_escape
+    entered = []
+    events = []
+    started = time.monotonic()
+
+    def record(*event):
+        events.append((round(time.monotonic() - started, 4), *event))
+
+    def traced_run(app):
+        record("run")
+        for sequence in ("<Map>", "<FocusIn>"):
+            app.root.bind(sequence, lambda event, sequence=sequence: record(
+                sequence, event.widget is app.root, app.root.winfo_ismapped()
+            ), add="+")
+        return original_run(app)
+
+    def traced_focus(widget):
+        record("focus_force", widget.winfo_ismapped())
+        return original_focus(widget)
+
+    def traced_key(*args):
+        record("native_key", *args)
+        return original_key(*args)
+
+    def traced_escape(app, event=None):
+        record("escape", app.w.screen.name)
+        return original_escape(app, event)
+
+    def delayed_mainloop(root, *args, **kwargs):
+        entered.append(True)
+        # Preserve the native case's 120ms input and 320ms teardown. Model
+        # loop-entry work that leaves initial input due before idle dispatch.
+        time.sleep(0.15)
+        record("loop_entry", root.winfo_ismapped())
+        return original_mainloop(root, *args, **kwargs)
+
+    monkeypatch.setattr(TkWizard, "run", traced_run)
+    monkeypatch.setattr(TkWizard, "_on_escape", traced_escape)
+    monkeypatch.setattr(tk.Misc, "focus_force", traced_focus)
+    monkeypatch.setattr(native, "key", traced_key)
+    monkeypatch.setattr(tk.Misc, "mainloop", delayed_mainloop)
+    try:
+        test_first_native_key_works_with_pointer_outside_window(
+            native, Gdk.KEY_Escape, True, "inside"
+        )
+    finally:
+        request.node.user_properties.append(("native_startup_order", repr(events)))
+    assert entered == [True]
 
 
 def test_initial_focus_is_claimed_once_and_held_return_keeps_gate(native):  # noqa: F811

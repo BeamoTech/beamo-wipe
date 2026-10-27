@@ -33,7 +33,7 @@ fi
 BEAMO_WIPE_MANIFEST_VERSION="$VERSION" BEAMO_WIPE_MANIFEST_DEST="$DEST" python3 - <<'PY'
 import json, os, pathlib, sys
 sys.path.insert(0, "src")
-from beamo_wipe.release_manifest import generate_manifest, write_manifest, require_verified_prior_checksum_list, _open_regular_nofollow
+from beamo_wipe.release_manifest import generate_manifest, write_manifest, require_verified_prior_checksum_list, _open_regular_nofollow, _atomic_write, sha256_file
 from beamo_wipe.ci_evidence import load_receipts
 strict = os.environ.get("ALLOW_DIRTY") != "1"
 build_only = os.environ.get("BEAMO_BUILD_PROVENANCE_ONLY") == "1"
@@ -49,21 +49,30 @@ if not build_only:
 manifest = generate_manifest(version=os.environ["BEAMO_WIPE_MANIFEST_VERSION"], strict=strict,
                              build_only=build_only, **inputs)
 dest = pathlib.Path(os.environ["BEAMO_WIPE_MANIFEST_DEST"])
-require_verified_prior_checksum_list(dest.parent)
+# Bind the verified prior list (or absence) before rewriting the manifest it
+# authenticates. Keep that snapshot in this transaction through publication.
+checksum_snapshot = require_verified_prior_checksum_list(dest.parent)
 out = write_manifest(manifest, dest)
 # Always verify: with ALLOW_DIRTY only the dirty-state check is skipped, every
 # other structural check (checksum, placeholders, nwipe pin, ISO checksum)
 # still runs so a dirty-tree manifest cannot pass as clean provenance.
 from beamo_wipe.release_manifest import verify_manifest, verify_build_manifest
 if build_only:
-    verify_build_manifest(out, allow_dirty=not strict)
+    verified_manifest = verify_build_manifest(out, allow_dirty=not strict)
 else:
-    verify_manifest(out, allow_dirty=not strict)
+    verified_manifest = verify_manifest(out, allow_dirty=not strict)
 print(f"Verified {out} (strict={strict})")
 import hashlib
-print(f"Manifest SHA256: {hashlib.sha256(out.read_bytes()).hexdigest()}")
+manifest_sha = hashlib.sha256(verified_manifest).hexdigest()
+print(f"Manifest SHA256: {manifest_sha}")
 sidecar = pathlib.Path(str(out) + ".sha256")
 print(f"Sidecar written: {sidecar.name}")
+iso = dest.parent / manifest["artifact"]["iso_name"]
+_atomic_write(
+    dest.parent / "SHA256SUMS",
+    f"{sha256_file(iso)}  {iso.name}\n{manifest_sha}  {out.name}\n".encode("ascii"),
+    expected=checksum_snapshot,
+)
 PY
 
 echo "Manifest written: $DEST (verifying checksums below)"
@@ -102,38 +111,7 @@ finally:
     trap - EXIT HUP INT TERM
   fi
   ( cd "$(dirname "$ISO")" && sha256sum -c "$(basename "${ISO}.sha256")" )
-  # Publish checksum output by replacement, never by shell redirection to the
-  # final name. A stale SHA256SUMS link must not redirect bytes into user data.
-  SUMS_TMP="$(mktemp "$ROOT/dist/.SHA256SUMS.XXXXXX")"
-  trap 'rm -f -- "$SUMS_TMP"' EXIT
-  trap 'exit 130' HUP INT TERM
-  ( cd dist && sha256sum "beamo-wipe-${VERSION}-amd64.iso" "beamo-wipe-${VERSION}-amd64.manifest.json" > "$SUMS_TMP" )
-  python3 -c '
-import os, stat, sys
-source, destination = sys.argv[1:]
-directory = os.path.dirname(destination)
-directory_fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
-try:
-    source_name = os.path.basename(source)
-    dest_name = os.path.basename(destination)
-    staged = os.stat(source_name, dir_fd=directory_fd, follow_symlinks=False)
-    if not stat.S_ISREG(staged.st_mode) or staged.st_uid != os.getuid():
-        raise SystemExit("unsafe staged checksum output")
-    try:
-        existing = os.stat(dest_name, dir_fd=directory_fd, follow_symlinks=False)
-    except FileNotFoundError:
-        pass
-    else:
-        if not stat.S_ISREG(existing.st_mode) or existing.st_uid != os.getuid():
-            raise SystemExit("unsafe existing checksum output")
-    # os.replace does not follow a destination link if it appeared after the
-    # check; it replaces that directory entry, leaving its target untouched.
-    os.replace(source_name, dest_name, src_dir_fd=directory_fd, dst_dir_fd=directory_fd)
-    os.fsync(directory_fd)
-finally:
-    os.close(directory_fd)
-' "$SUMS_TMP" "$ROOT/dist/SHA256SUMS"
-  trap - EXIT HUP INT TERM
+  # The Python transaction published against its verified pre-rewrite snapshot.
   ( cd dist && sha256sum -c SHA256SUMS )
   echo "Manifest generation does not sign: authenticate the publisher key and verify detached signatures first (docs/release-verification.md)."
   echo "Then compare downloaded artifact hashes with the authenticated manifest/inventory; checksum sidecars alone do not authenticate them."

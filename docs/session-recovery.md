@@ -2,13 +2,17 @@
 
 Recovery displays evidence; it never starts, attaches to, signals, or resumes
 nwipe. Owner consent, typed confirmation, countdown, progress percentages,
-PIDs, runnable requests, and export receipts are never restored. A recovered
-session cannot start another erase. Save available evidence before shutdown.
+PIDs, runnable requests, and export receipts are never restored. Recovery of an
+armed or terminal erase cannot start another erase. A proven unstarted preflight
+may begin a fresh owner flow after the ownership and engine-absence checks below;
+all consent and confirmation are required again. Save available evidence before
+shutdown.
 
 Temporary evidence does **not** survive shutdown or power loss. The systemd
-kiosk has `PrivateTmp=yes`: graphical fallback and the supervisor's interface
-loop share its private `/tmp`, but stopping/restarting the service can destroy
-that namespace even within the same boot. Recovery promises only evidence
+kiosk mounts private tmpfs filesystems with `TemporaryFileSystem=/tmp` and
+`TemporaryFileSystem=/var/tmp`: graphical fallback and the supervisor's interface
+loop share that volatile storage, but stopping/restarting the service can destroy
+it even within the same boot. Recovery promises only evidence
 still present after an interface crash, not persistence across service teardown.
 Nothing is written to the erase target or the boot USB.
 
@@ -39,17 +43,18 @@ device numbers. Mount paths, confirmation state and progress are omitted.
 The existing runner independently repeats its checks and holds `wipe.lock`,
 passing that descriptor to nwipe. The child retains ownership if the UI dies.
 
-A restarted interface does not poll the old process. It tries only the existing
-wipe lock. While held by another process, the UI says the erase may still be
-running and blocks new erasure, export and application-requested shutdown.
-Once free, recovery retains that lock through result inspection and export.
-Lock errors remain blocked; a free lock is never completion evidence.
+A restarted interface does not attach to or control the old process. It checks
+the existing wipe lock and independently checks for a pinned engine, including
+a manually started engine that may not hold that lock. While either check is
+busy or uncertain, the UI blocks new erasure, export and application-requested
+shutdown. Once quiescence is established, recovery retains the lock through
+result inspection and export. A free lock is never completion evidence.
 
 ## Crash boundaries
 
 | Boundary | Saved state and restart behavior |
 | --- | --- |
-| Discovery / confirmation / final rediscovery | Preflight; previous result unavailable, no consent restored; constrained diagnostics only |
+| Discovery / confirmation / final rediscovery | Valid unstarted preflight may rotate to a fresh owner flow only after exclusive ownership and pinned-engine absence are proved; no consent or runnable request is restored. Uncertain state remains blocked. |
 | Before armed checkpoint finishes | Old preflight remains; runner startup cannot proceed after checkpoint failure |
 | After armed checkpoint, before/during runner startup | Indeterminate; no inference that the erase either started or never started |
 | Writing / verification | Wait for runner lock; then indeterminate with unknown/null exit, no percentage inference |

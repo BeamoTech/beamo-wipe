@@ -1,0 +1,308 @@
+{
+  "utc": "2026-10-25T21:50:17.461260+00:00",
+  "status": "BLOCKED_FINAL_QUALIFICATION",
+  "base": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+  "branch": "codex/wipe-audit-20261024",
+  "worktree": "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2",
+  "functional_inputs": 922,
+  "functional_identity": "1016e41e61b2f78a4cf84841c8657b5cc55a4ae09a2553668ffb5635a909df51",
+  "functional_manifest_sha256": "0a40237aa90ba5030a7a0c70e0b844eb4ea13f1762b172a2b2805483613e1cdb",
+  "changed_this_pass": {
+    "src/beamo_wipe/discover.py": {
+      "bytes": 116595,
+      "sha256": "3dc8d6f93296f93323aae464d35d7e4d1184696b0a91cbea6804ef713db1aa37"
+    },
+    "src/beamo_wipe/nwipe_runner.py": {
+      "bytes": 100544,
+      "sha256": "8b4c8fc5cc319790c427584407ab96b25106eb5d0da3a0f2c2cd87fbf7a2e443"
+    },
+    "src/beamo_wipe/safety.py": {
+      "bytes": 47012,
+      "sha256": "a77c3d1d01fac9b6c4083e899ace5c80916e8e8f795f8054492ac8f775f641a3"
+    },
+    "src/beamo_wipe/wizard.py": {
+      "bytes": 141765,
+      "sha256": "b3dc067eb0d0bc912a25ccba974b078f8716d763c3c5187cb62e90d7e4e78690"
+    },
+    "tests/test_completion_projection_byte_budget.py": {
+      "bytes": 3542,
+      "sha256": "abe2ccc4d812a081f829fbee3f0322702a3d5f8a3de5d940ee2895d7d5fcba8d"
+    },
+    "tests/test_malformed_terminal_progress.py": {
+      "bytes": 3729,
+      "sha256": "6fb59c7a1e3043987951b7145a78bad627941bc1e9509cf3e999ea4b57a394e6"
+    },
+    "tests/test_nvme_surviving_transport.py": {
+      "bytes": 18511,
+      "sha256": "85a8793ab2b95603ce804c261dd505f6dbcd81f55587d4abf8a470a509d065e8"
+    },
+    "tests/test_progress_activity_projection.py": {
+      "bytes": 1600,
+      "sha256": "87bf5bec81c4d2d3d1807753a14632aeaf4a7ba64379aee62eb09c5014bdcc93"
+    },
+    "tests/test_raw_disk_ancestry_refusal.py": {
+      "bytes": 13029,
+      "sha256": "5271ad26936c81e5a971c45a1059c92a9fbad7e837d3e03034411b7a591d45d1"
+    },
+    "tests/test_runner_read_handle_ownership.py": {
+      "bytes": 4699,
+      "sha256": "3b7fe93a36638d440ffecb2ab69fb4931e5f9776e73e36580e7d65a5e4973b31"
+    },
+    "tests/test_shutdown_invalid_journal.py": {
+      "bytes": 6929,
+      "sha256": "013eec94f1cbf40a3f15701dd5031d556b08c4341a2ae563960623ff37229b03"
+    },
+    "tests/test_terminal_log_snapshot_ownership.py": {
+      "bytes": 2499,
+      "sha256": "b37266a086019936e7892c9c4e71364a35e634fe6b41d06fcad4bb80c77697c2"
+    },
+    "tests/test_wizard_log_handle_ownership.py": {
+      "bytes": 3582,
+      "sha256": "66688e8b7075f0da2ac16efa12c20149e1827e1c5a5e77f7ad314d35bd23dc23"
+    }
+  },
+  "source_overlay": {
+    "utc": "2026-10-25T21:45:43.953725+00:00",
+    "source": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+    "functional_identity": "1016e41e61b2f78a4cf84841c8657b5cc55a4ae09a2553668ffb5635a909df51",
+    "inputs": 922,
+    "overlay_files": 63,
+    "archive": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r3\\final-source-overlay.zip",
+    "archive_bytes": 417853,
+    "archive_sha256": "f5deda9e5ffa882cefd8fd02faa4e652980b82d1f94b0f7b0a73954d46317a9e",
+    "readback_verified": true,
+    "source_stable": true,
+    "candidate_acceptance": false,
+    "publication": false
+  },
+  "delegated_tasks": 14,
+  "all_delegated_tasks_terminal": true,
+  "final_reviews": {
+    "normalized_budget": "No concrete objection; 2306 exact-AST fake-I/O checks",
+    "private_nvme": "No concrete objection; 43 exact-AST in-memory cases"
+  },
+  "current_native_static": {
+    "actual_exits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_unchanged": true,
+    "tool": "C:\\Users\\Jack\\dev\\BeamoTech\\beamo-wipe\\.venv-win32\\Scripts\\ruff.exe",
+    "tool_sha256": "a3fd92d64e0b23dd27520525b8235d3fa7676e256fe906bdd4a42033bd5c4f8f",
+    "scope": "Existing native Windows Ruff only, cache disabled. No test, WSL, service, native launcher, Go or physical inventory startup; does not substitute for Linux type/shell/full gates."
+  },
+  "narrow_windows_helper": {
+    "actual_exit": 0,
+    "counts": {
+      "total": 8,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "four_bound_inputs_still_match": true,
+    "full_native_acceptance": false,
+    "scope": "Native Windows regular-file stat/read/manifest helpers; fake compiler/Git; no real launcher, Go or inventory"
+  },
+  "earlier_linux_phases": [
+    {
+      "phase": "r3-combined-lint",
+      "counts": null,
+      "actual_queried_exit": 0,
+      "timed_out": false,
+      "harness_valid": true,
+      "source_bytes_unchanged": true,
+      "owned_process_reaped": true,
+      "owned_descendants_absent": true,
+      "cleanup_errors": [],
+      "final_v2_acceptance": false,
+      "source_manifest_sha256": "b1eea09a3c8fca5402ef40038d80522b18baa3770efd1ba6d1fa9daeb2f7c9bc",
+      "scope": "Earlier exact source; retained at its actual stage, not final-v2 acceptance"
+    },
+    {
+      "phase": "r3-combined-preview",
+      "counts": null,
+      "actual_queried_exit": 0,
+      "timed_out": false,
+      "harness_valid": true,
+      "source_bytes_unchanged": true,
+      "owned_process_reaped": true,
+      "owned_descendants_absent": true,
+      "cleanup_errors": [],
+      "final_v2_acceptance": false,
+      "source_manifest_sha256": "b1eea09a3c8fca5402ef40038d80522b18baa3770efd1ba6d1fa9daeb2f7c9bc",
+      "scope": "Earlier exact source; retained at its actual stage, not final-v2 acceptance"
+    },
+    {
+      "phase": "r3-combined-regressions",
+      "counts": {
+        "total": 470,
+        "failed": 3,
+        "errors": 0,
+        "skipped": 7
+      },
+      "actual_queried_exit": 1,
+      "timed_out": false,
+      "harness_valid": true,
+      "source_bytes_unchanged": true,
+      "owned_process_reaped": true,
+      "owned_descendants_absent": true,
+      "cleanup_errors": [],
+      "final_v2_acceptance": false,
+      "source_manifest_sha256": "b1eea09a3c8fca5402ef40038d80522b18baa3770efd1ba6d1fa9daeb2f7c9bc",
+      "scope": "Earlier exact source; retained at its actual stage, not final-v2 acceptance"
+    },
+    {
+      "phase": "r3-combined-regressions-git",
+      "counts": {
+        "total": 470,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "actual_queried_exit": 0,
+      "timed_out": false,
+      "harness_valid": true,
+      "source_bytes_unchanged": true,
+      "owned_process_reaped": true,
+      "owned_descendants_absent": true,
+      "cleanup_errors": [],
+      "final_v2_acceptance": false,
+      "source_manifest_sha256": "b1eea09a3c8fca5402ef40038d80522b18baa3770efd1ba6d1fa9daeb2f7c9bc",
+      "scope": "Earlier exact source; retained at its actual stage, not final-v2 acceptance"
+    },
+    {
+      "phase": "r3-runner-regressions",
+      "counts": {
+        "total": 134,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "actual_queried_exit": 0,
+      "timed_out": false,
+      "harness_valid": true,
+      "source_bytes_unchanged": true,
+      "owned_process_reaped": true,
+      "owned_descendants_absent": true,
+      "cleanup_errors": [],
+      "final_v2_acceptance": false,
+      "source_manifest_sha256": "d07a67a05a4d8673bc2290d364e3e72dadbc0f5811da9cfb4bc8535b1e711f8c",
+      "scope": "Earlier exact source; retained at its actual stage, not final-v2 acceptance"
+    },
+    {
+      "phase": "r3-core-fixes",
+      "counts": null,
+      "actual_queried_exit": null,
+      "timed_out": true,
+      "harness_valid": true,
+      "source_bytes_unchanged": true,
+      "owned_process_reaped": true,
+      "owned_descendants_absent": true,
+      "cleanup_errors": [],
+      "final_v2_acceptance": false,
+      "source_manifest_sha256": "e0563f4eeebe90d61d7a96f19353a7131f73c956258341e010c7c509fecb3552",
+      "scope": "INCOMPLETE outer timeout; no queried test exit or final JUnit"
+    },
+    {
+      "phase": "r3-core-collection",
+      "counts": {
+        "total": 0,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "actual_queried_exit": 0,
+      "timed_out": false,
+      "harness_valid": true,
+      "source_bytes_unchanged": true,
+      "owned_process_reaped": true,
+      "owned_descendants_absent": true,
+      "cleanup_errors": [],
+      "final_v2_acceptance": false,
+      "source_manifest_sha256": "26107b7c4162406decd74cbee458974496748960c477411bf50a67ed6d5f9a79",
+      "scope": "Collection-only diagnosis, not a runtime pass"
+    },
+    {
+      "phase": "r3-final-new-regressions",
+      "counts": {
+        "total": 332,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "actual_queried_exit": 0,
+      "timed_out": false,
+      "harness_valid": true,
+      "source_bytes_unchanged": true,
+      "owned_process_reaped": true,
+      "owned_descendants_absent": true,
+      "cleanup_errors": [],
+      "final_v2_acceptance": false,
+      "source_manifest_sha256": "ea5839c37d43fbac73964b06cc53362498427f806c2e9f9b61a05441bfc63d30",
+      "scope": "Earlier exact source; retained at its actual stage, not final-v2 acceptance"
+    },
+    {
+      "phase": "r3-final-adjacent",
+      "counts": {
+        "total": 694,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "actual_queried_exit": 0,
+      "timed_out": false,
+      "harness_valid": true,
+      "source_bytes_unchanged": true,
+      "owned_process_reaped": true,
+      "owned_descendants_absent": true,
+      "cleanup_errors": [],
+      "final_v2_acceptance": false,
+      "source_manifest_sha256": "3d9679ef77b32c645a82c2d2fa00feb557d576a635ad8f9d94f46d4af6bf56f9",
+      "scope": "Earlier exact source; retained at its actual stage, not final-v2 acceptance"
+    }
+  ],
+  "final_linux": {
+    "status": "BLOCKED_BEFORE_STARTUP",
+    "phase": "r3-v2-lint",
+    "admission": {
+      "free_bytes": 8464756736,
+      "available_ram_bytes": 5176422400,
+      "total_ram_bytes": 16946950144,
+      "admitted": false
+    },
+    "controller_exit": 2,
+    "actual_gate_exit": null,
+    "remaining": "selected/new/adjacent/large-log, canonical types/shell/lint/preview/negative unrun at final-v2"
+  },
+  "prior_full_gate": "INCOMPLETE: older full run has no final main JUnit/queried test exit/cleanup receipt; current expanded 1106-case run timed out at300s with owned cleanup valid",
+  "native_go": "BLOCKED: pinned go version timed out45s without output; owned Job cleanup retained; no blind retry",
+  "lab": {
+    "head": "d3d0959bb26b17531464dbd1ba233d4d842ad581",
+    "report_run": "20261025T214341Z-b627490ee204",
+    "report_status": "PASS",
+    "level": "preparation",
+    "integrity": "VALID:6files/3events",
+    "candidate_acceptance": false,
+    "visual_qa": "UNAVAILABLE: Preview automation open failed: Invalid preview URL (unsupported-protocol: file:; input length 128)."
+  },
+  "limitations": [
+    "No full source or platform acceptance",
+    "No real engine/device execution",
+    "Runner concurrent API hazard reachability through shipped serialized wizard unproved",
+    "Documented assessment-versus-retained-suffix conservative export/recovery refusal is not a new defect",
+    "NVMe observation is not an atomic topology lock",
+    "ISO/QEMU/native/physical/release gates remain open"
+  ],
+  "index_empty": true,
+  "git_diff_check": true,
+  "changed_python_ast_valid": true,
+  "peer_source_and_status_unchanged": true,
+  "final_resources": {
+    "free_bytes": 8414494720,
+    "available_ram_bytes": 6612144128,
+    "total_ram_bytes": 16946950144
+  },
+  "publication": "LOCAL ONLY: no stage, commit, push, hosted CI, guest, release or physical-device operation"
+}

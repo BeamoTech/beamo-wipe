@@ -1942,7 +1942,7 @@ def _confirm_report_discard(stdscr, wizard: Wizard) -> None:
         _add(stdscr, h - 2, 0, C.CON_TYPE_OR_RETURN.format(word=wizard.exit_confirmation_discard.upper()))
         _add(stdscr, h - 1, 0, " " * 55)
         stdscr.refresh()
-        answer = stdscr.getstr(h - 1, 0, 32).decode("ascii", errors="replace")
+        answer = stdscr.getstr(h - 1, 0, 32).decode("utf-8", errors="replace")
         if answer == wizard.exit_confirmation_discard.upper():
             wizard.confirm_shutdown_without_saving(generation)
         else:

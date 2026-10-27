@@ -1,0 +1,135 @@
+{
+  "utc": "2026-10-26T13:33:57.134928+00:00",
+  "reviews": [
+    {
+      "scope": "report",
+      "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-report-r3-resume1",
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "status": "complete, independently parent-validated",
+      "cases": 13,
+      "binding_records": 383,
+      "result": "report-review-r3/RESULT.md",
+      "parent_validation": "report-parent-validation.json",
+      "parent_validation_sha256": "83cd2503d5f7d209cc57773b5b28f33c28b8e57ab75276d04c23b5d7af374e2d",
+      "manifest_sha256": "213f692f35bdb3f154e919dee5fdb92b344615c641254f798b74c86d344d3a73",
+      "scope_limit": "Selected exact AST/fake/static; no native/full/platform qualification"
+    },
+    {
+      "scope": "lifecycle",
+      "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-lifecycle-r3-resume1",
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "status": "complete, independently parent-validated",
+      "cases": 32,
+      "binding_records": 22,
+      "result": "lifecycle-review-r3/RESULT.md",
+      "parent_validation": "lifecycle-build-parent-validation.json",
+      "parent_validation_sha256": "54985756f569d1e71c069b77d2619e231396e619d9e32eaf40d95a11be8e8921",
+      "manifest_sha256": "bf7e4104c62ec029882ed0efeb2e8489fd53daeb34243ff87f38b0ba976628f2",
+      "scope_limit": "Selected exact AST/fake/static; no native/full/platform qualification"
+    },
+    {
+      "scope": "build",
+      "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-build-r3-resume1",
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "status": "complete, independently parent-validated",
+      "cases": 28,
+      "binding_records": 127,
+      "result": "build-review-r3/RESULT.md",
+      "parent_validation": "lifecycle-build-parent-validation.json",
+      "parent_validation_sha256": "54985756f569d1e71c069b77d2619e231396e619d9e32eaf40d95a11be8e8921",
+      "manifest_sha256": "70405aaeb1f437355e0d2dd07e41823025aedde2a9d9ba11c0bb031f45c933cf",
+      "scope_limit": "Selected exact AST/fake/static; no native/full/platform qualification"
+    },
+    {
+      "scope": "journal-r4",
+      "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-journal-fix-review-r4-resume1",
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "status": "complete, independently parent-validated",
+      "cases": 40,
+      "binding_records": 35,
+      "result": "journal-fix-review-r4/RESULT.md",
+      "parent_validation": "journal-r4-parent-validation.json",
+      "parent_validation_sha256": "d4f5cfd4c0fa523da93e7c9411544e64d2763078a72e1c3aec201d343f7248b9",
+      "manifest_sha256": "03f10005ce94d84e428e22459288889579f4eff12fd7b25e6d0f1d21ba8f10f6",
+      "scope_limit": "Selected exact AST/fake/static; no native/full/platform qualification"
+    },
+    {
+      "scope": "app-r5",
+      "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-app-final-review-r5-resume1",
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "status": "complete, independently parent-validated",
+      "cases": 30,
+      "binding_records": 51,
+      "result": "app-final-review-r5/RESULT.md",
+      "parent_validation": "app-r5-parent-validation-v3.json",
+      "parent_validation_sha256": "5a5a74fb8bb9395441fd33be4154e9a1c935771b08e9ad1b3269910e640d6f63",
+      "manifest_sha256": "febdbcdeb43af6a8c8c9c766d88dad77f3e454e66422f360839a6e47fb16996e",
+      "scope_limit": "Selected exact AST/fake/static; no native/full/platform qualification"
+    }
+  ],
+  "no_pending_reviews": true,
+  "evidence_level": "bounded source/model only",
+  "remaining": [
+    "Full Linux main/Orca gate remains blocked: unchanged8GiB disk/1GiB RAM admission floors; entry disk1133289472bytes. No admission retry, cleanup or lower floor. Capacity loss cause remains unknown.",
+    "Controlled main/Orca test containment and original ten finite selftests remain unimplemented/unqualified. Retain reaping PID-init/lifelines/private proc, inherited service/socket/Windows interop/device exclusion, aggregate resources and bounded writable/log transport requirements.",
+    "Actual product-module/Linux/POSIX close, locks, signals, races, UI/GTK/audio and Go/native platform, shell/build/artifact/public ISO/QEMU/hosted gates remain incomplete and require their original separately authorized isolated/native resources and exact final candidate.",
+    "Task119 remains NOT TESTED/BLOCKED until explicit new owner physical session, sparePC, valuable disks disconnected, authenticated cold media reconnect/readback, independent recovery/evidence and full firmware trust/revocation/SBAT/enforcement. Boot alone never qualifies.",
+    "R11-C1 PATH-collision remains an unproved synthetic candidate pending authentic producer/kernel/artifact and reachable race evidence. Optional duplicate sound callback and terminal journal log leaf/arbitrary-opcode interruption remain outside proved correction scope.",
+    "No release, signing, publication, push, PR, staging or commit performed. Existing dirty changes remain local."
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "acceptance": "Full/Linux/native/platform/shell/artifact/ISO/QEMU/hosted/physical INCOMPLETE/BLOCKED",
+  "admission": "Both entry disk and RAM below unchanged8GiB/1GiB floors. No WSL/admission retry, cleanup or reduced floor. Capacity cause not inferred.",
+  "available_source_pass": "FINISHED",
+  "base": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+  "branch": "codex/wipe-audit-20261024",
+  "changed": [
+    "tests/test_ci_qemu_directory_race_pass31.py"
+  ],
+  "changed_records": {
+    "tests/test_ci_qemu_directory_race_pass31.py": {
+      "bytes": 3937,
+      "sha256": "7de9dd559eaf6e79a1c77a28518f23e8c58d0e1d80c17aa9dfd01f13846c24dc"
+    }
+  },
+  "failures_retained": "All reviewer/parent harness failures, old red/control receipts, browser write15000ms timeout/inactive controls, missing fixture token and bounded console truncation retained. Corrections preserve oracles and replays add zero cases.",
+  "finding": {
+    "baseline": {
+      "actual_exit": 1,
+      "control": 1,
+      "failures": 3
+    },
+    "correction": "Inject one swap at active descriptor listing; assert exactly one swap on any passing path. Original private-digest assertion/finally cleanup and all other test bodies preserved.",
+    "final": {
+      "actual_exit": 0,
+      "cases": 4,
+      "matching": 4
+    },
+    "id": "R15-BUILD-C1",
+    "native_or_unsafe_read": "No unsafe product read demonstrated; actual Linux rename/symlink/pytest remains unrun.",
+    "priority": "P3 test coverage",
+    "trigger": "Directory replacement regression patched Path.iterdir while the reader uses os.listdir(fd); original test passes with zero swaps."
+  },
+  "functional_count": 939,
+  "functional_identity": "0a099f5f59c78a1fb9937c29ef792dfd81b6b3ade89ceef693c87661e5faaccc",
+  "git_and_host": "Unstaged/uncommitted/unpushed. No publication, hosted CI/spend, install, guest/container/mount, real engine, device/USB, power/session/network/security/firmware action.",
+  "independent": {
+    "broad_scopes": 3,
+    "correction_review": "PASS, bounded source/model no objection",
+    "parent_binding_records": 1266,
+    "parent_packet_full_byte_readback": true
+  },
+  "lab": "Doctor/sync/plan/report and four verifiers PASS at preparation/integrity only. Offline UTF8/CSP and isolated5filter controls checked; partial report screenshot is not full/native visual qualification.",
+  "local_checks": {
+    "GUI_input_overlay_fake_cases": 42,
+    "application_lifecycle_fake_cases": 40,
+    "focused_Ruff_exit": 0,
+    "full_launcher_JS_fake_transport_DOM_cases": 26,
+    "grand_native_test_count": 0,
+    "new_race_causal_models": 4,
+    "syntax": "750 files before the test-only edit; final edited test parsed with3.11 grammar/compiled without module execution",
+    "types": "R14 source52 Linux3.11-stub mypy evidence reused only for unchanged production/config/tool bytes; untyped-body notes retained"
+  },
+  "prior_candidates": "R11-C1 and initial-reader/optional callback/terminal-leaf/arbitrary opcode/native-release hypotheses retain their prior unproved reachability qualifications.",
+  "prior_evidence": "R14 sealed payloads/canonical records reread unchanged; historical backlog compared with exact preR15 bytes and fully preserved.",
+  "production_edits": [],
+  "remaining": [
+    "Controlled main/Orca containment and original ten finite selftests remain unqualified.",
+    "Actual full/Linux/native/platform/shell/artifact/ISO/QEMU/required hosted gates on separately authorized isolated resources, preserving pins/thresholds/required phases/no unapproved spend.",
+    "Task119 NOT TESTED/BLOCKED: explicit owner physical session, spare machine, valuable disks disconnected, authenticated cold media reconnect/readback, independent recovery/evidence, and complete actual firmware trust/revocation/SBAT/enforcement. Successful boot alone insufficient."
+  ],
+  "resource_observation": {
+    "available_ram_bytes": 999948288,
+    "free_bytes": 4388978688,
+    "total_ram_bytes": 16946950144
+  },
+  "utc": "2026-10-26T17:53:12.889997+00:00",
+  "worktree": "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2"
+}

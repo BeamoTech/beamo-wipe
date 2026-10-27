@@ -1,0 +1,113 @@
+{
+  "schema": "beamo-wipe-security-review/1",
+  "utc": "2026-10-26T19:23:37.284437+00:00",
+  "status": "INCOMPLETE / REQUIRED GATES BLOCKED",
+  "release_qualified": false,
+  "source": {
+    "branch": "codex/security-review-20261026",
+    "base": "b7c49d949d1dc75eecabdb24ffa534779f674ec3",
+    "dirty": true,
+    "functional_count": 729,
+    "functional_identity_json_compact_sha256": "d2c2cb5e5f4a91c25aa9263115db885c67055d1269cfb41c304e3979a65feb6e",
+    "changed_production": {
+      "src/beamo_wipe/nwipe_runner.py": {
+        "bytes": 78672,
+        "sha256": "9eb81a226a1e8801304ca273bd32e018435e1fdbfc7ca2cd6f333a18edf98e9c"
+      },
+      "src/beamo_wipe/wizard.py": {
+        "bytes": 140487,
+        "sha256": "1361357e71633fd910d8b4e8ee47865da6934dbdb6a324fc3a820b2aacaaf1a3"
+      }
+    }
+  },
+  "findings": [
+    {
+      "id": "SEC-01",
+      "priority": "P1",
+      "issue": "stale or rounded completion proof",
+      "state": "source-corrected; Linux regression acceptance pending"
+    },
+    {
+      "id": "SEC-02",
+      "priority": "P2",
+      "issue": "damaged activity supports misleading nothing-erased outcome",
+      "state": "source-corrected; Linux regression acceptance pending"
+    },
+    {
+      "id": "SEC-03",
+      "priority": "P3",
+      "issue": "normalized and deferred projection byte accounting",
+      "state": "source-corrected; Linux regression acceptance pending"
+    },
+    {
+      "id": "SEC-04",
+      "priority": "P2",
+      "issue": "startup fallback skips external-engine power guard",
+      "state": "source-corrected; Linux regression acceptance pending"
+    }
+  ],
+  "verification": {
+    "ruff_full": "exit 0",
+    "ruff_source_security": "exit 0",
+    "ruff_test_security": "exit 0",
+    "mypy": {
+      "exit": 0,
+      "source_files": 52,
+      "platform_stubs": "Linux / Python 3.11",
+      "untyped_body_notes_retained": true
+    },
+    "syntax_without_execution": 575,
+    "original_fixture_assertions_preserved": 314,
+    "focused_AST_cases": {
+      "completion": 24,
+      "budget": 3,
+      "power": 16,
+      "new_test_body_replay": 41,
+      "overlap": true
+    },
+    "native_windows_developer_tools": {
+      "exit": 0,
+      "passed": 77,
+      "skipped": 3,
+      "skips": [
+        "2 POSIX descriptor cases",
+        "1 legacy POSIX script case"
+      ]
+    },
+    "signature_privacy": {
+      "distinct_cases_resolved": 29,
+      "initial_exit": 1,
+      "original_matches": 28,
+      "single_diagnostic_oracle_replay_exit": 0,
+      "cryptography": "50.0.1",
+      "keys": "ephemeral in-memory fixtures only"
+    },
+    "pip_audit": {
+      "tool": "2.10.1",
+      "exit": 0,
+      "package_version_pairs": 15,
+      "reported_vulnerabilities": 0,
+      "inputs_hashed": true,
+      "complete_Linux_dependency_graph": false
+    },
+    "launcher_javascript_syntax": "node --check exit 0",
+    "git_diff_check_exit": 0
+  },
+  "blockers": [
+    "No qualified existing isolated x86_64 Linux worker supplied; no host-disk passthrough permitted.",
+    "Actual-module Linux regressions, full pytest/GTK/Orca/72-DPI preview and negative safety gate not run.",
+    "ShellCheck, full pinned-Go native/race/vet/fuzz and exact-source vulnerability reachability checks not run.",
+    "ISO/package inventory, Debian vulnerability gate and complete BIOS/UEFI/QEMU matrix not run.",
+    "Go 1.26.8 remains explicitly pinned; later security fixes require reachability assessment and any authorized pin decision.",
+    "Offline Lab report visual snapshot timed out twice; fallback had no suitable isolated-profile window."
+  ],
+  "preserved_constraints": [
+    "nwipe 0.42 / existing Go / PRIOR_STABLE / claims unchanged",
+    "no real device/media/host-power or host network/security setting changes",
+    "no staging/commit/push/hosted dispatch/publication",
+    "Task119 NOT TESTED/BLOCKED"
+  ],
+  "next_action": "Supply an existing approved isolated x86_64 Linux worker reference; bind this dirty source and run all remaining phases without weakening assertions, timeouts or safety controls.",
+  "evidence_root": "C:\\Users\\Jack\\beamo-release-evidence\\security-review-20261026",
+  "model_results_are_native_acceptance": false
+}
