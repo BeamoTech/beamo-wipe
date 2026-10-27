@@ -1,0 +1,511 @@
+{
+  "utc": "2026-10-26T03:26:13.503135+00:00",
+  "status": "AVAILABLE AUDIT FINISHED; REQUIRED ACCEPTANCE BLOCKED/INCOMPLETE",
+  "source": "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2",
+  "base": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+  "branch": "codex/wipe-audit-20261024",
+  "functional_count": 934,
+  "functional_identity": "25ff560c06cbba0ce405603e71a735af452c13a0afb81f77d23ecdf5a191dc9e",
+  "changed_since_entry": [
+    "packaging/live/config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk",
+    "src/beamo_wipe/wizard.py",
+    "tests/test_kiosk_identity_guard.py",
+    "tests/test_kiosk_recovery.py",
+    "tests/test_report_shutdown.py",
+    "tests/test_startup_diagnostics.py",
+    "tests/test_startup_power_guard.py",
+    "tests/test_usb_report_workflow.py"
+  ],
+  "overlay_count": 88,
+  "overlay_sha256": "92d62cc727f14153dfcedff626cfdc54ee51f7a0db409ccc8cb9b400dadc8510",
+  "overlay_readback_verified": true,
+  "available_checks": {
+    "functional_identity": "25ff560c06cbba0ce405603e71a735af452c13a0afb81f77d23ecdf5a191dc9e",
+    "functional_count": 934,
+    "fresh_portable": {
+      "actual_exits": [
+        0,
+        0,
+        0
+      ],
+      "passed_nodes": 254,
+      "passed_subtests": 37,
+      "junit_suites": [
+        {
+          "batch": "portable-core",
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "265",
+          "time": "14.945",
+          "timestamp": "2026-10-25T21:36:09.573341-05:00",
+          "hostname": "WIN-GS570J99SRQ"
+        },
+        {
+          "batch": "portable-readers-a",
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "13",
+          "time": "25.052",
+          "timestamp": "2026-10-25T21:36:40.570743-05:00",
+          "hostname": "WIN-GS570J99SRQ"
+        },
+        {
+          "batch": "portable-readers-b",
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "13",
+          "time": "13.809",
+          "timestamp": "2026-10-25T21:37:22.835997-05:00",
+          "hostname": "WIN-GS570J99SRQ"
+        }
+      ],
+      "scope": "In-process Windows CPython + existing pytest, exact AST-only tests; fake product OS/process boundaries; external process/network creation refused",
+      "source_inputs": 18,
+      "all_current_inputs_match": true,
+      "reader_groups_complete_and_disjoint": true,
+      "rerun_after_fixture_change": false,
+      "actual_run_source_identity": "98c84bc2a52d9a633fc5bd0be76318d4c6160666146f6ab4bfc74f48245d0d34",
+      "current_exact_18_inputs_match": true
+    },
+    "kiosk_portable": {
+      "actual_exit": 0,
+      "passed_nodes": 2,
+      "passed_subtests": 10,
+      "inputs_current": true,
+      "rerun_after_startup": false,
+      "scope": "Exact trusted kiosk inline Python with fake import/probe; no shell/product/native/power action"
+    },
+    "ruff": {
+      "actual_exits": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "inputs_current": true,
+      "receipt": "static-shared-fixture.json",
+      "rerun_after_fixture_change": true
+    },
+    "types": {
+      "actual_exit": 0,
+      "checked_source_files": 52,
+      "inputs_current": true,
+      "scope": "Windows-hosted whole-source static type analysis with Linux/Python3.11 stubs; no product/runtime imports; not canonical actual-Linux execution",
+      "notes": "Five unchanged annotation-unchecked notes; untyped bodies remain outside the configured default analysis",
+      "rerun_after_fixture_change": false,
+      "actual_run_source_identity": "98c84bc2a52d9a633fc5bd0be76318d4c6160666146f6ab4bfc74f48245d0d34",
+      "current_exact_52_inputs_match": true
+    },
+    "sound_scope_reuse": {
+      "passed_nodes": 2,
+      "passed_subtests": 14,
+      "rerun": false,
+      "test_AST_identical": true,
+      "source_and_current_test_bytes_match": true,
+      "receipt_sha256": "cac6d5971980868b0d1e97e0b7cdaedf0ab351f884e80c0e88b5ac3bca3e5c0c"
+    },
+    "actual_new_startup_linux_cases": 30,
+    "new_startup_linux_pytest": "NOT RUN; Linux admission blocked",
+    "actual_shell_kiosk_new_cases": 11,
+    "kiosk_actual_shell": "NOT RUN; Linux admission blocked",
+    "linux_acceptance": false,
+    "full_source_acceptance": false,
+    "native_acceptance": false,
+    "artifact_acceptance": false,
+    "physical_acceptance": false,
+    "prior_receipt_handling": "Old R5 whole-file portable and R6 type bindings superseded by fresh current-source runs, never overwritten. Kiosk and scoped sound evidence reused only after current byte/AST checks.",
+    "fixture_correction": {
+      "whole_test_module_AST_preserved_after_removing_only_two_mocks": true,
+      "original_assertions_preserved": true,
+      "production_source_unchanged": true,
+      "before_sha256": "f457aaa086f3104cb247a04a3bc8c9d710a69815841bbc0f824dfc69586ea414",
+      "after_sha256": "2cff8305d277f1c1bc9acc759ef6ed5630c02908ee9ab21078ddc6865294fb61",
+      "observations": [
+        {
+          "version": "before",
+          "ambient_busy": true,
+          "case": "receipt",
+          "change": false,
+          "ambient_probe_calls": 1,
+          "wants_shutdown": false,
+          "screen": "DIAGNOSTIC",
+          "matches": false
+        },
+        {
+          "version": "before",
+          "ambient_busy": true,
+          "case": "receipt",
+          "change": true,
+          "ambient_probe_calls": 1,
+          "wants_shutdown": false,
+          "screen": "DIAGNOSTIC",
+          "matches": true
+        },
+        {
+          "version": "before",
+          "ambient_busy": true,
+          "case": "failure",
+          "change": null,
+          "ambient_probe_calls": 1,
+          "wants_shutdown": false,
+          "screen": "DIAGNOSTIC",
+          "matches": false
+        },
+        {
+          "version": "before",
+          "ambient_busy": false,
+          "case": "receipt",
+          "change": false,
+          "ambient_probe_calls": 1,
+          "wants_shutdown": true,
+          "screen": "DIAGNOSTIC",
+          "matches": true
+        },
+        {
+          "version": "before",
+          "ambient_busy": false,
+          "case": "receipt",
+          "change": true,
+          "ambient_probe_calls": 1,
+          "wants_shutdown": false,
+          "screen": "SHUTDOWN_CONFIRM",
+          "matches": true
+        },
+        {
+          "version": "before",
+          "ambient_busy": false,
+          "case": "failure",
+          "change": null,
+          "ambient_probe_calls": 1,
+          "wants_shutdown": false,
+          "screen": "SHUTDOWN_CONFIRM",
+          "matches": true
+        },
+        {
+          "version": "after",
+          "ambient_busy": true,
+          "case": "receipt",
+          "change": false,
+          "ambient_probe_calls": 0,
+          "wants_shutdown": true,
+          "screen": "DIAGNOSTIC",
+          "matches": true
+        },
+        {
+          "version": "after",
+          "ambient_busy": true,
+          "case": "receipt",
+          "change": true,
+          "ambient_probe_calls": 0,
+          "wants_shutdown": false,
+          "screen": "SHUTDOWN_CONFIRM",
+          "matches": true
+        },
+        {
+          "version": "after",
+          "ambient_busy": true,
+          "case": "failure",
+          "change": null,
+          "ambient_probe_calls": 0,
+          "wants_shutdown": false,
+          "screen": "SHUTDOWN_CONFIRM",
+          "matches": true
+        }
+      ],
+      "expected_before_fixture_mismatches": 2,
+      "after_mismatches": 0,
+      "scope": "Exact inserted mock statements and exact live predicate/shutdown methods with minimal inert report state; full existing test bodies independently covered by reviewer, no actual Linux pytest or host inspection"
+    },
+    "corrected_old_report_linux_tests": "NOT RUN; three declared cases in two original functions, assertions unchanged",
+    "last_source_delta": "Only two existing test fixtures changed; all 18 portable/52 type/kiosk byte inputs unchanged and rebound. Current Ruff rerun; fixture AST cases are not actual Linux pytest.",
+    "shared_fixture_correction": {
+      "files": {
+        "test_usb_report_workflow.py": {
+          "before_sha256": "3715d4352dfb8adb54e9f6033423604f60bc6511628e55d62940e9a44f540d09",
+          "after_sha256": "41ae795cac891c52494b73009b0c7a0bc48333d26a6dc13b4e2e803bf048560b",
+          "original_module_AST_and_assertions_preserved": true
+        },
+        "test_startup_diagnostics.py": {
+          "before_sha256": "e6c91c9dc4dc090e43c1f5cbb579e4cc6bbaff1dd8adc1e7877950901c7d18d7",
+          "after_sha256": "a5409d9a659a7f7c7a97049ec411edafe40e5f7bad776a93d98a988fede554b5",
+          "original_module_AST_and_assertions_preserved": true
+        }
+      },
+      "only_test_files_changed": [
+        "tests/test_startup_diagnostics.py",
+        "tests/test_usb_report_workflow.py"
+      ],
+      "production_and_new_startup_regressions_unchanged": true,
+      "before": "8 existing report-test failures +8 clear controls under exact shared fixture",
+      "after": "16 existing report-test cases match; no ambient inspection",
+      "direct_live_guard_controls": [
+        {
+          "busy": true,
+          "shutdown_refused": true,
+          "process_inspected": true
+        },
+        {
+          "busy": null,
+          "shutdown_refused": true,
+          "process_inspected": true
+        },
+        {
+          "busy": "OSError",
+          "shutdown_refused": true,
+          "process_inspected": true
+        }
+      ],
+      "scope": "Exact old test bodies/shared fixture and full constructor/guard AST, inert discovery/evidence/process boundaries; no actual Linux pytest/native qualification",
+      "known_limit": "The shared report fixture deliberately replaces the independent external-engine predicate only on its own inert controller; dedicated direct live guard/startup tests use original method and remain required"
+    },
+    "actual_shared_fixture_linux_pytest": "NOT RUN; original Linux/full gate blocked"
+  },
+  "observation": {
+    "utc": "2026-10-26T03:11:12.954434+00:00",
+    "source": "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2",
+    "branch": "codex/wipe-audit-20261024",
+    "head": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+    "functional_count": 934,
+    "functional_identity": "25ff560c06cbba0ce405603e71a735af452c13a0afb81f77d23ecdf5a191dc9e",
+    "functional_source_matches_frozen": true,
+    "staged": [],
+    "whitespace": "PASS",
+    "resources": {
+      "free_bytes": 2150330368,
+      "available_ram_bytes": 7505334272,
+      "total_ram_bytes": 16946950144
+    },
+    "peer_captured_input_drift": [],
+    "peer_head": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+    "lab_head": "d3d0959bb26b17531464dbd1ba233d4d842ad581",
+    "lab_status": " M .ai/memory/MEMORY.md\n?? .ai/memory/UNFINISHED-2026-10-14.md\n",
+    "guide_hashes": {
+      "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2\\AGENTS.md": "1e6f980d50267db488a9beb353802242ac57379450c1d9c0ad77c13928509290",
+      "C:\\Users\\Jack\\dev\\AGENTS.md": "3a874239597d7a2a6e41cf4699e8d7d8fec8e3cbb8f2ee55b2a66661bc935d77",
+      "C:\\Users\\Jack\\beamo-remote-lab\\AGENTS.md": "e2f869ea37412be19601585a76abd9a76d29ae8217f1a30beef254128aeb43a0",
+      "C:\\Users\\Jack\\beamo-remote-lab\\README.md": "6d80b332b0e32a611158760ca26e5440876688b780dd3e294e4a94b6f24dfa35",
+      "C:\\Users\\Jack\\beamo-remote-lab\\docs\\runbook.md": "97d892280a1926e5ad68249cd83f288ee9554bdb5454d64e8ec1e29f2e2f9a0e"
+    },
+    "guide_drift": []
+  },
+  "parent_validations": {
+    "completion": {
+      "disposition": "BOUNDED NO OBJECTION",
+      "scoped_source_count": 8,
+      "current_source_matches": true,
+      "sealed_files": 36,
+      "supplemental_hashes": {
+        "seal.json": "e077e9af268e32caa08276e77d2b28a7adf562631414d049e4e770a2306efd0b",
+        "seal-command-receipt.json": "44d39da0e5973255628d9f4a60661063a5cf55a4c4666279113aa4a800d99903"
+      },
+      "reviewer_model_observations": 355,
+      "parent_reran_probes": false,
+      "scope": "Parent read report/critical oracle descriptions, checked source and packet hashes; no full/native qualification"
+    },
+    "lifecycle": {
+      "disposition": "BOUNDED NO OBJECTION to production; one preexisting P3 documentation mismatch",
+      "scoped_source_and_context_count": 36,
+      "current_inputs_match": true,
+      "sealed_files": 23,
+      "supplemental_hashes": {
+        "packet-manifest.json": "5aa0df2b84443a2cf91428d86868cdd038a66fa29e1578f07cde7ecc70927cc7"
+      },
+      "reviewer_lifecycle_observations": 149,
+      "reviewer_preflight_controls": 21,
+      "parent_reran_probes": false,
+      "finding": "R7-LIFE-DOC-1: parent independently read exact resume/begin/enable code and existing owner-flow regression; row is stale",
+      "scope": "Source and packet readback before parent documentation correction; native/full checks remain unavailable"
+    },
+    "build": {
+      "disposition": "BOUNDED NO OBJECTION",
+      "scoped_source_count": 40,
+      "current_source_matches": true,
+      "sealed_files": 24,
+      "supplemental_hashes": {
+        "evidence-seal.json": "50a74e74aaea96f3f785407c97c41d6e2ce86501550d19cbf561472a07529f59",
+        "closing-command.json": "43b430d92bc0ff57479f555747026fe33e4aa890543fc3e46de54ad4894c78cc"
+      },
+      "reviewer_model_observations": 100,
+      "parent_reran_probes": false,
+      "scope": "Parent read result/critical contract scope and independently verified current source and packet; no actual shell/build/native qualification"
+    },
+    "kiosk": {
+      "disposition": "BOUNDED NO OBJECTION at source/model level",
+      "packet_files": 21,
+      "sealed_member_hashes_match": true,
+      "current_scoped_inputs_match": true,
+      "scoped_inputs": 43,
+      "complete_input_stability_command_exit": 1,
+      "documented_drift": [
+        "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2\\.ai\\memory\\unfinished-work.md"
+      ],
+      "review_observations": 370,
+      "staging_memory_cases": 8,
+      "parent_reran_probes": false,
+      "product_or_native_qualification": false,
+      "closing_receipt": {
+        "close_command": "py -3 -I -B 'C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r7\\kiosk-fix-review-r2\\close_review.py'",
+        "actual_close_exit": 0,
+        "actual_close_wall_seconds": 2.6089516,
+        "close_stdout": {
+          "unique_scoped_inputs": 43,
+          "functional_inputs": 20,
+          "functional_drift": [],
+          "documentation_drift": [
+            ".ai/memory/unfinished-work.md"
+          ],
+          "sealed_files": 21,
+          "sealed_bytes": 192942,
+          "disposition": "bounded no objection"
+        },
+        "final_readback_command": "py -3 -I -B -c \"from pathlib import Path; import hashlib,json; p=Path(r'C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r7\\kiosk-fix-review-r2'); m=json.loads((p/'manifest.json').read_text()); bad=[n for n,v in m['files'].items() if {'bytes':len((p/n).read_bytes()),'sha256':hashlib.sha256((p/n).read_bytes()).hexdigest()}!=v]; assert not bad,bad; print(json.dumps({'sealed_files':len(m['files']),'mismatches':bad,'manifest_sha256':hashlib.sha256((p/'manifest.json').read_bytes()).hexdigest(),'bytes_before_post_execution_receipt':sum(x.stat().st_size for x in p.iterdir() if x.is_file())}))\"",
+        "actual_readback_exit": 0,
+        "actual_readback_wall_seconds": 5.2667008,
+        "readback": {
+          "sealed_files": 21,
+          "mismatches": [],
+          "manifest_sha256": "93b7990d099cbd5cff1f26121b48d854265aa665bfb6ac0596750636f0b4ae73",
+          "bytes_before_post_execution_receipt": 196250
+        },
+        "excluded_from_manifest": true,
+        "reason": "Post-execution receipt; manifest explicitly excludes it and its own self-hash.",
+        "final_git_observation": {
+          "actual_exit": 0,
+          "head": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+          "branch": "codex/wipe-audit-20261024",
+          "scoped_status": "kiosk/recovery test modified; identity test untracked; no reviewer source writes"
+        }
+      },
+      "manifest_sha256": "93b7990d099cbd5cff1f26121b48d854265aa665bfb6ac0596750636f0b4ae73",
+      "scope": "Parent read the complete result, exact source decisions and staged import reasoning; independently checked packet and scoped byte bindings. Native, Debian import and actual shell checks remain unavailable."
+    },
+    "startup": {
+      "disposition": "CONFIRMED PREEXISTING P2 source finding, corrected separately",
+      "scoped_inputs": 15,
+      "packet_members": 44,
+      "checksum_entries": 45,
+      "all_packet_hashes_match": true,
+      "pre_fix_wizard_retained_and_matches": true,
+      "remaining_current_source_matches": true,
+      "parent_source_readback_before_edit": "parent-startup-prefix-validation.json",
+      "final_probe_actual_exit": 0,
+      "close_actual_exit": 0,
+      "expected_red_cases": 6,
+      "matching_controls": 28,
+      "parent_reran_probe": false,
+      "native_or_real_power_acceptance": false,
+      "closing_binding_sha256": "241d5dc32a399b7d33ea575dd2f8ee4c5c0c7b7555862ed78329338734e708a8",
+      "file_manifest_sha256": "ca173763ea6c92f58fd4ece37fc783112d684643dcb7324721f0cec2e7d21be8"
+    },
+    "startup-fix": {
+      "current_source_matches": true,
+      "production_no_objection": true,
+      "no_remaining_concrete_objection": false,
+      "open_objection": "P3: two existing diagnostic-report tests require explicit fake clear-engine probe",
+      "new_regression_cases": 30,
+      "new_cases_AST_replayed": true,
+      "actual_linux_pytest": false,
+      "scoped_source_inputs": 15,
+      "all_packet_members_match": true,
+      "sealed_files": 59,
+      "actual_successful_exits": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "parent_reran_matrices": false,
+      "manifest_actual_byte_sha256": "5f7e3bc5151e6dac02a2e87f5112f3785fdab6c648e9417dbeb43f163e6efd80",
+      "reviewer_manifest_hash_scope": "LF-normalized text, independently checked; actual Windows manifest byte hash recorded separately",
+      "manifest_normalized_text_sha256": "6c6d5ce713c06667da1a02aa9036b90548944ffa9a6c5f13085f2de4491674c1",
+      "scope": "Parent read full result, exact new test bodies and affected-test proof/source; independently bound all current inputs and packet members before fixture correction",
+      "production_current_sha256": "d606c6e2ef791cbf8df11b34973e133a1a8b46c84d43af551cb551c035ecbe17"
+    },
+    "report-fixture": {
+      "current_source_matches": true,
+      "no_remaining_concrete_objection": true,
+      "scope": "Only the two diagnostic-report fixtures; a separate shared report helper dependency is now independently established by parent and remains open",
+      "current_target_fixtures_and_52_production_inputs_match": true,
+      "subsequent_input_delta": "Shared report fixture changed after R4; exact reviewed bytes recovered and verified against frozen/R4 hashes. No blanket current sixty-input claim.",
+      "scoped_inputs": 60,
+      "production_python_files": 52,
+      "preserved_assertions": 69,
+      "corrected_fixture_invocations": 6,
+      "independent_controls": 9,
+      "all_packet_members_match": true,
+      "sealed_members": 18,
+      "manifest_actual_byte_sha256": "3f33858522ca4abf2f692f3a90b45af0ffae4cae0eb2e2c278c33428edc6c12f",
+      "closure_actual_exit": 0,
+      "parent_reran_reviewer_cases": false,
+      "native_acceptance": false,
+      "actual_linux_pytest": false
+    },
+    "shared-fixture": {
+      "utc": "2026-10-26T03:25:36.200949+00:00",
+      "status": "BOUNDED NO OBJECTION; parent source and packet checks passed",
+      "current_source_matches": true,
+      "no_remaining_concrete_objection": true,
+      "scoped_functional_inputs": 73,
+      "production_python_files": 52,
+      "context_inputs": 28,
+      "original_assertions_preserved": {
+        "tests/test_usb_report_workflow.py": 180,
+        "tests/test_startup_diagnostics.py": 65
+      },
+      "caller_modules": 14,
+      "direct_caller_functions": 59,
+      "indirect_wrapper_users": 2,
+      "exact_shared_consumers": 61,
+      "packet_payload_members": 28,
+      "packet_payload_bytes": 190508,
+      "actual_manifest_receipt": {
+        "bytes": 2515,
+        "sha256": "7bb0258135c6d3eb1172e17a2f40c26dcadea59d061bcdd31874c58da079448f"
+      },
+      "command_exits": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "retained_adapter_failure": true,
+      "parent_count_adapter_attempt1_exit": 1,
+      "parent_count_adapter_correction": "59 direct functions plus 2 separately bound indirect wrapper users, totaling 61; source and AST preservation checks unchanged",
+      "fake_report_observations": 32,
+      "fake_diagnostic_observations": 8,
+      "independent_fake_controls": 19,
+      "assessment": "Instance-only report override and local diagnostic monkeypatch preserve original test AST/assertions; dedicated production engine-refusal tests stay independent. Independent expected outcomes reviewed; no concrete objection within this scope.",
+      "qualification": "Source and packet validation only. Reviewer fake observations were inspected, not rerun or counted as pytest; actual Linux fixture execution/teardown, full/native/artifact/physical acceptance remain unrun or blocked.",
+      "release_qualified": false,
+      "actual_linux_acceptance": false,
+      "native_acceptance": false
+    }
+  },
+  "syntax_files": 745,
+  "embedded_python_syntax": "PASS",
+  "old_backlog_suffix_sha256": "266acb6d9b98dee3c286e3dd219c510be491df6a881cd611dacbf8a05ff1cf7a",
+  "release_qualified": false,
+  "actual_linux_acceptance": false,
+  "native_acceptance": false,
+  "artifact_acceptance": false,
+  "physical_acceptance": false,
+  "canonical_hashes": {
+    "docs\\evidence\\bug-audit-20261025-pass7\\README.md": "8a1f68d34af44e8c9e5a5ec3ca11aa2b7417a0fd9c2914d437b5cb5c6a4ce1b8",
+    "docs\\evidence\\bug-audit-20261025-pass7\\reviews.json": "cf7f7b1a06785c0fda39dd8ed77e5c68af487a28550c99b8a66e7144f04e1f85",
+    ".ai\\memory\\unfinished-work.md": "a9b4d13c22eb69e91f6db94c8e45b9f57063a22946833ec271f9ccf3051315f3"
+  },
+  "raw_seal": {
+    "path": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r7\\evidence-seal.json",
+    "sha256": "30f542957ca02e41c9d28d375c0acb1af61961c3b428e6bb2a46f75f7d2b91d6",
+    "files": 662,
+    "bytes": 19762004,
+    "readback": true
+  }
+}

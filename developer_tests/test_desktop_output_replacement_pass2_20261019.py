@@ -8,6 +8,8 @@ from pathlib import Path
 
 import pytest
 
+from native_mutation import NativeMutation
+
 
 class WindowsOSProxy:
     name = "nt"
@@ -154,7 +156,7 @@ def test_build_preserves_foreign_launcher_replacement(
 @pytest.mark.parametrize("prior", [False, True])
 @pytest.mark.parametrize("kind", ["symlink", "directory"])
 def test_build_preserves_nonregular_output_appearing_during_compilation(
-    builder, tmp_path, monkeypatch, host, prior, kind
+    builder, tmp_path, monkeypatch, request, host, prior, kind
 ):
     output = _setup(builder, tmp_path, monkeypatch, host, prior)
     target = output / builder.LAUNCHERS[0]
@@ -162,6 +164,7 @@ def test_build_preserves_nonregular_output_appearing_during_compilation(
     outside.write_bytes(b"foreign bytes")
     original_build = builder.subprocess.check_call
     calls = 0
+    mutation = NativeMutation(request)
 
     def compile_then_insert(*args, **kwargs):
         nonlocal calls
@@ -170,17 +173,25 @@ def test_build_preserves_nonregular_output_appearing_during_compilation(
         if calls == 1:
             target.unlink(missing_ok=True)
             if kind == "symlink":
-                target.symlink_to(outside)
+                with mutation.operation(1314, unchanged=(outside,)):
+                    target.symlink_to(outside)
             else:
-                target.mkdir()
-                (target / "user-data").write_bytes(b"owned directory content")
+                with mutation.operation():
+                    target.mkdir()
+                    (target / "user-data").write_bytes(b"owned directory content")
 
     monkeypatch.setattr(builder.subprocess, "check_call", compile_then_insert)
-    with pytest.raises((RuntimeError, OSError)):
+    with pytest.raises((RuntimeError, OSError)) as caught:
         builder.build(output)
     assert outside.read_bytes() == b"foreign bytes"
-    if kind == "symlink":
+    if mutation.was_denied(caught):
+        assert kind == "symlink"
+        assert not target.exists()
+        assert not target.is_symlink()
+        assert calls == 1
+    elif kind == "symlink":
         assert target.is_symlink()
     else:
         assert (target / "user-data").read_bytes() == b"owned directory content"
     assert not (output / "desktop-build.json").exists()
+    assert not (output / ".build.lock").exists()

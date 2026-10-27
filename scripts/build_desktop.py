@@ -55,13 +55,13 @@ def _require_output_directory(output: Path, *, create: bool = False) -> int | No
     try:
         directory_fd = os.open("/", flags)
         try:
-            for component in output.absolute().parts[1:]:
+            for part in output.absolute().parts[1:]:
                 if create:
                     try:
-                        os.mkdir(component, dir_fd=directory_fd)
+                        os.mkdir(part, dir_fd=directory_fd)
                     except FileExistsError:
                         pass
-                next_fd = os.open(component, flags, dir_fd=directory_fd)
+                next_fd = os.open(part, flags, dir_fd=directory_fd)
                 os.close(directory_fd)
                 directory_fd = next_fd
             if os.fstat(directory_fd).st_uid != os.getuid():
@@ -203,10 +203,16 @@ def _read_output_file(
         return os.stat(name, dir_fd=output_fd, follow_symlinks=False)
 
     def identity(info):
+        # Windows path stat infers execute bits from suffixes such as .exe;
+        # fstat has no filename and does not infer those bits. Compare each
+        # API's full mode separately below, retaining all real mode changes.
+        mode = info.st_mode
+        if sys.platform == "win32":
+            mode &= ~(stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
         return (
             info.st_dev,
             info.st_ino,
-            info.st_mode,
+            mode,
             info.st_uid,
             info.st_nlink,
             info.st_size,
@@ -268,6 +274,8 @@ def _read_output_file(
         or before.st_ctime_ns != named.st_ctime_ns
         or not (opened.st_ctime_ns == after_read.st_ctime_ns == after.st_ctime_ns)
         or (output_fd is not None and before.st_ctime_ns != opened.st_ctime_ns)
+        or before.st_mode != named.st_mode
+        or not (opened.st_mode == after_read.st_mode == after.st_mode)
     ):
         raise OSError("desktop output file changed during read")
     return data
@@ -831,7 +839,7 @@ def build(output=None):
         try:
             try:
                 if output_fd is None:
-                    with manifest.open("x", encoding="utf-8") as stream:
+                    with manifest.open("x", encoding="utf-8", newline="\n") as stream:
                         manifest_owned = os.fstat(stream.fileno())
                         stream.write(manifest_bytes)
                 else:
@@ -842,7 +850,9 @@ def build(output=None):
                         dir_fd=output_fd,
                     )
                     manifest_owned = os.fstat(manifest_fd)
-                    with os.fdopen(manifest_fd, "w", encoding="utf-8") as stream:
+                    with os.fdopen(
+                        manifest_fd, "w", encoding="utf-8", newline="\n"
+                    ) as stream:
                         stream.write(manifest_bytes)
             except FileExistsError as exc:
                 raise RuntimeError(

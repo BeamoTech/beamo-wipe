@@ -22,7 +22,7 @@ def test_finalize_does_not_follow_checksum_symlink(build_provenance, monkeypatch
     manifest = json.loads(manifest_path.read_text())
     monkeypatch.setattr(ci_evidence, "load_receipts", lambda _directory: [])
     monkeypatch.setattr(rm, "generate_manifest", lambda **_kwargs: manifest)
-    monkeypatch.setattr(rm, "verify_manifest", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(rm, "verify_manifest", lambda path, **_kwargs: path.read_bytes())
 
     ci_evidence.finalize(root)
 

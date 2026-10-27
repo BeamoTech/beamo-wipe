@@ -1,0 +1,271 @@
+{
+  "scope": "Exact bodies of the 41 security regression cases, with fake OS/FD/path/process/power imports. The journal fixture is adapted to the integrated controller. No product-module imports or native pytest acceptance.",
+  "cases": 41,
+  "matching": 41,
+  "rows": [
+    {
+      "case": "terminal-damaged-everyday-0",
+      "match": true
+    },
+    {
+      "case": "terminal-damaged-everyday-1",
+      "match": true
+    },
+    {
+      "case": "terminal-damaged-everyday-2",
+      "match": true
+    },
+    {
+      "case": "terminal-damaged-everyday-3",
+      "match": true
+    },
+    {
+      "case": "test_exact_decimal_above_one_hundred_is_not_completion-everyday",
+      "match": true
+    },
+    {
+      "case": "test_other_device_update_does_not_clear_target_completion-everyday",
+      "match": true
+    },
+    {
+      "case": "test_independent_erased_table_remains_completion_proof-everyday",
+      "match": true
+    },
+    {
+      "case": "projection-everyday",
+      "match": true
+    },
+    {
+      "case": "terminal-damaged-extra-0",
+      "match": true
+    },
+    {
+      "case": "terminal-damaged-extra-1",
+      "match": true
+    },
+    {
+      "case": "terminal-damaged-extra-2",
+      "match": true
+    },
+    {
+      "case": "terminal-damaged-extra-3",
+      "match": true
+    },
+    {
+      "case": "test_exact_decimal_above_one_hundred_is_not_completion-extra",
+      "match": true
+    },
+    {
+      "case": "test_other_device_update_does_not_clear_target_completion-extra",
+      "match": true
+    },
+    {
+      "case": "test_independent_erased_table_remains_completion_proof-extra",
+      "match": true
+    },
+    {
+      "case": "projection-extra",
+      "match": true
+    },
+    {
+      "case": "terminal-damaged-quick_zero-0",
+      "match": true
+    },
+    {
+      "case": "terminal-damaged-quick_zero-1",
+      "match": true
+    },
+    {
+      "case": "terminal-damaged-quick_zero-2",
+      "match": true
+    },
+    {
+      "case": "terminal-damaged-quick_zero-3",
+      "match": true
+    },
+    {
+      "case": "test_exact_decimal_above_one_hundred_is_not_completion-quick_zero",
+      "match": true
+    },
+    {
+      "case": "test_other_device_update_does_not_clear_target_completion-quick_zero",
+      "match": true
+    },
+    {
+      "case": "test_independent_erased_table_remains_completion_proof-quick_zero",
+      "match": true
+    },
+    {
+      "case": "projection-quick_zero",
+      "match": true
+    },
+    {
+      "case": "activity-0",
+      "match": true
+    },
+    {
+      "case": "activity-1",
+      "match": true
+    },
+    {
+      "case": "activity-2",
+      "match": true
+    },
+    {
+      "case": "normalized-budget-True",
+      "match": true
+    },
+    {
+      "case": "normalized-budget-False",
+      "match": true
+    },
+    {
+      "case": "deferred-budget",
+      "match": true
+    },
+    {
+      "case": "live-DryRunner-False",
+      "match": true
+    },
+    {
+      "case": "live-DryRunner-True",
+      "match": true
+    },
+    {
+      "case": "live-DryRunner-None",
+      "match": true
+    },
+    {
+      "case": "live-DryRunner-error",
+      "match": true
+    },
+    {
+      "case": "live-RealRunner-False",
+      "match": true
+    },
+    {
+      "case": "live-RealRunner-True",
+      "match": true
+    },
+    {
+      "case": "live-RealRunner-None",
+      "match": true
+    },
+    {
+      "case": "live-RealRunner-error",
+      "match": true
+    },
+    {
+      "case": "inert-dry_run",
+      "match": true
+    },
+    {
+      "case": "inert-preview",
+      "match": true
+    },
+    {
+      "case": "startup-fallback",
+      "match": true
+    }
+  ],
+  "bindings": [
+    {
+      "path": "tests/test_security_terminal_progress.py",
+      "file_sha256": "00743f8e9d2fc28765d62516d65c3fb2314025347773b3b354d6a33e8fd9bab3",
+      "name": "final_sample",
+      "line": 19,
+      "ast_sha256": "9b93986cdd118425a57fe289c1d311b3306423feca2d5ec81a4b970cba21db7a"
+    },
+    {
+      "path": "tests/test_security_terminal_progress.py",
+      "file_sha256": "00743f8e9d2fc28765d62516d65c3fb2314025347773b3b354d6a33e8fd9bab3",
+      "name": "test_damaged_target_update_clears_prior_completion",
+      "line": 39,
+      "ast_sha256": "e247990d08603098eba65884ca54b4d2e7cd04b63086fba4c98c5d00f5758729"
+    },
+    {
+      "path": "tests/test_security_terminal_progress.py",
+      "file_sha256": "00743f8e9d2fc28765d62516d65c3fb2314025347773b3b354d6a33e8fd9bab3",
+      "name": "test_exact_decimal_above_one_hundred_is_not_completion",
+      "line": 48,
+      "ast_sha256": "0c9dd9579d18ef6f29986e4c07dc59dda8dcd7e90f83a46fefcc131e21efbbc6"
+    },
+    {
+      "path": "tests/test_security_terminal_progress.py",
+      "file_sha256": "00743f8e9d2fc28765d62516d65c3fb2314025347773b3b354d6a33e8fd9bab3",
+      "name": "test_other_device_update_does_not_clear_target_completion",
+      "line": 57,
+      "ast_sha256": "5ee3d04d33fd7af9e9c7ff268e92f9ca2f4a6b04f18e9418b62fefe7932147c8"
+    },
+    {
+      "path": "tests/test_security_terminal_progress.py",
+      "file_sha256": "00743f8e9d2fc28765d62516d65c3fb2314025347773b3b354d6a33e8fd9bab3",
+      "name": "test_independent_erased_table_remains_completion_proof",
+      "line": 63,
+      "ast_sha256": "315bc9b233636c2bfc639e600d962319e07bdd5d8cb07c3b59c7207723cf656f"
+    },
+    {
+      "path": "tests/test_security_terminal_progress.py",
+      "file_sha256": "00743f8e9d2fc28765d62516d65c3fb2314025347773b3b354d6a33e8fd9bab3",
+      "name": "test_damaged_progress_cannot_support_nothing_erased",
+      "line": 81,
+      "ast_sha256": "a3e45cf6f446493e69901512caf10d904af20dfe95468b12c87b6f9e11454e5b"
+    },
+    {
+      "path": "tests/test_security_terminal_progress.py",
+      "file_sha256": "00743f8e9d2fc28765d62516d65c3fb2314025347773b3b354d6a33e8fd9bab3",
+      "name": "scan_fixture",
+      "line": 86,
+      "ast_sha256": "249a4eb8fee6ea5b3f55bd401fb2089b46b53b83e025c36c3a5d2e718fa310b9"
+    },
+    {
+      "path": "tests/test_security_terminal_progress.py",
+      "file_sha256": "00743f8e9d2fc28765d62516d65c3fb2314025347773b3b354d6a33e8fd9bab3",
+      "name": "test_large_log_projection_preserves_damaged_latest_record",
+      "line": 96,
+      "ast_sha256": "a7e28375d02547864917e77891bc992ce6141d665a0f4453dda9a8e9246d438a"
+    },
+    {
+      "path": "tests/test_security_terminal_progress.py",
+      "file_sha256": "00743f8e9d2fc28765d62516d65c3fb2314025347773b3b354d6a33e8fd9bab3",
+      "name": "test_scanner_budget_counts_normalized_utf8",
+      "line": 108,
+      "ast_sha256": "d83c9aae7bff54f9697f07de1890724e307c69169e0712fa45e297f4616bc1ad"
+    },
+    {
+      "path": "tests/test_security_terminal_progress.py",
+      "file_sha256": "00743f8e9d2fc28765d62516d65c3fb2314025347773b3b354d6a33e8fd9bab3",
+      "name": "test_scanner_budget_includes_deferred_progress",
+      "line": 118,
+      "ast_sha256": "d9567150d7c723a591656970acd447cd5a7e26e96b4d5d4eb654fd7730402caa"
+    },
+    {
+      "path": "tests/test_security_startup_power_guard.py",
+      "file_sha256": "de3f6c131255e970971f57970ac17f8b225d3cdef44db38a457d5ff1e852aa6c",
+      "name": "idle_wizard",
+      "line": 13,
+      "ast_sha256": "718a8b57b4a81ae98846d8df3b83f357c19e92cd84fed75c6c54aced2d12b9b6"
+    },
+    {
+      "path": "tests/test_security_startup_power_guard.py",
+      "file_sha256": "de3f6c131255e970971f57970ac17f8b225d3cdef44db38a457d5ff1e852aa6c",
+      "name": "test_live_power_request_checks_external_engine",
+      "line": 33,
+      "ast_sha256": "aaeb526f09d15896e76972d9f7c24e88a42c2b2ae87e2ece30dc60bba07eac6d"
+    },
+    {
+      "path": "tests/test_security_startup_power_guard.py",
+      "file_sha256": "de3f6c131255e970971f57970ac17f8b225d3cdef44db38a457d5ff1e852aa6c",
+      "name": "test_inert_modes_do_not_probe_live_processes",
+      "line": 52,
+      "ast_sha256": "8603eaeb84d71dd7c6f2657cfc6492e374602ac74c4c55ed7ba1edd61dabd0f1"
+    },
+    {
+      "path": "tests/test_security_startup_power_guard.py",
+      "file_sha256": "de3f6c131255e970971f57970ac17f8b225d3cdef44db38a457d5ff1e852aa6c",
+      "name": "test_startup_fallback_remains_live_for_power_safety",
+      "line": 63,
+      "ast_sha256": "f3120068b3347be0b1052ccf02b02490861497b17e82766936b3a36c324d4b07"
+    }
+  ]
+}

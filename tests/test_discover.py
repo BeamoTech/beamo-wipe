@@ -1443,13 +1443,16 @@ def test_mmcblk_boot_and_rpmb_are_hidden():
     assert "/dev/mmcblk0rpmb" not in {d.path for d in result.disks}
 
 
-def test_discovery_boot_is_the_identified_usb_not_a_protected_mount():
+def test_discovery_boot_is_the_identified_usb_not_a_protected_mount(
+    monkeypatch, tmp_path
+):
     """Internal disk mounted at / must not steal discovery.boot / --exclude."""
     from beamo_wipe.discover import parse_lsblk_json
     from beamo_wipe.models import MethodId, WipeRequest
     from beamo_wipe.nwipe_runner import build_nwipe_argv
     from beamo_wipe.safety import selectable_disks
 
+    monkeypatch.setattr("beamo_wipe.safety.DEFAULT_LOG_DIR", tmp_path)
     payload = _payload(
         [
             {
@@ -1500,7 +1503,7 @@ def test_discovery_boot_is_the_identified_usb_not_a_protected_mount():
         device="/dev/nvme0n1",
         method=MethodId.EVERYDAY,
         boot_device=result.boot.path,
-        logfile="/tmp/beamo-wipe/nwipe-nvme0n1.log",
+        logfile=str(tmp_path / "nwipe-nvme0n1.log"),
     )
     argv = build_nwipe_argv(req)
     assert "--exclude=/dev/sdb" in argv

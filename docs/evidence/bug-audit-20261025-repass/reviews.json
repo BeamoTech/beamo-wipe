@@ -1,0 +1,440 @@
+{
+  "scope": "Delegated implementation and read-only review results. Fakes/source review do not qualify product/native/physical gates.",
+  "all_terminal": true,
+  "tasks": [
+    {
+      "round": "wipe-r3-20261025-runner",
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-runner",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-runner",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-runner:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-runner",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-runner:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "Two new defects reproduced with exact-source, in-memory probes.\n\n1. **P1 \u00e2\u20ac\u201d Malformed later progress can preserve stale success.**  \n   [nwipe_runner.py:900](/C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/src/beamo_wipe/nwipe_runner.py:900) silently skips malformed samples; the completion predicates retain an earlier 100% sample.\n\n   Reproduction: exit `0`, followed by these two LF-terminated records:\n\n   ```text\n   /dev/sda: 100.00%, round 1 of 1, pass 1 of 1, eta 00:00:00, [verifying]\n   /dev/sda: 010.00%, round 1 of 1, pass 1 of\n   ```\n\n   Actual `NwipeRunner.poll()` returns successful completion, and evidence reports **verified**. The corresponding three-pass and Quick zero cases also falsely succeed. Controls with a complete later 10% sample, or an unterminated final record, correctly refuse success.\n\n   Impact: a later damaged target update does not invalidate stale completion proof. Invalidate the progress fallback when a later target progress record is malformed; preserve the separate rules for independent Erased-table proof.\n\n2. **P2 \u00e2\u20ac\u201d Terminal assessment can support success that cannot be exported or recovered.**  \n   [evidence.py:321](/C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/src/beamo_wipe/evidence.py:321) evaluates the whole-log assessment but authenticates only the suffix. [Recovery:589](/C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/src/beamo_wipe/evidence.py:589) and the [export guard:1527](/C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/src/beamo_wipe/support_export.py:1527) recheck that suffix alone.\n\n   Reproduction: place genuine completion proof in `assessment_log_text` and retain only later diagnostic text in the authenticated suffix. Evidence presents **verified**; recovery returns **indeterminate**, and the exact export guard raises `EVIDENCE_LOG_META`. Matching-snapshot controls pass.\n\n   A deterministic interleaving also reproduced a concurrent progress refresh shrinking the cached terminal log from **10,209 to 8,000 bytes** during assessment, removing completion proof while the result remains verified. Persist authenticated assessment evidence and prevent progress refreshes from replacing the terminal snapshot.\n\nConfirmed branch `codex/wipe-audit-20261024`, HEAD `9764d93ac21273aa79ae4618629b0a30e3eda271`. SHA-256 values remained unchanged across probing:\n\n```text\nnwipe_runner.py\nd17e9e2bd0782271402e39f2c4ebdd82bce30f3259a400da4d63297e1d5d6377\nprogress.py\nfef87a29ceabb1fb97b8abc521d55cea1ceb9428989104973783da6eb52c4fa6\nevidence.py\n971724b3b911d8f1668557370641b8309bd9b0c23f5acdb6eac4bef2ef36cb00\nengine_checks.py\n7a9d4682ca7d90a0eeb6cff9ae24a520554552c701b2728ab8f9c21895f5e27e\n\nSupporting source inspected:\nsupport_export.py\n8e0ec8a30208592c9f542480ed4ee7d983dff74db7ec78096c9e4cfc95aef445\nwizard.py\na0fe1dfe53d128c55e86be280059164c3035b2ae7b058cb510b2f5f7daed93ae\nsession_recovery.py\ncf2443e391e184677b12c9d4356eb4314621aecb45244a425d6736823dd47948\noutcomes.py\n4af35b516e728d1b46fd8b242346c7ded29e61a0bbb9e827a617d155267bd8ba\nmodels.py\ne0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9\nmethods.py\nedf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13\n```\n\nThese prove parser/report behavior with fake I/O, not an incomplete real wipe or full export execution. No files changed, delegation, gates, services, guests, or device operations occurred. The supplied 913-input identity was not recomputed; no full-source or platform acceptance is claimed.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-runner:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:3532701f-229a-41fc-92be-4d69b4b57af6",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "round": "wipe-r3-20261025-recovery",
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-recovery",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-recovery",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-recovery:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-recovery",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-recovery:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "One new **P2 defect reproduced**: accepted shutdown is rejected afterward when the recovery journal is invalid.\n\nAt [wizard.py:1322](C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/src/beamo_wipe/wizard.py:1322), `shutdown_still_safe()` applies `_new_session_store_blocked()`, whose `store.invalid` check also rejects quiescent sessions. Earlier shutdown handlers accept the owner\u00e2\u20ac\u2122s explicit discard decision.\n\nExact-source AST reproduction, entirely in memory:\n\n1. Open a private fake journal containing corrupt JSON, a foreign build identity, or no journal beside an old log.\n2. Prove interface/wipe-lock ownership and absence of pinned nwipe.\n3. Choose Shutdown and confirm the current discard generation.\n4. Observe `wants_shutdown=True`, followed by `shutdown_still_safe()==False`; the extracted application power handler calls the fake power action **zero times**.\n\nAll three scenarios reproduced. A valid-journal control called fake power once; three busy-lock controls correctly blocked shutdown.\n\n**Impact:** journal corruption prevents application shutdown even after engine absence and explicit consent are established. The interface accepts the decision but exits without powering off. The documented recovery flow permits diagnostics and explicit loss decisions; it does not establish journal validity as a prerequisite for poweroff.\n\nSeparate shutdown safety from eligibility to begin another erase. Preserve lock/process checks and invalid-journal erasure restrictions.\n\nThe other **48 inert controls passed**, covering stale authorization, stop/shutdown confirmations, retry limits, finalization retry, report claim changes, receipt rejection and export failure cleanup. Optional-log permissions, export overlap and console EOF remain **unproved candidates**, not findings.\n\nReviewed HEAD: `9764d93ac21273aa79ae4618629b0a30e3eda271`, branch `codex/wipe-audit-20261024`, dirty. Primary reviewed raw-byte SHA-256 values:\n\n```text\nwizard.py\na0fe1dfe53d128c55e86be280059164c3035b2ae7b058cb510b2f5f7daed93ae\nsession_recovery.py\ncf2443e391e184677b12c9d4356eb4314621aecb45244a425d6736823dd47948\nsupport_export.py\n8e0ec8a30208592c9f542480ed4ee7d983dff74db7ec78096c9e4cfc95aef445\nreport_intent.py\ne4a1bf94aecfc3926b72973f2319ab3f8394e03a83737d11542c5a3670727c82\napp.py\n49455714801f83a3cc126ac3c2516b3655fb25790e08481593220d6d7c1e7e14\n```\n\nTargeted probe inputs remained byte-identical. No files edited or delegation performed. No gates, runtime services, WSL, guests, mounts or device operations were used. This review does **not** establish full-source or platform acceptance; the supplied 913-input aggregate was not independently recensused.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-recovery:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:9a4a1a58-3fb0-4e83-826a-ebb3d75beddc",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "round": "wipe-r3-20261025-discovery",
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-discovery",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-discovery",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-discovery:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-discovery",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-discovery:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "Two new findings reproduced with exact-source, in-memory fakes:\n\n1. **P2 \u00e2\u20ac\u201d Raw-disk ancestry can bypass refusal and the authorization snapshot.** [discover.py:2037](C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/src/beamo_wipe/discover.py:2037), [safety.py:644](C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/src/beamo_wipe/safety.py:644).\n\n   Reproduction: authorize an unmounted 500 GB `/dev/sda` with unique serial/WWN and boot `/dev/sdz`. At final rediscovery, change only the target row to include `\"pkname\": \"sdz\"`. The target remains selectable; target and inventory snapshots remain equal; boot exclusion and rediscovery checks pass. Exact `NwipeRunner.start()` reaches the fake `Popen` recorder with `--exclude=/dev/sdz` and `/dev/sda`. An unknown parent also reaches that boundary. Nested observations beneath mounted storage reproduce the same omission; a directly mounted target is correctly refused.\n\n   **Impact:** contradictory or unresolved physical ancestry does not reliably fail closed. This requires malformed observations; I have not demonstrated a normal kernel producing this raw-disk topology or any real erasure. Refuse eligible raw-disk rows with unresolved, cyclic or protected ancestry before authorization and execution.\n\n2. **P2 \u00e2\u20ac\u201d Local NVMe failover can hide an otherwise available target.** [safety.py:795](C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/src/beamo_wipe/safety.py:795).\n\n   Reproduction: model namespace head `nvme0n1` served by two PCIe controllers, `nvme0` and `nvme1`. Both initially pass. Remove only the fake `nvme0/transport` file while retaining the namespace and surviving `nvme1` PCIe path. Discovery returns no selectable target; launch refuses with `Cannot prove NVMe is locally attached`. The implementation reads only the controller name inferred from the namespace prefix.\n\n   Linux 6.1 names namespace heads using the subsystem instance and retains that instance after the original controller disappears. Resolve the namespace\u00e2\u20ac\u2122s surviving controllers through sysfs instead of assuming matching numbers. This is a kernel-source-supported availability scenario, reproduced only with fake sysfs. [Kernel naming](https://raw.githubusercontent.com/torvalds/linux/v6.1/drivers/nvme/host/multipath.c), [instance lifetime](https://raw.githubusercontent.com/torvalds/linux/refs/tags/v6.1/drivers/nvme/host/core.c).\n\n   **The earlier unrelated-controller bypass hypothesis is withdrawn:** Linux\u00e2\u20ac\u2122s instance reservation rules out the supplied topology.\n\nThe final bounded selection exited **0**: 48 alias controls, eight malformed-input controls and six recorded launch scenarios. No files were edited, and no gates, services, guests, native inventory or physical devices were invoked. This provides no full-source or platform acceptance.\n\nReviewed branch: `codex/wipe-audit-20261024`; HEAD: `9764d93ac21273aa79ae4618629b0a30e3eda271`.\n\nThe supplied entry aggregate was `ca24d8be91cf1f386d5d9d98573cb0306eb5eb0ea525c74f218bd3141e9ad62d`; I did not recompute the 913-input census. **The runner changed during review** from `d17e9e2bd0782271402e39f2c4ebdd82bce30f3259a400da4d63297e1d5d6377` to the hash below. Final probes and readback used these bytes:\n\n```text\ndiscover.py\na331d360824d1ad3a42928d8e9fdaf7ffa822940fa2bd8c827741f8a59c63fae\nsafety.py\n5cc1eeee4b220bc3f133b5933a1cd6aec382d14247156d3b4977b6b4af2e14f6\nnwipe_runner.py\n7787976b2084d6a01b1df2e86b16cc3154b8b29e5ed0b8ac9655da1df95ff345\nmodels.py\ne0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9\nmethods.py\nedf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13\n```",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-discovery:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:7c50cc99-287f-4252-a407-990fae24e6af",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "round": "wipe-r3-20261025-terminal-proof-r2",
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-terminal-proof-r2",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-terminal-proof-r2",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-terminal-proof-r2:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-terminal-proof-r2",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-terminal-proof-r2:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "P2 is **qualified to a concurrent runner-API race**. I retract the documented large-log limitation as a new defect. I did **not establish reachability through the shipped wizard**.\n\nThe original finding\u00e2\u20ac\u201dwhole-log assessment can succeed while the authenticated suffix cannot substantiate recovery/export\u00e2\u20ac\u201dis already accepted for proof outside the retained window. [The October 15 record explicitly documents that conservative refusal](C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/docs/evidence/bug-audit-20261015-pass2/README.md:110).\n\nA separate, bounded race is reproducible:\n\n1. Poll A caches the complete 10,209-byte terminal log and assessment.\n2. Poll B\u00e2\u20ac\u2122s progress refresh overwrites `_log_tail` with 8,000 bytes.\n3. A publishes success and clears `_proc`.\n4. B discards its subsequent completion read because `_proc` changed.\n5. Exact `_write_evidence` capture retains the 8,000-byte suffix alongside the 10,209-byte assessment.\n\nObserved results:\n\n```text\n                     snapshot  assessment  assessment verdict  suffix verdict\nserial                 10209      10209     completed           completed\nconcurrent polls        8000      10209     completed           completion_missing\n```\n\nRecovery consequently refuses success; export rejects its completion claim. This needs neither a >1 MiB log nor disk I/O in the reproduction.\n\n**Reachability objection:** neither `get_log_tail` nor `_remember_log_snapshot` exists in the specified source. The writer is `_refresh_progress`. [Wizard tick holds its lock across polling](C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/src/beamo_wipe/wizard.py:875); Stop claims `STOPPING` under that same lock before its worker polls. Those callers prevent the demonstrated overlap. Thus this is a confirmed runner concurrency hazard, not yet a demonstrated shipped-flow P2.\n\nMinimal defensive recommendation: under the existing runner lock, prevent progress refreshes from replacing `_log_tail` once `_assessment_ready` is published. Preserve the separate whole-log assessment, exact bounded suffix, privacy checks, and recovery/export authentication. **Do not switch assessment to suffix-only:** the inert negative control returned `engine_failed` for the whole log but `completed` for its suffix.\n\nThis executable Python probe uses exact extracted parser/control methods, fake process/log operations, and bounded thread waits. Run from the specified worktree using Python stdin. It reconstructs the requested source **in memory** from the retained snapshot plus the ownership fix and verifies its full hash:\n\n```python\nfrom pathlib import Path\nimport ast, hashlib, math, posixpath, re, sys, threading, types\nfrom types import SimpleNamespace as S\n\np = Path(\"src/beamo_wipe/nwipe_runner.py\")\nentry = Path(r\"C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261025-r3/entry-source/src/beamo_wipe/nwipe_runner.py\").read_bytes()\nlive = p.read_bytes()\ndef reader_span(b):\n    c = next(n for n in ast.parse(b).body if isinstance(n, ast.ClassDef) and n.name == \"NwipeRunner\")\n    n = next(n for n in c.body if isinstance(n, ast.FunctionDef) and n.name == \"_read_log_tail\")\n    return n.lineno - 1, n.end_lineno\na, z = reader_span(entry); x, y = reader_span(live)\nb = b\"\".join(entry.splitlines(True)[:a] + live.splitlines(True)[x:y] + entry.splitlines(True)[z:])\nassert hashlib.sha256(b).hexdigest() == \"7787976b2084d6a01b1df2e86b16cc3154b8b29e5ed0b8ac9655da1df95ff345\"\nt = ast.parse(b)\nc = next(n for n in t.body if isinstance(n, ast.ClassDef) and n.name == \"NwipeRunner\")\nselected = [n for n in t.body if (\n    isinstance(n, (ast.Assign, ast.AnnAssign)) and (45 <= n.lineno < 163 or 648 <= n.lineno < 1240)\n    or isinstance(n, ast.FunctionDef) and 648 <= n.lineno < 1240)]\nmethods = [n for n in c.body if isinstance(n, ast.FunctionDef) and n.name in\n           {\"poll\", \"_refresh_progress\", \"_complete_log_records\", \"_update_progress\"}]\nselected.append(ast.ClassDef(name=\"Runner\", bases=[], keywords=[], body=methods, decorator_list=[]))\nfuture = ast.parse(\"from __future__ import annotations\").body\nns = dict(re=re, math=math, os=S(path=posixpath), WipeResult=lambda **k: S(**k),\n          SafetyError=RuntimeError, ProcessStatusError=RuntimeError, _try_log_diag=lambda *a: None,\n          METHODS={\"everyday\": S(verify=\"last\", overwrite_passes=1, rounds=1)})\nexec(compile(ast.fix_missing_locations(ast.Module(body=future + selected, type_ignores=[])), str(p), \"exec\"), ns)\nsys.modules[\"beamo_wipe\"] = types.ModuleType(\"beamo_wipe\")\nprogress = types.ModuleType(\"beamo_wipe.progress\"); progress.observe = lambda *a: None\nsys.modules[\"beamo_wipe.progress\"] = progress\nclassify = ns[\"completion_for_method\"]\nproof = ns[\"NWIPE_DRIVE_STATUS_HEADER\"] + \"\\n      sda | Erased | 120MB/s | 01:25:04 | FAKE\\n\"\nlog = proof + \"x\" * (10208 - len(proof)) + \"\\n\"\nrequest = S(device=\"/dev/sda\", method=\"everyday\", logfile=\"in-memory\")\ndef run(race):\n    r = ns[\"Runner\"]()\n    r.__dict__.update(_lock=threading.Lock(), _proc=S(poll=lambda: 0), _active_request=request,\n        _status_polling=None, _progress_read_seq=0, _log_read_state=threading.local(),\n        result=None, progress=None, _log_tail=\"\", _release_wipe_lock=lambda: None)\n    refreshed, done = threading.Event(), threading.Event()\n    failures = []\n    def wait(event):\n        assert event.wait(3), \"bounded probe wait expired\"\n    def read(path, count):\n        r._log_read_state.truncated = False\n        if race and threading.current_thread() is later and count == 1048576:\n            refreshed.set(); wait(done)\n        return log[-count:]\n    def second():\n        try:\n            r.poll(request)\n        except BaseException as exc:\n            failures.append(repr(exc))\n    later = threading.Thread(target=second)\n    def assess(*args):\n        result = classify(*args)\n        if race and threading.current_thread() is not later:\n            later.start(); wait(refreshed)\n        return result\n    r._read_log_tail = read; ns[\"completion_for_method\"] = assess\n    try:\n        r.poll(request)\n    finally:\n        done.set()\n        if later.ident is not None:\n            later.join(5)\n    assert not later.is_alive() and not failures, failures\n    print(race, r.result.reason, len(r._log_tail), len(r._assessment_log_text),\n          classify(0, r._log_tail, \"/dev/sda\", \"everyday\")[2])\nrun(False); run(True)\nnegative = \"/dev/sda: >>> FAILURE! <<<\\n\" + \"x\" * 10000 + \"\\n\" + proof\nprint(\"negative:\", classify(0, negative, \"/dev/sda\", \"everyday\")[2],\n      classify(0, negative[-8000:], \"/dev/sda\", \"everyday\")[2])\n```\n\nExact SHA-256 identities:\n\n```text\nnwipe_runner.py \u00e2\u20ac\u201d executed, reconstructed:\n7787976b2084d6a01b1df2e86b16cc3154b8b29e5ed0b8ac9655da1df95ff345\nnwipe_runner.py \u00e2\u20ac\u201d latest observed during concurrent parent edits:\nf7742f297e52caea3c5737ca3f27fdea689ad5276b255fa73fac4371191f7a7b\nwizard.py:\na0fe1dfe53d128c55e86be280059164c3035b2ae7b058cb510b2f5f7daed93ae\nevidence.py:\n971724b3b911d8f1668557370641b8309bd9b0c23f5acdb6eac4bef2ef36cb00\nsupport_export.py:\n8e0ec8a30208592c9f542480ed4ee7d983dff74db7ec78096c9e4cfc95aef445\n```\n\nThe four extracted runner control methods were AST-identical in the latest observed source. No files edited, tests/gates run, services started, or devices accessed.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-terminal-proof-r2:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:d6f3eb12-b0d7-47d1-9396-f814a8b91906",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "round": "wipe-r3-20261025-shutdown-fix-r2",
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-shutdown-fix-r2",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-shutdown-fix-r2",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-shutdown-fix-r2:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-shutdown-fix-r2",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-shutdown-fix-r2:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "Implemented in the owned checkout only: separated shutdown lock safety from journal validity and added 39 regression cases in `tests/test_shutdown_invalid_journal.py`.\n\nInert reproduction: **31 pass / 3 fail before; 34/34 pass after**, including a replay after preserving the concurrent `_write_evidence` edit. Invalid journals still refuse another erase; ownership, process, report and finalization guards remain.\n\nSHA-256:\n\n- Original wizard: `a0fe1dfe53d128c55e86be280059164c3035b2ae7b058cb510b2f5f7daed93ae`\n- Shutdown-only wizard: `f851bc13e8f744e8d5180897b6e8c769629770c039fbde50c6e0d646933b68c6`\n- Shared final wizard: `9b67c8d7427770ccd3a77fe405b220fe82376aeab78c94bab111a01272147ac7`\n- New test: `013eec94f1cbf40a3f15701dd5031d556b08c4341a2ae563960623ff37229b03`\n\nActual pytest remains pending with the parent. AST probes do not qualify Linux locking or poweroff; the concurrent terminal-evidence change needs separate validation.\n\n[Handoff, receipts and objections](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261025-r3/shutdown-invalid-journal-implementation/HANDOFF.txt). No staging, gates or platform actions.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-shutdown-fix-r2:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:42f8191a-06a5-45f8-8626-748bd0a07966",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "round": "wipe-r3-20261025-ancestry-fix-r2",
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-ancestry-fix-r2",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-ancestry-fix-r2",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-ancestry-fix-r2:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-ancestry-fix-r2",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-ancestry-fix-r2:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "Implemented only [discover.py](C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/src/beamo_wipe/discover.py:2165) and [35 new regression cases](C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/tests/test_raw_disk_ancestry_refusal.py).\n\nRaw disks with unexpected tree/PKNAME ancestry are now ineligible. Physical protection facts, clean disks, resolved aliases, known holders and boot rows remain preserved.\n\nInert evidence: **19 failures before \u00e2\u2020\u2019 28 passes after**. The exact-source regression adapter passes **35/35**. Real Linux pytest remains pending with root. Nothing staged; `safety.py` unchanged.\n\nNVMe numbering mismatch is confirmed from [primary kernel source](https://github.com/torvalds/linux/blob/v6.1/drivers/nvme/host/core.c#L3963). The [proposal](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261025-r3/raw-disk-ancestry-implementation/NVME-PROPOSAL.md) resolves the actual sysfs controller/subsystem association and requires proven PCIe transports. Synthetic cases also show incorrect acceptance when an unrelated prefix controller reports PCIe.\n\n[Handoff, receipts and limitations](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261025-r3/raw-disk-ancestry-implementation/HANDOFF.md) \u00c2\u00b7 [All reviewed/final SHA-256 hashes](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261025-r3/raw-disk-ancestry-implementation/final-manifest.json)\n\nFinal hashes:\n\n```text\ndiscover.py  9df33ba15982dad9eeb1156daf016ba6c2783fa7ab9e072381b92246f4abf3d1\nnew tests   d6ce5134ff5aac3802e55228bdd94bf59672a1a53a2e4a1f7dd7727ed09c1e32\n```",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-ancestry-fix-r2:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:8bf95596-05fe-4abd-8224-6e622fdaab6a",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "round": "wipe-r3-20261025-runner-fix-review-r3",
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-runner-fix-review-r3",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-runner-fix-review-r3",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-runner-fix-review-r3:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-runner-fix-review-r3",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-runner-fix-review-r3:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "Two concrete findings:\n\n1. **P2 \u00e2\u20ac\u201d Latest malformed progress can erase the only activity witness.** At [nwipe_runner.py:1868](C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/src/beamo_wipe/nwipe_runner.py:1868), the scan replaces `last_progress` even when the new sample is invalid. An earlier round-only 10% sample is then discarded because it adds no method totals.\n\n   Exact AST reproduction: timestamped busy report \u00e2\u2020\u2019 round-only 10% sample \u00e2\u2020\u2019 truncated `pass 1 of` sample \u00e2\u2020\u2019 diagnostic padding; 1,116,190 bytes total. Full-log assessment returns `indeterminate`; projected assessment returns `occupied`. Changing only the retention predicate in memory restores `indeterminate`.\n\n   [The activity check](C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/src/beamo_wipe/nwipe_runner.py:885) also ignores malformed-only progress, permitting `occupied`, `open_failed`, and `geometry_unusable`. These are failed outcomes, **not successful-completion claims**, but belong to `NOTHING_ERASED_CODES`. Preserve activity evidence independently of the latest completion sample.\n\n2. **P2 \u00e2\u20ac\u201d Scanner close failures escape its error handler and replace primary exceptions.** The raw close at [nwipe_runner.py:1931](C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/src/beamo_wipe/nwipe_runner.py:1931) runs outside the scan\u00e2\u20ac\u2122s `except`. Injected `OSError(5, \"inert close failure\")` escapes an otherwise successful scan. With a primary `KeyboardInterrupt`, that same close error replaces it; the interruption survives only as `__context__`. Handle closure failure without retrying the descriptor and preserve the primary exception.\n\nIndependent exact-AST/in-memory checks passed: 54 malformed-completion cases across all methods, 24 runner ownership cases, six wizard ownership cases, six terminal-snapshot controls, and six projection-order controls. Independent Erased-table proof remains effective. No superlinear regex growth appeared in the bounded samples through 64 KiB.\n\nOne bounds observation is **not specific to the new malformed path**: final-line insertion bypasses retained-byte accounting. Projection reached 1,114,033 bytes against the 1,048,576-byte budget; a valid-sample control also exceeded it. Overlong-line and ordinary retained-budget rejection controls passed.\n\nReviewed HEAD: `9764d93ac21273aa79ae4618629b0a30e3eda271`, dirty source. Final raw SHA-256 values:\n\n```text\nsrc/beamo_wipe/nwipe_runner.py\n93d9576fd8d4458eb2b392dd77f68d894127f23b259f6df665d03b50e42fdf91\nsrc/beamo_wipe/wizard.py\n9b67c8d7427770ccd3a77fe405b220fe82376aeab78c94bab111a01272147ac7\ntests/test_malformed_terminal_progress.py\n6fb59c7a1e3043987951b7145a78bad627941bc1e9509cf3e999ea4b57a394e6\ntests/test_runner_read_handle_ownership.py\na7538f964365d27b228d4428ae893411c0d941c4bf18352b5e00451ce0d0b0c3\ntests/test_terminal_log_snapshot_ownership.py\nb37266a086019936e7892c9c4e71364a35e634fe6b41d06fcad4bb80c77697c2\ntests/test_wizard_log_handle_ownership.py\n9b31e51367ee9e48cab4b155128d56f4999c8c44f4f7bd34571834b96d55c279\n```\n\nNo files changed or gates/pytest executed. Probes used fake POSIX path resolution, handles, and dependencies; they establish function behavior, not native acceptance or shipped-wizard concurrency reachability. The earlier 134-pass receipt does not qualify these latest bytes.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-runner-fix-review-r3:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:703db2be-7a15-4a6f-b5ec-f67d21e25c48",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "round": "wipe-r3-20261025-ancestry-reverse-r3",
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-ancestry-reverse-r3",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-ancestry-reverse-r3",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-ancestry-reverse-r3:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-ancestry-reverse-r3",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-ancestry-reverse-r3:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "Implemented the conservative refusal in the two owned files. Raw boot rows with tree/PKNAME ancestry now invalidate authorization while retaining protected boot rows, physical facts, and diagnostics. Clean roots, aliases, and holders retain their behavior.\n\n- Final causal AST pair: **20 failures / 44 passes before \u00e2\u2020\u2019 64 passes after**.\n- Independent topology probe: **23 passed**.\n- AST compilation and whitespace inspection pass. Actual Linux pytest and independent review remain root-owned.\n- No unresolved narrow implementation objection found. NVMe remains untouched; the withdrawn bypass qualification is preserved.\n\nFinal raw SHA-256:\n\n```text\ndiscover.py\n3dc8d6f93296f93323aae464d35d7e4d1184696b0a91cbea6804ef713db1aa37\n\ntest_raw_disk_ancestry_refusal.py\n5271ad26936c81e5a971c45a1059c92a9fbad7e837d3e03034411b7a591d45d1\n```\n\n[Durable handoff, evidence details, and inspection limits](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261025-r3/raw-boot-ancestry-new-round/handoff.txt). No staging or gates performed.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-ancestry-reverse-r3:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:8c9cb577-cc7b-4f55-b7bb-beb4f99c22ce",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "round": "wipe-r3-20261025-nvme-failover-r3",
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-nvme-failover-r3",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-nvme-failover-r3",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-nvme-failover-r3:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-nvme-failover-r3",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-nvme-failover-r3:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "Implemented only `safety.py` and new `tests/test_nvme_surviving_transport.py`; nothing staged.\n\nThe fallback runs only after the numeric controller read raises `OSError`, verifies actual subsystem membership, and requires every surviving controller to report PCIe.\n\nExact-source inert probes: red **36/42**, green **42/42**. Linux pytest remains for root. The scan conservatively refuses ambiguous membership and does not atomically lock topology. No hardware acceptance claimed.\n\n[Handoff, hashes, and evidence](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261025-r3/nvme-failover-implementation/HANDOFF.md).",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-nvme-failover-r3:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:81ec217d-6d9f-453a-9e76-0140b2dd0f14",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "round": "wipe-r3-20261025-safety-final-r4",
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-safety-final-r4",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-safety-final-r4",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-safety-final-r4:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-safety-final-r4",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-safety-final-r4:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "One new **P2 availability objection** at [safety.py:797](C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/src/beamo_wipe/safety.py:797): the fallback still rejects a valid controller-parented private namespace after the original controller disappears.\n\nLinux 6.1 permits this layout: with multipath enabled and a private namespace lacking the unique-NSID guarantees, it creates no multipath head, names the disk using the subsystem instance, and parents it under its actual controller. Thus `nvme0n2` can legitimately belong directly to `nvme1` in `nvme-subsys0`. This follows from [nvme_is_unique_nsid](https://raw.githubusercontent.com/torvalds/linux/v6.1/drivers/nvme/host/nvme.h), [head allocation](https://raw.githubusercontent.com/torvalds/linux/v6.1/drivers/nvme/host/multipath.c), and [namespace naming/parenting](https://raw.githubusercontent.com/torvalds/linux/v6.1/drivers/nvme/host/core.c).\n\nIndependent exact-source, in-memory reproduction:\n\n- Created both controllers and private namespaces; `nvme0n2` was accepted.\n- Removed controller `nvme0`, its class/member links and attributes.\n- Verified `nvme0n2/device`, the `nvme1` class link and subsystem member all resolve to the surviving PCIe controller.\n- The unchanged assertion then raised:\n  `SafetyError: Cannot prove NVMe is locally attached.`\n  Cause: `ValueError: Namespace parent is not the expected NVMe subsystem`.\n\nThis is residual availability loss, **not a safety bypass or a regression introduced by this patch**. No unrelated controller-number reuse is involved.\n\nBounded recommendation: add this private-namespace regression and extend only the fallback to verify a controller-parented namespace against the expected subsystem\u00e2\u20ac\u2122s matching controller/class links, retaining all-member PCIe checks and replacement detection. Preserve readable direct/remote decisions.\n\nNo new boot-ancestry objection emerged. Independent probes confirmed reverse/transitive/nested boot refusal and conservative NVMe refusal for mixed, unknown, dangling and observed replacement cases.\n\nRaw SHA-256 values were unchanged between reads:\n\n```text\ndiscover.py\n3dc8d6f93296f93323aae464d35d7e4d1184696b0a91cbea6804ef713db1aa37\nsafety.py\n6b75b7557d7dcc54ab56b418d2035fe25a531c3e91572a24ad7a852a67c03469\ntest_raw_disk_ancestry_refusal.py\n5271ad26936c81e5a971c45a1059c92a9fbad7e837d3e03034411b7a591d45d1\ntest_nvme_surviving_transport.py\n12c2fe1c102f5dfe4a9bd5904f6376223e0d7f42c9501bb98c2cfa7c621faba2\n```\n\nReviewed `codex/wipe-audit-20261024`, HEAD `9764d93ac21273aa79ae4618629b0a30e3eda271` plus dirty bytes. No edits or staging. Evidence is limited to stdlib AST/in-memory probes and primary kernel source inspection. Actual Linux checks remain pending; entry/full incomplete gates remain incomplete.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-safety-final-r4:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:47e98629-61fd-4c0d-9fb4-4c84d7d78237",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "round": "wipe-r3-20261025-runner-cleanup-final-r4",
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-runner-cleanup-final-r4",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-runner-cleanup-final-r4",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-runner-cleanup-final-r4:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-runner-cleanup-final-r4",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-runner-cleanup-final-r4:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "One remaining objection: **P3 \u00e2\u20ac\u201d projection\u00e2\u20ac\u2122s returned UTF-8 bytes can exceed its 1 MiB budget.** [The accounting](C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2/src/beamo_wipe/nwipe_runner.py:1931) charges raw bytes before replacement decoding; deferred progress does likewise.\n\nIndependently reproduced:\n\n| Retained content | Raw retained bytes | Returned UTF-8 bytes |\n|---|---:|---:|\n| ASCII control | 1,048,576 | 1,048,576 |\n| Invalid UTF-8 | 1,048,576 | **3,145,600** |\n\nThe raw-input cap holds; expansion remains bounded. Charge `len(line.encode(\"utf-8\")) + 1` for retained and deferred records if the cap is intended to bound the returned projection.\n\nRunnable inert reproduction from the reviewed checkout; all descriptor operations are fake:\n\n```python\nimport ast, io, posixpath, re, stat, __future__\nfrom pathlib import Path\nfrom types import SimpleNamespace as NS\n\np = Path(\"src/beamo_wipe/nwipe_runner.py\")\ntree = ast.parse(p.read_bytes())\nnames = {\n    \"_scan_completion_log\", \"_close_log_read_fd\", \"_log_signature\",\n    \"_status_device_names\", \"_status_column_has_name\", \"nwipe_status_device_field\",\n    \"_engine_log_body\", \"_is_target_progress_record\", \"_iter_target_progress\",\n    \"_progress_has_method_counters\", \"_is_error_summary_header\",\n}\nnodes = [\n    n for n in tree.body if isinstance(n, ast.Assign)\n    and any(isinstance(t, ast.Name) and\n            (t.id.startswith(\"NWIPE_\") and n.lineno <= 171 or\n             t.id in {\"NWIPE_STATUS_DEVICE_WIDTH\", \"_LOG_DEVICE_RE\"})\n            for t in n.targets)\n]\nnodes += [n for n in ast.walk(tree)\n          if isinstance(n, ast.FunctionDef) and n.name in names]\nexec(compile(ast.Module(body=nodes, type_ignores=[]), str(p), \"exec\",\n             __future__.annotations.compiler_flag))\n_try_log_diag = lambda *a: None\n\nclass Stream(io.BytesIO):\n    def fileno(self): return 17\n\nfor fill in (b\"x\", b\"\\xff\"):\n    data = (b\"***\" + fill * 65532 + b\"\\n\") * 16 + b\"diagnostic\\n\"\n    snap = NS(st_mode=stat.S_IFREG | 0o600, st_uid=0, st_dev=1, st_ino=2,\n              st_size=len(data), st_mtime_ns=3, st_ctime_ns=4)\n    os = NS(open=lambda *a: 17, close=lambda fd: None, getuid=lambda: 0,\n            fdopen=lambda *a, **kw: Stream(data), fstat=lambda fd: snap,\n            O_RDONLY=1, O_NOFOLLOW=2, O_NONBLOCK=4,\n            path=NS(realpath=posixpath.normpath, basename=posixpath.basename))\n    result = _scan_completion_log(NS(_active_log_identity=None),\n                                  \"/inert/log\", \"/dev/sda\", _log_signature(snap))\n    print(repr(fill), len(data), len(result.encode(\"utf-8\")),\n          NWIPE_COMPLETION_EVIDENCE_BYTES)\n```\n\nNo additional objection reproduced across **36 full/projected activity comparisons, 22 reader cleanup cases, 9 wizard fallback cleanup cases, and 5 terminal-snapshot cases**. These are bounded AST/in-memory observations, not actual-module or gate passes.\n\nReviewed `codex/wipe-audit-20261024`, HEAD `9764d93ac21273aa79ae4618629b0a30e3eda271` plus dirty bytes. Raw SHA-256:\n\n```text\nnwipe_runner.py e02568102ad2362cac611dbedc666f1171e11e993395a2157c9ad50eba0c1f71\nwizard.py       b3dc067eb0d0bc912a25ccba974b078f8716d763c3c5187cb62e90d7e4e78690\nmethods.py      edf22b0a3cc4fb5de61c43a5ab82cccafbf6280270753c802f58ca6fe1ae6e13\nmodels.py       e0f5bbc893caff30b9bb88d8ee8062fe0e90c7ddd3d42063a2bb43be1607a9f9\n```\n\nNo edits, delegation, gates, pytest, WSL, services, device operations, or staging. Final actual-Linux checks remain pending; entry and incomplete full gates remain incomplete.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-runner-cleanup-final-r4:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:4cb8929a-b5ba-4bab-9885-4ba472b2b7e4",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "round": "wipe-r3-20261025-private-nvme-fix-r5",
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-private-nvme-fix-r5",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-private-nvme-fix-r5",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-private-nvme-fix-r5:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-private-nvme-fix-r5",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-private-nvme-fix-r5:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "Implemented R5 in only the two owned files. Private controller parents must match the stable, all-PCIe subsystem member map; the final parent must remain unchanged.\n\n- Reproduced 3 original availability failures; final in-memory replay matched **74/74** cases.\n- Added 34 Linux fixture cases, totaling **76**. Existing test assertions remain unchanged.\n- Actual Linux tests and root review/gates remain pending. Earlier timeouts and pre-change passes remain nonfinal.\n\n[Causal proof, hashes and HANDOFF](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261025-r3/private-nvme-r5/HANDOFF.md)\n\nNo remaining correctness objection identified within the modeled scope.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-private-nvme-fix-r5:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:0105ca8b-d329-4cd9-8648-b155e6a61186",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "round": "wipe-r3-20261025-normalized-budget-review-r5",
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-normalized-budget-review-r5",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-normalized-budget-review-r5",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-normalized-budget-review-r5:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-normalized-budget-review-r5",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-normalized-budget-review-r5:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "No concrete objection to the scoped follow-up.\n\n- Independently reproduced P3 on the saved prior source: 1,048,576 raw bytes yielded 3,145,600 normalized UTF-8 bytes. Current code conservatively returns `None`; the exact-limit ASCII control still succeeds. P3 is resolved.\n- **2,306 in-memory exact-AST checks passed**, covering exact/one-byte-short limits, retained and deferred records, superseded progress, collision witnesses, malformed UTF-8, and descriptor/primary-error handling.\n- Reviewed all 20 parameterized regression cases statically; did not execute pytest. Bounded fake-I/O timing found no material performance objection.\n\nScoped hashes were unchanged before/after:\n\n```text\nnwipe_runner.py\n8b4c8fc5cc319790c427584407ab96b25106eb5d0da3a0f2c2cd87fbf7a2e443\n\ntest_completion_projection_byte_budget.py\nabe2ccc4d812a081f829fbee3f0322702a3d5f8a3de5d940ee2895d7d5fcba8d\n```\n\nNo files changed. This review provides no final Linux, native, artifact, or physical acceptance.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-normalized-budget-review-r5:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:4999a6df-635b-435e-a7a2-24fc3d52eb1a",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    {
+      "round": "wipe-r3-20261025-private-nvme-review-r6",
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-private-nvme-review-r6",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-private-nvme-review-r6",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-private-nvme-review-r6:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r3-20261025-private-nvme-review-r6",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-private-nvme-review-r6:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "No concrete objection within the requested scope. The narrow fix resolves the private-namespace availability refusal while preserving fail-closed transport checks.\n\nIndependent exact-AST, in-memory reproduction completed with exit 0:\n\n- Before: two valid private-namespace cases refused; 41 controls matched expectations.\n- Current: **43/43 matched**, covering remote/mixed transports, missing links, membership/class mismatches, observed replacements, and readable direct transport decisions.\n- The fallback caller is unchanged and remains limited to `OSError` reading the numeric controller\u00e2\u20ac\u2122s transport.\n- Reviewed 27 test functions / 76 declared cases statically; pytest was not run.\n\nExact SHA-256 inputs:\n\n```text\nBefore safety.py:\n6b75b7557d7dcc54ab56b418d2035fe25a531c3e91572a24ad7a852a67c03469\n\nCurrent safety.py:\na77c3d1d01fac9b6c4083e899ace5c80916e8e8f795f8054492ac8f775f641a3\n\nCurrent test_nvme_surviving_transport.py:\n85a8793ab2b95603ce804c261dd505f6dbcd81f55587d4abf8a470a509d065e8\n```\n\nHashes remained unchanged through the final check on branch `codex/wipe-audit-20261024`, HEAD `9764d93ac21273aa79ae4618629b0a30e3eda271` plus dirty changes. Later edits require renewed review.\n\nThe first probe aborted because of a harness exception-class mismatch; only the corrected run supplies evidence. No files were written. These synthetic observations provide no atomic topology lock and no full, native, artifact, physical, or hardware acceptance. Actual-module Linux regressions remain unexecuted by this reviewer.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r3-20261025-private-nvme-review-r6:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:998fb498-b92d-4f69-a452-c516d944d03f",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    }
+  ]
+}

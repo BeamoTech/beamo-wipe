@@ -1,0 +1,19 @@
+# Pass 15 audit — 2026-10-26
+
+The available R15 source review is finished (2026-10-26T17:53:12.889997+00:00). Full Linux, native, artifact and physical acceptance remains incomplete or blocked.
+
+The review found and corrected one pre-existing P3 coverage defect. A QEMU directory-replacement test patched Path.iterdir even though the reader uses os.listdir(fd), so its intended race never ran. The test now swaps the directory at the active descriptor boundary and asserts that exactly one swap occurred. It preserves the original private-file digest assertion and cleanup. A suppressed trigger or an earlier refusal can no longer make the test pass without exercising the race. The causal model changed from three failures plus one passing control to four passes. No unsafe production read was demonstrated.
+
+R15 changes only tests/test_ci_qemu_directory_race_pass31.py. Production code is unchanged. All three broad independent reviews and the fresh correction review are complete, with their source bindings, original failures, actual exits, manifests and evidence bytes independently validated by the parent. R14's production cleanup correction received bounded source/model no-objection. These conclusions do not qualify native filesystem races or a release.
+
+The owned checkout is C:/Users/Jack/beamo-release-work/20261024-wipe-audit-pass2, branch codex/wipe-audit-20261024, base 9764d93ac21273aa79ae4618629b0a30e3eda271 plus pre-existing dirty work. Final source identity for 939 functional inputs: 0a099f5f59c78a1fb9937c29ef792dfd81b6b3ade89ceef693c87661e5faaccc. Nothing is staged, committed or pushed.
+
+The local checks passed 40 application/session cases, 42 GUI input/overlay cases and 26 full launcher-JavaScript cases with fake server/restart transport. The corrected race test passed four causal model controls. Syntax checks covered 750 Python files before the test-only change and the final edited test afterward. Focused Ruff passed. Earlier mypy results for 52 unchanged source files, with unchanged configuration and tool bytes, were reused; their untyped-body notes remain explicit. None of these is a native test count.
+
+Lab doctor, sync, plan, report and four integrity verifiers passed at preparation level. The report's offline parser/CSP and isolated renderer checks passed. The collaborative-browser timeout and inactive controls, fixture-token omission, recorder truncation and parent schema/order assumptions remain retained with their corrected checks. Replays add no new cases. Earlier packets, released artifacts and historical backlog bytes were preserved.
+
+Remaining acceptance requires the original controlled main/Orca containment and ten finite selftests, and the applicable actual full/Linux/native/platform/shell/artifact/ISO/QEMU/hosted gates on separately authorized isolated resources. Entry disk and available RAM were below the unchanged 8 GiB/1 GiB admission floors. No host cleanup, reduced threshold, WSL retry, installation, guest, mount or hosted spend was used to remove those blockers.
+
+Task119 remains NOT TESTED/BLOCKED. It still requires an explicit owner physical session, spare machine, valuable disks disconnected, authenticated cold media reconnect/readback, independent firmware/live recovery and evidence access, and actual trust/revocation/SBAT/enforcement evidence. A successful boot alone is insufficient. Preserve the running Windows session, security, network and all physical disks/USBs.
+
+Evidence is retained in C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261026-r15; see reviews.json and verification.json beside this report. R11-C1 and the initial-reader, optional callback, terminal-leaf and arbitrary-opcode/native-release candidates retain their prior unproved qualifications. Source review is complete; release and physical qualification are not.

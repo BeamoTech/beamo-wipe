@@ -153,11 +153,14 @@ power_choice() {
     notice 'Cancelled. The computer will stay on.'
     return
   fi
-  # A crashed UI can leave the pinned nwipe process alive. Never power off
-  # on an uncertain process check, including a missing/broken procps tool.
+  # A crashed UI can leave the pinned nwipe process alive. Descriptor-based
+  # exec need not have the process name "nwipe", so also use the same
+  # executable-identity check as the wizard. Any missing, broken, timed-out
+  # or uncertain inspection blocks the request.
   engine_rc=0
   pgrep -x nwipe >/dev/null 2>&1 || engine_rc=$?
-  if [ "$engine_rc" -ne 1 ]; then
+  if [ "$engine_rc" -ne 1 ] ||
+    ! timeout 10 python3 -I -c 'from beamo_wipe.nwipe_runner import pinned_nwipe_already_running; raise SystemExit(0 if pinned_nwipe_already_running() is False else 1)' >/dev/null 2>&1; then
     notice 'We cannot confirm that erasing has stopped. Power request blocked.'
     notice 'Try Beamo Wipe again to review and stop an interrupted erase.'
     return

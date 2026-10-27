@@ -523,7 +523,9 @@ class Wizard:
 
     def _live_pinned_engine_busy(self) -> bool:
         """Refuse poweroff when any pinned engine may run outside this runner."""
-        if self.dry_run or self.preview or not isinstance(self.runner, NwipeRunner):
+        # A live startup failure uses an inert runner, but another engine can
+        # still be active. Power safety must not depend on this runner's type.
+        if self.dry_run or self.preview:
             return False
         try:
             from beamo_wipe.nwipe_runner import pinned_nwipe_already_running
@@ -735,9 +737,15 @@ class Wizard:
         with self._lock:
             observation = getattr(self.runner, "progress_observation", None)
             spec = METHODS[self.method]
+            stages = _progress.plan_stages(
+                spec.overwrite_passes, bool(spec.verification_passes)
+            )
+            position, mismatch = _progress.locate_stage(
+                stages, self._observation_for_stage(observation)
+            )
             final_operation = bool(
-                observation and observation.counters[0] == observation.counters[1]
-                and 0 < observation.counters[2] == observation.counters[3]
+                observation and position is not None and not mismatch
+                and position == len(stages) - 1
                 and (observation.phase == "Verifying" and spec.verify == "last"
                      or observation.phase == "Writing" and spec.verify == "off")
             )
@@ -773,12 +781,6 @@ class Wizard:
                 percent = previous.percent
             else:
                 self._display_progress_at = now
-            stages = _progress.plan_stages(
-                spec.overwrite_passes, bool(spec.verification_passes)
-            )
-            position, mismatch = _progress.locate_stage(
-                stages, self._observation_for_stage(observation)
-            )
             old = bool(percent is not None and stale_for is not None)
             # Both lines describe job progress; share throttling and monotonicity.
             step_percent = (
@@ -1139,14 +1141,18 @@ class Wizard:
             and self.result_view.code != "stop_unconfirmed"
         )
 
-    def _new_session_store_blocked(self) -> bool:
+    def _session_store_busy(self) -> bool:
         store = self._session_store
         if store is None:
             return False
         try:
-            return store.invalid or not store.is_quiescent()
+            return not store.is_quiescent()
         except (OSError, SafetyError):
             return True
+
+    def _new_session_store_blocked(self) -> bool:
+        store = self._session_store
+        return store is not None and (store.invalid or self._session_store_busy())
 
     @property
     def exit_confirmation_title(self) -> str:
@@ -1319,7 +1325,9 @@ class Wizard:
                 and not self._runner_is_active()
                 and not self._live_pinned_engine_busy()
                 and not self._recovery_busy()
-                and not self._new_session_store_blocked()
+                # Invalid evidence blocks another erase, but explicit discard
+                # permits poweroff once fresh lock ownership is established.
+                and not self._session_store_busy()
                 and not self._finishing
                 and not self._evidence_saving
                 and not self._report_exporting
@@ -2206,7 +2214,12 @@ class Wizard:
                 res = observed
                 cancelled = interrupted = False
             else:
-                res = _WR(ok=False, exit_code=143, summary="interrupted", logfile=self._wipe_request.logfile)
+                res = _WR(
+                    ok=False,
+                    exit_code=observed.exit_code,
+                    summary="interrupted",
+                    logfile=self._wipe_request.logfile,
+                )
                 interrupted = True
                 cancelled = origin == "user" and observed is not None and not observed.ok
             # _write_evidence and _finish outside lock to avoid I/O under lock
@@ -2229,6 +2242,12 @@ class Wizard:
         except Exception:
             key = None
         with self._lock:
+            # A fast child may finish after WORKING is armed but before the
+            # start worker reaches this save. Preserve its terminal evidence
+            # (including a failed save's frozen retry) rather than claiming a
+            # newer STARTED write and clearing that observation.
+            if result is None and self.wipe_result is not None:
+                return
             if key is not None and self._evidence_written_for == key:
                 return
             if key is not None:
@@ -2254,28 +2273,34 @@ class Wizard:
                 if not log_text and self._wipe_request and self._wipe_request.logfile:
                     # Same window as NwipeRunner completion parsing. An 8 KiB
                     # tail can sit entirely after the Erased row.
-                    from beamo_wipe.nwipe_runner import NWIPE_COMPLETION_LOG_BYTES
+                    from beamo_wipe.nwipe_runner import (
+                        NWIPE_COMPLETION_LOG_BYTES, _close_log_read_fd,
+                    )
 
+                    fd = -1
+                    primary_error: Optional[BaseException] = None
                     try:
-                        fd = os.open(
-                            self._wipe_request.logfile,
-                            os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
-                        )
                         try:
+                            fd = os.open(
+                                self._wipe_request.logfile,
+                                os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+                            )
                             opened = os.fstat(fd)
                             if not stat.S_ISREG(opened.st_mode) or opened.st_uid != os.getuid():
                                 raise OSError("unsafe wipe log")
-                            with os.fdopen(fd, "rb") as fh:
-                                fd = -1
+                            with os.fdopen(fd, "rb", closefd=False) as fh:
                                 fh.seek(0, 2)
                                 size = fh.tell()
                                 fh.seek(max(0, size - NWIPE_COMPLETION_LOG_BYTES))
                                 log_text = fh.read(NWIPE_COMPLETION_LOG_BYTES).decode(
                                     "utf-8", errors="replace"
                                 )
+                        except BaseException as exc:
+                            primary_error = exc
+                            raise
                         finally:
                             if fd >= 0:
-                                os.close(fd)
+                                _close_log_read_fd(fd, primary_error)
                     except OSError as exc:
                         try:
                             from beamo_wipe.diagnostics import log_diag
@@ -2441,7 +2466,7 @@ class Wizard:
             with self._lock:
                 if seq != self._evidence_write_seq:
                     return False
-                if context != self._evidence_context() or (result is not None and self.wipe_result != result):
+                if context != self._evidence_context() or self.wipe_result != result:
                     raise SafetyError(CHANGED_TERMINAL)
                 self._pending_evidence_path = path
             stage = "finalization"
@@ -2450,7 +2475,7 @@ class Wizard:
             with self._lock:
                 if seq != self._evidence_write_seq:
                     return False
-                if context != self._evidence_context() or (result is not None and self.wipe_result != result):
+                if context != self._evidence_context() or self.wipe_result != result:
                     raise SafetyError(CHANGED_TERMINAL)
                 written["provenance"]["verified"] = True
                 self.evidence = written

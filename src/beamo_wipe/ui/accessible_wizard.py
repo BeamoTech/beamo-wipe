@@ -182,7 +182,7 @@ class AccessibleWizard:
             self.body.pack_start(expander, False, False, 4)
 
     def button(self, text: str, action: Callable, *, enabled: bool = True,
-               utility: bool = False, in_body: bool = False):
+               utility: bool = False, in_body: bool = False, render_after: bool = True):
         widget = Gtk.Button.new_with_label(text)
         widget.set_sensitive(enabled)
         widget.set_can_default(False)
@@ -210,7 +210,7 @@ class AccessibleWizard:
             action()
             if self.w.wants_shutdown or self.w.wants_new_session:
                 self.close()
-            else:
+            elif render_after:
                 self.render()
 
         widget.connect("clicked", clicked)
@@ -763,7 +763,9 @@ class AccessibleWizard:
             Screen.REFRESHING,
             Screen.SHUTDOWN_CONFIRM,
         }:
-            self.button(C.SOUND_CHECK_BUTTON, self.open_sound_check, utility=True)
+            # The modal owns its presentation. Keep comparison/details open
+            # behind it instead of replacing the owner's current view.
+            self.button(C.SOUND_CHECK_BUTTON, self.open_sound_check, utility=True, render_after=False)
         if self.w.can_open_diagnostic:
             self.button(C.DIAGNOSTIC_TITLE, self.w.open_diagnostic, utility=True)
         if self.w.can_open_report_help:
@@ -849,6 +851,7 @@ class AccessibleWizard:
         self._sound_dialog.dialog.connect("key-press-event", self._modal_key_press)
         self._sound_dialog.dialog.connect("key-release-event", self._key_release)
         self._focus_active_window()
+        self.update_status()
 
     def _live_sound_dialog(self):
         controller = getattr(self, "_sound_dialog", None)

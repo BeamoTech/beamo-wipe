@@ -80,6 +80,9 @@ def test_manifest_generator_rebuilds_missing_iso_sidecar_safely(tmp_path, sideca
         "if [ \"$1\" = -c ]; then exec \"$BEAMO_REAL_PYTHON\" \"$@\"; fi\n"
         "printf fixture > \"$BEAMO_WIPE_MANIFEST_DEST\"\n"
         "(cd dist && sha256sum \"${BEAMO_WIPE_MANIFEST_DEST##*/}\" > \"${BEAMO_WIPE_MANIFEST_DEST##*/}.sha256\")\n"
+        # The initial Python transaction now also produces the aggregate list;
+        # this fixture isolates the later shell ISO-sidecar recovery boundary.
+        "(cd dist && sha256sum beamo-wipe-0.2.9-amd64.iso \"${BEAMO_WIPE_MANIFEST_DEST##*/}\" > SHA256SUMS)\n"
     )
     python.chmod(0o755)
 

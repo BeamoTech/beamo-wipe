@@ -482,6 +482,7 @@ def _run_session(args, *, session_store, use_console, want_accessible,
     keyboard_layout = None
     language = None
     text_size = None
+    owned_readers = []
     owned_reader = None
     try:
         while True:
@@ -501,6 +502,11 @@ def _run_session(args, *, session_store, use_console, want_accessible,
                 if needs_reader:
                     from beamo_wipe.ui.accessible_wizard import start_live_reader
 
+                    # Archive the previous handle before replacing it. Keep
+                    # the current acquisition in a protected local so an
+                    # interruption immediately after startup cannot lose it.
+                    if owned_reader is not None:
+                        owned_readers.append(owned_reader)
                     owned_reader = start_live_reader()
                     reader = owned_reader
             code = _run_one_session(
@@ -519,10 +525,15 @@ def _run_session(args, *, session_store, use_console, want_accessible,
             if session_store is not None:
                 session_store.begin_new_session()
     finally:
-        if owned_reader is not None:
+        if owned_reader is not None and not any(
+            owned_reader is previous for previous in owned_readers
+        ):
+            owned_readers.append(owned_reader)
+        if owned_readers:
             from beamo_wipe.ui.accessible_wizard import stop_live_reader
 
-            stop_live_reader(owned_reader)
+            for owned_reader in reversed(owned_readers):
+                stop_live_reader(owned_reader)
 
 
 def _run_one_session(args, *, session_store, use_console, want_accessible,
@@ -675,12 +686,14 @@ def main(argv: list[str] | None = None) -> int:
         return 3
     from beamo_wipe.session_recovery import SessionStore
     store = SessionStore()
+    primary: BaseException | None = None
     try:
         # Acquire interface ownership and persist preflight before discovery.
         # A failed journal/identity/ownership check must never reach runner startup.
         store.open()
         return _main(argv, session_store=store, args=args)
     except (OSError, SafetyError, ValueError) as exc:
+        primary = exc
         # A fixed serial marker lets the isolated boot gate distinguish a
         # volatile-filesystem refusal from other pre-UI startup failures.
         # Never put the exception text, a disk path, or journal data on serial.
@@ -699,8 +712,21 @@ def main(argv: list[str] | None = None) -> int:
             pass
         print(RECOVERY_UNAVAILABLE, file=sys.stderr)
         return 3
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        store.close()
+        try:
+            store.close()
+        except BaseException as error:
+            if primary is None:
+                raise
+            try:
+                from beamo_wipe.diagnostics import log_diag
+
+                log_diag("session_recovery", "store_close", type(error).__name__)
+            except BaseException:
+                pass  # Cleanup diagnostics must preserve the operation failure.
 
 
 # Referenced by packaging so the ISO banner can print the engine version.

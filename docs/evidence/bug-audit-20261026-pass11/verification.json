@@ -1,0 +1,538 @@
+{
+  "artifact_acceptance": false,
+  "base": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+  "branch": "codex/wipe-audit-20261024",
+  "candidate_disposition": "b: retain documented synthetic acceptance counterexample; producer/race reachability and exact built package association remain unresolved. No universal impossibility claim.",
+  "canonical_hashes": {
+    ".ai/memory/unfinished-work.md": "f113bc1327ae682a91db99f85aece665cbd81c541f0e85573ee1257750cbb2a8",
+    "docs/evidence/bug-audit-20261026-pass11/README.md": "959aa5b8c44fe2e70750c29dcb27d62f5807b7f1f832217996b3a5cd6009b3f4",
+    "docs/evidence/bug-audit-20261026-pass11/reviews.json": "d77b883f737987d2aec1ddf1a4bd316f4543ab4d7fc53e8433918d28e2017627"
+  },
+  "changed_production_test_paths": [],
+  "checks_reused_not_rerun": {
+    "portable_nodes": 13,
+    "portable_subtests": 29,
+    "ruff_commands": 4,
+    "scope": "Only the declared R10 source/config/fake-dependency checks; all936 source and pinned interpreter/Ruff bytes match.",
+    "static_types_files": 52,
+    "syntax_files": 747
+  },
+  "current_check_binding_sha256": "ced4bbdffc706e02d17c43321ab369c560aa7492c4870606cfa09318bc839f9a",
+  "functional_count": 936,
+  "functional_identity": "682501409de92473b4cdb44505358a4dda83a24514b75bb4fd0eec5b7e8d77f7",
+  "historical_suffix_sha256": "e77f22eaeb9b4eb75ceddd1af3745e1f245684656da2ac53cf39a430c82eae52",
+  "lab_visual_verified": false,
+  "linux_full_acceptance": false,
+  "native_acceptance": false,
+  "observation": {
+    "guide_hashes_unchanged": true,
+    "peer_and_lab_unchanged": true,
+    "resource_observation_is_not_admission_retry": true,
+    "resources": {
+      "available_ram_bytes": 6520070144,
+      "free_bytes": 1499353088,
+      "total_ram_bytes": 16946950144
+    },
+    "source_status": " M .ai/memory/unfinished-work.md\n M desktop/platform_windows_test.go\n M desktop/windows_inventory_pass13_test.go\n M developer_tests/test_desktop_final_receipt_pass3_20261019.py\n M developer_tests/test_desktop_output_replacement_pass2_20261019.py\n M developer_tests/test_desktop_output_snapshot_pass14_20261021.py\n M developer_tests/test_desktop_prior_receipt_retirement_pass4_20261019.py\n M docs/report-shutdown.md\n M docs/session-recovery.md\n M packaging/live/config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk\n M packaging/live/inside-docker.sh\n M scripts/build-iso.sh\n M scripts/build_desktop.py\n M scripts/ci-blacksmith.sh\n M scripts/generate-release-manifest.sh\n M src/beamo_wipe/app.py\n M src/beamo_wipe/build_identity.py\n M src/beamo_wipe/ci_evidence.py\n M src/beamo_wipe/diagnostics.py\n M src/beamo_wipe/discover.py\n M src/beamo_wipe/evidence.py\n M src/beamo_wipe/nwipe_runner.py\n M src/beamo_wipe/release_manifest.py\n M src/beamo_wipe/report_intent.py\n M src/beamo_wipe/result_summary.py\n M src/beamo_wipe/safety.py\n M src/beamo_wipe/sound.py\n M src/beamo_wipe/support_export.py\n M src/beamo_wipe/ui/accessible_wizard.py\n M src/beamo_wipe/ui/console_wizard.py\n M src/beamo_wipe/ui/sound_dialog.py\n M src/beamo_wipe/ui/tk_wizard.py\n M src/beamo_wipe/verification_evidence.py\n M src/beamo_wipe/wizard.py\n M tests/test_accessible_runtime.py\n M tests/test_audit_20260905_wizard.py\n M tests/test_ci_evidence_pipeline.py\n M tests/test_discover.py\n M tests/test_export_mount_cleanup_regression.py\n M tests/test_helper_boot_guidance.py\n M tests/test_iso_bundle_ownership_pass8.py\n M tests/test_kiosk_recovery.py\n M tests/test_manifest_sum_output_pass14_build.py\n M tests/test_pass14_final_checksum.py\n M tests/test_report_shutdown.py\n M tests/test_startup_diagnostics.py\n M tests/test_startup_notice_state_pass12.py\n M tests/test_tk_input_scroll_pass13.py\n M tests/test_usb_report_workflow.py\n?? developer_tests/native_mutation.py\n?? developer_tests/test_build_identity_cleanup.py\n?? developer_tests/test_desktop_windows_output_mode.py\n?? developer_tests/test_optional_helper_cleanup.py\n?? docs/evidence/bug-audit-20261024/\n?? docs/evidence/bug-audit-20261025-pass4/\n?? docs/evidence/bug-audit-20261025-pass5/\n?? docs/evidence/bug-audit-20261025-pass6/\n?? docs/evidence/bug-audit-20261025-pass7/\n?? docs/evidence/bug-audit-20261025-repass/\n?? docs/evidence/bug-audit-20261025/\n?? docs/evidence/bug-audit-20261026-pass10/\n?? docs/evidence/bug-audit-20261026-pass11/\n?? docs/evidence/bug-audit-20261026-pass8/\n?? docs/evidence/bug-audit-20261026-pass9/\n?? scripts/handoff_ci_outputs.py\n?? tests/test_build_failure_propagation.py\n?? tests/test_build_output_handoff_20261023.py\n?? tests/test_build_reader_cleanup.py\n?? tests/test_cancel_observed_exit.py\n?? tests/test_ci_handoff_boundaries.py\n?? tests/test_ci_handoff_publication_races.py\n?? tests/test_ci_qemu_final_binding.py\n?? tests/test_completion_projection_byte_budget.py\n?? tests/test_curses_discard_unicode.py\n?? tests/test_evidence_fd_cleanup.py\n?? tests/test_finalizer_output_binding.py\n?? tests/test_iso_rollback_collision.py\n?? tests/test_kiosk_identity_guard.py\n?? tests/test_malformed_terminal_progress.py\n?? tests/test_manifest_checksum_publication_races.py\n?? tests/test_manifest_writer_cleanup.py\n?? tests/test_nvme_surviving_transport.py\n?? tests/test_orca_acquisition_interrupt.py\n?? tests/test_orca_parent_failures.py\n?? tests/test_orca_process_cleanup.py\n?? tests/test_progress_activity_projection.py\n?? tests/test_progress_plan_estimate.py\n?? tests/test_raw_disk_ancestry_refusal.py\n?? tests/test_reader_acquisition_interrupt.py\n?? tests/test_reader_replacement_ownership.py\n?? tests/test_report_bundle_cleanup.py\n?? tests/test_report_intent_cleanup.py\n?? tests/test_report_member_cleanup.py\n?? tests/test_report_worker_cleanup.py\n?? tests/test_report_worker_outer_cleanup.py\n?? tests/test_runner_inhibitor_identity_order.py\n?? tests/test_runner_launch_handle_ownership.py\n?? tests/test_runner_read_handle_ownership.py\n?? tests/test_runner_status_whitespace_bound.py\n?? tests/test_shutdown_invalid_journal.py\n?? tests/test_sound_partial_state.py\n?? tests/test_started_terminal_evidence_race.py\n?? tests/test_startup_observation_order.py\n?? tests/test_startup_power_guard.py\n?? tests/test_stop_observed_exit.py\n?? tests/test_terminal_log_snapshot_ownership.py\n?? tests/test_wizard_log_handle_ownership.py\n",
+    "staged": [],
+    "utc": "2026-10-26T06:35:58.139805+00:00",
+    "whitespace": "PASS"
+  },
+  "parent_validations": {
+    "completion": {
+      "attempts": [
+        {
+          "ast_bindings": 65,
+          "attempt": 1,
+          "driver": {
+            "bytes": 29901,
+            "sha256": "142e5c75ad3644608606ea0dc1c072cbec2e6ffcf647e6375e8b97434290e7a0"
+          },
+          "exception": {
+            "message": "name '_build_sections' is not defined",
+            "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r11\\completion-review\\probe.py\", line 475, in <module>\n    pkg,models,methods,limits,run,progress,checksmod,outcomes,evmod=setup()\n                                                                    ~~~~~^^\n  File \"C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r11\\completion-review\\probe.py\", line 225, in setup\n    limits=selected(module('storage_limits', DiskKind=models.DiskKind), 'storage_limits',\n                    ('notice',), uppercase=True)\n  File \"C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r11\\completion-review\\probe.py\", line 153, in selected\n    exec(code, m.__dict__)\n    ~~~~^^^^^^^^^^^^^^^^^^\n  File \"<selected:storage_limits>\", line 94, in <module>\nNameError: name '_build_sections' is not defined\n",
+            "type": "NameError"
+          },
+          "finite_cases": 0,
+          "observations": 0,
+          "receipt": {
+            "bytes": 29072,
+            "sha256": "b4e87953f0e8352688d7220352f41bd7248785a11a8346fca6e097c34e0e9ead"
+          }
+        },
+        {
+          "ast_bindings": 274,
+          "attempt": 2,
+          "driver": {
+            "bytes": 29918,
+            "sha256": "a57dc3c8eb5078414a89dfd41d41d8ca6780763956160a42dd8dc11a1ab43223"
+          },
+          "exception": null,
+          "finite_cases": 43,
+          "observations": 87,
+          "receipt": {
+            "bytes": 740354,
+            "sha256": "32226b76a5726cdae89d9d85f880a64455d69ea6daae0a8ed89834c6e145e025"
+          }
+        }
+      ],
+      "counted_cases": 43,
+      "counted_observations": 87,
+      "limits": "Source/fake only. Differential observation pairs share assessment helpers; not independent correctness proofs. No native/full/physical acceptance.",
+      "packet": {
+        "all_members": {
+          "FILES.sha256": {
+            "bytes": 1325,
+            "sha256": "12fec0ed5c53ae965fa7c9b66b84ccbc83ec8f1baaa2fd5b83be7b310dc94412"
+          },
+          "POSTSEAL.json": {
+            "bytes": 7923,
+            "sha256": "3aae68d247864621dd0b9de114f9a5c6c8e85e67a00c24d589780803c47d3831"
+          },
+          "RESULT.md": {
+            "bytes": 11646,
+            "sha256": "cbc2f03dd5e0bd3ace34248a12dc2035fdb0c3d1b9b0ab96b3e3123c1ffd6f1b"
+          },
+          "after.json": {
+            "bytes": 12583,
+            "sha256": "e7cbab3ec1a2d740091646271a3fa7bea1d3e54ba49490488cf9bbd70603f508"
+          },
+          "attempt-1.driver.py.gz": {
+            "bytes": 9762,
+            "sha256": "274b9849eb142788398205cd67eb70b847bf4ab556a8d9dc8040f941d6614cc3"
+          },
+          "attempt-1.json.gz": {
+            "bytes": 8076,
+            "sha256": "d1fcdc6874b0b1045f4a606daeb5f907e0f4e0b81e0f1cd0cdaca0e11688ca41"
+          },
+          "attempt-2.driver.py.gz": {
+            "bytes": 9768,
+            "sha256": "a37d17e4725cca7920f9c826e068a81b560c80cd480d374de75377c1bd9c36b7"
+          },
+          "attempt-2.json.gz": {
+            "bytes": 44606,
+            "sha256": "c83558d1d9d1a3332d6c81aab686a8f71085b1ad2bd8c59306df68686bcc2146"
+          },
+          "before.json": {
+            "bytes": 12433,
+            "sha256": "405c32077d14e3532f2b0a5440ad282a7d56bd8c7ef01ae642bffe6fe28e7718"
+          },
+          "capture.py": {
+            "bytes": 3828,
+            "sha256": "94764b0f90f3e89b5b7f6219ca6c2ee2d02e57c9eca2204924d98e3b78be191a"
+          },
+          "closing-command.json": {
+            "bytes": 1846,
+            "sha256": "0770860c414b41c4333d445bdb5bc51d86260e7acae2c4619bf8a44f82aee29b"
+          },
+          "closing-source-context.json": {
+            "bytes": 5793,
+            "sha256": "d5f83dd204a890877b98bdf0afcb21b47732600866660f357d88cb0388eff4c9"
+          },
+          "closure-preparation-commands.json": {
+            "bytes": 2221,
+            "sha256": "92b7e63168ca186346a14e92b9a601935e8e8bc905aba77f7042b35a90fd6e9e"
+          },
+          "probe-commands.json": {
+            "bytes": 3590,
+            "sha256": "e1405e2ce4c652622a990b416c3470639f0fa487e2046fab5024ead93f924478"
+          },
+          "probe.py": {
+            "bytes": 29918,
+            "sha256": "a57dc3c8eb5078414a89dfd41d41d8ca6780763956160a42dd8dc11a1ab43223"
+          },
+          "read-notes.json": {
+            "bytes": 4909,
+            "sha256": "7d4d960e6bf10645d8618f079eb1ed69e197e407935335d19a566628e0bd1e1e"
+          },
+          "readback.json": {
+            "bytes": 10193,
+            "sha256": "6f4d168ae2ff986858da2d2921c67cbd965542bc1d4c648b25a1d94b3fc688df"
+          },
+          "seal.py": {
+            "bytes": 7260,
+            "sha256": "02abd5295e060db4e252d355f7b9493832c423dee2ee824b324d81a89ef2e3ba"
+          },
+          "validate.py": {
+            "bytes": 5700,
+            "sha256": "9b42e16b9e17f74d1cd9d32b2f7a0d4e707b54d60a1db89e40062ba1e8391c3c"
+          },
+          "validation.json": {
+            "bytes": 6182,
+            "sha256": "f73bb8421d4a0f7e01c8bf7ae30c23d00cdee1644bb96615ef60bb2ab147f8af"
+          }
+        },
+        "bytes": 199562,
+        "files": 20,
+        "manifest": {
+          "bytes": 1325,
+          "sha256": "12fec0ed5c53ae965fa7c9b66b84ccbc83ec8f1baaa2fd5b83be7b310dc94412"
+        }
+      },
+      "probe_actual_exits": [
+        1,
+        0
+      ],
+      "replay": "No probe/writer rerun. Complete saved oracles, archived original failure,274 current AST nodes and full byte packet rebound.",
+      "scoped_current_inputs": 18,
+      "status": "PARENT VALIDATED; BOUNDED NO OBJECTION"
+    },
+    "launcher": {
+      "finalizer_actual_exit": 0,
+      "inspection": "Parent read the complete original probe, independent full-byte/mode/identity/argv/refusal oracles and explicit native guards. Rebound all saved AST and static segments; reread Go preview/restart dispatch and live wrapper argv isolation. No writer/probe rerun.",
+      "limits": "Finite fake Python composition and static Go/shell inference; no compiler, native executable, shell, GTK, artifact, Linux/full or physical qualification.",
+      "manifest": {
+        "bytes": 810,
+        "sha256": "b6342bd7a3264f4f54acdf20d32d1168e013fe8c98f42d31fcf9fe65cc9f233a"
+      },
+      "matching_serialized_observations": 30,
+      "packet_bytes": 177312,
+      "payload_bytes": 171041,
+      "payload_files": 10,
+      "probe_actual_exit": 0,
+      "recorded_ast_bindings": 61,
+      "scope_identity": "da60a32981466b30788c0687515d72eb216ded6caca176cfaff938316471b6c5",
+      "scoped_current_inputs": 34,
+      "static_segments_bound": 19,
+      "status": "PARENT PACKET AND CURRENT SCOPE VALIDATED; BOUNDED NO OBJECTION",
+      "unique_current_ast_nodes": 8,
+      "validator": {
+        "bytes": 4884,
+        "sha256": "553956a6b5e0d5c19bde7041d47b81d4f78c18cc9436650a509dfe4d08422e5f"
+      }
+    },
+    "path": {
+      "current_scope_inputs": 14,
+      "disposition": "b: retain documented synthetic acceptance counterexample; producer/race reachability and exact built package association remain unresolved. No universal impossibility claim.",
+      "evidence_sealer_exits": [
+        1,
+        0
+      ],
+      "manifest": {
+        "bytes": 2137,
+        "sha256": "096db2e37faa134a39732459896e645c1054180eef660ba774b8f8cd4e38b950"
+      },
+      "new_ast_bindings": 39,
+      "new_child_product_probes": 0,
+      "no_production_reachable_unsafe_wipe_established": true,
+      "no_required_product_fix_established": true,
+      "original_ast_bindings_rebound": 298,
+      "original_observations": {
+        "invocations": 26,
+        "matching_unique_controls": 22,
+        "superseded_adapter_errors": 2,
+        "synthetic_mismatches": 2,
+        "unique_cases": 24
+      },
+      "original_probe_exits": [
+        1,
+        1
+      ],
+      "packet_bytes": 459565,
+      "packet_files": 28,
+      "packet_members": {
+        "FILES.sha256": {
+          "bytes": 2137,
+          "sha256": "096db2e37faa134a39732459896e645c1054180eef660ba774b8f8cd4e38b950"
+        },
+        "READBACK.json": {
+          "bytes": 8580,
+          "sha256": "9fc163108609d9a400c22b80cc122ff5b0d5ff2cedbc90d9fb5b6ced0d056fc2"
+        },
+        "RESULT.md": {
+          "bytes": 14535,
+          "sha256": "b21bbc4325a1c8e007d14ce70019c98dac43d94a667a71eca6199532f7e17d22"
+        },
+        "after.json": {
+          "bytes": 9305,
+          "sha256": "7d6802bfb46337b4fe0e5a1bf6038249229f8dc023cd332a6f0132c83095f93e"
+        },
+        "before.json": {
+          "bytes": 9339,
+          "sha256": "cd57841d672bfd23d28f82d227a70230c4a6aa6d4cf5b12db3d34d83e5fd9dfc"
+        },
+        "bindings.json": {
+          "bytes": 17187,
+          "sha256": "e9df500d77837c729727a299ebf3a3fc1093c407c8c30b691177b0ba010eff5b"
+        },
+        "browser-readings.zip": {
+          "bytes": 41647,
+          "sha256": "92304fe9ba4920e65073026dbd03cd9ae2034cf243842d4409705ed2f8978236"
+        },
+        "capture-receipts.json": {
+          "bytes": 30838,
+          "sha256": "258ccfc4fdc6d483b4bb736f0b356962718d96549e815968b3924637fff8f0d3"
+        },
+        "collect.py": {
+          "bytes": 10516,
+          "sha256": "7c08ca52167e8b1c74851c1997d506426daed378f63af8babf64283137bf5c22"
+        },
+        "debian-lsblk-devtree.txt": {
+          "bytes": 3319,
+          "sha256": "d19b9ef1e716a61d30480e8e528a47d9975876c11febe9c4921a04110df10439"
+        },
+        "debian-lsblk-properties.txt": {
+          "bytes": 3319,
+          "sha256": "d19b9ef1e716a61d30480e8e528a47d9975876c11febe9c4921a04110df10439"
+        },
+        "debian-lsblk.txt": {
+          "bytes": 3319,
+          "sha256": "d19b9ef1e716a61d30480e8e528a47d9975876c11febe9c4921a04110df10439"
+        },
+        "debian-sysfs.txt": {
+          "bytes": 3319,
+          "sha256": "d19b9ef1e716a61d30480e8e528a47d9975876c11febe9c4921a04110df10439"
+        },
+        "failed-export-command.zip": {
+          "bytes": 37766,
+          "sha256": "233d55265bb23b091d548b022738d1ae61ddf4db0ff96e9bfe6ef2ba7ca30647"
+        },
+        "failed-seal-round1.zip": {
+          "bytes": 16375,
+          "sha256": "4666fcfade35437d6b6fc0c636cec8cba877e1d3a6a0990407c0f6f81e5b007f"
+        },
+        "original-readings.zip": {
+          "bytes": 79511,
+          "sha256": "774a767c20817fd9891f0252b2535126abe15826d593acdda6777d5ecff523eb"
+        },
+        "post-execution.json": {
+          "bytes": 7921,
+          "sha256": "45645808e7c46e32c777a1d25ce6d603db69697ded3658db9acb8f0f2361428a"
+        },
+        "prepare-seal-v2.py": {
+          "bytes": 2271,
+          "sha256": "fc821382b6849c2c853848d4b444fe71be05ed9ad4b069e43c7db76a2fb3b26d"
+        },
+        "producer-readings.json": {
+          "bytes": 11132,
+          "sha256": "0e56efc37725e66f81053aa10c39df26d15629c732444e5df041265054aeceaa"
+        },
+        "seal-v2.py": {
+          "bytes": 8948,
+          "sha256": "c6f32b522cbceafdf008495c3d7f7f047ef777b5cdd9140aa12f4d04c6d79847"
+        },
+        "seal.py": {
+          "bytes": 8599,
+          "sha256": "feb5e54f0e01149fd636d5963f3474e426ed35c527ff72858fea19bf4a13220e"
+        },
+        "upstream-canonicalize.txt": {
+          "bytes": 4936,
+          "sha256": "1fa5606a1692315c26ed638ea04355f302ed7ddd8c287311413e426cd604a732"
+        },
+        "upstream-lsblk-devtree.txt": {
+          "bytes": 12732,
+          "sha256": "7fed5284d6c81d3f881f82f302ef69d05b75461d3dbd1fb29b15abc5c25dc9c9"
+        },
+        "upstream-lsblk-man.txt": {
+          "bytes": 8361,
+          "sha256": "d6e0d0d5a19275b01f33021652f96212aacfe8d878d810ed097a928fd1f712b0"
+        },
+        "upstream-lsblk-mnt.txt": {
+          "bytes": 3907,
+          "sha256": "c27b5d89c2a8cedfc008bced4aa786d9fcd014fdc2f0adc704e1fab4ed9c4a2d"
+        },
+        "upstream-lsblk-properties.txt": {
+          "bytes": 10133,
+          "sha256": "c26b5d1fb146419d68513327c2fae4894d7b3022ade0b49c6cc2c5ad32d7918c"
+        },
+        "upstream-lsblk.txt": {
+          "bytes": 64021,
+          "sha256": "97ad3cd3c76708f07d8ef9a85e6a95a9df7162a1c6d4273fd180d5019523fd68"
+        },
+        "upstream-sysfs.txt": {
+          "bytes": 25592,
+          "sha256": "2a7a3daf6006375958be60c0361ae63521c8b7390bb79d060d1d0d88a4818b2b"
+        }
+      },
+      "parent_fresh_fixtures": 6,
+      "parent_harness_failure_retained": true,
+      "parent_primary_reading": "Independently opened official upstream v2.38.1 lsblk.c/canonicalize.c and Bookworm manual; inspected exact get_device_path/NAME/PATH/PKNAME and udev timing caveat. Normalized web line numbers differ from raw saved bytes; no byte equality claim.",
+      "parent_probe_exits": [
+        1,
+        0
+      ],
+      "rationale": "Fixed absolute lsblk producer constructs paths; current CLI JSON override forces dry run and is cleared on live USB. Literal cross-owner PATH fixture does not establish kernel device association or normal output. Existing mount and consent refusal controls remain effective. Stale/rename/hotplug races remain unqualified.",
+      "remaining_acceptance": "Full/Linux/native/platform/artifact incomplete; Task119 NOT TESTED/BLOCKED. No source edits or release qualification.",
+      "source_scope_identity": "ae4662c1dc6e2305ac13b2d95852796e6219df77c05c1f04db567b29f5eb9c69",
+      "status": "PARENT VALIDATED; C1 RETAINED AS UNPROVED SYNTHETIC CANDIDATE",
+      "validator": {
+        "bytes": 8014,
+        "sha256": "096ddb40cd27f958eb5bfd0fa856dd08170536518b4dd43131daca173c02da55"
+      }
+    },
+    "safety": {
+      "current_ast_bindings": 298,
+      "limits": "Malformed PATH collision launch reaches fake boundary only; normal Linux reachability unproved. Integrity exit0 is not a product/probe pass. Focused producer disposition remains pending.",
+      "matching_unique_controls": 22,
+      "packet": {
+        "all_members": {
+          "FILES.sha256": {
+            "bytes": 1465,
+            "sha256": "bc88e85a890f1d9bcdeabdcc0c4ca3ea11e8449d642c8973bdd167b2e7a11b02"
+          },
+          "READBACK.json": {
+            "bytes": 3112,
+            "sha256": "28ab37f79580dc5bd921c1d8cb89e9e5ce4dc8162962451f1882efe9fe9e433e"
+          },
+          "RESULT.md": {
+            "bytes": 10663,
+            "sha256": "4177b29cc412c9fb814306ab520e65abab955a8fe6851daa1d3eecd8ff18f5a2"
+          },
+          "adapter-repair.json": {
+            "bytes": 962,
+            "sha256": "cc24d6b2c54228898d0537b074d9653af6bb96fefc3935f759fd0ee2862ddaa7"
+          },
+          "after.json": {
+            "bytes": 4440,
+            "sha256": "133de7b204e403fa9ef02522c7f67f6a264b6a32622fe4a0188761444746e21d"
+          },
+          "archive-receipt.json": {
+            "bytes": 459,
+            "sha256": "dd7378ed3f1e17ac5cb632779e6c122f3d187965ef1ef50e7ff087030f12ee8e"
+          },
+          "before.json": {
+            "bytes": 4656,
+            "sha256": "de68ef9d246b5eaf651adf2f36dbffbb9011297d3ef7acbb5cd849b059f1bd74"
+          },
+          "bindings.json": {
+            "bytes": 134427,
+            "sha256": "74fdb4774c0c5072acd4d5b10a65ef751a46472225c739d2eb386d940e742f53"
+          },
+          "closing-commands.json": {
+            "bytes": 1414,
+            "sha256": "4d9d14e55a5a20b9ef9e88f8f3f9c2d2fd6348a11416c2bcd39cd2e00f110ff8"
+          },
+          "commands.json": {
+            "bytes": 17292,
+            "sha256": "5e710a272402d818c1739a410bf56f6d8248b9b1a378f3067d2409c330002140"
+          },
+          "observations.json": {
+            "bytes": 52956,
+            "sha256": "deea8918d9748ba5cd84c3c9aa1d373637984f567239225503d1cc63f1559367"
+          },
+          "post-execution.json": {
+            "bytes": 3678,
+            "sha256": "40c31b6c191f025183b35d140f94a0fc4dd4bd8ab935fca0423c96ce0197f65a"
+          },
+          "prepare-v2.py": {
+            "bytes": 6486,
+            "sha256": "15da935e72dbf90eeb7357144ec959c39ce68c893a5621bd85851cc7c6a7e526"
+          },
+          "repeated-bindings.zip": {
+            "bytes": 30214,
+            "sha256": "ea8f103cb981e99d199da8bc71a34d2cc2095c86cb20f04617110bdab7016353"
+          },
+          "review-v2.py": {
+            "bytes": 31826,
+            "sha256": "933714d92ac9af7300be4fd2a08a61a44560d1884d3047115e9dc9334ba4ba67"
+          },
+          "review.py": {
+            "bytes": 34312,
+            "sha256": "84e205692b7e0274846e34653ee23869e8eb84701969fdde5d9c81d1e6ce3543"
+          },
+          "seal.py": {
+            "bytes": 9254,
+            "sha256": "74503b7ccf85c1abd3e28522ccef4a6e7651daa2c28553ae3b9d4d55496a5124"
+          },
+          "v2-after.json": {
+            "bytes": 4440,
+            "sha256": "d8849b4b336e3168cbaf1b80f65f31783bdb6d174920ba75e3d5f79d80b71d00"
+          },
+          "v2-before.json": {
+            "bytes": 4656,
+            "sha256": "de7a3366604f7be465643eb2badc277b15e0411e39d2d69dd726fabb01d0582f"
+          },
+          "v2-observations.json": {
+            "bytes": 35181,
+            "sha256": "3e2b7f79083389d81895006989a3b0cefcba33fed448904747b8b414a152e539"
+          },
+          "verification.json": {
+            "bytes": 6342,
+            "sha256": "13d60b37bc96702d5897eef7d210cd327bb942d6e97df71f4dbb62f0fe05a95c"
+          }
+        },
+        "bytes": 398235,
+        "files": 21,
+        "manifest": {
+          "bytes": 1465,
+          "sha256": "bc88e85a890f1d9bcdeabdcc0c4ca3ea11e8449d642c8973bdd167b2e7a11b02"
+        }
+      },
+      "probe_actual_exits": [
+        1,
+        1
+      ],
+      "scoped_current_inputs": 9,
+      "status": "PARENT PACKET VALIDATED; CANDIDATE DISPOSITION PENDING",
+      "superseded_adapter_errors": [
+        "hotplug-presentation-change-is-not-a-new-target-identity",
+        "unmounted-distinct-hidden-physical-fact-preserves-authorization"
+      ],
+      "synthetic_mismatches": [
+        {
+          "actual": {
+            "fake_popen_reached": false,
+            "inventory_identity_equal": false,
+            "refused": true,
+            "target_identity_equal": true,
+            "target_selected_after_mount": true
+          },
+          "error": null,
+          "expected": {
+            "fake_popen_reached": false,
+            "inventory_identity_equal": false,
+            "refused": true,
+            "target_identity_equal": true,
+            "target_selected_after_mount": false
+          },
+          "kind": "investigative-strict-refusal-candidate",
+          "match": false,
+          "name": "synthetic-cross-owner-mapper-partition-PATH-collision"
+        },
+        {
+          "actual": {
+            "authorization_key_equal": true,
+            "fake_popen_reached": true,
+            "inventory_identity_equal": true,
+            "refused": false,
+            "target_identity_equal": true,
+            "target_selected_after_mount": true
+          },
+          "error": null,
+          "expected": {
+            "authorization_key_equal": true,
+            "fake_popen_reached": false,
+            "inventory_identity_equal": true,
+            "refused": true,
+            "target_identity_equal": true,
+            "target_selected_after_mount": false
+          },
+          "kind": "investigative-strict-refusal-candidate",
+          "match": false,
+          "name": "synthetic-PATH-collision-with-already-unlisted-readonly-peer"
+        }
+      ],
+      "unique_cases": 24
+    }
+  },
+  "physical_acceptance": false,
+  "prior_seal": {
+    "bytes": 2693910,
+    "full_byte_readback": true,
+    "members": 246,
+    "path": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r10\\evidence-seal.json",
+    "sha256": "4b764f6313d9e93fb8c723bc5d2c1508f6bbba698fd42d6ae9167009b759ed0f"
+  },
+  "raw_seal": {
+    "bytes": 2708918,
+    "files": 160,
+    "path": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r11\\evidence-seal.json",
+    "readback": true,
+    "sha256": "b0f79b3bd460b97c13bf040652dc1720f4867381db2071d53e5535f00ab5fb2d"
+  },
+  "release_qualified": false,
+  "source": "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2",
+  "status": "AVAILABLE SOURCE AUDIT FINISHED; REQUIRED ACCEPTANCE BLOCKED/INCOMPLETE",
+  "tasks_terminal": true,
+  "utc": "2026-10-26T06:35:58.139805+00:00"
+}

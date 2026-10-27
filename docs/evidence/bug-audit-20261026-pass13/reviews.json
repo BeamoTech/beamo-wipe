@@ -1,0 +1,58 @@
+{
+  "build": {
+    "bindings": 57,
+    "diagnostic_oracle_corrections": 1,
+    "distinct_observations": 13,
+    "full_packet_bytes_reread": 202245,
+    "full_packet_files_reread": 19,
+    "manifest": {
+      "bytes": 1162,
+      "sha256": "20879666e33b05d60a705a66822f5d7e238057b617e088347d4383d8f36ca005"
+    },
+    "original_exit": 1,
+    "original_matches": 12,
+    "product_replays_by_parent": 0,
+    "resolved_matches": 13,
+    "source_inputs": 18,
+    "static_regions": 9,
+    "supplemental_source_inputs": 1
+  },
+  "independent_coverage": "INCOMPLETE: safety delegate failed HTTP429 before review",
+  "original_failures_preserved": true,
+  "parent_validation": {
+    "actual_exit": 0,
+    "new_product_replays": 0,
+    "record": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r13\\parent-review-validation.json",
+    "tool_chunk": "414958"
+  },
+  "recovery": {
+    "bindings_records": 244,
+    "distinct_observations": 14,
+    "full_packet_bytes_reread": 244035,
+    "full_packet_files_reread": 34,
+    "manifest": {
+      "bytes": 2291,
+      "sha256": "1f108ecb7f0611d88437f46f6a32862d3177484adec3c2a8944555124aff5bf4"
+    },
+    "new_cases_from_replay": 0,
+    "original_exits": [
+      1,
+      1,
+      0
+    ],
+    "original_observation_matches": 11,
+    "resolved_matches": 14,
+    "source_inputs": 12,
+    "static_notes": 5,
+    "unchanged_oracle_replays": 3,
+    "unique_bindings": 135
+  },
+  "remaining_objections": "No new actionable product finding in reviewed scopes. Missing independent safety/native coverage remains unresolved; no release approval.",
+  "safety": {
+    "failure": "exceeded retry limit, last status: 429 Too Many Requests",
+    "failure_record": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r13\\safety-r1-failed.json",
+    "retried": false,
+    "status": "FAILED before review; no findings/cases produced",
+    "task_id": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r13-20261026-safety-r1"
+  }
+}

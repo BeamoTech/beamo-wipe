@@ -21,6 +21,24 @@ SERIAL_MARKER_RE = re.compile(r"^BEAMO_WIPE_[A-Z0-9_]{1,64}$")
 SERIAL_DEVICE = "/dev/ttyS0"
 
 
+def _close_diagnostic_fds(
+    primary: BaseException | None, owned: dict[str, int], *names: str
+) -> None:
+    """Close each owned descriptor once without replacing a primary failure."""
+    failure: BaseException | None = None
+    for name in names:
+        fd = owned.pop(name, None)
+        if fd is None:
+            continue
+        try:
+            os.close(fd)
+        except BaseException as exc:
+            if failure is None:
+                failure = exc
+    if primary is None and failure is not None:
+        raise failure
+
+
 def _verify_directory(directory: Path, fd: int) -> None:
     opened = os.fstat(fd)
     named = os.stat(directory, follow_symlinks=False)
@@ -35,20 +53,23 @@ def _verify_directory(directory: Path, fd: int) -> None:
 
 def _open_diagnostics(directory: Path, flags: int) -> tuple[int, int]:
     """Bind the file open to one validated directory, without following links."""
-    directory_fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
-    fd = -1
+    owned: dict[str, int] = {}
+    primary: BaseException | None = None
     try:
-        _verify_directory(directory, directory_fd)
-        fd = os.open("diagnostics.log", flags, 0o600, dir_fd=directory_fd)
-        _verify_directory(directory, directory_fd)
-        return directory_fd, fd
-    except BaseException:
-        try:
-            if fd >= 0:
-                os.close(fd)
-        finally:
-            os.close(directory_fd)
+        owned["directory"] = os.open(
+            directory, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+        )
+        _verify_directory(directory, owned["directory"])
+        owned["file"] = os.open(
+            "diagnostics.log", flags, 0o600, dir_fd=owned["directory"]
+        )
+        _verify_directory(directory, owned["directory"])
+        return owned.pop("directory"), owned.pop("file")
+    except BaseException as exc:
+        primary = exc
         raise
+    finally:
+        _close_diagnostic_fds(primary, owned, "file", "directory")
 
 
 def _write_all(fd: int, data: bytes) -> None:
@@ -65,16 +86,22 @@ def emit_serial_marker(marker: str) -> bool:
     if not isinstance(marker, str) or not SERIAL_MARKER_RE.fullmatch(marker):
         return False
     try:
-        fd = os.open(
-            SERIAL_DEVICE,
-            os.O_WRONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC,
-        )
+        owned: dict[str, int] = {}
+        primary: BaseException | None = None
         try:
+            owned["serial"] = os.open(
+                SERIAL_DEVICE,
+                os.O_WRONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC,
+            )
+            fd = owned["serial"]
             if not stat.S_ISCHR(os.fstat(fd).st_mode):
                 return False
             _write_all(fd, (marker + "\n").encode("ascii"))
+        except BaseException as exc:
+            primary = exc
+            raise
         finally:
-            os.close(fd)
+            _close_diagnostic_fds(primary, owned, "serial")
         return True
     except OSError:
         return False
@@ -182,10 +209,13 @@ def log_diag(
         # If file doesn't exist, create 0o600; if exists, append.
         # O_RDWR (not O_WRONLY): the size-bound rotation below must read the
         # tail through this fd; a write-only fd fails the read with EBADF.
-        directory_fd, fd = _open_diagnostics(
-            Path(directory), os.O_RDWR | os.O_CREAT | os.O_APPEND | os.O_NOFOLLOW
-        )
+        owned: dict[str, int] = {}
+        primary: BaseException | None = None
         try:
+            owned["directory"], owned["file"] = _open_diagnostics(
+                Path(directory), os.O_RDWR | os.O_CREAT | os.O_APPEND | os.O_NOFOLLOW
+            )
+            directory_fd, fd = owned["directory"], owned["file"]
             opened = os.fstat(fd)
             if not stat.S_ISREG(opened.st_mode):
                 raise OSError("diagnostics path is not a regular file")
@@ -221,11 +251,11 @@ def log_diag(
             except OSError:
                 pass
             _verify_directory(Path(directory), directory_fd)
+        except BaseException as exc:
+            primary = exc
+            raise
         finally:
-            try:
-                os.close(fd)
-            finally:
-                os.close(directory_fd)
+            _close_diagnostic_fds(primary, owned, "file", "directory")
         return True
     except OSError as exc:
         # Fallback to stderr so failure is visible to maintainer (sanitized:
@@ -265,10 +295,13 @@ def read_diagnostics(log_dir: Optional[Path] = None, limit: int = 100) -> list[d
     except Exception:
         return []
     try:
-        directory_fd, fd = _open_diagnostics(
-            Path(directory), os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
-        )
+        owned: dict[str, int] = {}
+        primary: BaseException | None = None
         try:
+            owned["directory"], owned["file"] = _open_diagnostics(
+                Path(directory), os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+            )
+            directory_fd, fd = owned["directory"], owned["file"]
             opened = os.fstat(fd)
             if not stat.S_ISREG(opened.st_mode) or opened.st_uid != os.getuid():
                 return []
@@ -288,11 +321,11 @@ def read_diagnostics(log_dir: Optional[Path] = None, limit: int = 100) -> list[d
                 raw = raw.split(b"\n", 1)[1]
             text = raw.decode("utf-8", errors="replace")
             _verify_directory(Path(directory), directory_fd)
+        except BaseException as exc:
+            primary = exc
+            raise
         finally:
-            try:
-                os.close(fd)
-            finally:
-                os.close(directory_fd)
+            _close_diagnostic_fds(primary, owned, "file", "directory")
     except OSError:
         return []
     lines = [ln for ln in text.splitlines() if ln.strip()]

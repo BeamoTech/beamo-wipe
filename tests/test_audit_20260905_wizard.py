@@ -10,7 +10,10 @@ from beamo_wipe.models import Screen
 from beamo_wipe.ui import console_wizard as console
 
 
-def _working_wizard(monkeypatch):
+def _working_wizard(monkeypatch, tmp_path):
+    # Exercise the real log-directory guard against an owned fixture, never
+    # the live application's shared /tmp/beamo-wipe directory.
+    monkeypatch.setattr("beamo_wipe.safety.DEFAULT_LOG_DIR", tmp_path / "logs")
     wizard = make_demo_wizard()
     wizard.preview = False
     wizard.runner._clock = lambda: 0.0
@@ -33,10 +36,10 @@ def _working_wizard(monkeypatch):
 @pytest.mark.parametrize("report_wanted", [False, True])
 @pytest.mark.parametrize("before_eof", ["", "\n", "unknown command\n"])
 def test_working_plain_console_eof_cancels_before_leaving(
-    monkeypatch, report_wanted, before_eof
+    monkeypatch, tmp_path, report_wanted, before_eof
 ):
     """readline EOF must reach the same interrupted recovery as input EOF."""
-    wizard = _working_wizard(monkeypatch)
+    wizard = _working_wizard(monkeypatch, tmp_path)
     wizard.report_wanted = report_wanted
     stdin = io.StringIO(before_eof)
     monkeypatch.setattr(console.sys, "stdin", stdin)

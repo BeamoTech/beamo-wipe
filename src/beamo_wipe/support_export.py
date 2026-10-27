@@ -1169,11 +1169,13 @@ def read_export_log(
         or not 0 < expected_size_bytes <= MAX_LOG_BYTES
     ):
         return b"", "unavailable"
+    fd = -1
+    primary_error: BaseException | None = None
     try:
-        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
-    except OSError:
-        return b"", "unavailable"
-    try:
+        try:
+            fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        except OSError:
+            return b"", "unavailable"
         before = os.fstat(fd)
         if (
             not stat.S_ISREG(before.st_mode)
@@ -1225,12 +1227,17 @@ def read_export_log(
         # The log is optional; failed metadata/seek/read operations must omit
         # it just like a failed open, without blocking the evidence export.
         return b"", "unavailable"
+    except BaseException as exc:
+        primary_error = exc
+        raise
     finally:
-        try:
-            os.close(fd)
-        except OSError:
-            # A failed close also makes the optional log read untrustworthy.
-            return b"", "unavailable"
+        if fd >= 0:
+            try:
+                _close_report_fds(fd, primary_error=primary_error)
+            except OSError:
+                # Failed close omits optional bytes, while an outstanding
+                # interruption or refusal keeps its original identity.
+                return b"", "unavailable"
 
 
 def _block_rdev(path: str) -> int:
@@ -1650,17 +1657,22 @@ def _full_write(fd: int, data: bytes) -> None:
 
 def _write_exclusive(directory_fd: int, name: str, data: bytes) -> None:
     temporary = "." + name + ".partial"
-    fd = os.open(
-        temporary,
-        os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
-        0o600,
-        dir_fd=directory_fd,
-    )
+    fd = -1
+    primary_error: BaseException | None = None
     try:
+        fd = os.open(
+            temporary,
+            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+            0o600,
+            dir_fd=directory_fd,
+        )
         _full_write(fd, data)
         os.fsync(fd)
+    except BaseException as exc:
+        primary_error = exc
+        raise
     finally:
-        os.close(fd)
+        _close_report_fds(fd, primary_error=primary_error)
     # Session directory is new and exclusively owned by this export attempt.
     os.rename(temporary, name, src_dir_fd=directory_fd, dst_dir_fd=directory_fd)
 
@@ -1674,8 +1686,10 @@ def _read_at(
 ) -> bytes:
     if not re.fullmatch(r"[A-Za-z0-9_][A-Za-z0-9_.-]{0,100}", name) or name in {".", ".."}:
         raise SafetyError(REPORT_FILENAME_INVALID)
-    fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory_fd)
+    fd = -1
+    primary_error: BaseException | None = None
     try:
+        fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory_fd)
         opened = os.fstat(fd)
         if (
             not stat.S_ISREG(opened.st_mode)
@@ -1733,8 +1747,11 @@ def _read_at(
         ):
             raise SafetyError(REPORT_READBACK_FAILED)
         return data
+    except BaseException as exc:
+        primary_error = exc
+        raise
     finally:
-        os.close(fd)
+        _close_report_fds(fd, primary_error=primary_error)
 
 
 def _bundle_files(
@@ -1928,19 +1945,17 @@ def _bundle_files(
     return files
 
 
-def _close_directory_fds(*fds: int) -> None:
-    """Close every owned directory even if an earlier close reports an error."""
-    first_error: BaseException | None = None
+def _close_report_fds(*fds: int, primary_error: BaseException | None = None) -> None:
+    """Close every owned report handle even if an earlier close reports an error."""
+    cleanup_errors: list[tuple[str, BaseException]] = []
     for fd in fds:
         if fd < 0:
             continue
         try:
             os.close(fd)
         except BaseException as exc:
-            if first_error is None:
-                first_error = exc
-    if first_error is not None:
-        raise first_error
+            cleanup_errors.append(("report_close", exc))
+    _finish_report_cleanup(cleanup_errors, primary_error)
 
 
 def write_report_bundle(
@@ -1953,14 +1968,17 @@ def write_report_bundle(
     privacy_reduced: bool = False,
 ) -> tuple[str, dict[str, bytes]]:
     """Write one unique, completion-marked bundle using directory-relative FDs."""
-    mount_fd = os.open(str(mountpoint), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    mount_fd = -1
     reports_fd = -1
     session_fd = -1
+    primary_error: BaseException | None = None
     try:
         try:
+            mount_fd = os.open(str(mountpoint), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
             os.mkdir(REPORTS_DIR, 0o700, dir_fd=mount_fd)
         except FileExistsError:
-            pass
+            if mount_fd < 0:
+                raise  # Only an existing reports directory may be reused.
         reports_fd = os.open(
             REPORTS_DIR,
             os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
@@ -2005,16 +2023,21 @@ def write_report_bundle(
         os.fsync(reports_fd)
         os.fsync(mount_fd)
         return chosen, files
+    except BaseException as exc:
+        primary_error = exc
+        raise
     finally:
-        _close_directory_fds(session_fd, reports_fd, mount_fd)
+        _close_report_fds(session_fd, reports_fd, mount_fd, primary_error=primary_error)
 
 
 def verify_report_bundle(mountpoint: Path, session_name: str, files: Mapping[str, bytes]) -> None:
     if not SESSION_RE.fullmatch(session_name):
         raise SafetyError(RECEIPT_DIR_INVALID)
-    mount_fd = os.open(str(mountpoint), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    mount_fd = -1
     reports_fd = directory_fd = -1
+    primary_error: BaseException | None = None
     try:
+        mount_fd = os.open(str(mountpoint), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
         reports_fd = os.open(REPORTS_DIR, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=mount_fd)
         directory_fd = os.open(session_name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=reports_fd)
         names = sorted(os.listdir(directory_fd))
@@ -2027,8 +2050,11 @@ def verify_report_bundle(mountpoint: Path, session_name: str, files: Mapping[str
                 raise SafetyError(REPORT_READBACK_FAILED)
         if sorted(os.listdir(directory_fd)) != names:
             raise SafetyError(REPORT_FILES_CHANGED)
+    except BaseException as exc:
+        primary_error = exc
+        raise
     finally:
-        _close_directory_fds(directory_fd, reports_fd, mount_fd)
+        _close_report_fds(directory_fd, reports_fd, mount_fd, primary_error=primary_error)
 
 
 def _mount_record(mountpoint: Path) -> Optional[tuple[str, str, str, frozenset[str]]]:
@@ -2242,6 +2268,28 @@ def _assert_partition_parent(volume: ExportVolume) -> None:
         raise SafetyError(USB_PARTITION_ORPHAN)
 
 
+def _finish_report_cleanup(
+    cleanup_errors: Sequence[tuple[str, BaseException]],
+    primary_error: BaseException | None,
+) -> None:
+    """Record private-safe cleanup stages without replacing a primary failure."""
+    if not cleanup_errors:
+        return
+    try:
+        from beamo_wipe.diagnostics import log_diag
+
+        log_diag(
+            "report_export",
+            "cleanup_failed",
+            "; ".join(f"{stage}:{type(exc).__name__}" for stage, exc in cleanup_errors),
+        )
+    except BaseException:
+        pass  # Optional diagnostics cannot hide the original failure.
+    if primary_error is None:
+        # A pending success receipt cannot survive failed cleanup.
+        raise cleanup_errors[0][1]
+
+
 def _persist_and_verify_report(
     volume: ExportVolume,
     evidence: VerifiedEvidence,
@@ -2255,7 +2303,8 @@ def _persist_and_verify_report(
     root_fd = -1
     mountpoint: Optional[Path] = None
     mount_name = ""
-    mounted = False
+    mount_pending = False
+    primary_error: BaseException | None = None
     try:
         try:
             MOUNT_ROOT.mkdir(mode=0o700, parents=True, exist_ok=True)
@@ -2308,6 +2357,9 @@ def _persist_and_verify_report(
         # owner-only and regular report members exactly 0600 on both mounts.
         permission_options = "fmask=0177,dmask=0077"
         rw_options = f"rw,nodev,nosuid,noexec,nosymfollow,{permission_options}"
+        # The command can mount successfully before its result is observed.
+        # Cleanup rechecks identity even if command return/inspection is interrupted.
+        mount_pending = True
         proc = _run_command(
             [MOUNT_BIN, "-t", volume.fstype, "-o", rw_options, stable_source, str(mountpoint)],
             pass_fds=(volume_fd,),
@@ -2331,10 +2383,11 @@ def _persist_and_verify_report(
         if not _ordinary_unmount(mountpoint, volume):
             mounted = _mounted_exact(mountpoint, volume)
             raise SafetyError(USB_UNMOUNT_FAILED)
-        mounted = False
+        mount_pending = False
         _emit_export_marker("BEAMO_WIPE_EXPORT_RW_UNMOUNTED")
 
         ro_options = f"ro,nodev,nosuid,noexec,nosymfollow,{permission_options}"
+        mount_pending = True
         proc = _run_command(
             [MOUNT_BIN, "-t", volume.fstype, "-o", ro_options, stable_source, str(mountpoint)],
             pass_fds=(volume_fd,),
@@ -2349,7 +2402,7 @@ def _persist_and_verify_report(
         if not _ordinary_unmount(mountpoint, volume):
             mounted = _mounted_exact(mountpoint, volume)
             raise SafetyError(USB_VERIFIED_UNMOUNT_FAILED)
-        mounted = False
+        mount_pending = False
         if _mount_record(mountpoint) is not None:
             raise SafetyError(USB_STILL_MOUNTED)
         _emit_export_marker("BEAMO_WIPE_EXPORT_RO_UNMOUNTED")
@@ -2361,26 +2414,37 @@ def _persist_and_verify_report(
             privacy_reduced=privacy_reduced,
             diagnostic=_is_diagnostic_evidence(evidence.data),
         )
+    except BaseException as exc:
+        primary_error = exc
+        raise
     finally:
-        # An I/O error during one cleanup must not abandon the other owned
-        # resources. Never retry close: Linux may already have released the FD.
-        try:
-            if mountpoint is not None and mounted:
-                _ordinary_unmount(mountpoint, volume)
-        finally:
+        # Preserve the primary refusal and attempt every remaining cleanup.
+        # Never retry close: Linux may already have released the descriptor.
+        cleanup_errors: list[tuple[str, BaseException]] = []
+        if mountpoint is not None and mount_pending:
             try:
-                if lock_fd >= 0:
-                    os.close(lock_fd)
-            finally:
-                try:
-                    if mount_name and root_fd >= 0:
-                        try:
-                            os.rmdir(mount_name, dir_fd=root_fd)
-                        except OSError:
-                            pass
-                finally:
-                    if root_fd >= 0:
-                        os.close(root_fd)
+                if not _ordinary_unmount(mountpoint, volume):
+                    raise SafetyError(USB_UNMOUNT_FAILED)
+            except BaseException as exc:
+                cleanup_errors.append(("unmount", exc))
+        if lock_fd >= 0:
+            try:
+                os.close(lock_fd)
+            except BaseException as exc:
+                cleanup_errors.append(("lock_close", exc))
+        if mount_name and root_fd >= 0:
+            try:
+                os.rmdir(mount_name, dir_fd=root_fd)
+            except OSError:
+                pass  # Removing the empty mount directory remains best effort.
+            except BaseException as exc:
+                cleanup_errors.append(("directory_remove", exc))
+        if root_fd >= 0:
+            try:
+                os.close(root_fd)
+            except BaseException as exc:
+                cleanup_errors.append(("root_close", exc))
+        _finish_report_cleanup(cleanup_errors, primary_error)
 
 
 def _worker() -> ExportReceipt:
@@ -2412,9 +2476,11 @@ def _worker() -> ExportReceipt:
         raise SafetyError(USB_BLOCK_CHANGED)
     _emit_export_marker("BEAMO_WIPE_EXPORT_WORKER_IDENTIFIED")
     flags = os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW
-    parent_fd = os.open(volume.parent.path, flags)
+    parent_fd = -1
     volume_fd = -1
+    primary_error: BaseException | None = None
     try:
+        parent_fd = os.open(volume.parent.path, flags)
         volume_fd = os.open(volume.path, flags)
         if os.fstat(parent_fd).st_rdev != volume.parent.rdev or os.fstat(volume_fd).st_rdev != volume.rdev:
             raise SafetyError(USB_IDENTITY_CHANGED_OPEN)
@@ -2423,12 +2489,22 @@ def _worker() -> ExportReceipt:
         return _persist_and_verify_report(
             volume, evidence, log_data, log_status, volume_fd, privacy_reduced
         )
+    except BaseException as exc:
+        primary_error = exc
+        raise
     finally:
-        try:
-            if volume_fd >= 0:
+        cleanup_errors: list[tuple[str, BaseException]] = []
+        if volume_fd >= 0:
+            try:
                 os.close(volume_fd)
-        finally:
-            os.close(parent_fd)
+            except BaseException as exc:
+                cleanup_errors.append(("volume_close", exc))
+        if parent_fd >= 0:
+            try:
+                os.close(parent_fd)
+            except BaseException as exc:
+                cleanup_errors.append(("parent_close", exc))
+        _finish_report_cleanup(cleanup_errors, primary_error)
 
 
 def worker_main() -> int:

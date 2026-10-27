@@ -1,0 +1,61 @@
+{
+  "correction_review": "NOT RUN/PENDING after all3 sessions failed429. No blind retry or provider/account switch.",
+  "failed_baseline_reviews": [
+    {
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "status": "failed",
+      "summary": "exceeded retry limit, last status: 429 Too Many Requests",
+      "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r14-20261026-safety-r1"
+    },
+    {
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "status": "failed",
+      "summary": "exceeded retry limit, last status: 429 Too Many Requests",
+      "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r14-20261026-completion-r1"
+    },
+    {
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "status": "failed",
+      "summary": "exceeded retry limit, last status: 429 Too Many Requests",
+      "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r14-20261026-lifecycle-r1"
+    }
+  ],
+  "overall": "INCOMPLETE - no independent approval",
+  "remaining": "Fresh independent safety/completion/lifecycle/correction review when provider availability permits; source/full/Linux/native/platform/artifact/physical acceptance still required.",
+  "root_validation": {
+    "actual_exit": 0,
+    "completion_chunk": "bd64e4",
+    "independent": false,
+    "record": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261026-r14\\candidate-final-validation.json"
+  }
+}

@@ -76,8 +76,12 @@ func TestWindowsInventoryPowerShellRuntime(t *testing.T) {
 			if tc.duplicate {
 				cmd.Env[len(cmd.Env)-1] = "BEAMO_DUPLICATE=1"
 			}
-			out, err := cmd.Output()
+			out, err := cmd.CombinedOutput()
+			ctxErr := ctx.Err()
 			cancel()
+			if ctxErr != nil {
+				t.Fatalf("PowerShell inventory fixture timed out: %v\n%s", ctxErr, out)
+			}
 			if tc.want == "" {
 				if err == nil {
 					t.Fatal("unsupported inventory accepted")
@@ -85,7 +89,7 @@ func TestWindowsInventoryPowerShellRuntime(t *testing.T) {
 				return
 			}
 			if err != nil {
-				t.Fatalf("PowerShell inventory runtime: %v", err)
+				t.Fatalf("PowerShell inventory runtime: %v\n%s", err, out)
 			}
 			var got struct {
 				Media      string   `json:"media"`

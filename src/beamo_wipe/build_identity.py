@@ -38,6 +38,24 @@ def _unique_identity_fields(pairs):
     return fields
 
 
+def _close_identity_fds(
+    primary: BaseException | None, owned: dict[str, int], *names: str
+) -> None:
+    """Attempt every owned close once without replacing a primary failure."""
+    failure: BaseException | None = None
+    for name in names:
+        fd = owned.pop(name, None)
+        if fd is None:
+            continue
+        try:
+            os.close(fd)
+        except BaseException as exc:
+            if failure is None:
+                failure = exc
+    if primary is None and failure is not None:
+        raise failure
+
+
 def runtime_source_sha256() -> str | None:
     """Hash installed application bytes with the release manifest's framing."""
     root = Path(__file__).parent
@@ -56,11 +74,18 @@ def runtime_source_sha256() -> str | None:
                 continue
             from beamo_wipe.support_export import _read_at
 
-            fd = os.open(str(path.parent), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+            owned: dict[str, int] = {}
+            primary: BaseException | None = None
             try:
-                data = _read_at(fd, path.name, limit=4 * 1024 * 1024)
+                owned["directory"] = os.open(
+                    str(path.parent), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+                )
+                data = _read_at(owned["directory"], path.name, limit=4 * 1024 * 1024)
+            except BaseException as exc:
+                primary = exc
+                raise
             finally:
-                os.close(fd)
+                _close_identity_fds(primary, owned, "directory")
             total += len(data)
             if total > 16 * 1024 * 1024:
                 return None
@@ -120,11 +145,18 @@ def load_injected_build(path: Path | None = None) -> dict[str, Any] | None:
     try:
         from beamo_wipe.support_export import _read_at
 
-        fd = os.open(str(target.parent), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        owned: dict[str, int] = {}
+        primary: BaseException | None = None
         try:
-            raw = _read_at(fd, target.name, limit=4096)
+            owned["directory"] = os.open(
+                str(target.parent), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+            )
+            raw = _read_at(owned["directory"], target.name, limit=4096)
+        except BaseException as exc:
+            primary = exc
+            raise
         finally:
-            os.close(fd)
+            _close_identity_fds(primary, owned, "directory")
         return parse_injected_build(
             json.loads(raw, object_pairs_hook=_unique_identity_fields)
         )
@@ -179,21 +211,25 @@ def _identity_directory(directory: Path, *, create: bool) -> int:
     """Open one output directory without following any path component."""
     absolute = Path(os.path.abspath(directory))
     flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
-    fd = os.open("/", flags)
+    owned: dict[str, int] = {}
+    primary: BaseException | None = None
     try:
+        owned["directory"] = os.open("/", flags)
         for component in absolute.parts[1:]:
             if create:
                 try:
-                    os.mkdir(component, 0o755, dir_fd=fd)
+                    os.mkdir(component, 0o755, dir_fd=owned["directory"])
                 except FileExistsError:
                     pass
-            next_fd = os.open(component, flags, dir_fd=fd)
-            os.close(fd)
-            fd = next_fd
-        return fd
-    except BaseException:
-        os.close(fd)
+            owned["next"] = os.open(component, flags, dir_fd=owned["directory"])
+            _close_identity_fds(None, owned, "directory")
+            owned["directory"] = owned.pop("next")
+        return owned.pop("directory")
+    except BaseException as exc:
+        primary = exc
         raise
+    finally:
+        _close_identity_fds(primary, owned, "next", "directory")
 
 
 def _identity_bytes(fd: int, size: int) -> bytes:
@@ -250,16 +286,19 @@ def _verify_identity_publication(
 def _publish_identity(path: Path, data: bytes) -> None:
     if not path.name or path.name in {".", ".."}:
         raise RuntimeError("invalid build identity path")
-    directory_fd = _identity_directory(path.parent, create=True)
-    temporary = ".build-identity-" + secrets.token_hex(16)
-    fd = -1
+    owned: dict[str, int] = {}
+    primary: BaseException | None = None
     try:
-        fd = os.open(
+        owned["directory"] = _identity_directory(path.parent, create=True)
+        directory_fd = owned["directory"]
+        temporary = ".build-identity-" + secrets.token_hex(16)
+        owned["file"] = os.open(
             temporary,
             os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
             0o600,
             dir_fd=directory_fd,
         )
+        fd = owned["file"]
         pending = memoryview(data)
         while pending:
             written = os.write(fd, pending)
@@ -279,28 +318,23 @@ def _publish_identity(path: Path, data: bytes) -> None:
         )
         os.fsync(directory_fd)
         _verify_identity_publication(directory_fd, path.name, fd, data)
-        current_fd = _identity_directory(path.parent, create=False)
-        try:
-            opened_directory = os.fstat(directory_fd)
-            current_directory = os.fstat(current_fd)
-            if (opened_directory.st_dev, opened_directory.st_ino) != (
-                current_directory.st_dev,
-                current_directory.st_ino,
-            ):
-                raise RuntimeError(
-                    "build identity directory changed during publication"
-                )
-        finally:
-            os.close(current_fd)
+        owned["current_directory"] = _identity_directory(path.parent, create=False)
+        opened_directory = os.fstat(directory_fd)
+        current_directory = os.fstat(owned["current_directory"])
+        if (opened_directory.st_dev, opened_directory.st_ino) != (
+            current_directory.st_dev,
+            current_directory.st_ino,
+        ):
+            raise RuntimeError(
+                "build identity directory changed during publication"
+            )
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        try:
-            # A failed exact stage is retained. POSIX has no atomic
-            # unlink-if-same-inode operation, so a stat-then-unlink cleanup
-            # could delete a concurrent replacement of the staging name.
-            if fd >= 0:
-                os.close(fd)
-        finally:
-            os.close(directory_fd)
+        # A failed exact stage is retained. POSIX has no atomic
+        # unlink-if-same-inode operation, so cleanup must not delete it.
+        _close_identity_fds(primary, owned, "current_directory", "file", "directory")
 
 
 def write_injected(

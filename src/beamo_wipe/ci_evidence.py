@@ -52,6 +52,22 @@ def _metadata_values(metadata, fields):
     return tuple(getattr(metadata, field, None) for field in fields)
 
 
+def _close_reader_fds(primary, owned, *names) -> None:
+    """Consume each owned descriptor once, retaining an operation's primary error."""
+    first_error = None
+    for name in names or tuple(owned):
+        fd = owned.pop(name, None)
+        if fd is None:
+            continue
+        try:
+            os.close(fd)
+        except BaseException as exc:
+            if first_error is None:
+                first_error = exc
+    if primary is None and first_error is not None:
+        raise first_error
+
+
 def _open_evidence_directory(directory: Path, *, create: bool = False) -> int:
     """Open every directory component without links and return the final fd."""
     requested = Path(directory)
@@ -62,50 +78,60 @@ def _open_evidence_directory(directory: Path, *, create: bool = False) -> int:
         os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
         | getattr(os, "O_CLOEXEC", 0)
     )
-    directory_fd = None
+    owned = {}
     try:
-        directory_fd = os.open(os.sep, flags)
-        for component in path.parts[1:]:
-            if create:
-                try:
-                    os.mkdir(component, 0o700, dir_fd=directory_fd)
-                except FileExistsError:
-                    pass
-            next_fd = os.open(component, flags, dir_fd=directory_fd)
-            os.close(directory_fd)
-            directory_fd = next_fd
-        if not stat.S_ISDIR(os.fstat(directory_fd).st_mode):
-            raise RuntimeError("unsafe CI evidence directory")
-        return directory_fd
-    except OSError as exc:
-        if directory_fd is not None:
-            os.close(directory_fd)
-        raise RuntimeError("unsafe CI evidence directory") from exc
-    except BaseException:
-        if directory_fd is not None:
-            os.close(directory_fd)
+        try:
+            owned["directory"] = os.open(os.sep, flags)
+            for component in path.parts[1:]:
+                if create:
+                    try:
+                        os.mkdir(component, 0o700, dir_fd=owned["directory"])
+                    except FileExistsError:
+                        pass
+                owned["pending"] = os.open(
+                    component, flags, dir_fd=owned["directory"]
+                )
+                _close_reader_fds(None, owned, "directory")
+                owned["directory"] = owned.pop("pending")
+            if not stat.S_ISDIR(os.fstat(owned["directory"]).st_mode):
+                raise RuntimeError("unsafe CI evidence directory")
+            return owned["directory"]
+        except OSError as exc:
+            raise RuntimeError("unsafe CI evidence directory") from exc
+    except BaseException as exc:
+        _close_reader_fds(exc, owned)
         raise
 
 
 def _require_evidence_directory(directory: Path, *, create: bool = False) -> None:
     """Reject a linked path component before writing or trusting CI receipts."""
-    directory_fd = _open_evidence_directory(directory, create=create)
-    os.close(directory_fd)
+    owned = {}
+    try:
+        owned["directory"] = _open_evidence_directory(directory, create=create)
+        _close_reader_fds(None, owned)
+    except BaseException as exc:
+        _close_reader_fds(exc, owned)
+        raise
 
 
 def _require_evidence_binding(directory: Path, directory_fd: int) -> None:
     """Require the requested path to still name the opened evidence directory."""
+    current_fd = None
+    primary = None
     try:
-        current_fd = _open_evidence_directory(directory)
-    except RuntimeError as exc:
-        raise RuntimeError("CI evidence directory changed while in use") from exc
-    try:
+        try:
+            current_fd = _open_evidence_directory(directory)
+        except RuntimeError as exc:
+            raise RuntimeError("CI evidence directory changed while in use") from exc
         if _metadata_values(
             os.fstat(directory_fd), _DIRECTORY_ID_FIELDS
         ) != _metadata_values(os.fstat(current_fd), _DIRECTORY_ID_FIELDS):
             raise RuntimeError("CI evidence directory changed while in use")
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        os.close(current_fd)
+        _close_reader_fds(primary, {"directory": current_fd})
 
 
 def _name_exists(directory_fd: int, name: str) -> bool:
@@ -138,37 +164,52 @@ def _regular_file_is_bound(opened, current) -> bool:
     )
 
 
-def _read_regular_at(directory_fd: int, name: str, *, limit: int, what: str) -> bytes:
+class _OptionalImageInputMissing(Exception):
+    """Approved operation-level absence, pending successful owned cleanup."""
+
+
+def _read_regular_at(
+    directory_fd: int, name: str, *, limit: int, what: str, missing_ok: bool = False,
+) -> bytes:
     """Read bounded stable bytes from one regular file in a pinned directory."""
     fd = None
+    primary = None
     try:
-        fd = os.open(
-            name,
-            os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
-            | getattr(os, "O_CLOEXEC", 0),
-            dir_fd=directory_fd,
-        )
-        opened = os.fstat(fd)
-        if (
-            not stat.S_ISREG(opened.st_mode)
-            or opened.st_nlink != 1
-            or opened.st_size > limit
-        ):
-            raise RuntimeError(f"cannot safely read {what}; unsafe file or symlink")
-        first = _read_descriptor(fd, limit)
-        middle = os.fstat(fd)
-        second = _read_descriptor(fd, limit)
-        final = os.fstat(fd)
-        named = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
-    except FileNotFoundError:
+        try:
+            fd = os.open(
+                name,
+                os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+                | getattr(os, "O_CLOEXEC", 0),
+                dir_fd=directory_fd,
+            )
+            opened = os.fstat(fd)
+            if (
+                not stat.S_ISREG(opened.st_mode)
+                or opened.st_nlink != 1
+                or opened.st_size > limit
+            ):
+                raise RuntimeError(f"cannot safely read {what}; unsafe file or symlink")
+            first = _read_descriptor(fd, limit)
+            middle = os.fstat(fd)
+            second = _read_descriptor(fd, limit)
+            final = os.fstat(fd)
+            named = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
+        except FileNotFoundError as exc:
+            if missing_ok:
+                raise _OptionalImageInputMissing from exc
+            raise
+        except OSError as exc:
+            raise RuntimeError(
+                f"cannot safely read {what}; unsafe file or symlink"
+            ) from exc
+    except _OptionalImageInputMissing:
+        # Optional absence is normal only if the leaf close below succeeds.
         raise
-    except OSError as exc:
-        raise RuntimeError(
-            f"cannot safely read {what}; unsafe file or symlink"
-        ) from exc
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        if fd is not None:
-            os.close(fd)
+        _close_reader_fds(primary, {"file": fd})
     if (
         len(first) > limit
         or first != second
@@ -181,38 +222,45 @@ def _read_regular_at(directory_fd: int, name: str, *, limit: int, what: str) -> 
     return first
 
 
-def _hash_regular_at(directory_fd: int, name: str, *, what: str) -> str:
+def _hash_regular_at(
+    directory_fd: int, name: str, *, what: str,
+    metadata: list[os.stat_result] | None = None,
+) -> str:
     """Hash one stable regular file in a pinned directory."""
     fd = None
+    primary = None
     try:
-        fd = os.open(
-            name,
-            os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
-            | getattr(os, "O_CLOEXEC", 0),
-            dir_fd=directory_fd,
-        )
-        opened = os.fstat(fd)
-        if not stat.S_ISREG(opened.st_mode) or opened.st_nlink != 1:
-            raise RuntimeError(f"unsafe {what}")
-        first = hashlib.sha256()
-        first_size = 0
-        for chunk in iter(lambda: os.read(fd, 1024 * 1024), b""):
-            first.update(chunk)
-            first_size += len(chunk)
-        middle = os.fstat(fd)
-        os.lseek(fd, 0, os.SEEK_SET)
-        second = hashlib.sha256()
-        second_size = 0
-        for chunk in iter(lambda: os.read(fd, 1024 * 1024), b""):
-            second.update(chunk)
-            second_size += len(chunk)
-        final = os.fstat(fd)
-        named = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
-    except OSError as exc:
-        raise RuntimeError(f"unsafe {what}") from exc
+        try:
+            fd = os.open(
+                name,
+                os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+                | getattr(os, "O_CLOEXEC", 0),
+                dir_fd=directory_fd,
+            )
+            opened = os.fstat(fd)
+            if not stat.S_ISREG(opened.st_mode) or opened.st_nlink != 1:
+                raise RuntimeError(f"unsafe {what}")
+            first = hashlib.sha256()
+            first_size = 0
+            for chunk in iter(lambda: os.read(fd, 1024 * 1024), b""):
+                first.update(chunk)
+                first_size += len(chunk)
+            middle = os.fstat(fd)
+            os.lseek(fd, 0, os.SEEK_SET)
+            second = hashlib.sha256()
+            second_size = 0
+            for chunk in iter(lambda: os.read(fd, 1024 * 1024), b""):
+                second.update(chunk)
+                second_size += len(chunk)
+            final = os.fstat(fd)
+            named = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
+        except OSError as exc:
+            raise RuntimeError(f"unsafe {what}") from exc
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        if fd is not None:
-            os.close(fd)
+        _close_reader_fds(primary, {"file": fd})
     if (
         first_size != opened.st_size
         or second_size != first_size
@@ -222,6 +270,8 @@ def _hash_regular_at(directory_fd: int, name: str, *, what: str) -> str:
         or not _regular_file_is_bound(opened, named)
     ):
         raise RuntimeError(f"{what} changed while being hashed")
+    if metadata is not None:
+        metadata.append(opened)
     return first.hexdigest()
 
 
@@ -230,13 +280,14 @@ def _create_regular_at(directory_fd: int, name: str, mode: int = 0o644) -> int:
         os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW
         | getattr(os, "O_CLOEXEC", 0)
     )
-    fd = os.open(name, flags, mode, dir_fd=directory_fd)
+    fd = None
     try:
+        fd = os.open(name, flags, mode, dir_fd=directory_fd)
         if os.name == "posix":
             os.fchmod(fd, mode)
         return fd
-    except BaseException:
-        os.close(fd)
+    except BaseException as exc:
+        _close_reader_fds(exc, {"file": fd})
         raise
 
 
@@ -244,41 +295,45 @@ def _write_bytes_at(directory_fd: int, name: str, payload: bytes) -> None:
     """Exclusively create and verify bytes within a pinned directory."""
     fd = None
     data = bytes(payload)
+    primary = None
     try:
-        fd = _create_regular_at(directory_fd, name)
-        view = memoryview(data)
-        while view:
-            written = os.write(fd, view)
-            if written <= 0:
-                raise OSError("short write")
-            view = view[written:]
-        os.fsync(fd)
-        opened = os.fstat(fd)
-        named = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
-        if (
-            not _regular_file_is_bound(opened, named)
-            or opened.st_size != len(data)
-            or _read_descriptor(fd, len(data)) != data
-            or _read_descriptor(fd, len(data)) != data
-        ):
-            raise RuntimeError("CI evidence output changed while being written")
-        os.fsync(directory_fd)
-        if (
-            not _regular_file_is_bound(opened, os.fstat(fd))
-            or not _regular_file_is_bound(
-                opened,
-                os.stat(name, dir_fd=directory_fd, follow_symlinks=False),
-            )
-            or _read_descriptor(fd, len(data)) != data
-        ):
-            raise RuntimeError("CI evidence output changed while being written")
-    except FileExistsError:
+        try:
+            fd = _create_regular_at(directory_fd, name)
+            view = memoryview(data)
+            while view:
+                written = os.write(fd, view)
+                if written <= 0:
+                    raise OSError("short write")
+                view = view[written:]
+            os.fsync(fd)
+            opened = os.fstat(fd)
+            named = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
+            if (
+                not _regular_file_is_bound(opened, named)
+                or opened.st_size != len(data)
+                or _read_descriptor(fd, len(data)) != data
+                or _read_descriptor(fd, len(data)) != data
+            ):
+                raise RuntimeError("CI evidence output changed while being written")
+            os.fsync(directory_fd)
+            if (
+                not _regular_file_is_bound(opened, os.fstat(fd))
+                or not _regular_file_is_bound(
+                    opened,
+                    os.stat(name, dir_fd=directory_fd, follow_symlinks=False),
+                )
+                or _read_descriptor(fd, len(data)) != data
+            ):
+                raise RuntimeError("CI evidence output changed while being written")
+        except FileExistsError:
+            raise
+        except OSError as exc:
+            raise RuntimeError("CI evidence output cannot be safely written") from exc
+    except BaseException as exc:
+        primary = exc
         raise
-    except OSError as exc:
-        raise RuntimeError("CI evidence output cannot be safely written") from exc
     finally:
-        if fd is not None:
-            os.close(fd)
+        _close_reader_fds(primary, {"file": fd})
 
 
 def _write_json_at(directory_fd: int, name: str, data: dict) -> None:
@@ -288,86 +343,69 @@ def _write_json_at(directory_fd: int, name: str, data: dict) -> None:
 
 def qemu_evidence_hashes(directory: Path) -> dict[str, str]:
     """Hash copied QEMU evidence files, excluding the private staging path."""
+    directory_fd = None
+    primary = None
     try:
-        directory_fd = _open_evidence_directory(directory)
-    except (OSError, RuntimeError) as exc:
-        raise RuntimeError("QEMU evidence cannot be read") from exc
-    try:
-        opened_directory = os.fstat(directory_fd)
-        files = {}
-        names = sorted(os.listdir(directory_fd))
-        identities = {}
-        for name in names:
-            if name == "PATH":
-                continue
-            child_fd = os.open(
-                name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
-                dir_fd=directory_fd,
-            )
-            with os.fdopen(child_fd, "rb") as stream:
-                opened = os.fstat(stream.fileno())
+        try:
+            try:
+                directory_fd = _open_evidence_directory(directory)
+            except (OSError, RuntimeError) as exc:
+                raise RuntimeError("QEMU evidence cannot be read") from exc
+            opened_directory = os.fstat(directory_fd)
+            files = {}
+            names = sorted(os.listdir(directory_fd))
+            identities = {}
+            for name in names:
+                if name == "PATH":
+                    continue
+                named_member = os.stat(
+                    name, dir_fd=directory_fd, follow_symlinks=False
+                )
                 if (
-                    not stat.S_ISREG(opened.st_mode)
-                    or getattr(opened, "st_nlink", 1) != 1
+                    not stat.S_ISREG(named_member.st_mode)
+                    or getattr(named_member, "st_nlink", 1) != 1
                 ):
                     raise RuntimeError("QEMU evidence contains a non-regular file")
-                digest = hashlib.sha256()
-                size = 0
-                for chunk in iter(lambda: stream.read(65536), b""):
-                    digest.update(chunk)
-                    size += len(chunk)
-                first_digest = digest.hexdigest()
-                # A same-size in-place rewrite can retain the original mtime
-                # and appear to retain ctime on coarse-clock filesystems.
-                # Re-read the opened inode so those metadata coincidences
-                # cannot publish a digest of bytes no longer in the file.
-                stream.seek(0)
-                repeat = hashlib.sha256()
-                repeat_size = 0
-                for chunk in iter(lambda: stream.read(65536), b""):
-                    repeat.update(chunk)
-                    repeat_size += len(chunk)
-                if repeat_size != size or repeat.hexdigest() != first_digest:
-                    raise RuntimeError("QEMU evidence changed while hashing")
-                after = os.fstat(stream.fileno())
-                if (
-                    (opened.st_dev, opened.st_ino, opened.st_size,
-                     opened.st_mtime_ns, opened.st_ctime_ns)
-                    != (after.st_dev, after.st_ino, after.st_size,
-                        after.st_mtime_ns, after.st_ctime_ns)
-                    or size != opened.st_size
-                ):
-                    raise RuntimeError("QEMU evidence changed while hashing")
-                files[name] = first_digest
+                member_metadata: list[os.stat_result] = []
+                files[name] = _hash_regular_at(
+                    directory_fd, name, what="QEMU evidence",
+                    metadata=member_metadata,
+                )
+                # Bind the directory recheck to the inode actually hashed,
+                # rather than to an earlier pathname stat that could change.
+                opened = member_metadata[0]
                 identities[name] = (
                     opened.st_dev, opened.st_ino, opened.st_size,
                     opened.st_mtime_ns, opened.st_ctime_ns,
                 )
-        if sorted(os.listdir(directory_fd)) != names:
-            raise RuntimeError("QEMU evidence files changed while hashing")
-        for name, identity in identities.items():
-            current = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
+            if sorted(os.listdir(directory_fd)) != names:
+                raise RuntimeError("QEMU evidence files changed while hashing")
+            for name, identity in identities.items():
+                current = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
+                if (
+                    not stat.S_ISREG(current.st_mode)
+                    or getattr(current, "st_nlink", 1) != 1
+                    or (current.st_dev, current.st_ino, current.st_size,
+                        current.st_mtime_ns, current.st_ctime_ns) != identity
+                ):
+                    raise RuntimeError("QEMU evidence file changed while hashing")
+            named_directory = os.stat(directory, follow_symlinks=False)
             if (
-                not stat.S_ISREG(current.st_mode)
-                or getattr(current, "st_nlink", 1) != 1
-                or (current.st_dev, current.st_ino, current.st_size,
-                    current.st_mtime_ns, current.st_ctime_ns) != identity
+                not stat.S_ISDIR(named_directory.st_mode)
+                or (named_directory.st_dev, named_directory.st_ino,
+                    named_directory.st_mtime_ns, named_directory.st_ctime_ns)
+                != (opened_directory.st_dev, opened_directory.st_ino,
+                    opened_directory.st_mtime_ns, opened_directory.st_ctime_ns)
             ):
-                raise RuntimeError("QEMU evidence file changed while hashing")
-        named_directory = os.stat(directory, follow_symlinks=False)
-        if (
-            not stat.S_ISDIR(named_directory.st_mode)
-            or (named_directory.st_dev, named_directory.st_ino,
-                named_directory.st_mtime_ns, named_directory.st_ctime_ns)
-            != (opened_directory.st_dev, opened_directory.st_ino,
-                opened_directory.st_mtime_ns, opened_directory.st_ctime_ns)
-        ):
-            raise RuntimeError("QEMU evidence directory changed while hashing")
-        _require_evidence_binding(directory, directory_fd)
-    except OSError as exc:
-        raise RuntimeError("QEMU evidence cannot be read") from exc
+                raise RuntimeError("QEMU evidence directory changed while hashing")
+            _require_evidence_binding(directory, directory_fd)
+        except OSError as exc:
+            raise RuntimeError("QEMU evidence cannot be read") from exc
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        os.close(directory_fd)
+        _close_reader_fds(primary, {"directory": directory_fd})
     if not files:
         raise RuntimeError("QEMU evidence is empty")
     return files
@@ -377,6 +415,13 @@ def qemu_evidence_digest(files: dict[str, str]) -> str:
     """Bind both evidence filenames and contents in one stable digest."""
     blob = json.dumps(files, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(blob).hexdigest()
+
+
+def _completed_qemu_evidence_digest(directory: Path) -> str:
+    files = qemu_evidence_hashes(directory)
+    if "summary.txt" not in files:
+        raise RuntimeError("QEMU evidence is missing its completion summary")
+    return qemu_evidence_digest(files)
 
 
 def _verify_execution_log(
@@ -399,12 +444,14 @@ def _verify_execution_log(
             raise RuntimeError("execution log changed during gate")
         if not matches(os.stat(path.name, dir_fd=directory_fd, follow_symlinks=False)):
             raise RuntimeError("execution log changed during gate")
-        fd = os.open(
-            path.name,
-            os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
-            dir_fd=directory_fd,
-        )
+        fd = None
+        primary = None
         try:
+            fd = os.open(
+                path.name,
+                os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+                dir_fd=directory_fd,
+            )
             if not matches(os.fstat(fd)):
                 raise RuntimeError("execution log changed during gate")
             actual = hashlib.sha256()
@@ -423,8 +470,11 @@ def _verify_execution_log(
                 )
             ):
                 raise RuntimeError("execution log changed during gate")
+        except BaseException as exc:
+            primary = exc
+            raise
         finally:
-            os.close(fd)
+            _close_reader_fds(primary, {"directory": fd})
         _require_evidence_binding(path.parent, directory_fd)
     except OSError as exc:
         raise RuntimeError("execution log changed during gate") from exc
@@ -442,8 +492,10 @@ def run_gate(gate, command, *, root, evidence_dir, build_id):
     orca_junit_name = junit_name + ".orca.xml"
     log_path = evidence_dir / log_name
     junit = evidence_dir / junit_name
-    directory_fd = _open_evidence_directory(evidence_dir, create=True)
+    directory_fd = None
+    primary = None
     try:
+        directory_fd = _open_evidence_directory(evidence_dir, create=True)
         _require_evidence_binding(evidence_dir, directory_fd)
         if any(
             _name_exists(directory_fd, name)
@@ -564,8 +616,8 @@ def run_gate(gate, command, *, root, evidence_dir, build_id):
                 )
             })
         if gate == "qemu" and status == "pass":
-            environment["qemu_evidence_sha256"] = qemu_evidence_digest(
-                qemu_evidence_hashes(root / "qemu-evidence")
+            environment["qemu_evidence_sha256"] = _completed_qemu_evidence_digest(
+                root / "qemu-evidence"
             )
         receipt = build_gate_receipt(
             gate=gate,
@@ -585,70 +637,103 @@ def run_gate(gate, command, *, root, evidence_dir, build_id):
         _write_json_at(directory_fd, receipt_name, receipt)
         _require_evidence_binding(evidence_dir, directory_fd)
         return receipt
-    finally:
-        os.close(directory_fd)
-
-
-def _image_directory_fd(root: Path, relative: Path) -> int:
-    """Open a mounted-image directory without following any component link."""
-    flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
-    try:
-        root_fd = _open_evidence_directory(root)
-    except RuntimeError as exc:
-        raise RuntimeError("unsafe image inventory input") from exc
-    fd = None
-    try:
-        fd = os.dup(root_fd)
-        for component in relative.parts:
-            next_fd = os.open(component, flags, dir_fd=fd)
-            os.close(fd)
-            fd = next_fd
-        _require_evidence_binding(root, root_fd)
-        return fd
-    except BaseException:
-        if fd is not None:
-            os.close(fd)
+    except BaseException as exc:
+        primary = exc
         raise
     finally:
-        os.close(root_fd)
+        _close_reader_fds(primary, {"directory": directory_fd})
+
+
+def _image_directory_fd(root: Path, relative: Path, *, missing_ok: bool = False) -> int:
+    """Open a mounted-image directory without following any component link."""
+    flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    owned = {}
+    try:
+        try:
+            root_fd = owned["root"] = _open_evidence_directory(root)
+        except RuntimeError as exc:
+            raise RuntimeError("unsafe image inventory input") from exc
+        fd = owned["directory"] = os.dup(root_fd)
+        for component in relative.parts:
+            try:
+                next_fd = owned["pending"] = os.open(component, flags, dir_fd=fd)
+            except FileNotFoundError as exc:
+                if missing_ok:
+                    raise _OptionalImageInputMissing from exc
+                raise
+            _close_reader_fds(None, owned, "directory")
+            owned["directory"] = owned.pop("pending")
+            fd = next_fd
+        _require_evidence_binding(root, root_fd)
+        _close_reader_fds(None, owned, "root")
+        return fd
+    except _OptionalImageInputMissing:
+        # A close failure must not be mistaken for operation-level absence.
+        try:
+            _close_reader_fds(None, owned, "pending", "directory", "root")
+        except OSError as cleanup:
+            raise RuntimeError("unsafe image inventory input") from cleanup
+        raise
+    except BaseException as exc:
+        _close_reader_fds(exc, owned, "pending", "directory", "root")
+        raise
 
 
 def _image_text(root: Path, relative: Path, *, required: bool, limit: int) -> str | None:
     """Read a regular image file, never a host file reached through a link."""
+    parent_fd = None
+    primary = None
     try:
-        parent_fd = _image_directory_fd(root, relative.parent)
         try:
+            parent_fd = _image_directory_fd(root, relative.parent, missing_ok=not required)
             data = _read_regular_at(
                 parent_fd,
                 relative.name,
                 limit=limit,
                 what="image inventory input",
+                missing_ok=not required,
             )
             return data.decode("utf-8")
-        finally:
-            os.close(parent_fd)
-    except FileNotFoundError as exc:
-        if not required:
+        except _OptionalImageInputMissing:
             return None
-        raise RuntimeError("missing image inventory input") from exc
-    except (OSError, UnicodeDecodeError) as exc:
-        raise RuntimeError("unsafe image inventory input") from exc
+        except FileNotFoundError as exc:
+            if required:
+                raise RuntimeError("missing image inventory input") from exc
+            raise RuntimeError("unsafe image inventory input") from exc
+        except (OSError, UnicodeDecodeError) as exc:
+            raise RuntimeError("unsafe image inventory input") from exc
+    except BaseException as exc:
+        primary = exc
+        raise
+    finally:
+        _close_reader_fds(primary, {"directory": parent_fd})
 
 
 def _image_source_names(root: Path) -> list[str]:
+    directory_fd = None
+    primary = None
     try:
-        directory_fd = _image_directory_fd(root, Path("etc/apt/sources.list.d"))
         try:
+            directory_fd = _image_directory_fd(
+                root, Path("etc/apt/sources.list.d"), missing_ok=True
+            )
+            try:
+                names = os.listdir(directory_fd)
+            except FileNotFoundError:
+                return []
             return sorted(
-                name for name in os.listdir(directory_fd)
+                name for name in names
                 if name.endswith((".list", ".sources"))
             )
-        finally:
-            os.close(directory_fd)
-    except FileNotFoundError:
-        return []
-    except OSError as exc:
-        raise RuntimeError("unsafe image inventory input") from exc
+        except _OptionalImageInputMissing:
+            return []
+        except OSError as exc:
+            raise RuntimeError("unsafe image inventory input") from exc
+    except BaseException as exc:
+        primary = exc
+        raise
+    finally:
+        _close_reader_fds(primary, {"directory": directory_fd})
 
 
 def _active_apt_uris(path: Path, content: str) -> set[str]:
@@ -698,8 +783,10 @@ def _active_apt_uris(path: Path, content: str) -> set[str]:
 def collect_inventory(image_root: Path, dest: Path, commit: str) -> None:
     """Read package status and configured repositories from the mounted image."""
     dest = Path(os.path.abspath(os.fspath(dest)))
-    directory_fd = _open_evidence_directory(dest.parent)
+    directory_fd = None
+    primary = None
     try:
+        directory_fd = _open_evidence_directory(dest.parent)
         _require_evidence_binding(dest.parent, directory_fd)
         sources = set()
         paths = [Path("etc/apt/sources.list")]
@@ -729,8 +816,11 @@ def collect_inventory(image_root: Path, dest: Path, commit: str) -> None:
         _require_evidence_binding(dest.parent, directory_fd)
         _write_json_at(directory_fd, dest.name, inventory)
         _require_evidence_binding(dest.parent, directory_fd)
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        os.close(directory_fd)
+        _close_reader_fds(primary, {"directory": directory_fd})
 
 
 def _load_receipts_at(directory_fd: int) -> list[dict]:
@@ -764,13 +854,18 @@ def _load_receipts_at(directory_fd: int) -> list[dict]:
 def load_receipts(directory: Path) -> list[dict]:
     """Bind every receipt to the retained execution log before finalization."""
     directory = Path(os.path.abspath(os.fspath(directory)))
-    directory_fd = _open_evidence_directory(directory)
+    directory_fd = None
+    primary = None
     try:
+        directory_fd = _open_evidence_directory(directory)
         receipts = _load_receipts_at(directory_fd)
         _require_evidence_binding(directory, directory_fd)
         return receipts
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        os.close(directory_fd)
+        _close_reader_fds(primary, {"directory": directory_fd})
 
 
 def finalize(root: Path) -> None:
@@ -784,11 +879,13 @@ def finalize(root: Path) -> None:
     if (previous["source"]["commit"] != rm.git_commit()
             or previous["build"]["release_build_id"] != os.environ.get("BUILD_ID", "local")):
         raise RuntimeError("built artifact belongs to another source or build")
-    rm.require_verified_prior_checksum_list(dist, replace_link=True)
+    checksum_snapshot = rm.require_verified_prior_checksum_list(dist, replace_link=True)
     evidence_dir = dist / "evidence"
     receipts = load_receipts(evidence_dir)
-    evidence_fd = _open_evidence_directory(evidence_dir)
+    evidence_fd = None
+    primary = None
     try:
+        evidence_fd = _open_evidence_directory(evidence_dir)
         pinned_receipts = _load_receipts_at(evidence_fd)
         if pinned_receipts != receipts:
             raise RuntimeError("CI evidence directory changed while in use")
@@ -800,8 +897,16 @@ def finalize(root: Path) -> None:
             what="packages.json CI package inventory",
         )
         _require_evidence_binding(evidence_dir, evidence_fd)
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        os.close(evidence_fd)
+        if evidence_fd is not None:
+            try:
+                os.close(evidence_fd)
+            except BaseException:
+                if primary is None:
+                    raise
     inventory = json.loads(raw_inventory, object_pairs_hook=_unique_json_fields)
     inventory_digest = hashlib.sha256(raw_inventory).hexdigest()
     manifest = rm.generate_manifest(strict=not allow_dirty, gate_receipts=receipts, package_inventory=inventory)
@@ -810,20 +915,32 @@ def finalize(root: Path) -> None:
     for field in ("beamo_wipe_version", "source", "dependencies", "live_build_inputs", "nwipe"):
         if manifest[field] != previous[field]:
             raise RuntimeError("build inputs changed during verification")
+    for receipt in receipts:
+        if receipt["gate"] == "qemu" and receipt["status"] == "pass":
+            expected = receipt["environment"].get("qemu_evidence_sha256")
+            if not isinstance(expected, str) or not re.fullmatch(r"[0-9a-f]{64}", expected):
+                raise RuntimeError("QEMU evidence is not bound by its gate receipt")
+            if _completed_qemu_evidence_digest(root / "qemu-evidence") != expected:
+                raise RuntimeError("QEMU evidence changed after its gate")
     rm.write_manifest(manifest, dest)
-    rm.verify_manifest(dest, allow_dirty=allow_dirty)
-    iso = dist / manifest["artifact"]["iso_name"]
-    # Publish beside the verified artifacts without opening a pre-existing
-    # checksum path, which may have been replaced by a symlink.
+    verified_manifest = rm.verify_manifest(dest, allow_dirty=allow_dirty)
+    verified_artifact = json.loads(
+        verified_manifest, object_pairs_hook=_unique_json_fields
+    )["artifact"]
+    iso = dist / verified_artifact["iso_name"]
+    iso_sha = verified_artifact["iso_sha256"]
+    manifest_sha = hashlib.sha256(verified_manifest).hexdigest()
+    # Bind checksums to the accepted bytes and the initially permitted output.
     rm._atomic_write(
         dist / "SHA256SUMS",
-        f"{rm.sha256_file(iso)}  {iso.name}\n{rm.sha256_file(dest)}  {dest.name}\n".encode("ascii"),
+        f"{iso_sha}  {iso.name}\n{manifest_sha}  {dest.name}\n".encode("ascii"),
+        expected=checksum_snapshot,
     )
     print("Final verified evidence: " + json.dumps({
         "source_commit": manifest["source"]["commit"],
         "build_id": manifest["build"]["release_build_id"],
-        "iso_sha256": rm.sha256_file(iso),
-        "manifest_sha256": rm.sha256_file(dest),
+        "iso_sha256": iso_sha,
+        "manifest_sha256": manifest_sha,
         "gate_count": len(receipts),
         "packages_sha256": inventory_digest,
     }, sort_keys=True), flush=True)
@@ -840,9 +957,11 @@ def print_summary(evidence_dir: Path) -> None:
     if not stat.S_ISDIR(initial.st_mode) and not stat.S_ISLNK(initial.st_mode):
         print("CI timing summary: no evidence directory")
         return
-    directory_fd = _open_evidence_directory(evidence_dir)
-    rows = []
+    directory_fd = None
+    primary = None
     try:
+        directory_fd = _open_evidence_directory(evidence_dir)
+        rows = []
         names = sorted(os.listdir(directory_fd))
         for name in (item for item in names if item.endswith(".receipt.json")):
             raw = _read_regular_at(
@@ -869,8 +988,11 @@ def print_summary(evidence_dir: Path) -> None:
         if sorted(os.listdir(directory_fd)) != names:
             raise RuntimeError("CI evidence directory contents changed while in use")
         _require_evidence_binding(evidence_dir, directory_fd)
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        os.close(directory_fd)
+        _close_reader_fds(primary, {"directory": directory_fd})
     print("CI timing summary")
     for gate, status, elapsed in rows:
         print(f"  {gate}: {status} {elapsed}")

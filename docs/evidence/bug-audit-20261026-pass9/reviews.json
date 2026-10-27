@@ -1,0 +1,824 @@
+{
+  "utc": "2026-10-26T04:58:38.435445+00:00",
+  "tasks": {
+    "safety": {
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r9-20261026-safety-r1",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r9-20261026-safety-r1",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r9-20261026-safety-r1:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r9-20261026-safety-r1",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r9-20261026-safety-r1:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "**Bounded NO OBJECTION.** No new actionable product defect established.\n\n- 37 guarded AST/fake observations matched.\n- 81 scoped inputs unchanged and match frozen R9; whole-934 census not recomputed.\n- 309 AST bindings verified; full-byte packet readback passed.\n- One setup failure retained; corrected probe exited 0.\n- No source/test/backlog edits. Full/native/artifact/physical acceptance remains **BLOCKED/INCOMPLETE**; Task119 remains **NOT TESTED/BLOCKED**.\n\nParent should independently validate the packet. Review stopped.\n\n[RESULT.md](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261026-r9/safety-review/RESULT.md) \u00b7 [FILES.sha256](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261026-r9/safety-review/FILES.sha256) \u00b7 [Readback receipt](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261026-r9/safety-review/READBACK.json)",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r9-20261026-safety-r1:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:528f3407-14ae-4b0e-8981-b417b5a47e24",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    "export": {
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r9-20261026-export-r1",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r9-20261026-export-r1",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r9-20261026-export-r1:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r9-20261026-export-r1",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r9-20261026-export-r1:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "Scoped **NO OBJECTION**: 50 matching inert observations; no new actionable defect.\n\nFinal entry equality **FAILED/BLOCKED** because `build_identity.py` changed during closure. All 18 scoped files and 346 selected AST bindings remained unchanged. Failures retained; packet sealed and full-byte readback verified.\n\nRoot must reconcile the source drift. Native/full/physical acceptance remains blocked.\n\n[RESULT.md](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261026-r9/export-review/RESULT.md)",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r9-20261026-export-r1:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:acfac5bd-abd2-4fb0-9f59-60eb1b0be5df",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    "startup": {
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r9-20261026-startup-r1",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r9-20261026-startup-r1",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r9-20261026-startup-r1:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r9-20261026-startup-r1",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r9-20261026-startup-r1:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "**INCOMPLETE / SOURCE DRIFT.** No new product defect established, but closure found `build_identity.py` changed during review, including two probed readers. Final frozen-entry equality failed; parent must qualify the changed source.\n\n- 21 matching frozen-source observations; 15 textual checks.\n- 140 scoped functional inputs; all 934 frozen paths hashed.\n- Six failures retained.\n- Packet sealed/read back: 263,017 bytes.\n- Full/native/artifact/physical acceptance remains blocked.\n\n[RESULT.md](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261026-r9/startup-review/RESULT.md)\n\nReview stopped.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r9-20261026-startup-r1:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:adff1000-2997-479e-8c62-fcf351d8c869",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    },
+    "identity": {
+      "taskId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r9-20261026-identity-fix-review-r2",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r9-20261026-identity-fix-review-r2",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r9-20261026-identity-fix-review-r2:ordinal:1",
+      "childNodeId": "node:delegated-task:command%3Amcp%3A92a88872-d31c-426f-b79c-f353c84e7ff5%3Adelegate-task%3Awipe-r9-20261026-identity-fix-review-r2",
+      "status": "completed",
+      "workState": "result_available",
+      "hasPendingChildRuns": false,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r9-20261026-identity-fix-review-r2:ordinal:1",
+      "latestTerminalStatus": "completed",
+      "latestTerminalSummary": null,
+      "latestTerminalResultContextTransferId": null,
+      "providerInstanceId": "codex",
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "summary": "**Scoped no objection; no new actionable finding.** [RESULT.md](C:/Users/Jack/beamo-release-evidence/wipe-comprehensive-repass-20261026-r9/identity-fix-review/RESULT.md)\n\n- Matched **46/46** causal observations: six original-source cases and 40 current-source cases.\n- Matched **23/23** supplemental and **21/21** renewed startup observations.\n- Successful probe exits and final sealing exit: **0**. Three failed harness/sealing attempts remain retained with actual exit **1**; overlapping runs are not added.\n- All **935 declared functional inputs** remained unchanged. README/backlog context drift is recorded separately.\n- Full-byte readback covers **59 payload files**, 309,334 bytes; packet remains below 512 KiB.\n\nExact SHA-256 bindings:\n\n```text\nbefore:  7ebdf1ef15065f233bec986cbd821163261c93793e10290750af1e52f6116f3b\ncurrent: 195d0f4308134eeb9a6fd02f50440f9de76e07ac8186309d11f2ff39bc1479c3\ntests:   3d8762a640ab3d2a0a93ad016c404a5971134f0fdcd43a817f9ebbcaf3baeb53\nidentity:4f3ddeaf0f57af82174537992d635c022b8f273e09e65c7ca705d25b2f0da7fc\nFILES:   77d4ece73ce3d61176c5057e258ff7d7b7a2aa45ac6cd9c96352ba6d65f374b0\n```\n\nNative close semantics, filesystem races, installed startup, Linux/full/platform/artifact and physical acceptance remain unqualified. No source/test/backlog edits occurred.",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A92a88872-d31c-426f-b79c-f353c84e7ff5%253Adelegate-task%253Awipe-r9-20261026-identity-fix-review-r2:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:ccc9d2af-0855-49d0-879e-10e8e8b1fd66",
+      "hasPendingQuestion": false,
+      "pendingApproval": null,
+      "waitTimedOut": false
+    }
+  },
+  "parent_original_validation": {
+    "utc": "2026-10-26T04:47:17.738707+00:00",
+    "source_identity": "4f3ddeaf0f57af82174537992d635c022b8f273e09e65c7ca705d25b2f0da7fc",
+    "reviews": {
+      "safety": {
+        "observation_count": 37,
+        "exact_ast": {
+          "unique_bindings": 309,
+          "changed_selected_nodes": []
+        },
+        "scoped_inputs": 81,
+        "scoped_current_drift": [],
+        "integrity": {
+          "payload_files": 10,
+          "all_packet_files": {
+            "after.json": {
+              "bytes": 13777,
+              "sha256": "40f7efe2ff37aac54f4794969e2c5cc86a6cee265a5c4190903a55297107f1e0"
+            },
+            "before.json": {
+              "bytes": 13712,
+              "sha256": "530940dc6ac1eafbc547d10c14d934ff2d3bacd7ec145d27e0dc542ef0bf928c"
+            },
+            "commands.json": {
+              "bytes": 14685,
+              "sha256": "37b4647baf8ec3d7c9af896d634ceb5569f41918e916892f3e9418e38b9766e3"
+            },
+            "FILES.sha256": {
+              "bytes": 808,
+              "sha256": "eaadfa5a32f54c743c51a3d1c7c171af94e3f6e8c53eae157e4686114742ec00"
+            },
+            "outcomes-attempt-1.json": {
+              "bytes": 88372,
+              "sha256": "bb158c8a2447bc9b9d4895d03122dbf376b9c9ddd694bba60bd60acd6a30a181"
+            },
+            "probe-attempt-1.py": {
+              "bytes": 23900,
+              "sha256": "62c02eec4449a20409efa74f942812037cd5a200e3fe8c4115a64197242ff301"
+            },
+            "probe.py": {
+              "bytes": 23973,
+              "sha256": "e2c2b5f33db1a14aa0b6af10e362b3c41da1d346e3bd113a631e24d0291cfa63"
+            },
+            "READBACK.json": {
+              "bytes": 2106,
+              "sha256": "3e360b920fb6009dabcd35cfad5beec75aa9668bc533629783cbc9ee17582ed1"
+            },
+            "RESULT.md": {
+              "bytes": 8185,
+              "sha256": "434e8514f83305d3d1412c4c320254d21efd234a8ec786c17e1d3274e654771e"
+            },
+            "review_io.py": {
+              "bytes": 2389,
+              "sha256": "da216347a3fa5163b4ed08b45a8887105c6f934978a27a0045cf9fd6d786538d"
+            },
+            "seal.py": {
+              "bytes": 14886,
+              "sha256": "a595b11464d059801adbf34aa267897f67c98e49271ca47b3e5ec0230349ad27"
+            },
+            "verification.json": {
+              "bytes": 18572,
+              "sha256": "b0155c5ba8724efd69996891f1dee001e068f0185e65e23cdf7689badfd28cd1"
+            }
+          },
+          "packet_bytes": 225365,
+          "manifest_sha256": "eaadfa5a32f54c743c51a3d1c7c171af94e3f6e8c53eae157e4686114742ec00"
+        },
+        "current_scoped_semantics_validated": true,
+        "disposition": "Scoped bounded no objection; unrelated root source drift separately reconciled",
+        "qualification": "Values/oracles/guards/source inspected and exact AST/full bytes independently verified. No product import, probe rerun, Linux/native/full or release acceptance."
+      },
+      "export": {
+        "observation_count": 50,
+        "exact_ast": {
+          "unique_bindings": 346,
+          "changed_selected_nodes": []
+        },
+        "scoped_inputs": 18,
+        "scoped_current_drift": [],
+        "integrity": {
+          "payload_files": 33,
+          "all_packet_files": {
+            "audit_io.py": {
+              "bytes": 2957,
+              "sha256": "52d4342c4a71a5dc831f9d0afb3dad7ef65bd31cd8b803608a356020fafb6140"
+            },
+            "bundle_probe.py": {
+              "bytes": 3087,
+              "sha256": "ff2712ea16ad7741436cb12d6b7fc9f2ad85d3a61bb650cfe6b4930eba329454"
+            },
+            "close_review.py": {
+              "bytes": 4586,
+              "sha256": "38af9b4492c9c94b6b717332d7fb0d884aa1f20cb254e70266fae50e8a88e9f3"
+            },
+            "closing-command.json": {
+              "bytes": 1556,
+              "sha256": "56b3f08774f460b52d386217d35d51e806376107808865ef9d63ab43e952c948"
+            },
+            "entry-drift.json": {
+              "bytes": 599,
+              "sha256": "e64564b82d0cb0efecdd0efe13eda162c579ff96dfb9877f080f88d90a6eed80"
+            },
+            "execution-identities.json": {
+              "bytes": 1325,
+              "sha256": "8403f4b7e4b2e58986e1bf4de086ef220cfe8c7566cb64093650de5cdabb73b5"
+            },
+            "FILES-attempt1.sha256": {
+              "bytes": 2426,
+              "sha256": "15f4ec079942322ea34b0104ab5dac5b28a96ada2a36f563dbfbe137f72a3e3e"
+            },
+            "FILES.sha256": {
+              "bytes": 2859,
+              "sha256": "d86f5e9d638e1bfba88de61f4c7837af0edac4c16a4a8b6c99019232e72b1c7a"
+            },
+            "final-entry-check.json": {
+              "bytes": 889,
+              "sha256": "4f319bae00ba9657cef3d2912d29d0c3c764c37a7ac71fe00e4fe5884af00ad7"
+            },
+            "probe-attempt1-command.json": {
+              "bytes": 569,
+              "sha256": "3d5e8c40dabe21374efc291196a96c0f91f1f51539f423adda51e782e0753ab9"
+            },
+            "probe-attempt1.py": {
+              "bytes": 22374,
+              "sha256": "ec61a41cd1fbf677c56883e98797404ec0a26c654dd73f6bfbca7a27c0c25d8f"
+            },
+            "probe-attempt2-command.json": {
+              "bytes": 1412,
+              "sha256": "bc13599ad78fd86fd4102e834f66bf8198039bef9181cf7ec387d00d00cd77d6"
+            },
+            "probe-attempt2.py": {
+              "bytes": 22766,
+              "sha256": "9d3da4cb17a838c318e43855f0ff2ce11cce5ef6884f1db8f549c6fc7d6acec5"
+            },
+            "probe-attempt3.py": {
+              "bytes": 22842,
+              "sha256": "f43155a36fbffa6755b2c23361839b8ee22252c8ab481031b50a89130a443856"
+            },
+            "probe-bundle-command.json": {
+              "bytes": 335,
+              "sha256": "367e5db0ac48a943d221f5b6a658fffa72c2b2b7a0b9abfa0992e2ca5475a779"
+            },
+            "probe-bundle.json": {
+              "bytes": 2523,
+              "sha256": "e03b2e9550170cb5e54e0df1b50a139e91b163da3089b1a847908edf7e9d4423"
+            },
+            "probe-chain-command.json": {
+              "bytes": 539,
+              "sha256": "58dbc9474f283f88264fead713c43c8f648e5f3fd5f67fb522e25fb3e8d278d0"
+            },
+            "probe-chain.json": {
+              "bytes": 127874,
+              "sha256": "7c03b6c314d5caec7ed7e564cf26f04f30171a65740c3f8043bfb2155ebdf9ba"
+            },
+            "probe-diagnostic-attempt1-command.json": {
+              "bytes": 368,
+              "sha256": "47eb29c3f317c1e0c5c8f8cda8838e347759b2729961a1b3697b9227b63a8864"
+            },
+            "probe-diagnostic-attempt1.json": {
+              "bytes": 102101,
+              "sha256": "65bd811d028c780b80f25dad88b1948ec1aa87cbce230bb2a5498c8f467be335"
+            },
+            "probe-diagnostic-command.json": {
+              "bytes": 367,
+              "sha256": "b7eb2542e88f760aa3cea37f6dc87ea98e70604582b67dfe8cd71d06cfe578ed"
+            },
+            "probe-diagnostic.json": {
+              "bytes": 102314,
+              "sha256": "fb52b6392b528fead577acf9173410d4d5e432b9cf9b47c633927ffbb2862794"
+            },
+            "probe-recovery-command.json": {
+              "bytes": 337,
+              "sha256": "c2e46ab1735d113bcdd794784e468aca043586ba8e1ac1154d66fa7048aa41c8"
+            },
+            "probe-recovery.json": {
+              "bytes": 10443,
+              "sha256": "eec8fc6e9984bc84441ebe8bd5355314ea5e115c2637ec525894d5f8e8a49ac2"
+            },
+            "probe.py": {
+              "bytes": 22935,
+              "sha256": "16eeefbf70f53937bb4e58103ce8ade379fafa108e60309ebfb78c7f4803f968"
+            },
+            "read-command-failures.json": {
+              "bytes": 1945,
+              "sha256": "74bbad20d1d562c366e72edddd2a9139e9d721489d7bcd49615db5ba087ef2ee"
+            },
+            "readback.json": {
+              "bytes": 5685,
+              "sha256": "7b0743df64eb1f656c98f9ea5e23f07d4a154b1bba0e1290e09f84c2e69cb1c1"
+            },
+            "reads.json": {
+              "bytes": 11349,
+              "sha256": "0cce916b800675c801a208841335ffac1bc8b88560d9557c8aa73967a8f81f3d"
+            },
+            "recovery_probe.py": {
+              "bytes": 4101,
+              "sha256": "aec40be42d222557ef18e755cfed99c044fc95aca9aa3f73a92915530655dfff"
+            },
+            "RESULT.md": {
+              "bytes": 9910,
+              "sha256": "366dde454bd78e5ac2fc898ea2b9ce30d9907a4566397eb1e84b52091ccc6f10"
+            },
+            "scope-after.json": {
+              "bytes": 6280,
+              "sha256": "e9d7fe756be159c767e17fdd54435aa9a7b3f3206fc468da63ce41bb535a7fa1"
+            },
+            "scope-before.json": {
+              "bytes": 4142,
+              "sha256": "595ae3ddbeae118267ab8f411d3ba346ace12706f57df05d6694c66cc2d8193e"
+            },
+            "seal-attempt1-command.json": {
+              "bytes": 617,
+              "sha256": "a9fbb80e50c5d1f890e12cf6610769c00a4429d9591e02c44d54a6b4133ad03d"
+            },
+            "seal.py": {
+              "bytes": 2627,
+              "sha256": "547ddc67767d75c4ffa32a3c9bfd26fdcf8fb3d68b6b9ee8fcee0babfe8d5be9"
+            },
+            "seal_drift.py": {
+              "bytes": 3379,
+              "sha256": "2019d9cbb77709976767085abfcd7fda5731daab5af372adf0948b1390ef615d"
+            },
+            "validation-command.json": {
+              "bytes": 1136,
+              "sha256": "3df383afb739779a2d8684df6550ac449ce8c0df1e6d3c354679fe0276883573"
+            }
+          },
+          "packet_bytes": 511554,
+          "manifest_sha256": "d86f5e9d638e1bfba88de61f4c7837af0edac4c16a4a8b6c99019232e72b1c7a"
+        },
+        "current_scoped_semantics_validated": true,
+        "disposition": "Scoped bounded no objection; unrelated root source drift separately reconciled",
+        "qualification": "Values/oracles/guards/source inspected and exact AST/full bytes independently verified. No product import, probe rerun, Linux/native/full or release acceptance."
+      },
+      "startup": {
+        "observation_count": 21,
+        "exact_ast": {
+          "unique_bindings": 15,
+          "changed_selected_nodes": [
+            "load_injected_build",
+            "runtime_source_sha256"
+          ]
+        },
+        "scoped_inputs": 140,
+        "scoped_current_drift": [
+          "src/beamo_wipe/build_identity.py"
+        ],
+        "integrity": {
+          "payload_files": 32,
+          "all_packet_files": {
+            "adapter-failures.json": {
+              "bytes": 3917,
+              "sha256": "540e10411f528960927c8bbc3249a2477552ddd8bbd6e9373616902f5d363b87"
+            },
+            "close-drift-exit.json": {
+              "bytes": 328,
+              "sha256": "91effe9769083e4ea91a72a706f5b34c289fa2238def81ba9f2d30b606bc930b"
+            },
+            "close-drift-output.txt": {
+              "bytes": 324,
+              "sha256": "aa8c3c9052b2cd35b24a3a8bbc5196f60927046e255768f53c1e00bba2f00e3a"
+            },
+            "close-drift.py": {
+              "bytes": 21613,
+              "sha256": "bc35cc639b4eefd9ed70748c29371d4f9f08661ccd4eb6db56bcce2572795121"
+            },
+            "close-exit.json": {
+              "bytes": 273,
+              "sha256": "5c38d5a84dec09368591a8403169ca4cb8ad59c4d945f94ec91e5bae8db979d1"
+            },
+            "close-output.txt": {
+              "bytes": 649,
+              "sha256": "e8928e1470ffc446863d4bf02cfe0e29313c42dfbf8f8cea49d0cf1ca3c061fc"
+            },
+            "close.py": {
+              "bytes": 18949,
+              "sha256": "97f5ff7c2ebebef8237ccbb083e75131df8d8c46d948f154f091a37b14f93515"
+            },
+            "commands.json": {
+              "bytes": 5849,
+              "sha256": "178cff28aee6ae4bc719a5a987453cc8b9363b1c54bbbc8874953122c796e17b"
+            },
+            "FILES.sha256": {
+              "bytes": 2716,
+              "sha256": "3793f4d50c3cbc79937ebf01b4c3958357dad46b3ff4a706827978e4edd40175"
+            },
+            "final-census-drift.json": {
+              "bytes": 659,
+              "sha256": "3aa767f32e671f679e0da7496d2a54c831e1bf90362e45b6d18df5ae0b19fc5a"
+            },
+            "final-census.json": {
+              "bytes": 659,
+              "sha256": "3aa767f32e671f679e0da7496d2a54c831e1bf90362e45b6d18df5ae0b19fc5a"
+            },
+            "post-drift-ast-bindings.json": {
+              "bytes": 5294,
+              "sha256": "7e0f8078c43b1d3e4cbd9812af98d979c86aa83f137582132cb292a0c8b1dd83"
+            },
+            "probe-exit.json": {
+              "bytes": 158,
+              "sha256": "1481b0a469849ea499c4d5714ea0a1802f406dd42d70cc26db848c2fbd06745e"
+            },
+            "probe-results.json": {
+              "bytes": 14320,
+              "sha256": "0c6c11ff48fc4380ec872c9e84331b9a8c4f458b27e6aea33ed1ad89beb09129"
+            },
+            "probe-v2-exit.json": {
+              "bytes": 86,
+              "sha256": "1848f7db9cc02af95e1ed680ea3b5a06357048f45f8add64078c4d48bf548db9"
+            },
+            "probe-v2-output.txt": {
+              "bytes": 221,
+              "sha256": "21e588a616960e6653cc32287a36d04587cdbad3d5dfb400cf995238012d0378"
+            },
+            "probe-v2.py": {
+              "bytes": 17874,
+              "sha256": "90a3f816802adaffc10f6e8121b09029589696eb70168de67461b6285b4c2bf6"
+            },
+            "probe-v3-exit.json": {
+              "bytes": 86,
+              "sha256": "207997cc2b47d79a93db8f62dad2fdb80d96dbd2428f80afe4135cda7d8f52b3"
+            },
+            "probe-v3-output.txt": {
+              "bytes": 71,
+              "sha256": "d952de5783b24bd4709946efbb7f633d9167f797435fafa82addaa60705433a3"
+            },
+            "probe-v3-results.json": {
+              "bytes": 14980,
+              "sha256": "60e59fb29591919c85d3016cd7da7acdd777a5b0676fcc80f74d243d5c893672"
+            },
+            "probe-v3.py": {
+              "bytes": 18417,
+              "sha256": "3fd9235731372e39913bb9ad750e858684d4c9fd4801895c51236a43b71f36e2"
+            },
+            "probe.py": {
+              "bytes": 17495,
+              "sha256": "e9726d0fc86aa4edd7578ed4abccd0b60f20d4ff4904f98f84f67aa9616f6e61"
+            },
+            "probe.stderr.txt": {
+              "bytes": 2896,
+              "sha256": "ba457f9a6d06771b6a48af0c74c31678c00bd6becad9b65222ff468d1136270a"
+            },
+            "probe.stdout.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "readback-receipt.json": {
+              "bytes": 5756,
+              "sha256": "c49dfa2f7dc8efa48816258ec6c433180ad0da0280989d4615431318e1777936"
+            },
+            "RESULT.md": {
+              "bytes": 9960,
+              "sha256": "4a761c65e5449158e8becff3dbe28d54252e29f93ac5c14857d9dd4801eb928e"
+            },
+            "scope-after-drift.json": {
+              "bytes": 23534,
+              "sha256": "3f732e9e11909d2dbcf8e0a2cb961058bed936893f38c955319e0d761d53eef6"
+            },
+            "scope-after.json": {
+              "bytes": 23534,
+              "sha256": "3f732e9e11909d2dbcf8e0a2cb961058bed936893f38c955319e0d761d53eef6"
+            },
+            "scope-before.json": {
+              "bytes": 21566,
+              "sha256": "43c835d39ea76fbf4525dfaf574fce4b17d7b82e3ea8b2f7263f8a767dd3298e"
+            },
+            "scope-session-before.json": {
+              "bytes": 372,
+              "sha256": "2925a5facb28e562504788aa8c245da1c6f27039023dc5e6eae9c1231c43053b"
+            },
+            "scope-supplement-before.json": {
+              "bytes": 1764,
+              "sha256": "27dc27d258e11d8254c09aff0d7428b4e5d2c09085faed9bf7ac3a17ead6f82f"
+            },
+            "source-contracts-exit.json": {
+              "bytes": 94,
+              "sha256": "b09f48c8aaa4f533b86dd9db1592ea40bf671596d182661ed8e0f1c1d00046d5"
+            },
+            "source-contracts-output.txt": {
+              "bytes": 53,
+              "sha256": "1cf915ba6d58573a68c2c05067c05868bcaa7542fc04339d3f41a1cedf63c398"
+            },
+            "source-contracts.json": {
+              "bytes": 17724,
+              "sha256": "bb2c8b288a6da5d85e8812f44aaeec1a64457025c2ac654b08bd9914a6a527e5"
+            },
+            "source-contracts.py": {
+              "bytes": 8674,
+              "sha256": "75766b94830373fcc3b37f3e5f8285ccd633761812524593c985275a896a5e19"
+            },
+            "verification.json": {
+              "bytes": 2152,
+              "sha256": "20a7965af18bd6db17ffea295c30cc30b09a6e2a71a48823030e8787a9b34497"
+            }
+          },
+          "packet_bytes": 263017,
+          "manifest_sha256": "3793f4d50c3cbc79937ebf01b4c3958357dad46b3ff4a706827978e4edd40175"
+        },
+        "current_scoped_semantics_validated": false,
+        "disposition": "Bounded original review validated; changed identity readers require focused current-source review/replay",
+        "qualification": "Values/oracles/guards/source inspected and exact AST/full bytes independently verified. No product import, probe rerun, Linux/native/full or release acceptance."
+      }
+    },
+    "pending": "Fresh identity correction review/current-reader replay and final complete-source reconciliation",
+    "required_acceptance": "Linux/full/native/artifact/physical BLOCKED/INCOMPLETE",
+    "release_qualified": false
+  },
+  "parent_identity_validation": {
+    "utc": "2026-10-26T04:58:05.121244+00:00",
+    "source_identity": "4f3ddeaf0f57af82174537992d635c022b8f273e09e65c7ca705d25b2f0da7fc",
+    "current_source_matches": true,
+    "no_remaining_concrete_objection": true,
+    "disposition": "Bounded no objection to correction; current startup readers reconciled",
+    "observation_count": 69,
+    "current_source_observations": 63,
+    "historical_original_observations": 6,
+    "current_startup_replay_observations": 21,
+    "current_startup_exact_nodes": 16,
+    "overlapping_startup_replays_not_added": true,
+    "exact_identity_nodes_old_and_new": 53,
+    "manifest_sha256": "77d4ece73ce3d61176c5057e258ff7d7b7a2aa45ac6cd9c96352ba6d65f374b0",
+    "packet_files": {
+      "adapter-correction.json": {
+        "bytes": 586,
+        "sha256": "74012fa4f71a856214d2bed370e50f95ab9d9f29fbbe3888e153da83c14f4ea5"
+      },
+      "bind.exit.json": {
+        "bytes": 105,
+        "sha256": "a14d84c69889a122333d5da479fc89b40767e060a595a8b8fe73de73c235f7e0"
+      },
+      "bind.py": {
+        "bytes": 4308,
+        "sha256": "7ea739e5b254d4f3d21c0f5aefaa38c3d77d117893687bd93417c3a6df576602"
+      },
+      "bind.stderr.txt": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "bind.stdout.txt": {
+        "bytes": 788,
+        "sha256": "45b9edc14875b3d10e24cca9431128c1595d75ecfd623a4a77205012c503cca3"
+      },
+      "FILES.failed-v1.sha256": {
+        "bytes": 4335,
+        "sha256": "af2e98a9602c6408fdbce20b9dca3f2513cc9d8649fa0c9ca991c8b8a534eb4e"
+      },
+      "FILES.sha256": {
+        "bytes": 5145,
+        "sha256": "77d4ece73ce3d61176c5057e258ff7d7b7a2aa45ac6cd9c96352ba6d65f374b0"
+      },
+      "inspect-closure-inputs.exit.json": {
+        "bytes": 87,
+        "sha256": "10230ebcf94b96817646662eda9dd3fb241fa393dde690ece83006423cb2e967"
+      },
+      "inspect-closure-inputs.py": {
+        "bytes": 382,
+        "sha256": "ecf07e09db6d25314822f24f324facaec21c54faa0ecb995ce197a745f672123"
+      },
+      "inspect-closure-inputs.stderr.txt": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "inspect-closure-inputs.stdout.txt": {
+        "bytes": 596,
+        "sha256": "d59a2acdde854b951ff1783d8071ecc8df5c5a5144ff34a907721c2f7b775afa"
+      },
+      "prepare-seal-v2.exit.json": {
+        "bytes": 80,
+        "sha256": "3bd533e01007a308e8077e4b0033c0283ba0fe087be4c55ba45125ae449d865d"
+      },
+      "prepare-seal-v2.py": {
+        "bytes": 2079,
+        "sha256": "fe81a3d8b5753fcaa6eef32074d286b9c690dc7e7f8fad368e72d2bbe0644521"
+      },
+      "prepare-startup-v2.exit.json": {
+        "bytes": 83,
+        "sha256": "fa9754b3957c036b2510de3aa1d2eac992fca25970b1652ddc30fc0bf043fb4d"
+      },
+      "prepare-startup-v2.py": {
+        "bytes": 1118,
+        "sha256": "ab23e761b09e8857b4f7dc53ad4c6d4bb65ce224fbeead8772cb7014cad23fa7"
+      },
+      "prepare-v2.exit.json": {
+        "bytes": 75,
+        "sha256": "364ca15a83e04c22e899b6fab2c55627f42788d7003c786613a1f7df4d4b4eb3"
+      },
+      "prepare-v2.py": {
+        "bytes": 1124,
+        "sha256": "bcf67c7bed34c1d9afd1581e90293059735747f2e0f6a2d5306939068e8ffbe3"
+      },
+      "probe-results.json": {
+        "bytes": 65575,
+        "sha256": "c11eac433a2edfd3863369dc35e4b70f389e4a41d429b78c1fe12e872b9a0d79"
+      },
+      "probe-v2-results.json": {
+        "bytes": 65610,
+        "sha256": "c318eb7f7646fe238afefcbefd596bee9148aa86b5c0e21d599e451e8632d48c"
+      },
+      "probe-v2.exit.json": {
+        "bytes": 136,
+        "sha256": "0775cd97fc26706cda3319d7df3560ef27bbcc0f2391f3947f9363624f2cfcc9"
+      },
+      "probe-v2.py": {
+        "bytes": 14721,
+        "sha256": "04830361fba60fea7e77cc797bec554a90eed2d6225994e1c65119f4608795a3"
+      },
+      "probe-v2.stderr.txt": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "probe-v2.stdout.txt": {
+        "bytes": 252,
+        "sha256": "23d4317bb84cd6d3b64d3b7b5a291bbcb35c4c44e151a8b78cdc09e1c19d63f8"
+      },
+      "probe.exit.json": {
+        "bytes": 133,
+        "sha256": "7f8e388d53923147912eeeb75d219f3a1c432697edc082229cfb254acec9ce84"
+      },
+      "probe.py": {
+        "bytes": 14498,
+        "sha256": "15058d94e9b9d6e77fdd7c6460b530ec442e320edaeb6779549caea719b38556"
+      },
+      "probe.stderr.txt": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "probe.stdout.txt": {
+        "bytes": 2406,
+        "sha256": "6db6bb17a8c8357aad7e9f65854816f75b922c0a0f55e63d1b56743edbe900d7"
+      },
+      "readback-receipt.json": {
+        "bytes": 9789,
+        "sha256": "131cfb3186772a26aa8cc3751b5500cebeddc1022b3be053d5488e29a03d0d59"
+      },
+      "RESULT.failed-v1.md": {
+        "bytes": 10048,
+        "sha256": "81acc927fec27bfc77d3b2caf7df2a95242566a3e863def69af5fd6fab076676"
+      },
+      "RESULT.md": {
+        "bytes": 10431,
+        "sha256": "741862fc22a5a4f46bf670150c30168583b96454a6ee367ffbd7cffaa20c440d"
+      },
+      "retry-control-results.json": {
+        "bytes": 1036,
+        "sha256": "ad65bfdb64de0afa1b42cf37d33418651ce4308c0a2ecb211958c1560af1726c"
+      },
+      "retry-control.exit.json": {
+        "bytes": 141,
+        "sha256": "c7bb83e33b76c02d9c2f3ed13550cd59f02c8e65ff86e4922929b8c3462d0418"
+      },
+      "retry-control.py": {
+        "bytes": 1448,
+        "sha256": "c401d6f29e761ac29531c544092636ec3592ac86e3d8d0d79f96a3f4c70940e9"
+      },
+      "retry-control.stderr.txt": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "retry-control.stdout.txt": {
+        "bytes": 822,
+        "sha256": "22598dbab2cc4459cee6a956950acfd3ff2cb4a43f5555c63cdd95034586be3e"
+      },
+      "scope-after.failed-v1.json": {
+        "bytes": 3940,
+        "sha256": "52d4996eb6d8b8ec9eae1bafd4bdc02e6a76d05d03ac24b8fd2057610503bc2e"
+      },
+      "scope-after.json": {
+        "bytes": 3940,
+        "sha256": "b1181b27ecee2119250d701d5841ebb63f15cf742de9c524d0edcdb10309ae2f"
+      },
+      "scope-before.json": {
+        "bytes": 6998,
+        "sha256": "8054f032dbcdb61c67053ea033c59983691117077b6a50f0aed9dea20ac3197b"
+      },
+      "seal-adapter-failure.json": {
+        "bytes": 580,
+        "sha256": "7b56c53fb37a1c516fa9a596326f6ebebc67643e896ce6cbf2f4aa3c0a58f351"
+      },
+      "seal-v2.exit.json": {
+        "bytes": 108,
+        "sha256": "0ad8d1f7d325457763bac362b305da48098460a33e0b6ac8356e5e01c45f3a4f"
+      },
+      "seal-v2.py": {
+        "bytes": 18441,
+        "sha256": "e87b9414a750abe71c604d52e7a5404be0c52fc47aaf4a6809d38d3bf1256c38"
+      },
+      "seal-v2.stderr.txt": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "seal-v2.stdout.txt": {
+        "bytes": 1612,
+        "sha256": "4029d2b9f792f1537d69fe2ea6d3184e987ac1ec01289bf98a103a322d3a8027"
+      },
+      "seal.exit.json": {
+        "bytes": 114,
+        "sha256": "36885b3b14e356414df8775f7ea7405ea859cf6f35d36f271cf34d857e065dfc"
+      },
+      "seal.py": {
+        "bytes": 17864,
+        "sha256": "0847f811d11a91eca0f5bdd1b7fb17159da5a919d6b8796c87504301972f12f8"
+      },
+      "seal.stderr.txt": {
+        "bytes": 1324,
+        "sha256": "fa5a0fe2974983393d4b5cf95615e41bf105b42463c09c0f91a6bbd035874d96"
+      },
+      "seal.stdout.txt": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "setup-observations.json": {
+        "bytes": 692,
+        "sha256": "54e5fa099e256da68f5909aa0972430067815a0ce22eb65fb25ffde9ab0f3357"
+      },
+      "startup-adapter-failure.json": {
+        "bytes": 491,
+        "sha256": "8cafe73087a1fdf0b1d5bdc8c6c5abfb6fd761cab4f06d40b85e5a27e1594110"
+      },
+      "startup-current-results.json": {
+        "bytes": 15308,
+        "sha256": "4a4e35416ded156d9f169cbbafeff162aab969463b3536d7c77395f7712551b3"
+      },
+      "startup-replay-v2-adapter.json": {
+        "bytes": 1598,
+        "sha256": "309867ea988377d501a22a533bc57310fdcd99f59c015e0bd462c5ceafccbaba"
+      },
+      "startup-replay-v2.exit.json": {
+        "bytes": 145,
+        "sha256": "529623619fc3ba47bee4e12bc0a1be812da806970335f162ea061e50dec12a6b"
+      },
+      "startup-replay-v2.py": {
+        "bytes": 1812,
+        "sha256": "ac6188ff497aacea02d09327d00b2a4d5cca434ce07a3e6468d7ee70b0af15f6"
+      },
+      "startup-replay-v2.stderr.txt": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "startup-replay-v2.stdout.txt": {
+        "bytes": 138,
+        "sha256": "c08c0e12034ddbb08c2c993e21b7b48b279dc4eda382a621180004aac55684b4"
+      },
+      "startup-replay.exit.json": {
+        "bytes": 151,
+        "sha256": "d3c725a6fa496797081a4e52bdd5d0770027e697b6c8bb458da42a32fd02f1f5"
+      },
+      "startup-replay.py": {
+        "bytes": 1748,
+        "sha256": "0a0d0123eb463a6bd30e5da6f70f9f41ea39d6774d5ce86358bbb7be994972df"
+      },
+      "startup-replay.stderr.txt": {
+        "bytes": 1986,
+        "sha256": "f7bba7753313733039bfcc81d5b6b58651938a45fb5b010d613d3aafcad7fb45"
+      },
+      "startup-replay.stdout.txt": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "supplement-results.json": {
+        "bytes": 24438,
+        "sha256": "7cb2a25d175208e07a22da8cd84e775a20059f4c60282d010f4802a10aeae495"
+      },
+      "supplement.exit.json": {
+        "bytes": 138,
+        "sha256": "dcd32adac1104c07ea0dec5bb6ca36027ae0501d1354cd05a7acd549d4535c5e"
+      },
+      "supplement.py": {
+        "bytes": 3957,
+        "sha256": "46f8945d639bc364161eca8ebe8a19d034e41bbb49c37a5bb24b03ba1ec88645"
+      },
+      "supplement.stderr.txt": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "supplement.stdout.txt": {
+        "bytes": 528,
+        "sha256": "5354699233aa467f366b3a1f74803be958f1e0310a4b21f317cab2c5b6f99f17"
+      }
+    },
+    "packet_bytes": 325988,
+    "full_byte_readback": true,
+    "product_and_test_hashes": {
+      "developer_tests/test_build_identity_cleanup.py": "3d8762a640ab3d2a0a93ad016c404a5971134f0fdcd43a817f9ebbcaf3baeb53",
+      "src/beamo_wipe/build_identity.py": "195d0f4308134eeb9a6fd02f50440f9de76e07ac8186309d11f2ff39bc1479c3"
+    },
+    "qualification": "Parent inspected original/current oracles, guard model, supplementary acquisition/metadata controls and replay. Exact AST/values/full bytes verified; no native/process/syscall/full/Linux/artifact/physical acceptance.",
+    "retained_failures": [
+      "First focused probe45/46 used nonexistent fstat7 ordinal; corrected fstat6 and later cleanup close3; original output retained",
+      "First startup adapter failed strict CRLF controller replacement before observations; normalized text only, original retained",
+      "First child seal rejected Windows newline-translated manifest; failed report/manifest/snapshot and exit1 retained; final LF-byte seal succeeds"
+    ]
+  },
+  "startup_drift_resolution": {
+    "original_status": "INCOMPLETE/SOURCE DRIFT retained",
+    "current_replay_count": 21,
+    "current_exact_ast": 16,
+    "actual_exit": 0,
+    "receipt_sha256": "4a4e35416ded156d9f169cbbafeff162aab969463b3536d7c77395f7712551b3"
+  }
+}

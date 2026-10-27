@@ -601,12 +601,37 @@ def recover_result(path: Path, *, expected_sha256: str | None = None):
         return present_evidence(None)
 
 
+def _close_evidence_fds(
+    primary: BaseException | None, *owned: tuple[str, int]
+) -> None:
+    """Close detached descriptors once, retaining the operation's first failure."""
+    failure = primary
+    for stage, fd in owned:
+        if fd < 0:
+            continue
+        try:
+            os.close(fd)
+        except BaseException as exc:
+            if failure is None:
+                failure = exc
+            else:
+                try:
+                    # Stages are fixed call-site labels; never log paths or
+                    # exception messages from private evidence operations.
+                    sys.stderr.write(
+                        f"Evidence cleanup failed ({stage}: {type(exc).__name__})\n"
+                    )
+                except BaseException:
+                    pass
+    if primary is None and failure is not None:
+        raise failure
+
+
 def _read_regular_nofollow(path: Path, *, private: bool = False) -> bytes:
+    fd = -1
+    primary: BaseException | None = None
     try:
         fd = os.open(str(path), os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
-    except OSError as exc:
-        raise SafetyError("Cannot safely read evidence file") from exc
-    try:
         opened = os.fstat(fd)
         if not stat.S_ISREG(opened.st_mode):
             raise SafetyError("Evidence path is not a regular file")
@@ -646,12 +671,32 @@ def _read_regular_nofollow(path: Path, *, private: bool = False) -> bytes:
         ) or total != opened.st_size:
             raise SafetyError("Evidence changed while reading")
         return b"".join(chunks)
+    except BaseException as exc:
+        if fd < 0 and isinstance(exc, OSError):
+            primary = SafetyError("Cannot safely read evidence file")
+            raise primary from exc
+        primary = exc
+        raise
     finally:
-        os.close(fd)
+        closing_fd, fd = fd, -1
+        _close_evidence_fds(primary, ("read-file", closing_fd))
 
 
 class EvidenceFinalizationError(OSError):
     """Publication occurred but its final filesystem synchronization failed."""
+
+
+class _EvidencePublicationCollision(FileExistsError):
+    """A no-replace publication collision, distinct from other EEXIST errors."""
+
+    def __init__(self, original: FileExistsError) -> None:
+        super().__init__(*original.args)
+        self.errno = original.errno
+        self.strerror = original.strerror
+        self.filename = original.filename
+        self.filename2 = original.filename2
+        if hasattr(original, "winerror"):
+            setattr(self, "winerror", getattr(original, "winerror"))
 
 
 def _rename_noreplace(directory_fd: int, source: str, destination: str) -> None:
@@ -701,9 +746,8 @@ def _rename_noreplace(directory_fd: int, source: str, destination: str) -> None:
 
 def _atomic_write_bytes(path: Path, data: bytes) -> tuple[int, int]:
     directory = path.parent
-    dir_fd = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
-    tmp_name = f".{path.name}.tmp.{secrets.token_hex(16)}"
-    fd = pinned_fd = -1
+    fd = pinned_fd = dir_fd = -1
+    primary: BaseException | None = None
 
     def verify_publication(name: str, links: int) -> None:
         fields = (
@@ -739,6 +783,8 @@ def _atomic_write_bytes(path: Path, data: bytes) -> tuple[int, int]:
             raise SafetyError("Evidence publication changed")
 
     try:
+        dir_fd = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        tmp_name = f".{path.name}.tmp.{secrets.token_hex(16)}"
         fd = os.open(
             tmp_name,
             os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
@@ -766,7 +812,11 @@ def _atomic_write_bytes(path: Path, data: bytes) -> tuple[int, int]:
         verify_publication(tmp_name, 1)
         # Linux atomically consumes the temporary name and refuses an occupied
         # destination. No final-name rollback or temp-name unlink is needed.
-        _rename_noreplace(dir_fd, tmp_name, path.name)
+        try:
+            _rename_noreplace(dir_fd, tmp_name, path.name)
+        except FileExistsError as exc:
+            # Only this boundary permits the caller's exact-state recovery.
+            raise _EvidencePublicationCollision(exc) from exc
         try:
             verify_publication(path.name, 1)
             os.fsync(dir_fd)
@@ -778,16 +828,17 @@ def _atomic_write_bytes(path: Path, data: bytes) -> tuple[int, int]:
                 raise EvidenceFinalizationError("Evidence finalization failed") from exc
             raise
         return published_identity
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        try:
-            if fd >= 0:
-                os.close(fd)
-        finally:
-            try:
-                if pinned_fd >= 0:
-                    os.close(pinned_fd)
-            finally:
-                os.close(dir_fd)
+        owned = (
+            ("write-file", fd),
+            ("write-pin", pinned_fd),
+            ("write-directory", dir_fd),
+        )
+        fd = pinned_fd = dir_fd = -1
+        _close_evidence_fds(primary, *owned)
 
 
 def verify_evidence_checksum(path: Path) -> bool:
@@ -823,19 +874,17 @@ def _verified_evidence_bytes(path: Path, *, private: bool = False) -> bytes:
 
 def _exact_private_file(path: Path, expected: bytes) -> tuple[int, int] | None:
     """Return a stable identity only when a named private file has exact bytes."""
-    directory_fd = os.open(
-        str(path.parent), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
-    )
-    fd = -1
+    fd = directory_fd = -1
+    primary: BaseException | None = None
     try:
-        try:
-            fd = os.open(
-                path.name,
-                os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
-                dir_fd=directory_fd,
-            )
-        except FileNotFoundError:
-            return None
+        directory_fd = os.open(
+            str(path.parent), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+        )
+        fd = os.open(
+            path.name,
+            os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+            dir_fd=directory_fd,
+        )
         opened = os.fstat(fd)
         fields = (
             "st_dev", "st_ino", "st_size", "st_mode", "st_uid", "st_nlink",
@@ -876,13 +925,20 @@ def _exact_private_file(path: Path, expected: bytes) -> tuple[int, int] | None:
             raise SafetyError("Export destination contains different evidence")
         return opened.st_dev, opened.st_ino
     except OSError as exc:
-        raise SafetyError("Cannot safely inspect export destination") from exc
+        if directory_fd < 0:
+            primary = exc
+            raise
+        if fd < 0 and isinstance(exc, FileNotFoundError):
+            return None
+        primary = SafetyError("Cannot safely inspect export destination")
+        raise primary from exc
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        try:
-            if fd >= 0:
-                os.close(fd)
-        finally:
-            os.close(directory_fd)
+        owned = (("inspect-file", fd), ("inspect-directory", directory_fd))
+        fd = directory_fd = -1
+        _close_evidence_fds(primary, *owned)
 
 
 def _publish_or_accept_exact(path: Path, data: bytes) -> tuple[int, int]:
@@ -892,9 +948,8 @@ def _publish_or_accept_exact(path: Path, data: bytes) -> tuple[int, int]:
         return existing
     try:
         return _atomic_write_bytes(path, data)
-    except FileExistsError:
-        # A concurrent publisher may have won after the absence check. Its
-        # exact bytes are harmless; every other state belongs to that writer.
+    except _EvidencePublicationCollision:
+        # Only a genuine publication collision permits exact-state recovery.
         existing = _exact_private_file(path, data)
         if existing is None:
             raise
@@ -957,14 +1012,20 @@ def export_evidence(
     ):
         raise SafetyError("Export evidence finalization failed")
     # Fsync dest_dir
+    dfd = -1
+    primary: BaseException | None = None
     try:
         dfd = os.open(str(dest_dir), os.O_DIRECTORY | os.O_RDONLY)
-        try:
-            os.fsync(dfd)
-        finally:
-            os.close(dfd)
-    except OSError:
-        pass
+        os.fsync(dfd)
+    except OSError as exc:
+        # Retain this compatibility API's best-effort final sync contract.
+        primary = exc
+    except BaseException as exc:
+        primary = exc
+        raise
+    finally:
+        closing_fd, dfd = dfd, -1
+        _close_evidence_fds(primary, ("export-directory", closing_fd))
     return dest_file
 
 

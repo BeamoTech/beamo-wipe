@@ -14,6 +14,7 @@ import urllib.error
 import urllib.request
 
 import pytest
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 HELPER = ROOT / "helper" / "index.html"
@@ -348,6 +349,51 @@ def test_helper_guide_stays_offline_and_keyboard_operable():
     assert "START-HERE.html" in desktop
 
 
+def _trusted_microsoft_source(url):
+    if any(ord(char) < 32 or ord(char) == 127 for char in url):
+        return False
+    try:
+        parsed = urlsplit(url)
+        return (
+            parsed.scheme == "https"
+            and parsed.hostname
+            in {
+                "microsoft.com",
+                "www.microsoft.com",
+                "learn.microsoft.com",
+                "support.microsoft.com",
+            }
+            and parsed.username is None
+            and parsed.password is None
+            and parsed.port in (None, 443)
+        )
+    except ValueError:
+        return False
+
+
+@pytest.mark.parametrize(
+    "url,expected",
+    [
+        ("https://learn.microsoft.com/en-us/windows", True),
+        ("https://support.microsoft.com:443/windows", True),
+        ("https://www.microsoft.com/windows", True),
+        ("https://SUPPORT.MICROSOFT.COM/windows", True),
+        ("https://evil.invalid/support.microsoft.com", False),
+        ("https://support.microsoft.com.evil.invalid/", False),
+        ("https://notmicrosoft.com/", False),
+        ("https://support.microsoft.com@evil.invalid/", False),
+        ("https://user@support.microsoft.com/", False),
+        ("http://support.microsoft.com/", False),
+        ("https://support.microsoft.com:444/", False),
+        ("https://support.microsoft.com:invalid/", False),
+        ("https://support.microsoft.com/\n", False),
+        ("https://[invalid/", False),
+    ],
+)
+def test_microsoft_source_redirects_require_a_trusted_https_host(url, expected):
+    assert _trusted_microsoft_source(url) is expected
+
+
 @pytest.mark.parametrize("url", MICROSOFT_SOURCES)
 def test_cited_microsoft_sources_are_current(url):
     request = urllib.request.Request(
@@ -365,10 +411,8 @@ def test_cited_microsoft_sources_are_current(url):
     except urllib.error.URLError as exc:
         pytest.skip(f"network unavailable for {url}: {exc.reason}")
     assert status < 400
-    assert (
-        "microsoft" in final.lower()
-        or "learn.microsoft.com" in final.lower()
-        or "support.microsoft.com" in final.lower()
+    assert _trusted_microsoft_source(final), (
+        f"unexpected Microsoft source redirect: {final}"
     )
     if "bitlocker" in url:
         assert "recovery" in body

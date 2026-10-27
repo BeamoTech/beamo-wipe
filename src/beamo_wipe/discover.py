@@ -2162,11 +2162,28 @@ def parse_lsblk_json(
             ))
     disks: List[Disk] = []
     identified_boot: Optional[Disk] = None
-    for node in disk_nodes(blockdevices):
+    boot_ancestry_unresolved = False
+    for node, parent in flat_nodes:
+        if _node_type(node) != "disk":
+            continue
         try:
             matched_boot = _node_is_boot(node, boot_path)
             if should_hide(node, boot_path) and not matched_boot:
                 continue
+            if not _is_stacked_holder(node) and (
+                parent is not None or _identity_text(node.get("pkname"), "pkname")
+            ):
+                # A raw whole disk must be an independent root. Unexpected
+                # tree/PKNAME ancestry cannot prove it is separate from boot
+                # or mounted storage, even when its own mount list is empty.
+                # Keep its physical facts above, but never authorize this row.
+                if matched_boot:
+                    # Excluding boot itself does not protect its claimed
+                    # ancestors. An impossible raw-boot topology invalidates
+                    # the inventory; retain the protected row for diagnostics.
+                    boot_ancestry_unresolved = True
+                else:
+                    continue
             disk = node_to_disk(node, is_boot=matched_boot)
             disk = replace(
                 disk,
@@ -2263,6 +2280,8 @@ def parse_lsblk_json(
         boot = next((item for item in disks if item.path == boot.path), boot)
     # Retain even identical rows: final identity validation requires exactly
     # one observation and must continue refusing an ambiguous target.
+    if boot_ancestry_unresolved:
+        disks = [d for d in disks if d.is_boot]
     selectable = tuple(d for d in disks if is_wipeable_disk(d))
     for path in repeated_physical_paths:
         if sum(os.path.realpath(d.path) == path for d in selectable) == 1:
@@ -2319,8 +2338,9 @@ def parse_lsblk_json(
         disks=tuple(disks),
         selectable=selectable,
         boot=boot,
-        error=None,
-        boot_identified=True,
+        error=_copy.IDENTIFY_ERROR if boot_ancestry_unresolved else None,
+        boot_identified=not boot_ancestry_unresolved,
+        diagnostic="lsblk raw boot disk ancestry is unresolved" if boot_ancestry_unresolved else None,
         physical_observations=tuple(physical_observations),
     )
 

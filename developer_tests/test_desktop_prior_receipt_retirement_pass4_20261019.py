@@ -1,9 +1,11 @@
 """Prior receipt validation never authorizes retiring another writer's bytes."""
 
 import os
+import re
 
 import pytest
 
+from native_mutation import NativeMutation
 from test_desktop_output_replacement_pass2_20261019 import (
     _setup,
     builder as existing_builder_fixture,
@@ -32,6 +34,7 @@ def test_changed_prior_receipt_is_preserved_before_any_compilation(
     builder,
     tmp_path,
     monkeypatch,
+    request,
     host,
     prior,
     change,
@@ -44,6 +47,7 @@ def test_changed_prior_receipt_is_preserved_before_any_compilation(
     original = builder._require_generated_prior_manifest
     compile_call = builder.subprocess.check_call
     compiled = []
+    mutation = NativeMutation(request)
 
     def record_compile(*args, **kwargs):
         compiled.append(args)
@@ -54,7 +58,8 @@ def test_changed_prior_receipt_is_preserved_before_any_compilation(
         if change in {"replace", "symlink", "directory", "remove"}:
             manifest.unlink(missing_ok=True)
         if change == "symlink":
-            manifest.symlink_to(outside)
+            with mutation.operation(1314, unchanged=(outside,)):
+                manifest.symlink_to(outside)
         elif change == "directory":
             manifest.mkdir()
             (manifest / "foreign-content").write_bytes(foreign)
@@ -69,10 +74,19 @@ def test_changed_prior_receipt_is_preserved_before_any_compilation(
         builder, "_require_generated_prior_manifest", change_after_validation
     )
     monkeypatch.setattr(builder.subprocess, "check_call", record_compile)
-    with pytest.raises(RuntimeError, match="prior manifest"):
+    with pytest.raises((RuntimeError, OSError)) as caught:
         builder.build(output)
     assert not compiled
-    if change == "remove":
+    denied = mutation.was_denied(caught) if change == "symlink" else False
+    if denied:
+        assert not manifest.exists()
+        assert not manifest.is_symlink()
+    else:
+        assert isinstance(caught.value, RuntimeError)
+        assert re.search("prior manifest", str(caught.value))
+    if denied:
+        pass
+    elif change == "remove":
         assert not manifest.exists()
     elif change == "directory":
         assert (manifest / "foreign-content").read_bytes() == foreign
@@ -153,6 +167,7 @@ def test_receipt_retirement_rechecks_lock_and_directory_ownership(
     builder,
     tmp_path,
     monkeypatch,
+    request,
     host,
     swap,
 ):
@@ -161,14 +176,27 @@ def test_receipt_retirement_rechecks_lock_and_directory_ownership(
     archive = tmp_path / "original-output"
     foreign = b"foreign directory receipt"
     original = builder._require_generated_prior_manifest
+    mutation = NativeMutation(request)
+    compiled = []
+    compile_call = builder.subprocess.check_call
+
+    def record_compile(*args, **kwargs):
+        compiled.append(args)
+        return compile_call(*args, **kwargs)
 
     def change_after_validation(*args, **kwargs):
         expected = original(*args, **kwargs)
         if swap == "lock":
-            (output / ".build.lock").unlink()
+            with mutation.operation(
+                32, unchanged=(output / ".build.lock", output / "desktop-build.json")
+            ):
+                (output / ".build.lock").unlink()
             (output / ".build.lock").write_bytes(b"foreign lock")
         else:
-            output.rename(archive)
+            with mutation.operation(
+                5, unchanged=(output, output / "desktop-build.json")
+            ):
+                output.rename(archive)
             output.mkdir()
             os.link(archive / ".build.lock", output / ".build.lock")
             (output / "desktop-build.json").write_bytes(foreign)
@@ -177,11 +205,23 @@ def test_receipt_retirement_rechecks_lock_and_directory_ownership(
     monkeypatch.setattr(
         builder, "_require_generated_prior_manifest", change_after_validation
     )
-    with pytest.raises(RuntimeError, match="build lock changed"):
+    monkeypatch.setattr(builder.subprocess, "check_call", record_compile)
+    with pytest.raises((RuntimeError, OSError)) as caught:
         builder.build(output)
-    if swap == "lock":
+    assert not compiled
+    if mutation.was_denied(caught):
+        assert (output / "desktop-build.json").read_bytes() == original_bytes
+        assert not (output / ".build.lock").exists()
+        assert not archive.exists()
+        for name in builder.LAUNCHERS:
+            assert (output / name).read_bytes() == b"prior compiled launcher"
+    elif swap == "lock":
+        assert isinstance(caught.value, RuntimeError)
+        assert re.search("build lock changed", str(caught.value))
         assert (output / "desktop-build.json").read_bytes() == original_bytes
         assert (output / ".build.lock").read_bytes() == b"foreign lock"
     else:
+        assert isinstance(caught.value, RuntimeError)
+        assert re.search("build lock changed", str(caught.value))
         assert (archive / "desktop-build.json").read_bytes() == original_bytes
         assert (output / "desktop-build.json").read_bytes() == foreign

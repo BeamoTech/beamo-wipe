@@ -147,6 +147,24 @@ def _validate_nonposix_parent(path: Path) -> os.stat_result:
     return metadata
 
 
+def _close_reader_fds(
+    primary: BaseException | None, owned: dict[str, int | None], *names: str
+) -> None:
+    """Consume each owned descriptor once, retaining an operation's primary error."""
+    first_error = None
+    for name in names or tuple(owned):
+        fd = owned.pop(name, None)
+        if fd is None:
+            continue
+        try:
+            os.close(fd)
+        except BaseException as exc:
+            if first_error is None:
+                first_error = exc
+    if primary is None and first_error is not None:
+        raise first_error
+
+
 def _open_pinned_parent(path: Path) -> tuple[Path, Optional[int], tuple[Any, ...]]:
     """Open every parent component without following a link."""
     absolute = Path(os.path.abspath(os.fspath(Path(path))))
@@ -166,28 +184,30 @@ def _open_pinned_parent(path: Path) -> tuple[Path, Optional[int], tuple[Any, ...
         | getattr(os, "O_NOFOLLOW", 0)
         | getattr(os, "O_CLOEXEC", 0)
     )
+    owned: dict[str, int | None] = {}
     try:
-        directory_fd = os.open(os.sep, flags)
-    except OSError as exc:
-        raise RuntimeError(f"cannot safely open parent of {absolute.name}") from exc
-    try:
-        for component in absolute.parent.parts[1:]:
-            next_fd = os.open(component, flags, dir_fd=directory_fd)
-            os.close(directory_fd)
-            directory_fd = next_fd
-        metadata = os.fstat(directory_fd)
-        if not stat.S_ISDIR(metadata.st_mode):
-            raise RuntimeError(f"cannot safely open parent of {absolute.name}")
-        return (
-            absolute,
-            directory_fd,
-            _metadata_values(metadata, _PARENT_BIND_FIELDS),
-        )
-    except (OSError, RuntimeError) as exc:
-        os.close(directory_fd)
-        if isinstance(exc, RuntimeError):
-            raise
-        raise RuntimeError(f"cannot safely open parent of {absolute.name}") from exc
+        try:
+            directory_fd = owned["directory"] = os.open(os.sep, flags)
+            for component in absolute.parent.parts[1:]:
+                next_fd = owned["pending"] = os.open(
+                    component, flags, dir_fd=directory_fd
+                )
+                _close_reader_fds(None, owned, "directory")
+                owned["directory"] = owned.pop("pending")
+                directory_fd = next_fd
+            metadata = os.fstat(directory_fd)
+            if not stat.S_ISDIR(metadata.st_mode):
+                raise RuntimeError(f"cannot safely open parent of {absolute.name}")
+            return (
+                absolute,
+                directory_fd,
+                _metadata_values(metadata, _PARENT_BIND_FIELDS),
+            )
+        except OSError as exc:
+            raise RuntimeError(f"cannot safely open parent of {absolute.name}") from exc
+    except BaseException as exc:
+        _close_reader_fds(exc, owned)
+        raise
 
 
 def _named_metadata(path: Path, directory_fd: Optional[int]) -> os.stat_result:
@@ -200,8 +220,11 @@ def _require_parent_binding(
     path: Path, directory_fd: Optional[int], parent_fields: tuple[Any, ...]
 ) -> None:
     """Require the requested parent path to still name the opened directory."""
-    _, current_fd, current_fields = _open_pinned_parent(path)
+    owned: dict[str, int | None] = {}
+    primary = None
     try:
+        _, owned["current"], current_fields = _open_pinned_parent(path)
+        current_fd = owned["current"]
         if current_fields != parent_fields:
             raise RuntimeError(f"parent of {path.name} changed while being verified")
         if directory_fd is not None and current_fd is not None:
@@ -212,18 +235,21 @@ def _require_parent_binding(
                 raise RuntimeError(
                     f"parent of {path.name} changed while being verified"
                 )
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        if current_fd is not None:
-            os.close(current_fd)
+        _close_reader_fds(primary, owned)
 
 
 def _open_bound_regular(
     path: Path,
 ) -> tuple[Path, Optional[int], tuple[Any, ...], int, os.stat_result]:
     """Open one regular leaf relative to its pinned, link-free parent."""
-    absolute, directory_fd, parent_fields = _open_pinned_parent(path)
-    fd = -1
+    owned: dict[str, int | None] = {}
     try:
+        absolute, owned["directory"], parent_fields = _open_pinned_parent(path)
+        directory_fd = owned["directory"]
         flags = (
             os.O_RDONLY
             | getattr(os, "O_NOFOLLOW", 0)
@@ -231,9 +257,9 @@ def _open_bound_regular(
             | getattr(os, "O_CLOEXEC", 0)
         )
         if directory_fd is None:
-            fd = os.open(absolute, flags)
+            fd = owned["file"] = os.open(absolute, flags)
         else:
-            fd = os.open(absolute.name, flags, dir_fd=directory_fd)
+            fd = owned["file"] = os.open(absolute.name, flags, dir_fd=directory_fd)
         opened = os.fstat(fd)
         named = _named_metadata(absolute, directory_fd)
         if not stat.S_ISREG(opened.st_mode) or _metadata_values(
@@ -242,23 +268,26 @@ def _open_bound_regular(
             raise RuntimeError(f"cannot safely read {absolute.name}")
         _require_parent_binding(absolute, directory_fd, parent_fields)
         return absolute, directory_fd, parent_fields, fd, opened
-    except Exception:
-        if fd >= 0:
-            os.close(fd)
-        if directory_fd is not None:
-            os.close(directory_fd)
+    except BaseException as exc:
+        _close_reader_fds(exc, owned, "file", "directory")
         raise
 
 
 def _open_regular_nofollow(path: Path) -> int:
+    owned: dict[str, int | None] = {}
     try:
-        # A planted FIFO cannot block because _open_bound_regular uses NONBLOCK.
-        _absolute, directory_fd, _parent_fields, fd, _opened = _open_bound_regular(path)
-        if directory_fd is not None:
-            os.close(directory_fd)
-        return fd
-    except (OSError, RuntimeError) as exc:
-        raise RuntimeError(f"cannot safely read {path.name}") from exc
+        try:
+            # A planted FIFO cannot block because _open_bound_regular uses NONBLOCK.
+            _absolute, owned["directory"], _parent_fields, owned["file"], _opened = _open_bound_regular(path)
+            _close_reader_fds(None, owned, "directory")
+            fd = owned["file"]
+            assert fd is not None
+            return fd
+        except (OSError, RuntimeError) as exc:
+            raise RuntimeError(f"cannot safely read {path.name}") from exc
+    except BaseException as exc:
+        _close_reader_fds(exc, owned, "file", "directory")
+        raise
 
 
 def _read_descriptor(fd: int, limit: int) -> bytes:
@@ -288,8 +317,12 @@ def _read_regular_snapshot(
     path: Path, *, limit: int, what: str
 ) -> tuple[bytes, _RegularBinding]:
     """Read stable bounded bytes and retain their path identity."""
-    absolute, directory_fd, parent_fields, fd, opened = _open_bound_regular(path)
+    owned: dict[str, int | None] = {}
+    primary = None
     try:
+        absolute, owned["directory"], parent_fields, owned["file"], opened = _open_bound_regular(path)
+        directory_fd, fd = owned["directory"], owned["file"]
+        assert fd is not None
         if opened.st_size > limit:
             raise RuntimeError(f"{what} exceeds size limit")
         first = _read_descriptor(fd, limit)
@@ -311,16 +344,21 @@ def _read_regular_snapshot(
         ):
             raise RuntimeError(f"{what} changed while being verified")
         return first, _binding(absolute, opened, parent_fields)
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        os.close(fd)
-        if directory_fd is not None:
-            os.close(directory_fd)
+        _close_reader_fds(primary, owned, "file", "directory")
 
 
 def _hash_regular_snapshot(path: Path) -> tuple[str, int, _RegularBinding]:
     """Hash one stable regular inode and retain its path identity."""
-    absolute, directory_fd, parent_fields, fd, opened = _open_bound_regular(path)
+    owned: dict[str, int | None] = {}
+    primary = None
     try:
+        absolute, owned["directory"], parent_fields, owned["file"], opened = _open_bound_regular(path)
+        directory_fd, fd = owned["directory"], owned["file"]
+        assert fd is not None
         digest = hashlib.sha256()
         while True:
             chunk = os.read(fd, 1024 * 1024)
@@ -342,18 +380,21 @@ def _hash_regular_snapshot(path: Path) -> tuple[str, int, _RegularBinding]:
             int(opened.st_size),
             _binding(absolute, opened, parent_fields),
         )
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        os.close(fd)
-        if directory_fd is not None:
-            os.close(directory_fd)
+        _close_reader_fds(primary, owned, "file", "directory")
 
 
 def _require_regular_binding(binding: _RegularBinding) -> None:
     """Require a previously verified file and parent to keep their identities."""
-    absolute, directory_fd, parent_fields, fd, opened = _open_bound_regular(
-        binding.path
-    )
+    owned: dict[str, int | None] = {}
+    primary = None
     try:
+        absolute, owned["directory"], parent_fields, owned["file"], opened = _open_bound_regular(binding.path)
+        directory_fd, fd = owned["directory"], owned["file"]
+        assert fd is not None
         named = _named_metadata(absolute, directory_fd)
         _require_parent_binding(absolute, directory_fd, parent_fields)
         if (
@@ -364,10 +405,11 @@ def _require_regular_binding(binding: _RegularBinding) -> None:
             raise RuntimeError(
                 f"{absolute.name} changed after its release snapshot was verified"
             )
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        os.close(fd)
-        if directory_fd is not None:
-            os.close(directory_fd)
+        _close_reader_fds(primary, owned, "file", "directory")
 
 
 def sha256_file(path: Path) -> str:
@@ -808,16 +850,25 @@ def _regular_output_snapshot(path: Path, limit: int) -> _OutputSnapshot | None:
     if not stat.S_ISREG(named_before.st_mode) or named_before.st_uid != os.getuid():
         raise RuntimeError("unverified prior manifest output")
     fd = -1
+    primary = None
     try:
-        fd = _open_regular_nofollow(path)
-        pinned = _regular_fd_snapshot(fd, limit)
-        named_after = path.lstat()
-        confirmed = _regular_fd_snapshot(fd, limit)
-    except OSError as exc:
-        raise RuntimeError("unverified prior manifest output") from exc
+        try:
+            fd = _open_regular_nofollow(path)
+            pinned = _regular_fd_snapshot(fd, limit)
+            named_after = path.lstat()
+            confirmed = _regular_fd_snapshot(fd, limit)
+        except OSError as exc:
+            raise RuntimeError("unverified prior manifest output") from exc
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
         if fd >= 0:
-            os.close(fd)
+            try:
+                os.close(fd)
+            except BaseException:
+                if primary is None:
+                    raise
     if (
         not stat.S_ISREG(named_after.st_mode)
         or named_after.st_uid != os.getuid()
@@ -947,34 +998,33 @@ def _atomic_write(
         expected = _path_snapshot(
             path, max(MAX_MANIFEST_BYTES, len(blob)), allow_symlink=True
         )
-    if isinstance(expected, _OutputSnapshot) and expected.contents == blob:
-        if not _snapshot_matches(path, expected):
-            raise RuntimeError("manifest output changed before publication")
-        existing_dirfd = os.open(
-            str(directory), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
-        )
-        try:
-            os.fsync(existing_dirfd)
-        finally:
-            os.close(existing_dirfd)
-        if not _snapshot_matches(path, expected):
-            raise RuntimeError("manifest output changed during finalization")
-        return
-    dirfd = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
-    name = path.name
-    suffix = secrets.token_hex(16)
-    new_digest = hashlib.sha256(blob).hexdigest()
-    prior_digest = _snapshot_digest(
-        expected if isinstance(expected, _OutputSnapshot) else None
-    )
-    tmp_name = (
-        f".{name}.publish.{new_digest}.retired-{prior_digest}.{suffix}"
-    )
-    tmp_path = directory / tmp_name
     fd = -1
+    dirfd = -1
     staged: _OutputSnapshot | None = None
+    primary: BaseException | None = None
 
     try:
+        if isinstance(expected, _OutputSnapshot) and expected.contents == blob:
+            if not _snapshot_matches(path, expected):
+                raise RuntimeError("manifest output changed before publication")
+            dirfd = os.open(
+                str(directory), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+            )
+            os.fsync(dirfd)
+            if not _snapshot_matches(path, expected):
+                raise RuntimeError("manifest output changed during finalization")
+            return
+        dirfd = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        name = path.name
+        suffix = secrets.token_hex(16)
+        new_digest = hashlib.sha256(blob).hexdigest()
+        prior_digest = _snapshot_digest(
+            expected if isinstance(expected, _OutputSnapshot) else None
+        )
+        tmp_name = (
+            f".{name}.publish.{new_digest}.retired-{prior_digest}.{suffix}"
+        )
+        tmp_path = directory / tmp_name
         fd = os.open(
             tmp_name,
             os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
@@ -1054,10 +1104,22 @@ def _atomic_write(
             raise RuntimeError(
                 f"displaced manifest output changed; retained at {tmp_path}"
             )
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        if fd >= 0:
-            os.close(fd)
-        os.close(dirfd)
+        owned = (fd, dirfd)
+        fd = dirfd = -1
+        cleanup_error: BaseException | None = None
+        for closing in owned:
+            if closing >= 0:
+                try:
+                    os.close(closing)
+                except BaseException as exc:
+                    if cleanup_error is None:
+                        cleanup_error = exc
+        if primary is None and cleanup_error is not None:
+            raise cleanup_error
 
 
 def _sidecar_blob(sha: str, name: str) -> bytes:
@@ -1158,17 +1220,20 @@ def _require_replaceable_manifest_outputs(
         raise RuntimeError("unverified prior manifest output") from exc
 
 
-def require_verified_prior_checksum_list(dist: Path, *, replace_link: bool = False) -> None:
-    """Preserve an unfamiliar SHA256SUMS before regenerating a release bundle."""
+def require_verified_prior_checksum_list(
+    dist: Path, *, replace_link: bool = False
+) -> _OutputSnapshot | None:
+    """Verify prior SHA256SUMS and return its byte-bound publication snapshot."""
     dist = Path(dist)
     try:
-        # The finalizer publishes with os.replace, so a planted link can be
-        # replaced safely without reading or writing its destination.
-        if replace_link and (dist / "SHA256SUMS").is_symlink():
-            return
-        raw = _prior_output_bytes(dist / "SHA256SUMS", 1024)
-        if raw is None:
-            return
+        # The separate evidence finalizer can retain a planted link without
+        # reading or writing its destination.
+        snapshot = _path_snapshot(
+            dist / "SHA256SUMS", 1024, allow_symlink=replace_link
+        )
+        if snapshot is None or snapshot.kind == "symlink":
+            return snapshot
+        raw = _regular_snapshot_bytes(snapshot)
         lines = raw.decode("ascii").splitlines(keepends=True)
         if len(lines) != 2:
             raise ValueError("unexpected checksum entries")
@@ -1231,6 +1296,7 @@ def require_verified_prior_checksum_list(dist: Path, *, replace_link: bool = Fal
             != _sidecar_blob(manifest_sha, manifest_name)
         ):
             raise ValueError("prior bundle does not match its checksums")
+        return snapshot
     except (OSError, ValueError, TypeError, UnicodeError, RuntimeError) as exc:
         raise RuntimeError("unverified prior checksum list") from exc
 

@@ -1,0 +1,211 @@
+{
+  "utc": "2026-10-26T01:44:30.641407+00:00",
+  "status": "AVAILABLE AUDIT FINISHED; FULL/NATIVE/ARTIFACT/PHYSICAL ACCEPTANCE BLOCKED",
+  "source": "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2",
+  "base": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+  "branch": "codex/wipe-audit-20261024",
+  "functional_count": 932,
+  "functional_identity": "7e14f2ffb55ab8323365aeb06a34d284277efc6ae1df3a9b72905c6e0b382376",
+  "changed_since_entry": [
+    "src/beamo_wipe/ui/sound_dialog.py",
+    "tests/test_sound_partial_state.py"
+  ],
+  "overlay_sha256": "e18cb63cdd7f89c3b1f2473b8479810caa01e4efd3e52437e676f79f0e52561d",
+  "overlay_count": 81,
+  "overlay_readback_verified": true,
+  "available_checks": {
+    "functional_identity": "7e14f2ffb55ab8323365aeb06a34d284277efc6ae1df3a9b72905c6e0b382376",
+    "functional_count": 932,
+    "tested_test_sha256": "045e5e21c8515caafde707cb49dc4b6f66de2f5c3a1014ae5f8cdb68fb73e2a6",
+    "current_test_sha256": "6c0d55628ee2665fe74f0d64c061b7d5757fb4ce7623ad92a4d90641c77facdc",
+    "test_AST_identical": true,
+    "intervening_change": "Only explanatory comment plus local S102 annotation for the intentional bounded trusted-source AST compilation, consistent with existing AST tests. No assertion/global lint rule changed.",
+    "new_pytest": {
+      "actual_exit": 0,
+      "passed_nodes": 2,
+      "passed_subtests": 14,
+      "junit": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "16",
+          "time": "0.160",
+          "timestamp": "2026-10-25T20:25:01.545965-05:00",
+          "hostname": "owned-inert-test"
+        }
+      ],
+      "scope": "Exact AST and fake GTK/audio commands after existing Windows pytest console bootstrap; no product runtime/native acceptance"
+    },
+    "ruff_actual_exits": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "types_actual_exit": 0,
+    "types_scope": "Windows-hosted whole-source static type analysis with Linux/Python3.11 stubs; no product/runtime imports; not canonical actual-Linux execution",
+    "reused_prior_portable_checks": [
+      {
+        "receipt": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r5\\native-r6-core\\receipt.json",
+        "input_count": 18,
+        "reused_scope": "In-process Windows CPython + existing pytest, exact AST-only tests; fake product OS/process boundaries; external process/network creation refused",
+        "all_inputs_match_current": true,
+        "rerun": false
+      },
+      {
+        "receipt": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r5\\native-r6-readers-a\\receipt.json",
+        "input_count": 18,
+        "reused_scope": "In-process Windows CPython + existing pytest, exact AST-only tests; fake product OS/process boundaries; external process/network creation refused",
+        "all_inputs_match_current": true,
+        "rerun": false
+      },
+      {
+        "receipt": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r5\\native-r6-readers-b\\receipt.json",
+        "input_count": 18,
+        "reused_scope": "In-process Windows CPython + existing pytest, exact AST-only tests; fake product OS/process boundaries; external process/network creation refused",
+        "all_inputs_match_current": true,
+        "rerun": false
+      }
+    ],
+    "root_review_scoped_hashes": {
+      "src/beamo_wipe/report_intent.py": "d8b3c0154f813074971b9c015f447d691615e92e8f10a6ff6dc3d3aa4725e56c",
+      "src/beamo_wipe/support_export.py": "8e0ec8a30208592c9f542480ed4ee7d983dff74db7ec78096c9e4cfc95aef445",
+      "src/beamo_wipe/diagnostic_report.py": "fc01e84c6f917d679ea743bc104c5c5d6031de34bd9d68b6f6ee43f63986a1dd",
+      "src/beamo_wipe/privacy.py": "bcb9c6ce4764a7e6df54b970aede4003c3f90357535fc42530b831eeef0face2",
+      "src/beamo_wipe/copy.py": "91b68c6aeb8187d47038c3d5c0d0d53be23e31b61d35c69fbc66217417758034",
+      "src/beamo_wipe/wizard.py": "3c017228651a17de21ead30270d70bbbca34f8a7403551f97080113f0e0c130d",
+      "src/beamo_wipe/audio_jobs.py": "07e34b995a4df7424e6e1c5cd1a345856cd6b9ff622606fa74a79af2688597e0",
+      "src/beamo_wipe/sound.py": "3280e26123f8c06a54a6e6ec3137d1cc0aef14029a57365b2eeb3d58120eb068",
+      "src/beamo_wipe/ui/sound_dialog.py": "6d6b68c75c9ac708fbc91c37da6f7637fc7a73f1925519b891109abf65d066cd",
+      "src/beamo_wipe/ui/tk_wizard.py": "3eafcc0204ac8e519d3fb6650c8f447ec95f91bb43997c3c5ef9814e544ed1e8",
+      "src/beamo_wipe/ui/console_wizard.py": "0df2a08f32b789e05511079a167d3351bbe665544970681b1fc21ebd4624043b",
+      "src/beamo_wipe/ui/accessible_wizard.py": "c2780178e6f9a6669fac9f9a9b986e4f02ab697851f2e3ca10db7743ab5da80a"
+    },
+    "root_review": {
+      "controls": 26,
+      "receipt": "parent-report-receipt-controls.json",
+      "examined": "report-intent persistence, export claim and receipt binding, success readback enforcement, mounted cleanup state machine, privacy sharing boundary and UI sound/ticket behavior",
+      "rejected_candidates": "Concurrent sharing-choice change is unavailable on DONE through the guarded setter; malformed raw ancestry of a report candidate lacks demonstrated normal kernel topology/rdev-protection bypass; neither promoted to a finding.",
+      "finding": "R6-SOUND-1: known mute observation discarded when volume query fails; proved and corrected, independent review pending."
+    },
+    "actual_linux_acceptance": false,
+    "native_GTK_or_audio_acceptance": false,
+    "full_source_acceptance": false
+  },
+  "final_observation": {
+    "utc": "2026-10-26T01:44:08.334210+00:00",
+    "source": "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2",
+    "branch": "codex/wipe-audit-20261024",
+    "head": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+    "functional_count": 932,
+    "functional_identity": "7e14f2ffb55ab8323365aeb06a34d284277efc6ae1df3a9b72905c6e0b382376",
+    "functional_source_matches_frozen": true,
+    "staged": [],
+    "whitespace": "PASS",
+    "resources": {
+      "free_bytes": 2360705024,
+      "available_ram_bytes": 6046097408,
+      "total_ram_bytes": 16946950144
+    },
+    "peer_captured_input_drift": [],
+    "peer_head": "9764d93ac21273aa79ae4618629b0a30e3eda271",
+    "lab_head": "d3d0959bb26b17531464dbd1ba233d4d842ad581",
+    "lab_status": " M .ai/memory/MEMORY.md\n?? .ai/memory/UNFINISHED-2026-10-14.md\n",
+    "guide_hashes": {
+      "C:\\Users\\Jack\\beamo-release-work\\20261024-wipe-audit-pass2\\AGENTS.md": "1e6f980d50267db488a9beb353802242ac57379450c1d9c0ad77c13928509290",
+      "C:\\Users\\Jack\\dev\\AGENTS.md": "3a874239597d7a2a6e41cf4699e8d7d8fec8e3cbb8f2ee55b2a66661bc935d77",
+      "C:\\Users\\Jack\\beamo-remote-lab\\AGENTS.md": "e2f869ea37412be19601585a76abd9a76d29ae8217f1a30beef254128aeb43a0",
+      "C:\\Users\\Jack\\beamo-remote-lab\\README.md": "6d80b332b0e32a611158760ca26e5440876688b780dd3e294e4a94b6f24dfa35",
+      "C:\\Users\\Jack\\beamo-remote-lab\\docs\\runbook.md": "97d892280a1926e5ad68249cd83f288ee9554bdb5454d64e8ec1e29f2e2f9a0e"
+    },
+    "guide_drift": []
+  },
+  "reviews_status": "ALL FOUR TERMINAL; BOUNDED NO OBJECTION",
+  "parent_validations": {
+    "build": {
+      "review_disposition": "BOUNDED NO OBJECTION; no new finding",
+      "current_scoped_inputs_match": true,
+      "scoped_count": 36,
+      "scoped_identity": "5605185ab0c8921d72ee8526907a7af53d72fc755e7d736503502bb40d2ec678",
+      "sealed_files_readback": 28,
+      "post_termination_hashes": {
+        "close-review.exit.txt": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+        "close-review.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "close-review.stdout.txt": "b9530fc581037ed0e0ce92590e2873b35efbfe6144e40a3aae1a44bf3e368583",
+        "evidence-seal.json": "58ae6bfd563082e1beec3dd7689b8e6e57cfe2c52ffef57b891d18020fe8967c"
+      },
+      "seal_actual_exit": 0,
+      "reviewed_probe_scripts": true,
+      "parent_reran_probes": false,
+      "scope": "Parent read the exact probes, checked original source hashes and full packet bytes;95 fake observations remain reviewer-owned, no Linux/native/build qualification."
+    },
+    "outcomes": {
+      "disposition": "BOUNDED NO OBJECTION / no new finding",
+      "current_scoped_inputs_match": true,
+      "scoped_count": 8,
+      "scoped_identity": "a38be77b5076d504de0529d83eea4c9ae894acfa31bc94959778f71b7b858bc5",
+      "sealed_files_readback": 30,
+      "supplemental_hashes": {
+        "seal.json": "1ebfeb27c473b49795995cdc229164581ccc99174c7ad9094c17b03a497eac12",
+        "post-command-result.json": "b0185ba485f8150c97fd834b7b06beaf3a5adfadacef193bcb6c648cbccce14a"
+      },
+      "reviewer_observations": 388,
+      "parent_reran_probes": false,
+      "scope": "Parent reviewed result and critical oracle list, checked exact source and packet bytes. Fake observations remain reviewer-owned; no full/native/Linux acceptance."
+    },
+    "safety": {
+      "disposition": "bounded NO OBJECTION; no newly proved product finding",
+      "current_scoped_inputs_match": true,
+      "scoped_count": 17,
+      "scoped_identity": "c22ea0ddc5149f219289ee55218733faf3723590a53ee556da33411610486f2c",
+      "sealed_files_readback": 46,
+      "supplemental_hashes": {
+        "FILES.sha256": "29fa58b55842694b1a3542c9d49b2aba3758a0ce7e8f348da32333fa74d4b739",
+        "closing-summary.json": "29a448c577c4f989275725c497aee6b65005319198c212226223ab746ba25a42"
+      },
+      "product_model_observations": 194,
+      "harness_guard_controls": 3,
+      "parent_reran_probes": false,
+      "unproved_candidate": "fd-based engine execution versus kiosk process-name check; native behavior not qualified",
+      "scope": "Parent read the result, inspected the scoped oracle descriptions, independently checked source and packet hashes. No native/full/platform acceptance."
+    },
+    "sound": {
+      "disposition": "BOUNDED NO OBJECTION",
+      "current_scoped_inputs_match": true,
+      "scoped_count": 10,
+      "sealed_files_readback": 15,
+      "supplemental_hashes": {
+        "seal.json": "243c3ab8a964d7d09eb7c426fbd2f22285d8bd9e6482f8b93a9480bace1b9979",
+        "closing-command.json": "561fafb55220751e07415745cc424c57df19c3616be7f7c2ae1ebe8c3736044b"
+      },
+      "current_model_observations": 55,
+      "historical_observations": 51,
+      "historical_expected_mismatches": 19,
+      "parent_reran_probes": false,
+      "scope": "Parent read the independent probe, result and oracles; validated current source, guides, context, packet and actual closing exit. Root has separate before/after causal proof. No native GTK/audio/full acceptance."
+    }
+  },
+  "syntax_files": 743,
+  "embedded_python_syntax": "PASS",
+  "old_backlog_suffix_sha256": "aea9368b712932828a9639f9dac841aa726ea71127e83df412714f672edb64f7",
+  "native_candidate": "UNPROVEN fd-based execution/kiosk pgrep interaction; must resolve in future native qualification",
+  "actual_linux_acceptance": false,
+  "native_acceptance": false,
+  "artifact_acceptance": false,
+  "physical_acceptance": false,
+  "release_qualified": false,
+  "canonical_hashes": {
+    "docs\\evidence\\bug-audit-20261025-pass6\\README.md": "67c5dc7b710c86373d8afdf78404fc20851d9098586b1946cf568d781eae26fd",
+    "docs\\evidence\\bug-audit-20261025-pass6\\reviews.json": "9d6956d0f3b23e6c9eb5914da4aa32787ecd78976f6f2b00b3df8e830f6d6f56",
+    ".ai\\memory\\unfinished-work.md": "d001a4f6c86c1b7f9e26a323d93919b93be24a4c2cea95b9414c2786cc80b896"
+  },
+  "raw_seal": {
+    "path": "C:\\Users\\Jack\\beamo-release-evidence\\wipe-comprehensive-repass-20261025-r6\\evidence-seal.json",
+    "sha256": "33981ef383b73d30ae53a39bc0aecdf3487d3abf9dc8bcfd01d537d31e0132e8",
+    "files": 250,
+    "bytes": 9670597,
+    "readback": true
+  }
+}

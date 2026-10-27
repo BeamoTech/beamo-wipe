@@ -978,7 +978,6 @@ class _CheckRow(tk.Frame):
         self._variable = variable
         self._command = command
         self._font = font
-        self._wraplength = wraplength
         self._base_bg = bg
         self._hovering = False
         self._held = False
@@ -2379,14 +2378,6 @@ class TkWizard:
         for w in collect(widget):
             w.bind("<Enter>", enter)
             w.bind("<Leave>", leave)
-
-    def _kind_chip(self, parent: tk.Widget, disk: Disk) -> None:
-        label = C.kind_label(disk.kind)
-        if not label:
-            return
-        self._chip(parent, label, fg=MUTED, bg=SURFACE_ALT).pack(
-            side=tk.LEFT, padx=(10, 0)
-        )
 
     def _recovery_block(
         self,
@@ -4954,8 +4945,9 @@ class TkWizard:
     def run(self) -> int:
         # Bare X11 has no window manager to claim input when the pointer is
         # outside a windowed preview. Initial child focus requests made before
-        # mapping were ignored, so claim the mapped window once and let the
-        # renderer restore its intended child. Later redraws never force input.
+        # mapping were ignored. Complete initial geometry/mapping before
+        # dispatching timers or input, then claim once and let the renderer
+        # restore its intended child. Later redraws never force input.
         def claim_input() -> None:
             self.root.focus_force()
             self._draw()
@@ -4963,13 +4955,16 @@ class TkWizard:
         def mapped(event) -> None:
             if event.widget is self.root:
                 self.root.unbind("<Map>", mapping)
-                self.root.after_idle(claim_input)
+                claim_input()
 
         try:
             if self.root.winfo_ismapped():
-                self.root.after_idle(claim_input)
+                claim_input()
             else:
                 mapping = self.root.bind("<Map>", mapped, add="+")
+                # An overdue input timer can run before Tk's idle map work.
+                # Process only that work here, without dispatching user input.
+                self.root.update_idletasks()
             self.root.mainloop()
         except BaseException as original:
             _retire_tk_owner(self, original)

@@ -367,6 +367,9 @@ def test_diagnostic_receipt_only_covers_current_startup(tmp_path, monkeypatch, c
     import hashlib
     from beamo_wipe import support_export
 
+    monkeypatch.setattr(
+        "beamo_wipe.nwipe_runner.pinned_nwipe_already_running", lambda: False
+    )
     w = make_demo_wizard()
     w.preview = False
     w.dry_run = False
@@ -402,6 +405,9 @@ def test_diagnostic_receipt_only_covers_current_startup(tmp_path, monkeypatch, c
 def test_diagnostic_failure_and_busy_state_preserve_guard(monkeypatch):
     from beamo_wipe import support_export
 
+    monkeypatch.setattr(
+        "beamo_wipe.nwipe_runner.pinned_nwipe_already_running", lambda: False
+    )
     w = make_demo_wizard()
     w.preview = False
     w.dry_run = False

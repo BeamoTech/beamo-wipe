@@ -46,7 +46,7 @@ def test_cleanup_error_still_removes_owned_mount_directory_and_closes_root(
                 patch.setattr(export, "_mounted_exact", lambda *_a: True)
                 patch.setattr(export, "_verify_mount", refuse_mount)
                 patch.setattr(export, "_ordinary_unmount", fail_unmount)
-            with pytest.raises(OSError, match="fake cleanup failure"):
+            with pytest.raises(SafetyError, match="fake mount refusal"):
                 export._persist_and_verify_report(
                     SimpleNamespace(fstype="vfat"), None, b"", "unavailable", 0
                 )
@@ -102,8 +102,7 @@ def test_worker_closes_parent_after_volume_close_error(tmp_path, monkeypatch, cl
         with monkeypatch.context() as patch:
             patch.setattr(os, "open", record_open)
             patch.setattr(os, "close", close)
-            error = OSError if close_error else SafetyError
-            with pytest.raises(error, match="fake (volume close failure|export refusal)"):
+            with pytest.raises(SafetyError, match="fake export refusal"):
                 export._worker()
         for fd in opened.values():
             with pytest.raises(OSError) as caught:
