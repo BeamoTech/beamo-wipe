@@ -1716,3 +1716,137 @@
   repository browser regressions passed, which is distinct evidence.
 - Publication state: **NOT TESTED / NOT DEPLOYED** for ISO/QEMU/native Windows/
   physical acceptance. No hosted dispatch or publication performed.
+
+## BW-READINESS-WORK-20261026 — LOCAL COMMITS VERIFIED / RELEASE GATES OPEN
+
+- 2026-10-26 / Claude (Opus 5.5) for the owner's request to save everything
+  that cannot be done here and complete the rest. Follows the readiness review
+  BW-READINESS-REVIEW-20261026. Repo BeamoTech/beamo-wipe, branch
+  `fix/release-readiness-20261026` from main `58c677f` (product bytes = tag
+  v0.2.14 `9764d93`). Owned shared-object sparse clone (docs/evidence omitted)
+  `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`. Peer dirty work
+  in the main checkout and PR93 untouched. State: committed locally; pushed only
+  as a branch if noted below. No PR, no hosted CI, no tag, no release.
+- Test environment: existing WSL distro (no /mnt/c by design) with owned copies
+  `/home/beamo-qual/beamo-wipe-readiness-20261026` (work), `-red` (original
+  runner), `-base` (pristine main archive), helpers
+  `/home/beamo-qual/bwrt-readiness-20261026.sh` (private userns + tmpfs /tmp)
+  and `bwrtx-...sh` (adds private 72 DPI Xvfb + D-Bus). Pre-existing environment
+  failures reproduced identically on `-base`: tests needing `.git`
+  (git rev-parse), tests reading docs/evidence, test_compat_story helper copy,
+  ci_evidence gate runner, GTK sound-dialog layout under WSLg.
+
+### Completed and verified locally (commit: evidence)
+
+- `8872929` safety: runner holds a read-only, non-exclusive, CLOEXEC handle to
+  the confirmed disk from before the final rediscovery until nwipe exits, so the
+  kernel cannot hand its name to a swapped disk (nwipe 0.42 opens by name after
+  scan/PRNG benchmark; verified its open flags have no O_EXCL). 15 new tests
+  PASS; end-to-end case FAILS on the original runner (no handle at launch).
+  176 runner-related modules rerun; only environment failures remain.
+- `3ee29ed` image: troubleshoot entry = nomodeset safe video without
+  memtest/noapic/nolapic/nosmp; GRUB Utilities submenu --unrestricted;
+  ctrl-alt-del.target masked + CtrlAltDelBurstAction=none; kernel.sysrq=0;
+  QEMU squashfs checks + new bios/uefi-troubleshoot-usb boot probes
+  (BEAMO_WIPE_SAFE_VIDEO=1) + publisher inventory. Source tests PASS; ruff 0.9.2,
+  mypy 2.1.0 (52 modules), shellcheck PASS. NEW QEMU PROBES/CHECKS UNRUN until
+  the hosted KVM gate.
+- `eaed93d` GPL: SOURCE.txt is a written offer (3 years, cost-only, via support
+  URL); scripts/corresponding_source.py plans/fetches exact Debian sources from
+  snapshot.debian.org + nwipe/Beamo tarballs with hash checks; THIRD_PARTY.md
+  procedure + trademark/non-affiliation. Tests PASS (in-memory opener only).
+- `6e149d8` docs: Secure Boot wording, boot card (helper order, Lenovo/Acer/
+  Secured-core, SmartScreen, real screen order), SECURITY.md (private advisory,
+  supported versions, no numeric SLA), boot-exclusion-signals refresh, claims
+  (FAT32 second stick, SSD overwrite-only, no competitor comparison), version-
+  neutral ci/release docs, BeamoTech URLs incl. helper EN/FR/DE.
+- `ddf9b92` scripts/rescan_release_packages.py (published-release Debian
+  security rescan). Ran 2026-10-26 on public v0.2.13 manifest sha256
+  0f2796dc0cedd3e34c4a81e233b12c4662a6eb91a6b5aca7b54370d4afe85640 (matches
+  sidecar; signature not checked in this informational run): 11 fixed issues
+  missing in openssl 3.0.22-1~deb12u1, expat 2.5.0-1+deb12u4, brotli 1.0.9-2.
+  Output in WSL `/home/beamo-qual/beamo-wipe-readiness-20261026-rescan/`.
+- Further commits for copy changes and the manufacturing SOP/readback tool are
+  listed in the checkpoint at the end of this entry.
+
+### Cannot be done here — open items (ID, acceptance, next action, blocker)
+
+- BW-RR-PHYS — BLOCKED (hardware; remote-only host). Run the Tier 3 matrix in
+  docs/evidence/physical-acceptance-111 on dedicated hardware with the exact
+  release image: BIOS, UEFI SB off/on with inspected db/dbx, vendor boot keys,
+  troubleshoot (nomodeset) entry on real AMD/Intel/NVIDIA graphics, speech on
+  real audio, USB2/3/C ports, lid/power, real erase of DISPOSABLE SATA and NVMe
+  disks, boot-USB exclusion with a writable stick. Also a novice usability test
+  with non-technical participants. Next: owner provides lab hardware/people.
+- BW-RR-LEGAL — OWNER/COUNSEL. Review SOURCE.txt offer wording and 3-year
+  retention; NOTICE "no warranty" for a paid consumer product (US/EU/UK) and
+  whether an in-app terms/disclaimer screen is required before erasing; privacy
+  policy for support/report data; "not a Blancco replacement" in README/NOTICE
+  and the claims.md competitor rule; Debian trademark statement. No in-app
+  legal screen was added without approved text.
+- BW-RR-RELEASE — BLOCKED on PR93 + authority. v0.2.13 (latest) lacks the
+  0.2.14 safety fixes and the 11 Debian fixes above; v0.2.14 cannot publish
+  because check-release-ready.sh needs tag == main HEAD (now 58c677f). Next:
+  resolve PR93's GTK segfault (peer-owned, run 40433850969), open a PR for this
+  branch (triggers the hosted CI gate — owner authorization), merge, bump to
+  0.2.15, tag at main HEAD, wait for exact-main push CI, dispatch release.yml,
+  verify public bytes. Retain every gate; no bypass.
+- BW-RR-GPL-ARCHIVE — OPEN. Produce and privately retain (with readback) the
+  corresponding-source archive for v0.2.13 and every later release using
+  scripts/corresponding_source.py. Blocked: several GB free space (C: ~1 GB)
+  and an authorized private destination. Deciding whether release.yml should
+  run it is an automation change needing owner authority.
+- BW-RR-FIRMWARE — OWNER DECISION + ISO QUALIFICATION. Image ships no firmware
+  (--firmware-* false, main only): amdgpu, Intel SOF audio, microcode absent.
+  Decide on non-free-firmware packages (license review, size, THIRD_PARTY),
+  then hosted ISO/QEMU and physical display/audio tests.
+- BW-RR-TRIXIE — PLAN. Bookworm regular security support ended 2026-06; LTS to
+  ~2028-06. Migrate to Debian 13 (kernel 6.12, Python 3.13, Tk/GTK requal) on an
+  isolated build worker with full gates; new base digest pin.
+- BW-RR-SHIM — MONITOR. Shipped shim 16.1 is signed only by Microsoft UEFI CA
+  2011; firmware trusting only the 2023 CA (or a future revocation) will refuse
+  it. Adopt a 2023-CA-signed Debian shim when available; repeat the Q12
+  component inspection for the next release image (none exists for 0.2.14).
+- BW-RR-SIGNING / BW-RR-ENV — OWNER. Move the Ed25519 release key from
+  exportable Secret Manager to non-exportable KMS/HSM or offline custody with a
+  backup; publish its fingerprint on an independent channel (support site).
+  `production` environment has no required reviewer and admins can bypass;
+  sole-maintainer policy decision. Authenticode-sign the Windows launcher
+  (certificate purchase). Numeric SECURITY.md response targets. Dependabot
+  security updates. None changed here.
+- BW-RR-RESCAN-SCHEDULE — OWNER/SPEND. A scheduled hosted rescan is new spend;
+  until authorized, run scripts/rescan_release_packages.py on the latest
+  manifest at least weekly and before every stick production lot.
+- BW-RR-LIVEMEDIA — NEEDS QEMU + HARDWARE. live-boot is not bound to the
+  medium; if a stick reports non-removable, internal partitions may be probed
+  (ro mount can replay an ext4 journal). Evaluate live-media=/UUID binding with
+  a QEMU case (usb-storage removable=off + dirty ext4 internal disk) and
+  hardware; boot-critical, not changed blind.
+- BW-RR-QEMU-COVERAGE — HOSTED ITERATION. Add NVMe and AHCI erase targets and an
+  end-to-end writable-boot-stick exclusion probe (snapshot=on, assert BEAMOBOOT
+  absent from the pick list); current probes attach the stick readonly=on.
+- BW-RR-UX — PRODUCT DECISIONS. Report export on exFAT or clearer upfront
+  guidance; HiDPI auto-scaling; high-contrast theme; ES/IT locales; per-outcome
+  failure next steps; plain "computer's main drive" hint; localized typed
+  console words; record selected nwipe PRNG in reports.
+- BW-RR-HOST-DISK — OWNER URGENT. C: had ~1.0–1.4 GB free; iCloud Drive
+  `iCloudDrive.db-wal` is ~7.7 GB and Google DriveFS WAL ~0.66 GB. Not stopped
+  or deleted (owner apps). Other agents also report low space.
+
+### Final checkpoint — 2026-10-27 UTC
+
+- Additional commits: `40a522a` customer guidance (method screen "large hard
+  disks can take many hours", restart after interruption, Intel RST/VMD/RAID
+  hint on the empty list; FR/DE translated; layout modules at 72 DPI Xvfb show
+  no new failures; guidance tests PASS). `7174651` scripts/verify-usb-stick.py
+  + docs/manufacturing.md (99 readback tests PASS on regular-file fixtures; 149
+  PASS with adjacent download/signing tests; seven tool mutations caught; no
+  real device opened; procedure never executed with a duplicator or stick).
+- Final local checks on the branch: ruff 0.9.2 (src+tests+new scripts) PASS,
+  mypy 2.1.0 52 modules PASS, shellcheck PASS, `git diff --check` PASS. Not run:
+  full pytest suite in one session, ISO build, hosted CI/QEMU, native Windows,
+  browser/Orca live checks, anything physical.
+- Next exact action: owner decides whether to open a PR for
+  `fix/release-readiness-20261026` (starts the hosted CI gate) after or with
+  PR93's fix; then follow BW-RR-RELEASE. Translation wording (FR/DE) for the
+  three new sentences should get a native-speaker review.
