@@ -24,6 +24,7 @@ from beamo_wipe.demo import make_demo_wizard
 from beamo_wipe.models import (
     CONTENTS_DATA,
     CONTENTS_SYSTEM,
+    CONTENTS_UNKNOWN,
     CONTENTS_WINDOWS,
     MethodId,
     Screen,
@@ -33,7 +34,7 @@ from beamo_wipe.ui import tk_wizard as tkui
 from beamo_wipe.ui.layout import LARGE_SIZE, LAPTOP_SIZE, MIN_SIZE, NETBOOK_SIZE
 from beamo_wipe.wizard import Wizard
 from test_adaptive_layout import _assert_actions_on_window
-from test_tk_runtime import _drive_to, _needs_display
+from test_tk_runtime import _clipping_problems, _drive_to, _needs_display
 
 SHORT = (MIN_SIZE, NETBOOK_SIZE)
 SIZES = (MIN_SIZE, NETBOOK_SIZE, LAPTOP_SIZE, LARGE_SIZE)
@@ -431,3 +432,45 @@ def test_preview_stripe_and_title_follow_the_language_choice(tk_app, code):
         assert _stripe_texts(app) == [C.PREVIEW_BANNER]
         assert C.PREVIEW_BANNER in app.root.title()
     assert lang.current() == "en"
+
+
+# -- 8. Pick rows say what each disk holds (factual, never advice) ----------
+
+
+@pytest.mark.parametrize("size", (MIN_SIZE, LAPTOP_SIZE), ids=lambda s: f"{s[0]}x{s[1]}")
+@pytest.mark.parametrize("code", lang.LANGUAGE_ORDER)
+def test_pick_rows_show_what_each_disk_holds(tk_app, code, size):
+    wiz, app = tk_app(size=size, code=code, contents=CONTENTS)
+    wiz.skip_intro()
+    wiz.accept_what()
+    wiz.set_owner(True)
+    wiz.continue_owner()
+    app._draw()
+    _settle(app)
+    hints = {
+        CONTENTS_WINDOWS: C.CONTENTS_HINT_WINDOWS,
+        CONTENTS_SYSTEM: C.CONTENTS_HINT_SYSTEM,
+        CONTENTS_DATA: C.CONTENTS_HINT_DATA,
+    }
+    assert len(set(hints.values())) == 3 and all(hints.values())
+    for disk in wiz.selectable:
+        card = app._pick_cards[disk.path]
+        shown = [str(w.cget("text")) for w in _descendants(card) if w.winfo_class() == "Label"]
+        expected = hints[CONTENTS[disk.path]]
+        assert shown.count(expected) == 1, (disk.path, shown)
+        assert not (set(hints.values()) - {expected}) & set(shown)
+    boot = next(w for w in _descendants(app._pick_canvas) if getattr(w, "_beamo_protected_boot", False))
+    boot_text = [str(w.cget("text")) for w in _descendants(boot) if w.winfo_class() == "Label"]
+    assert not set(hints.values()) & set(boot_text)
+    assert _clipping_problems(app) == []
+    _assert_actions_on_window(app)
+    assert wiz.selected is None and not wiz.runner.started
+
+
+def test_unknown_contents_add_no_hint(tk_app):
+    wiz, app = tk_app(contents={path: CONTENTS_UNKNOWN for path in CONTENTS})
+    _drive_to(wiz, app, Screen.PICK)
+    _settle(app, 50)
+    hints = {C.CONTENTS_HINT_WINDOWS, C.CONTENTS_HINT_SYSTEM, C.CONTENTS_HINT_DATA}
+    shown = {str(w.cget("text")) for w in _descendants(app._pick_canvas) if w.winfo_class() == "Label"}
+    assert not hints & shown

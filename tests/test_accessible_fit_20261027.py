@@ -16,6 +16,7 @@ from beamo_wipe.lang import LANGUAGE_NAMES  # noqa: E402
 from beamo_wipe.models import (  # noqa: E402
     CONTENTS_DATA,
     CONTENTS_SYSTEM,
+    CONTENTS_UNKNOWN,
     CONTENTS_WINDOWS,
     Screen,
 )
@@ -123,6 +124,39 @@ def test_focused_method_choice_scrolls_into_view_with_extra_large_text(gtk, code
         assert top >= 0
         assert top + radio.get_allocated_height() <= _window_y(app, app.footer)
     assert not wizard.runner.started
+
+
+@pytest.mark.parametrize("code", lang.LANGUAGE_ORDER)
+def test_pick_rows_speak_and_show_what_each_disk_holds(gtk, code):
+    wizard = _wizard(code, contents=CONTENTS)
+    wizard.skip_intro()
+    wizard.set_owner(True)
+    wizard.continue_owner()
+    assert wizard.screen == Screen.PICK
+    app = gtk(wizard)
+    shown = [w.get_text() for w in widgets(app.body) if isinstance(w, Gtk.Label)]
+    expected = {
+        CONTENTS_WINDOWS: C.CONTENTS_HINT_WINDOWS,
+        CONTENTS_SYSTEM: C.CONTENTS_HINT_SYSTEM,
+        CONTENTS_DATA: C.CONTENTS_HINT_DATA,
+    }
+    for disk in wizard.selectable:
+        key = f"Select {wizard.disk_view(disk).announcement}"
+        hint = expected[CONTENTS[disk.path]]
+        assert app.actions[key].get_accessible().get_name() == f"{key}. {hint}"
+        assert shown.count(hint) == 1
+    assert wizard.selected is None and not wizard.runner.started
+
+
+def test_unknown_contents_keep_the_plain_select_name(gtk):
+    wizard = _wizard(contents={path: CONTENTS_UNKNOWN for path in CONTENTS})
+    wizard.skip_intro()
+    wizard.set_owner(True)
+    wizard.continue_owner()
+    app = gtk(wizard)
+    for disk in wizard.selectable:
+        key = f"Select {wizard.disk_view(disk).announcement}"
+        assert app.actions[key].get_accessible().get_name() == key
 
 
 @pytest.mark.parametrize("code", ["fr", "de", "es"])

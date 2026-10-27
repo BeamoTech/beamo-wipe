@@ -801,6 +801,26 @@ def kind_label(kind: DiskKind) -> str:
 
 
 KIND_HDD = "Hard disk"
+# Pick-row hint from observed partitions (models.CONTENTS_*). Factual only:
+# it helps an owner recognise the computer's own system disk and never says
+# which disk to erase. Unknown contents show no hint.
+CONTENTS_HINT_WINDOWS = "Windows found on this disk"
+CONTENTS_HINT_SYSTEM = "Operating system found on this disk"
+CONTENTS_HINT_DATA = "No operating system found on this disk"
+
+
+def contents_hint(disk: Disk) -> str:
+    """Short pick-row line about what the disk holds, or "" when unknown."""
+    contents = getattr(disk, "contents", CONTENTS_UNKNOWN)
+    if contents == CONTENTS_WINDOWS:
+        return CONTENTS_HINT_WINDOWS
+    if contents == CONTENTS_SYSTEM:
+        return CONTENTS_HINT_SYSTEM
+    if contents == CONTENTS_DATA:
+        return CONTENTS_HINT_DATA
+    return ""
+
+
 CONFIRM_TYPE_SIZE = "Type these numbers so we know it is the right disk: {token}"
 CONFIRM_TYPE_FOUR = "Type these 4 characters so we know it is the right disk: {token}"
 CONFIRM_TYPE_CHARS = "Type these characters so we know it is the right disk: {token}"

@@ -149,6 +149,7 @@ def _disks_payload(scenario: str = "happy") -> list[dict]:
                 "prepare": "" if disk.is_boot else C.prepare_selected(disk),
                 "components": components,
                 "contents": disk.contents,
+                "contentsHint": "" if disk.is_boot else C.contents_hint(disk),
                 "eraseLabel": "" if disk.is_boot else C.erase_now_label(disk, peers),
             }
         )
@@ -1057,6 +1058,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .help-reader { max-height: 55vh; }
   .help-reader.compact { max-height: 43vh; }
   .nested { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); }
+  .contents-hint { margin-top: 4px; }
   .nested-intro { font-weight: 600; margin-bottom: 4px; }
   .nested-item { margin-top: 6px; }
   .inventory-reader:focus-visible, .help-reader:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
@@ -1397,6 +1399,7 @@ function diskCard(d) {
           <div class="size">${esc(d.size)}</div>
         </div>
         ${metaLine(d)}
+        ${d.contentsHint ? `<div class="small muted contents-hint">${esc(d.contentsHint)}</div>` : ""}
         ${nestedComponents(d)}
       </div>
     </div>

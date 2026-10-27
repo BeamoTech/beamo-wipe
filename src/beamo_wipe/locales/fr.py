@@ -194,6 +194,9 @@ STRINGS = {
         "NAV_LABEL": "Actions principales",
         "NO_CODE": "Numéro de série non communiqué",
         "KIND_HDD": "Disque dur",
+        "CONTENTS_HINT_WINDOWS": "Windows trouvé sur ce disque",
+        "CONTENTS_HINT_SYSTEM": "Système d’exploitation trouvé sur ce disque",
+        "CONTENTS_HINT_DATA": "Aucun système d’exploitation trouvé sur ce disque",
         "KIND_UNKNOWN": "Type inconnu",
         "CAPACITY_UNIT_NOTE": (
             "GB et To sont décimaux (1 To = 1000 Go). Ce ne sont pas des Gio."

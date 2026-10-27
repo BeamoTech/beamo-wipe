@@ -289,6 +289,9 @@ def _pick_blocks(wizard: Wizard, width: int) -> list[tuple[object, list[str]]]:
         view, block = _pick_disk_header(wizard, disk, width)
         for note in view.notes:
             block.extend(_lines("  " + note, width))
+        hint = C.contents_hint(disk)
+        if hint:
+            block.extend(_lines("  " + hint, width))
         block.extend(_nested_lines(wizard, disk, width))
         blocks.append((disk, block))
     return blocks
@@ -891,6 +894,9 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 _emit(f"    {view.id_label}: {view.id_value}")
                 for note in view.notes:
                     _emit("    " + note)
+                hint = C.contents_hint(disk)
+                if hint:
+                    _emit("    " + hint)
                 nested = inventory.card_nesting_text(wizard.nested_components(disk))
                 if nested:
                     for line in nested.split("\n"):

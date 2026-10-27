@@ -414,7 +414,13 @@ class AccessibleWizard:
             self._protected_boot()
             for disk in sorted(self.w.selectable, key=lambda d: d.path):
                 text = f"Select {self.w.disk_view(disk).announcement}"
-                self.button(text, lambda path=disk.path: self._select(path), in_body=True)
+                select = self.button(text, lambda path=disk.path: self._select(path), in_body=True)
+                hint = C.contents_hint(disk)
+                if hint:
+                    # Factual contents line: shown under the row and spoken
+                    # with it, so Orca users hear what sighted owners see.
+                    select.get_accessible().set_name(f"{text}. {hint}")
+                    self.label(hint)
                 nested = inventory.card_nesting_text(self.w.nested_components(disk))
                 if nested:
                     self.label(nested, focusable=True)

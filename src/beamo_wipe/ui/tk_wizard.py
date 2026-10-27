@@ -3375,6 +3375,8 @@ class TkWizard:
             )
         self._disk_heading(title_col, disk, fill)
         self._meta_line(title_col, disk, fill).pack(fill=tk.X, pady=(4, 0))
+        if not disk.is_boot:
+            self._contents_line(title_col, disk, fill)
         nested = inventory.card_nesting_text(self.w.nested_components(disk))
         if nested:
             nest = tk.Frame(title_col, bg=fill)
@@ -3400,6 +3402,17 @@ class TkWizard:
                 partial(card.set_style, fill=SURFACE),
             )
         return card
+
+    def _contents_line(self, parent: tk.Widget, disk: Disk, bg: str) -> None:
+        """What the partitions show (Windows, another system, none): helps an
+        owner recognise the computer's own disk. Factual, never a suggestion;
+        unknown contents add nothing."""
+        hint = C.contents_hint(disk)
+        if not hint:
+            return
+        line = self._wrapping_label(parent, hint, font=self.font_s, fg=MUTED, bg=bg)
+        line.pack_configure(pady=(4, 0))
+        setattr(line, "_beamo_contents_hint", True)
 
     def _pick(self) -> None:
         col = self._column(self._body, fill_height=True)
