@@ -94,6 +94,13 @@ lb clean --all || true
 # framebuffer (X then uses fbdev or vesa) instead of a GPU driver that can
 # leave a black screen. It omits live-build's legacy failsafe flags
 # (noapic, nolapic, nosmp, memtest), which can hang or stall modern UEFI PCs.
+# It also stays verbose (no quiet) so a hang shows its last kernel message.
+#
+# Hardware support: non-free-firmware supplies only the graphics, audio,
+# USB-controller and CPU microcode firmware listed in the package list
+# (--firmware-chroot stays false: no Wi-Fi or Bluetooth blobs). Backports are
+# enabled only so config/archives/backports.pref.chroot can pin the
+# Debian-signed 6.12 kernel and matching firmware; userland stays bookworm.
 lb config \
   --ignore-system-defaults \
   --mode debian \
@@ -110,12 +117,14 @@ lb config \
   --iso-preparer "Beamo" \
   --iso-publisher "Beamo https://github.com/BeamoTech/beamo-wipe" \
   --iso-volume "BEAMO_WIPE" \
-  --archive-areas "main" \
+  --archive-areas "main non-free-firmware" \
+  --parent-archive-areas "main non-free-firmware" \
+  --backports true \
   --apt-recommends false \
   --firmware-binary false \
   --firmware-chroot false \
   --initsystem systemd \
-  --bootappend-live "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin" \
+  --bootappend-live "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin quiet loglevel=3" \
   --bootappend-live-failsafe "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin nomodeset nosplash vga=788" \
   --mirror-bootstrap "https://deb.debian.org/debian/" \
   --mirror-chroot "https://deb.debian.org/debian/" \

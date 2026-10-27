@@ -32,6 +32,18 @@ in the live image keep their own licenses (GPL, LGPL, MIT,
 Apache, and others as shipped by Debian). Each package's license is in
 `/usr/share/doc/<package>/copyright` inside the live system.
 
+## Device firmware and CPU microcode
+
+So screens, laptop audio and some USB 3 ports work on more PCs, the image
+includes Debian's redistributable `non-free-firmware` packages for graphics
+(AMD, Intel, NVIDIA), Intel and Cirrus audio, Renesas USB controllers and
+other small device firmware, plus Intel and AMD CPU microcode. They are
+vendor binaries under their own redistribution licenses, listed in
+`/usr/share/doc/<package>/copyright` inside the live system; Beamo does not
+modify them. No Wi-Fi or Bluetooth firmware is included. The graphics and
+misc firmware and the Debian-signed Linux 6.12 kernel come from Debian's
+`bookworm-backports`; everything else is Debian 12 (bookworm).
+
 ## Corresponding source (GPL)
 
 Sticks and downloads carry GPL-covered programs: the Linux kernel, GRUB,

@@ -53,6 +53,26 @@ hdparm
 ca-certificates
 kbd
 console-setup
+# Console keymaps for loadkeys (kbd ships none). Without them the text-console
+# guide and recovery menu stay US QWERTY whatever layout the owner chooses.
+console-data
+# Hardware support (non-free-firmware). Only what makes screens, audio and
+# USB ports work on more PCs; no Wi-Fi or Bluetooth firmware. Graphics and
+# misc firmware come from bookworm-backports with the 6.12 kernel
+# (config/archives/backports.pref.chroot); SOF and microcode from bookworm.
+firmware-amd-graphics
+firmware-intel-graphics
+firmware-nvidia-graphics
+# Renesas USB 3 controllers and other small device firmware.
+firmware-misc-nonfree
+firmware-intel-misc
+# Laptop audio: Intel SOF/HDA DSPs and Cirrus amplifiers (spoken startup, Orca).
+firmware-sof-signed
+firmware-intel-sound
+firmware-cirrus
+# CPU microcode, loaded early by the initramfs.
+intel-microcode
+amd64-microcode
 libncurses6
 libparted2
 libconfig9

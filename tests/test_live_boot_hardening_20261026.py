@@ -41,8 +41,10 @@ def _bootappend(name: str) -> list[str]:
 def test_troubleshoot_entry_is_safe_video_not_legacy_failsafe():
     normal = _bootappend("bootappend-live")
     failsafe = _bootappend("bootappend-live-failsafe")
-    # Every safety flag of the normal entry is retained.
-    assert set(normal) <= set(failsafe)
+    # Every safety flag of the normal entry is retained. Troubleshooting stays
+    # verbose: the normal entry's quiet console options are deliberately absent.
+    assert set(normal) - {"quiet", "loglevel=3"} <= set(failsafe)
+    assert "quiet" not in failsafe and not any(f.startswith("loglevel=") for f in failsafe)
     assert {"nomodeset", "nosplash", "vga=788"} <= set(failsafe)
     for flag in ("memtest", "noapic", "nolapic", "nosmp", "nomce", "nodma", "noapm"):
         assert flag not in failsafe

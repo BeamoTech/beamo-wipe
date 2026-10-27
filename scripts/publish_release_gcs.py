@@ -696,6 +696,7 @@ def _qemu_evidence_names() -> list[str]:
         "nwipe-version.txt",
         "fixed-vulnerabilities.txt",
         "accessible-runtime.txt",
+        "keyboard-layouts.txt",
         "report-image.txt",
         "report-helper-crash.txt",
         "fake-disk-e2e.txt",

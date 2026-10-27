@@ -235,7 +235,8 @@ Preview/dry-run cannot exec real `NwipeRunner`: `test_confirm_erase_refuses_real
 - **USB boot variants:** USB-A and USB-C via adapter when firmware lists the stick; directly attached, not a keyboard hub if avoidable (`docs/boot-card.md`). Optical ISO (`sr0`) as QEMU path.
 - **Storage:** NVMe (Samsung 970/980 etc.), SATA HDD (ST500/WDC), SATA SSD (Crucial MX500), virtio `vda` (QEMU), USB-attached disks (`tran usb` SATA bridges). Multi-disk (2–4) with same-size handling via last-4-serial → full serial → device-name token chain.
 - **Display:** 800×600 through 1920×1080, including 1280×720, on Xorg `modesetting`/`fbdev`/`qxl`/`vmware`/`amdgpu`/`intel`/`nouveau` + DejaVu fonts, 72 DPI gate.
-- **Input:** Full keyboard traversal (Tk and console fallback) with held-key guards; mouse click on disk cards.
+- **Kernel and firmware:** Debian-signed Linux 6.12 from `bookworm-backports` (newer Intel/AMD laptop platforms, storage and USB controllers), with Debian `non-free-firmware` for AMD/Intel/NVIDIA graphics, Intel SOF/HDA and Cirrus audio, Renesas USB 3 and other small devices, and early CPU microcode. No Wi-Fi/Bluetooth firmware. The hosted QEMU gate checks the installed packages and firmware files; real-hardware behavior remains **NOT TESTED** (physical acceptance #111).
+- **Input:** Full keyboard traversal (Tk and console fallback) with held-key guards; mouse click on disk cards. Console layouts load from Debian `console-data` keymaps; the QEMU gate checks a keymap and X layout exist for every offered layout.
 - **Boot identification:** Live mount (`/run/live/medium` etc.) + `findmnt` + `mountinfo` + cmdline tokens (`boot=live`/`casper`, `bootfrom`/`live-media`/`img_dev`) + typed sources (`LABEL=/UUID=/PARTUUID=`) + label scan limited to `usb`/`rom`.
 - **Safety:** All gates above; `nwipe` never runs with `--force`, never with a device list other than one, always `--exclude=` boot.
 

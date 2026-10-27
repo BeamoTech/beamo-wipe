@@ -391,6 +391,51 @@ for forbidden in nano less iproute2 pciutils usbutils eject gcc git; do
     exit 2
   fi
 done
+# Hardware support: the pinned backports kernel, display/audio/USB firmware,
+# CPU microcode and console keymaps must all be installed. No radio firmware.
+for required in console-data firmware-amd-graphics firmware-intel-graphics \
+    firmware-nvidia-graphics firmware-misc-nonfree firmware-intel-misc \
+    firmware-sof-signed firmware-intel-sound firmware-cirrus intel-microcode \
+    amd64-microcode; do
+  if ! dpkg-query --admindir="$SQUASH_MOUNT/var/lib/dpkg" -W -f='${db:Status-Abbrev}' "$required" 2>/dev/null | grep -q '^ii'; then
+    echo "hardware support package missing from ISO: $required" >&2
+    exit 2
+  fi
+done
+for radio in firmware-iwlwifi firmware-atheros firmware-brcm80211 firmware-realtek \
+    firmware-mediatek firmware-libertas; do
+  if dpkg-query --admindir="$SQUASH_MOUNT/var/lib/dpkg" -W -f='${db:Status-Abbrev}' "$radio" 2>/dev/null | grep -q '^ii'; then
+    echo "radio firmware present in ISO: $radio" >&2
+    exit 2
+  fi
+done
+kernel_version="$(dpkg-query --admindir="$SQUASH_MOUNT/var/lib/dpkg" -W -f='${Version}' linux-image-amd64)"
+dpkg --compare-versions "$kernel_version" ge 6.12 || {
+  echo "ISO kernel is older than the pinned 6.12 backports kernel: $kernel_version" >&2
+  exit 2
+}
+for firmware_dir in amdgpu i915 nvidia intel/sof intel-ucode amd-ucode; do
+  find "$SQUASH_MOUNT/usr/lib/firmware/$firmware_dir" -type f -print -quit 2>/dev/null | grep -q . || {
+    echo "firmware directory missing or empty in ISO: $firmware_dir" >&2
+    exit 2
+  }
+done
+# Every layout the shipped wizard offers must exist for X and the console.
+{ sudo chroot "$SQUASH_MOUNT" /usr/bin/python3 -B -sP -c '
+from beamo_wipe import keyboard
+for layout in keyboard.LAYOUTS.values():
+    print(layout.xkb_layout, layout.console_map)
+'; } >"$EVIDENCE_DIR/keyboard-layouts.txt"
+[[ -s "$EVIDENCE_DIR/keyboard-layouts.txt" ]] || { echo "no keyboard layouts listed" >&2; exit 2; }
+while read -r xkb_layout console_map; do
+  [[ "$xkb_layout" =~ ^[a-z]+$ && "$console_map" =~ ^[a-z0-9-]+$ ]] || {
+    echo "unexpected keyboard layout name: $xkb_layout $console_map" >&2; exit 2; }
+  [[ -f "$SQUASH_MOUNT/usr/share/X11/xkb/symbols/$xkb_layout" ]] || {
+    echo "X keyboard layout missing from ISO: $xkb_layout" >&2; exit 2; }
+  find "$SQUASH_MOUNT/usr/share/keymaps" -name "${console_map}.kmap.gz" -print -quit \
+    2>/dev/null | grep -q . || {
+    echo "console keymap missing from ISO: $console_map" >&2; exit 2; }
+done <"$EVIDENCE_DIR/keyboard-layouts.txt"
 # Debian bookworm's libparted2 on amd64 has a hard dependency on dmidecode.
 # Pinned nwipe needs libparted; its mandatory --quiet argument anonymizes the
 # unique disk and DMI values. Keep the dependency intact and prove that its
