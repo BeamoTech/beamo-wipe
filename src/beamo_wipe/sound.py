@@ -403,6 +403,7 @@ def _popen(tool: str, args: List[str]):
         # The sound is optional, but a process with no reaper would become a
         # zombie. Thread.start may also raise after the thread exists; the
         # gate above keeps that rejected thread from racing this cleanup.
+        launch_allowed.clear()
         stop_player()
         return None
     finally:

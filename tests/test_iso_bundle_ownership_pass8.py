@@ -193,16 +193,23 @@ def test_iso_success_survives_backup_cleanup_failure(tmp_path):
     source = BUILD.read_text()
     finalize = 'for _f in "dist/' + source.rsplit('for _f in "dist/', 1)[1]
     finalize = finalize.split('\nls -lh "dist/', 1)[0]
+    # Success now requires real, mutually consistent provenance. Keep the
+    # original cleanup failure injection while supplying a complete bundle.
+    valid_bundle = (
+        'python3 - "$OUT_DIR" <<\'PYBUNDLE\'\n'
+        'from pathlib import Path\nimport sys\n'
+        f'sys.path.insert(0, {str(ROOT / "tests")!r})\n'
+        'from test_build_output_handoff_20261023 import _write_bundle\n'
+        '_write_bundle(Path(sys.argv[1]), "0.2.9", b"new iso")\n'
+        'PYBUNDLE\n'
+    )
     script = tmp_path / "repro.sh"
     script.write_text(
         _transaction_script(
             out,
             'printf "prior" > "$OUT_DIR/$ISO_NAME"',
             'rm "$BACKUP_DIR/$ISO_NAME"; mkdir "$BACKUP_DIR/$ISO_NAME"; '
-            "for file in beamo-wipe-0.2.9-amd64.manifest.json "
-            "beamo-wipe-0.2.9-amd64.manifest.json.sha256 "
-            "beamo-wipe-0.2.9-amd64.iso.sha256 SHA256SUMS; do "
-            'touch "$OUT_DIR/$file"; done; cd "$OUT_DIR/.."',
+            '\n' + valid_bundle + 'cd "$OUT_DIR/.."',
             finalize,
         )
     )
@@ -210,6 +217,7 @@ def test_iso_success_survives_backup_cleanup_failure(tmp_path):
     assert result.returncode == 0, result.stdout + result.stderr
     assert (out / "beamo-wipe-0.2.9-amd64.iso").read_text() == "new iso"
     assert "Could not remove prior ISO bundle backup" in result.stderr
+    assert list(out.glob(".bundle-backup.*/beamo-wipe-0.2.9-amd64.iso"))[0].is_dir()
 
 
 def test_iso_build_refuses_directory_swapped_after_preflight(tmp_path):

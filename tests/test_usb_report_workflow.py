@@ -1065,6 +1065,9 @@ def test_worker_duplicate_export_is_blocked_then_retry_succeeds(tmp_path, monkey
 def _done_wizard(exporter, tmp_path: Path) -> Wizard:
     base = make_demo_wizard()
     wizard = Wizard(base.discovery, base.runner, dry_run=False, report_exporter=exporter)
+    # This report fixture has an inert runner and no external engine. Keep its
+    # report/ownership assertions independent of the host process table.
+    wizard._live_pinned_engine_busy = lambda: False
     wizard.preview = False
     wizard.screen = Screen.DONE
     wizard.selected = wizard.discovery.selectable[0]

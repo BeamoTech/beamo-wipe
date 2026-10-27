@@ -22,7 +22,10 @@ from test_usb_report_workflow import _payload, _discovery, _worker_success_stdou
 
 
 @pytest.fixture
-def blocked():
+def blocked(monkeypatch):
+    monkeypatch.setattr(
+        "beamo_wipe.nwipe_runner.pinned_nwipe_already_running", lambda: False
+    )
     return Wizard(
         DiscoveryResult(
             error="private /dev/secret SERIAL password=secret",
