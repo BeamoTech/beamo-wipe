@@ -29,6 +29,7 @@ versioned v0.2.12 example; its release files are
 `beamo-wipe-0.2.12-amd64.manifest.json.sig`. The public USB asset is
 `.img.gz`; the `.img` record describes the reconstructed regular file, which
 need not also be offered as a download.
+Sold sticks are duplicated only from that verified `.img`: see [manufacturing and quality](manufacturing.md).
 
 The ISO artifacts are under `dist/` after `./scripts/build-iso.sh`. The hosted
 QEMU phase also runs `./scripts/build-usb-image.sh` on its isolated amd64 Linux
