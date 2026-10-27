@@ -14,7 +14,7 @@ from beamo_wipe.safety import SafetyError
 from beamo_wipe.wizard import error_needs_support
 
 
-@pytest.mark.parametrize("language", ["en", "fr", "de"])
+@pytest.mark.parametrize("language", ["en", "fr", "de", "es"])
 def test_uncertain_cleanup_offers_support_in_every_language(language):
     previous = lang.current()
     try:

@@ -44,6 +44,16 @@ UNSAFE_FR = [
     "réessay",
     "forcer",
 ]
+UNSAFE_ES = [
+    "reinici",
+    "reboot",
+    "desconect",
+    "vuelva a conectar",
+    "vuelva a empezar",
+    "vuelva a intentar",
+    "reintent",
+    "forz",
+]
 UNSAFE_DE = [
     "neustart",
     "neu starten",
@@ -176,6 +186,7 @@ def test_stale_block_never_recommends_an_unsafe_restart():
     [
         ("fr", UNSAFE_FR, "USB", "secteur", "N’éteignez pas"),
         ("de", UNSAFE_DE, "USB", "Netzteil", "nicht aus"),
+        ("es", UNSAFE_ES, "USB", "corriente", "No apague"),
     ],
 )
 def test_stale_block_is_translated_and_safe(code, unsafe, usb, power, off):

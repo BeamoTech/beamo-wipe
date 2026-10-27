@@ -75,7 +75,7 @@ def test_every_hint_key_name_renders_as_a_key_cap():
         C.HINT_SPLASH,
     )
     for hint in hints:
-        for word in ("Enter", "Esc", "Space", "Up/Down", "1, 2, or 3", "any key"):
+        for word in ("Enter", "Esc", "Space", "Up/Down", "1, 2, or 3", "1–7", "any key"):
             if word in hint:
                 assert tkui._KEY_TOKEN_RE.search(hint), hint
                 assert word in tkui._KEY_TOKEN_RE.pattern
@@ -84,6 +84,36 @@ def test_every_hint_key_name_renders_as_a_key_cap():
     assert tkui._KEY_TOKEN_KEYS["1, 2, or 3"] == ("1", "2", "3")
     html = gallery_html()
     assert "1, 2, or 3" in html and "Up/Down" in html
+    # The layout-range cap is language-neutral, so every table keeps it.
+    assert tkui._KEY_TOKEN_RE.fullmatch("1–7")
+    assert "1–7" in html
+    assert "1–7" in C.HINT_KEYBOARD
+
+
+def test_key_caps_match_whole_words_in_every_language():
+    """Spanish "Escriba" or "Escanee" must not render an Esc cap plus a stub."""
+    from beamo_wipe import lang
+
+    assert not tkui._KEY_TOKEN_RE.search("Escriba en la casilla")
+    assert not tkui._KEY_TOKEN_RE.search("Entertaste Spaces")
+    assert [m.group(1) for m in tkui._KEY_TOKEN_RE.finditer("1–7 elige. Esc vuelve. Enter.")] == [
+        "1–7", "Esc", "Enter",
+    ]
+    hints = [name for name in lang.keys("fr", "copy") if name.startswith("HINT_")]
+    assert "HINT_KEYBOARD" in hints and "HINT_CONFIRM" in hints
+    try:
+        for code in lang.LANGUAGE_ORDER:
+            lang.set_language(code)
+            for name in hints:
+                text = getattr(C, name)
+                for match in tkui._KEY_TOKEN_RE.finditer(text):
+                    before = text[match.start() - 1:match.start()]
+                    after = text[match.end():match.end() + 1]
+                    assert not before.isalnum() and not after.isalnum(), (code, name, match.group(0))
+    finally:
+        lang.set_language("en")
+    html = gallery_html("es")
+    assert "(?<![\\p{L}\\p{N}])(Up\\/Down|1, 2, or 3|1–7|any key|Enter|Esc|Space)(?![\\p{L}\\p{N}])/gu" in html
 
 
 def test_box_component_supports_shadows_and_sync_fit():

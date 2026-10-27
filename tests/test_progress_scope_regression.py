@@ -10,7 +10,8 @@ from test_progress_timing import line, sample
 
 
 @pytest.mark.parametrize(
-    "language,label", [("en", "40% overall"), ("fr", "40% au total"), ("de", "40% insgesamt")]
+    "language,label",
+    [("en", "40% overall"), ("fr", "40% au total"), ("de", "40% insgesamt"), ("es", "40% en total")],
 )
 def test_job_percentage_is_never_described_as_within_step(language, label):
     wiz, _ = _working(MethodId.EXTRA)

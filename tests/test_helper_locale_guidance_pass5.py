@@ -30,7 +30,7 @@ class _Links(HTMLParser):
             self.links.append(attrs["href"])
 
 
-@pytest.mark.parametrize("language", ("en", "fr", "de"))
+@pytest.mark.parametrize("language", ("en", "fr", "de", "es"))
 def test_localized_helper_retains_each_offline_troubleshooting_route(language):
     name = "index.html" if language == "en" else f"{language}.html"
     html = (HELPER / name).read_text(encoding="utf-8")

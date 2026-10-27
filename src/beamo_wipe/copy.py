@@ -3,6 +3,7 @@
 
 from beamo_wipe import inventory as _inventory
 from beamo_wipe import outcomes as _outcomes
+from beamo_wipe import progress as _progress
 from beamo_wipe import storage_limits as _limits
 from beamo_wipe.models import (
     CONTENTS_DATA,
@@ -11,7 +12,9 @@ from beamo_wipe.models import (
     CONTENTS_WINDOWS,
     Disk,
     DiskKind,
+    MethodId,
     Screen,
+    capacity_phrase,
 )
 from beamo_wipe.methods import DEFAULT_METHOD, METHODS
 
@@ -124,7 +127,7 @@ KEYBOARD_LEAD = (
     "Then type a few characters to check."
 )
 KEYBOARD_LIMITS = (
-    "Only US QWERTY, French AZERTY, and German QWERTZ. "
+    "Only the layouts listed here are offered. "
     "The change lasts until this USB restarts. "
     "It does not change firmware or BIOS keyboards."
 )
@@ -400,6 +403,73 @@ def _method_cards() -> dict:
 
 METHOD_CARDS = _method_cards()
 
+# Method-screen time guide (progress.time_guide): a rough range for the
+# selected disk and method, never a promise. Hidden when the size is unknown.
+TIME_GUIDE_HDD = "Rough guide for this {size} hard disk (not promised): {range}."
+TIME_GUIDE_SSD = "Rough guide for this {size} SSD (not promised): {range}."
+TIME_GUIDE_DISK = "Rough guide for this {size} disk (not promised): {range}."
+TIME_GUIDE_LONG = "Plan to leave it running overnight or longer."
+TIME_RANGE_MINUTES = "{low}–{high} minutes"
+TIME_RANGE_HOURS = "{low}–{high} hours"
+TIME_RANGE_DAYS = "{low}–{high} days"
+TIME_RANGE_MIXED = "{low} to {high}"
+
+
+def _guide_amount(value: int, unit: str) -> str:
+    one, many = {
+        "minutes": (_progress.MINUTE_ONE, _progress.MINUTE_MANY),
+        "hours": (_progress.HOUR_ONE, _progress.HOUR_MANY),
+        "days": (_progress.DAY_ONE, _progress.DAY_MANY),
+    }[unit]
+    return (one if value == 1 else many).format(value=value)
+
+
+def time_guide_range(guide: _progress.TimeGuide) -> str:
+    """Like 3–8 hours, or 40 minutes to 2 hours when the units differ."""
+    if guide.low_unit == guide.high_unit:
+        template = {
+            "minutes": TIME_RANGE_MINUTES,
+            "hours": TIME_RANGE_HOURS,
+            "days": TIME_RANGE_DAYS,
+        }[guide.low_unit]
+        return template.format(low=guide.low, high=guide.high)
+    return TIME_RANGE_MIXED.format(
+        low=_guide_amount(guide.low, guide.low_unit),
+        high=_guide_amount(guide.high, guide.high_unit),
+    )
+
+
+def method_time_guide(method: MethodId, disk: "Disk | None") -> str:
+    """Per-method rough duration for this disk, or "" when it cannot be shown.
+
+    Presentation only: it never gates, starts, or describes an erase result.
+    """
+    spec = METHODS.get(method)
+    label = str(getattr(disk, "size_gb_label", "") or "").strip()
+    if disk is None or spec is None or not label.isdigit() or int(label) <= 0:
+        return ""
+    kind = getattr(disk, "kind", DiskKind.UNKNOWN)
+    usb = str(getattr(disk, "bus", "") or "").strip().casefold() == "usb"
+    guide = _progress.time_guide(
+        getattr(disk, "size_bytes", 0),
+        kind,
+        usb,
+        spec.overwrite_passes + spec.verification_passes,
+    )
+    if guide is None:
+        return ""
+    if kind == DiskKind.HDD:
+        template = TIME_GUIDE_HDD
+    elif kind in (DiskKind.SSD, DiskKind.NVME):
+        template = TIME_GUIDE_SSD
+    else:
+        template = TIME_GUIDE_DISK
+    text = template.format(
+        size=capacity_phrase(label).split(" (", 1)[0],
+        range=time_guide_range(guide),
+    )
+    return f"{text} {TIME_GUIDE_LONG}" if guide.long else text
+
 ADVANCED_LEAD = (
     "These are the nwipe names. For technicians. The other screens stay simple."
 )
@@ -644,7 +714,7 @@ PRIMARY_ACTION_LABELS = frozenset(_primary_by_screen().values()) | {BTN_CONTINUE
 PREVIEW_BANNER = "PREVIEW on this computer — fake disks — nothing is erased"
 
 HINT_KEYBOARD = (
-    "1, 2, or 3 chooses a layout. Type in the check box. Enter continues. "
+    "1–7 chooses a layout. Type in the check box. Enter continues. "
     "Text size stays until this USB restarts."
 )
 HINT_DEFAULT = "Enter continues.  Esc goes back."
@@ -888,7 +958,7 @@ CON_KEYBOARD = "K: Keyboard layout"
 CON_KEYBOARD_LONG = "CHANGE KEYBOARD: Keyboard layout"
 CON_READ_ONLY = "Read only. Up/Down, PgUp/PgDn: read. Esc: back."
 CON_PRESS_ANY_KEY = "Press any key."
-CON_KEYBOARD_FOOTER = "1/2/3: layout. F2: language. Type to check. Enter continues."
+CON_KEYBOARD_FOOTER = "Left/Right: layout. F2: language. Type to check. Enter continues."
 CON_WHAT_FOOTER = "Enter: I understand    S: shut down"
 CON_READ_MORE = "Up/Down: read more"
 CON_OWNER_FOOTER = "Space to check. Enter chooses a disk only when checked. Esc: back"
@@ -1020,6 +1090,7 @@ ERASE_PROGRESS_LABEL = "Erase progress"
 RETRY_SAVE = "Retry evidence save"
 NO_WIPE_YET = "(no wipe yet)"
 ACCESSIBLE_TITLE = "Beamo Wipe — screen-reader view"
+ACCESSIBLE_SELECTED = "selected"
 ACCESSIBLE_NOT_SELECTED = "not selected"
 ACCESSIBLE_NO_TARGET = "No target selected"
 ACCESSIBLE_REFRESHED = "Checking disks again. Previous confirmations have been cleared."
@@ -1034,10 +1105,10 @@ CONFIRM_KEYBOARD_LINE = "Keyboard: {layout} · Language: {language}"
 # Language selection. Option names are endonyms: identical in every language.
 TITLE_LANGUAGE = "Choose your language"
 LANGUAGE_LEAD = "Pick the language for every screen, report, and help page."
-LANGUAGE_HINT = "1, 2, or 3 chooses a language. Enter continues."
 LANGUAGE_NAME_EN = "English"
 LANGUAGE_NAME_FR = "Français"
 LANGUAGE_NAME_DE = "Deutsch"
+LANGUAGE_NAME_ES = "Español"
 
 # Web gallery scaffolding (preview only). Wizard content arrives via payload.
 GALLERY_TITLE = "Beamo Wipe — screen preview"

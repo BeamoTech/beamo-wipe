@@ -129,30 +129,42 @@ def header_caption(step_n: int, step_label: str) -> str:
 
 _JOURNEY_N = len(C.JOURNEY_LABELS)
 
-_STEP_ORDER = {
-    Screen.KEYBOARD: (C.journey_stage(Screen.KEYBOARD), C.journey_caption(Screen.KEYBOARD), C.TITLE_KEYBOARD),
-    Screen.WHAT: (C.journey_stage(Screen.WHAT), C.journey_caption(Screen.WHAT), C.TITLE_OWNER),
-    Screen.OWNER: (C.journey_stage(Screen.OWNER), C.journey_caption(Screen.OWNER), C.STEP_OWNERSHIP),
-    Screen.DISK_HELP: (C.journey_stage(Screen.DISK_HELP), C.DISK_HELP_TITLE, C.DISK_HELP_TITLE),
-    Screen.PICK: (C.journey_stage(Screen.PICK), C.journey_caption(Screen.PICK), C.TITLE_PICK),
-    Screen.PICK_EMPTY: (C.journey_stage(Screen.PICK_EMPTY), C.journey_caption(Screen.PICK_EMPTY), C.TITLE_PICK),
-    Screen.PICK_BLOCKED: (C.journey_stage(Screen.PICK_BLOCKED), C.journey_caption(Screen.PICK_BLOCKED), C.TITLE_PICK),
-    Screen.CONFIRM: (C.journey_stage(Screen.CONFIRM), C.journey_caption(Screen.CONFIRM), C.TITLE_CONFIRM),
-    Screen.METHOD: (C.journey_stage(Screen.METHOD), C.journey_caption(Screen.METHOD), C.TITLE_METHOD),
-    Screen.ADVANCED: (C.journey_stage(Screen.ADVANCED), C.TITLE_ADVANCED, C.TITLE_ADVANCED),
-    Screen.LIMITS: (C.journey_stage(Screen.LIMITS), limits.TITLE, limits.TITLE),
-    Screen.REFRESHING: (C.journey_stage(Screen.REFRESHING), C.journey_caption(Screen.REFRESHING), C.BUSY_REFRESHING_TITLE),
-    Screen.REFRESH_CONFIRM: (0, "", C.TITLE_REFRESH),
-    Screen.LAST_CHANCE: (C.journey_stage(Screen.LAST_CHANCE), C.journey_caption(Screen.LAST_CHANCE), C.TITLE_LAST),
-    Screen.CHECKING: (C.journey_stage(Screen.CHECKING), C.journey_caption(Screen.CHECKING), C.BUSY_CHECKING_TITLE),
-    Screen.STOPPING: (C.journey_stage(Screen.STOPPING), C.journey_caption(Screen.STOPPING), C.BUSY_STOPPING_TITLE),
-    Screen.WORKING: (C.journey_stage(Screen.WORKING), C.journey_caption(Screen.WORKING), C.TITLE_WORKING),
-    Screen.DONE: (C.journey_stage(Screen.DONE), C.journey_caption(Screen.DONE), C.TITLE_DONE_OK),
-    Screen.REPORT_HELP: (C.journey_stage(Screen.REPORT_HELP), C.REPORT_HELP_TITLE, C.REPORT_HELP_TITLE),
-}
+
+def _step_order() -> dict:
+    """Stage, header caption and title per screen, in the active language.
+
+    Built on each header draw: a table frozen at import kept English
+    captions ("Preparation") on French and German screens.
+    """
+    return {
+        Screen.KEYBOARD: (C.journey_stage(Screen.KEYBOARD), C.journey_caption(Screen.KEYBOARD), C.TITLE_KEYBOARD),
+        Screen.WHAT: (C.journey_stage(Screen.WHAT), C.journey_caption(Screen.WHAT), C.TITLE_OWNER),
+        Screen.OWNER: (C.journey_stage(Screen.OWNER), C.journey_caption(Screen.OWNER), C.STEP_OWNERSHIP),
+        Screen.DISK_HELP: (C.journey_stage(Screen.DISK_HELP), C.DISK_HELP_TITLE, C.DISK_HELP_TITLE),
+        Screen.PICK: (C.journey_stage(Screen.PICK), C.journey_caption(Screen.PICK), C.TITLE_PICK),
+        Screen.PICK_EMPTY: (C.journey_stage(Screen.PICK_EMPTY), C.journey_caption(Screen.PICK_EMPTY), C.TITLE_PICK),
+        Screen.PICK_BLOCKED: (C.journey_stage(Screen.PICK_BLOCKED), C.journey_caption(Screen.PICK_BLOCKED), C.TITLE_PICK),
+        Screen.CONFIRM: (C.journey_stage(Screen.CONFIRM), C.journey_caption(Screen.CONFIRM), C.TITLE_CONFIRM),
+        Screen.METHOD: (C.journey_stage(Screen.METHOD), C.journey_caption(Screen.METHOD), C.TITLE_METHOD),
+        Screen.ADVANCED: (C.journey_stage(Screen.ADVANCED), C.TITLE_ADVANCED, C.TITLE_ADVANCED),
+        Screen.LIMITS: (C.journey_stage(Screen.LIMITS), limits.TITLE, limits.TITLE),
+        Screen.REFRESHING: (C.journey_stage(Screen.REFRESHING), C.journey_caption(Screen.REFRESHING), C.BUSY_REFRESHING_TITLE),
+        Screen.REFRESH_CONFIRM: (0, "", C.TITLE_REFRESH),
+        Screen.LAST_CHANCE: (C.journey_stage(Screen.LAST_CHANCE), C.journey_caption(Screen.LAST_CHANCE), C.TITLE_LAST),
+        Screen.CHECKING: (C.journey_stage(Screen.CHECKING), C.journey_caption(Screen.CHECKING), C.BUSY_CHECKING_TITLE),
+        Screen.STOPPING: (C.journey_stage(Screen.STOPPING), C.journey_caption(Screen.STOPPING), C.BUSY_STOPPING_TITLE),
+        Screen.WORKING: (C.journey_stage(Screen.WORKING), C.journey_caption(Screen.WORKING), C.TITLE_WORKING),
+        Screen.DONE: (C.journey_stage(Screen.DONE), C.journey_caption(Screen.DONE), C.TITLE_DONE_OK),
+        Screen.REPORT_HELP: (C.journey_stage(Screen.REPORT_HELP), C.REPORT_HELP_TITLE, C.REPORT_HELP_TITLE),
+    }
+
+
+# English table kept for source checks; draws use _step_order().
+_STEP_ORDER = _step_order()
 
 # Spans of hint copy that render as key-caps instead of plain text.
-_KEY_TOKEN_RE = re.compile(r"(Up/Down|1, 2, or 3|any key|Enter|Esc|Space)")
+# Whole words only: Spanish "Escriba" must not become an Esc cap plus "riba".
+_KEY_TOKEN_RE = re.compile(r"\b(Up/Down|1, 2, or 3|1–7|any key|Enter|Esc|Space)\b")
 _KEY_TOKEN_KEYS = {
     "Up/Down": ("↑", "↓"),
     "1, 2, or 3": ("1", "2", "3"),
@@ -285,13 +297,15 @@ def _draw_alert_glyph(cv: tk.Canvas, x: float, y: float, size: float, kind: str)
     for ok, document square for limits."""
     if kind == "info":
         cv.create_oval(x + 2, y + 2, x + size - 2, y + size - 2, fill=PRIMARY, outline="")
-        cv.create_oval(
-            x + size / 2 - 2.5, y + size * 0.24, x + size / 2 + 2.5, y + size * 0.24 + 5,
-            fill="#FFFFFF", outline="",
-        )
+        # Keep a visible gap between dot and stem: at panel sizes the old
+        # 5 px dot touched the round-capped stem and read as a bar, not "i".
+        dot = max(1.6, size * 0.075)
+        stem = max(3.0, size * 0.1)
+        cx, cy = x + size / 2, y + size * 0.28
+        cv.create_oval(cx - dot, cy - dot, cx + dot, cy + dot, fill="#FFFFFF", outline="")
         cv.create_line(
-            x + size / 2, y + size * 0.46, x + size / 2, y + size * 0.74,
-            fill="#FFFFFF", width=3, capstyle="round",
+            cx, max(y + size * 0.48, cy + dot + 1 + stem / 2), cx, y + size * 0.74,
+            fill="#FFFFFF", width=stem, capstyle="round",
         )
     elif kind == "warn":
         cv.create_polygon(
@@ -1651,21 +1665,27 @@ class TkWizard:
         )
         # Combined intro still uses the Owner page. The header names the stage
         # (Preparation, Erase, Result) and never a wipe percent.
-        step = _STEP_ORDER.get(self.w.screen, (0, "", ""))
-        self._draw_journey(cv, width, step[0])
+        step = _step_order().get(self.w.screen, (0, "", ""))
+        stepper = self._draw_journey(cv, width, step[0])
         label = header_caption(step[0], step[1])
+        if stepper and label == C.JOURNEY_LABELS[step[0] - 1]:
+            # The stepper already highlights this stage; do not repeat it.
+            label = ""
         if label:
             cv.create_text(
                 width - 24, mid, anchor="e",
                 text=label, font=self.font_meta, fill=MUTED,
             )
 
-    def _draw_journey(self, cv: tk.Canvas, width: int, step: int) -> None:
+    def _draw_journey(self, cv: tk.Canvas, width: int, step: int) -> bool:
         # Three named stages, never eight equal pages or success badges.
         if not step or width < 1000:
-            return
+            return False
         start, end = 260, width - 150
         gap = (end - start) / len(C.JOURNEY_LABELS)
+        # The compact 48 px header put descenders on the bottom hairline.
+        line = self.font_meta.metrics("linespace")
+        label_y = min(42.0, cv.winfo_height() - 3 - line / 2.0)
         for index, name in enumerate(C.JOURNEY_LABELS, 1):
             cx = start + gap * (index - 0.5)
             active = index == step
@@ -1676,8 +1696,9 @@ class TkWizard:
                            outline=PRIMARY if active else BORDER_STRONG)
             cv.create_text(cx, 18, text=str(index), font=self.font_tiny,
                            fill=SURFACE if active else MUTED)
-            cv.create_text(cx, 42, text=name, font=self.font_meta,
+            cv.create_text(cx, label_y, text=name, font=self.font_meta,
                            fill=PRIMARY if active else MUTED)
+        return True
 
     def _draw_strip(self) -> None:
         cv = self._strip
@@ -1737,7 +1758,13 @@ class TkWizard:
         ):
             return
         if self.w.screen in {
+            # The splash is short and centers itself; in the scrolling body it
+            # was pinned to the top edge with the space below left empty.
+            Screen.SPLASH,
             Screen.PICK,
+            # Owns its reasons scroller. Inside the shared body it kept the
+            # canvas default height: reasons clipped above empty space.
+            Screen.PICK_EMPTY,
             Screen.LIMITS,
             Screen.DISK_HELP,
             Screen.REPORT_HELP,
@@ -2636,7 +2663,10 @@ class TkWizard:
         # of the content column. Hints stay in the assist strip so Done's
         # four left actions plus Shut down still fit the 940px column.
         left_host = tk.Frame(row, bg=BG)
-        left_host.pack(side=tk.LEFT, anchor="n")
+        # Centred beside the taller primary: compact Back sat at the top edge
+        # of the row, visibly higher than the button it pairs with. Wrapped
+        # left rows are taller than the primary and fill the row either way.
+        left_host.pack(side=tk.LEFT, anchor="w")
         left = tk.Frame(left_host, bg=BG)
         left.pack(anchor="w")
         right = tk.Frame(row, bg=BG)
@@ -2787,16 +2817,22 @@ class TkWizard:
                 variant="primary" if selected else "ghost",
                 compact=True,
             ).pack(side=tk.LEFT, padx=(0, 8))
+        # Seven layouts: compact title cards in two columns when there is
+        # room (one column for narrow windows or larger text), and only the
+        # selected layout's note below, so Continue stays near at 800x600.
+        layout_grid = tk.Frame(zone, bg=BG)
+        layout_grid.pack(fill=tk.X)
+        layout_cells: list[_Box] = []
         for index, layout_id in enumerate(LAYOUT_ORDER, 1):
             spec = _keyboard.LAYOUTS[layout_id]
             selected = self.w.keyboard_layout == layout_id
             fill = PRIMARY_TINT if selected else SURFACE
             outline = PRIMARY if selected else BORDER_STRONG
             card = _Box(
-                zone, radius=RADIUS, fill=fill, outline=outline, ow=2 if selected else 1,
-                padx=16, pady=10, halo=False,
+                layout_grid, radius=RADIUS, fill=fill, outline=outline, ow=2 if selected else 1,
+                padx=14, pady=8, halo=False,
             )
-            card.pack(fill=tk.X, pady=(6, 0))
+            layout_cells.append(card)
             inner = card.inner
             top = tk.Frame(inner, bg=fill)
             top.pack(fill=tk.X)
@@ -2805,13 +2841,14 @@ class TkWizard:
             icon.pack(side=tk.LEFT, anchor="n", pady=1)
             self._kbd(top, str(index)).pack(side=tk.RIGHT, anchor="n")
             text_col = tk.Frame(top, bg=fill)
-            text_col.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(14, 8))
-            tk.Label(
-                text_col, text=spec.title, font=self.font_bold, fg=INK, bg=fill, anchor="w",
-            ).pack(fill=tk.X)
+            text_col.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(12, 8))
             self._p(
-                text_col, spec.note, font=self.font_s, fg=MUTED, bg=fill,
-            ).pack(fill=tk.X, pady=(4, 0))
+                text_col, spec.title, font=self.font_bold, fg=INK, bg=fill,
+            ).pack(fill=tk.X)
+            # Request about one line up front: an unmapped _Box asks for Tk's
+            # default canvas height, and seven of those spike the scrolling
+            # body before _sync_height corrects each card.
+            card.configure(height=max(24, self.font_bold.metrics("linespace") + 4) + 2 * 8)
 
             def _click(_e=None, lid=layout_id, keyboard=False):
                 self.w.set_keyboard_layout(lid)
@@ -2835,6 +2872,24 @@ class TkWizard:
                     partial(card.set_style, fill=SURFACE_ALT),
                     partial(card.set_style, fill=SURFACE),
                 )
+        # Fixed per layout class: a window resize that changes self.lay
+        # redraws this screen, so no <Configure> reflow (it flip-flopped
+        # the body height mid-layout and stranded the scroll position).
+        columns = 1 if (self.lay.content_w < 640 or self._type_scale() > 1.05) else 2
+        for column in range(columns):
+            layout_grid.columnconfigure(column, weight=1, uniform="layouts")
+        for i, cell in enumerate(layout_cells):
+            left = columns == 2 and i % 2 == 1
+            right = columns == 2 and i % 2 == 0
+            cell.grid(
+                row=i // columns, column=i % columns, sticky="nsew",
+                padx=(4 if left else 0, 4 if right else 0), pady=(6, 0),
+            )
+        chosen = _keyboard.LAYOUTS.get(self.w.keyboard_layout)
+        if chosen is not None:
+            self._p(
+                zone, f"{chosen.title}: {chosen.note}", font=self.font_s, fg=MUTED,
+            ).pack(fill=tk.X, pady=(8, 0))
         tk.Label(
             zone, text=C.TITLE_LANGUAGE, font=self.font_bold, fg=INK, bg=BG, anchor="w",
         ).pack(fill=tk.X, pady=(14, 2))
@@ -3626,7 +3681,10 @@ class TkWizard:
 
     def _empty(self) -> None:
         col = self._column(self._body, fill_height=True)
-        _icon_badge(col, "info", 40).pack(anchor="w")
+        # Same page background and top margin as every other screen title.
+        badge = _icon_badge(col, "info", 40)
+        badge.configure(bg=BG)
+        badge.pack(anchor="w", pady=(self.lay.title_top, 0))
         self._title_block(col, C.TITLE_EMPTY)
         count = self._p(col, self.w.inventory_count, font=self.font_s, fg=MUTED)
         setattr(count, "_beamo_inventory_count", True)
@@ -3928,15 +3986,33 @@ class TkWizard:
         self._p(
             text_col, blurb, font=self.font_s, fg=MUTED, bg=fill,
         ).pack(fill=tk.X, pady=(2, 0))
+        # Rough duration for this disk (never a promise). When it is shown,
+        # the clock marks that line on every card; otherwise it stays beside
+        # the check sentence as before.
+        guide = C.method_time_guide(method, self.w.selected)
+        pace_clock = checks and not guide
+        # Text beside the 16 px clock and its 7 px gap wraps to what is left.
+        clock_pad = 8 + 16 + 7
         pace_row = tk.Frame(text_col, bg=fill)
         pace_row.pack(fill=tk.X, pady=(4, 0))
-        if checks:
+        if pace_clock:
             clock = _icon_clock(pace_row, 16)
             clock.configure(bg=fill)
             clock.pack(side=tk.LEFT, anchor="n", pady=1)
         self._p(
             pace_row, pace, font=self.font_s, fg=MUTED, bg=fill,
-        ).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(7 if checks else 0, 0))
+            flow_pad=clock_pad if pace_clock else 8,
+        ).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(7 if pace_clock else 0, 0))
+        if guide:
+            guide_row = tk.Frame(text_col, bg=fill)
+            guide_row.pack(fill=tk.X, pady=(4, 0))
+            clock = _icon_clock(guide_row, 16)
+            clock.configure(bg=fill)
+            clock.pack(side=tk.LEFT, anchor="n", pady=1)
+            self._p(
+                guide_row, guide, font=self.font_s, fg=MUTED, bg=fill,
+                flow_pad=clock_pad,
+            ).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(7, 0))
         if extra:
             self._p(
                 text_col, extra, font=self.font_s, fg=MUTED, bg=fill,
@@ -4913,7 +4989,7 @@ class TkWizard:
             focused = self.root.focus_get()
             if isinstance(focused, tk.Entry):
                 return None
-            keyboard_mapping = {"1": "us", "2": "fr", "3": "de"}
+            keyboard_mapping = {str(i): lid for i, lid in enumerate(LAYOUT_ORDER, 1)}
             if event.keysym in keyboard_mapping:
                 self.w.set_keyboard_layout(keyboard_mapping[event.keysym])
                 self._draw()

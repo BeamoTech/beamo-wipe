@@ -33,6 +33,9 @@ def _inside(page: str, marker: str) -> str:
         ("de", "local", False, "Entwicklung", "keine Produktionsversion"),
         ("fr", BUILD_ID, True, "modifié", "code source modifié"),
         ("de", BUILD_ID, True, "geändert", "geändertem Quellcode"),
+        ("es", BUILD_ID, False, "producción", "contiene una imagen fabricada"),
+        ("es", "local", False, "desarrollo", "no una versión de producción"),
+        ("es", BUILD_ID, True, "modificado", "código fuente modificado"),
     ),
 )
 def test_localized_helper_identifies_this_packaged_image(

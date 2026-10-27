@@ -30,6 +30,7 @@ def _inventory(available, other=0):
         ("en", ("No disks available to erase", "1 disk available to erase", "3 disks available to erase")),
         ("fr", ("Aucun disque disponible à effacer", "1 disque disponible à effacer", "3 disques disponibles à effacer")),
         ("de", ("Keine Datenträger zum Löschen verfügbar", "1 Datenträger zum Löschen verfügbar", "3 Datenträger zum Löschen verfügbar")),
+        ("es", ("No hay discos disponibles para borrar", "1 disco disponible para borrar", "3 discos disponibles para borrar")),
     ],
 )
 @pytest.mark.parametrize("available,index", [(0, 0), (1, 1), (3, 2)])
@@ -46,6 +47,7 @@ def test_available_count_is_in_session_language(language, phrases, available, in
         ("en", ("1 other device not available", "2 other devices not available")),
         ("fr", ("1 autre appareil non disponible", "2 autres appareils non disponibles")),
         ("de", ("1 weiteres Gerät nicht verfügbar", "2 weitere Geräte nicht verfügbar")),
+        ("es", ("1 dispositivo más no disponible", "2 dispositivos más no disponibles")),
     ],
 )
 @pytest.mark.parametrize("other", [1, 2])

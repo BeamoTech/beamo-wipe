@@ -84,6 +84,7 @@ def test_plain_keyboard_shortcuts_do_not_steal_exact_confirm_token(monkeypatch, 
     [
         ("fr", "CHANGE KEYBOARD : Disposition du clavier"),
         ("de", "CHANGE KEYBOARD: Tastaturlayout"),
+        ("es", "CHANGE KEYBOARD: Distribución del teclado"),
     ],
 )
 def test_plain_keyboard_collision_hint_uses_chosen_language(

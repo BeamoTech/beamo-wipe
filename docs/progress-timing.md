@@ -63,6 +63,32 @@ rounded-up minutes, five-minute buckets, or whole hours, never seconds. This is
 an estimate of remaining engine work; final cleanup or report-saving time is
 unknown. Fast operations and slow quantized streams may never show an estimate.
 
+## Method-screen time guide
+
+Before anything starts, each method shows a rough range for the selected disk,
+for example "Rough guide for this 1 TB hard disk (not promised): 2–10 hours."
+It is a planning hint, not a measurement: it never gates, starts or describes
+an erase, is not written to evidence or reports, and does not feed the live
+estimate above. It is hidden when the disk size is unknown.
+
+Work is the disk size times the method's full-disk passes from `methods.py`
+(every overwrite plus every verification read: Everyday 2, Three overwrites 4,
+Quick zero 1), divided by conservative sustained rates:
+
+| Disk kind (from lsblk) | Slow bound | Fast bound |
+| --- | --- | --- |
+| Hard disk (rotational) | 60 MB/s | 200 MB/s |
+| SATA SSD | 100 MB/s | 500 MB/s |
+| NVMe | 150 MB/s | 1500 MB/s |
+| Rotation unknown | 60 MB/s | 500 MB/s |
+
+A USB transport halves the slow bound only. The fast end rounds down and the
+slow end rounds up, each in minutes under 1.5 hours (5-minute steps from 10
+minutes), hours under 48 hours, otherwise days. A slow end over 10 hours adds
+"Plan to leave it running overnight or longer." Tk cards, the GTK radio names
+read by Orca, and both console views use the same text
+(`copy.method_time_guide`; tests in `tests/test_method_time_guide.py`).
+
 ## Shared presentation and evidence
 
 Every interface uses the same progress view. Displayed integer percentages

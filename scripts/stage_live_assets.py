@@ -227,7 +227,7 @@ def stage_assets(root: Path, live: Path) -> None:
     ).encode("utf-8")
     put_bytes(share / "helper/index.html", packaged_html)
     put_bytes(binary / "START-HERE.html", packaged_html)
-    for name in ("fr.html", "de.html"):
+    for name in ("fr.html", "de.html", "es.html"):
         localized_source = root / "helper" / name
         localized_html = remember_source(
             localized_source, read_regular_bytes(localized_source)

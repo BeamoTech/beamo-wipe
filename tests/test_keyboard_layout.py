@@ -16,6 +16,7 @@ from beamo_wipe.keyboard import (
     APPLY_FAILED,
     DEFAULT_LAYOUT,
     GRAPHICAL_ONLY,
+    LAYOUT_ORDER,
     LAYOUTS,
     TOOLS_MISSING,
     UNAVAILABLE,
@@ -72,13 +73,22 @@ def _authorized(wiz):
     assert wiz.selected is not None
 
 
+ALL_LAYOUTS = ("us", "fr", "de", "gb", "es", "latam", "it")
+
+
 def test_allowlist_is_qwerty_azerty_qwertz():
-    assert set(LAYOUTS) == {"us", "fr", "de"}
+    assert set(LAYOUTS) == set(ALL_LAYOUTS)
+    assert LAYOUT_ORDER == ALL_LAYOUTS
     assert LAYOUTS["us"].family == "qwerty"
     assert LAYOUTS["fr"].family == "azerty"
     assert LAYOUTS["de"].family == "qwertz"
+    for layout_id in ("gb", "es", "latam", "it"):
+        assert LAYOUTS[layout_id].family == "qwerty"
+        assert not LAYOUTS[layout_id].digits_need_shift
     assert LAYOUTS["fr"].dead_keys and LAYOUTS["de"].dead_keys
+    assert LAYOUTS["es"].dead_keys and LAYOUTS["latam"].dead_keys and LAYOUTS["it"].dead_keys
     assert not LAYOUTS["us"].dead_keys
+    assert not LAYOUTS["gb"].dead_keys
     assert LAYOUTS["fr"].digits_need_shift
     assert not is_allowed("dvorak")
     assert not is_allowed("us;fr")
@@ -98,7 +108,7 @@ def test_apply_rejects_non_allowlisted_argv(monkeypatch):
     assert result.message == UNAVAILABLE
 
 
-@pytest.mark.parametrize("layout_id", ["us", "fr", "de"])
+@pytest.mark.parametrize("layout_id", ALL_LAYOUTS)
 def test_apply_uses_exact_allowlisted_argv(monkeypatch, layout_id):
     seen = []
 
@@ -163,7 +173,7 @@ def test_failed_apply_does_not_change_layout_or_clear_auth():
     assert applier.calls == ["fr"]
 
 
-@pytest.mark.parametrize("layout_id", ["fr", "de"])
+@pytest.mark.parametrize("layout_id", ALL_LAYOUTS[1:])
 def test_successful_layout_change_clears_full_confirmation_flow(layout_id):
     wiz = _wiz()
     _authorized(wiz)
@@ -415,3 +425,223 @@ def test_kiosk_restart_returns_to_shipped_us_qwerty():
     assert wiz.typing_check == ""
     assert not wiz.owner_ok
     assert wiz.confirm_input == ""
+
+
+def test_layout_names_match_debian_xkb_data_and_console_data():
+    """XKB names exist in bookworm xkb-data (/usr/share/X11/xkb/symbols/<name>);
+    console names exist in console-data (/usr/share/keymaps/i386/*/<name>.kmap.gz).
+    scripts/qemu-verify.sh checks both against the built ISO."""
+    expected = {
+        "us": ("us", "us"),
+        "fr": ("fr", "fr"),
+        "de": ("de", "de"),
+        "gb": ("gb", "uk"),
+        "es": ("es", "es"),
+        "latam": ("latam", "la-latin1"),
+        "it": ("it", "it"),
+    }
+    assert {lid: (s.xkb_layout, s.console_map) for lid, s in LAYOUTS.items()} == expected
+    for layout_id, spec in LAYOUTS.items():
+        # _run_allowlisted looks setxkbmap argv up by layout id.
+        assert spec.id == layout_id == spec.xkb_layout
+        assert spec.xkb_argv == ("setxkbmap", "-layout", spec.xkb_layout, "-option", "")
+        assert spec.console_argv == ("loadkeys", spec.console_map)
+    # Digit shortcuts 1..N must stay single keys.
+    assert 1 <= len(LAYOUT_ORDER) <= 9
+    assert len(set(LAYOUT_ORDER)) == len(LAYOUT_ORDER)
+
+
+def test_apply_rejects_console_map_names_as_layout_ids(monkeypatch):
+    monkeypatch.setattr("beamo_wipe.safety.resolve_system_binary", lambda name: f"/usr/bin/{name}")
+
+    def fake_run(argv, **kw):
+        raise AssertionError(argv)
+
+    monkeypatch.setattr("beamo_wipe.keyboard.subprocess.run", fake_run)
+    for bogus in ("uk", "la-latin1", "latam;us", "es ", "ES", "it2"):
+        assert not is_allowed(bogus)
+        result = apply_layout(bogus, graphical=True)
+        assert not result.ok and result.message == UNAVAILABLE
+
+
+def test_every_layout_has_translated_title_and_note():
+    from beamo_wipe import keyboard, lang
+
+    english = {lid: (LAYOUTS[lid].title, LAYOUTS[lid].note) for lid in LAYOUT_ORDER}
+    try:
+        for code in ("fr", "de", "es"):
+            lang.set_language(code)
+            for layout_id in LAYOUT_ORDER:
+                spec = keyboard.LAYOUTS[layout_id]
+                assert spec.note != english[layout_id][1], (code, layout_id)
+                assert spec.title.split(" ", 1)[0] == english[layout_id][0].split(" ", 1)[0]
+                assert spec.xkb_layout == LAYOUTS[layout_id].xkb_layout
+                assert spec.console_map == LAYOUTS[layout_id].console_map
+            assert keyboard.LIMITS.endswith(keyboard.SESSION_ONLY)
+    finally:
+        lang.set_language("en")
+
+
+def test_keyboard_hints_name_every_layout_shortcut():
+    from beamo_wipe import lang
+
+    span = f"1–{len(LAYOUT_ORDER)}"
+    try:
+        for code in ("en", "fr", "de", "es"):
+            lang.set_language(code)
+            assert C.HINT_KEYBOARD.startswith(span), code
+            # The curses screen keeps every digit for the typing check.
+            assert C.CON_KEYBOARD_FOOTER.startswith("Left/Right"), code
+    finally:
+        lang.set_language("en")
+
+
+@pytest.mark.parametrize("index,layout_id", list(enumerate(ALL_LAYOUTS, 1)))
+def test_plain_console_digit_chooses_every_layout(monkeypatch, capsys, index, layout_id):
+    wiz = _wiz()
+    wiz.skip_splash()
+    answers = iter([str(index), ""])
+
+    def fake_input(_prompt=""):
+        try:
+            return next(answers)
+        except StopIteration as exc:
+            raise EOFError from exc
+
+    monkeypatch.setattr("builtins.input", fake_input)
+    console._plain_loop(wiz)
+    text = capsys.readouterr().out
+    for number, other in enumerate(LAYOUT_ORDER, 1):
+        assert f" {number} {LAYOUTS[other].title}" in text
+    assert wiz.keyboard_layout == layout_id
+    assert wiz.screen == Screen.OWNER
+
+
+@pytest.mark.parametrize("language", ["en", "es"])
+def test_curses_keyboard_pages_to_every_layout_at_80x24(monkeypatch, language):
+    import curses
+
+    from beamo_wipe import keyboard, lang
+
+    wiz = _wiz()
+    try:
+        assert wiz.set_language(language)
+        wiz.skip_splash()
+        seen = []
+        keys = iter([curses.KEY_DOWN] * 60)
+
+        class Terminal:
+            def getmaxyx(self):
+                return 24, 80
+
+            def addstr(self, y, x, text, attr=0):
+                assert 0 <= y < 24
+                assert len(text) < 80
+                seen.append(text)
+
+            def getch(self):
+                try:
+                    return next(keys)
+                except StopIteration:
+                    wiz.wants_shutdown = True
+                    return -1
+
+            def __getattr__(self, name):
+                return lambda *a, **k: None
+
+        monkeypatch.setattr(console.curses, "curs_set", lambda *a, **k: None)
+        monkeypatch.setattr(console.curses, "use_default_colors", lambda *a, **k: None)
+        console._loop(Terminal(), wiz)
+        shown = "\n".join(seen)
+        for layout_id in LAYOUT_ORDER:
+            assert keyboard.LAYOUTS[layout_id].title in shown, layout_id
+        for code in lang.LANGUAGE_ORDER:
+            assert lang.LANGUAGE_NAMES[code] in shown
+        assert C.CON_KEYBOARD_FOOTER in shown
+        assert wiz.screen == Screen.KEYBOARD
+    finally:
+        wiz.set_language("en")
+
+
+def test_curses_arrows_reach_every_layout_and_digits_stay_typeable(monkeypatch):
+    wiz = _wiz()
+    wiz.skip_splash()
+    reached = [wiz.keyboard_layout]
+    for _ in LAYOUT_ORDER:
+        console._handle(wiz, console.curses.KEY_RIGHT)
+        reached.append(wiz.keyboard_layout)
+    assert reached == [*LAYOUT_ORDER, LAYOUT_ORDER[0]]
+    console._handle(wiz, console.curses.KEY_LEFT)
+    assert wiz.keyboard_layout == LAYOUT_ORDER[-1]
+    console._handle(wiz, console.curses.KEY_RIGHT)
+    assert wiz.keyboard_layout == LAYOUT_ORDER[0]
+    # Every digit goes into the typing check and never switches layout.
+    for digit in "0123456789":
+        console._handle(wiz, ord(digit))
+    assert wiz.keyboard_layout == LAYOUT_ORDER[0]
+    assert wiz.typing_check == "0123456789"
+
+
+@pytest.mark.parametrize("size", [(800, 600), (1024, 600), (1280, 720), (1600, 1000)])
+@pytest.mark.parametrize("language", ["en", "fr", "de", "es"])
+def test_keyboard_screen_fits_and_reaches_every_layout(size, language):
+    from test_adaptive_layout import _assert_actions_on_window, _buttons, _texts
+    from test_tk_runtime import _needs_display
+
+    from beamo_wipe import keyboard, lang
+    from beamo_wipe.ui.layout import MIN_SIZE
+    from beamo_wipe.ui.tk_wizard import TkWizard
+
+    _needs_display()
+    wiz = _wiz()
+    app = TkWizard(wiz)
+    try:
+        assert wiz.set_language(language)
+        app.root.minsize(*MIN_SIZE)
+        app.root.geometry(f"{size[0]}x{size[1]}+40+40")
+        app.root.update_idletasks()
+        app.root.focus_force()
+        wiz.skip_splash()
+        app._draw()
+        app.root.update()
+        assert wiz.screen == Screen.KEYBOARD
+        shown = _texts(app.root)
+        for layout_id in LAYOUT_ORDER:
+            assert keyboard.LAYOUTS[layout_id].title in shown, layout_id
+        for code in lang.LANGUAGE_ORDER:
+            assert lang.LANGUAGE_NAMES[code] in shown
+        assert keyboard.LAYOUTS["us"].note in shown
+        assert C.KEYBOARD_CHECK_LABEL in shown
+        assert set(app._keyboard_layout_cards) == set(LAYOUT_ORDER)
+        assert set(app._keyboard_language_cards) == set(lang.LANGUAGE_ORDER)
+        # Footer Continue stays on the window; nothing clips at this size.
+        _assert_actions_on_window(app)
+        labels = [b.itemcget(b._label, "text") for b in _buttons(app) if b.winfo_ismapped()]
+        assert C.BTN_CONTINUE in labels
+        for index, layout_id in enumerate(LAYOUT_ORDER, 1):
+            card = app._keyboard_layout_cards[layout_id]
+            card.focus_set()
+            app.root.update()
+            canvas = app._body_canvas
+            if canvas is not None:
+                top = card.winfo_rooty() - canvas.winfo_rooty()
+                assert top >= -2, (layout_id, top)
+                assert top + card.winfo_height() <= canvas.winfo_height() + 2, layout_id
+            app.root.event_generate("<KeyPress>", keysym=str(index))
+            app.root.update()
+            app.root.event_generate("<KeyRelease>", keysym=str(index))
+            app.root.update()
+            assert wiz.keyboard_layout == layout_id
+            assert keyboard.LAYOUTS[layout_id].note in _texts(app.root)
+            assert _clipping_free(app), layout_id
+    finally:
+        app._teardown()
+        lang.set_language("en")
+
+
+def _clipping_free(app) -> bool:
+    from test_tk_runtime import _clipping_problems
+
+    problems = _clipping_problems(app)
+    assert problems == []
+    return True

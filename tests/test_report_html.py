@@ -138,6 +138,7 @@ def test_html_follows_session_language_like_txt():
         for code, caption in (
             ("fr", "Détails du rapport"),
             ("de", "Berichtsdetails"),
+            ("es", "Detalles del informe"),
         ):
             lang.set_language(code)
             page = build_result_report_html(ev)

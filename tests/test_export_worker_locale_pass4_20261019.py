@@ -101,8 +101,8 @@ def worker(tmp_path, monkeypatch):
     assert not effects
 
 
-@pytest.mark.parametrize("controller_language", ["en", "fr", "de"])
-@pytest.mark.parametrize("worker_language", ["en", "fr", "de"])
+@pytest.mark.parametrize("controller_language", ["en", "fr", "de", "es"])
+@pytest.mark.parametrize("worker_language", ["en", "fr", "de", "es"])
 @pytest.mark.parametrize("kind", ["diagnostic", "owner", "sharing"])
 def test_worker_exports_controller_language(worker, controller_language, worker_language, kind):
     lang.set_language(controller_language)
@@ -131,7 +131,7 @@ def test_worker_exports_controller_language(worker, controller_language, worker_
     assert len(worker.commands) == 3  # Fake rw mount, sync, then ro remount.
 
 
-@pytest.mark.parametrize("bad_language", [None, True, 1, [], {}, "es", "FR", " fr", "en\x00"])
+@pytest.mark.parametrize("bad_language", [None, True, 1, [], {}, "it", "ES", "FR", " fr", "es ", "en\x00"])
 def test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry(
     worker, monkeypatch, bad_language
 ):
@@ -152,7 +152,7 @@ def test_unknown_or_malformed_language_fails_before_inventory_and_allows_retry(
     assert lang.current() == "fr"
 
 
-@pytest.mark.parametrize("startup_language", ["en", "fr", "de"])
+@pytest.mark.parametrize("startup_language", ["en", "fr", "de", "es"])
 def test_legacy_request_without_language_is_english(worker, startup_language):
     lang.set_language("en")
     wire, original = worker.request("diagnostic")

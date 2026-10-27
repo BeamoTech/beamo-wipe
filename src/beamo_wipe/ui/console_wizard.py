@@ -801,7 +801,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
             print(C.KEYBOARD_CHECK_LABEL)
             typed = input(C.CON_INPUT_PREFIX)
             key = typed.strip()
-            keyboard_mapping = {"1": "us", "2": "fr", "3": "de"}
+            keyboard_mapping = {str(i): lid for i, lid in enumerate(LAYOUT_ORDER, 1)}
             if key in keyboard_mapping:
                 wizard.set_keyboard_layout(keyboard_mapping[key])
             elif key.upper() == "K":
@@ -948,12 +948,14 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 extra = f" {card['extra']}" if card["extra"] else ""
                 lead = f" {card['lead']}" if card["lead"] else ""
                 limits_note = f" {card['limits']}" if card["limits"] else ""
+                guide = C.method_time_guide(method, wizard.selected)
+                guide = f" {guide}" if guide else ""
                 # One logical line so overwrite + verification stay a contiguous description.
                 # The TTY wraps at its own width; pre-fill would split spec.description.
                 print(
                     f"{card['key']} {spec.title}{mark}: "
                     f"{spec.overwrite_description} {spec.verification_description}"
-                    f"{extra}{lead}{limits_note}"
+                    f"{guide}{extra}{lead}{limits_note}"
                 )
             choice = _answer(wizard, C.CON_METHOD_PROMPT).strip()
             if choice.lower() == "a":
@@ -1294,10 +1296,10 @@ def _loop(stdscr, wizard: Wizard) -> int:
             y = _wrap(stdscr, y, C.TEXT_SIZE_CONSOLE, w, y_max)
             y = _wrap(stdscr, y, _keyboard.CONSOLE_DEAD_KEYS, w, y_max) + 1
             lines = []
-            for i, layout_id in enumerate(LAYOUT_ORDER, 1):
+            for layout_id in LAYOUT_ORDER:
                 layout_spec = _keyboard.LAYOUTS[layout_id]
                 star = ">" if wizard.keyboard_layout == layout_id else " "
-                lines.extend(_lines(f"{star} {i} {layout_spec.title}: {layout_spec.note}", w))
+                lines.extend(_lines(f"{star} {layout_spec.title}: {layout_spec.note}", w))
                 lines.append("")
             lines.extend(_lines(C.TITLE_LANGUAGE, w))
             lines.extend(_lines(C.LANGUAGE_LEAD, w))
@@ -1567,6 +1569,19 @@ def _loop(stdscr, wizard: Wizard) -> int:
                         w,
                     )
                 )
+                lines.append("")
+            # Rough durations follow the choices so the first page keeps
+            # every method; taller consoles show them without scrolling.
+            guides = [
+                (i, METHODS[method].title, C.method_time_guide(method, wizard.selected))
+                for i, method in enumerate(
+                    (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO), 1
+                )
+            ]
+            for i, title, guide in guides:
+                if guide:
+                    lines.extend(_lines(f"{i} {title}: {guide}", w))
+            if any(guide for _, _, guide in guides):
                 lines.append("")
             for method in (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO):
                 extra = C.METHOD_CARDS[method]["extra"]
@@ -1977,9 +1992,15 @@ def _handle(wizard: Wizard, ch: int) -> None:
         wizard.open_keyboard()
         return
     if wizard.screen == Screen.KEYBOARD:
-        keyboard_mapping = {ord("1"): "us", ord("2"): "fr", ord("3"): "de"}
-        if ch in keyboard_mapping:
-            wizard.set_keyboard_layout(keyboard_mapping[ch])
+        # Left/Right choose the layout so every digit stays available for the
+        # typing check: digit placement is what differs between layouts.
+        if ch in (curses.KEY_LEFT, curses.KEY_RIGHT):
+            step = -1 if ch == curses.KEY_LEFT else 1
+            try:
+                index = LAYOUT_ORDER.index(wizard.keyboard_layout)
+            except ValueError:
+                index = 0
+            wizard.set_keyboard_layout(LAYOUT_ORDER[(index + step) % len(LAYOUT_ORDER)])
             return
         if ch == curses.KEY_F2:
             wizard.set_language(_next_language(wizard))

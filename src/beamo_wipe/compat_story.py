@@ -135,6 +135,27 @@ LOCALIZED_HELPER_IDENTITY: dict[str, LocalizedHelperIdentity] = {
             STATUS_UNAVAILABLE: "nicht verfügbar",
         },
     },
+    "es": {
+        "source_label": (
+            "Esta copia no es una imagen USB fabricada. "
+            "Es la ayuda de origen que se usa para crear una."
+        ),
+        "source_status": "no es una imagen fabricada",
+        "labels": {
+            STATUS_PRODUCTION: "Esta memoria USB contiene una imagen fabricada de Beamo Wipe.",
+            STATUS_DEVELOPMENT: "Esta memoria USB contiene una imagen de desarrollo, no una versión de producción.",
+            STATUS_DIRTY: "Esta memoria USB se creó a partir de código fuente modificado. No es una versión de producción.",
+            STATUS_MISMATCH: "Este lanzador no coincide con la identidad de la imagen USB.",
+            STATUS_UNAVAILABLE: "Esta sesión no procede de una imagen USB fabricada.",
+        },
+        "statuses": {
+            STATUS_PRODUCTION: "producción",
+            STATUS_DEVELOPMENT: "desarrollo",
+            STATUS_DIRTY: "modificado",
+            STATUS_MISMATCH: "el código fuente no coincide",
+            STATUS_UNAVAILABLE: "no disponible",
+        },
+    },
 }
 
 

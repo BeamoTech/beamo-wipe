@@ -824,11 +824,11 @@ class Wizard:
 
     @property
     def elapsed_text(self) -> str:
-        from beamo_wipe.progress import duration
+        from beamo_wipe import progress
         if self._recovered:
             value = (self.evidence or {}).get("timestamps", {}).get("duration_s")
-            return "Elapsed: " + duration(value)
-        return "Elapsed: " + duration(self.progress_view.elapsed)
+            return progress.ELAPSED_LABEL.format(text=progress.duration(value))
+        return progress.ELAPSED_LABEL.format(text=progress.duration(self.progress_view.elapsed))
 
     @staticmethod
     def _result_evidence_key(result: WipeResult) -> str:

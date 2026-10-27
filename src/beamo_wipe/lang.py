@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""UI language selection. English is the source; French and German tables
-in locales/ override module attributes. Tables hold data only (never
+"""UI language selection. English is the source; French, German and Spanish
+tables in locales/ override module attributes. Tables hold data only (never
 functions); builders format translated templates, and modules with derived
 text rebuild it in _apply_language().
 """
@@ -9,10 +9,10 @@ from __future__ import annotations
 
 import importlib
 
-LANGUAGE_ORDER = ("en", "fr", "de")
+LANGUAGE_ORDER = ("en", "fr", "de", "es")
 
 # Own-language names. Never translated, never in the tables.
-LANGUAGE_NAMES = {"en": "English", "fr": "Français", "de": "Deutsch"}
+LANGUAGE_NAMES = {"en": "English", "fr": "Français", "de": "Deutsch", "es": "Español"}
 
 # Translated modules in dependency order: a module's _apply_language() may
 # read another module's already-translated attributes (copy reads outcomes,

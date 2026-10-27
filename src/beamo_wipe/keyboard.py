@@ -9,7 +9,9 @@ import subprocess
 from typing import Mapping, Optional, Sequence, Tuple
 
 # Shipped on the live image: x11-xserver-utils (setxkbmap) and kbd (loadkeys).
-# xkb-data and console-setup ship many maps; only these three are offered.
+# xkb-data (/usr/share/X11/xkb/symbols/<xkb>) and console-data
+# (/usr/share/keymaps/i386/<family>/<console>.kmap.gz) ship many maps; only
+# the layouts below are offered. A layout id always equals its XKB name.
 DEFAULT_LAYOUT = "us"
 
 # Binaries we may exec. Names only; resolved on the clean PATH at apply time.
@@ -60,6 +62,43 @@ NOTE_DE = (
     "Letters match a German QWERTZ keyboard. Y and Z are swapped from QWERTY. "
     "Some accents use dead keys: press the accent, then the letter."
 )
+TITLE_GB = "QWERTY (UK)"
+NOTE_GB = (
+    "Letters and digits match a UK QWERTY keyboard. Numbers do not need Shift. "
+    "Some symbols, such as @ and \", are in different places than on US QWERTY."
+)
+TITLE_ES = "QWERTY (Spanish)"
+NOTE_ES = (
+    "Letters and digits match a Spanish QWERTY keyboard, including Ñ. "
+    "Numbers do not need Shift. "
+    "Accents use dead keys: press the accent, then the letter."
+)
+TITLE_LATAM = "QWERTY (Latin American)"
+NOTE_LATAM = (
+    "Letters and digits match a Latin American QWERTY keyboard, including Ñ. "
+    "Numbers do not need Shift. "
+    "Accents use dead keys: press the accent, then the letter."
+)
+TITLE_IT = "QWERTY (Italian)"
+NOTE_IT = (
+    "Letters and digits match an Italian QWERTY keyboard. "
+    "Numbers do not need Shift. "
+    "Accented letters such as è and à have their own keys; "
+    "some other accents use dead keys with AltGr."
+)
+
+
+def _qwerty(layout_id: str, title: str, note: str, console_map: str, dead_keys: bool) -> KeyboardLayout:
+    return KeyboardLayout(
+        id=layout_id,
+        title=title,
+        family="qwerty",
+        note=note,
+        xkb_layout=layout_id,
+        console_map=console_map,
+        dead_keys=dead_keys,
+        digits_need_shift=False,
+    )
 
 
 def _build_layouts() -> Mapping[str, KeyboardLayout]:
@@ -94,12 +133,18 @@ def _build_layouts() -> Mapping[str, KeyboardLayout]:
             dead_keys=True,
             digits_need_shift=False,
         ),
+        # Console map names are console-data's qwerty/{uk,es,la-latin1,it}.
+        "gb": _qwerty("gb", TITLE_GB, NOTE_GB, "uk", False),
+        "es": _qwerty("es", TITLE_ES, NOTE_ES, "es", True),
+        "latam": _qwerty("latam", TITLE_LATAM, NOTE_LATAM, "la-latin1", True),
+        "it": _qwerty("it", TITLE_IT, NOTE_IT, "it", True),
     }
 
 
 LAYOUTS: Mapping[str, KeyboardLayout] = _build_layouts()
 
-LAYOUT_ORDER = ("us", "fr", "de")
+# Digit shortcuts are 1..N in this order; N must stay a single digit.
+LAYOUT_ORDER = ("us", "fr", "de", "gb", "es", "latam", "it")
 
 UNAVAILABLE = "That keyboard layout is not available."
 APPLY_FAILED = (
@@ -114,7 +159,8 @@ SESSION_ONLY = (
     "It does not change firmware or BIOS keyboards."
 )
 LIMITS_LEAD = (
-    "Only US QWERTY, French AZERTY, and German QWERTZ are offered. "
+    "Only US QWERTY, French AZERTY, German QWERTZ, UK QWERTY, Spanish QWERTY, "
+    "Latin American QWERTY, and Italian QWERTY are offered. "
     "This USB does not include other layouts. "
 )
 LIMITS = LIMITS_LEAD + SESSION_ONLY

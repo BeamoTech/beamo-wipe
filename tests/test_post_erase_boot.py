@@ -190,6 +190,11 @@ def test_helper_after_erasing_card_in_every_language():
             "Wenn der Computer nach dem Löschen nicht startet",
             "möglicherweise",
         ),
+        (
+            "es.html",
+            "Si el equipo no se inicia después del borrado",
+            "es posible",
+        ),
     ):
         raw = (ROOT / "helper" / name).read_text(encoding="utf-8")
         doc = _Doc()
@@ -203,6 +208,7 @@ def test_helper_after_erasing_card_in_every_language():
         assert conditional in card, name
         assert (
             "operating system" in card or "système" in card or "Betriebssystem" in card
+            or "sistema operativo" in card
         ), name
         lowered = card.lower()
         assert "will not start" not in lowered, name

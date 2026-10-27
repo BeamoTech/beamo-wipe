@@ -237,7 +237,11 @@ def _method_copy_field_matches(actual: object, expected: str, *, sharing: bool) 
     placeholders = {
         privacy.WITHHELD,
         lang.english("privacy", "WITHHELD"),
-        *(lang.translated(code, "privacy", "WITHHELD") for code in ("fr", "de")),
+        *(
+            lang.translated(code, "privacy", "WITHHELD")
+            for code in lang.LANGUAGE_ORDER
+            if code != "en"
+        ),
     }
     for placeholder in placeholders:
         if placeholder not in actual:

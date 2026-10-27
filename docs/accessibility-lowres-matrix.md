@@ -58,7 +58,7 @@ One palette is shared by Tk, gallery, helper and pinned by `tests/test_ui_system
 
 - **Body type**: `DejaVu Sans` / `Noto Sans` fallback, 34 px bold titles, 18 px lead, 16 px body/button, 14 px meta, 12 px tiny caps. Minimum readable ≥12 px (WCAG large-text threshold). Entry is 26 px bold mono so typed token is readable at 1024 width in bright rooms.
 - **WCAG AA**: text pairs ≥4.5:1, white-on-primary/navy/danger ≥4.5:1, non-text UI (focus ring, strong border) ≥3:1 (`test_text_contrast_meets_wcag_aa`, `test_non_text_contrast_meets_wcag_aa`).
-- **Key caps**: `Up/Down → ↑ ↓`, `1, 2, or 3 → 1 2 3`, `Enter/Esc/Space/any key` rendered as `_Box`/`span.kbd` with `BORDER_STRONG #6E7C8A` (≥3:1 on `SURFACE`).
+- **Key caps**: `Up/Down → ↑ ↓`, `1, 2, or 3 → 1 2 3`, `1–7` (keyboard layouts, one cap in every language), `Enter/Esc/Space/any key` rendered as `_Box`/`span.kbd` with `BORDER_STRONG #6E7C8A` (≥3:1 on `SURFACE`).
 - **Color-independent meaning**: every tinted state pairs color with an icon + text. See §7.
 
 ---
@@ -107,6 +107,7 @@ One palette is shared by Tk, gallery, helper and pinned by `tests/test_ui_system
 | **DISP-09** | **Browser 360×640** | CSS px | Phone-preview of gallery/helper | Cards stack, `disklist` `overflow-y:auto` with 12px thumb, `wraplength` not needed; `kbd` caps still 12px bold | `test_browser_cards_have_tabindex_and_focus_visible` + manual resize | **Supported (degraded width)** |
 | **DISP-10** | **Browser 1920×1080** | 1× | Desktop | `max-width 940` centered, gallery `page max-width 1100` | Same | **Supported** |
 | **DISP-11** | **Console 80×24** | Mono | No-X fallback | `curses` wraps at `w-2`, `plain_loop` prints serial+path+`SAME_SIZE_HINT` | `test_curses_pick_shows_serial_and_same_size_hint` | **Supported** |
+| **DISP-12** | **HiDPI / 4K panels** (wider than 2560 or taller than 1600 px; 2560 wide at 150+ DPI from EDID size) | Native panel pixels; Tk scaling 1.0 | 3K/4K laptops, 2560×1600 laptops, 4K monitors | Before the wizard (Tk or GTK) starts, the live launcher `/usr/local/bin/beamo-wipe` runs `xrandr` to move each lit output to its own largest listed mode of at most 1920×1200 with the same aspect (within 2%), so the 1920×1080/1200 layout applies. No change for one-mode outputs (simpledrm, fbdev, `nomodeset`), rotated or side-by-side layouts, a missing `xrandr`, unexpected output or any failure; text then stays small and the Text size control remains. | `tests/test_launcher_readable_mode.py`: fake `xrandr` for 4K eDP, 2560×1600, clone and side-by-side dual, simpledrm, malformed, 1920×1080 and 800×600 (exact argv or no call); `shellcheck -s sh` | **Fixture-tested only. QEMU not run; physical panels NOT TESTED** |
 
 Pinning rationale: `TkWizard` sets `tk scaling 1.0` so point sizes are pixel-equivalent on every X DPI. Tests at 72 DPI therefore model the live USB exactly; a 96 DPI VNC inspection that shows clipping is expected and not the gate.
 

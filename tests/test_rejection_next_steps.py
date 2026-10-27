@@ -304,6 +304,7 @@ def test_diagnostic_step_property_and_render(monkeypatch):
 
 def test_next_step_keys_translated_in_fr_and_de():
     from beamo_wipe.locales import de as de_locale
+    from beamo_wipe.locales import es as es_locale
     from beamo_wipe.locales import fr as fr_locale
 
     for key in (
@@ -320,17 +321,21 @@ def test_next_step_keys_translated_in_fr_and_de():
         assert "sûre à retirer" not in fr_locale.STRINGS["support_export"][key]
         assert "sûr à retirer" not in fr_locale.STRINGS["support_export"][key]
         assert "sicher entfernbar" not in de_locale.STRINGS["support_export"][key]
+        assert key in es_locale.STRINGS["support_export"]
+        assert "con seguridad" not in es_locale.STRINGS["support_export"][key]
 
 
 def test_retry_escalation_translated_in_fr_and_de():
     from beamo_wipe.locales import de as de_locale
+    from beamo_wipe.locales import es as es_locale
     from beamo_wipe.locales import fr as fr_locale
 
     assert "autre clé USB" in fr_locale.STRINGS["copy"]["EXPORT_GUIDE_RETRY"]
     assert "anderen USB-Stick" in de_locale.STRINGS["copy"]["EXPORT_GUIDE_RETRY"]
+    assert "otra memoria USB" in es_locale.STRINGS["copy"]["EXPORT_GUIDE_RETRY"]
 
 
-@pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html"])
+@pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html", "es.html"])
 def test_helper_lists_rejection_remedies(name):
     from beamo_wipe.gallery import project_root
 
@@ -340,6 +345,7 @@ def test_helper_lists_rejection_remedies(name):
         "index.html": ("different USB stick", "plug it back in", "while the computer is off"),
         "fr.html": ("autre clé USB", "rebranchez-la", "ordinateur est éteint"),
         "de.html": ("anderen USB-Stick", "wieder an", "Computer aus ist"),
+        "es.html": ("otra memoria USB", "vuelva a conectarla", "con el equipo apagado"),
     }[name]
     for marker in markers:
         assert marker in card
@@ -347,6 +353,7 @@ def test_helper_lists_rejection_remedies(name):
         "index.html": ("Support code", "Build"),
         "fr.html": ("Code d’assistance", "Version"),
         "de.html": ("Supportcode", "Build-Kennung"),
+        "es.html": ("Código de soporte", "Compilación"),
     }[name]
     for marker in code_markers:
         assert marker in card

@@ -1226,7 +1226,7 @@ const MATCH_OK = '<svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11
 const EMBLEM = '__LOGO_SPLASH__';
 
 // Key names inside hint copy render as key-caps, mirroring _hint_bar.
-const KEY_RE = /(Up\/Down|1, 2, or 3|any key|Enter|Esc|Space)/g;
+const KEY_RE = /(?<![\p{L}\p{N}])(Up\/Down|1, 2, or 3|1–7|any key|Enter|Esc|Space)(?![\p{L}\p{N}])/gu;
 const KEY_MAP = {"Up/Down": ["↑", "↓"], "1, 2, or 3": ["1", "2", "3"]};
 function renderHint(text) {
   const el = document.getElementById("hint");
