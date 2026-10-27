@@ -170,7 +170,7 @@ POWER_EVENTS = (
     "and disables sleep. Firmware or a held power button can still stop the erase. "
     "Use Stop erase to stop; wait for the result before shutting down. "
     "A power cut can leave the disk partly erased and lose unsaved reports. "
-    "An interrupted erase does not resume automatically."
+    "An interrupted erase does not resume automatically; start it again from the beginning."
 )
 
 POWER_BLANKING = (
@@ -372,7 +372,8 @@ COUNTDOWN_CAPTION = "seconds until Erase is available."
 COUNTDOWN_READY = "Nothing has started. Choose Erase now to erase this disk."
 
 METHOD_LEAD = (
-    "Pick how thoroughly to overwrite the disk. Time is not promised."
+    "Pick how thoroughly to overwrite the disk. Large hard disks can take many "
+    "hours, so time is not promised."
 )
 
 LAST_LEAD = (
