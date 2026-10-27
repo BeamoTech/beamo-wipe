@@ -33,6 +33,25 @@ Use `git rev-parse HEAD` on the pushed branch for its exact commit. The
 binds this checkpoint's functional inputs separately from documentation.
 Neither a source hash nor a successful model run authenticates a live image.
 
+## PR review follow-up
+
+[PR #93](https://github.com/BeamoTech/beamo-wipe/pull/93) received Greptile's
+first review at `7f2f2a4`: 4/5, with one P2 finding. The finding was confirmed:
+CI handoff cleanup could stop at its first failed close and replace an earlier
+copy, binding or cancellation failure. The correction independently closes
+every owned handle, preserves the primary error, protects acquisition and
+applies the same rule to member writes and directory-binding checks. Exclusive
+creation, no-follow opens, readback, permissions and no-replace publication
+remain required. Member writes now explicitly handle partial and stalled
+writes through the owned descriptor.
+
+The [review follow-up evidence](evidence/security-main-handoff-20261027/greptile-r1.json)
+binds that correction separately from the original checkpoint. The original
+192-case regression matrix failed 148 cases; the corrected matrix and 48
+additional boundary cases pass, 240/240. These are exact-AST/fake-descriptor
+controls, not native close/signal or filesystem-race assurance. The final head
+still requires its own CI and Greptile review; older-head results are historical.
+
 ## What changed
 
 The combined diff hardens these existing boundaries:
