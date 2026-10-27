@@ -1,5 +1,30 @@
 # Unfinished work
 
+## BW-SECURITY-PR93-CI2 - BLOCKED / NATIVE GTK CRASH UNRESOLVED
+
+2026-10-27 UTC / Codex. PR93 source bf2b490909c01b91b1fd209c430ce40d3dcfc721;
+tested merge cf404480eed2ee4be078d43419664ffe4ae64abe, base58c677f.
+CI40433850969 failed: the main GTK pytest process segfaulted while collecting
+garbage, with the Python trace at test_accessible_runtime.py:277. The missing
+tests.xml followed the crash. C-level cause and a safe fix remain UNKNOWN.
+The boot-guard test named by the bot is the intentional private mutation;
+the unchanged source control and negative gate passed. Do not weaken them.
+Native Windows and CodeQL passed; Linux/CI gate failed; ISO/QEMU skipped.
+
+Canonical failure evidence and next native-debugging action:
+docs/security-review-handoff.md and
+docs/evidence/security-main-handoff-20261027/ci-failure-bf2.json.
+The documentation-only handoff/security-review-blocked-20261027 branch
+preserves this status over unchanged bf2b490 product bytes without opening a
+duplicate PR or rerunning full CI for unshipped documentation maintenance.
+Next: use an admitted isolated Linux/GTK worker, reproduce the actual sequence,
+capture native backtrace, confirm/fix the cause and add a causal regression.
+Batch this status commit with that fix on the existing PR branch. Required
+checks/final-head review and exact main-push qualification remain outstanding.
+Current unattended Windows and physical disks remain protected; Hostinger
+admission is still blocked. No speculative source edit, blind retry, release,
+firmware or physical-media operation was performed. Main remains unmerged.
+
 ## BW-SECURITY-PR93-G1 - FIXED IN SOURCE / FINAL-HEAD REVIEW AND CI PENDING
 
 2026-10-27 UTC / Codex; BeamoTech/beamo-wipe,

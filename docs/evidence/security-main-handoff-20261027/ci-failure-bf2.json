@@ -1,0 +1,83 @@
+{
+  "schema": "beamo-wipe-ci-failure-triage/1",
+  "date_utc": "2026-10-27",
+  "status": "BLOCKED / NATIVE GTK ROOT CAUSE UNRESOLVED",
+  "repository": "BeamoTech/beamo-wipe",
+  "pull_request": "https://github.com/BeamoTech/beamo-wipe/pull/93",
+  "source_head": "bf2b490909c01b91b1fd209c430ce40d3dcfc721",
+  "tested_merge": "cf404480eed2ee4be078d43419664ffe4ae64abe",
+  "merge_parents": [
+    "58c677f7316b5e2fc0cbb3ee4b502681c80338c1",
+    "bf2b490909c01b91b1fd209c430ce40d3dcfc721"
+  ],
+  "run": {
+    "id": 40433850969,
+    "attempt": 1,
+    "event": "pull_request",
+    "conclusion": "failure",
+    "url": "https://github.com/BeamoTech/beamo-wipe/actions/runs/40433850969"
+  },
+  "jobs": {
+    "Linux image gate": {"id": 121958059285, "conclusion": "failure"},
+    "Windows launcher tests": {"id": 121958059568, "conclusion": "success"},
+    "CI gate": {"id": 121959960753, "conclusion": "failure"},
+    "CodeQL and four language analyses": "success at inspected head"
+  },
+  "source_phases_observed": {
+    "negative": "pass: expected mutant failed, then unmodified source passed",
+    "lint": "pass with retained tool notes/warnings",
+    "preview": "pass",
+    "desktop-launchers": "pass",
+    "tests": "failed/incomplete: native main-suite crash",
+    "separate_orca_case": "1 passed in 253.89 seconds",
+    "iso": "skipped after source failure; not accepted",
+    "qemu": "skipped after source failure; not accepted"
+  },
+  "negative_test_disposition": {
+    "name": "test_boot_guard_rejects_false_identity_with_otherwise_selectable_target",
+    "mutant_result": "Expected DID NOT RAISE failure, pytest exit 1",
+    "source_control": "passed",
+    "gate_message": "negative test PASS: safety gate blocks bypass",
+    "change_required": false
+  },
+  "actual_blocker": {
+    "time_utc": "2026-10-27T01:43:10Z",
+    "observed": "Fatal Python error: Segmentation fault; current thread Garbage-collecting",
+    "python_stack": [
+      "src/beamo_wipe/discover.py:1201 _content_evidence",
+      "src/beamo_wipe/discover.py:1229 classify_disk_contents",
+      "src/beamo_wipe/discover.py:2191 parse_lsblk_json",
+      "src/beamo_wipe/discover.py:2847 discover",
+      "src/beamo_wipe/demo.py:42 discovery_for_scenario",
+      "src/beamo_wipe/demo.py:63 make_demo_wizard",
+      "tests/test_accessible_runtime.py:277 test_last_chance_enter_without_erase_focus_never_erases"
+    ],
+    "extensions_reported": ["gi._gi", "PIL._imaging"],
+    "following_error": "FileNotFoundError for main-suite /proc/self/fd/3/tests.xml",
+    "outer_step_exit": 1,
+    "native_process_numeric_exit": "Not independently recorded in the inspected log",
+    "native_root_cause": "UNKNOWN: Python allocation/GC location does not identify the C-level corruption",
+    "fix_status": "No speculative implementation change made; native reproduction/backtrace required"
+  },
+  "observed_native_packages": {
+    "python3.11": "3.11.2-6+deb12u9",
+    "python3-gi": "3.42.2-3+b1",
+    "libglib2.0-0": "2.74.6-2+deb12u9",
+    "libgtk-3-0": "3.24.38-2~deb12u3",
+    "libatk-bridge2.0-0": "2.46.0-5"
+  },
+  "evidence": {
+    "linux_job": "https://github.com/BeamoTech/beamo-wipe/actions/runs/40433850969/job/121958059285",
+    "ci_artifact": "https://github.com/BeamoTech/beamo-wipe/actions/runs/40433850969/artifacts/12702799486",
+    "artifact_zip_sha256_reported_by_uploader": "23b4e3222c21f843e4ee07c92ce0a8aa42997ec68ac3ffff431eab0acd898d89",
+    "decoded_full_job_log_retained_privately": "security-main-handoff-20261027/ci-failure/linux-121958059285.log",
+    "decoded_log_sha256": "d833e119aaf0753a667ed93384b3d49347392425cbf9c54cea09064a9ca0b9a5"
+  },
+  "remaining_action": "Reproduce on an admitted isolated x86_64 Linux/GTK worker, capture native backtrace without changing assertions or timeouts, confirm and correct root cause, add regression and qualify exact final PR head before protected merge",
+  "no_retry_dispatched": true,
+  "runtime_or_test_source_modified_during_triage": false,
+  "handoff_branch": "handoff/security-review-blocked-20261027",
+  "main_merged": false,
+  "release_published": false,
+  "Task119": "NOT TESTED / BLOCKED"
+}

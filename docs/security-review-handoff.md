@@ -9,6 +9,66 @@ preserves the accumulated audit fixes and regression tests. It does not waive
 the current `AGENTS.md` review rules, required `CI gate`, device protections or
 separate release authorization. Do not bypass protection to merge it.
 
+## Current blocker: native GTK crash in required CI
+
+The corrected source `bf2b490909c01b91b1fd209c430ce40d3dcfc721` failed
+[CI run 40433850969](https://github.com/BeamoTech/beamo-wipe/actions/runs/40433850969).
+**Do not merge PR #93.** The failure is a native Python/GTK segmentation fault
+in the main accessibility test process during garbage collection. The Python
+trace reaches `make_demo_wizard()` at
+`tests/test_accessible_runtime.py:277`; it does not establish the underlying
+C-level fault. A missing main-suite JUnit file follows the crash. Native
+Windows and CodeQL passed; required Linux and aggregate gates failed, and
+ISO/QEMU were skipped. No complete Linux-suite pass is available.
+
+The Blacksmith comment names the boot-guard test because the deliberate
+negative mutation makes it fail. The log then confirms the unmodified check
+passes and `negative test PASS: safety gate blocks bypass`. That is working
+mutation coverage. Do not remove or weaken the boot-identity guard, its test
+or the negative gate to address this crash.
+
+[Failure evidence and exact source bindings](evidence/security-main-handoff-20261027/ci-failure-bf2.json)
+retain the actual failed run and diagnosis. The decoded full job log is kept
+privately with its SHA-256; the GitHub job log and artifact are linked in the
+record. No native root cause or corrective implementation is claimed.
+
+This latest status is preserved on the documentation-only branch
+`handoff/security-review-blocked-20261027`, based on the same `bf2b490` product
+source. It has no separate PR. This avoids rerunning the unchanged full
+candidate merely to publish an unshipped documentation update. PR #93 still
+targets `main` from `fix/security-audit-handoff-20261027`.
+
+Next, reproduce the failure with native GTK on an admitted isolated x86_64
+Linux machine and capture a native debugger backtrace. Preserve the test
+sequence, all assertions and timeouts; running one test alone may omit the
+earlier GTK objects involved in garbage collection. One diagnostic starting
+point, after creating a new owned evidence directory and installing the
+required dependencies there, is:
+
+```bash
+dbus-run-session -- xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72" \
+  env BEAMO_WIPE_DRY_RUN=1 BEAMO_ISOLATED_X11_TEST=1 \
+      BEAMO_HOSTED_ORCA_SEPARATE=1 \
+  gdb --nx --batch --return-child-result \
+      -ex 'set pagination off' -ex 'set print frame-arguments none' \
+      -ex run -ex 'thread apply all bt' --args \
+  python3 -X faulthandler -m pytest -vv -p no:cacheprovider \
+      tests/test_accessible_runtime.py \
+      --deselect=tests/test_accessible_runtime.py::test_orca_announces_every_result \
+      --junitxml=/NEW-OWNED-INTERNAL-EVIDENCE/gtk.xml
+```
+
+This diagnostic command is **not executed or qualified by this handoff**.
+It must run only on the admitted isolated worker, with owned cleanup and no
+physical-device passthrough. Orca remains a separate required test, exactly
+as in the normal gate. If the module alone does not reproduce the fault,
+capture the full main-suite sequence under the same environment; absence of
+one isolated-test crash is not a correction. Investigate native widget and
+binding lifetime before editing. Then add a causal regression, batch this
+documentation commit with the proven fix on the existing PR branch, and rerun
+the affected checks plus exact-final-head qualification. Review any new
+Greptile findings before merge. No blind unchanged retry was dispatched.
+
 ## Source and integration
 
 - Repository: `BeamoTech/beamo-wipe`; proposed branch:
