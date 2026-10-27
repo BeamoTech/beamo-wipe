@@ -231,7 +231,7 @@ Preview/dry-run cannot exec real `NwipeRunner`: `test_confirm_erase_refuses_real
 
 ### Supported
 
-- **Firmware:** Legacy BIOS and UEFI (Secure Boot disabled) via `syslinux` + `grub-efi`. Both show the wizard first; power-off via `systemctl poweroff` after Done.
+- **Firmware:** Legacy BIOS and UEFI via `syslinux` + `grub-efi`. The UEFI path uses Debian-signed shim, GRUB and kernel, so it is designed to start with Secure Boot on or off; do not disable Secure Boot as a routine step. With Secure Boot enforcing, acceptance stays firmware-dependent (see **Secure Boot enforcing** under Degraded), and physical Secure Boot cases remain NOT TESTED. Both show the wizard first; power-off via `systemctl poweroff` after Done.
 - **USB boot variants:** USB-A and USB-C via adapter when firmware lists the stick; directly attached, not a keyboard hub if avoidable (`docs/boot-card.md`). Optical ISO (`sr0`) as QEMU path.
 - **Storage:** NVMe (Samsung 970/980 etc.), SATA HDD (ST500/WDC), SATA SSD (Crucial MX500), virtio `vda` (QEMU), USB-attached disks (`tran usb` SATA bridges). Multi-disk (2–4) with same-size handling via last-4-serial → full serial → device-name token chain.
 - **Display:** 800×600 through 1920×1080, including 1280×720, on Xorg `modesetting`/`fbdev`/`qxl`/`vmware`/`amdgpu`/`intel`/`nouveau` + DejaVu fonts, 72 DPI gate.
@@ -244,7 +244,7 @@ Preview/dry-run cannot exec real `NwipeRunner`: `test_confirm_erase_refuses_real
 - **SSDs:** Overwrite via `prng`/`dodshort`/`zero` is **not a formal certificate**; controller wear-leveling may retain data (SSD footer on pick screen, `docs/storage-and-controller-limits.md` §3, evidence `warnings[]`). Customers needing certified SSD erasure must use vendor secure-erase tool per model or physical destruction per `docs/storage-and-controller-limits.md` §5.
 - **Missing/duplicate metadata:** Falls back to label → `Unknown model`. Same-size disks without a unique serial or hardware ID fail closed: shut down and disconnect extra drives. Kernel names are never identity.
 - **eMMC/mmcblk:** `mmcblk0boot0/1/rpmb` (4 MiB) are hidden — correct (they are not wipe targets) the ordinary `mmcblk0` user-data device remains eligible when all disk safety checks pass. Only firmware-area nodes alone yield `PICK_EMPTY`.
-- **USB hubs / keyboard hubs:** May hide the stick from firmware boot menu; degraded boot findability (try direct port, disable Fast Boot per `docs/boot-card.md`).
+- **USB hubs / keyboard hubs:** May hide the stick from firmware boot menu; degraded boot findability (try a direct port or the Windows **Use a device** restart per `docs/boot-card.md`; firmware changes are not the routine next step).
 - **HiDPI:** May exhibit clipping at non-gate DPI; not automated at those DPIs. 800×600 and 1280×720 are supported short layouts.
 - **Secure Boot enforcing:** Firmware-dependent acceptance of the inspected Debian chain; trust, revocations, SBAT and firmware architecture decide. Use [the physical cases](secure-boot-acceptance.md). Unknown policy cannot Pass. We do not prescribe security changes or ship a bypass.
 - **Xorg driverless fallback:** Very old GPUs may fall back to `vesa`/`fbdev` (still works but slower); we deliberately do not force VESA on every GPU.

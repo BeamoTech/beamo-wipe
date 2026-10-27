@@ -383,7 +383,7 @@ def test_helper_cites_the_verified_microsoft_sources():
     doc = _parse()
     hrefs = [link for link in doc.links if link.startswith("http")]
     allowed = {
-        "https://github.com/BeamoINT/beamo-wipe",
+        "https://github.com/BeamoTech/beamo-wipe",
         *MICROSOFT_SOURCES,
     }
     from beamo_wipe.support_contact import SUPPORT_URL

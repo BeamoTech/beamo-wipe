@@ -11,7 +11,7 @@ Beamo Wipe — Bootable nwipe Drive Eraser USB for x64 PCs (UEFI & Legacy), Dual
 - Guided screens on top of nwipe (open source). You pay for the flashed stick and the guide, not a secret algorithm.
 - For x64 PCs that can boot from USB. You will use the PC’s boot menu (F12 / Esc / F9). Not Apple Silicon. Not Chromebooks.
 - Choose the disk by size and serial. The Beamo USB cannot be selected.
-- HDD overwrite via nwipe. SSD results depend on the drive’s controller. Not a Blancco-style certificate.
+- HDD overwrite via nwipe. SSD results depend on the drive’s controller. Not a formal erasure certificate.
 - No subscription. Reusable. No account.
 - Source and license on GitHub and on the USB.
 
@@ -27,12 +27,22 @@ Do not write any of these:
 - impossible to recover
 - we invented this wipe technology
 - Blancco replacement
+- any comparison with a named competitor's product, certificate, or trademark
 
 ## Honesty lines you may add
 
 - This uses nwipe (open source). GPL-3.0-or-later for the wrapper; nwipe is GPL-2.0.
 - There is no warranty.
-- If the USB does not appear, you may need to allow USB boot in firmware settings.
+- If the USB does not appear, try another port on the PC itself or the Windows
+  "Use a device" restart. Some PCs list USB only after USB boot is allowed in
+  firmware settings; if you will use that Windows again, find its BitLocker
+  recovery key before changing firmware.
+- A wipe report is optional. Saving one needs a second, separate USB stick
+  formatted FAT32, which is not included. exFAT and NTFS sticks are refused,
+  and many sticks over 32 GB come formatted as exFAT. Beamo Wipe does not
+  format the report stick. Plug it in only when the result screen asks.
+- On SSD and NVMe drives, Beamo Wipe overwrites the storage the drive exposes.
+  It does not send the drive's built-in sanitize or secure-erase command.
 - Secure Boot: this USB uses Debian's signed boot files. Whether a PC accepts
   them depends on its firmware trust settings and revocation updates. We do
   not ship circumvention tools. Older sticks may differ; read START-HERE.html

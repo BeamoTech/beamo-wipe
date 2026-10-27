@@ -194,9 +194,12 @@ project currently pins them, but Debian package repositories remain mutable;
 this does **not** establish bit-for-bit reproducible ISO bytes. Record installed
 package versions and hashes for each build.
 
-The recorded prior-stable rollback for v0.2.12 is the signed
-`beamo-wipe-0.2.11-amd64.iso`, SHA-256
-`9694068e4d70824b316f12da9bd4c0ee964809d15ce5ad4d406333f710176305`.
+Each release manifest records its prior-stable rollback target in
+`prior_stable` (`PRIOR_STABLE` in `src/beamo_wipe/release_manifest.py`).
+The current source records the signed `beamo-wipe-0.2.11-amd64.iso`, SHA-256
+`9694068e4d70824b316f12da9bd4c0ee964809d15ce5ad4d406333f710176305`. For a
+rollback, use the `prior_stable` record in the signed manifest of the release
+being rolled back.
 See [release verification](release-verification.md) and [runbook](runbook.md).
 Do not relabel a fresh build as the old verified artifact.
 

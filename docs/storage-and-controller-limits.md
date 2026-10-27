@@ -119,7 +119,7 @@ Back-office policy: a support ticket that asks to bypass ownership, EDID, or the
 
 | Bucket | What we handle | Reference |
 |---|---|---|
-| **Supported** | Legacy BIOS + UEFI (Secure Boot disabled) via `syslinux`+`grub-efi`, USB-A/C when firmware lists the stick, NVMe/SATA HDD/SSD/virtio/eMMC main device, same-size disambiguation via `confirm_spec`, 5 s delay, proof-of-attempt JSON. | `docs/compatibility-matrix.md` FW/ST rows |
+| **Supported** | Legacy BIOS + UEFI via `syslinux`+`grub-efi` (Debian-signed shim/GRUB/kernel, so Secure Boot on or off; do not disable it routinely; enforcing acceptance is firmware-dependent and physically NOT TESTED, see Degraded), USB-A/C when firmware lists the stick, NVMe/SATA HDD/SSD/virtio/eMMC main device, same-size disambiguation via `confirm_spec`, 5 s delay, proof-of-attempt JSON. | `docs/compatibility-matrix.md` FW/ST rows |
 | **Degraded (works but not a certificate)** | Any SSD/NVMe/eMMC overwrite as above, damaged reallocated media, PICK_EMPTY only-eMMC, hub-boot, 800×600/HiDPI. Secure Boot acceptance is firmware-dependent on the inspected Debian chain and actual trust/revocations; unknown states cannot Pass. Documented as overwrite, not sanitization. | This doc §3; [Secure Boot cases](secure-boot-acceptance.md) |
 | **Unsupported / out of scope** | Apple Silicon, Chromebooks, RAID controllers (hardware), Apple T2 internal, `nbd/iscsi/fc/nvmeof`, BitLocker/OPAL/Sed locked without prior unlock, HPA/DCO hidden LBAs, hidden NVMe namespaces, Windows in-OS wipe from inside the running OS. Correctly listed-with-no-targets or fails closed. | `docs/compatibility-matrix.md` Unsupported, `docs/claims.md` forbidden list |
 
@@ -135,7 +135,7 @@ Any surface (wizard, gallery, README, helper, evidence, dist `README.txt`, Amazo
 | "SSD results depend on the drive's controller. Not a formal certificate." | "SSD is fully erased / sanitized" |
 | "Overwriting reaches only storage the device exposes. It cannot guarantee coverage of inaccessible, remapped, over-provisioned (spare), or controller-managed flash areas. Additional overwrite passes do not fix these limitations." (method selection and report warning) | "SSD overwrite is certified" |
 | "Overwrite is not a lab certificate. Do not tell customers otherwise." (ADVANCED) | "This SSD is now certified" |
-| "HDD overwrite via nwipe. SSD results depend on the drive's controller. Not a Blancco-style certificate." (claims) | "Works with any SSD guarantee" |
+| "HDD overwrite via nwipe. SSD results depend on the drive's controller. Not a formal erasure certificate." (claims) | "Works with any SSD guarantee" |
 | `evidence.outcome` in `{completed, verified, failed, interrupted}` + `verification.verified` boolean | Any `certificate`, `sanitized`, `compliant` field |
 | "Owner-operated erasure before recycle or resale. No warranty." | "We take ownership liability" |
 
