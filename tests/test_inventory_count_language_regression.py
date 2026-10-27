@@ -45,7 +45,7 @@ def test_available_count_is_in_session_language(language, phrases, available, in
     "language,phrases",
     [
         ("en", ("1 other device not available", "2 other devices not available")),
-        ("fr", ("1 autre appareil non disponible", "2 autres appareils non disponibles")),
+        ("fr", ("1 autre périphérique non disponible", "2 autres périphériques non disponibles")),
         ("de", ("1 weiteres Gerät nicht verfügbar", "2 weitere Geräte nicht verfügbar")),
         ("es", ("1 dispositivo más no disponible", "2 dispositivos más no disponibles")),
     ],
