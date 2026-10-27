@@ -2,8 +2,8 @@
 """Fail-closed export of a completed wipe report to one newly inserted USB.
 
 The kiosk never accepts a destination path.  The controller identifies one
-new FAT32 USB, then delegates mounting and copying to a short-lived private
-mount namespace.  A report is successful only after a read-only remount,
+new FAT32 or exFAT USB, then delegates mounting and copying to a short-lived
+private mount namespace.  A report is successful only after a read-only remount,
 byte-for-byte verification, and a final ordinary unmount.
 """
 
@@ -23,6 +23,7 @@ import sys
 import unicodedata
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from types import MappingProxyType
 from typing import TypeGuard, Any, Callable, Iterable, Mapping, Optional, Sequence
 
 from beamo_wipe.discover import run_lsblk
@@ -47,7 +48,13 @@ MOUNTINFO_PATH = "/proc/self/mountinfo"
 SYS_DEV_BLOCK_ROOT = Path("/sys/dev/block")
 MOUNT_ROOT = Path("/run/beamo-wipe-export")
 REPORTS_DIR = "BEAMO-WIPE-REPORTS"
-SUPPORTED_FILESYSTEMS = frozenset({"vfat"})
+SUPPORTED_FILESYSTEMS = frozenset({"vfat", "exfat"})
+# The only lsblk/libblkid FSVER accepted for each FSTYPE above. "vfat" also
+# covers FAT12 and FAT16, which stay refused. exFAT has one published
+# revision, 1.00, which libblkid prints as "1.0"; any other revision is
+# refused. Both in-kernel drivers take the same fmask/dmask/VFS mount
+# options, so the mount command differs only in its -t value.
+_REQUIRED_FSVER: Mapping[str, str] = MappingProxyType({"vfat": "FAT32", "exfat": "1.0"})
 TERMINAL_OUTCOMES = frozenset({"completed", "verified", "failed", "interrupted"})
 EXPORT_TIMEOUT_S = 120
 COMMAND_TIMEOUT_S = 15
@@ -88,14 +95,14 @@ USB_MANY_FOUND = "More than one new report USB found."
 USB_MUST_BE_WRITABLE = "The report USB must be writable and not already mounted."
 USB_LAYOUT_MALFORMED = "The report USB layout is malformed."
 USB_LAYOUT_AMBIGUOUS = "The report USB layout is ambiguous."
-USB_NEED_ONE_VOLUME = "The report USB must contain exactly one FAT32 volume."
+USB_NEED_ONE_VOLUME = "The report USB must contain exactly one FAT32 or exFAT volume."
 USB_LAYOUT_UNSUPPORTED = "The report USB layout is unsupported."
 USB_PARTITION_ORPHAN = "The report USB partition does not belong to its parent disk."
 USB_VOLUME_PATH_UNSUPPORTED = "The report USB volume path is unsupported."
 USB_VOLUME_WRITABLE = "The report USB volume must be writable and unmounted."
 USB_VOLUME_SMALL = "The report USB volume is too small."
-USB_FAT32_ONLY = "Use a FAT32 report USB. Other filesystems are not mounted."
-USB_FAT32_NOT_12_16 = "Use a FAT32 report USB. FAT12 and FAT16 are not accepted."
+USB_FAT32_ONLY = "Use a FAT32 or exFAT report USB. Other filesystems are not mounted."
+USB_FAT32_NOT_12_16 = "Use a FAT32 or exFAT report USB. FAT12 and FAT16 are not accepted."
 EVIDENCE_MALFORMED = "The saved wipe evidence is malformed."
 EVIDENCE_SCHEMA = "The saved wipe evidence has an unsupported schema."
 EVIDENCE_NOT_FINISHED = "Only a finished wipe report can be exported."
@@ -159,11 +166,11 @@ USB_CHANGED_BEFORE_MOUNT = "The report USB changed before mounting."
 PROTECTED_CHANGED = "A protected disk identity changed before export."
 USB_ALIASES_PROTECTED = "The report USB aliases a connected protected disk."
 USB_IDENTITY_CHANGED_OPEN = "The report USB identity changed while opening it."
-USB_NOT_SINGLE = "{detail} Insert exactly one new FAT32 report USB, then try again."
+USB_NOT_SINGLE = "{detail} Insert exactly one new FAT32 or exFAT report USB, then try again."
 
 NEXT_REPLUG = "Unplug only the report USB, plug it back in, then try again."
 NEXT_DIFFERENT_STICK = (
-    "Use a different USB stick with one FAT32 volume. "
+    "Use a different USB stick with one FAT32 or exFAT volume. "
     "This USB cannot format or repair report media."
 )
 NEXT_TRY_SUPPORT = (
@@ -984,7 +991,7 @@ def _require_baseline_present(
 def select_export_volume(
     payload: Mapping[str, Any], baseline: Sequence[DeviceFingerprint]
 ) -> ExportVolume:
-    """Return exactly one new, simple, writable FAT32 USB volume."""
+    """Return exactly one new, simple, writable FAT32 or exFAT USB volume."""
     roots = _root_disks(payload)
     _require_baseline_present(roots, baseline)
     _refuse_duplicate_wwns(roots)
@@ -1049,8 +1056,11 @@ def select_export_volume(
     if fstype not in SUPPORTED_FILESYSTEMS:
         raise SafetyError(USB_FAT32_ONLY)
     fsver = _strict_text(volume_node, "fsver", required=True)
-    if fsver != "FAT32":
-        raise SafetyError(USB_FAT32_NOT_12_16)
+    if fsver != _REQUIRED_FSVER[fstype]:
+        # An unknown exFAT revision is an unsupported filesystem, not FAT12/16.
+        raise SafetyError(
+            USB_FAT32_NOT_12_16 if fstype == "vfat" else USB_FAT32_ONLY
+        )
     uuid = _strict_text(volume_node, "uuid", required=True)
     return ExportVolume(
         parent=parent,

@@ -481,9 +481,9 @@ REPORT_VOLATILE = (
 )
 REPORT_HELP_NEED = (
     "What you need\n"
-    "Saving a report is optional. You need a separate removable FAT32 USB device, "
+    "Saving a report is optional. You need a separate removable FAT32 or exFAT USB device, "
     "with one writable, unmounted volume. It must be different from the Beamo boot USB and "
-    "the disk you erase. exFAT, NTFS, FAT12 and FAT16 are not supported. "
+    "the disk you erase. NTFS, FAT12 and FAT16 are not supported. "
     "Beamo Wipe does not format or repair report media."
 )
 REPORT_HELP_INSERT = (
@@ -526,7 +526,7 @@ REPORT_HELP_START = (
 REPORT_HELP_STAGES = (
     "Saving in stages\n"
     "1. Insert the report USB, only when the result screen asks. "
-    "2. Check the USB: exactly one new FAT32 USB is accepted. "
+    "2. Check the USB: exactly one new FAT32 or exFAT USB is accepted. "
     "3. Save the report to that USB. "
     "4. Verify the copy by reading it back. "
     "5. Safe removal: only the saved message makes the report USB safe to remove. "
@@ -549,11 +549,11 @@ REPORT_SHARE_REDACTED = (
 
 REPORT_INSERT = (
     "No erase is running. Leave the boot USB and selected disk connected. "
-    "Insert one separate FAT32 USB, then choose Save report to USB. "
+    "Insert one separate FAT32 or exFAT USB, then choose Save report to USB. "
     "The original report includes disk identifiers. A sharing copy, if saved, is not identity evidence."
 )
 REPORT_MEDIA_WHAT = (
-    "Want a report afterwards? You will need a separate FAT32 USB stick with "
+    "Want a report afterwards? You will need a separate FAT32 or exFAT USB stick with "
     "one volume (any size). Keep it unplugged until the result screen asks "
     "for it. A USB that is already plugged in cannot be used for the report. "
     "Open Need a report? for the full requirements."
@@ -565,7 +565,7 @@ REPORT_MEDIA_WANTED = (
     "Check disks again."
 )
 ADVANCED_LOG_LEAD = (
-    "Keep the separate FAT32 report USB unplugged until the erase has stopped "
+    "Keep the separate FAT32 or exFAT report USB unplugged until the erase has stopped "
     "and Save report to USB is offered. Then insert it before choosing Save. "
     "Leave the boot USB and selected disk connected. "
 )
@@ -994,7 +994,7 @@ CON_DIAG_SAVE = "save diagnostic report"
 CON_DIAG_PREPARE = "prepare baseline"
 CON_DIAG_LINE = "R: {action}    Esc: back    S: shut down"
 CON_DONE_PREVIEW = "Enter: run again    C: close"
-CON_DONE_SAVE = "R: save report to one FAT32 USB    Enter: shut down"
+CON_DONE_SAVE = "R: save report to one FAT32 or exFAT USB    Enter: shut down"
 CON_DONE_RETRY = "E: retry evidence save    Enter: shut down"
 CON_DONE_SHUTDOWN = "Enter: shut down"
 CON_DONE_READ = "Up/Down, PgUp/PgDn: read aftercare."

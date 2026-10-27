@@ -26,7 +26,7 @@ Status: Beamo Wipe 0.2.14, nwipe 0.42. All paths below are traced to executable 
 | `MOUNTPOINT` / `MOUNTPOINTS` | lsblk | `_node_mountpoints` → `Disk.mountpoints` → `is_protected_mountpoint`, `has_any_mount`, `is_boot` via mount | `/` or `/run/live` etc → `is_boot` forced true; `has_any_mount` → not wipeable |
 | `LABEL` | lsblk | `_volume_label`, `labels_for`, `BOOT_LABELS`, `FIRMWARE_LABELS`, typed source resolver; `layout_id` → `disk_identity[8]` | missing → `""`; duplicate `BEAMO_WIPE` → fail-closed duplicate; `EFI` filtered when real label exists |
 | `FSTYPE` | lsblk | Not a boot signal. Partition-contents evidence and `layout_id` → `disk_identity[8]` | change → identity fail |
-| `FSVER` | lsblk | Not a boot signal. `support_export` reads it from the same `run_lsblk` scan for the report-USB FAT32 check | — |
+| `FSVER` | lsblk | Not a boot signal. `support_export` reads it from the same `run_lsblk` scan for the report-USB check (`vfat` must be `FAT32`, `exfat` must be `1.0`) | — |
 | `VENDOR` | lsblk | `Disk.vendor` → `disk_identity[5]` | missing → `""`; change → identity fail |
 | `PKNAME` | lsblk | `parent_disk_path` partition→disk via `pkname` match | missing → fallback to `parent` node or alias scan |
 | `UUID` | lsblk | Typed source `_resolve_typed_source` `UUID`; `layout_id` → `disk_identity[8]` | duplicate UUID → `found` list len>1 → resolver returns `None` → fail-closed |

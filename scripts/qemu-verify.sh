@@ -485,6 +485,10 @@ find "$SQUASH_MOUNT/lib/modules" -type f -name 'vfat.ko*' -print -quit | grep -q
   echo "FAT32 kernel module missing from ISO" >&2
   exit 2
 }
+find "$SQUASH_MOUNT/lib/modules" -type f -name 'exfat.ko*' -print -quit | grep -q . || {
+  echo "exFAT kernel module missing from ISO" >&2
+  exit 2
+}
 grep -q '^PrivateMounts=yes$' \
   "$SQUASH_MOUNT/etc/systemd/system/beamo-wipe-kiosk.service" || {
   echo "kiosk private mount namespace is missing" >&2

@@ -38,9 +38,9 @@ Do not write any of these:
   firmware settings; if you will use that Windows again, find its BitLocker
   recovery key before changing firmware.
 - A wipe report is optional. Saving one needs a second, separate USB stick
-  formatted FAT32, which is not included. exFAT and NTFS sticks are refused,
-  and many sticks over 32 GB come formatted as exFAT. Beamo Wipe does not
-  format the report stick. Plug it in only when the result screen asks.
+  formatted FAT32 or exFAT, which is not included. Many sticks over 32 GB come
+  formatted as exFAT. NTFS, FAT12 and FAT16 sticks are refused. Beamo Wipe does
+  not format the report stick. Plug it in only when the result screen asks.
 - On SSD and NVMe drives, Beamo Wipe overwrites the storage the drive exposes.
   It does not send the drive's built-in sanitize or secure-erase command.
 - Secure Boot: this USB uses Debian's signed boot files. Whether a PC accepts

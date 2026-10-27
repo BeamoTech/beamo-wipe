@@ -574,7 +574,7 @@
       <p>Check that you have the copies you need. You will pick a disk. Everything on that disk will be erased. You cannot get the files back.</p>
       <p>If that disk holds an operating system, erasing it also removes Windows or Linux, applications, files, and recovery partitions on that disk. Only the disk you confirm is erased. Other disks are not. Putting an operating system back on is a separate task.</p>
       <p>If this computer has a battery, plug it into wall power before you erase. Keep the lid open. A power cut stops the erase. The screen may go dark; press a key or move the mouse to bring it back. That is the display, not sleep.</p>
-      <p>If you want a report afterwards, you need a separate FAT32 USB stick with one volume (any size). Keep it unplugged until the result screen asks for it. A USB that is already plugged in cannot be used for the report.</p>
+      <p>If you want a report afterwards, you need a separate FAT32 or exFAT USB stick with one volume (any size). Keep it unplugged until the result screen asks for it. A USB that is already plugged in cannot be used for the report.</p>
       <p>The live USB asks Linux to ignore lid closure and a short power-button press, and disables sleep. Firmware or a held power button can still stop the erase. Use Cancel erase and wait for the result before shutting down. A power cut can leave the disk partly erased and lose unsaved reports; an interrupted erase does not resume automatically.</p>
       <p>This offline helper cannot read battery or wall-power status. The live wizard shows reported readings when available; unknown readings are not proof that power is connected or will last.</p>
       <p>For 64-bit Intel/AMD Windows or Linux PCs that start from this USB. <strong>Not Apple Silicon Macs. Not Chromebooks.</strong> Some Intel Macs may show this USB; many will not.</p>
@@ -591,7 +591,7 @@
       <h2>Saving the report</h2>
       <ol>
         <li>Insert the report USB only when the result screen asks for it.</li>
-        <li>Check: the wizard accepts exactly one new FAT32 USB.</li>
+        <li>Check: the wizard accepts exactly one new FAT32 or exFAT USB.</li>
         <li>Save writes the report to that USB. This can take a couple of minutes on a slow stick; never remove any USB while saving.</li>
         <li>Verify reads the copy back before it counts as saved.</li>
         <li>Safe removal: only the saved message makes the report USB safe to remove.</li>
@@ -600,7 +600,7 @@
       <p>If a report cannot be saved at all, read the Support code and Build lines on the screen and tell support those exact values. They do not include disk serials or paths.</p>
       <p>If the USB is rejected:</p>
       <ul>
-        <li>Wrong filesystem or layout: use a different USB stick with one FAT32 volume.</li>
+        <li>Wrong filesystem or layout: use a different USB stick with one FAT32 or exFAT volume.</li>
         <li>Already mounted: unplug only the report USB, plug it back in, then try again.</li>
         <li>More than one new USB: unplug the extras so exactly one remains.</li>
         <li>Boot or selected disk involved: shut down first, then sort the USB sticks while the computer is off.</li>

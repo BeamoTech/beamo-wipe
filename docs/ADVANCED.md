@@ -67,10 +67,13 @@ then you confirm) before choosing and
 confirming the target again. Do not guess which device to remove.
 
 Only after the erase has stopped and the result screen offers **Save report to
-USB**, insert exactly one separate removable FAT32 USB, then choose **Save
-report to USB**. Leave the Beamo boot USB and selected erase disk connected.
-The report USB must have one writable, unmounted FAT32 volume; exFAT, NTFS,
-FAT12 and FAT16 are unsupported. Beamo Wipe never formats or repairs it.
+USB**, insert exactly one separate removable FAT32 or exFAT USB, then choose
+**Save report to USB**. Leave the Beamo boot USB and selected erase disk
+connected. The report USB must have one writable, unmounted FAT32 or exFAT
+(revision 1.0) volume; NTFS, FAT12 and FAT16 are unsupported. Each is mounted
+by its in-kernel driver (`vfat` or `exfat`) with the same
+`nodev,nosuid,noexec,nosymfollow,fmask=0177,dmask=0077` options. Beamo Wipe
+never formats or repairs it.
 The exporter rejects devices present in the final pre-erase inventory, including
 a report USB inserted too early. Final target rediscovery and confirmation
 remain mandatory; report intent does not authorize any disk operation.

@@ -297,7 +297,7 @@ Console: type `ANOTHER` (or press `A` in the keyboard interface). See
 ### Planning to save a report
 
 Open **Need a report?** before choosing an erase target (also available at method
-selection and in Advanced). Keep a separate supported FAT32 report USB unplugged
+selection and in Advanced). Keep a separate supported FAT32 or exFAT report USB unplugged
 until the erase has stopped and Save report to USB is offered; then insert it
 before choosing Save. Keep the boot USB and erase disk connected. Any unsaved
 report is lost on live-session shutdown or power loss. The optional preference

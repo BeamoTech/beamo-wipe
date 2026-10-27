@@ -404,7 +404,7 @@
       <p>Vérifiez que vous avez les copies dont vous avez besoin. Vous choisirez un disque. Tout son contenu sera effacé. Vous ne pourrez pas récupérer les fichiers.</p>
       <p>Si ce disque contient un système d’exploitation, l’effacer supprime aussi Windows ou Linux, les applications, les fichiers et les partitions de récupération de ce disque. Seul le disque confirmé est effacé. Les autres ne le sont pas. Réinstaller un système d’exploitation est une tâche séparée.</p>
       <p>Si cet ordinateur a une batterie, branchez-le sur le secteur avant d’effacer. Gardez le capot ouvert. Une coupure de courant arrête l’effacement. L’écran peut s’éteindre ; appuyez sur une touche ou bougez la souris pour le rallumer. C’est l’affichage, pas la mise en veille.</p>
-      <p>Si vous voulez un rapport ensuite, il vous faut une clé USB FAT32 séparée avec un seul volume (toutes tailles). Gardez-la débranchée jusqu’à ce que l’écran de résultat la demande. Une clé USB déjà branchée ne peut pas servir pour le rapport.</p>
+      <p>Si vous voulez un rapport ensuite, il vous faut une clé USB FAT32 ou exFAT séparée avec un seul volume (toutes tailles). Gardez-la débranchée jusqu’à ce que l’écran de résultat la demande. Une clé USB déjà branchée ne peut pas servir pour le rapport.</p>
       <p>La clé USB live demande à Linux d’ignorer la fermeture du capot et un appui bref sur le bouton d’alimentation, et désactive la mise en veille. Le micrologiciel ou un appui prolongé sur ce bouton peuvent quand même arrêter l’effacement. Utilisez Arrêter l’effacement et attendez le résultat avant d’éteindre. Une coupure de courant peut laisser le disque partiellement effacé et faire perdre les rapports non enregistrés ; un effacement interrompu ne reprend pas automatiquement.</p>
       <p>Cette aide hors ligne ne peut pas lire l’état de la batterie ni du secteur. L’assistant live affiche les mesures signalées quand elles existent ; une mesure inconnue ne prouve pas que le secteur est branché ni que l’alimentation tiendra.</p>
       <p>Pour PC Windows ou Linux 64 bits Intel/AMD qui démarrent depuis cette clé USB. <strong>Pas les Mac Apple Silicon. Pas les Chromebooks.</strong> Certains Mac Intel peuvent afficher cette clé USB ; beaucoup ne le feront pas.</p>
@@ -421,7 +421,7 @@
       <h2>Rapport : les étapes</h2>
       <ol>
         <li>Insérez la clé USB de rapport uniquement quand l’écran de résultat la demande.</li>
-        <li>Vérifiez la clé USB : l’assistant n’accepte qu’une seule nouvelle clé USB FAT32.</li>
+        <li>Vérifiez la clé USB : l’assistant n’accepte qu’une seule nouvelle clé USB FAT32 ou exFAT.</li>
         <li>Enregistrez le rapport sur cette clé. Cela peut prendre quelques minutes sur une clé lente ; ne retirez aucune clé USB pendant l’enregistrement.</li>
         <li>Contrôlez la copie en la relisant avant qu’elle ne compte comme enregistrée.</li>
         <li>Le retrait n’est sûr qu’après la confirmation d’enregistrement : elle seule rend la clé USB de rapport sûre à retirer.</li>
@@ -430,7 +430,7 @@
       <p>Si un rapport ne peut pas être enregistré du tout, lisez les lignes Code d’assistance et Version à l’écran et communiquez ces valeurs exactes à l’assistance. Elles ne contiennent ni numéros de série ni chemins de disque.</p>
       <p>Si la clé USB est refusée :</p>
       <ul>
-        <li>Système de fichiers ou structure incorrects : utilisez une autre clé USB avec un seul volume FAT32.</li>
+        <li>Système de fichiers ou structure incorrects : utilisez une autre clé USB avec un seul volume FAT32 ou exFAT.</li>
         <li>Déjà montée : débranchez uniquement la clé USB de rapport, rebranchez-la, puis réessayez.</li>
         <li>Plusieurs nouvelles clés USB : débranchez les autres pour n’en garder qu’une seule.</li>
         <li>Disque de démarrage ou disque sélectionné concerné : éteignez d’abord, puis triez les clés USB pendant que l’ordinateur est éteint.</li>
