@@ -15,12 +15,119 @@ unset PYTHONUSERBASE
 umask 077
 export LANG=C.UTF-8
 cd /
+# Readable text on very dense panels. The wizard sizes text in window
+# pixels, so a 4K laptop panel shows it tiny. Each lit output moves to its
+# own largest listed mode of at most 1920x1200 with the same shape (aspect
+# within 2%). Dense means wider than 2560 or taller than 1600 pixels, or
+# 2560 wide on a panel whose reported width gives 150 DPI or more. Nothing
+# changes for one-mode outputs (simpledrm, fbdev, nomodeset), rotated or
+# side-by-side layouts, a missing xrandr, unexpected output or any failure.
+# Only xrandr (x11-xserver-utils) is run. This never stops the session.
+beamo_uint() {
+  # 0, or 1-5 digits without a leading zero (safe for shell arithmetic).
+  case "$1" in
+    0) return 0 ;;
+    ''|0*|*[!0-9]*|??????*) return 1 ;;
+  esac
+  return 0
+}
+
+beamo_mode_flush() {
+  [ -n "$name" ] || return 0
+  lit=$((lit + 1))
+  [ "$x$y" = 00 ] || moved=1
+  if [ "$dense" = 1 ] && [ "$modes" -gt 1 ] && [ -n "$best" ]; then
+    args="$args --output $name --mode $best"
+  fi
+  name=''
+  return 0
+}
+
+beamo_readable_mode() {
+  command -v xrandr >/dev/null 2>&1 || return 0
+  query="$(timeout 5 xrandr --query 2>/dev/null)" || return 0
+  set -f
+  args='' lit=0 moved=0 skip=0 name='' dense=0 modes=0 best='' area=0
+  cw=0 ch=0 x=0 y=0
+  while IFS= read -r line; do
+    case "$line" in
+      ' '*)
+        [ -n "$name" ] || continue
+        # shellcheck disable=SC2086
+        set -- $line
+        mode=${1:-}
+        case "$mode" in *x*) ;; *) continue ;; esac
+        w=${mode%%x*} h=${mode#*x}
+        if ! beamo_uint "$w" || ! beamo_uint "$h"; then continue; fi
+        modes=$((modes + 1))
+        if [ "$w" -gt 1920 ] || [ "$h" -gt 1200 ] ||
+          [ "$w" -lt 1280 ] || [ "$h" -lt 720 ]; then
+          continue
+        fi
+        d=$((w * ch - cw * h))
+        [ "$d" -ge 0 ] || d=$((0 - d))
+        [ $((d * 50)) -le $((cw * h)) ] || continue
+        [ $((w * h)) -gt "$area" ] || continue
+        best=$mode area=$((w * h))
+        ;;
+      *)
+        beamo_mode_flush
+        # shellcheck disable=SC2086
+        set -- $line
+        [ "${2:-}" = connected ] || continue
+        oname=$1
+        shift 2
+        if [ "${1:-}" = primary ]; then shift; fi
+        geom=${1:-}
+        case "$geom" in *x*+*+*) ;; *) continue ;; esac
+        # A rotation or reflection word sits between geometry and "(".
+        case "${2:-}" in '('*) ;; *) skip=1; continue ;; esac
+        case "$oname" in ''|-*|*[!A-Za-z0-9._-]*) skip=1; continue ;; esac
+        cw=${geom%%x*} rest=${geom#*x}
+        ch=${rest%%+*} rest=${rest#*+}
+        x=${rest%%+*} y=${rest#*+}
+        for n in "$cw" "$ch" "$x" "$y"; do
+          beamo_uint "$n" || skip=1
+        done
+        [ "$skip" = 0 ] || continue
+        # Physical size from EDID, after the "(...)" list: "344mm x 194mm".
+        size_mm=${line##*)}
+        # shellcheck disable=SC2086
+        set -- $size_mm
+        wmm=${1:-0} wmm=${wmm%mm}
+        beamo_uint "$wmm" || wmm=0
+        dense=0
+        if [ "$cw" -gt 2560 ] || [ "$ch" -gt 1600 ]; then
+          dense=1
+        elif [ "$cw" -ge 2560 ] && [ "$wmm" -ge 150 ] && [ "$wmm" -le 2000 ] &&
+          [ $((cw * 254)) -ge $((wmm * 1500)) ]; then
+          dense=1
+        fi
+        name=$oname modes=0 best='' area=0
+        ;;
+    esac
+  done <<EOF
+$query
+EOF
+  beamo_mode_flush
+  [ -n "$args" ] && [ "$skip" = 0 ] || return 0
+  # Panels not all at 0,0 (side by side): resizing one would open a gap
+  # inside the full-screen window or move its content across the seam.
+  if [ "$lit" -gt 1 ] && [ "$moved" = 1 ]; then return 0; fi
+  # shellcheck disable=SC2086
+  set -- $args
+  timeout 10 xrandr "$@" >/dev/null 2>&1 || true
+  return 0
+}
+
 # -s: ignore user site-packages. -P: do not prepend cwd (Python 3.11+, bookworm).
 # "$@" is only --console / --fullscreen / --accessible from the kiosk profile. app.py still
 # strips preview/gallery/boot-device flags if this binary is invoked by hand.
 # Display blanking is X screensaver, not OS sleep. xset confirms the
 # ServerFlags policy when X is up; failure is ignored.
 if [ -n "${DISPLAY:-}" ]; then
+  # Subshell: parser options and any failure stay contained.
+  (beamo_readable_mode) 2>/dev/null || true
   xset s 600 s blank s on 2>/dev/null || true
   xset dpms 0 0 0 2>/dev/null || true
   # Familiar arrow on the X root window (startup gap, uncovered areas).
