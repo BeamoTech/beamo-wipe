@@ -263,7 +263,7 @@ def test_french_and_german_states():
             40, phase="retrying", counters="round 1 of 1, pass 2 of 3"
         )
         assert (
-            "während das Laufwerk gerade wiederholt"
+            "während das Laufwerk einen Schritt wiederholt"
             in wiz.progress_view.status_text
         )
     finally:

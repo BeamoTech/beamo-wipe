@@ -121,7 +121,7 @@ LOCALIZED_HELPER_IDENTITY: dict[str, LocalizedHelperIdentity] = {
         ),
         "source_status": "kein hergestelltes Abbild",
         "labels": {
-            STATUS_PRODUCTION: "Dieser USB-Stick enthält ein hergestelltes Beamo Wipe-Abbild.",
+            STATUS_PRODUCTION: "Dieser USB-Stick enthält ein hergestelltes Beamo-Wipe-Abbild.",
             STATUS_DEVELOPMENT: "Dieser USB-Stick enthält ein Entwicklungsabbild, keine Produktionsversion.",
             STATUS_DIRTY: "Dieser USB-Stick wurde aus geändertem Quellcode erstellt. Er ist keine Produktionsversion.",
             STATUS_MISMATCH: "Dieser Starter passt nicht zur Identität des USB-Abbilds.",
