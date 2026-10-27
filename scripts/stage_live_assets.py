@@ -31,8 +31,33 @@ is offered only when the USB and an exact boot entry can be verified.
 You still choose and confirm the disk after restarting. Nothing erases automatically.
 Open START-HERE.html for this USB's build and boot-menu keys.
 Engine: nwipe (GPL). Wrapper: GPL-3.0-or-later. NO WARRANTY.
-https://github.com/BeamoINT/beamo-wipe
+Source code and our written offer for it: SOURCE.txt.
+https://github.com/BeamoTech/beamo-wipe
 """
+
+REPOSITORY_URL = "https://github.com/BeamoTech/beamo-wipe"
+
+
+def source_offer(support_url: str) -> bytes:
+    """GPL corresponding-source notice and written offer shipped on the USB."""
+    return f"""Beamo Wipe: source code and written offer
+
+This USB contains free software under the GNU General Public License (GPL)
+and other licenses, including the Linux kernel, GRUB, nwipe and Debian
+packages. The license texts are on this USB (LICENSE, NOTICE and
+THIRD_PARTY.md) and inside the live system under /usr/share/doc/.
+
+Beamo Wipe source: {REPOSITORY_URL}
+Exact version and build: shown on START-HERE.html on this USB.
+
+Written offer: for at least three years after we last distribute this
+release, Beamo will give any third party who asks a complete
+machine-readable copy of the corresponding source code for every program on
+this USB that is covered by the GPL or a license requiring source
+distribution, for no more than our cost of physically performing that
+distribution. Ask through {support_url} and quote the version and build
+shown on START-HERE.html.
+""".encode("utf-8")
 
 
 def require_reviewed_chroot_includes(
@@ -145,6 +170,7 @@ def stage_assets(root: Path, live: Path) -> None:
     from beamo_wipe.build_identity import assert_injectable, injected_payload
     from beamo_wipe.compat_story import inject_helper_html
     from beamo_wipe.release_manifest import git_commit, git_dirty, live_build_inputs
+    from beamo_wipe.support_contact import SUPPORT_URL
 
     build_id = os.environ.get("BUILD_ID", "local")
     dirty = git_dirty()[0]
@@ -233,7 +259,7 @@ def stage_assets(root: Path, live: Path) -> None:
         put_file(root / name, docs / name)
     for name in ("NOTICE", "LICENSE"):
         put_file(root / name, binary / name)
-    source = b"Source: https://github.com/BeamoINT/beamo-wipe\n"
+    source = source_offer(SUPPORT_URL)
     put_bytes(binary / "SOURCE.txt", source)
     put_bytes(docs / "SOURCE.txt", source)
     put_bytes(binary / "README.txt", README.encode("utf-8"))

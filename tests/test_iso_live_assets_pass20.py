@@ -23,6 +23,7 @@ def _fixture(tmp_path):
     source.mkdir(parents=True)
     (source / "__init__.py").write_text('__version__ = "0.2.9"\n')
     (source / "payload.py").write_text("PAYLOAD = 'A'\n")
+    (source / "support_contact.py").write_text('SUPPORT_URL = "https://support.invalid"\n')
     (source / "build_identity.py").write_text(
         "def assert_injectable(**kwargs): pass\n"
         "def injected_payload(**kwargs): return kwargs\n"

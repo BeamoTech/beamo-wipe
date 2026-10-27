@@ -108,7 +108,7 @@ lb config \
   --win32-loader false \
   --iso-application "Beamo Wipe" \
   --iso-preparer "Beamo" \
-  --iso-publisher "Beamo https://github.com/BeamoINT/beamo-wipe" \
+  --iso-publisher "Beamo https://github.com/BeamoTech/beamo-wipe" \
   --iso-volume "BEAMO_WIPE" \
   --archive-areas "main" \
   --apt-recommends false \
