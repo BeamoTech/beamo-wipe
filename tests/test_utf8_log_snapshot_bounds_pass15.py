@@ -35,6 +35,7 @@ def _fake_boundaries(monkeypatch):
     monkeypatch.setattr(runner_module.subprocess, "run", forbidden)
     monkeypatch.setattr(runner_module, "pinned_nwipe_already_running", forbidden)
     monkeypatch.setattr(runner_module, "_recheck_identity_under_lock", forbidden)
+    monkeypatch.setattr(runner_module, "_reserve_target_under_lock", forbidden)
     monkeypatch.setattr(runner_module, "_try_log_diag", lambda *_args: None)
     monkeypatch.setattr(
         evidence_module,

@@ -129,6 +129,7 @@ def test_runner_execs_the_descriptor_that_passed_the_version_probe(
     monkeypatch.setattr(module, "assert_not_boot", lambda *_a, **_kw: None)
     monkeypatch.setattr(module, "block_rdev", lambda p: 1 if p == "/dev/sda" else 2)
     monkeypatch.setattr(module, "_recheck_identity_under_lock", lambda _request: None)
+    monkeypatch.setattr(module, "_reserve_target_under_lock", lambda _request: None)
     monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
     monkeypatch.setattr(
         module.subprocess,

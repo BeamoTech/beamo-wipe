@@ -504,6 +504,33 @@ def _recheck_identity_under_lock(request: WipeRequest) -> None:
     assert_rediscovered_identity(request, fresh)
 
 
+def _reserve_target_under_lock(request: WipeRequest) -> int:
+    """Hold the confirmed disk open read-only until the engine has exited.
+
+    nwipe opens its positional target by name only after its own device scan
+    and PRNG selection. While any handle to a disk stays open, the kernel
+    keeps that disk's name allocated: if the disk is unplugged, its node
+    disappears and a newly attached disk receives a different name, so the
+    engine's open fails instead of reaching another disk. Rediscovery runs
+    after this reservation, binding the confirmed identity to the held name.
+    The handle is read-only, non-exclusive and is never inherited by nwipe.
+    """
+    flags = os.O_RDONLY | os.O_NONBLOCK | os.O_NOCTTY | os.O_NOFOLLOW | os.O_CLOEXEC
+    try:
+        fd = os.open(request.device, flags)
+    except OSError as exc:
+        raise SafetyError("Disk identity changed. Refusing to erase.") from exc
+    try:
+        held = os.fstat(fd)
+        if (not stat.S_ISBLK(held.st_mode) or not request.device_rdev
+                or held.st_rdev != request.device_rdev):
+            raise SafetyError("Disk identity changed. Refusing to erase.")
+    except BaseException:
+        os.close(fd)
+        raise
+    return fd
+
+
 def build_nwipe_argv(request: WipeRequest) -> List[str]:
     try:
         spec: NwipeMethodSpec = METHODS[request.method]
@@ -1286,6 +1313,9 @@ class NwipeRunner:
         self._sigusr1_armed = False
         self._last_logfile = ""
         self._log_fd: Optional[int] = None
+        # Read-only handle that keeps the confirmed disk's kernel name from
+        # being reassigned between final rediscovery and engine exit.
+        self._target_fd: Optional[int] = None
         self._active_log_identity: Optional[tuple[str, int, int]] = None
         self._active_request: Optional[WipeRequest] = None
         self._sleep_inhibit = SleepInhibit()
@@ -1306,6 +1336,7 @@ class NwipeRunner:
                 and self._proc is None
                 and self._lock_fd is None
                 and self._log_fd is None
+                and self._target_fd is None
                 and not self._cleanup_failed
             )
 
@@ -1315,7 +1346,7 @@ class NwipeRunner:
             if self._cleanup_failed:
                 raise SafetyError("Runner cleanup could not be confirmed.")
             if (self._proc is not None or self._lock_fd is not None
-                    or self._log_fd is not None):
+                    or self._log_fd is not None or self._target_fd is not None):
                 raise SafetyError("A wipe is already running.")
             # A new launch attempt owns the runner state even if an early
             # preflight check refuses it. A later poll must not return the
@@ -1379,7 +1410,7 @@ class NwipeRunner:
                     verified_engine.close()
                 raise SafetyError("Runner cleanup could not be confirmed.")
             if (self._proc is not None or self._lock_fd is not None
-                    or self._log_fd is not None):
+                    or self._log_fd is not None or self._target_fd is not None):
                 if verified_engine is not None:
                     verified_engine.close()
                 raise SafetyError("A wipe is already running.")
@@ -1418,6 +1449,9 @@ class NwipeRunner:
                         )
                     assert_local_device_transport(request.device)
                     assert_not_boot(request.device, request.boot_device, required=True)
+                    # Reserve the name first, so the rediscovered identity is
+                    # the disk nwipe can open by that name until it exits.
+                    self._target_fd = _reserve_target_under_lock(request)
                     _recheck_identity_under_lock(request)
             except BaseException:
                 try:
@@ -1968,6 +2002,15 @@ class NwipeRunner:
         self._lock_path = lock_path
 
     def _release_wipe_lock(self) -> None:
+        target_fd = self._target_fd
+        if target_fd is not None:
+            # Callers release only after the engine has exited or was never
+            # launched. The read-only reservation carries no write state.
+            self._target_fd = None
+            try:
+                os.close(target_fd)
+            except OSError as exc:
+                _try_log_diag("nwipe", "target_hold_close_failed", type(exc).__name__)
         self._sleep_inhibit.stop()
         if self._cleanup_failed:
             raise SafetyError("Runner cleanup could not be confirmed.")

@@ -86,6 +86,7 @@ def test_log_replaced_during_preflight_blocks_spawn(tmp_path, monkeypatch):
         logfile.rename(tmp_path / "original-engine.log")
         logfile.write_text(COMPLETE)
 
+    monkeypatch.setattr(module, "_reserve_target_under_lock", lambda _request: None)
     monkeypatch.setattr(module, "_recheck_identity_under_lock", replace_during_rediscovery)
     try:
         with pytest.raises(module.SafetyError, match="Log file changed"):

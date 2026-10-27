@@ -251,6 +251,7 @@ def test_failed_engine_spawn_releases_sleep_inhibitor(tmp_path, monkeypatch):
     monkeypatch.setattr(runner_module, "assert_local_device_transport", lambda _path: None)
     monkeypatch.setattr(runner_module, "block_rdev", lambda path: 1 if path == "/dev/vda" else 2)
     monkeypatch.setattr(runner_module, "_recheck_identity_under_lock", lambda _request: None)
+    monkeypatch.setattr(runner_module, "_reserve_target_under_lock", lambda _request: None)
     # A child-reported exec failure names the executable and is proven
     # reaped; a generic parent OSError after fork cannot release ownership.
     monkeypatch.setattr(
