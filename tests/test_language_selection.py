@@ -681,6 +681,37 @@ def test_translated_surfaces_carry_no_forbidden_claims():
         "senza competenze tecniche", "nessuna competenza tecnica", "abbiamo inventato",
     ):
         assert phrase not in it_blob, phrase
+    # docs/claims.md forbidden claims, in French and German wording.
+    fr_blob += " " + " ".join(
+        t if isinstance(t, str) else " ".join(t)
+        for module in lang.surface()
+        for t in (lang.translated("fr", module, n) for n in lang.surface()[module])
+    ).lower() + " " + gallery_html("fr").lower()
+    for phrase in (
+        "plug and play", "certifié dod", "certification dod", "certifié militaire",
+        "certifié par", "effacement garanti", "suppression garantie", "garanti à 100",
+        "100 % garanti", "100 % sûr", "100% sûr", "100 % efficace", "100% efficace",
+        "irrécupérable", "impossible à récupérer", "n’importe quel ordinateur",
+        "tout ordinateur", "n’importe quel mac", "fonctionne sur mac",
+        "fonctionne sur les mac", "sans connaissances techniques",
+        "aucune compétence technique", "nous avons inventé",
+    ):
+        assert phrase not in fr_blob, phrase
+    de_blob += " " + " ".join(
+        t if isinstance(t, str) else " ".join(t)
+        for module in lang.surface()
+        for t in (lang.translated("de", module, n) for n in lang.surface()[module])
+    ).lower() + " " + gallery_html("de").lower()
+    for phrase in (
+        "plug and play", "dod-zertifiziert", "dod zertifiziert", "militärisch zertifiziert",
+        "zertifiziert von", "zertifiziert durch", "garantiert gelöscht",
+        "garantierte löschung", "100 % garantiert", "100 % sicher", "100% sicher",
+        "100 % wirksam", "100% wirksam", "nicht wiederherstellbar",
+        "unmöglich wiederherzustellen", "jeder computer", "jedem computer", "jeder mac",
+        "jedem mac", "funktioniert auf mac", "ohne technische kenntnisse",
+        "keine technischen kenntnisse", "wir haben erfunden",
+    ):
+        assert phrase not in de_blob, phrase
 
 
 def test_tokens_stay_ascii_exact_in_every_language():
