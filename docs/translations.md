@@ -15,7 +15,8 @@ the strings that most need one.
 | `it` | *Lei* | Standard Italian (Italy). Pronouns and possessives lower case in sentences; buttons use the usual interface imperative (see decisions below). |
 
 Spoken output (Orca/speech), the boot menu and the kiosk recovery screen stay
-English. The helper pages say so and quote those English names verbatim
+English: the image has no per-language voice, so translated screens are read
+with the English voice. The helper pages say so and quote those English names verbatim
 (`Beamo Wipe: speech for screen readers`, `Restart computer`, `Shut down`,
 `Technical details and logs`), with a translation in parentheses where useful.
 
