@@ -136,3 +136,39 @@ def set_language(code: str) -> str:
             _apply_hook(modules[module_name])
     _current = code
     return code
+
+
+_REVERSE = None
+
+
+def _reverse_index():
+    """{text: {(module, name), ...}} for every language's constant strings."""
+    global _REVERSE
+    if _REVERSE is None:
+        index: dict = {}
+        for code in LANGUAGE_ORDER:
+            tables = _snapshot() if code == "en" else _tables(code)
+            for module_name, names in tables.items():
+                for name, value in names.items():
+                    if isinstance(value, str):
+                        index.setdefault(value, set()).add((module_name, name))
+        _REVERSE = index
+    return _REVERSE
+
+
+def current_text(text: str) -> str:
+    """A stored constant string, in the current language.
+
+    Text kept from before a language switch (discovery runs before the owner
+    picks one) maps to the current value of the translated constant it equals
+    in any language. Formatted, unknown or ambiguous text is returned as is.
+    """
+    keys = _reverse_index().get(text) if isinstance(text, str) else None
+    if not keys:
+        return text
+    modules = _modules()
+    current = {getattr(modules[module_name], name) for module_name, name in keys}
+    if len(current) != 1:
+        return text
+    (value,) = current
+    return value if isinstance(value, str) else text

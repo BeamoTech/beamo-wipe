@@ -1012,6 +1012,12 @@ class Wizard:
             except ValueError:
                 return False
             self.language = code
+            # A shown error or keyboard notice is a translated constant; keep
+            # it, and the guidance matched against it, in the new language.
+            if self.error:
+                self.error = ui_lang.current_text(self.error)
+            if self.keyboard_message:
+                self.keyboard_message = ui_lang.current_text(self.keyboard_message)
             return True
 
     def set_keyboard_layout(self, layout_id: str) -> bool:
@@ -1430,6 +1436,18 @@ class Wizard:
                 return
             self._enter_pick()
 
+    def _discovery_error(self) -> Optional[str]:
+        """Discovery's error in the current language.
+
+        Discovery usually runs before the owner picks a language. The blocked
+        heading and recovery guidance match the error against constants in
+        the current language, so a stale English copy would get generic help.
+        """
+        from beamo_wipe import lang as ui_lang
+
+        error = self.discovery.error
+        return ui_lang.current_text(error) if error else error
+
     def _enter_pick(self) -> None:
         if self._startup_blocked:
             self.screen = Screen.PICK_BLOCKED
@@ -1441,7 +1459,7 @@ class Wizard:
             # exception messages may contain device paths or serials.
             diag = getattr(self.discovery, "diagnostic", None)
             if diag:
-                self.error = self.discovery.error
+                self.error = self._discovery_error()
                 try:
                     from beamo_wipe.diagnostics import log_diag
                     from beamo_wipe.diagnostic_report import CODES
@@ -1459,7 +1477,7 @@ class Wizard:
                 except Exception:
                     pass
             else:
-                self.error = self.discovery.error
+                self.error = self._discovery_error()
             return
         try:
             assert_boot_excluded(self.discovery)

@@ -122,3 +122,64 @@ def test_old_percent_suffix_is_translated_in_the_preview(code):
     text = _serialize_progress(view)["percentText"]
     assert text == progress.OLD_PERCENT.format(percent=format_progress_percent(42))
     assert ("(old)" in text) == (code == "en")
+
+
+def _blocked_wizard():
+    from beamo_wipe.models import Screen
+
+    wizard = make_demo_wizard(scenario="blocked")  # Discovery runs in English.
+    assert wizard.discovery.error == lang.english("copy", "IDENTIFY_ERROR")
+    return wizard, Screen.PICK_BLOCKED
+
+
+@pytest.mark.parametrize("code", TRANSLATED)
+def test_blocked_screen_scanned_in_english_reads_and_guides_in_the_chosen_language(code):
+    from beamo_wipe import copy as C
+    from beamo_wipe.recovery import recovery_for_blocked, recovery_for_wizard_error
+
+    wizard, blocked = _blocked_wizard()
+    assert wizard.set_language(code)
+    wizard.skip_intro()
+    wizard.set_owner(True)
+    wizard.continue_owner()
+    assert wizard.screen == blocked
+    assert wizard.error == C.IDENTIFY_ERROR != lang.english("copy", "IDENTIFY_ERROR")
+    # The specific heading and blocked guidance, not the generic fallback.
+    assert C.blocked_title(wizard.error) == C.BLOCKED_HEADING_IDENTIFY != C.TITLE_BLOCKED
+    assert recovery_for_wizard_error(wizard.error) == recovery_for_blocked(C.IDENTIFY_ERROR)
+    assert not wizard.selectable and wizard.selected is None and not wizard.runner.started
+
+
+def test_language_switch_on_the_blocked_screen_retranslates_the_error():
+    from beamo_wipe import copy as C
+
+    wizard, blocked = _blocked_wizard()
+    wizard.skip_intro()
+    wizard.set_owner(True)
+    wizard.continue_owner()
+    assert wizard.screen == blocked
+    for code in (*TRANSLATED, "en"):
+        assert wizard.set_language(code)
+        assert wizard.screen == blocked
+        assert wizard.error == C.IDENTIFY_ERROR, code
+        assert C.blocked_title(wizard.error) == C.BLOCKED_HEADING_IDENTIFY, code
+    assert not wizard.runner.started
+
+
+def test_current_text_maps_only_exact_unambiguous_constants():
+    english = lang.english("copy", "IDENTIFY_ERROR")
+    lang.set_language("de")
+    german = lang.translated("de", "copy", "IDENTIFY_ERROR")
+    assert lang.current_text(english) == german
+    assert lang.current_text(lang.translated("es", "copy", "IDENTIFY_ERROR")) == german
+    assert lang.current_text(german) == german
+    for text in ("", "/dev/sda: vendor text", f"{english} (sda)"):
+        assert lang.current_text(text) == text
+    # One text that names constants German renders differently stays as written.
+    ambiguous = [
+        text for text, keys in lang._reverse_index().items()
+        if len({lang.translated("de", module, name) for module, name in keys}) > 1
+    ]
+    assert ambiguous
+    for text in ambiguous:
+        assert lang.current_text(text) == text
