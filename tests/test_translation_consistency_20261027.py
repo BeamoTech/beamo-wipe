@@ -29,6 +29,8 @@ CITED_LABELS = (
     ("copy", "CON_WORKING_IDLE", "copy", "STOP_ASK"),
     ("copy", "CON_WORKING_STOP", "copy", "STOP_KEEP"),
     ("copy", "COUNTDOWN_READY", "copy", "BTN_ERASE"),
+    ("copy", "COUNTDOWN_CAPTION", "copy", "BTN_ERASE"),
+    ("copy", "HINT_LAST_CHANCE_TK", "copy", "BTN_ERASE"),
     ("copy", "REPORT_HELP_INSERT", "copy", "BTN_SAVE_REPORT"),
     ("copy", "REPORT_INSERT", "copy", "BTN_SAVE_REPORT"),
     ("copy", "ADVANCED_LOG_LEAD", "copy", "BTN_SAVE_REPORT"),

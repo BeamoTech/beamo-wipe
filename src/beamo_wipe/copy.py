@@ -371,7 +371,7 @@ CONFIRM_LEAD = "Type what we ask for, then continue."
 CONFIRM_MATCH_WAIT = "Type it exactly, then you can continue."
 CONFIRM_MATCH_OK = "That matches. You can continue."
 
-COUNTDOWN_CAPTION = "seconds until Erase is available."
+COUNTDOWN_CAPTION = "seconds until Erase now is available."
 COUNTDOWN_READY = "Nothing has started. Choose Erase now to erase this disk."
 
 METHOD_LEAD = (
@@ -724,7 +724,7 @@ HINT_METHOD = "Press 1, 2, or 3 to choose. Enter reviews before erasing."
 HINT_CONFIRM = "Type exactly what we ask for, then Enter."
 HINT_ADVANCED = "Enter returns to methods.  Esc goes back."
 HINT_LAST_CHANCE = "Esc goes back.  Enter erases after the countdown."
-HINT_LAST_CHANCE_TK = "Esc goes back.  Tab to Erase, then Enter after the countdown."
+HINT_LAST_CHANCE_TK = "Esc goes back.  Tab to Erase now, then Enter after the countdown."
 HINT_BLOCKED = "Enter requests shutdown. Esc goes back."
 HINT_REFRESH = "Esc keeps your answers. Enter checks disks again."
 REFRESH_LEAD = (
