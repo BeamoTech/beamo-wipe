@@ -109,3 +109,63 @@ def test_qemu_gate_inspects_kernel_firmware_and_every_offered_keymap():
     assert '-name "${console_map}.kmap.gz"' in source
     for name in RADIO[:6]:
         assert name in source, name
+
+
+def test_amd_early_microcode_does_not_depend_on_the_build_cpu():
+    # amd64-microcode's default "auto" adds AMD early microcode only when the
+    # build worker's own CPU is AMD; the image must carry it for every PC.
+    default = LIVE / "config/includes.chroot/etc/default/amd64-microcode"
+    settings = [
+        line.strip() for line in default.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+    assert settings == ["AMD64UCODE_INITRAMFS=early"]
+    gate = QEMU.read_text(encoding="utf-8")
+    for vendor in ("AuthenticAMD", "GenuineIntel"):
+        assert f"kernel/x86/microcode/{vendor}.bin" in gate
+
+
+def _newc(*names: str) -> bytes:
+    """An uncompressed newc cpio archive of empty regular files."""
+    out = b""
+    for name in (*names, "TRAILER!!!"):
+        encoded = name.encode() + b"\0"
+        fields = [0, 0o100644, 0, 0, 1, 0, 0, 0, 0, 0, 0, len(encoded), 0]
+        entry = b"070701" + b"".join(b"%08x" % value for value in fields) + encoded
+        out += entry + b"\0" * (-len(entry) % 4)
+    return out + b"\0" * (-len(out) % 512)
+
+
+def _run_microcode_gate(tmp_path, *initrds: bytes):
+    import subprocess
+    import sys
+
+    gate = QEMU.read_text(encoding="utf-8")
+    start = gate.index('python3 - "$ISO_MOUNT/live" <<\'PY\' || exit 2\n')
+    body = gate[gate.index("\n", start) + 1:]
+    body = body[:body.index("\nPY\n")]
+    live = tmp_path / "live"
+    live.mkdir()
+    for index, data in enumerate(initrds):
+        (live / ("initrd.img" if index == 0 else f"initrd.img-6.12.{index}")).write_bytes(data)
+    return subprocess.run(  # noqa: S603 - fixed interpreter and gate text
+        [sys.executable, "-c", body, str(live)], capture_output=True, text=True, check=False,
+    )
+
+
+def test_microcode_gate_reads_every_early_archive(tmp_path):
+    amd = _newc("kernel", "kernel/x86", "kernel/x86/microcode",
+                "kernel/x86/microcode/AuthenticAMD.bin")
+    intel = _newc("./kernel/x86/microcode/GenuineIntel.bin")
+    main = b"\x1f\x8b compressed main archive"
+    passed = _run_microcode_gate(tmp_path, amd + intel + main, intel + amd + main)
+    assert passed.returncode == 0, passed.stderr
+
+
+def test_microcode_gate_fails_without_amd_or_without_any_initrd(tmp_path):
+    intel_only = _newc("kernel/x86/microcode/GenuineIntel.bin") + b"\x1f\x8b"
+    failed = _run_microcode_gate(tmp_path, intel_only)
+    assert failed.returncode != 0 and "AuthenticAMD.bin" in failed.stderr
+    empty = tmp_path / "none"
+    empty.mkdir()
+    assert _run_microcode_gate(empty).returncode != 0

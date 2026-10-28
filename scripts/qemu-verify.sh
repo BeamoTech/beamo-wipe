@@ -429,6 +429,36 @@ for firmware_dir in amdgpu i915 nvidia intel/sof intel-ucode amd-ucode; do
     exit 2
   }
 done
+# Both vendors' early microcode must be in every live initramfs, whatever CPU
+# built the image (etc/default/amd64-microcode forces AMD's "early" mode).
+python3 - "$ISO_MOUNT/live" <<'PY' || exit 2
+import pathlib
+import sys
+
+WANTED = {"kernel/x86/microcode/AuthenticAMD.bin", "kernel/x86/microcode/GenuineIntel.bin"}
+initrds = sorted(pathlib.Path(sys.argv[1]).glob("initrd.img*"))
+if not initrds:
+    sys.exit("no live initramfs in ISO")
+for initrd in initrds:
+    data = initrd.read_bytes()[: 256 * 1024 * 1024]
+    names, offset = set(), 0
+    # Early microcode is one or more uncompressed newc cpio archives in front
+    # of the compressed main archive.
+    while data.startswith(b"070701", offset):
+        size = int(data[offset + 54:offset + 62], 16)
+        name_size = int(data[offset + 94:offset + 102], 16)
+        name = data[offset + 110:offset + 110 + name_size - 1].decode("ascii", "replace")
+        offset = (offset + 110 + name_size + 3) & ~3
+        offset = (offset + size + 3) & ~3
+        if name == "TRAILER!!!":
+            while offset < len(data) and data[offset] == 0:
+                offset += 1
+        else:
+            names.add(name.removeprefix("./"))
+    missing = sorted(WANTED - names)
+    if missing:
+        sys.exit(f"early microcode missing from {initrd.name}: {missing}")
+PY
 # Every layout the shipped wizard offers must exist for X and the console.
 { sudo chroot "$SQUASH_MOUNT" /usr/bin/python3 -B -sP -c '
 from beamo_wipe import keyboard
