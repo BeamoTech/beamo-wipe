@@ -51,6 +51,10 @@ TARGET_RAW="$RUN_ROOT/target.raw"
 # derive the confirmation token from the same production policy as the UI
 # instead of assuming the target serial or a particular ISO size.
 QEMU_TARGET_SERIAL="0001"
+# Target controller (virtio, nvme or sata) and whether the USB boot image is
+# attached writable (snapshot=on) for the next boot_probe.
+QEMU_TARGET_BUS=virtio
+QEMU_BOOT_WRITABLE=0
 HOST_METHOD_BYTES=67108864
 # case|key|nwipe_method|verify|outcome|host_timeout_s|guest_done_timeout_s|serial
 METHOD_CASES=$(cat <<'EOF'
@@ -304,33 +308,6 @@ grep -qiE '^nwipe version 0\.42([[:space:]]|$)' "$EVIDENCE_DIR/nwipe-version.txt
   exit 2
 }
 
-# Boot menus carry Beamo Wipe identity and never imply booting erases.
-# BIOS boots isolinux; UEFI boots grub. Both entries must exist with the
-# branded labels, the troubleshooting entry keeps the failsafe kernel line,
-# and reaching the wizard must not be presented as starting an erase.
-BIOS_LIVE="$ISO_MOUNT/isolinux/live.cfg"
-EFI_GRUB="$ISO_MOUNT/boot/grub/grub.cfg"
-[[ -f "$BIOS_LIVE" ]] || { echo "ISO BIOS menu isolinux/live.cfg missing" >&2; exit 2; }
-[[ -f "$EFI_GRUB" ]] || { echo "ISO UEFI menu boot/grub/grub.cfg missing" >&2; exit 2; }
-# A template marker live-build did not fill would run as an unknown GRUB
-# command or show as text in the menu.
-if grep -Eq '@[A-Z_]+@' "$BIOS_LIVE" "$EFI_GRUB"; then
-  echo "ISO boot menu contains an unfilled live-build template marker" >&2; exit 2
-fi
-if grep -Eiq '^[[:space:]]*menu[[:space:]]+help[[:space:]]' "$BIOS_LIVE"; then
-  echo "ISO BIOS boot entry was replaced with a help-file action" >&2; exit 2
-fi
-grep -q "Beamo Wipe: start the erase guide" "$BIOS_LIVE" || {
-  echo "ISO BIOS menu lost the branded normal entry" >&2; exit 2; }
-# Syslinux's caret marks the menu hotkey and is not displayed to the owner.
-grep -Eq 'Beamo Wipe: \^?troubleshoot startup' "$BIOS_LIVE" || {
-  echo "ISO BIOS menu lost the troubleshooting entry" >&2; exit 2; }
-grep -q "Nothing is erased until you pick a disk" "$BIOS_LIVE" || {
-  echo "ISO BIOS menu lost the no-erase statement" >&2; exit 2; }
-grep -q "Beamo Wipe: start the erase guide (nothing is erased yet)" "$EFI_GRUB" || {
-  echo "ISO UEFI menu lost the branded normal entry" >&2; exit 2; }
-grep -q "Beamo Wipe: troubleshoot startup (nothing is erased yet)" "$EFI_GRUB" || {
-  echo "ISO UEFI menu lost the troubleshooting entry" >&2; exit 2; }
 # BIOS boot files are GPL syslinux code outside the squashfs inventory. They
 # must be Debian 12's syslinux build, the version the corresponding-source
 # plan names (scripts/corresponding_source.py SYSLINUX_SOURCE_VERSION). This
@@ -359,6 +336,34 @@ reference = pathlib.Path("/usr/lib/ISOLINUX/isolinux.bin").read_bytes()
 if len(image) != len(reference) or image[:8] + image[64:] != reference[:8] + reference[64:]:
     sys.exit("ISO isolinux/isolinux.bin is not Debian 12 isolinux's loader")
 PY
+
+# Boot menus carry Beamo Wipe identity and never imply booting erases.
+# BIOS boots isolinux; UEFI boots grub. Both entries must exist with the
+# branded labels, the troubleshooting entry keeps the failsafe kernel line,
+# and reaching the wizard must not be presented as starting an erase.
+BIOS_LIVE="$ISO_MOUNT/isolinux/live.cfg"
+EFI_GRUB="$ISO_MOUNT/boot/grub/grub.cfg"
+[[ -f "$BIOS_LIVE" ]] || { echo "ISO BIOS menu isolinux/live.cfg missing" >&2; exit 2; }
+[[ -f "$EFI_GRUB" ]] || { echo "ISO UEFI menu boot/grub/grub.cfg missing" >&2; exit 2; }
+# A template marker live-build did not fill would run as an unknown GRUB
+# command or show as text in the menu.
+if grep -Eq '@[A-Z_]+@' "$BIOS_LIVE" "$EFI_GRUB"; then
+  echo "ISO boot menu contains an unfilled live-build template marker" >&2; exit 2
+fi
+if grep -Eiq '^[[:space:]]*menu[[:space:]]+help[[:space:]]' "$BIOS_LIVE"; then
+  echo "ISO BIOS boot entry was replaced with a help-file action" >&2; exit 2
+fi
+grep -q "Beamo Wipe: start the erase guide" "$BIOS_LIVE" || {
+  echo "ISO BIOS menu lost the branded normal entry" >&2; exit 2; }
+# Syslinux's caret marks the menu hotkey and is not displayed to the owner.
+grep -Eq 'Beamo Wipe: \^?troubleshoot startup' "$BIOS_LIVE" || {
+  echo "ISO BIOS menu lost the troubleshooting entry" >&2; exit 2; }
+grep -q "Nothing is erased until you pick a disk" "$BIOS_LIVE" || {
+  echo "ISO BIOS menu lost the no-erase statement" >&2; exit 2; }
+grep -q "Beamo Wipe: start the erase guide (nothing is erased yet)" "$EFI_GRUB" || {
+  echo "ISO UEFI menu lost the branded normal entry" >&2; exit 2; }
+grep -q "Beamo Wipe: troubleshoot startup (nothing is erased yet)" "$EFI_GRUB" || {
+  echo "ISO UEFI menu lost the troubleshooting entry" >&2; exit 2; }
 # Check the kernel lines in the built ISO, not just the entry labels or the
 # source lb config. A missing nox11autologin lets live-config seize tty1 before
 # the kiosk starts, including when the owner chooses troubleshooting mode.
@@ -1049,6 +1054,7 @@ record_qemu_cmdline() {
       # An added NIC can otherwise appear even beside `-nic none`.
       case "$arg" in
         qemu-xhci,id=beamo-xhci|usb-storage,drive=beamo-boot-media,serial=BEAMOBOOT,bootindex=1|virtio-blk-pci,drive=beamo-target,serial=*) ;;
+        nvme,drive=beamo-target,serial=*|ahci,id=beamo-ahci|ide-hd,drive=beamo-target,bus=beamo-ahci.0,serial=*) ;;
         *) echo "ABORT: QEMU command has an unexpected guest device" >&2; return 1 ;;
       esac
     fi
@@ -1492,9 +1498,22 @@ boot_probe() {
   local media_args=(-cdrom "$ISO" -boot order=d)
   if [[ "$label" == *-usb ]]; then
     boot_media="$USB_IMAGE"
-    media_args=(-drive "if=none,id=beamo-boot-media,format=raw,readonly=on,file=$USB_IMAGE"
+    # A writable stick (QEMU keeps guest writes in a discarded overlay) proves
+    # the boot USB is excluded by its identity, not by a read-only flag.
+    local boot_access=readonly=on
+    [[ "${QEMU_BOOT_WRITABLE:-0}" != 1 ]] || boot_access=snapshot=on
+    media_args=(-drive "if=none,id=beamo-boot-media,format=raw,$boot_access,file=$USB_IMAGE"
       -device "usb-storage,drive=beamo-boot-media,serial=BEAMOBOOT,bootindex=1")
   fi
+  # Real PCs erase SATA (AHCI) and NVMe disks; the method journeys use virtio.
+  local target_devices
+  case "${QEMU_TARGET_BUS:-virtio}" in
+    virtio) target_devices=(-device "virtio-blk-pci,drive=beamo-target,serial=$token") ;;
+    nvme) target_devices=(-device "nvme,drive=beamo-target,serial=$token") ;;
+    sata) target_devices=(-device "ahci,id=beamo-ahci"
+      -device "ide-hd,drive=beamo-target,bus=beamo-ahci.0,serial=$token") ;;
+    *) echo "ABORT: unknown QEMU target bus $QEMU_TARGET_BUS" >&2; return 1 ;;
+  esac
   confirmation_token="$(guest_confirmation_token "$boot_media" "$HOST_METHOD_BYTES" "$token")"
   # shellcheck disable=SC2054 # commas are inside QEMU values, not separators
   local qemu_args=(
@@ -1503,7 +1522,7 @@ boot_probe() {
     "$@" "${media_args[@]}"
     -blockdev "driver=file,node-name=beamo-target-file,filename=$target_img"
     -blockdev "driver=qcow2,node-name=beamo-target,file=beamo-target-file"
-    -device "virtio-blk-pci,drive=beamo-target,serial=$token"
+    "${target_devices[@]}"
     -display none -serial "file:$EVIDENCE_DIR/${label}-serial.txt"
     -qmp "unix:$qmp_socket,server=on,wait=off"
     -no-reboot
@@ -1957,12 +1976,47 @@ boot_probe secureboot-usb no \
   -drive "if=pflash,format=raw,readonly=on,file=$SECURE_CODE" \
   -drive "if=pflash,format=raw,file=$RUN_ROOT/secureboot-vars.fd"
 
+# Most owners erase an NVMe or SATA disk from a writable USB stick. Boot the
+# USB image writable (guest writes go to a discarded overlay; its hash is
+# rechecked below), so the stick is excluded by its boot identity alone, and
+# run the default method to a saved report on each controller type.
+run_bus_journey() {
+  local label="$1" bus="$2" serial="$3" key nwipe_method outcome guest_timeout
+  shift 3
+  IFS='|' read -r _ key nwipe_method _ outcome _ guest_timeout _ \
+    < <(grep '^everyday|' <<<"$METHOD_CASES")
+  local local_target="$RUN_ROOT/target-${label}.qcow2"
+  local local_report="$RUN_ROOT/report-${label}.raw"
+  make_guest_target "$local_target"
+  make_report_image "$local_report"
+  TARGET="$local_target"
+  REPORT_RAW="$local_report"
+  QEMU_TARGET_SERIAL="$serial"
+  QEMU_TARGET_BUS="$bus"
+  QEMU_BOOT_WRITABLE=1
+  boot_probe "$label" yes "$key" "$serial" "$local_target" "$local_report" "$guest_timeout" "$@"
+  QEMU_TARGET_BUS=virtio
+  QEMU_BOOT_WRITABLE=0
+  assert_guest_phases "$label"
+  assert_guest_overwrite "$label" "$nwipe_method" "$local_target"
+  verify_guest_report "$label" "$local_report" "$outcome" everyday "$nwipe_method" "$(method_title everyday)"
+}
+run_bus_journey bios-sata-usb sata 0004
+if [[ -f "$OVMF_VARS" ]]; then
+  cp "$OVMF_VARS" "$RUN_ROOT/ovmf-nvme-vars.fd"
+  run_bus_journey uefi-nvme-usb nvme 0005 \
+    -drive "if=pflash,format=raw,readonly=on,file=$OVMF_CODE" \
+    -drive "if=pflash,format=raw,file=$RUN_ROOT/ovmf-nvme-vars.fd"
+else
+  run_bus_journey uefi-nvme-usb nvme 0005 -bios "$OVMF_CODE"
+fi
+
 if [[ "$(sha256sum "$USB_IMAGE" | awk '{print $1}')" != "$QEMU_USB_SHA" ]]; then
   echo 'ABORT: USB image changed during QEMU verification' >&2
   exit 2
 fi
 log "usb_image_sha256=$QEMU_USB_SHA"
-printf 'iso_sha256=%s\nusb_image_sha256=%s\nnwipe_sha256=%s\nsource_commit=%s\nbuild_id=%s\nrepetitions=2\ncases=%s\neveryday=pass\nextra=pass\nquick_zero=pass\nbios=pass\nuefi=pass\nbios_usb=pass\nuefi_usb=pass\nsecureboot_usb=pass\nspeech_bios_usb=pass\nspeech_uefi_usb=pass\ntroubleshoot_bios_usb=pass\ntroubleshoot_uefi_usb=pass\nreport_export=pass\n' \
+printf 'iso_sha256=%s\nusb_image_sha256=%s\nnwipe_sha256=%s\nsource_commit=%s\nbuild_id=%s\nrepetitions=2\ncases=%s\neveryday=pass\nextra=pass\nquick_zero=pass\nbios=pass\nuefi=pass\nbios_usb=pass\nuefi_usb=pass\nsecureboot_usb=pass\nspeech_bios_usb=pass\nspeech_uefi_usb=pass\ntroubleshoot_bios_usb=pass\ntroubleshoot_uefi_usb=pass\nsata_bios_usb=pass\nnvme_uefi_usb=pass\nwritable_boot_usb=pass\nreport_export=pass\n' \
   "$(sha256sum "$ISO" | awk '{print $1}')" "$QEMU_USB_SHA" "$shipped_sha" \
   "$(tr -d '\n' <"$EVIDENCE_DIR/source-commit.txt")" \
   "${BUILD_ID:-local}" "${EXECUTED_CASES}" \

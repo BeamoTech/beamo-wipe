@@ -713,8 +713,15 @@ def _qemu_evidence_names() -> list[str]:
         "uefi-speech-usb",
         "bios-troubleshoot-usb",
         "uefi-troubleshoot-usb",
+        "bios-sata-usb",
+        "uefi-nvme-usb",
     ):
         names.extend(f"{label}-{suffix}.txt" for suffix in ("serial", "qemu", "cmdline"))
+    # SATA and NVMe erase journeys from the writable USB image.
+    for label in ("bios-sata-usb", "uefi-nvme-usb"):
+        names.extend(
+            f"guest-{label}-{suffix}.txt" for suffix in ("readback", "bundle", "fsck", "mount")
+        )
     for method in ("everyday", "extra", "quick_zero"):
         for case in (method, f"{method}-repeat"):
             names.extend(

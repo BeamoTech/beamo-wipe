@@ -48,9 +48,15 @@ def _qemu_gate_output_names() -> set[str]:
         "uefi-speech-usb",
         "bios-troubleshoot-usb",
         "uefi-troubleshoot-usb",
+        "bios-sata-usb",
+        "uefi-nvme-usb",
     ):
         names.update(
             f"{label}-{suffix}.txt" for suffix in ("serial", "qemu", "cmdline")
+        )
+    for label in ("bios-sata-usb", "uefi-nvme-usb"):
+        names.update(
+            f"guest-{label}-{suffix}.txt" for suffix in ("readback", "bundle", "fsck", "mount")
         )
     for case in ("everyday", "extra", "quick_zero"):
         for run in (case, f"{case}-repeat"):
@@ -96,6 +102,10 @@ def test_release_lists_qemu_gate_outputs_from_script():
     labels.update(re.findall(
         r"^(?:boot_probe|uefi_boot_probe) ([a-z][a-z0-9-]*)\b", source, re.M
     ))
+    # SATA/NVMe journeys: each label is a probe and a guest (not host) case.
+    journeys = set(re.findall(r"^\s*run_bus_journey ([a-z][a-z0-9-]*) ", source, re.M))
+    assert journeys == {"bios-sata-usb", "uefi-nvme-usb"}
+    labels |= journeys
     assert labels
 
     templates = set(re.findall(
@@ -108,7 +118,8 @@ def test_release_lists_qemu_gate_outputs_from_script():
         placeholders = set(re.findall(r"\$\{([^}]+)\}", template))
         assert placeholders <= {"case", "label"}, template
         expanded = {template}
-        for placeholder, values in (("case", cases), ("label", labels)):
+        template_cases = cases | journeys if template.startswith("guest-") else cases
+        for placeholder, values in (("case", template_cases), ("label", labels)):
             expanded = {
                 name.replace("${" + placeholder + "}", value)
                 for name in expanded for value in values

@@ -84,7 +84,7 @@ these containers. Checkout does not retain Git credentials.
 | Windows | Native Go tests/vet including Win32 and PowerShell fixtures, on pinned Go 1.26.8 |
 | negative | Private safety mutation must produce the expected failing fake-device test, followed by a passing unmodified-source test |
 | iso | Tested launchers, pinned nwipe v0.42, build provenance, ISO size/PVD/checksums |
-| qemu | ISO and USB image inspection, installed-package inventory, fixed-vulnerability scan, isolated shipped-nwipe tests, BIOS/UEFI/Secure Boot checks, manifest finalization |
+| qemu | ISO and USB image inspection, installed-package inventory, fixed-vulnerability scan, BIOS boot files bound to Debian 12 syslinux, isolated shipped-nwipe tests, BIOS/UEFI/Secure Boot checks, full erase journeys per method (virtio) plus SATA (AHCI, BIOS) and NVMe (UEFI) journeys from a writable USB stick, manifest finalization |
 
 The five source phases run concurrently; every process is waited for and any
 failure stops image building. ISO waits for all source gates. QEMU follows ISO
