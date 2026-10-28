@@ -17,6 +17,7 @@ from beamo_wipe.lang import LANGUAGE_ORDER, current as _lang_current
 from beamo_wipe.outcomes import (
     ResultView,
     _method_copy_for_locale,
+    may_have_erased,
     present_evidence,
     view_needs_support,
 )
@@ -61,6 +62,7 @@ H_CAPACITY = "Capacity"
 H_CONNECTION = "Connection"
 H_METHOD = "Method"
 H_OVERWRITES = "Overwrites"
+H_RANDOM_GENERATOR = "Random data generator"
 METHOD_BOTH = "{title}. {summary}"
 H_APPLICATION = "Application"
 H_WRAPPER_COMMIT = "Wrapper commit"
@@ -329,6 +331,29 @@ def _method_lines(evidence: Mapping[str, Any]) -> list[tuple[str, str]]:
     return [(H_METHOD, method_line), (H_OVERWRITES, overwrites)]
 
 
+def _generator_lines(evidence: Mapping[str, Any], view: ResultView) -> list[tuple[str, str]]:
+    """nwipe's logged random-data generator, only when known and relevant.
+
+    Optional: absent, unknown or unexpected values omit the line rather than
+    print "unavailable". Shown for pinned methods that write random data and
+    results that may have written to the disk.
+    """
+    from beamo_wipe.methods import METHODS, RANDOM_DATA_NWIPE_METHODS
+    from beamo_wipe.models import MethodId
+    from beamo_wipe.nwipe_runner import NWIPE_PRNG_LOG_NAMES
+
+    name = _object_mapping(evidence.get("nwipe")).get("prng")
+    if not isinstance(name, str) or name not in NWIPE_PRNG_LOG_NAMES:
+        return []
+    try:
+        spec = METHODS[MethodId(_object_mapping(evidence.get("method"))["id"])]
+    except (KeyError, TypeError, ValueError):
+        return []
+    if spec.nwipe_method not in RANDOM_DATA_NWIPE_METHODS or not may_have_erased(view.code):
+        return []
+    return [(H_RANDOM_GENERATOR, name)]
+
+
 def _warnings(evidence: Mapping[str, Any], secrets: tuple[str, ...]) -> str:
     raw = evidence.get("warnings")
     if "warnings" not in evidence:
@@ -439,6 +464,7 @@ def _result_fields(
         (H_REPORT_CHECKSUM, checksum),
         *_disk_lines(payload, redacted=redacted),
         *_method_lines(payload),
+        *_generator_lines(payload, view),
         (H_ELAPSED, _elapsed(timestamps)),
         (H_RESULT, view.message),
         *_recovery_fields(view),

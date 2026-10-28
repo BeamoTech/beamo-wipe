@@ -661,6 +661,7 @@ STRINGS = {
         "H_CONNECTION": "Anschluss",
         "H_METHOD": "Methode",
         "H_OVERWRITES": "Überschreiben",
+        "H_RANDOM_GENERATOR": "Zufallsdatengenerator",
         "METHOD_BOTH": "{title}. {summary}",
         "H_APPLICATION": "Anwendung",
         "H_WRAPPER_COMMIT": "Wrapper-Commit",

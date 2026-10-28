@@ -148,6 +148,41 @@ NWIPE_SIGUSR1_READY_RE = re.compile(
     r"(?:Program options are set as follows\b|do not show GUI interface\b|"
     r"Using direct I/O\b|Using cached I/O\b)"
 )
+# nwipe 0.42 (6082bde) options.c nwipe_options_log() names the generator in
+# nwipe_options.prng, which nwipe.c copied into every wipe context just before
+# logging the manifest. Exact logging.c records only; "Unknown" is not a name.
+NWIPE_PRNG_LOG_NAMES = frozenset(
+    {
+        "Mersenne Twister",
+        "Lagged Fibonacci generator",
+        "XORoshiro-256",
+        "SplitMix64",
+        "AES-256-CTR (CSPRNG)",
+        "ISAAC (CSPRNG)",
+        "ISAAC-64 (CSPRNG)",
+        "ChaCha20 (CSPRNG)",
+    }
+)
+# prng.c labels in nwipe.c's "Auto-selected fastest PRNG" record, mapped to the
+# manifest name for the same generator. Only Lagged Fibonacci is spelled apart.
+NWIPE_PRNG_AUTO_LABELS = {
+    "Mersenne Twister": "Mersenne Twister",
+    "ISAAC (CSPRNG)": "ISAAC (CSPRNG)",
+    "ISAAC-64 (CSPRNG)": "ISAAC-64 (CSPRNG)",
+    "Lagged Fibonacci": "Lagged Fibonacci generator",
+    "XORoshiro-256": "XORoshiro-256",
+    "SplitMix64": "SplitMix64",
+    "AES-256-CTR (CSPRNG)": "AES-256-CTR (CSPRNG)",
+    "ChaCha20 (CSPRNG)": "ChaCha20 (CSPRNG)",
+}
+_NWIPE_LOG_STAMP = r"\[\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\] "
+NWIPE_OPTIONS_HEADER_RE = re.compile(
+    _NWIPE_LOG_STAMP + r" notice: Program options are set as follows\.\.\."
+)
+NWIPE_PRNG_OPTION_RE = re.compile(_NWIPE_LOG_STAMP + r" notice:   prng {9}= (.+)")
+NWIPE_PRNG_AUTO_RE = re.compile(
+    _NWIPE_LOG_STAMP + r"   info: Auto-selected fastest PRNG: (.+)"
+)
 NWIPE_VERSION_TIMEOUT_S = 5
 # Drive Status is written before create_system_multi_disc_pdf()/smartctl.
 # 64KiB from EOF can be only that tail, hiding | Erased |.
@@ -1277,6 +1312,44 @@ def evaluate_nwipe_completion(
 ) -> tuple[bool, str]:
     ok, detail, _reason = evaluate_nwipe_outcome(exit_code, log_text, device)
     return ok, detail
+
+
+def logged_random_generator(log_text: object) -> Optional[str]:
+    """The random-data generator nwipe 0.42 logged for this run, or None.
+
+    Display only: never part of an outcome. Accepts exactly one complete
+    options-manifest record after the manifest header, with a known name.
+    A second manifest record, a conflicting or repeated auto-selection
+    record, an unknown name or a cut-off record leaves the value unknown.
+    Device text cannot supply these records: a full record is longer than
+    the 40-byte model or 20-byte serial nwipe can print.
+    """
+    if not isinstance(log_text, str) or not log_text:
+        return None
+    lines = log_text.split("\n")
+    # Only newline-terminated records are complete.
+    lines = lines[:-1]
+    header_seen = False
+    chosen: list[str] = []
+    auto: list[str] = []
+    for line in lines:
+        if NWIPE_OPTIONS_HEADER_RE.fullmatch(line):
+            header_seen = True
+            continue
+        option = NWIPE_PRNG_OPTION_RE.fullmatch(line)
+        if option is not None:
+            if not header_seen:
+                return None
+            chosen.append(option.group(1))
+            continue
+        selected = NWIPE_PRNG_AUTO_RE.fullmatch(line)
+        if selected is not None:
+            auto.append(selected.group(1))
+    if len(chosen) != 1 or chosen[0] not in NWIPE_PRNG_LOG_NAMES or len(auto) > 1:
+        return None
+    if auto and NWIPE_PRNG_AUTO_LABELS.get(auto[0]) != chosen[0]:
+        return None
+    return chosen[0]
 
 
 def _assert_named_wipe_lock(fd: int, lock_path: str) -> None:

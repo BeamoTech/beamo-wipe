@@ -25,7 +25,7 @@ from typing import Any, List, Optional, Sequence, Tuple
 
 from beamo_wipe import NWIPE_PINNED_COMMIT, NWIPE_PINNED_VERSION, __version__
 from beamo_wipe.build_identity import evidence_identity
-from beamo_wipe.methods import METHODS
+from beamo_wipe.methods import METHODS, RANDOM_DATA_NWIPE_METHODS
 from beamo_wipe import storage_limits as _limits
 from beamo_wipe.storage_limits import notice
 from beamo_wipe.models import Disk, MethodId, WipeRequest, WipeResult
@@ -386,6 +386,18 @@ def build_evidence(
     argv_redacted = _sanitize_argv(argv or [])
     # Ensure no /dev/…/.. or control chars leaked beyond validation
     # Keep only allowed flags and the device itself
+    nwipe_record: dict[str, Any] = {
+        "version": NWIPE_PINNED_VERSION,
+        "argv_redacted": argv_redacted,
+    }
+    if result is not None and spec.nwipe_method in RANDOM_DATA_NWIPE_METHODS:
+        # Optional, display-only observation from the exact log snapshot whose
+        # digest this record carries. Unknown stays absent; never an outcome input.
+        from beamo_wipe.nwipe_runner import logged_random_generator
+
+        generator = logged_random_generator(log_text)
+        if generator is not None:
+            nwipe_record["prng"] = generator
 
     # Log checksum (tail only, not full sensitive log)
     log_checksum: Optional[str] = None
@@ -438,10 +450,7 @@ def build_evidence(
             "wall_confidence": walls["wall_confidence"],
             "wall_provenance": walls["wall_provenance"],
         },
-        "nwipe": {
-            "version": NWIPE_PINNED_VERSION,
-            "argv_redacted": argv_redacted,
-        },
+        "nwipe": nwipe_record,
         "exit_evidence": {
             "exit_code": exit_code,
             "signal": signal,

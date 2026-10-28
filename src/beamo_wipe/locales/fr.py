@@ -661,6 +661,7 @@ STRINGS = {
         "H_CONNECTION": "Connexion",
         "H_METHOD": "Méthode",
         "H_OVERWRITES": "Écrasements",
+        "H_RANDOM_GENERATOR": "Générateur de données aléatoires",
         "METHOD_BOTH": "{title}. {summary}",
         "H_APPLICATION": "Application",
         "H_WRAPPER_COMMIT": "Commit de l’enveloppe",

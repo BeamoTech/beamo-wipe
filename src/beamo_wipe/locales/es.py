@@ -666,6 +666,7 @@ STRINGS = {
         "H_CONNECTION": "Conexión",
         "H_METHOD": "Método",
         "H_OVERWRITES": "Sobrescrituras",
+        "H_RANDOM_GENERATOR": "Generador de datos aleatorios",
         "METHOD_BOTH": "{title}. {summary}",
         "H_APPLICATION": "Aplicación",
         "H_WRAPPER_COMMIT": "Commit de la interfaz",
