@@ -63,7 +63,9 @@ Fulfil the offer for each published release:
 2. `python3 scripts/corresponding_source.py plan manifest.json --out SOURCES.json`
    maps every installed binary package in the signed dpkg inventory to its
    exact source package and version, plus the pinned nwipe and Beamo Wipe
-   commits.
+   commits. It always adds Debian 12's `syslinux` source: the BIOS boot
+   files (isolinux.bin, *.c32, ldlinux.sys, mbr.bin) are installed outside
+   the squashfs inventory, and the QEMU gate checks they are that build.
 3. `python3 scripts/corresponding_source.py fetch SOURCES.json NEW_DIR`
    downloads each Debian source package from snapshot.debian.org, which keeps
    every published version, checks every file against snapshot's content

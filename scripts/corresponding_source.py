@@ -61,6 +61,16 @@ SHA256_RE = re.compile(r"[0-9a-f]{64}")
 FILE_NAME_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9+.~_-]*")
 UPSTREAM_VERSION_RE = re.compile(r"[0-9][A-Za-z0-9.+~-]*")
 
+# Debian 12's only syslinux source version (binary syslinux is its +b1
+# rebuild). scripts/qemu-verify.sh refuses an image whose BIOS boot files
+# come from anything else, so a change here and there must go together.
+SYSLINUX_SOURCE_VERSION = "3:6.04~git20190206.bf6db5b4+dfsg1-3"
+SYSLINUX_BOOT_BINARIES = (
+    "isolinux:all (ISO BIOS boot: isolinux.bin)",
+    "syslinux-common:all (ISO and USB BIOS modules *.c32, USB mbr.bin)",
+    "syslinux:amd64 (USB BIOS loader ldlinux.sys)",
+)
+
 
 class SourceError(RuntimeError):
     pass
@@ -137,6 +147,11 @@ def plan(manifest: Mapping[str, Any]) -> Dict[str, Any]:
     if inventory.get("source_commit") != commit:
         raise SourceError("package inventory belongs to another source commit")
     groups: Dict[tuple[str, str], List[str]] = {}
+    # BIOS boot files are not in the squashfs inventory: live-build installs
+    # isolinux/syslinux-common only while it assembles the ISO, and the USB
+    # image builder runs syslinux on the QEMU worker. Both are Debian 12's
+    # single syslinux build, which scripts/qemu-verify.sh checks byte for byte.
+    groups[("syslinux", SYSLINUX_SOURCE_VERSION)] = list(SYSLINUX_BOOT_BINARIES)
     for entry in inventory["packages"]:
         identity = _source_of(entry)
         binary = f"{entry['name']}:{entry['arch']}"

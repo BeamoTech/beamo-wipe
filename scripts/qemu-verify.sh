@@ -331,6 +331,34 @@ grep -q "Beamo Wipe: start the erase guide (nothing is erased yet)" "$EFI_GRUB" 
   echo "ISO UEFI menu lost the branded normal entry" >&2; exit 2; }
 grep -q "Beamo Wipe: troubleshoot startup (nothing is erased yet)" "$EFI_GRUB" || {
   echo "ISO UEFI menu lost the troubleshooting entry" >&2; exit 2; }
+# BIOS boot files are GPL syslinux code outside the squashfs inventory. They
+# must be Debian 12's syslinux build, the version the corresponding-source
+# plan names (scripts/corresponding_source.py SYSLINUX_SOURCE_VERSION). This
+# worker's packages also supplied the USB image's ldlinux.sys and mbr.bin.
+SYSLINUX_SOURCE_VERSION='3:6.04~git20190206.bf6db5b4+dfsg1-3'
+for package in isolinux syslinux syslinux-common; do
+  [[ "$(dpkg-query -W -f='${source:Version}' "$package" 2>/dev/null)" == "$SYSLINUX_SOURCE_VERSION" ]] || {
+    echo "QEMU worker $package is not Debian 12 syslinux $SYSLINUX_SOURCE_VERSION" >&2; exit 2; }
+done
+python3 - "$ISO_MOUNT/isolinux" <<'PY' || exit 2
+import pathlib
+import sys
+
+iso = pathlib.Path(sys.argv[1])
+modules = pathlib.Path("/usr/lib/syslinux/modules/bios")
+shipped = sorted(iso.glob("*.c32"))
+if not shipped:
+    sys.exit("no syslinux modules in ISO isolinux/")
+for path in shipped:
+    reference = modules / path.name
+    if not reference.is_file() or reference.read_bytes() != path.read_bytes():
+        sys.exit(f"ISO isolinux/{path.name} is not Debian 12 syslinux's module")
+# xorriso -boot-info-table rewrites bytes 8-63 of the image's isolinux.bin.
+image = (iso / "isolinux.bin").read_bytes()
+reference = pathlib.Path("/usr/lib/ISOLINUX/isolinux.bin").read_bytes()
+if len(image) != len(reference) or image[:8] + image[64:] != reference[:8] + reference[64:]:
+    sys.exit("ISO isolinux/isolinux.bin is not Debian 12 isolinux's loader")
+PY
 # Check the kernel lines in the built ISO, not just the entry labels or the
 # source lb config. A missing nox11autologin lets live-config seize tty1 before
 # the kiosk starts, including when the owner chooses troubleshooting mode.

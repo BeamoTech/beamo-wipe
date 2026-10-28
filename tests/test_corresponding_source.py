@@ -332,7 +332,62 @@ def test_signed_boot_wrappers_also_pull_their_real_gpl_source(binary, source, ex
     wrapper = source.split(" ", 1)[0]
     assert any(name == wrapper for name, _ in sources)
     assert sources[expected] == [f"{binary}:amd64 (signed from)"]
-    assert result["debian_source_count"] == 2
+    # The wrapper, its unsigned source, and the always-listed BIOS loader.
+    assert result["debian_source_count"] == 3
+
+
+def test_plan_lists_the_bios_boot_loader_source_outside_the_inventory():
+    # isolinux.bin, *.c32, ldlinux.sys and mbr.bin are syslinux GPL code that
+    # live-build and the USB builder install outside the squashfs inventory.
+    result = cs.plan(_manifest(SMALL))
+    sources = {(s["name"], s["version"]): s["binaries"] for s in result["debian_sources"]}
+    assert sources[("syslinux", "3:6.04~git20190206.bf6db5b4+dfsg1-3")] == sorted(
+        cs.SYSLINUX_BOOT_BINARIES
+    )
+    for name in ("isolinux:all", "syslinux-common:all", "syslinux:amd64"):
+        assert any(binary.startswith(name) for binary in cs.SYSLINUX_BOOT_BINARIES)
+
+
+def test_qemu_gate_binds_the_shipped_boot_files_to_the_planned_syslinux():
+    gate = (ROOT / "scripts/qemu-verify.sh").read_text(encoding="utf-8")
+    assert f"SYSLINUX_SOURCE_VERSION='{cs.SYSLINUX_SOURCE_VERSION}'" in gate
+    assert "for package in isolinux syslinux syslinux-common; do" in gate
+    assert "-W -f='${source:Version}' \"$package\"" in gate
+    assert 'modules = pathlib.Path("/usr/lib/syslinux/modules/bios")' in gate
+    assert 'pathlib.Path("/usr/lib/ISOLINUX/isolinux.bin")' in gate
+    hosted = (ROOT / "scripts/ci-hosted.sh").read_text(encoding="utf-8")
+    assert "syslinux syslinux-common isolinux" in hosted
+
+
+def _syslinux_gate(tmp_path, *, module=b"vesamenu", loader=b"L" * 512, patch_info_table=True):
+    """Run only the gate's Python byte check against fake reference trees."""
+    import subprocess
+
+    gate = (ROOT / "scripts/qemu-verify.sh").read_text(encoding="utf-8")
+    marker = 'python3 - "$ISO_MOUNT/isolinux" <<' + "'PY' || exit 2\n"
+    code = gate.split(marker, 1)[1].split("\nPY\n", 1)[0]
+    reference = tmp_path / "ref"
+    (reference / "bios").mkdir(parents=True)
+    (reference / "bios/vesamenu.c32").write_bytes(b"vesamenu")
+    (reference / "isolinux.bin").write_bytes(b"L" * 512)
+    code = code.replace('"/usr/lib/syslinux/modules/bios"', repr(str(reference / "bios")))
+    code = code.replace('"/usr/lib/ISOLINUX/isolinux.bin"', repr(str(reference / "isolinux.bin")))
+    iso = tmp_path / "iso"
+    iso.mkdir()
+    (iso / "vesamenu.c32").write_bytes(module)
+    image = bytearray(loader)
+    if patch_info_table:
+        image[8:64] = b"I" * 56
+    (iso / "isolinux.bin").write_bytes(bytes(image))
+    return subprocess.run(["python3", "-c", code, str(iso)], capture_output=True, text=True, timeout=30)
+
+
+def test_syslinux_byte_gate_accepts_the_boot_info_table_and_rejects_other_bytes(tmp_path):
+    assert _syslinux_gate(tmp_path / "ok").returncode == 0
+    changed = _syslinux_gate(tmp_path / "module", module=b"vesamenX")
+    assert changed.returncode != 0 and "vesamenu.c32" in changed.stderr
+    loader = _syslinux_gate(tmp_path / "loader", loader=b"L" * 500 + b"X" * 12)
+    assert loader.returncode != 0 and "isolinux.bin" in loader.stderr
 
 
 def test_debian_12_shim_signed_records_pull_shim_source():
@@ -351,6 +406,7 @@ def test_debian_12_shim_signed_records_pull_shim_source():
         ("shim-signed", "1.51~1+deb12u1"),
         ("shim-helpers-amd64-signed", "1+16.1+2~deb12u1"),
         ("shim", "16.1-2~deb12u1"),
+        ("syslinux", cs.SYSLINUX_SOURCE_VERSION),
     }
     assert sources[("shim", "16.1-2~deb12u1")] == [
         "shim-helpers-amd64-signed:amd64 (signed from)",
