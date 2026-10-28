@@ -7,7 +7,7 @@ import pytest
 
 from beamo_wipe import copy as C
 from beamo_wipe import inventory
-from beamo_wipe.locales import de, es, fr
+from beamo_wipe.locales import de, es, fr, it
 
 
 def _values(module, key):
@@ -41,6 +41,7 @@ def test_empty_list_explains_hidden_raid_storage_without_prescribing_firmware_ch
     (fr, "heures", "recommencez", "Intel RST, VMD ou RAID"),
     (de, "Stunden", "erneut von vorn", "Intel RST, VMD oder RAID"),
     (es, "horas", "desde el principio", "Intel RST, VMD o RAID"),
+    (it, "ore", "dall’inizio", "Intel RST, VMD o RAID"),
 ])
 def test_translations_carry_the_same_guidance(module, hours, restart, raid):
     assert all(hours in text for text in _values(module, "METHOD_LEAD"))

@@ -9,7 +9,7 @@ from test_tk_runtime import descendants
 from test_tk_runtime import ui as ui
 
 
-@pytest.mark.parametrize("code", ["en", "fr", "de", "es"])
+@pytest.mark.parametrize("code", ["en", "fr", "de", "es", "it"])
 @pytest.mark.parametrize("size", [(800, 600), (1280, 820), (1600, 1000)])
 def test_comparison_title_uses_available_width_without_midword_breaks(request, code, size):
     try:

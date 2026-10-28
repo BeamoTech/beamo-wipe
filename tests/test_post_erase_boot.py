@@ -195,6 +195,11 @@ def test_helper_after_erasing_card_in_every_language():
             "Si el equipo no se inicia después del borrado",
             "es posible",
         ),
+        (
+            "it.html",
+            "Se il computer non si avvia dopo la cancellazione",
+            "potrebbe",
+        ),
     ):
         raw = (ROOT / "helper" / name).read_text(encoding="utf-8")
         doc = _Doc()

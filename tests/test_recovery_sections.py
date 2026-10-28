@@ -325,11 +325,14 @@ def test_helper_explains_three_recovery_sections():
     fr = (root / "helper/fr.html").read_text(encoding="utf-8")
     de = (root / "helper/de.html").read_text(encoding="utf-8")
     es = (root / "helper/es.html").read_text(encoding="utf-8")
+    it = (root / "helper/it.html").read_text(encoding="utf-8")
     assert 'id="error-recovery"' in fr and 'id="error-recovery"' in de
     assert 'id="error-recovery"' in es
+    assert 'id="error-recovery"' in it
     assert "Ce qui s’est passé" in fr
     assert "Was geschehen ist" in de
     from beamo_wipe import lang
 
     for key in ("RECOVERY_HAPPENED", "RECOVERY_MEANING", "RECOVERY_NEXT", "RECOVERY_TECHNICAL"):
         assert lang.translated("es", "recovery", key) in es, key
+        assert lang.translated("it", "recovery", key) in it, key

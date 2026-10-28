@@ -165,6 +165,7 @@ def test_media_step_keys_translated_in_fr_and_de():
     from beamo_wipe.locales import de as de_locale
     from beamo_wipe.locales import es as es_locale
     from beamo_wipe.locales import fr as fr_locale
+    from beamo_wipe.locales import it as it_locale
 
     keys = (
         "MEDIA_STEPS_TITLE",
@@ -181,6 +182,7 @@ def test_media_step_keys_translated_in_fr_and_de():
         assert fr_locale.STRINGS["copy"][key] != getattr(C, key)
         assert de_locale.STRINGS["copy"][key] != getattr(C, key)
         assert es_locale.STRINGS["copy"][key] != getattr(C, key)
+        assert it_locale.STRINGS["copy"][key] != getattr(C, key)
 
 
 def test_media_steps_follow_active_language():
@@ -195,7 +197,7 @@ def test_media_steps_follow_active_language():
     assert C.media_steps() == C.media_steps(stay_in_session=False)
 
 
-@pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html", "es.html"])
+@pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html", "es.html", "it.html"])
 def test_helper_lists_removal_steps_in_order(name):
     from beamo_wipe.gallery import project_root
 
@@ -225,6 +227,12 @@ def test_helper_lists_removal_steps_in_order(name):
             "completamente apagado",
             "reinicia",
             "no adivine",
+        ),
+        "it.html": (
+            "Prima il rapporto",
+            "completamente spento",
+            "riavvia",
+            "non tiri a indovinare",
         ),
     }[name]
     positions = [text.index(marker) for marker in markers]

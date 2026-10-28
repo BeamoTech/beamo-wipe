@@ -204,6 +204,7 @@ def test_guide_never_promises():
         ("fr", "heures", "non promise", "toute la nuit"),
         ("de", "Stunden", "ohne Gewähr", "über Nacht"),
         ("es", "horas", "no se promete", "toda la noche"),
+        ("it", "ore", "non è una promessa", "tutta la notte"),
     ],
 )
 def test_translated_guides(code, hours, hedge, overnight):
@@ -214,7 +215,7 @@ def test_translated_guides(code, hours, hedge, overnight):
     quick = C.method_time_guide(MethodId.QUICK_ZERO, disk)
     assert hours in everyday and hedge in everyday and "1 TB" in everyday
     assert overnight in extra and overnight not in everyday
-    assert any(word in quick for word in ("minutes", "Minuten", "minutos"))
+    assert any(word in quick for word in ("minutes", "Minuten", "minutos", "minuti"))
     assert "Rough guide" not in everyday + extra + quick
 
 

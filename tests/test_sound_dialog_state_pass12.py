@@ -138,7 +138,7 @@ def _settle_geometry():
     Gdk.Display.get_default().sync()
 
 
-@pytest.mark.parametrize("language", ["en", "fr", "de", "es"])
+@pytest.mark.parametrize("language", ["en", "fr", "de", "es", "it"])
 @pytest.mark.parametrize("working", [False, True])
 @pytest.mark.parametrize("count", [1, 2, 8, 16])
 @pytest.mark.parametrize("workarea", [(0, 0, 800, 600), (0, 0, 1600, 1000), (120, 80, 800, 600)])

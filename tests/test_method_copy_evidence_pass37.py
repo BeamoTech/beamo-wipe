@@ -22,7 +22,7 @@ def test_forged_method_copy_cannot_keep_green_result_or_report(field):
     assert "Certified 100-pass purge" not in build_result_summary(changed)
 
 
-@pytest.mark.parametrize("language", ["fr", "de", "es"])
+@pytest.mark.parametrize("language", ["fr", "de", "es", "it"])
 def test_saved_method_copy_is_checked_in_its_own_language(language):
     original = lang.current()
     try:

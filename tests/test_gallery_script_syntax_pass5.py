@@ -12,7 +12,7 @@ import pytest
 from beamo_wipe.gallery import gallery_html
 
 
-@pytest.mark.parametrize("language", ("en", "fr", "de", "es"))
+@pytest.mark.parametrize("language", ("en", "fr", "de", "es", "it"))
 def test_generated_gallery_script_parses(language, tmp_path):
     node = shutil.which("node")
     if node is None:

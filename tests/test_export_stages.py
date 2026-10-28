@@ -202,6 +202,7 @@ def test_export_stage_keys_translated_in_fr_and_de():
     from beamo_wipe.locales import de as de_locale
     from beamo_wipe.locales import es as es_locale
     from beamo_wipe.locales import fr as fr_locale
+    from beamo_wipe.locales import it as it_locale
 
     keys = (
         "EXPORT_STAGE_INSERT",
@@ -219,9 +220,10 @@ def test_export_stage_keys_translated_in_fr_and_de():
         assert fr_locale.STRINGS["copy"][key] != getattr(C, key)
         assert de_locale.STRINGS["copy"][key] != getattr(C, key)
         assert es_locale.STRINGS["copy"][key] != getattr(C, key)
+        assert it_locale.STRINGS["copy"][key] != getattr(C, key)
 
 
-@pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html", "es.html"])
+@pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html", "es.html", "it.html"])
 def test_helper_explains_export_stages(name):
     from beamo_wipe.gallery import project_root
 
@@ -233,6 +235,7 @@ def test_helper_explains_export_stages(name):
         "fr.html": ("Insérez", "Vérif", "Enregistr", "Contrôl", "retrait"),
         "de.html": ("Stecken", "Prüf", "Speichern", "Verifizier", "Abziehen"),
         "es.html": ("Conecte", "Compruebe", "Guarde", "Verifique", "Retirada segura"),
+        "it.html": ("Inserisca", "Controlli", "Salvi", "Verifichi", "Rimozione sicura"),
     }[name]
     positions = [card.index(marker) for marker in markers]
     assert positions == sorted(positions)

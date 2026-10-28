@@ -409,7 +409,7 @@ def test_worker_reselects_before_opening_or_mounting(monkeypatch, requested, fre
     assert not reached
 
 
-@pytest.mark.parametrize("code", ["en", "fr", "de", "es"])
+@pytest.mark.parametrize("code", ["en", "fr", "de", "es", "it"])
 def test_exfat_refusals_keep_stable_support_codes_markers_and_next_steps(code):
     lang.set_language(code)
     payload, disks = _payload()
@@ -436,7 +436,7 @@ def test_every_report_media_string_names_both_formats_in_every_language():
             if not any("FAT32" in text for text in texts):
                 continue
             named.append((module, name))
-            for code in ("en", "fr", "de", "es"):
+            for code in ("en", "fr", "de", "es", "it"):
                 value = english if code == "en" else lang.translated(code, module, name)
                 joined = " ".join(value) if isinstance(value, tuple) else value
                 assert "FAT32" in joined and "exFAT" in joined, (code, module, name)
@@ -454,7 +454,7 @@ def test_help_names_the_refused_formats_without_exfat():
     assert "FAT32 or exFAT" in C.REPORT_MEDIA_WHAT and "one volume" in C.REPORT_MEDIA_WHAT
 
 
-@pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html", "es.html"])
+@pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html", "es.html", "it.html"])
 def test_helper_pages_name_both_report_formats(name):
     text = (Path("helper") / name).read_text(encoding="utf-8")
     card = text.split('id="after-erasing"', 1)[0]

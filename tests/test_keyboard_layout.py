@@ -469,7 +469,7 @@ def test_every_layout_has_translated_title_and_note():
 
     english = {lid: (LAYOUTS[lid].title, LAYOUTS[lid].note) for lid in LAYOUT_ORDER}
     try:
-        for code in ("fr", "de", "es"):
+        for code in ("fr", "de", "es", "it"):
             lang.set_language(code)
             for layout_id in LAYOUT_ORDER:
                 spec = keyboard.LAYOUTS[layout_id]
@@ -487,7 +487,7 @@ def test_keyboard_hints_name_every_layout_shortcut():
 
     span = f"1–{len(LAYOUT_ORDER)}"
     try:
-        for code in ("en", "fr", "de", "es"):
+        for code in ("en", "fr", "de", "es", "it"):
             lang.set_language(code)
             assert C.HINT_KEYBOARD.startswith(span), code
             # The curses screen keeps every digit for the typing check.
@@ -517,7 +517,7 @@ def test_plain_console_digit_chooses_every_layout(monkeypatch, capsys, index, la
     assert wiz.screen == Screen.OWNER
 
 
-@pytest.mark.parametrize("language", ["en", "es"])
+@pytest.mark.parametrize("language", ["en", "es", "it"])
 def test_curses_keyboard_pages_to_every_layout_at_80x24(monkeypatch, language):
     import curses
 
@@ -583,7 +583,7 @@ def test_curses_arrows_reach_every_layout_and_digits_stay_typeable(monkeypatch):
 
 
 @pytest.mark.parametrize("size", [(800, 600), (1024, 600), (1280, 720), (1600, 1000)])
-@pytest.mark.parametrize("language", ["en", "fr", "de", "es"])
+@pytest.mark.parametrize("language", ["en", "fr", "de", "es", "it"])
 def test_keyboard_screen_fits_and_reaches_every_layout(size, language):
     from test_adaptive_layout import _assert_actions_on_window, _buttons, _texts
     from test_tk_runtime import _needs_display

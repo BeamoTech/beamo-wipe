@@ -16,7 +16,7 @@ import pytest
 
 from beamo_wipe import lang
 
-TRANSLATED = ("fr", "de", "es")
+TRANSLATED = ("fr", "de", "es", "it")
 HELPER = Path(__file__).resolve().parents[1] / "helper"
 
 # (citing module, citing name, label module, label name): the English citing
@@ -82,6 +82,8 @@ ERASE_STEMS = {
     "fr": r"effa[cç]",
     "de": r"lösch",
     "es": r"borr",
+    # Italian "annullare" (cancel, clear) shares no stem with "cancellare".
+    "it": r"cancell",
 }
 
 
@@ -175,6 +177,21 @@ def test_french_uses_typographic_apostrophes():
             continue
         for sub, text in translated.items():
             assert not apostrophe.search(text), (module, name + sub, text)
+
+
+def test_italian_uses_typographic_apostrophes_and_no_french_spacing():
+    apostrophe = re.compile(r"[^\W\d_]'[^\W\d_]")
+    checked = 0
+    for code, module, name, english, translated in _entries():
+        if code != "it":
+            continue
+        for sub, text in translated.items():
+            checked += "’" in text
+            assert not apostrophe.search(text), (module, name + sub, text)
+            # Italian sets ? ! ; : tight against the word, unlike French.
+            plain = re.sub(r"\{[^}]*\}", "X", re.sub(r"https?://\S+", "", text))
+            assert not re.search(r"\w [?!;]", plain), (module, name + sub, text)
+    assert checked >= 100
 
 
 def test_french_spaces_before_high_punctuation():

@@ -86,7 +86,7 @@ def test_assist_nav_labels_stay_on_the_swept_copy_surface():
     keys = set(_swept_surface()["copy"])
     assert "ASSIST_LABEL" in keys
     assert "NAV_LABEL" in keys
-    for code in ("fr", "de", "es"):
+    for code in ("fr", "de", "es", "it"):
         table = set(lang.keys(code, "copy"))
         assert "ASSIST_LABEL" in table
         assert "NAV_LABEL" in table
@@ -94,6 +94,8 @@ def test_assist_nav_labels_stay_on_the_swept_copy_surface():
     assert lang.translated("de", "copy", "NAV_LABEL") != C.NAV_LABEL
     assert lang.translated("es", "copy", "ASSIST_LABEL") != C.ASSIST_LABEL
     assert lang.translated("es", "copy", "NAV_LABEL") != C.NAV_LABEL
+    assert lang.translated("it", "copy", "ASSIST_LABEL") != C.ASSIST_LABEL
+    assert lang.translated("it", "copy", "NAV_LABEL") != C.NAV_LABEL
 
 
 def test_assist_nav_names_do_not_rewrite_result_heading():

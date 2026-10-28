@@ -18,9 +18,12 @@ def test_shipped_helper_separates_windows_and_linux_restart_routes():
     french = (ROOT / "helper/fr.html").read_text(encoding="utf-8")
     german = (ROOT / "helper/de.html").read_text(encoding="utf-8")
     spanish = (ROOT / "helper/es.html").read_text(encoding="utf-8")
+    italian = (ROOT / "helper/it.html").read_text(encoding="utf-8")
     assert "On Windows, save your work and use Restart" in english
     assert "On supported Linux desktops, a guided restart may be offered" in english
     assert "Sous Windows, enregistrez votre travail et utilisez Redémarrer" in french
     assert "Unter Windows speichern Sie Ihre Arbeit und verwenden Neu starten" in german
     assert "En Windows, guarde su trabajo y utilice Reiniciar" in spanish
     assert "se puede ofrecer un reinicio guiado" in spanish
+    assert "In Windows, salvi il suo lavoro e usi Riavvia il sistema" in italian
+    assert "può essere offerto un riavvio guidato" in italian

@@ -101,7 +101,7 @@ def _header_texts(app):
     ]
 
 
-@pytest.mark.parametrize("code", ["fr", "de", "es"])
+@pytest.mark.parametrize("code", ["fr", "de", "es", "it"])
 def test_header_stage_caption_follows_the_language(ui, code):  # noqa: F811
     wiz, app = ui(size=MIN_SIZE)
     wiz.set_language(code)

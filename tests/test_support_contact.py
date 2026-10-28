@@ -20,6 +20,7 @@ def test_destination_single_source():
     assert SC.SUPPORT_SHORT in lang.translated("fr", "support_export", "README_SUPPORT")
     assert SC.SUPPORT_SHORT in lang.translated("de", "support_export", "README_SUPPORT")
     assert SC.SUPPORT_SHORT in lang.translated("es", "support_export", "README_SUPPORT")
+    assert SC.SUPPORT_SHORT in lang.translated("it", "support_export", "README_SUPPORT")
     assert SC.SUPPORT_SHORT in C.support_text()
     assert SC.SUPPORT_SHORT in C.support_lead()
 
@@ -257,7 +258,13 @@ def test_helper_and_boot_card_name_destination():
 
     root = Path(__file__).resolve().parents[1]
     svg = SC.qr_svg()
-    for rel in ("helper/index.html", "helper/fr.html", "helper/de.html", "helper/es.html"):
+    for rel in (
+        "helper/index.html",
+        "helper/fr.html",
+        "helper/de.html",
+        "helper/es.html",
+        "helper/it.html",
+    ):
         html = (root / rel).read_text(encoding="utf-8")
         assert SC.SUPPORT_SHORT in html, rel
         assert f'href="{SC.SUPPORT_URL}"' in html, rel

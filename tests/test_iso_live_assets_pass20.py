@@ -52,7 +52,7 @@ def _fixture(tmp_path):
     )
     subprocess.run(["git", "init", "-q"], cwd=project, check=True)
     subprocess.run(["git", "add", "src/beamo_wipe"], cwd=project, check=True)
-    for name in ("index.html", "fr.html", "de.html", "es.html"):
+    for name in ("index.html", "fr.html", "de.html", "es.html", "it.html"):
         path = project / "helper" / name
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(f"<html>{name}: not packaged; source status</html>\n")
@@ -152,7 +152,7 @@ def test_stage_live_assets_normal_and_link_leaf(tmp_path):
     assert result.returncode == 0, result.stderr
     assert foreign.read_text() == "foreign"
     assert "packaged" in (binary / "START-HERE.html").read_text()
-    for language in ("fr", "de", "es"):
+    for language in ("fr", "de", "es", "it"):
         localized = (
             live
             / "config/includes.chroot/usr/share/beamo-wipe/helper"

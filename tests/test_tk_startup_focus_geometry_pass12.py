@@ -79,7 +79,7 @@ def test_first_tk_startup_accepts_native_escape(native, monkeypatch, pointer, fu
         assert finished.wait(timeout=1)
 
 
-@pytest.mark.parametrize("language", ["en", "fr", "de", "es"])
+@pytest.mark.parametrize("language", ["en", "fr", "de", "es", "it"])
 @pytest.mark.parametrize("fullscreen", [False, True])
 def test_mapped_tk_startup_uses_its_configured_screen_bounds(monkeypatch, language, fullscreen):
     lang.set_language(language)

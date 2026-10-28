@@ -11,7 +11,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 
 
-@pytest.mark.parametrize("first", ["fr", "de", "es"])
+@pytest.mark.parametrize("first", ["fr", "de", "es", "it"])
 def test_fresh_process_restores_english_after_first_translation(first):
     script = """
 from beamo_wipe import lang
