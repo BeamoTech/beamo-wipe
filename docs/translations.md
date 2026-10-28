@@ -189,6 +189,7 @@ French
 - `storage_limits.SECTION_SUPPORTS_BODY`: … la version figée nwipe v0.42 … (secure erase) ni de nettoyage (sanitize).
 - `result_summary.H_WRAPPER_COMMIT`: Commit de l’enveloppe
 - `helper/fr.html`: Windows names *Utiliser un périphérique*, *Choisir une option*, *Marche/Arrêt*
+- `helper/fr.html` problem guide (2026-10-28): titles *La clé USB n’apparaît pas ou n’est pas dans la liste*, *Le lanceur a échoué*; *Détail technique*; *hub de clavier*; *évite cette contrainte de temps* ("avoids that race"); *Ces vérifications n’assurent pas que la clé USB démarrera* (avoids *garantir*)
 
 German
 - `methods.TITLE_PRNG`: Standard
@@ -201,6 +202,7 @@ German
 - `progress.NO_UPDATE`: Zeit ohne neuen Fortschritt: {text}. (label form avoids the dative *seit 2 Tagen*)
 - `helper/de.html` tagline and `copy.GALLERY_NOTE`: Starthilfe
 - `helper/de.html`: Windows names *Ein Gerät verwenden*, *Option auswählen*, *Ein/Aus-Menü*
+- `helper/de.html` problem guide (2026-10-28): titles *Der USB-Stick wird nicht angezeigt oder fehlt in der Liste*, *Der Starter ist fehlgeschlagen*; *Technisches Detail*; *vermeidet dieses Zeitproblem* ("avoids that race"); *Diese Prüfungen stellen nicht sicher, dass der USB-Stick startet* (avoids *garantieren*); kept intro *Wählen Sie das beobachtete Problem*
 
 Spanish
 - `methods.TITLE_PRNG`: Habitual
