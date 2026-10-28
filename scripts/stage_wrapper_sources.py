@@ -226,10 +226,15 @@ def prepare_live_stage(live: Path) -> None:
     try:
         generated = {
             "START-HERE.html",
+            "START-HERE-fr.html",
+            "START-HERE-de.html",
+            "START-HERE-es.html",
+            "START-HERE-it.html",
             "build-identity.json",
             "README.txt",
             "NOTICE",
             "LICENSE",
+            "THIRD_PARTY.md",
             "SOURCE.txt",
             "Start Beamo Wipe.exe",
             "Start Beamo Wipe Linux",

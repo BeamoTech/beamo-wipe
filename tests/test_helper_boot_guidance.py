@@ -122,7 +122,7 @@ def test_helper_and_iso_start_here_are_injected_from_source(tmp_path):
     assets = (ROOT / "scripts/stage_live_assets.py").read_text(encoding="utf-8")
     assert "stage_live_assets.py" in script
     assert 'put_bytes(share / "helper/index.html", packaged_html)' in assets
-    assert 'put_bytes(binary / "START-HERE.html", packaged_html)' in assets
+    assert 'put_bytes(binary / "START-HERE.html", link_root_helpers(packaged_html))' in assets
     binary = tmp_path / "binary"
     share = tmp_path / "share"
     binary.mkdir()

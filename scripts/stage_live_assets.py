@@ -30,12 +30,36 @@ On supported Linux desktops: open Start Beamo Wipe Linux. A guided restart
 is offered only when the USB and an exact boot entry can be verified.
 You still choose and confirm the disk after restarting. Nothing erases automatically.
 Open START-HERE.html for this USB's build and boot-menu keys.
+Other languages: START-HERE-fr.html (Français), START-HERE-de.html (Deutsch),
+START-HERE-es.html (Español), START-HERE-it.html (Italiano).
 Engine: nwipe (GPL). Wrapper: GPL-3.0-or-later. NO WARRANTY.
 Source code and our written offer for it: SOURCE.txt.
 https://github.com/BeamoTech/beamo-wipe
 """
 
 REPOSITORY_URL = "https://github.com/BeamoTech/beamo-wipe"
+HELPER_LANGUAGES = ("fr", "de", "es", "it")
+
+
+def root_helper_name(code: str) -> str:
+    """Name of a helper page in the USB's visible root folder."""
+    return "START-HERE.html" if code == "en" else f"START-HERE-{code}.html"
+
+
+def link_root_helpers(page: bytes) -> bytes:
+    """Point the language links at the root copies, which are renamed.
+
+    The live system keeps helper/index.html and helper/<code>.html, but the
+    USB root names them START-HERE*.html, so a root page linking to fr.html
+    would open nothing.
+    """
+    out = page
+    for code in ("en", *HELPER_LANGUAGES):
+        source = "index.html" if code == "en" else f"{code}.html"
+        out = out.replace(
+            f'href="{source}"'.encode(), f'href="{root_helper_name(code)}"'.encode()
+        )
+    return out
 
 
 def source_offer(support_url: str) -> bytes:
@@ -226,8 +250,9 @@ def stage_assets(root: Path, live: Path) -> None:
         helper_html, version=__version__, injected=injected, packaged=True
     ).encode("utf-8")
     put_bytes(share / "helper/index.html", packaged_html)
-    put_bytes(binary / "START-HERE.html", packaged_html)
-    for name in ("fr.html", "de.html", "es.html", "it.html"):
+    put_bytes(binary / "START-HERE.html", link_root_helpers(packaged_html))
+    for code in HELPER_LANGUAGES:
+        name = f"{code}.html"
         localized_source = root / "helper" / name
         localized_html = remember_source(
             localized_source, read_regular_bytes(localized_source)
@@ -237,9 +262,10 @@ def stage_assets(root: Path, live: Path) -> None:
             version=__version__,
             injected=injected,
             packaged=True,
-            language=name[:2],
+            language=code,
         ).encode("utf-8")
         put_bytes(share / "helper" / name, packaged_localized_html)
+        put_bytes(binary / root_helper_name(code), link_root_helpers(packaged_localized_html))
     for name in ("finished.wav", "attention.wav"):
         put_file(root / "packaging/sounds" / name, share / "sounds" / name)
 
@@ -257,7 +283,8 @@ def stage_assets(root: Path, live: Path) -> None:
         put_file(root / "desktop" / name, binary / name)
     for name in ("NOTICE", "LICENSE", "THIRD_PARTY.md"):
         put_file(root / name, docs / name)
-    for name in ("NOTICE", "LICENSE"):
+    # SOURCE.txt and NOTICE on the stick point readers at all three files.
+    for name in ("NOTICE", "LICENSE", "THIRD_PARTY.md"):
         put_file(root / name, binary / name)
     source = source_offer(SUPPORT_URL)
     put_bytes(binary / "SOURCE.txt", source)
