@@ -391,11 +391,16 @@ def build_evidence(
         "argv_redacted": argv_redacted,
     }
     if result is not None and spec.nwipe_method in RANDOM_DATA_NWIPE_METHODS:
-        # Optional, display-only observation from the exact log snapshot whose
-        # digest this record carries. Unknown stays absent; never an outcome input.
+        # Optional, display-only observation, preferably from the exact log
+        # snapshot whose digest this record carries. After a long erase that
+        # tail no longer reaches nwipe's options manifest; then the same
+        # whole-log projection the outcome is assessed from supplies it.
+        # Unknown stays absent; never an outcome input.
         from beamo_wipe.nwipe_runner import logged_random_generator
 
         generator = logged_random_generator(log_text)
+        if generator is None and assessed_log and assessed_log != log_text:
+            generator = logged_random_generator(assessed_log)
         if generator is not None:
             nwipe_record["prng"] = generator
 

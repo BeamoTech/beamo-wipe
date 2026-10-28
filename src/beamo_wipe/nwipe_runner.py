@@ -1987,6 +1987,14 @@ class NwipeRunner:
                             NWIPE_GEOMETRY_RE,
                         ))
                         or any(_status_column_has_name(body, name) for name in names)
+                        # Display-only generator records. After hours of
+                        # progress lines they are no longer in the exported
+                        # tail; logged_random_generator() still requires the
+                        # same exact, unique, header-first records here.
+                        or any(regex.fullmatch(line) for regex in (
+                            NWIPE_OPTIONS_HEADER_RE, NWIPE_PRNG_OPTION_RE,
+                            NWIPE_PRNG_AUTO_RE,
+                        ))
                     )
                     if relevant:
                         retained_bytes += len(raw)
