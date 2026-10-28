@@ -2049,3 +2049,142 @@
   hint, PRNG; console words by design), BW-CU-UI-LEFTOVERS (all except
   BW-FIN-PICK-ROW), BW-RR-UX-POLISH leftovers (Elapsed, focus slicing, GTK
   third radio; build token by design).
+
+## BW-PASS2-20261028 — LOCAL VERIFIED, BRANCH PUSHED / HOSTED, NATIVE-REVIEW AND PHYSICAL GATES OPEN
+
+- 2026-10-28 / Claude (Opus 5.5) for the owner's request to run another very
+  thorough pass. Branch `fix/release-readiness-20261026` (clone
+  `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`), continuing
+  from `465274d`. Four independent read-only reviewers covered
+  `58c677f..465274d` (runtime safety; UI and locales; image, build and release
+  scripts; docs, helper pages and claims). Every finding was re-checked against
+  the code or primary sources (Debian package lists, live-build 1:20230502,
+  amd64-/intel-microcode hooks, madison, security tracker) before fixing.
+  No PR, hosted CI, tag, release, device or host-setting change.
+- Lab: current lab revision `6fd49c5` in owned clone
+  `C:/Users/Jack/dev/beamo-remote-lab-claude-20261028` (peer checkout at
+  `d3d0959` left untouched); run root
+  `C:/Users/Jack/beamo-release-evidence/wipe-pass2-claude-20261028`:
+  self-test PASS (61 tests, framework), doctor/sync/plan PASS (preparation).
+  Plan still lists WIPE-ISO-QEMU "no new spend authorized".
+
+### Done (commit: what, evidence)
+
+- `89373fe` safety: the pick row never says "No operating system found"; it
+  names only a recognised system. Contents check now recognises EFI+APFS/HFS+
+  (Intel Mac), Linux with swap or a GPT BIOS boot partition, and a Linux
+  vendor "Recovery" partition (no longer "Windows"). Selection, tokens, nwipe
+  unchanged. 766 related tests PASS.
+- `78dafdd`: START-HERE.html linked to fr/de/es/it.html that were never on the
+  stick root; they are now staged there as START-HERE-<code>.html with links
+  rewritten (live-system copies unchanged), README.txt lists them, and
+  THIRD_PARTY.md is on the root as SOURCE.txt/NOTICE say.
+- `6ab504f`: NOTICE/README no longer name a competitor or promise
+  "sanitization"; support guidance carries the BitLocker key warning;
+  "outside what the overwrite reaches" (EN/FR/DE); ADVANCED.md lists --quiet;
+  THIRD_PARTY/compat matrix: misc-nonfree's legacy radio files, no PC Renesas
+  USB 3 firmware, SOF 2.2.4 predates Meteor Lake.
+- `9bbd3e6`: FR/DE/ES/IT helper pages say speech uses the English voice.
+- `1796b6a`: verify-usb-stick.py keeps exit 1 for a FAIL whose receipt cannot
+  be written; manufacturing.md: boot-QA units never ship without a fresh
+  readback.
+- `5437259`: corresponding_source.py `plan` no longer fails on every real
+  image (shim version from the binary version; shim-helpers mapped); `fetch`
+  validates nwipe/Beamo identities before writing and binds GitHub tarballs to
+  the commit via the git-archive header. Real v0.2.13 manifest: plan lists
+  319 sources incl. linux 6.1.190-1, grub2 2.06-13+deb12u2, shim
+  16.1-2~deb12u1. rescan_release_packages.py checks linux/grub2/shim and
+  ~bpo12 backports against trixie. Weekly rescan of v0.2.13 (manifest sha256
+  0f2796dc…5640) 2026-10-28: same 11 fixed issues missing (openssl, expat,
+  brotli); its boot packages are current. Output WSL
+  `~/beamo-wipe-readiness-20261026-rescan/rescan-20261028.txt`.
+- `945313e`: /etc/default/amd64-microcode forces "early" (the default "auto"
+  depends on the build CPU); QEMU gate parses every live initramfs early cpio
+  and requires AuthenticAMD.bin and GenuineIntel.bin (parser tested on
+  synthetic archives; image not built).
+- `ff6b737`: Tk keyboard screen: Up/Down choose layouts even from the
+  focused check box (1–7 typed digits there; the hint now names Up/Down in
+  all languages; browser preview matches); over-wide footer hints wrap;
+  a long sub-page caption no longer overlaps the third stage name at
+  1000-1100 px (100-case test); console keyboard screen pages its lead on
+  short consoles (80x14-80x20, all languages).
+- `a496b73`: FR/ES "new report USB" no longer reads "brand-new".
+- `ad7fe73`: a two-part keyboard notice follows a language switch.
+- `8d5e445`: the held-reservation and curses time-guide tests now check what
+  their names claim.
+- Verification: see "Final verification" below.
+
+### Open items from this pass (ID — acceptance, next action, blocker)
+
+- BW-P2-KERNEL-LAG — OWNER DECISION before the next release. Debian 12
+  backports' newest kernel is linux-signed-amd64 6.12.95+1~bpo12+1; Debian 13
+  has 6.12.107+1 and the tracker lists fixes up to 6.12.113-1. The corrected
+  rescan counts 3,504 tracker issues fixed in trixie 6.12.96–6.12.113 that a
+  6.12.95 image would lack (all urgency "not yet assigned"); the shipped
+  v0.2.13 6.1.190 kernel lacks none. The build-time `debsecan --suite
+  bookworm` gate cannot see backports. Options: accept the lag (offline kiosk,
+  no network software), go back to the bookworm 6.1 kernel (loses newer
+  hardware support), or move the base to Debian 13 (BW-RR-TRIXIE). Whatever
+  is chosen, run scripts/rescan_release_packages.py on the candidate
+  manifest before publication.
+- BW-P2-GRUB-UTILITIES — OWNER DECISION. live-build 1:20230502 never fills
+  `@ENABLE_VERIFY_CHECKSUMS@`, so "Verify integrity of the boot medium" never
+  appears (the `3ee29ed` message claimed otherwise); the unlocked Utilities
+  submenu exposes only "UEFI Firmware Settings" (fwsetup) on UEFI.
+  tests/test_boot_menus.py::test_uefi_recovery_and_utility_blocks_preserved
+  deliberately keeps both, so nothing was removed. Decide keep / lock again /
+  remove (then update that test). Verify works after a live-build upgrade.
+- BW-P2-GPL-SYSLINUX — OPEN, needs hosted build data. The source plan reads the
+  squashfs dpkg inventory only. ISO isolinux files (Debian isolinux/
+  syslinux-common, installed by live-build only during binary_syslinux) and
+  the USB image's ldlinux/mbr.bin (CI host's Ubuntu syslinux) are not listed.
+  Next: record those package versions in the release manifest and add them to
+  corresponding_source.py (Debian via snapshot, Ubuntu via Launchpad), or
+  install the USB image's syslinux from the pinned Debian container.
+- BW-P2-PRNG-LONG — KNOWN LIMIT. "Random data generator" in the report comes
+  from the 1 MiB log snapshot whose digest the evidence carries; after about
+  5.5 h of 2-second progress lines the options header leaves that window and
+  the line is omitted (never wrong). A fix needs an evidence-schema change
+  (head snapshot plus digest); not done blind.
+- BW-P2-RADIO-FILES — DOCUMENTED. firmware-misc-nonfree (bpo) carries Agere/
+  VT6656/WF200/CW1200 Wi-Fi, Broadcom/NXP Bluetooth and Multi-Tech modem
+  files; no radio package or connection software is installed. If file-level
+  removal is required, it needs a reviewed hook (stage_wrapper_sources
+  approves exactly one) and a squashfs file gate.
+- BW-P2-SOF-MTL — DOCUMENTED. Debian 12 SOF 2.2.4 predates Meteor Lake; no
+  backport exists (Debian 13 has 2025.01). 2024+ Intel laptops may be silent.
+- BW-P2-HOSTED-NEW — HOSTED. Unrun until the hosted gate: the initramfs
+  microcode check, START-HERE-<code>.html and THIRD_PARTY.md on a real ISO
+  root and USB image, README.txt lines.
+- Unchanged and still open: BW-FIN-HOSTED (spend authorization), BW-FIN-PR93,
+  BW-FIN-SB-Q12, BW-FIN-SHIM-BUILD, BW-FIN-EXFAT-QEMU, BW-FIN-VOICE,
+  BW-FIN-L10N-REVIEW (now also the FR/ES "new USB" and Up/Down hint lines),
+  BW-FIN-PICK-ROW, BW-RR-* and BW-CU-* items listed in BW-FINISH-20261028.
+
+### Final verification — 2026-10-28 (pass 2)
+
+- Full suite on exact `8d5e445` (product tree of this entry's commit), WSL
+  `BeamoComboQualification-20261001` as beamo-qual, pristine `git archive`
+  copy `/home/beamo-qual/bw-pass2-8d5e445-20261028` (full docs/evidence, no
+  `.git`), six fresh sessions with private 72 DPI Xvfb and 3 GB RAM /tmp:
+  13,038 passed, 60 failed, 0 errors, 86 skipped. Every failure is in the
+  known environment set of the `d842818` and `872d38c` runs (CI/receipt
+  gates needing `.git`: test_ci_log_snapshot 36, ci_evidence_directory 6,
+  blacksmith_ci 4, ci_evidence_pipeline 3, release_manifest 2 and 8 single
+  modules; plus the GTK 60 ms sound-dialog timing test). No new failure; four
+  formerly evidence-dependent tests now pass. Logs
+  `~/bw-full-pass2-8d5e445-20261028/`.
+- Targeted runs during the pass: contents/UI-fit/locales 766, staging and
+  helper 162, docs/claims/readback 534, docs/image-config 648, source plan and
+  rescan 53, microcode/boot 100, Tk layout suites 907, later UI fixes 681 —
+  failures only from the same no-`.git` set.
+- Static: ruff 0.9.2 (src, tests, scripts) PASS; mypy 2.1.0
+  `--ignore-missing-imports` (CI form) 54 files PASS; shellcheck 0.9.0 on
+  qemu-verify, build-usb-image, inside-docker, launcher, kiosk PASS;
+  compileall PASS; `git diff --check` PASS.
+- Lab receipts (lab `6fd49c5`, owned clone): self-test
+  20261028T185439Z-786c42caac55, doctor 20261028T195848Z-25f63c5da8df, sync
+  20261028T195937Z-7d9b8901b313, plan 20261028T195950Z-1186c8d08a71 — all
+  `verify` VALID / PASS at framework or preparation level only.
+- Not run: ISO build, hosted CI/QEMU, native Windows, Chrome pixel checks,
+  Orca/speech, anything physical.
