@@ -138,15 +138,21 @@ def test_pick_rows_speak_and_show_what_each_disk_holds(gtk, code):
     expected = {
         CONTENTS_WINDOWS: C.CONTENTS_HINT_WINDOWS,
         CONTENTS_SYSTEM: C.CONTENTS_HINT_SYSTEM,
-        CONTENTS_DATA: C.CONTENTS_HINT_DATA,
+        CONTENTS_DATA: "",
     }
     for disk in wizard.selectable:
         key = C.ACCESSIBLE_SELECT_DISK.format(disk=wizard.disk_view(disk).announcement)
         # The action word is the owner's language too, not English "Select".
         assert key.startswith("Select ") == (code == "en")
         hint = expected[CONTENTS[disk.path]]
-        assert app.actions[key].get_accessible().get_name() == f"{key}. {hint}"
-        assert shown.count(hint) == 1
+        name = app.actions[key].get_accessible().get_name()
+        if hint:
+            assert name == f"{key}. {hint}"
+            assert shown.count(hint) == 1
+        else:  # no recognised system: nothing is claimed, by ear either
+            assert name == key
+    # One label per recognised disk; the data disk adds none.
+    assert sum(shown.count(hint) for hint in set(expected.values()) - {""}) == 2
     assert wizard.selected is None and not wizard.runner.started
 
 

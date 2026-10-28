@@ -196,7 +196,6 @@ STRINGS = {
         "KIND_HDD": "Festplatte",
         "CONTENTS_HINT_WINDOWS": "Windows auf diesem Datenträger gefunden",
         "CONTENTS_HINT_SYSTEM": "Betriebssystem auf diesem Datenträger gefunden",
-        "CONTENTS_HINT_DATA": "Kein Betriebssystem auf diesem Datenträger gefunden",
         "KIND_UNKNOWN": "Typ unbekannt",
         "CAPACITY_UNIT_NOTE": (
             "GB und TB sind dezimal (1 TB = 1000 GB). Das sind keine GiB."

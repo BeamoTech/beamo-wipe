@@ -201,7 +201,6 @@ STRINGS = {
         "KIND_HDD": "Disco duro",
         "CONTENTS_HINT_WINDOWS": "Se encontró Windows en este disco",
         "CONTENTS_HINT_SYSTEM": "Se encontró un sistema operativo en este disco",
-        "CONTENTS_HINT_DATA": "No se encontró ningún sistema operativo en este disco",
         "KIND_UNKNOWN": "Tipo desconocido",
         "CAPACITY_UNIT_NOTE": (
             "GB y TB son decimales (1 TB = 1000 GB). No son GiB."

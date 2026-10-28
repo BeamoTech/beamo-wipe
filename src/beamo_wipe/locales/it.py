@@ -197,7 +197,6 @@ STRINGS = {
         "KIND_HDD": "Disco rigido",
         "CONTENTS_HINT_WINDOWS": "Windows trovato su questo disco",
         "CONTENTS_HINT_SYSTEM": "Sistema operativo trovato su questo disco",
-        "CONTENTS_HINT_DATA": "Nessun sistema operativo trovato su questo disco",
         "KIND_UNKNOWN": "Tipo sconosciuto",
         "CAPACITY_UNIT_NOTE": "GB e TB sono decimali (1 TB = 1000 GB). Non sono GiB.",
         "CONFIRM_TYPE_SIZE": "Digiti questi numeri per confermare che è il disco giusto: {token}",

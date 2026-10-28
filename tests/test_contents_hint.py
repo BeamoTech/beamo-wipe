@@ -66,15 +66,18 @@ def test_hint_follows_observed_contents_and_is_silent_when_unknown():
     disk = make_demo_wizard().selectable[0]
     assert C.contents_hint(replace(disk, contents=CONTENTS_WINDOWS)) == C.CONTENTS_HINT_WINDOWS
     assert C.contents_hint(replace(disk, contents=CONTENTS_SYSTEM)) == C.CONTENTS_HINT_SYSTEM
-    assert C.contents_hint(replace(disk, contents=CONTENTS_DATA)) == C.CONTENTS_HINT_DATA
+    # "data" only means no system was recognised; saying "No operating
+    # system" there would mislabel a legacy-BIOS system disk.
+    assert C.contents_hint(replace(disk, contents=CONTENTS_DATA)) == ""
     assert C.contents_hint(replace(disk, contents=CONTENTS_UNKNOWN)) == ""
+    assert not hasattr(C, "CONTENTS_HINT_DATA")
 
 
 @pytest.mark.parametrize("code", lang.LANGUAGE_ORDER)
 def test_hint_wording_is_factual_and_translated(code):
     lang.set_language(code)
-    hints = (C.CONTENTS_HINT_WINDOWS, C.CONTENTS_HINT_SYSTEM, C.CONTENTS_HINT_DATA)
-    assert len(set(hints)) == 3 and all(hints)
+    hints = (C.CONTENTS_HINT_WINDOWS, C.CONTENTS_HINT_SYSTEM)
+    assert len(set(hints)) == 2 and all(hints)
     assert "Windows" in C.CONTENTS_HINT_WINDOWS
     for hint in hints:
         assert "\n" not in hint and len(hint) <= 60
@@ -82,7 +85,7 @@ def test_hint_wording_is_factual_and_translated(code):
         for hint in hints:
             assert not any(word in hint.lower() for word in STEERING), hint
     else:
-        for name in ("CONTENTS_HINT_WINDOWS", "CONTENTS_HINT_SYSTEM", "CONTENTS_HINT_DATA"):
+        for name in ("CONTENTS_HINT_WINDOWS", "CONTENTS_HINT_SYSTEM"):
             assert getattr(C, name) == lang.translated(code, "copy", name)
             assert getattr(C, name) != lang.english("copy", name)
 
@@ -94,7 +97,7 @@ def test_curses_pick_blocks_show_the_hint_under_each_disk(code):
     wiz = _picker()
     wiz.set_language(code)
     blocks = _pick_blocks(wiz, 80)
-    hints = {C.CONTENTS_HINT_WINDOWS, C.CONTENTS_HINT_SYSTEM, C.CONTENTS_HINT_DATA}
+    hints = {C.CONTENTS_HINT_WINDOWS, C.CONTENTS_HINT_SYSTEM}
     seen = set()
     for disk, block in blocks:
         lines = [line.strip() for line in block]
@@ -102,8 +105,11 @@ def test_curses_pick_blocks_show_the_hint_under_each_disk(code):
             assert not hints & set(lines)
             continue
         expected = C.contents_hint(disk)
-        assert lines.count(expected) == 1
-        seen.add(expected)
+        if expected:
+            assert lines.count(expected) == 1
+            seen.add(expected)
+        else:
+            assert not hints & set(lines)
         assert all(len(line) <= 80 for line in block)
     assert seen == hints
 
@@ -112,7 +118,7 @@ def test_curses_unknown_contents_add_no_line():
     from beamo_wipe.ui.console_wizard import _pick_blocks
 
     wiz = _picker({path: CONTENTS_UNKNOWN for path in CONTENTS})
-    hints = {C.CONTENTS_HINT_WINDOWS, C.CONTENTS_HINT_SYSTEM, C.CONTENTS_HINT_DATA}
+    hints = {C.CONTENTS_HINT_WINDOWS, C.CONTENTS_HINT_SYSTEM}
     for _disk, block in _pick_blocks(wiz, 80):
         assert not hints & {line.strip() for line in block}
 
@@ -132,7 +138,7 @@ def test_plain_console_lists_the_hint_with_each_disk(monkeypatch, capsys):
     _plain_loop(wiz)
     out = capsys.readouterr().out
     assert answers and answers[0] == Screen.PICK
-    for hint in (C.CONTENTS_HINT_WINDOWS, C.CONTENTS_HINT_SYSTEM, C.CONTENTS_HINT_DATA):
+    for hint in (C.CONTENTS_HINT_WINDOWS, C.CONTENTS_HINT_SYSTEM):
         assert out.count(hint) == 1
     assert wiz.selected is None and not wiz.runner.started
 
@@ -150,7 +156,7 @@ def test_gallery_pick_cards_carry_and_render_the_hint(monkeypatch):
         expected = {
             CONTENTS_WINDOWS: C.CONTENTS_HINT_WINDOWS,
             CONTENTS_SYSTEM: C.CONTENTS_HINT_SYSTEM,
-            CONTENTS_DATA: C.CONTENTS_HINT_DATA,
+            CONTENTS_DATA: "",
         }[contents]
         assert disks[path]["contentsHint"] == expected
     boot = [item for item in disks.values() if item["isBoot"]]
@@ -203,5 +209,5 @@ def test_gallery_disk_card_renders_the_hint_line(monkeypatch):
     for item in disks:
         assert rendered[item["path"]] == item["contentsHint"]
     assert {rendered[path] for path in CONTENTS} == {
-        C.CONTENTS_HINT_WINDOWS, C.CONTENTS_HINT_SYSTEM, C.CONTENTS_HINT_DATA,
+        C.CONTENTS_HINT_WINDOWS, C.CONTENTS_HINT_SYSTEM, "",
     }

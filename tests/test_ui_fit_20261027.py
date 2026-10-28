@@ -458,18 +458,20 @@ def test_pick_rows_show_what_each_disk_holds(tk_app, code, size):
     hints = {
         CONTENTS_WINDOWS: C.CONTENTS_HINT_WINDOWS,
         CONTENTS_SYSTEM: C.CONTENTS_HINT_SYSTEM,
-        CONTENTS_DATA: C.CONTENTS_HINT_DATA,
+        CONTENTS_DATA: "",
     }
-    assert len(set(hints.values())) == 3 and all(hints.values())
+    named = set(hints.values()) - {""}
+    assert len(named) == 2
     for disk in wiz.selectable:
         card = app._pick_cards[disk.path]
         shown = [str(w.cget("text")) for w in _descendants(card) if w.winfo_class() == "Label"]
         expected = hints[CONTENTS[disk.path]]
-        assert shown.count(expected) == 1, (disk.path, shown)
-        assert not (set(hints.values()) - {expected}) & set(shown)
+        if expected:
+            assert shown.count(expected) == 1, (disk.path, shown)
+        assert not (named - {expected}) & set(shown)
     boot = next(w for w in _descendants(app._pick_canvas) if getattr(w, "_beamo_protected_boot", False))
     boot_text = [str(w.cget("text")) for w in _descendants(boot) if w.winfo_class() == "Label"]
-    assert not set(hints.values()) & set(boot_text)
+    assert not named & set(boot_text)
     assert _clipping_problems(app) == []
     _assert_actions_on_window(app)
     assert wiz.selected is None and not wiz.runner.started
@@ -479,6 +481,6 @@ def test_unknown_contents_add_no_hint(tk_app):
     wiz, app = tk_app(contents={path: CONTENTS_UNKNOWN for path in CONTENTS})
     _drive_to(wiz, app, Screen.PICK)
     _settle(app, 50)
-    hints = {C.CONTENTS_HINT_WINDOWS, C.CONTENTS_HINT_SYSTEM, C.CONTENTS_HINT_DATA}
+    hints = {C.CONTENTS_HINT_WINDOWS, C.CONTENTS_HINT_SYSTEM}
     shown = {str(w.cget("text")) for w in _descendants(app._pick_canvas) if w.winfo_class() == "Label"}
     assert not hints & shown
