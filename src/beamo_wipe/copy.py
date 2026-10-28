@@ -714,7 +714,7 @@ PRIMARY_ACTION_LABELS = frozenset(_primary_by_screen().values()) | {BTN_CONTINUE
 PREVIEW_BANNER = "PREVIEW on this computer — fake disks — nothing is erased"
 
 HINT_KEYBOARD = (
-    "1–7 chooses a layout. Type in the check box. Enter continues. "
+    "Up/Down chooses a layout. Type in the check box. Enter continues. "
     "Text size stays until this USB restarts."
 )
 HINT_DEFAULT = "Enter continues.  Esc goes back."

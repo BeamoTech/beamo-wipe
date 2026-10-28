@@ -1893,6 +1893,16 @@ document.addEventListener("keydown", e => {
       && !e.target?.closest?.(".scenarios")) {
     e.preventDefault(); screen = "keyboard"; draw(); return;
   }
+  if (screen === "keyboard" && ["ArrowUp", "ArrowDown"].includes(e.key)) {
+    // As in the Tk view: Up/Down choose a layout even from the check box.
+    e.preventDefault();
+    const ids = P.keyboardLayouts.map(item => item.id);
+    const at = Math.max(0, ids.indexOf(keyboardLayout || "us"));
+    keyboardLayout = ids[(at + (e.key === "ArrowUp" ? ids.length - 1 : 1)) % ids.length];
+    owner = false; token = ""; selected = null;
+    draw();
+    return;
+  }
   if (["working", "stop_confirm"].includes(screen) && e.key === "Escape") {
     e.preventDefault();
     if (!e.repeat) { screen = screen === "working" ? "stop_confirm" : "working"; draw(); }

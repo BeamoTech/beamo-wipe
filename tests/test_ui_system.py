@@ -87,7 +87,7 @@ def test_every_hint_key_name_renders_as_a_key_cap():
     # The layout-range cap is language-neutral, so every table keeps it.
     assert tkui._KEY_TOKEN_RE.fullmatch("1–7")
     assert "1–7" in html
-    assert "1–7" in C.HINT_KEYBOARD
+    assert "Up/Down" in C.HINT_KEYBOARD
 
 
 def test_key_caps_match_whole_words_in_every_language():

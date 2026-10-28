@@ -170,7 +170,7 @@ STRINGS = {
         "BTN_REFRESH": "Ricontrolla i dischi",
         "BTN_REFRESH_UTILITY": "Ricontrolla i dischi (F5)",
         "PREVIEW_BANNER": "ANTEPRIMA su questo computer — dischi fittizi — non viene cancellato nulla",
-        "HINT_KEYBOARD": "1–7 sceglie un layout. Digiti nella casella di controllo. Enter continua. La dimensione del testo resta fino al riavvio di questa chiavetta USB.",
+        "HINT_KEYBOARD": "Up/Down sceglie un layout. Digiti nella casella di controllo. Enter continua. La dimensione del testo resta fino al riavvio di questa chiavetta USB.",
         "HINT_DEFAULT": "Enter continua.  Esc torna indietro.",
         "HINT_PICK": "Faccia clic su un disco o usi Up/Down.  Enter controlla questo disco.  Esc torna indietro.",
         "HINT_OWNER": "Space seleziona la casella.  Enter sceglie un disco quando è selezionata.",

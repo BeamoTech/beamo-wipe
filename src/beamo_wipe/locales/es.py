@@ -174,7 +174,7 @@ STRINGS = {
         "BTN_REFRESH": "Volver a comprobar los discos",
         "BTN_REFRESH_UTILITY": "Volver a comprobar los discos (F5)",
         "PREVIEW_BANNER": "VISTA PREVIA en este equipo — discos ficticios — no se borra nada",
-        "HINT_KEYBOARD": "1–7 elige una distribución. Escriba en la casilla de comprobación. Enter continúa. El tamaño del texto se mantiene hasta que se reinicie esta memoria USB.",
+        "HINT_KEYBOARD": "Up/Down elige una distribución. Escriba en la casilla de comprobación. Enter continúa. El tamaño del texto se mantiene hasta que se reinicie esta memoria USB.",
         "HINT_DEFAULT": "Enter continúa.  Esc vuelve atrás.",
         "HINT_PICK": "Haga clic en un disco o utilice Up/Down.  Enter revisa este disco.  Esc vuelve atrás.",
         "HINT_OWNER": "Space marca la casilla.  Enter elige un disco cuando está marcada.",

@@ -58,7 +58,7 @@ One palette is shared by Tk, gallery, helper and pinned by `tests/test_ui_system
 
 - **Body type**: `DejaVu Sans` / `Noto Sans` fallback, 34 px bold titles, 18 px lead, 16 px body/button, 14 px meta, 12 px tiny caps. Minimum readable ≥12 px (WCAG large-text threshold). Entry is 26 px bold mono so typed token is readable at 1024 width in bright rooms.
 - **WCAG AA**: text pairs ≥4.5:1, white-on-primary/navy/danger ≥4.5:1, non-text UI (focus ring, strong border) ≥3:1 (`test_text_contrast_meets_wcag_aa`, `test_non_text_contrast_meets_wcag_aa`).
-- **Key caps**: `Up/Down → ↑ ↓`, `1, 2, or 3 → 1 2 3`, `1–7` (keyboard layouts, one cap in every language), `Enter/Esc/Space/any key` rendered as `_Box`/`span.kbd` with `BORDER_STRONG #6E7C8A` (≥3:1 on `SURFACE`).
+- **Key caps**: `Up/Down → ↑ ↓`, `1, 2, or 3 → 1 2 3`, `1–7` (one cap in every language; the keyboard footer now names `Up/Down`), `Enter/Esc/Space/any key` rendered as `_Box`/`span.kbd` with `BORDER_STRONG #6E7C8A` (≥3:1 on `SURFACE`).
 - **Color-independent meaning**: every tinted state pairs color with an icon + text. See §7.
 
 ---

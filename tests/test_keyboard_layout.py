@@ -485,11 +485,13 @@ def test_every_layout_has_translated_title_and_note():
 def test_keyboard_hints_name_every_layout_shortcut():
     from beamo_wipe import lang
 
-    span = f"1–{len(LAYOUT_ORDER)}"
     try:
         for code in ("en", "fr", "de", "es", "it"):
             lang.set_language(code)
-            assert C.HINT_KEYBOARD.startswith(span), code
+            # The Tk check box has focus and takes digits, so the hint names
+            # the keys that always work there, not 1-7.
+            assert C.HINT_KEYBOARD.startswith("Up/Down"), code
+            assert "1–" not in C.HINT_KEYBOARD, code
             # The curses screen keeps every digit for the typing check.
             assert C.CON_KEYBOARD_FOOTER.startswith("Left/Right"), code
     finally:
@@ -645,3 +647,122 @@ def _clipping_free(app) -> bool:
     problems = _clipping_problems(app)
     assert problems == []
     return True
+
+
+def _tk_keyboard(language="en", size=(1280, 720)):
+    from test_tk_runtime import _needs_display
+
+    from beamo_wipe.ui.layout import MIN_SIZE
+    from beamo_wipe.ui.tk_wizard import TkWizard
+
+    _needs_display()
+    wiz = _wiz()
+    app = TkWizard(wiz)
+    assert wiz.set_language(language)
+    app.root.minsize(*MIN_SIZE)
+    app.root.geometry(f"{size[0]}x{size[1]}+40+40")
+    app.root.update_idletasks()
+    app.root.focus_force()
+    wiz.skip_splash()
+    app._draw()
+    app.root.update()
+    assert wiz.screen == Screen.KEYBOARD
+    return wiz, app
+
+
+def _press(app, keysym):
+    # A layout change redraws the screen, so the release goes to whatever
+    # holds focus afterwards (a new check box).
+    for event in ("<KeyPress>", "<KeyRelease>"):
+        (app.root.focus_get() or app.root).event_generate(event, keysym=keysym)
+        app.root.update()
+
+
+def test_tk_up_down_choose_layouts_while_the_check_box_has_focus():
+    import tkinter as tk
+
+    from beamo_wipe import lang
+
+    wiz, app = _tk_keyboard()
+    try:
+        assert isinstance(app.root.focus_get(), tk.Entry)
+        reached = [wiz.keyboard_layout]
+        for _ in LAYOUT_ORDER:
+            _press(app, "Down")
+            assert isinstance(app.root.focus_get(), tk.Entry)
+            reached.append(wiz.keyboard_layout)
+        assert reached == [*LAYOUT_ORDER, LAYOUT_ORDER[0]]
+        _press(app, "Up")
+        assert wiz.keyboard_layout == LAYOUT_ORDER[-1]
+        # Digits still type into the check box and never switch layout.
+        for digit in "123":
+            _press(app, digit)
+        assert wiz.keyboard_layout == LAYOUT_ORDER[-1]
+        assert wiz.typing_check.endswith("123")
+    finally:
+        app._teardown()
+        lang.set_language("en")
+
+
+@pytest.mark.parametrize("language", ["en", "fr", "de", "es", "it"])
+def test_tk_keyboard_hint_stays_inside_the_window_on_tall_screens(language):
+    from beamo_wipe import lang
+
+    wiz, app = _tk_keyboard(language, size=(1024, 740))
+    try:
+        hint = app._hint
+        assert hint is not None and hint.winfo_ismapped()
+        right = hint.winfo_rootx() + hint.winfo_reqwidth()
+        assert right <= app.root.winfo_rootx() + app.root.winfo_width(), language
+        assert _clipping_free(app)
+    finally:
+        app._teardown()
+        lang.set_language("en")
+
+
+@pytest.mark.parametrize("rows", [14, 16, 18, 20])
+@pytest.mark.parametrize("language", ["en", "fr", "de", "es", "it"])
+def test_curses_keyboard_reaches_every_layout_on_short_consoles(monkeypatch, language, rows):
+    # The lead paragraphs alone fill a short console; they page with the
+    # list so Down still reaches every layout and language.
+    import curses
+
+    from beamo_wipe import keyboard, lang
+
+    wiz = _wiz()
+    try:
+        assert wiz.set_language(language)
+        wiz.skip_splash()
+        seen = []
+        keys = iter([curses.KEY_DOWN] * 80)
+
+        class Terminal:
+            def getmaxyx(self):
+                return rows, 80
+
+            def addstr(self, y, x, text, attr=0):
+                assert 0 <= y < rows
+                assert len(text) < 80
+                seen.append(text)
+
+            def getch(self):
+                try:
+                    return next(keys)
+                except StopIteration:
+                    wiz.wants_shutdown = True
+                    return -1
+
+            def __getattr__(self, name):
+                return lambda *a, **k: None
+
+        monkeypatch.setattr(console.curses, "curs_set", lambda *a, **k: None)
+        monkeypatch.setattr(console.curses, "use_default_colors", lambda *a, **k: None)
+        console._loop(Terminal(), wiz)
+        shown = "\n".join(seen)
+        for layout_id in LAYOUT_ORDER:
+            assert keyboard.LAYOUTS[layout_id].title in shown, layout_id
+        for code in lang.LANGUAGE_ORDER:
+            assert lang.LANGUAGE_NAMES[code] in shown
+        assert wiz.screen == Screen.KEYBOARD
+    finally:
+        wiz.set_language("en")

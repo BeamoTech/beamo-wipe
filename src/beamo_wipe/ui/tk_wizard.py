@@ -1731,16 +1731,21 @@ class TkWizard:
         if stepper and label == C.JOURNEY_LABELS[step[0] - 1]:
             # The stepper already highlights this stage; do not repeat it.
             label = ""
+        if label and stepper and width - 24 - self.font_meta.measure(label) < stepper + 12:
+            # A long caption (Spanish, French, German page names) would run
+            # over the last stage name; the page title below still names it.
+            label = ""
         if label:
             cv.create_text(
                 width - 24, mid, anchor="e",
                 text=label, font=self.font_meta, fill=MUTED,
             )
 
-    def _draw_journey(self, cv: tk.Canvas, width: int, step: int) -> bool:
+    def _draw_journey(self, cv: tk.Canvas, width: int, step: int) -> float:
+        """Draw the stages; return the right edge they use (0 when hidden)."""
         # Three named stages, never eight equal pages or success badges.
         if not step or width < 1000:
-            return False
+            return 0.0
         start, end = 260, width - 150
         gap = (end - start) / len(C.JOURNEY_LABELS)
         # The compact 48 px header put descenders on the bottom hairline.
@@ -1758,7 +1763,8 @@ class TkWizard:
                            fill=SURFACE if active else MUTED)
             cv.create_text(cx, label_y, text=name, font=self.font_meta,
                            fill=PRIMARY if active else MUTED)
-        return True
+        last = C.JOURNEY_LABELS[-1]
+        return start + gap * (len(C.JOURNEY_LABELS) - 0.5) + self.font_meta.measure(last) / 2.0
 
     def _draw_strip(self) -> None:
         cv = self._strip
@@ -2894,7 +2900,11 @@ class TkWizard:
             # past an 1024-wide window; fill=X uses the content column.
             note.configure(width=1)
             note.pack(fill=tk.X, pady=(4, 0))
-        if self.lay.short or self._type_scale() > 1.05:
+        # One unwrapped line of key-caps must fit the column; a longer
+        # translation (Spanish, Italian) wraps like the short-window hint.
+        caps = sum(len(_KEY_TOKEN_KEYS.get(m.group(0), (m,))) for m in _KEY_TOKEN_RE.finditer(hint))
+        too_wide = self.font_s.measure(hint) + 24 * caps > self.lay.content_w - 8
+        if self.lay.short or self._type_scale() > 1.05 or too_wide:
             self._hint = self._p(assist, hint, font=self.font_s, fg=MUTED,
                                  wraplength=self.lay.content_w - 8)
             self._hint.configure(width=1)
@@ -5318,6 +5328,16 @@ class TkWizard:
             return "break"
         if self.w.screen == Screen.KEYBOARD:
             focused = self.root.focus_get()
+            # The one-line check box has no use for Up/Down, so they choose
+            # the layout even while it has focus; digits type there instead.
+            if event.keysym in ("Up", "Down") and not isinstance(focused, _Scrollbar):
+                layouts = list(LAYOUT_ORDER)
+                current = (layouts.index(self.w.keyboard_layout)
+                           if self.w.keyboard_layout in layouts else 0)
+                step = -1 if event.keysym == "Up" else 1
+                self.w.set_keyboard_layout(layouts[(current + step) % len(layouts)])
+                self._draw()
+                return "break"
             if isinstance(focused, tk.Entry):
                 return None
             keyboard_mapping = {str(i): lid for i, lid in enumerate(LAYOUT_ORDER, 1)}

@@ -297,6 +297,10 @@ def _pick_blocks(wizard: Wizard, width: int) -> list[tuple[object, list[str]]]:
     return blocks
 
 
+# Rows the keyboard screen keeps for its paged layout list under a fixed lead.
+KEYBOARD_MIN_LIST_ROWS = 6
+
+
 def _paint_paged(
     stdscr, y: int, lines: list[str], offset: int, y_max: int, width: int,
     visible: set[int] | None = None,
@@ -1296,12 +1300,21 @@ def _loop(stdscr, wizard: Wizard) -> int:
         elif wizard.screen == Screen.SPLASH:
             y = _wrap(stdscr, y, C.SPLASH_TAGLINE, w, y_max)
         elif wizard.screen == Screen.KEYBOARD:
-            y = _wrap(stdscr, y, C.KEYBOARD_LEAD, w, y_max)
-            y = _wrap(stdscr, y, C.KEYBOARD_LIMITS, w, y_max)
-            y = _wrap(stdscr, y, C.TEXT_SIZE_LEAD, w, y_max)
-            y = _wrap(stdscr, y, C.TEXT_SIZE_CONSOLE, w, y_max)
-            y = _wrap(stdscr, y, _keyboard.CONSOLE_DEAD_KEYS, w, y_max) + 1
+            lead: list[str] = []
+            for text in (C.KEYBOARD_LEAD, C.KEYBOARD_LIMITS, C.TEXT_SIZE_LEAD,
+                         C.TEXT_SIZE_CONSOLE, _keyboard.CONSOLE_DEAD_KEYS):
+                lead.extend(_lines(text, w))
             lines = []
+            if y + len(lead) + 1 + KEYBOARD_MIN_LIST_ROWS <= y_max:
+                for line in lead:
+                    _add(stdscr, y, 0, line)
+                    y += 1
+                y += 1
+            else:
+                # A short console: a fixed lead would fill every row and the
+                # layouts could never be reached, so it pages with them.
+                lines.extend(lead)
+                lines.append("")
             for layout_id in LAYOUT_ORDER:
                 layout_spec = _keyboard.LAYOUTS[layout_id]
                 star = ">" if wizard.keyboard_layout == layout_id else " "
