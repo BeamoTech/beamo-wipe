@@ -76,8 +76,11 @@ sudo python3 scripts/verify-usb-stick.py --image "$GOLDEN_IMG" \
   Identifying the right stick is still the operator's job.
 - Only exit 0 with `RESULT: PASS` and a written receipt qualifies the unit.
   Exit 1 (`FAIL`: different bytes, short stick, read error, or a change during
-  readback) still writes a FAIL receipt: keep it and hold the lot. Exit 2 is a
-  refusal or error with no result: fix the cause and rerun; never record PASS.
+  readback) still writes a FAIL receipt: keep it and hold the lot. If that
+  receipt cannot be written, the tool still exits 1: keep the printed output as
+  the record and hold the lot; a later passing rerun does not clear a FAIL.
+  Exit 2 is a refusal before any comparison, or a PASS whose receipt could not
+  be written: fix the cause and rerun; never record PASS without a receipt.
 - PASS covers the image bytes only; capacity beyond the image is not compared.
   Regular-file rehearsal receipts (`target_type: regular`) never qualify a unit.
   Under `sudo` the receipt is root-owned, mode 0600; file it unedited.
@@ -108,6 +111,10 @@ Boot changes ([Secure Boot cases](secure-boot-acceptance.md)).
   connector, the #111 result marker and the photo/log path. A Pass covers that
   named machine and image only ([evidence tiers](evidence-tiers.md)).
 - A lot without a boot-QA Pass for its release stays on hold.
+- Boot-QA units never ship. Booting, a #111 re-flash or a desktop OS that sees
+  the stick can change its bytes (section 10), so set them aside as QA stock or
+  scrap them; a unit that ships needs its own passed readback after its last
+  handling.
 
 ## 6. Labeling
 

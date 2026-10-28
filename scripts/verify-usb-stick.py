@@ -25,8 +25,9 @@ root filesystem, or is held at all. It is opened O_EXCL, so the kernel also
 refuses it while in use and refuses new mounts until the read finishes.
 
 Exit status: 0 PASS; 1 FAIL (different bytes, short target, read error, or the
-target changed during readback; a receipt is still written); 2 usage error or
-refusal before any comparison (no receipt).
+target changed during readback; a receipt is still written, and a FAIL whose
+receipt cannot be written still exits 1); 2 usage error or refusal before any
+comparison, or a PASS whose receipt could not be written (no qualifying result).
 """
 
 import argparse
@@ -491,6 +492,12 @@ def run(args, host):
             print(f"STOP: the {result} receipt was not written ({describe(exc)}); nothing "
                   f"qualifies this unit until a new run writes one: {receipt_path}",
                   file=sys.stderr)
+            if result != "PASS":
+                # A real mismatch or read error stays a FAIL: a later passing
+                # rerun must not hide it. Keep this output as the record.
+                print(f"STOP: USB stick readback FAIL: {reason}; keep this output and hold "
+                      "the lot", file=sys.stderr)
+                return 1
             return 2
         print(f"RECEIPT: {receipt_path}")
     if result == "PASS":

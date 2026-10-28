@@ -462,6 +462,24 @@ def test_receipt_created_during_readback_is_not_replaced(tool, tmp_path, capsys)
     assert "receipt was not written" in captured.err and "RECEIPT:" not in captured.out
 
 
+def test_fail_stays_exit_1_when_its_receipt_cannot_be_written(tool, tmp_path, capsys):
+    # A real mismatch must not turn into "error, rerun": a passing rerun
+    # would then hide it. Manufacturing holds the lot on exit 1.
+    target = stick(tmp_path, IMAGE[:-1] + b"\x00")
+    receipt = tmp_path / "receipt.json"
+
+    def read(fd, count):
+        if not receipt.exists():
+            receipt.write_text("someone else")
+        return os.read(fd, count)
+
+    assert run(tool, target, *expected(), "--receipt", receipt, host=tool.Host(read=read)) == 1
+    captured = capsys.readouterr()
+    assert receipt.read_text() == "someone else"
+    assert "RESULT: FAIL" in captured.out and "RECEIPT:" not in captured.out
+    assert "receipt was not written" in captured.err and "readback FAIL" in captured.err
+
+
 def test_every_open_is_read_only_except_the_new_receipt(tool, tmp_path, monkeypatch, opens):
     import fcntl
 
