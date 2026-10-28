@@ -426,7 +426,7 @@ def _stripe_texts(app):
     ]
 
 
-@pytest.mark.parametrize("code", ["fr", "de", "es"])
+@pytest.mark.parametrize("code", [c for c in lang.LANGUAGE_ORDER if c != "en"])
 def test_preview_stripe_and_title_follow_the_language_choice(tk_app, code):
     wiz, app = tk_app(size=LAPTOP_SIZE, preview=True)
     _drive_to(wiz, app, Screen.KEYBOARD)

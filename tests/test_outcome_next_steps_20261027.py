@@ -49,66 +49,81 @@ FORMER_GENERIC = {
         "está disponible y contacte con el soporte técnico. Apague antes de "
         "desconectar."
     ),
+    "it": (
+        "Sul disco potrebbero esserci ancora dei file. Salvi il rapporto, se "
+        "disponibile, e contatti l’assistenza. Spenga il computer prima di "
+        "scollegare."
+    ),
 }
 REMAIN = {
     "en": "Files may still be on the disk.",
     "fr": "Des fichiers sont peut-être encore sur le disque.",
     "de": "Es können noch Dateien auf dem Datenträger sein.",
     "es": "Es posible que todavía haya archivos en el disco.",
+    "it": "Sul disco potrebbero esserci ancora dei file.",
 }
 SAVE = {
     "en": "save the report if available",
     "fr": "enregistrez le rapport si possible",
     "de": "speichern sie den bericht, wenn verfügbar",
     "es": "guarde el informe si está disponible",
+    "it": "salvi il rapporto, se disponibile",
 }
 SUPPORT = {
     "en": "contact support",
     "fr": "contactez l’assistance",
     "de": "wenden sie sich an den support",
     "es": "contacte con el soporte técnico",
+    "it": "contatti l’assistenza",
 }
 SHUT_DOWN = {
     "en": "shut down",
     "fr": "éteignez",
     "de": "fahren sie herunter",
     "es": "apague",
+    "it": "spenga il computer",
 }
 RESTART = {
     "en": "start again from the beginning",
     "fr": "recommencez depuis le début",
     "de": "erneut von vorn",
     "es": "vuelva a empezar desde el principio",
+    "it": "ricominci dall’inizio",
 }
 NOT_ERASED = {
     "en": "do not treat or sell it as erased",
     "fr": "ne le considérez ni ne le vendez comme effacé",
     "de": "behandeln oder verkaufen sie ihn nicht als gelöscht",
     "es": "no lo trate ni lo venda como borrado",
+    "it": "non lo consideri né lo venda come cancellato",
 }
 DESTROY = {
     "en": "consider replacing or physically destroying it",
     "fr": "envisagez de le remplacer ou de le détruire physiquement",
     "de": "erwägen sie, ihn zu ersetzen oder physisch zu zerstören",
     "es": "considere sustituirlo o destruirlo físicamente",
+    "it": "valuti di sostituirlo o di distruggerlo fisicamente",
 }
 WHOLE_DISK = {
     "en": "to erase the whole disk",
     "fr": "pour effacer tout le disque",
     "de": "um den ganzen datenträger zu löschen",
     "es": "para borrar todo el disco",
+    "it": "per cancellare l’intero disco",
 }
 REPEATS = {
     "en": "if this repeats",
     "fr": "si cela se reproduit",
     "de": "wenn das wieder auftritt",
     "es": "si se repite",
+    "it": "se si ripete",
 }
 OPEN_RESTART = {
     "en": "then start again",
     "fr": "puis recommencez",
     "de": "beginnen sie dann erneut",
     "es": "vuelva a empezar",
+    "it": "poi ricominci",
 }
 # Actionable hints that are true for exactly one outcome and appear nowhere else.
 HINTS = {
@@ -117,54 +132,62 @@ HINTS = {
         "fr": ("vérifiez le branchement du disque", "évitez les hubs usb"),
         "de": ("prüfen sie den anschluss des datenträgers", "vermeiden sie usb-hubs"),
         "es": ("revise la conexión del disco", "evite los hubs usb"),
+        "it": ("controlli il collegamento del disco", "eviti gli hub usb"),
     },
     "geometry_unusable": {
         "en": ("contact support before trying this disk again",),
         "fr": ("contactez l’assistance avant de réessayer avec ce disque",),
         "de": ("bevor sie es mit diesem datenträger erneut versuchen",),
         "es": ("antes de volver a intentarlo con este disco",),
+        "it": ("prima di riprovare con questo disco",),
     },
     "verification_failed": {
         "en": ("may be unreliable",),
         "fr": ("n’est peut-être pas fiable",),
         "de": ("möglicherweise unzuverlässig",),
         "es": ("no sea fiable",),
+        "it": ("potrebbe essere inaffidabile",),
     },
     "engine_failed": {
         "en": ("may be failing",),
         "fr": ("peut-être défaillant",),
         "de": ("möglicherweise defekt",),
         "es": ("esté fallando",),
+        "it": ("potrebbe essere guasto",),
     },
     "cancelled": {
         "en": ("for help",),
         "fr": ("pour obtenir de l’aide",),
         "de": ("wenn sie hilfe brauchen",),
         "es": ("si necesita ayuda",),
+        "it": ("se ha bisogno di aiuto",),
     },
     "completion_missing": {
         "en": ("if the result is the same",),
         "fr": ("si le résultat est le même",),
         "de": ("wenn das ergebnis gleich bleibt",),
         "es": ("si el resultado es el mismo",),
+        "it": ("se il risultato è lo stesso",),
     },
     "process_failed": {
         "en": ("if it fails again",),
         "fr": ("si l’effacement échoue encore",),
         "de": ("wenn es wieder fehlschlägt",),
         "es": ("si vuelve a fallar",),
+        "it": ("se l’operazione non riesce di nuovo",),
     },
     "indeterminate": {
         "en": ("do not sell or give away the disk until an erase is confirmed",),
         "fr": ("ne vendez ni ne donnez le disque tant qu’un effacement n’est pas confirmé",),
         "de": ("verkaufen oder verschenken sie den datenträger erst, wenn ein löschen bestätigt ist",),
         "es": ("no venda ni regale el disco hasta que se confirme un borrado",),
+        "it": ("non venda né regali il disco finché una cancellazione non è confermata",),
     },
 }
 NO_PROMISES = (
     "minute", "hour", "second", "heure", "stunde", "sekunde", "minuto", "hora",
     "segundo", "certif", "dod", "plug and play", "guarant", "garanti", "secure",
-    "sécuris", "sicher gelöscht", "seguro",
+    "sécuris", "sicher gelöscht", "seguro", "minuti", "secondi", "sicur",
 )
 FAILURE_CASES = [case for case in CASES if case[0] in SPECIFIC_CODES]
 

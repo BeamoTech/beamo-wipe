@@ -161,7 +161,7 @@ def test_unknown_contents_keep_the_plain_select_name(gtk):
         assert app.actions[key].get_accessible().get_name() == key
 
 
-@pytest.mark.parametrize("code", ["fr", "de", "es"])
+@pytest.mark.parametrize("code", [c for c in lang.LANGUAGE_ORDER if c != "en"])
 def test_preview_notice_follows_the_language_choice(gtk, code):
     wizard = _wizard(preview=True)
     wizard.skip_splash()

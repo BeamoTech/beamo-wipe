@@ -229,3 +229,4 @@ Italian
 - `compat_story` labels: immagine USB prodotta (manufactured image)
 - `helper/it.html`: Windows names *Usa un dispositivo*, *Scegli un’opzione*, *Riavvia il sistema*, menu *Arresta*, *Ambiente ripristino Windows*; defaults *non pacchettizzata/o*
 - Lower-case *suo/le/la* for Lei throughout (rather than *Suo/Le/La*)
+- Added after the first Italian pass, not yet reviewed with it: `copy.CONTENTS_HINT_*` (*… trovato su questo disco*), `outcomes.NEXT_*` per-result next steps (*Valuti di sostituirlo o di distruggerlo fisicamente*, *Se si ripete*), `inventory.CANNOT_ERASE` (*Impossibile cancellare:*), `progress.OLD_PERCENT` (*non recente*), `copy.ACCESSIBLE_SELECT_DISK` (*Seleziona*) and `result_summary.H_RANDOM_GENERATOR` (*Generatore di dati casuali*)
