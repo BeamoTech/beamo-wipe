@@ -98,11 +98,6 @@
       margin: 0 0 18px;
       box-shadow: var(--shadow);
     }
-    .chooser { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 0; list-style: none; }
-    .chooser a { display: block; min-height: 2.75em; padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-alt); color: var(--ink); font-weight: 700; text-decoration: none; overflow-wrap: anywhere; }
-    .chooser a:hover, .chooser a:focus-visible, .panel:target { border-color: var(--primary); }
-    .chooser a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-    .panel { border-top: 1px solid var(--border); padding: 20px 0 4px; overflow-wrap: anywhere; }
     h2 { font-size: 24px; margin: 0 0 12px; letter-spacing: -.02em; font-weight: 700; }
     p { margin: 0 0 12px; }
     p:last-child { margin-bottom: 0; }
@@ -202,6 +197,93 @@
       background: #fff;
     }
     .support p { margin: 0; min-width: 0; }
+    .guide-intro { margin: 0 0 16px; }
+    .chooser {
+      list-style: none;
+      margin: 0 0 22px;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .chooser a {
+      display: flex;
+      align-items: center;
+      min-height: 2.75em;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-alt);
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1em;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+    .chooser a:hover { border-color: var(--border-strong); }
+    .chooser a:focus-visible {
+      outline: 3px solid var(--focus); outline-offset: 2px;
+    }
+    .guide:has(#trouble-usb:target) .chooser a[href="#trouble-usb"],
+    .guide:has(#trouble-key:target) .chooser a[href="#trouble-key"],
+    .guide:has(#trouble-firmware:target) .chooser a[href="#trouble-firmware"],
+    .guide:has(#trouble-launcher:target) .chooser a[href="#trouble-launcher"] {
+      border-color: var(--primary);
+      background: var(--navy-muted);
+    }
+    .guide-hint { display: none; margin: 0; }
+    @supports selector(:has(*)) {
+      .guide:has(.panel:target) .panel:not(:target) { display: none; }
+      .guide:not(:has(.panel:target)) .panel { display: none; }
+      .guide:not(:has(.panel:target)) .guide-hint { display: block; }
+    }
+    .panel {
+      border-top: 1px solid var(--border);
+      padding: 22px 0 8px;
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+    .panel:focus { outline: 3px solid var(--focus); outline-offset: 6px; }
+    .panel h2 { font-size: 1.2em; }
+    .illustration {
+      width: min(100%, 22rem);
+      margin: 0 0 14px;
+    }
+    .illustration svg { display: block; width: 100%; height: auto; }
+    figcaption {
+      font-size: 0.85em;
+      color: var(--muted);
+      margin: 8px 0 0;
+    }
+    .panel ol { padding-left: 1.3em; }
+    .panel details {
+      margin: 14px 0 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      background: var(--surface-alt);
+    }
+    .panel summary {
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    .panel summary:focus-visible {
+      outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px;
+    }
+    .back {
+      display: inline-block;
+      margin-top: 12px;
+      font-weight: 700;
+    }
+    @media print {
+      .guide .panel { display: block !important; }
+      .guide-hint { display: none !important; }
+    }
+    @media (forced-colors: active) {
+      .chooser a, .panel details, .kbd { border: 1px solid ButtonText; }
+    }
     @media (max-width: 600px) {
       header .inner { flex-wrap: wrap; padding: 16px 20px; gap: 8px; }
       header .tagline { flex: 1 0 100%; text-align: left; }
@@ -212,6 +294,7 @@
       table { display: block; overflow-x: auto; }
       .support { flex-wrap: wrap; }
       .chooser { grid-template-columns: 1fr; }
+      .illustration { width: 100%; }
       dl.build-ids { grid-template-columns: 1fr; }
     }
   </style>
@@ -251,49 +334,136 @@
     </div>
     <div class="card guide" id="guide">
       <h2>Si quelque chose ne fonctionne pas</h2>
-      <p>Choisissez ce que vous voyez. Toutes les étapes sont disponibles sur cette clé USB, sans connexion Internet.</p>
-      <nav aria-label="Problèmes de démarrage"><ul class="chooser">
-        <li><a href="#trouble-usb">La clé USB est absente de la liste</a></li>
-        <li><a href="#trouble-key">La touche du menu de démarrage ne fonctionne pas</a></li>
-        <li><a href="#trouble-firmware">L’ordinateur refuse la clé USB</a></li>
-        <li><a href="#trouble-launcher">Le lanceur ne démarre pas</a></li>
-      </ul></nav>
-      <article class="panel" id="trouble-usb" tabindex="-1" aria-labelledby="trouble-usb-title">
-        <h2 id="trouble-usb-title">La clé USB est absente de la liste</h2>
+      <p class="guide-intro">Choisissez ce que vous voyez. Toutes les étapes sont disponibles sur cette clé USB, sans connexion Internet.</p>
+      <nav aria-label="Problèmes de démarrage">
+        <ul class="chooser">
+          <li><a href="#trouble-usb">La clé USB n’apparaît pas ou n’est pas dans la liste</a></li>
+          <li><a href="#trouble-key">La touche du menu de démarrage ne fait rien</a></li>
+          <li><a href="#trouble-firmware">L’ordinateur refuse la clé USB</a></li>
+          <li><a href="#trouble-launcher">Le lanceur a échoué</a></li>
+        </ul>
+      </nav>
+      <p class="guide-hint">Choisissez un problème ci-dessus. Les étapes s’affichent ici.</p>
+
+      <article class="panel panel-usb" id="trouble-usb" tabindex="-1" aria-labelledby="trouble-usb-title">
+        <h2 id="trouble-usb-title">La clé USB n’apparaît pas ou n’est pas dans la liste</h2>
+        <figure class="illustration">
+          <svg viewBox="0 0 280 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="8" y="18" width="150" height="96" rx="8" fill="#F3F5F7" stroke="#0A1B34" stroke-width="3"/>
+            <rect x="20" y="30" width="126" height="72" rx="2" fill="#16315C"/>
+            <rect x="158" y="56" width="16" height="20" fill="#0A1B34"/>
+            <rect x="174" y="50" width="52" height="32" rx="4" fill="#1C4A73" stroke="#0A1B34" stroke-width="2"/>
+            <rect x="226" y="58" width="14" height="16" fill="#C9D6E8" stroke="#0A1B34" stroke-width="1.5"/>
+            <rect x="48" y="100" width="70" height="10" rx="2" fill="#D8DFE6"/>
+            <rect x="200" y="96" width="64" height="28" rx="4" fill="#F3F5F7" stroke="#6E7C8A" stroke-width="2"/>
+            <line x1="208" y1="104" x2="256" y2="116" stroke="#B3261E" stroke-width="3" stroke-linecap="round"/>
+            <line x1="256" y1="104" x2="208" y2="116" stroke="#B3261E" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <figcaption>Branchez la clé sur un port de l’ordinateur, pas sur un hub de clavier.</figcaption>
+        </figure>
         <ol>
-          <li>Laissez la clé branchée pendant le redémarrage. Utilisez un port USB-A ou USB-C directement sur l’ordinateur, puis essayez un autre port.</li>
-          <li>Recherchez la clé dans le menu de démarrage ou, sur un PC UEFI, dans Utiliser un périphérique. Suivez les étapes pour <a href="#windows-11">Windows 11</a> ou <a href="#windows-10">Windows 10</a>.</li>
-          <li>Si elle reste absente, vérifiez sur un ordinateur qui affiche les fichiers que <strong>START-HERE.html</strong> se trouve bien sur la clé. Ne considérez pas une modification du micrologiciel comme l’étape suivante automatique.</li>
+          <li>Laissez cette clé USB branchée pendant le redémarrage de l’ordinateur. Ne la retirez pas.</li>
+          <li>Utilisez un port USB-A ou USB-C de l’ordinateur lui-même. Si possible, évitez les ports d’un clavier, d’un écran ou d’un hub.</li>
+          <li>Essayez un autre port du même ordinateur.</li>
+          <li>Redémarrez et cherchez cette clé USB dans le menu de démarrage ou dans <strong>Utiliser un périphérique</strong> de Windows.</li>
+          <li>Si cet ordinateur n’affiche toujours pas la clé USB, ouvrez-la sur un ordinateur qui affiche déjà des fichiers et vérifiez que <strong>START-HERE.html</strong> s’y trouve. Essayez ensuite un autre port direct.</li>
         </ol>
-        <p><a href="#guide">Revenir aux problèmes</a></p>
+        <p>Windows 11 : Paramètres → Système → Récupération → Démarrage avancé → Redémarrer maintenant → Utiliser un périphérique, si cette option est proposée. Windows 10 : Paramètres → Mise à jour et sécurité → Récupération → Démarrage avancé → Redémarrer maintenant → Utiliser un périphérique. Ces menus concernent les PC UEFI. Consultez <a href="#windows-11">Windows 11</a> et <a href="#windows-10">Windows 10</a>.</p>
+        <details>
+          <summary>Détail technique</summary>
+          <p>Certains ordinateurs masquent le démarrage USB tant que le micrologiciel ne l’autorise pas. C’est un paramètre du micrologiciel de l’ordinateur, et non un paramètre de Beamo. Si vous pensez réutiliser cette installation Windows, confirmez d’abord la clé de récupération BitLocker. Cette page ne peut pas modifier le micrologiciel.</p>
+        </details>
+        <p><a class="back" href="#guide">Revenir aux problèmes</a></p>
       </article>
-      <article class="panel" id="trouble-key" tabindex="-1" aria-labelledby="trouble-key-title">
-        <h2 id="trouble-key-title">La touche du menu de démarrage ne fonctionne pas</h2>
+
+      <article class="panel panel-key" id="trouble-key" tabindex="-1" aria-labelledby="trouble-key-title">
+        <h2 id="trouble-key-title">La touche du menu de démarrage ne fait rien</h2>
+        <figure class="illustration">
+          <svg viewBox="0 0 280 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="70" y="8" width="140" height="70" rx="6" fill="#F3F5F7" stroke="#0A1B34" stroke-width="3"/>
+            <rect x="82" y="20" width="116" height="46" fill="#16315C"/>
+            <rect x="40" y="86" width="200" height="36" rx="4" fill="#F3F5F7" stroke="#0A1B34" stroke-width="2"/>
+            <rect x="52" y="94" width="22" height="20" rx="3" fill="#FFFFFF" stroke="#6E7C8A"/>
+            <rect x="78" y="94" width="22" height="20" rx="3" fill="#FFFFFF" stroke="#6E7C8A"/>
+            <rect x="104" y="94" width="40" height="20" rx="3" fill="#E8A317" stroke="#0A1B34" stroke-width="2"/>
+            <rect x="148" y="94" width="22" height="20" rx="3" fill="#FFFFFF" stroke="#6E7C8A"/>
+            <rect x="174" y="94" width="22" height="20" rx="3" fill="#FFFFFF" stroke="#6E7C8A"/>
+            <rect x="200" y="94" width="28" height="20" rx="3" fill="#FFFFFF" stroke="#6E7C8A"/>
+          </svg>
+          <figcaption>Appuyez sur la touche pendant le démarrage de l’ordinateur, pas une fois Windows chargé.</figcaption>
+        </figure>
         <ol>
-          <li>Consultez le <a href="#keys">tableau des touches habituelles</a>. Commencez à appuyer dès le redémarrage, avant le chargement de Windows.</li>
-          <li>Sur un PC HP, essayez d’abord Esc, puis F9. La touche peut varier selon le modèle ; vérifiez les instructions du constructeur.</li>
-          <li>Si l’ordinateur démarre trop vite, utilisez les étapes Windows ci-dessous plutôt que de modifier le micrologiciel.</li>
+          <li>Les touches varient selon le constructeur. Elles ne sont pas les mêmes sur tous les PC. Utilisez le tableau des <a href="#keys">touches habituelles</a>.</li>
+          <li>Commencez à appuyer plusieurs fois sur la touche dès que vous redémarrez — avant que Windows ou un logo ait fini de s’afficher.</li>
+          <li>Sur un PC HP, essayez d’abord <span class="kbd">Esc</span>, puis <span class="kbd">F9</span>.</li>
+          <li>Si l’ordinateur démarre trop vite pour que vous ayez le temps d’appuyer sur la touche, utilisez les étapes depuis les Paramètres Windows plutôt que de modifier le micrologiciel.</li>
+          <li>Si une touche de la liste ne fait rien, vérifiez l’autocollant, l’écran de démarrage ou les instructions du constructeur de l’ordinateur.</li>
         </ol>
-        <p><a href="#guide">Revenir aux problèmes</a></p>
+        <p>Dell, Lenovo et Acer utilisent souvent <span class="kbd">F12</span>. ASUS utilise souvent <span class="kbd">F8</span> ou <span class="kbd">Esc</span>. MSI utilise souvent <span class="kbd">F11</span>. Gigabyte utilise souvent <span class="kbd">F12</span>. Mac Intel : <span class="kbd">Option (⌥)</span> au démarrage. Pas les Mac Apple Silicon.</p>
+        <details>
+          <summary>Détail technique</summary>
+          <p>Certains ordinateurs réduisent le délai pendant lequel une touche est acceptée. <strong>Utiliser un périphérique</strong> dans l’environnement de récupération Windows évite cette contrainte de temps sur de nombreux PC UEFI. Ne considérez pas les changements de micrologiciel, d’ordre de démarrage ou du menu de configuration comme l’étape automatique suivante.</p>
+        </details>
+        <p><a class="back" href="#guide">Revenir aux problèmes</a></p>
       </article>
-      <article class="panel" id="trouble-firmware" tabindex="-1" aria-labelledby="trouble-firmware-title">
+
+      <article class="panel panel-firmware" id="trouble-firmware" tabindex="-1" aria-labelledby="trouble-firmware-title">
         <h2 id="trouble-firmware-title">L’ordinateur refuse la clé USB</h2>
+        <figure class="illustration">
+          <svg viewBox="0 0 280 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="36" y="14" width="130" height="90" rx="6" fill="#F3F5F7" stroke="#0A1B34" stroke-width="3"/>
+            <rect x="48" y="26" width="106" height="66" fill="#16315C"/>
+            <rect x="88" y="42" width="26" height="18" rx="8" fill="none" stroke="#FDED02" stroke-width="3"/>
+            <rect x="82" y="56" width="38" height="24" rx="4" fill="#FDED02"/>
+            <rect x="184" y="28" width="70" height="80" rx="4" fill="#FFFFFF" stroke="#1C4A73" stroke-width="2"/>
+            <line x1="196" y1="48" x2="238" y2="48" stroke="#6E7C8A" stroke-width="3" stroke-linecap="round"/>
+            <line x1="196" y1="62" x2="238" y2="62" stroke="#6E7C8A" stroke-width="3" stroke-linecap="round"/>
+            <line x1="196" y1="76" x2="226" y2="76" stroke="#6E7C8A" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <figcaption>Notez le message exact. Cette aide ne modifie pas Secure Boot.</figcaption>
+        </figure>
         <ol>
-          <li>Si vous pensez réutiliser cette installation Windows, vérifiez que vous avez la <a href="#bitlocker">clé de récupération BitLocker</a> avant toute modification du micrologiciel. Si vous ne la trouvez pas, arrêtez-vous.</li>
-          <li>Notez le message exact affiché. Atteindre un menu de démarrage ne signifie pas qu’un effacement a commencé.</li>
-          <li>Essayez un autre port USB direct et consultez les instructions de démarrage du constructeur. Cette page ne modifie pas Secure Boot et ne contourne pas un refus.</li>
+          <li>Si vous pensez réutiliser cette installation Windows, vérifiez que vous pouvez accéder à la clé de récupération BitLocker <strong>avant</strong> toute modification du micrologiciel. Si vous ne trouvez pas la clé de récupération, arrêtez-vous. Utilisez plutôt un autre port USB ou les étapes Windows. Consultez la section <a href="#bitlocker">BitLocker</a>.</li>
+          <li>Notez le message exact affiché à l’écran. Atteindre un menu de démarrage ne signifie pas qu’un effacement a commencé.</li>
+          <li>Essayez un autre port USB direct et redémarrez.</li>
+          <li>Sur les ordinateurs avec un ancien BIOS, l’option <strong>Utiliser un périphérique</strong> peut manquer. Utilisez la touche du menu de démarrage plutôt que de modifier le micrologiciel.</li>
+          <li>Suivez les instructions de démarrage du constructeur de l’ordinateur. Cette aide ne modifie pas Secure Boot et ne contourne pas un refus.</li>
         </ol>
         <p>Consultez la section <a href="#secure-boot">Secure Boot</a> pour savoir quels fichiers de démarrage se trouvent sur cette clé USB. Ne considérez pas une modification du micrologiciel ou de Secure Boot comme l’étape suivante automatique.</p>
-        <p><a href="#guide">Revenir aux problèmes</a></p>
+        <details>
+          <summary>Détail technique</summary>
+          <p>Cette clé USB utilise les fichiers de démarrage signés de Debian. Son démarrage dépend des paramètres de confiance du micrologiciel et des mises à jour de révocation de l’ordinateur. Le lanceur ne modifie pas les paramètres Secure Boot. L’ancien BIOS (legacy) et l’UEFI se comportent différemment ; l’absence de l’option <strong>Utiliser un périphérique</strong> vient souvent d’un BIOS hérité, et non d’un effacement échoué.</p>
+        </details>
+        <p><a class="back" href="#guide">Revenir aux problèmes</a></p>
       </article>
-      <article class="panel" id="trouble-launcher" tabindex="-1" aria-labelledby="trouble-launcher-title">
-        <h2 id="trouble-launcher-title">Le lanceur ne démarre pas</h2>
+
+      <article class="panel panel-launcher" id="trouble-launcher" tabindex="-1" aria-labelledby="trouble-launcher-title">
+        <h2 id="trouble-launcher-title">Le lanceur a échoué</h2>
+        <figure class="illustration">
+          <svg viewBox="0 0 280 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="20" y="16" width="150" height="98" rx="6" fill="#FFFFFF" stroke="#0A1B34" stroke-width="3"/>
+            <rect x="20" y="16" width="150" height="22" rx="6" fill="#0A1B34"/>
+            <rect x="20" y="32" width="150" height="6" fill="#0A1B34"/>
+            <path d="M95 52 L118 94 L72 94 Z" fill="#B3261E"/>
+            <rect x="93" y="64" width="4" height="16" fill="#FFFFFF"/>
+            <circle cx="95" cy="86" r="2.5" fill="#FFFFFF"/>
+            <rect x="188" y="36" width="72" height="78" rx="4" fill="#F3F5F7" stroke="#1C4A73" stroke-width="2"/>
+            <polygon points="236,36 260,36 260,60" fill="#C9D6E8" stroke="#1C4A73" stroke-width="2"/>
+          </svg>
+          <figcaption>Si l’application ne s’ouvre pas, utilisez les étapes de démarrage de cette page. Rien n’a été effacé.</figcaption>
+        </figure>
         <ol>
-          <li>Insérer la clé ne lance rien automatiquement. Sous Windows, ouvrez <strong>Start Beamo Wipe.exe</strong> ; sur un bureau Linux pris en charge, ouvrez <strong>Start Beamo Wipe Linux</strong>.</li>
-          <li>Des demandes d’autorisation peuvent apparaître. Si l’application ne s’ouvre pas, utilisez les <a href="#keys">touches du menu de démarrage</a> ou les étapes Windows ci-dessous.</li>
-          <li>Si Beamo Wipe a démarré depuis cette clé puis se ferme sans arrêt, utilisez <a href="#kiosk-recovery">l’écran de récupération</a>. Le lanceur lui-même n’efface rien.</li>
+          <li>Brancher la clé USB ne lance pas l’application. Sous Windows, ouvrez <strong>Start Beamo Wipe.exe</strong>. Sur un bureau Linux pris en charge, ouvrez <strong>Start Beamo Wipe Linux</strong>.</li>
+          <li>Des demandes d’autorisation ou de confiance envers l’application peuvent apparaître. Les réglages de bureau et de montage Linux peuvent empêcher l’exécution d’un fichier depuis une clé USB.</li>
+          <li>Une vérification non confirmée n’est pas un succès. Sous Windows, enregistrez votre travail et utilisez Redémarrer, puis choisissez cette clé USB dans le menu de démarrage. Sur un bureau Linux pris en charge, un redémarrage guidé peut être proposé après des vérifications réussies ; une autorisation administrateur peut être nécessaire.</li>
+          <li>Le lanceur n’efface rien. S’il ne s’ouvre pas, utilisez les <a href="#keys">touches habituelles</a> ou les étapes depuis les Paramètres Windows.</li>
+          <li>Si Beamo Wipe a déjà démarré depuis cette clé USB puis se ferme sans arrêt, utilisez <a href="#kiosk-recovery">l’écran de récupération</a> : réessayez, utilisez les écrans texte au clavier ou affichez les détails techniques.</li>
         </ol>
-        <p><a href="#guide">Revenir aux problèmes</a></p>
+        <details>
+          <summary>Détail technique</summary>
+          <p>Le lanceur vérifie seulement la clé USB d’origine, la lisibilité des réglages de démarrage et l’existence d’un redémarrage pris en charge. Ces vérifications n’assurent pas que la clé USB démarrera. Pour suivre les étapes de démarrage, il suffit d’ouvrir cette page dans un navigateur depuis la clé USB. Après le démarrage, la récupération ne peut ni identifier les disques ni confirmer un résultat d’effacement.</p>
+        </details>
+        <p><a class="back" href="#guide">Revenir aux problèmes</a></p>
       </article>
     </div>
     <div class="card">

@@ -98,11 +98,6 @@
       margin: 0 0 18px;
       box-shadow: var(--shadow);
     }
-    .chooser { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 0; list-style: none; }
-    .chooser a { display: block; min-height: 2.75em; padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-alt); color: var(--ink); font-weight: 700; text-decoration: none; overflow-wrap: anywhere; }
-    .chooser a:hover, .chooser a:focus-visible, .panel:target { border-color: var(--primary); }
-    .chooser a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-    .panel { border-top: 1px solid var(--border); padding: 20px 0 4px; overflow-wrap: anywhere; }
     h2 { font-size: 24px; margin: 0 0 12px; letter-spacing: -.02em; font-weight: 700; }
     p { margin: 0 0 12px; }
     p:last-child { margin-bottom: 0; }
@@ -202,6 +197,93 @@
       background: #fff;
     }
     .support p { margin: 0; min-width: 0; }
+    .guide-intro { margin: 0 0 16px; }
+    .chooser {
+      list-style: none;
+      margin: 0 0 22px;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .chooser a {
+      display: flex;
+      align-items: center;
+      min-height: 2.75em;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-alt);
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1em;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+    .chooser a:hover { border-color: var(--border-strong); }
+    .chooser a:focus-visible {
+      outline: 3px solid var(--focus); outline-offset: 2px;
+    }
+    .guide:has(#trouble-usb:target) .chooser a[href="#trouble-usb"],
+    .guide:has(#trouble-key:target) .chooser a[href="#trouble-key"],
+    .guide:has(#trouble-firmware:target) .chooser a[href="#trouble-firmware"],
+    .guide:has(#trouble-launcher:target) .chooser a[href="#trouble-launcher"] {
+      border-color: var(--primary);
+      background: var(--navy-muted);
+    }
+    .guide-hint { display: none; margin: 0; }
+    @supports selector(:has(*)) {
+      .guide:has(.panel:target) .panel:not(:target) { display: none; }
+      .guide:not(:has(.panel:target)) .panel { display: none; }
+      .guide:not(:has(.panel:target)) .guide-hint { display: block; }
+    }
+    .panel {
+      border-top: 1px solid var(--border);
+      padding: 22px 0 8px;
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+    .panel:focus { outline: 3px solid var(--focus); outline-offset: 6px; }
+    .panel h2 { font-size: 1.2em; }
+    .illustration {
+      width: min(100%, 22rem);
+      margin: 0 0 14px;
+    }
+    .illustration svg { display: block; width: 100%; height: auto; }
+    figcaption {
+      font-size: 0.85em;
+      color: var(--muted);
+      margin: 8px 0 0;
+    }
+    .panel ol { padding-left: 1.3em; }
+    .panel details {
+      margin: 14px 0 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      background: var(--surface-alt);
+    }
+    .panel summary {
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    .panel summary:focus-visible {
+      outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px;
+    }
+    .back {
+      display: inline-block;
+      margin-top: 12px;
+      font-weight: 700;
+    }
+    @media print {
+      .guide .panel { display: block !important; }
+      .guide-hint { display: none !important; }
+    }
+    @media (forced-colors: active) {
+      .chooser a, .panel details, .kbd { border: 1px solid ButtonText; }
+    }
     @media (max-width: 600px) {
       header .inner { flex-wrap: wrap; padding: 16px 20px; gap: 8px; }
       header .tagline { flex: 1 0 100%; text-align: left; }
@@ -212,6 +294,7 @@
       table { display: block; overflow-x: auto; }
       .support { flex-wrap: wrap; }
       .chooser { grid-template-columns: 1fr; }
+      .illustration { width: 100%; }
       dl.build-ids { grid-template-columns: 1fr; }
     }
   </style>
@@ -251,49 +334,136 @@
     </div>
     <div class="card guide" id="guide">
       <h2>Wenn etwas nicht funktioniert</h2>
-      <p>Wählen Sie das beobachtete Problem. Alle Schritte stehen ohne Internetverbindung auf diesem USB-Stick.</p>
-      <nav aria-label="Startprobleme"><ul class="chooser">
-        <li><a href="#trouble-usb">Der USB-Stick fehlt in der Liste</a></li>
-        <li><a href="#trouble-key">Die Bootmenü-Taste funktioniert nicht</a></li>
-        <li><a href="#trouble-firmware">Der Computer lehnt den USB-Stick ab</a></li>
-        <li><a href="#trouble-launcher">Der Starter öffnet sich nicht</a></li>
-      </ul></nav>
-      <article class="panel" id="trouble-usb" tabindex="-1" aria-labelledby="trouble-usb-title">
-        <h2 id="trouble-usb-title">Der USB-Stick fehlt in der Liste</h2>
+      <p class="guide-intro">Wählen Sie das beobachtete Problem. Alle Schritte stehen ohne Internetverbindung auf diesem USB-Stick.</p>
+      <nav aria-label="Startprobleme">
+        <ul class="chooser">
+          <li><a href="#trouble-usb">Der USB-Stick wird nicht angezeigt oder fehlt in der Liste</a></li>
+          <li><a href="#trouble-key">Die Bootmenü-Taste bewirkt nichts</a></li>
+          <li><a href="#trouble-firmware">Der Computer lehnt den USB-Stick ab</a></li>
+          <li><a href="#trouble-launcher">Der Starter ist fehlgeschlagen</a></li>
+        </ul>
+      </nav>
+      <p class="guide-hint">Wählen Sie oben ein Problem aus. Die Schritte erscheinen hier.</p>
+
+      <article class="panel panel-usb" id="trouble-usb" tabindex="-1" aria-labelledby="trouble-usb-title">
+        <h2 id="trouble-usb-title">Der USB-Stick wird nicht angezeigt oder fehlt in der Liste</h2>
+        <figure class="illustration">
+          <svg viewBox="0 0 280 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="8" y="18" width="150" height="96" rx="8" fill="#F3F5F7" stroke="#0A1B34" stroke-width="3"/>
+            <rect x="20" y="30" width="126" height="72" rx="2" fill="#16315C"/>
+            <rect x="158" y="56" width="16" height="20" fill="#0A1B34"/>
+            <rect x="174" y="50" width="52" height="32" rx="4" fill="#1C4A73" stroke="#0A1B34" stroke-width="2"/>
+            <rect x="226" y="58" width="14" height="16" fill="#C9D6E8" stroke="#0A1B34" stroke-width="1.5"/>
+            <rect x="48" y="100" width="70" height="10" rx="2" fill="#D8DFE6"/>
+            <rect x="200" y="96" width="64" height="28" rx="4" fill="#F3F5F7" stroke="#6E7C8A" stroke-width="2"/>
+            <line x1="208" y1="104" x2="256" y2="116" stroke="#B3261E" stroke-width="3" stroke-linecap="round"/>
+            <line x1="256" y1="104" x2="208" y2="116" stroke="#B3261E" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <figcaption>Stecken Sie den Stick in einen Anschluss am Computer, nicht in einen Tastatur-Hub.</figcaption>
+        </figure>
         <ol>
-          <li>Lassen Sie den Stick beim Neustart eingesteckt. Nutzen Sie einen USB-A- oder USB-C-Anschluss direkt am Computer und probieren Sie einen anderen Anschluss.</li>
-          <li>Suchen Sie den Stick im Bootmenü oder auf UEFI-PCs unter Ein Gerät verwenden. Folgen Sie den Schritten für <a href="#windows-11">Windows 11</a> oder <a href="#windows-10">Windows 10</a>.</li>
-          <li>Wenn er weiter fehlt, prüfen Sie auf einem Computer, der die Dateien anzeigt, ob <strong>START-HERE.html</strong> auf dem Stick liegt. Eine Firmwareänderung ist nicht der nächste automatische Schritt.</li>
+          <li>Lassen Sie diesen USB-Stick eingesteckt, während der Computer neu startet. Ziehen Sie ihn nicht ab.</li>
+          <li>Verwenden Sie einen USB-A- oder USB-C-Anschluss direkt am Computer. Vermeiden Sie nach Möglichkeit Anschlüsse an Tastatur, Monitor oder Hub.</li>
+          <li>Probieren Sie einen anderen Anschluss am selben Computer.</li>
+          <li>Starten Sie neu und suchen Sie diesen USB-Stick im Bootmenü oder in Windows unter <strong>Ein Gerät verwenden</strong>.</li>
+          <li>Wenn dieser Computer den USB-Stick weiterhin nicht aufführt, öffnen Sie ihn an einem Computer, der bereits Dateien anzeigt, und prüfen Sie, ob <strong>START-HERE.html</strong> vorhanden ist. Probieren Sie dann einen anderen direkten Anschluss.</li>
         </ol>
-        <p><a href="#guide">Zurück zu den Problemen</a></p>
+        <p>Windows 11: Einstellungen → System → Wiederherstellung → Erweiterter Start → Jetzt neu starten → Ein Gerät verwenden, falls angeboten. Windows 10: Einstellungen → Update und Sicherheit → Wiederherstellung → Erweiterter Start → Jetzt neu starten → Ein Gerät verwenden. Diese Menüs gelten für UEFI-PCs. Siehe <a href="#windows-11">Windows 11</a> und <a href="#windows-10">Windows 10</a>.</p>
+        <details>
+          <summary>Technisches Detail</summary>
+          <p>Manche Computer blenden den USB-Start aus, bis die Firmware das Starten von USB erlaubt. Das ist eine Firmware-Einstellung des Computers, keine Beamo-Einstellung. Wenn Sie diese Windows-Installation vielleicht wieder verwenden möchten, bestätigen Sie zuerst den BitLocker-Wiederherstellungsschlüssel. Diese Seite kann die Firmware nicht ändern.</p>
+        </details>
+        <p><a class="back" href="#guide">Zurück zu den Problemen</a></p>
       </article>
-      <article class="panel" id="trouble-key" tabindex="-1" aria-labelledby="trouble-key-title">
-        <h2 id="trouble-key-title">Die Bootmenü-Taste funktioniert nicht</h2>
+
+      <article class="panel panel-key" id="trouble-key" tabindex="-1" aria-labelledby="trouble-key-title">
+        <h2 id="trouble-key-title">Die Bootmenü-Taste bewirkt nichts</h2>
+        <figure class="illustration">
+          <svg viewBox="0 0 280 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="70" y="8" width="140" height="70" rx="6" fill="#F3F5F7" stroke="#0A1B34" stroke-width="3"/>
+            <rect x="82" y="20" width="116" height="46" fill="#16315C"/>
+            <rect x="40" y="86" width="200" height="36" rx="4" fill="#F3F5F7" stroke="#0A1B34" stroke-width="2"/>
+            <rect x="52" y="94" width="22" height="20" rx="3" fill="#FFFFFF" stroke="#6E7C8A"/>
+            <rect x="78" y="94" width="22" height="20" rx="3" fill="#FFFFFF" stroke="#6E7C8A"/>
+            <rect x="104" y="94" width="40" height="20" rx="3" fill="#E8A317" stroke="#0A1B34" stroke-width="2"/>
+            <rect x="148" y="94" width="22" height="20" rx="3" fill="#FFFFFF" stroke="#6E7C8A"/>
+            <rect x="174" y="94" width="22" height="20" rx="3" fill="#FFFFFF" stroke="#6E7C8A"/>
+            <rect x="200" y="94" width="28" height="20" rx="3" fill="#FFFFFF" stroke="#6E7C8A"/>
+          </svg>
+          <figcaption>Drücken Sie die Taste beim Start des Computers, nicht erst, wenn Windows geladen ist.</figcaption>
+        </figure>
         <ol>
-          <li>Sehen Sie in der <a href="#keys">Tabelle mit typischen Tasten</a> nach. Drücken Sie die Taste ab dem Neustart, bevor Windows lädt.</li>
-          <li>Bei HP versuchen Sie zuerst Esc, dann F9. Die Taste kann je nach Modell anders sein; prüfen Sie die Herstelleranleitung.</li>
-          <li>Wenn der Computer zu schnell startet, nutzen Sie die Windows-Schritte unten statt einer Firmwareänderung.</li>
+          <li>Die Tasten hängen vom Hersteller ab. Sie sind nicht auf jedem PC gleich. Verwenden Sie die Tabelle mit <a href="#keys">typischen Tasten</a>.</li>
+          <li>Drücken Sie die Taste wiederholt, sobald Sie neu starten — bevor Windows oder ein Logo vollständig erscheint.</li>
+          <li>Bei HP versuchen Sie zuerst <span class="kbd">Esc</span>, dann <span class="kbd">F9</span>.</li>
+          <li>Wenn der Computer so schnell startet, dass Sie die Taste nicht rechtzeitig drücken können, verwenden Sie die Schritte über die Windows-Einstellungen, statt die Firmware zu ändern.</li>
+          <li>Wenn eine aufgeführte Taste nichts bewirkt, prüfen Sie den Aufkleber, den Startbildschirm oder die Anweisungen des Computerherstellers.</li>
         </ol>
-        <p><a href="#guide">Zurück zu den Problemen</a></p>
+        <p>Dell, Lenovo und Acer verwenden oft <span class="kbd">F12</span>. ASUS verwendet oft <span class="kbd">F8</span> oder <span class="kbd">Esc</span>. MSI verwendet oft <span class="kbd">F11</span>. Gigabyte verwendet oft <span class="kbd">F12</span>. Intel-Mac: <span class="kbd">Option (⌥)</span> beim Start. Nicht für Apple Silicon.</p>
+        <details>
+          <summary>Technisches Detail</summary>
+          <p>Manche Computer verkürzen das Zeitfenster, in dem eine Taste angenommen wird. <strong>Ein Gerät verwenden</strong> in der Windows-Wiederherstellungsumgebung vermeidet dieses Zeitproblem auf vielen UEFI-PCs. Betrachten Sie Änderungen an Firmware, Bootreihenfolge oder Setup-Menü nicht als nächsten automatischen Schritt.</p>
+        </details>
+        <p><a class="back" href="#guide">Zurück zu den Problemen</a></p>
       </article>
-      <article class="panel" id="trouble-firmware" tabindex="-1" aria-labelledby="trouble-firmware-title">
+
+      <article class="panel panel-firmware" id="trouble-firmware" tabindex="-1" aria-labelledby="trouble-firmware-title">
         <h2 id="trouble-firmware-title">Der Computer lehnt den USB-Stick ab</h2>
+        <figure class="illustration">
+          <svg viewBox="0 0 280 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="36" y="14" width="130" height="90" rx="6" fill="#F3F5F7" stroke="#0A1B34" stroke-width="3"/>
+            <rect x="48" y="26" width="106" height="66" fill="#16315C"/>
+            <rect x="88" y="42" width="26" height="18" rx="8" fill="none" stroke="#FDED02" stroke-width="3"/>
+            <rect x="82" y="56" width="38" height="24" rx="4" fill="#FDED02"/>
+            <rect x="184" y="28" width="70" height="80" rx="4" fill="#FFFFFF" stroke="#1C4A73" stroke-width="2"/>
+            <line x1="196" y1="48" x2="238" y2="48" stroke="#6E7C8A" stroke-width="3" stroke-linecap="round"/>
+            <line x1="196" y1="62" x2="238" y2="62" stroke="#6E7C8A" stroke-width="3" stroke-linecap="round"/>
+            <line x1="196" y1="76" x2="226" y2="76" stroke="#6E7C8A" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <figcaption>Notieren Sie die genaue Meldung. Diese Hilfeseite ändert Secure Boot nicht.</figcaption>
+        </figure>
         <ol>
-          <li>Falls Sie dieses Windows vielleicht wieder nutzen, stellen Sie vor einer Firmwareänderung sicher, dass Sie den <a href="#bitlocker">BitLocker-Wiederherstellungsschlüssel</a> erreichen können. Wenn Sie ihn nicht finden, brechen Sie hier ab.</li>
-          <li>Notieren Sie die genaue Meldung. Das Erreichen des Bootmenüs bedeutet nicht, dass ein Löschen begonnen hat.</li>
-          <li>Probieren Sie einen anderen direkten USB-Anschluss und die Startanleitung des Herstellers. Diese Seite ändert Secure Boot nicht und umgeht keine Ablehnung.</li>
+          <li>Wenn Sie diese Windows-Installation vielleicht wieder verwenden möchten, stellen Sie <strong>vor</strong> jeder Firmwareänderung sicher, dass Sie den BitLocker-Wiederherstellungsschlüssel erreichen können. Wenn Sie den Schlüssel nicht finden, brechen Sie hier ab. Verwenden Sie stattdessen einen anderen USB-Anschluss oder die Windows-Schritte. Siehe Abschnitt <a href="#bitlocker">BitLocker</a>.</li>
+          <li>Notieren Sie die genaue Meldung auf dem Bildschirm. Das Erreichen eines Bootmenüs bedeutet nicht, dass ein Löschen begonnen hat.</li>
+          <li>Probieren Sie einen anderen direkten USB-Anschluss und starten Sie neu.</li>
+          <li>Auf Computern mit älterem BIOS kann <strong>Ein Gerät verwenden</strong> fehlen. Verwenden Sie die Bootmenü-Taste statt Firmwareänderungen.</li>
+          <li>Verwenden Sie die Startanweisungen des Computerherstellers. Diese Hilfeseite ändert Secure Boot nicht und umgeht keine Ablehnung.</li>
         </ol>
         <p>Im Abschnitt <a href="#secure-boot">Secure Boot</a> steht, welche Startdateien sich auf diesem USB-Stick befinden. Eine Firmware- oder Secure-Boot-Änderung ist nicht der nächste automatische Schritt.</p>
-        <p><a href="#guide">Zurück zu den Problemen</a></p>
+        <details>
+          <summary>Technisches Detail</summary>
+          <p>Dieser USB-Stick verwendet die signierten Startdateien von Debian. Ob er startet, hängt von den Vertrauenseinstellungen der Firmware und deren Sperrlisten-Updates ab. Der Starter ändert keine Secure-Boot-Einstellungen. Älteres BIOS (Legacy) und UEFI verhalten sich unterschiedlich; ein fehlender Eintrag <strong>Ein Gerät verwenden</strong> liegt oft am Legacy-BIOS, nicht an einem fehlgeschlagenen Löschen.</p>
+        </details>
+        <p><a class="back" href="#guide">Zurück zu den Problemen</a></p>
       </article>
-      <article class="panel" id="trouble-launcher" tabindex="-1" aria-labelledby="trouble-launcher-title">
-        <h2 id="trouble-launcher-title">Der Starter öffnet sich nicht</h2>
+
+      <article class="panel panel-launcher" id="trouble-launcher" tabindex="-1" aria-labelledby="trouble-launcher-title">
+        <h2 id="trouble-launcher-title">Der Starter ist fehlgeschlagen</h2>
+        <figure class="illustration">
+          <svg viewBox="0 0 280 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="20" y="16" width="150" height="98" rx="6" fill="#FFFFFF" stroke="#0A1B34" stroke-width="3"/>
+            <rect x="20" y="16" width="150" height="22" rx="6" fill="#0A1B34"/>
+            <rect x="20" y="32" width="150" height="6" fill="#0A1B34"/>
+            <path d="M95 52 L118 94 L72 94 Z" fill="#B3261E"/>
+            <rect x="93" y="64" width="4" height="16" fill="#FFFFFF"/>
+            <circle cx="95" cy="86" r="2.5" fill="#FFFFFF"/>
+            <rect x="188" y="36" width="72" height="78" rx="4" fill="#F3F5F7" stroke="#1C4A73" stroke-width="2"/>
+            <polygon points="236,36 260,36 260,60" fill="#C9D6E8" stroke="#1C4A73" stroke-width="2"/>
+          </svg>
+          <figcaption>Wenn sich die Anwendung nicht öffnet, verwenden Sie die Startschritte auf dieser Seite. Es wurde nichts gelöscht.</figcaption>
+        </figure>
         <ol>
-          <li>Das Einstecken startet nichts automatisch. Öffnen Sie unter Windows <strong>Start Beamo Wipe.exe</strong> oder auf einem unterstützten Linux-Desktop <strong>Start Beamo Wipe Linux</strong>.</li>
-          <li>Berechtigungsabfragen können erscheinen. Wenn sich die Anwendung nicht öffnet, verwenden Sie die <a href="#keys">Bootmenü-Tasten</a> oder die Windows-Schritte unten.</li>
-          <li>Falls Beamo Wipe bereits vom Stick gestartet ist und sich dann wiederholt schließt, nutzen Sie den <a href="#kiosk-recovery">Wiederherstellungsbildschirm</a>. Der Starter selbst löscht nichts.</li>
+          <li>Das Einstecken des USB-Sticks startet die Anwendung nicht. Öffnen Sie unter Windows <strong>Start Beamo Wipe.exe</strong>. Auf einem unterstützten Linux-Desktop öffnen Sie <strong>Start Beamo Wipe Linux</strong>.</li>
+          <li>Berechtigungs- oder Vertrauensabfragen für die Anwendung können erscheinen. Linux-Desktop- und Einhänge-Einstellungen können verhindern, dass eine Datei von einem USB-Stick ausgeführt wird.</li>
+          <li>Eine nicht bestätigte Prüfung gilt nicht als bestanden. Unter Windows speichern Sie Ihre Arbeit und verwenden Neu starten; wählen Sie dann diesen USB-Stick im Bootmenü. Auf unterstützten Linux-Desktops kann nach erfolgreichen Prüfungen ein geführter Neustart angeboten werden; dafür kann eine Administratorberechtigung nötig sein.</li>
+          <li>Der Starter löscht nichts. Wenn er sich nicht öffnet, verwenden Sie die <a href="#keys">typischen Tasten</a> oder die Schritte über die Windows-Einstellungen.</li>
+          <li>Wenn Beamo Wipe bereits von diesem USB-Stick gestartet ist und sich dann immer wieder schließt, verwenden Sie den <a href="#kiosk-recovery">Wiederherstellungsbildschirm</a>: Versuchen Sie es erneut, verwenden Sie die Tastatur-Textbildschirme oder sehen Sie sich die technischen Details an.</li>
         </ol>
-        <p><a href="#guide">Zurück zu den Problemen</a></p>
+        <details>
+          <summary>Technisches Detail</summary>
+          <p>Der Starter prüft nur den Original-USB-Stick, ob Starteinstellungen gelesen werden können und ob ein unterstützter Neustartweg vorhanden ist. Diese Prüfungen stellen nicht sicher, dass der USB-Stick startet. Um den Startschritten zu folgen, genügt es, diese Seite vom USB-Stick in einem Browser zu öffnen. Nach dem Start kann die Wiederherstellung weder Datenträger identifizieren noch ein Löschergebnis bestätigen.</p>
+        </details>
+        <p><a class="back" href="#guide">Zurück zu den Problemen</a></p>
       </article>
     </div>
     <div class="card">
