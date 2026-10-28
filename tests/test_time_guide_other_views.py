@@ -82,10 +82,15 @@ def test_curses_shows_guides_after_the_methods(monkeypatch):
     monkeypatch.setattr(console_wizard.curses, "use_default_colors", lambda: None, raising=False)
     wiz = _method_wizard()
     text = " ".join(_curses_text(wiz, 60, 120).split())
+    descriptions, guides = [], []
     for method, spec in METHODS.items():
         assert spec.description in text
         guide = C.method_time_guide(method, wiz.selected)
         assert f"{spec.title}: {guide}" in text
+        descriptions.append(text.index(spec.description))
+        guides.append(text.index(f"{spec.title}: {guide}"))
+    # Every rough duration follows the whole list of choices.
+    assert max(descriptions) < min(guides)
     # The 80x25 first page still shows every method description first.
     wiz.wants_shutdown = False
     small = " ".join(_curses_text(wiz, 25, 80).split())

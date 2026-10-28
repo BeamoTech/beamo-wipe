@@ -219,9 +219,22 @@ def test_held_reservation_blocks_a_second_start(tmp_path, monkeypatch, real_engi
     request = _request(tmp_path)
     env.runner.start(request)
     with env.runner._lock:
-        env.runner._proc = None  # only the reservation remains registered
-    with pytest.raises(SafetyError, match="already running"):
-        env.runner.start(request)
+        # Only the reservation remains registered: the duplicate check must
+        # refuse on it alone, before any preflight or wipe lock is touched.
+        saved = (env.runner._proc, env.runner._lock_fd, env.runner._log_fd)
+        env.runner._proc = env.runner._lock_fd = env.runner._log_fd = None
+        assert env.runner._target_fd is not None
+
+    def no_preflight(*_args, **_kwargs):
+        raise AssertionError("a second start reached preflight")
+
+    monkeypatch.setattr(module, "resolve_nwipe_binary", no_preflight)
+    try:
+        with pytest.raises(SafetyError, match="already running"):
+            env.runner.start(request)
+    finally:
+        with env.runner._lock:
+            env.runner._proc, env.runner._lock_fd, env.runner._log_fd = saved
     assert not env.runner.start_not_spawned()
 
 
