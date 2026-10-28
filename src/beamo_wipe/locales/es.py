@@ -416,6 +416,7 @@ STRINGS = {
     },
     "outcomes": {
         "STOP_WARNING": "Detener no restaura los archivos ya borrados.",
+        "SUPPORT": "Es posible que todavía haya archivos en el disco. Guarde el informe si está disponible y contacte con el soporte técnico. Apague antes de desconectar.",
         "FILES_MAY_REMAIN": "Es posible que todavía haya archivos en el disco.",
         "NEXT_OPEN_FAILED": "Guarde el informe si está disponible. Apague, revise la conexión del disco y evite los hubs USB; después vuelva a empezar. Si se repite, contacte con el soporte técnico.",
         "NEXT_GEOMETRY": "Guarde el informe si está disponible y contacte con el soporte técnico antes de volver a intentarlo con este disco. Apague antes de desconectar.",

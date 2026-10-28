@@ -411,6 +411,7 @@ STRINGS = {
     },
     "outcomes": {
         "STOP_WARNING": "Arrêter ne restaure pas les fichiers déjà effacés.",
+        "SUPPORT": "Des fichiers sont peut-être encore sur le disque. Enregistrez le rapport si possible et contactez l’assistance. Éteignez avant de débrancher.",
         "FILES_MAY_REMAIN": "Des fichiers sont peut-être encore sur le disque.",
         "NEXT_OPEN_FAILED": "Enregistrez le rapport si possible. Éteignez, vérifiez le branchement du disque et évitez les hubs USB, puis recommencez. Si cela se reproduit, contactez l’assistance.",
         "NEXT_GEOMETRY": "Enregistrez le rapport si possible et contactez l’assistance avant de réessayer avec ce disque. Éteignez avant de débrancher.",

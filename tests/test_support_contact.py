@@ -95,6 +95,7 @@ def test_trigger_strings_still_say_contact_support():
     from beamo_wipe.support_export import NEXT_SUPPORT, NEXT_TRY_SUPPORT
 
     triggers = [
+        outcomes.SUPPORT,
         # Each outcome-specific step replaced the former shared SUPPORT text;
         # every one of them must still send the owner to support.
         outcomes.NEXT_OPEN_FAILED,

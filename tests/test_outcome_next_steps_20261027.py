@@ -201,12 +201,18 @@ def test_former_generic_text_is_the_reference_translation(language):
 def test_every_failure_has_its_own_next_steps(code, language):
     views = _views(code)
     stop = outcomes.STOP_WARNING
-    generic = FORMER_GENERIC[code]
+    # The byte-for-byte former text and the live translated SUPPORT key.
+    generics = {FORMER_GENERIC[code], outcomes.SUPPORT}
     for outcome in SPECIFIC_CODES:
         step = views[outcome].next_step
-        assert step != generic, (code, outcome)
-        assert step != f"{stop} {generic}", (code, outcome)
+        for generic in generics:
+            assert step != generic, (code, outcome)
+            assert step != f"{stop} {generic}", (code, outcome)
         assert len(step) > len(REMAIN[code]) + 40, (code, outcome)
+    # No result shows the former shared text, even as part of its steps.
+    for outcome, view in views.items():
+        for generic in generics:
+            assert generic not in view.next_step, (code, outcome)
     steps = [view.next_step for view in views.values()]
     # Every outcome code, including the unchanged ones, names distinct steps.
     assert len(set(steps)) == len(steps), code

@@ -25,6 +25,13 @@ class ResultView:
 
 STOP_WARNING = "Stopping cannot restore files already erased."
 
+# Former shared next step for every failure. No outcome shows it any more;
+# it stays as the translated generic baseline each specific step must differ
+# from, so the locale tables keep their existing keys.
+SUPPORT = (
+    "Files may still be on the disk. Save the report if available and contact support. "
+    "Shut down before disconnecting."
+)
 # Every result that does not prove a finished erase leads its next steps with
 # this sentence. Each outcome then names its own actions; the report is
 # volatile, so saving it comes before any shutdown.
