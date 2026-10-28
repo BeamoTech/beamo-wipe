@@ -60,6 +60,14 @@ A 2023-only trust store does not authenticate this 2011-only shim unless it
 has another applicable authorization. This is an inference from the inspected
 signatures, consistent with [Microsoft's Linux transition guidance](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/linux-distribution-guidance-handling-2023keys).
 
+**Next image (not inspected):** Debian 12.15 replaced this shim with
+`shim-signed` `1.51~1+deb12u1` (shim `16.1-2~deb12u1`), which its changelog
+describes as dual-signed with the 2023 CA and NX-capable
+([Debian CA changes](https://wiki.debian.org/SecureBoot/CAChanges)). The QEMU
+gate refuses an older `shim-signed`. Until Q12 is repeated on that exact image,
+its signer list, SBAT entries and 2023-only behaviour are UNKNOWN; this
+section's 0.2.12 findings do not transfer to it.
+
 Shim has `shim,4` / `shim.debian,1` SBAT entries. GRUB has `grub,5`,
 `grub.debian,5`, and `grub.debian12,1`. Evaluate every matching entry against
 the active policy, including retained firmware variables; these numbers are

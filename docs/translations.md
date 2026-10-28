@@ -39,7 +39,9 @@ reads naturally:
   FR/ES use "— sortie/salida sélectionnée/seleccionada" to avoid agreeing
   with the name; DE `ausgewählt.` does not inflect.
 - `progress.duration()` joins `{value} day(s)/hour(s)/minute(s)` with no
-  grammatical case.
+  grammatical case, so a sentence around `{text}` must need the plain
+  (nominative/accusative) form. DE `NO_UPDATE` uses a label
+  (*Zeit ohne neuen Fortschritt: 2 Tage.*) because *seit* needs *Tagen*.
 
 ## Conventions
 
@@ -155,7 +157,7 @@ German
 - `copy.CON_OWNER_FOOTER`: Space: aktivieren. Enter wählt erst danach einen Datenträger. Esc: zurück
 - `copy.SUPPORT_SAVE_LABEL`: Speichercode
 - `progress.PHASE_NOTE_SYNCING`: … Dieser Schritt kann eine Weile unverändert wirken.
-- `progress.NO_UPDATE`: Kein neuer Fortschritt seit {text}. (dative: *seit 2 Tage* would be wrong; days are rare)
+- `progress.NO_UPDATE`: Zeit ohne neuen Fortschritt: {text}. (label form avoids the dative *seit 2 Tagen*)
 - `helper/de.html` tagline and `copy.GALLERY_NOTE`: Starthilfe
 - `helper/de.html`: Windows names *Ein Gerät verwenden*, *Option auswählen*, *Ein/Aus-Menü*
 

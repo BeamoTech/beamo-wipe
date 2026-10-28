@@ -561,7 +561,7 @@ STRINGS = {
         "MINUTE_ONE": "{value} Minute",
         "MINUTE_MANY": "{value} Minuten",
         "ABOUT_DURATION": "etwa {text}",
-        "NO_UPDATE": "Kein neuer Fortschritt seit {text}.",
+        "NO_UPDATE": "Zeit ohne neuen Fortschritt: {text}.",
         "STALE_MEANING": "Ein unveränderter Bildschirm bedeutet nicht, dass das Löschen angehalten hat.",
         "STALE_NEXT": "Lassen Sie den USB-Stick eingesteckt und das Netzteil angeschlossen. Schalten Sie den Computer nicht aus. Sie können jederzeit Löschen stoppen wählen.",
         "ELAPSED_LINE": " · Verstrichen: {text}",

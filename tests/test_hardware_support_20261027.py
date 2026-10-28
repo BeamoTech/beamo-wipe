@@ -99,6 +99,9 @@ def test_qemu_gate_inspects_kernel_firmware_and_every_offered_keymap():
     for name in (*FIRMWARE, "console-data"):
         assert name in source, name
     assert 'dpkg --compare-versions "$kernel_version" ge 6.12' in source
+    # First Debian 12 shim-signed dual-signed by the Microsoft UEFI CA 2011 and 2023.
+    assert "-W -f='${Version}' shim-signed)" in source
+    assert "dpkg --compare-versions \"$shim_version\" ge '1.51~1+deb12u1'" in source
     for directory in ("amdgpu", "i915", "nvidia", "intel/sof", "intel-ucode", "amd-ucode"):
         assert directory in source, directory
     assert "for layout in keyboard.LAYOUTS.values():" in source

@@ -414,6 +414,14 @@ dpkg --compare-versions "$kernel_version" ge 6.12 || {
   echo "ISO kernel is older than the pinned 6.12 backports kernel: $kernel_version" >&2
   exit 2
 }
+# Debian 12.15 ships shim 16.1-2 dual-signed by the Microsoft UEFI CA 2011 and
+# 2023, so Secure Boot also starts on PCs whose firmware trusts only the 2023
+# CA. An older, 2011-only shim must not reach a release image.
+shim_version="$(dpkg-query --admindir="$SQUASH_MOUNT/var/lib/dpkg" -W -f='${Version}' shim-signed)"
+dpkg --compare-versions "$shim_version" ge '1.51~1+deb12u1' || {
+  echo "ISO shim is not the dual-signed (2011 and 2023 CA) Debian build: $shim_version" >&2
+  exit 2
+}
 for firmware_dir in amdgpu i915 nvidia intel/sof intel-ucode amd-ucode; do
   find "$SQUASH_MOUNT/usr/lib/firmware/$firmware_dir" -type f -print -quit 2>/dev/null | grep -q . || {
     echo "firmware directory missing or empty in ISO: $firmware_dir" >&2
