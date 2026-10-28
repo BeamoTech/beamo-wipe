@@ -391,7 +391,7 @@ for forbidden in nano less iproute2 pciutils usbutils eject gcc git; do
     exit 2
   fi
 done
-# Hardware support: the pinned backports kernel, display/audio/USB firmware,
+# Hardware support: the LTS 6.12 kernel, display/audio/USB firmware,
 # CPU microcode and console keymaps must all be installed. No radio firmware
 # package (firmware-misc-nonfree's few legacy radio files are documented).
 for required in console-data firmware-amd-graphics firmware-intel-graphics \
@@ -410,9 +410,22 @@ for radio in firmware-iwlwifi firmware-atheros firmware-brcm80211 firmware-realt
     exit 2
   fi
 done
-kernel_version="$(dpkg-query --admindir="$SQUASH_MOUNT/var/lib/dpkg" -W -f='${Version}' linux-image-amd64)"
-dpkg --compare-versions "$kernel_version" ge 6.12 || {
-  echo "ISO kernel is older than the pinned 6.12 backports kernel: $kernel_version" >&2
+# The kernel is Debian 12's LTS-maintained 6.12 from bookworm-security, never
+# the stalled bookworm-backports build (~bpo) or a second kernel: the debsecan
+# gate below can then see every kernel fix Debian has published for it.
+kernel_version="$(dpkg-query --admindir="$SQUASH_MOUNT/var/lib/dpkg" -W -f='${Version}' linux-image-6.12-amd64)"
+dpkg --compare-versions "$kernel_version" ge '6.12.113-1~deb12u1' || {
+  echo "ISO kernel is older than Debian 12's LTS 6.12 kernel: $kernel_version" >&2
+  exit 2
+}
+[[ "$kernel_version" == *~deb12u* && "$kernel_version" != *bpo* ]] || {
+  echo "ISO kernel is not the bookworm-security 6.12 build: $kernel_version" >&2
+  exit 2
+}
+mapfile -t kernel_images < <(dpkg-query --admindir="$SQUASH_MOUNT/var/lib/dpkg" -W \
+  -f='${db:Status-Abbrev} ${Package}\n' 'linux-image-[0-9]*' 2>/dev/null | awk '$1 == "ii" { print $2 }')
+[[ "${#kernel_images[@]}" -eq 1 && "${kernel_images[0]}" == linux-image-6.12.*+deb12-amd64 ]] || {
+  echo "ISO must contain exactly one Debian 12 LTS 6.12 kernel: ${kernel_images[*]}" >&2
   exit 2
 }
 # Debian 12.15 ships shim 16.1-2 dual-signed by the Microsoft UEFI CA 2011 and

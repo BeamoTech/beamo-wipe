@@ -21,7 +21,8 @@ flashed image in [BUILD-IDENTITY](evidence/physical-acceptance-111/BUILD-IDENTIT
 before a case. A different image requires its own signature inspection and
 receipt; neither a version string nor a source-only build transfers this one.
 Images built after 0.2.14 boot Debian's signed Linux 6.12 kernel from
-`bookworm-backports` instead of 6.1, so their chain needs that new inspection.
+`bookworm-security` (`linux-image-6.12-amd64`, Debian LTS) instead of 6.1, so
+their chain needs that new inspection.
 Q12 identifies test inputs, not authorization to overwrite a USB or disk.
 Before a physical boot, complete the [post-flash readback](evidence/physical-acceptance-111/README.md#post-flash-readback)
 and record its receipt. A source-file hash or successful write alone does not

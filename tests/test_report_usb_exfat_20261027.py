@@ -476,7 +476,7 @@ def test_live_image_uses_only_the_signed_in_kernel_exfat_module():
         encoding="utf-8"
     ).splitlines()
     packages = {line.strip() for line in lines if line.strip() and not line.startswith("#")}
-    assert "linux-image-amd64" in packages
+    assert "linux-image-6.12-amd64" in packages
     # A FUSE mount.exfat helper would make `mount -t exfat` a fuseblk mount.
     assert not packages & {"exfat-fuse", "exfat-utils", "fuse", "fuse3"}
     assert "--apt-recommends false" in Path("packaging/live/inside-docker.sh").read_text(

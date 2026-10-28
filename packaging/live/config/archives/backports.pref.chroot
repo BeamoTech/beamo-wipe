@@ -1,6 +1,7 @@
-# Newer hardware support from Debian's own bookworm-backports: the signed
-# 6.12 kernel (Secure Boot via the same shim/GRUB) and current firmware.
+# Newer hardware firmware from Debian's own bookworm-backports. The kernel
+# is not pinned here: linux-image-6.12-amd64 comes from bookworm-security
+# (Debian LTS keeps it current; backports' 6.12 kernel stopped updating).
 # Everything else stays on bookworm and bookworm-security.
-Package: linux-image-* linux-kbuild-* linux-base firmware-*
+Package: firmware-*
 Pin: release n=bookworm-backports
 Pin-Priority: 990

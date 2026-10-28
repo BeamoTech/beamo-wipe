@@ -135,6 +135,37 @@ def test_signed_boot_packages_and_backports_are_checked_as_their_real_sources():
     ]
 
 
+# The shipped route: Debian 12 LTS's linux-6.12 from bookworm-security. The
+# tracker files its fixes under the versioned source for bookworm.
+LTS_KERNEL = [
+    {"name": "linux-image-6.12.113+deb12-amd64", "version": "6.12.113-1~deb12u1", "arch": "amd64",
+     "source": "linux-signed-6.12-amd64 (6.12.113+1~deb12u1)"},
+    {"name": "linux-image-6.12-amd64", "version": "6.12.113-1~deb12u1", "arch": "amd64",
+     "source": "linux-signed-6.12-amd64 (6.12.113+1~deb12u1)"},
+]
+LTS_TRACKER = {
+    "linux-6.12": {
+        "CVE-2026-2001": {"releases": {
+            "bookworm": {"status": "resolved", "fixed_version": "6.12.113-1~deb12u1"},
+        }},
+        "CVE-2026-2002": {"releases": {
+            "bookworm": {"status": "resolved", "fixed_version": "6.12.117-1~deb12u1", "urgency": "high"},
+        }},
+    },
+    # The 6.1 kernel's issues never apply to the 6.12 source.
+    "linux": {"CVE-2026-2003": {"releases": {
+        "bookworm": {"status": "resolved", "fixed_version": "6.1.199-1"},
+    }}},
+}
+
+
+def test_lts_kernel_is_checked_as_bookworm_linux_6_12():
+    findings = rescan.rescan(_manifest(LTS_KERNEL), LTS_TRACKER, "bookworm")
+    assert [(f["source"], f["installed"], f["fixed"], f["issue"], f["suite"]) for f in findings] == [
+        ("linux-6.12", "6.12.113-1~deb12u1", "6.12.117-1~deb12u1", "CVE-2026-2002", "bookworm"),
+    ]
+
+
 def test_cli_marks_findings_from_another_release(tmp_path, capsys):
     manifest = tmp_path / "manifest.json"
     tracker = tmp_path / "tracker.json"

@@ -318,6 +318,9 @@ def test_cli_plan_writes_new_file_and_refuses_overwrite(tmp_path, capsys):
 @pytest.mark.parametrize("binary,source,expected", [
     ("linux-image-6.12.95+deb12-amd64", "linux-signed-amd64 (6.12.95+1~bpo12+1)", ("linux", "6.12.95-1~bpo12+1")),
     ("linux-image-6.1.0-54-amd64", "linux-signed-amd64 (6.1.190+1)", ("linux", "6.1.190-1")),
+    # Debian 12 LTS's versioned 6.12 kernel (bookworm-security).
+    ("linux-image-6.12.113+deb12-amd64", "linux-signed-6.12-amd64 (6.12.113+1~deb12u1)",
+     ("linux-6.12", "6.12.113-1~deb12u1")),
     ("grub-efi-amd64-signed", "grub-efi-amd64-signed (1+2.06+13+deb12u2)", ("grub2", "2.06-13+deb12u2")),
     ("shim-helpers-amd64-signed", "shim-helpers-amd64-signed (1+16.1+2~deb12u1)",
      ("shim", "16.1-2~deb12u1")),

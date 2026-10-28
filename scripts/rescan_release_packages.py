@@ -8,8 +8,8 @@ inventory from a release manifest (verify it first with
 scripts/verify-usb-download.py) and the Debian Security Tracker data, and
 lists every source package whose installed version is older than a version
 Debian has marked as fixed for the suite. Signed boot packages are checked as
-their real sources (linux, grub2, shim), and ~bpo backports against the
-release they come from. It reads only; it never builds, publishes or changes
+their real sources (linux or Debian LTS's linux-6.12, grub2, shim), and ~bpo
+backports against the release they come from. It reads only; it never builds, publishes or changes
 anything.
 
   rescan_release_packages.py MANIFEST.json [--tracker tracker.json] [--suite bookworm]

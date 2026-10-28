@@ -3,7 +3,9 @@
 live-boot
 live-config
 live-config-systemd
-linux-image-amd64
+# Debian 12's LTS-maintained, Debian-signed 6.12 kernel (bookworm-security).
+# inside-docker.sh passes --linux-packages linux-image-6.12 to match.
+linux-image-6.12-amd64
 shim-signed
 grub-efi-amd64-signed
 systemd-sysv
@@ -59,7 +61,7 @@ console-data
 # Hardware support (non-free-firmware). Only what makes screens and audio
 # work on more PCs; no Wi-Fi or Bluetooth firmware package (misc-nonfree
 # still carries a few old radio chip files; nothing here connects). Graphics and
-# misc firmware come from bookworm-backports with the 6.12 kernel
+# misc firmware come from bookworm-backports to match the 6.12 kernel
 # (config/archives/backports.pref.chroot); SOF and microcode from bookworm.
 firmware-amd-graphics
 firmware-intel-graphics

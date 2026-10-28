@@ -92,6 +92,8 @@ def _unsigned_source(
     shim-signed contain only signatures and packaging; the GPL corresponding
     source is the unsigned package at the matching version, e.g.
     linux-signed-amd64 6.12.95+1~bpo12+1 -> linux 6.12.95-1~bpo12+1,
+    linux-signed-6.12-amd64 6.12.113+1~deb12u1 -> linux-6.12 6.12.113-1~deb12u1
+    (Debian LTS's versioned kernel source),
     grub-efi-amd64-signed 1+2.06+13+deb12u2 -> grub2 2.06-13+deb12u2,
     shim-helpers-amd64-signed 1+16.1+2~deb12u1 -> shim 16.1-2~deb12u1.
     shim-signed's source version (1.51~1+deb12u1) does not name shim; its
@@ -102,9 +104,11 @@ def _unsigned_source(
         match = re.fullmatch(r"([0-9][0-9.]*)\+(.+)", value)
         return f"{match.group(1)}-{match.group(2)}" if match else None
 
-    if re.fullmatch(r"linux-signed-[a-z0-9]+", name):
+    kernel = re.fullmatch(r"linux-signed-(?:([0-9]+\.[0-9]+)-)?[a-z0-9]+", name)
+    if kernel:
         derived = first_plus_to_hyphen(version)
-        return ("linux", derived) if derived else None
+        unsigned = f"linux-{kernel.group(1)}" if kernel.group(1) else "linux"
+        return (unsigned, derived) if derived else None
     wrapped = re.fullmatch(r"(grub-efi|shim-helpers)-[a-z0-9]+-signed", name)
     if wrapped:
         derived = first_plus_to_hyphen(version.split("+", 1)[1]) if "+" in version else None

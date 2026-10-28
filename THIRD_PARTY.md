@@ -43,9 +43,10 @@ inside the live system; Beamo does not modify them. No Wi-Fi or Bluetooth
 firmware package is installed, and the image has no Wi-Fi or Bluetooth
 software to connect with. Debian's general `firmware-misc-nonfree` package
 does carry a few files for older or embedded Wi-Fi, Bluetooth and modem
-chips. The graphics and misc firmware and the Debian-signed Linux 6.12
-kernel come from Debian's `bookworm-backports`; everything else is Debian 12
-(bookworm).
+chips. The graphics and misc firmware come from Debian's
+`bookworm-backports`; the Debian-signed Linux 6.12 kernel is Debian 12's own
+LTS-maintained `linux-image-6.12-amd64` from `bookworm-security`; everything
+else is Debian 12 (bookworm).
 
 ## Corresponding source (GPL)
 

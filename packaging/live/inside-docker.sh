@@ -98,9 +98,12 @@ lb clean --all || true
 #
 # Hardware support: non-free-firmware supplies only the graphics, audio,
 # USB-controller and CPU microcode firmware listed in the package list
-# (--firmware-chroot stays false: no Wi-Fi or Bluetooth blobs). Backports are
-# enabled only so config/archives/backports.pref.chroot can pin the
-# Debian-signed 6.12 kernel and matching firmware; userland stays bookworm.
+# (--firmware-chroot stays false: no Wi-Fi or Bluetooth blobs). The kernel is
+# Debian 12's own linux-image-6.12-amd64 from bookworm-security: Debian-signed
+# (same shim/GRUB chain), newer laptop support than 6.1, and kept current by
+# Debian LTS. Backports' 6.12 stopped receiving updates, so it is not used.
+# Backports are enabled only so config/archives/backports.pref.chroot can pin
+# the matching newer firmware; userland stays bookworm.
 #
 # Every entry keeps USB devices and NVMe drives fully awake for the session:
 # the live system runs from the stick, and some sticks, USB bridges and NVMe
@@ -125,6 +128,7 @@ lb config \
   --archive-areas "main non-free-firmware" \
   --parent-archive-areas "main non-free-firmware" \
   --backports true \
+  --linux-packages "linux-image-6.12" \
   --apt-recommends false \
   --firmware-binary false \
   --firmware-chroot false \

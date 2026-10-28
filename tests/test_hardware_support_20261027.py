@@ -41,8 +41,20 @@ def _lb_option(name: str) -> str:
 
 def test_display_audio_usb_firmware_microcode_and_keymaps_are_listed():
     packages = _packages()
-    for name in (*FIRMWARE, "console-data", "linux-image-amd64", "kbd", "console-setup"):
+    for name in (*FIRMWARE, "console-data", "linux-image-6.12-amd64", "kbd", "console-setup"):
         assert name in packages, name
+
+
+def test_kernel_is_debian_12_lts_6_12_not_the_stalled_backport():
+    # linux-image-6.12-amd64 exists only in bookworm-security (Debian LTS);
+    # live-build schedules <linux-packages>-<flavour>, so both must agree and
+    # the flavour stays amd64 (GRUB's menu looks for vmlinuz-*amd64).
+    packages = _packages()
+    assert "linux-image-6.12-amd64" in packages
+    assert "linux-image-amd64" not in packages
+    assert _lb_option("linux-packages") == "linux-image-6.12"
+    assert not [ln for ln in INSIDE.read_text(encoding="utf-8").splitlines()
+                if ln.strip().startswith("--linux-flavours")]
 
 
 def test_no_radio_or_catch_all_firmware():
@@ -61,7 +73,7 @@ def test_archive_areas_enable_only_main_and_non_free_firmware():
     assert _lb_option("distribution") == "bookworm"
 
 
-def test_backports_pin_covers_only_kernel_and_firmware():
+def test_backports_pin_covers_only_firmware():
     stanzas = [s for s in PREF.read_text(encoding="utf-8").split("\n\n") if "Package:" in s]
     assert len(stanzas) == 1
     fields = dict(
@@ -71,10 +83,11 @@ def test_backports_pin_covers_only_kernel_and_firmware():
     assert fields["Pin"].strip() == "release n=bookworm-backports"
     assert int(fields["Pin-Priority"]) > 500
     patterns = fields["Package"].split()
-    assert set(patterns) == {"linux-image-*", "linux-kbuild-*", "linux-base", "firmware-*"}
-    # Userland, boot chain and engine dependencies never come from backports.
+    assert patterns == ["firmware-*"]
+    # Kernel, userland, boot chain and engine dependencies never come from backports.
     for name in ("shim-signed", "grub-efi-amd64-signed", "live-boot", "python3",
-                 "systemd", "xserver-xorg-core", "libparted2", "initramfs-tools"):
+                 "systemd", "xserver-xorg-core", "libparted2", "initramfs-tools",
+                 "linux-image-6.12-amd64", "linux-image-amd64", "linux-base"):
         assert not any(re.fullmatch(p.replace("*", ".*"), name) for p in patterns), name
 
 
@@ -98,7 +111,10 @@ def test_qemu_gate_inspects_kernel_firmware_and_every_offered_keymap():
     source = QEMU.read_text(encoding="utf-8")
     for name in (*FIRMWARE, "console-data"):
         assert name in source, name
-    assert 'dpkg --compare-versions "$kernel_version" ge 6.12' in source
+    assert "-W -f='${Version}' linux-image-6.12-amd64)" in source
+    assert "dpkg --compare-versions \"$kernel_version\" ge '6.12.113-1~deb12u1'" in source
+    assert '"$kernel_version" != *bpo*' in source
+    assert '"${#kernel_images[@]}" -eq 1' in source
     # First Debian 12 shim-signed dual-signed by the Microsoft UEFI CA 2011 and 2023.
     assert "-W -f='${Version}' shim-signed)" in source
     assert "dpkg --compare-versions \"$shim_version\" ge '1.51~1+deb12u1'" in source
