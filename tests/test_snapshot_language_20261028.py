@@ -213,3 +213,36 @@ def test_current_text_maps_only_exact_unambiguous_constants():
     assert ambiguous
     for text in ambiguous:
         assert lang.current_text(text) == text
+
+
+@pytest.mark.parametrize("made", lang.LANGUAGE_ORDER)
+@pytest.mark.parametrize("shown", lang.LANGUAGE_ORDER)
+def test_joined_keyboard_notice_follows_the_language(made, shown):
+    from beamo_wipe import keyboard
+
+    lang.set_language(made)
+    notice = keyboard.GRAPHICAL_ONLY + keyboard.SESSION_ONLY
+    wiz = make_demo_wizard()
+    wiz.skip_splash()
+    wiz.keyboard_message = notice
+    assert wiz.set_language(shown)
+    assert wiz.keyboard_message == keyboard.GRAPHICAL_ONLY + keyboard.SESSION_ONLY
+    assert wiz.keyboard_message == (
+        _value(shown, "keyboard", "GRAPHICAL_ONLY") + _value(shown, "keyboard", "SESSION_ONLY")
+    )
+
+
+def test_joined_text_is_mapped_only_when_both_halves_are_exact_constants():
+    from beamo_wipe import keyboard
+
+    lang.set_language("en")
+    joined = keyboard.GRAPHICAL_ONLY + keyboard.SESSION_ONLY
+    lang.set_language("fr")
+    assert lang.current_text(joined) == keyboard.GRAPHICAL_ONLY + keyboard.SESSION_ONLY
+    # A constant plus anything else, or free text, stays exactly as stored.
+    lang.set_language("en")
+    partial = keyboard.GRAPHICAL_ONLY + "Something else."
+    free = "Nothing here is a constant."
+    lang.set_language("de")
+    assert lang.current_text(partial) == partial
+    assert lang.current_text(free) == free

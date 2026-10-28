@@ -161,14 +161,32 @@ def current_text(text: str) -> str:
 
     Text kept from before a language switch (discovery runs before the owner
     picks one) maps to the current value of the translated constant it equals
-    in any language. Formatted, unknown or ambiguous text is returned as is.
+    in any language, or to two such constants joined. Formatted, unknown or
+    ambiguous text is returned as is.
     """
-    keys = _reverse_index().get(text) if isinstance(text, str) else None
-    if not keys:
+    if not isinstance(text, str):
         return text
+    whole = _current_constant(text)
+    if whole is not None:
+        return whole
+    # Two constants joined, such as the keyboard notice GRAPHICAL_ONLY +
+    # SESSION_ONLY. Both halves must be exact, unambiguous constants.
+    for head in _reverse_index():
+        if head and len(head) < len(text) and text.startswith(head):
+            first = _current_constant(head)
+            second = _current_constant(text[len(head):])
+            if first is not None and second is not None:
+                return first + second
+    return text
+
+
+def _current_constant(text: str) -> str | None:
+    keys = _reverse_index().get(text)
+    if not keys:
+        return None
     modules = _modules()
     current = {getattr(modules[module_name], name) for module_name, name in keys}
     if len(current) != 1:
-        return text
+        return None
     (value,) = current
-    return value if isinstance(value, str) else text
+    return value if isinstance(value, str) else None
