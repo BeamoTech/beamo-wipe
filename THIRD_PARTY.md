@@ -34,15 +34,18 @@ Apache, and others as shipped by Debian). Each package's license is in
 
 ## Device firmware and CPU microcode
 
-So screens, laptop audio and some USB 3 ports work on more PCs, the image
-includes Debian's redistributable `non-free-firmware` packages for graphics
-(AMD, Intel, NVIDIA), Intel and Cirrus audio, Renesas USB controllers and
-other small device firmware, plus Intel and AMD CPU microcode. They are
-vendor binaries under their own redistribution licenses, listed in
-`/usr/share/doc/<package>/copyright` inside the live system; Beamo does not
-modify them. No Wi-Fi or Bluetooth firmware is included. The graphics and
-misc firmware and the Debian-signed Linux 6.12 kernel come from Debian's
-`bookworm-backports`; everything else is Debian 12 (bookworm).
+So screens and laptop audio work on more PCs, the image includes Debian's
+redistributable `non-free-firmware` packages for graphics (AMD, Intel,
+NVIDIA), Intel, Cirrus and TI laptop audio and other small device firmware,
+plus Intel and AMD CPU microcode. They are vendor binaries under their own
+redistribution licenses, listed in `/usr/share/doc/<package>/copyright`
+inside the live system; Beamo does not modify them. No Wi-Fi or Bluetooth
+firmware package is installed, and the image has no Wi-Fi or Bluetooth
+software to connect with. Debian's general `firmware-misc-nonfree` package
+does carry a few files for older or embedded Wi-Fi, Bluetooth and modem
+chips. The graphics and misc firmware and the Debian-signed Linux 6.12
+kernel come from Debian's `bookworm-backports`; everything else is Debian 12
+(bookworm).
 
 ## Corresponding source (GPL)
 

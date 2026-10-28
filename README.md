@@ -9,7 +9,7 @@ through erasing a disk they own. You pay for a flashed stick, a boot-key card,
 and this wizard. You do not pay for a secret wipe algorithm.
 
 > **No warranty.** See [LICENSE](LICENSE) (GPL-3.0-or-later) and [NOTICE](NOTICE).
-> Owner-operated sanitization before recycle or resale. Not a lab certificate.
+> Owner-operated disk overwrite before recycle or resale. Not a lab certificate.
 
 ## Desktop entry (development)
 
@@ -111,7 +111,7 @@ becomes success.
 - Not for **Apple Silicon** Macs, Chromebooks, Android, or RAID controllers.
 - Not a wipe from inside Windows or macOS. The PC must boot this USB.
 - Intel Mac USB boot-picker guidance is best-effort only; it is not Mac wipe support.
-- Not DoD / NSA / NIST “certified.” Not a Blancco replacement.
+- Not DoD / NSA / NIST “certified.” Not a certified erasure service.
 - Not a new wipe engine. The only eraser is [nwipe](https://github.com/martijnvanbrummelen/nwipe) **v0.42**.
 - Opening the application is explicit. The firmware boot menu (often F12,
   Esc, or F9) remains necessary when guided restart is unavailable.

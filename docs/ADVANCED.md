@@ -26,6 +26,7 @@ boot-device identification, or nwipe arguments.
 Always passed:
 
 - `--autonuke --nogui --nowait` with **exactly one** `/dev/…` target
+- `--quiet` (nwipe masks disk serial numbers and system identifiers in its log)
 - `--exclude=` the live boot device
 - `--PDFreportpath=noPDF`
 - `--logfile=` under `/tmp/beamo-wipe/` (tmpfs — never the target disk)

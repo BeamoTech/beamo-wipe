@@ -392,7 +392,8 @@ for forbidden in nano less iproute2 pciutils usbutils eject gcc git; do
   fi
 done
 # Hardware support: the pinned backports kernel, display/audio/USB firmware,
-# CPU microcode and console keymaps must all be installed. No radio firmware.
+# CPU microcode and console keymaps must all be installed. No radio firmware
+# package (firmware-misc-nonfree's few legacy radio files are documented).
 for required in console-data firmware-amd-graphics firmware-intel-graphics \
     firmware-nvidia-graphics firmware-misc-nonfree firmware-intel-misc \
     firmware-sof-signed firmware-intel-sound firmware-cirrus intel-microcode \

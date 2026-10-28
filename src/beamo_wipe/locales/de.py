@@ -641,7 +641,7 @@ STRINGS = {
         "SECTION_SSD_TITLE": "SSD- und Flashspeicher",
         "SECTION_VERIFY_TITLE": "Rückleseprüfung",
         "SECTION_HDD_TITLE": "Festplatten, versteckte Bereiche und beschädigte Medien",
-        "SECTION_HDD_BODY": "Versteckte HPA/DCO-Bereiche, umgemappte oder unlesbare Sektoren und nicht offengelegte NVMe-Namespaces sind außerhalb der Überschreibgarantie. Ein Datenträger kann Fertigstellung melden, während versteckte Daten verbleiben. Lese- oder Schreibfehler, fehlende Abschlussnachweise und Unterbrechung dürfen nicht als Erfolg gewertet werden.",
+        "SECTION_HDD_BODY": "Versteckte HPA/DCO-Bereiche, umgemappte oder unlesbare Sektoren und nicht offengelegte NVMe-Namespaces liegen außerhalb der Reichweite des Überschreibens. Ein Datenträger kann Fertigstellung melden, während versteckte Daten verbleiben. Lese- oder Schreibfehler, fehlende Abschlussnachweise und Unterbrechung dürfen nicht als Erfolg gewertet werden.",
         "SECTION_UNKNOWN_TITLE": "Unbekannte Geräte und Controller",
         "SECTION_UNKNOWN_BODY": "Ein fehlender Gerätetyp bleibt unbekannt. Eine USB-Bridge oder ein RAID-Controller kann Medientyp, physische Mitglieder, Caches oder Kapazität verbergen. Ein offengelegter virtueller Datenträger belegt keine Abdeckung jedes physischen Mitglieds. Verwenden Sie eine angezeigte SSD- oder HDD-Kennzeichnung nicht als Beweis, dass versteckte Bereiche fehlen.",
         "SECTION_ENCRYPTION_TITLE": "Verschlüsselung und gesperrte Geräte",

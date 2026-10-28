@@ -641,7 +641,7 @@ STRINGS = {
         "SECTION_SSD_TITLE": "SSD et stockage flash",
         "SECTION_VERIFY_TITLE": "Vérification par relecture",
         "SECTION_HDD_TITLE": "Disques durs, zones cachées et supports endommagés",
-        "SECTION_HDD_BODY": "Les zones cachées HPA/DCO, les secteurs réassignés ou illisibles et les espaces de noms NVMe non exposés sont hors garantie d’écrasement. Un disque peut annoncer la fin alors que des données cachées subsistent. Les erreurs de lecture ou d’écriture, l’absence de preuve de fin et l’interruption ne doivent pas être considérées comme un succès.",
+        "SECTION_HDD_BODY": "Les zones cachées HPA/DCO, les secteurs réassignés ou illisibles et les espaces de noms NVMe non exposés sont hors de portée de l’écrasement. Un disque peut annoncer la fin alors que des données cachées subsistent. Les erreurs de lecture ou d’écriture, l’absence de preuve de fin et l’interruption ne doivent pas être considérées comme un succès.",
         "SECTION_UNKNOWN_TITLE": "Périphériques et contrôleurs inconnus",
         "SECTION_UNKNOWN_BODY": "Un type de périphérique manquant reste inconnu. Un pont USB ou un contrôleur RAID peut masquer le type de support, les membres physiques, les caches ou la capacité. Un disque virtuel exposé ne prouve pas la couverture de chaque membre physique. N’utilisez pas une étiquette SSD ou HDD affichée comme preuve de l’absence de zones cachées.",
         "SECTION_ENCRYPTION_TITLE": "Chiffrement et périphériques verrouillés",
