@@ -399,6 +399,7 @@ STRINGS = {
         "LANGUAGE_NAME_FR": "Français",
         "LANGUAGE_NAME_DE": "Deutsch",
         "LANGUAGE_NAME_ES": "Español",
+        "LANGUAGE_NAME_IT": "Italiano",
         "GALLERY_TITLE": "Beamo Wipe — vista previa de las pantallas",
         "GALLERY_NOTE": 'Esta es una <strong>vista previa</strong>. No borra discos. Recórrala como el asistente de la memoria USB.\nLa ventana real (las mismas pantallas Tk que la memoria USB live): <code>./preview</code>\n&nbsp;·&nbsp; <a href="{helper}">Ayuda del menú de arranque</a>',
         "GALLERY_HAPPY": "Recorrido normal",

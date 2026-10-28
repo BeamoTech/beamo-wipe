@@ -481,6 +481,7 @@ def live_build_inputs() -> Dict[str, Any]:
         "helper/fr.html",
         "helper/de.html",
         "helper/es.html",
+        "helper/it.html",
         "scripts/build-iso.sh",
         "scripts/build-desktop.sh",
         "scripts/build-usb-image.sh",

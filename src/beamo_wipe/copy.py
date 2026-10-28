@@ -1131,6 +1131,7 @@ LANGUAGE_NAME_EN = "English"
 LANGUAGE_NAME_FR = "Français"
 LANGUAGE_NAME_DE = "Deutsch"
 LANGUAGE_NAME_ES = "Español"
+LANGUAGE_NAME_IT = "Italiano"
 
 # Web gallery scaffolding (preview only). Wizard content arrives via payload.
 GALLERY_TITLE = "Beamo Wipe — screen preview"

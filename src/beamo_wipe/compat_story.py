@@ -156,6 +156,27 @@ LOCALIZED_HELPER_IDENTITY: dict[str, LocalizedHelperIdentity] = {
             STATUS_UNAVAILABLE: "no disponible",
         },
     },
+    "it": {
+        "source_label": (
+            "Questa copia non è un’immagine USB prodotta. "
+            "È la guida sorgente usata per crearne una."
+        ),
+        "source_status": "non è un’immagine prodotta",
+        "labels": {
+            STATUS_PRODUCTION: "Questa chiavetta USB contiene un’immagine prodotta di Beamo Wipe.",
+            STATUS_DEVELOPMENT: "Questa chiavetta USB contiene un’immagine di sviluppo, non una versione di produzione.",
+            STATUS_DIRTY: "Questa chiavetta USB è stata creata da codice sorgente modificato. Non è una versione di produzione.",
+            STATUS_MISMATCH: "Questo programma di avvio non corrisponde all’identità dell’immagine USB.",
+            STATUS_UNAVAILABLE: "Questa sessione non proviene da un’immagine USB prodotta.",
+        },
+        "statuses": {
+            STATUS_PRODUCTION: "produzione",
+            STATUS_DEVELOPMENT: "sviluppo",
+            STATUS_DIRTY: "modificato",
+            STATUS_MISMATCH: "sorgente non corrispondente",
+            STATUS_UNAVAILABLE: "non disponibile",
+        },
+    },
 }
 
 

@@ -394,6 +394,7 @@ STRINGS = {
         "LANGUAGE_NAME_FR": "Français",
         "LANGUAGE_NAME_DE": "Deutsch",
         "LANGUAGE_NAME_ES": "Español",
+        "LANGUAGE_NAME_IT": "Italiano",
         "GALLERY_TITLE": "Beamo Wipe — Bildschirmvorschau",
         "GALLERY_NOTE": 'Dies ist eine <strong>Vorschau</strong>. Sie löscht keine Datenträger. Klicken Sie sich durch wie beim USB-Assistenten.\nDas echte Fenster (gleiche Tk-Bildschirme wie der Live-USB-Stick): <code>./preview</code>\n&nbsp;·&nbsp; <a href="{helper}">Starthilfe für das Bootmenü</a>',
         "GALLERY_HAPPY": "Normaler Ablauf",

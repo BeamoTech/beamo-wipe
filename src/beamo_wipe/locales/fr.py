@@ -394,6 +394,7 @@ STRINGS = {
         "LANGUAGE_NAME_FR": "Français",
         "LANGUAGE_NAME_DE": "Deutsch",
         "LANGUAGE_NAME_ES": "Español",
+        "LANGUAGE_NAME_IT": "Italiano",
         "GALLERY_TITLE": "Beamo Wipe — aperçu des écrans",
         "GALLERY_NOTE": 'Ceci est un <strong>aperçu</strong>. Il n’efface pas les disques. Parcourez-le comme l’assistant de la clé USB.\nLa vraie fenêtre (mêmes écrans Tk que la clé USB live) : <code>./preview</code>\n&nbsp;·&nbsp; <a href="{helper}">Aide du menu de démarrage</a>',
         "GALLERY_HAPPY": "Parcours nominal",

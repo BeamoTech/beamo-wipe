@@ -157,6 +157,7 @@ def prepare_live_stage(live: Path) -> None:
             ("helper", "fr.html"),
             ("helper", "de.html"),
             ("helper", "es.html"),
+            ("helper", "it.html"),
             ("sounds", "finished.wav"),
             ("sounds", "attention.wav"),
         },
