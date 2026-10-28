@@ -1,6 +1,6 @@
 # Translations
 
-Canonical guide for the French, German and Spanish copy. English is the
+Canonical guide for the French, German, Spanish and Italian copy. English is the
 source; the other languages override it. A native-speaker review is still
 required before any language is called final; the checklist at the end lists
 the strings that most need one.
@@ -12,6 +12,7 @@ the strings that most need one.
 | `fr` | *vous* | Standard French (France). |
 | `de` | *Sie* | Standard German. Terse console labels may use infinitives (`Enter: weiter`). |
 | `es` | *usted* | Neutral Spanish for Spain and the Americas (see decisions below). |
+| `it` | *Lei* | Standard Italian (Italy). Pronouns and possessives lower case in sentences; buttons use the usual interface imperative (see decisions below). |
 
 Spoken output (Orca/speech), the boot menu and the kiosk recovery screen stay
 English. The helper pages say so and quote those English names verbatim
@@ -23,9 +24,9 @@ English. The helper pages say so and quote those English names verbatim
 - `src/beamo_wipe/lang.py` applies a language. English values are the module
   attributes of `beamo_wipe.<module>`; `lang.surface()` lists every
   translated name.
-- `src/beamo_wipe/locales/{fr,de,es}.py`: `STRINGS[module][NAME] = value`.
+- `src/beamo_wipe/locales/{fr,de,es,it}.py`: `STRINGS[module][NAME] = value`.
   Keys and tuple lengths must match English. Data only, no functions.
-- `helper/{fr,de,es}.html`: offline START-HERE page per language, reviewed
+- `helper/{fr,de,es,it}.html`: offline START-HERE page per language, reviewed
   against `helper/index.html`.
 - `src/beamo_wipe/compat_story.py` `LOCALIZED_HELPER_IDENTITY`: build-label
   sentences injected into the helper pages at image build time.
@@ -34,10 +35,10 @@ Some values are fragments joined by code; translate them so the joined text
 reads naturally:
 
 - `progress.ESTIMATE_*` follow `Estimated time remaining: ` (`REMAINING_LINE`),
-  so FR/DE/ES write lower-case fragments.
+  so FR/DE/ES/IT write lower-case fragments.
 - `copy.SOUND_SELECTED` follows an output name (`Headphones`, `HDMI sound`…).
-  FR/ES use "— sortie/salida sélectionnée/seleccionada" to avoid agreeing
-  with the name; DE `ausgewählt.` does not inflect.
+  FR/ES/IT use "— sortie/salida/uscita sélectionnée/seleccionada/selezionata"
+  to avoid agreeing with the name; DE `ausgewählt.` does not inflect.
 - `progress.duration()` joins `{value} day(s)/hour(s)/minute(s)` with no
   grammatical case, so a sentence around `{text}` must need the plain
   (nominative/accusative) form. DE `NO_UPDATE` uses a label
@@ -51,7 +52,8 @@ reads naturally:
   `F2`, `F5`, `F8`, `Up/Down`, `Left/Right`, `PgUp/PgDn`), file names, `nwipe`,
   `Beamo Wipe`, `Secure Boot`, `BitLocker`, `Error Summary`, layout names
   (`QWERTY`, `AZERTY`, `QWERTZ`). Helper pages may add the local key cap in
-  parentheses: `Shift (Maj)`, `Shift (Umschalttaste)`, `Shift (Mayús)`.
+  parentheses: `Shift (Maj)`, `Shift (Umschalttaste)`, `Shift (Mayús)`,
+  `Shift (Maiusc)`.
 - **Placeholders** (`{title}`, `{size}`, `{token}`, …) and escaped braces keep
   the same names and counts as English.
 - **Cited labels:** when a sentence names a button, screen or section, use the
@@ -60,7 +62,8 @@ reads naturally:
   console footers.
 - **"Clear" is never "erase".** Clearing a selection, preference or
   preparation is *annuler* / *zurücksetzen, verwerfen, abwählen* /
-  *anular, quitar*, never *effacer* / *löschen* / *borrar*.
+  *anular, quitar* / *annullare*, never *effacer* / *löschen* / *borrar* /
+  *cancellare*.
 - **Safety wording is never softened:** "cannot get files back", "files may
   still be on the disk", "do not bypass protection", "the Beamo USB stays
   protected", "not a formal certificate", "time is not promised".
@@ -73,38 +76,41 @@ reads naturally:
     after a colon starts with a capital.
   - Spanish: every `?`/`!` has its opening `¿`/`¡`; « » in helper pages; no
     comma before *y* in short titles.
+  - Italian: typographic apostrophe `’` (*l’identità*, *un’altra*); no space
+    before `? ! ; :`; « » without inner spaces in helper pages; `È`, never
+    `E’`.
 
 ## Glossary
 
-| English | French | German | Spanish | Why |
-|---|---|---|---|---|
-| USB stick / the Beamo USB | clé USB / la clé USB Beamo | USB-Stick / der Beamo-USB-Stick | memoria USB / la memoria USB Beamo | ES: understood everywhere; *pendrive* is regional |
-| boot USB | clé USB de démarrage | Start-USB-Stick | memoria USB de arranque | |
-| report USB | clé USB de rapport | Berichts-USB-Stick | memoria USB del informe | |
-| disk / drive | disque | Datenträger (*Festplatte* only for "hard disk") | disco (*unidad* where English says "drive") | DE: covers SSD, HDD and USB |
-| erase / erasure | effacer / effacement | löschen / das Löschen | borrar / borrado | |
-| overwrite, pass | écraser, écrasement, passe | überschreiben, Überschreibdurchgang | sobrescribir, sobrescritura, pasada | |
-| read-back verification | vérification par relecture | Rückleseprüfung | verificación por relectura | |
-| check / verify (a copy) | vérifier / contrôler | prüfen / verifizieren | comprobar / verificar | keeps the two export stages distinct |
-| review | vérifier | prüfen | revisar | |
-| report / sharing copy | rapport / copie de partage | Bericht / Freigabekopie | informe / copia para compartir | |
-| evidence | preuve | Nachweis | pruebas | |
-| the saved message | la confirmation d’enregistrement | die Speicherbestätigung | la confirmación de guardado | the "saved, safe to remove" confirmation, not a stored message |
-| support | l’assistance | der Support | el soporte técnico | |
-| shut down / restart | éteindre / redémarrer | herunterfahren / neu starten | apagar / reiniciar | |
-| boot menu | menu de démarrage | Bootmenü (not *Startmenü*) | menú de arranque | DE *Startmenü* is the Windows Start menu |
-| firmware | micrologiciel | Firmware | firmware | |
-| wall power / lid / sleep | secteur / capot / mise en veille | Netzstrom, Netzteil / Deckel / Ruhezustand | corriente / tapa / suspensión | FR *capot* as in Windows power settings |
-| wizard / helper page / launcher | assistant / aide / lanceur | Assistent / Hilfeseite / Starter | asistente / ayuda / lanzador | FR: the helper is never *assistant* |
-| keyboard layout / USB layout | disposition / structure | Tastaturlayout / Partitionierung | distribución / estructura | different concepts |
-| dead keys | touches mortes | Tottasten | teclas muertas | |
-| pinned nwipe v0.42 | la version figée nwipe v0.42 | die festgelegte Version nwipe v0.42 | la versión fija nwipe v0.42 | not *épinglé* / *angepinnt* (UI pinning) |
-| Everyday / Three overwrites / Quick zero | Usage courant / Trois écrasements / Zéro rapide | Standard / Dreifaches Überschreiben / Schnelles Nullen | Habitual / Tres sobrescrituras / Rápido con ceros | *Quotidien*, *Alltag* read as "daily life" |
-| Support code / Save code / Build | Code d’assistance / Code d’enregistrement / Version | Supportcode / Speichercode / Build-Kennung | Código de soporte / Código de guardado / Compilación | read aloud to support |
-| Release build / Build status | Build de publication / État du build | Release-Build / Build-Status | Compilación de la versión / Estado de la compilación | report and helper use the same terms |
-| withheld | masqué | zurückgehalten | omitido | |
-| countdown | compte à rebours | Countdown | cuenta regresiva | |
-| Mute / Unmute (button) | Couper le son / Rétablir le son | Stummschalten / Ton einschalten | Silenciar / Activar el sonido | actions, not states |
+| English | French | German | Spanish | Italian | Why |
+|---|---|---|---|---|---|
+| USB stick / the Beamo USB | clé USB / la clé USB Beamo | USB-Stick / der Beamo-USB-Stick | memoria USB / la memoria USB Beamo | chiavetta USB / la chiavetta USB Beamo | ES: understood everywhere; *pendrive* is regional |
+| boot USB | clé USB de démarrage | Start-USB-Stick | memoria USB de arranque | chiavetta USB di avvio | |
+| report USB | clé USB de rapport | Berichts-USB-Stick | memoria USB del informe | chiavetta USB del rapporto | |
+| disk / drive | disque | Datenträger (*Festplatte* only for "hard disk") | disco (*unidad* where English says "drive") | disco (*unità* where English says "drive") | DE: covers SSD, HDD and USB |
+| erase / erasure | effacer / effacement | löschen / das Löschen | borrar / borrado | cancellare / cancellazione | |
+| overwrite, pass | écraser, écrasement, passe | überschreiben, Überschreibdurchgang | sobrescribir, sobrescritura, pasada | sovrascrivere, sovrascrittura, passata | |
+| read-back verification | vérification par relecture | Rückleseprüfung | verificación por relectura | verifica con rilettura | |
+| check / verify (a copy) | vérifier / contrôler | prüfen / verifizieren | comprobar / verificar | controllare / verificare | keeps the two export stages distinct |
+| review | vérifier | prüfen | revisar | controllare (*Controllo finale* for the last screen) | |
+| report / sharing copy | rapport / copie de partage | Bericht / Freigabekopie | informe / copia para compartir | rapporto / copia da condividere | |
+| evidence | preuve | Nachweis | pruebas | prove | |
+| the saved message | la confirmation d’enregistrement | die Speicherbestätigung | la confirmación de guardado | la conferma di salvataggio | the "saved, safe to remove" confirmation, not a stored message |
+| support | l’assistance | der Support | el soporte técnico | l’assistenza | |
+| shut down / restart | éteindre / redémarrer | herunterfahren / neu starten | apagar / reiniciar | spegnere / riavviare | |
+| boot menu | menu de démarrage | Bootmenü (not *Startmenü*) | menú de arranque | menu di avvio | DE *Startmenü* is the Windows Start menu |
+| firmware | micrologiciel | Firmware | firmware | firmware | |
+| wall power / lid / sleep | secteur / capot / mise en veille | Netzstrom, Netzteil / Deckel / Ruhezustand | corriente / tapa / suspensión | alimentazione di rete, corrente / coperchio / sospensione | FR *capot* as in Windows power settings |
+| wizard / helper page / launcher | assistant / aide / lanceur | Assistent / Hilfeseite / Starter | asistente / ayuda / lanzador | procedura guidata / guida / programma di avvio | FR: the helper is never *assistant* |
+| keyboard layout / USB layout | disposition / structure | Tastaturlayout / Partitionierung | distribución / estructura | layout della tastiera / struttura | different concepts |
+| dead keys | touches mortes | Tottasten | teclas muertas | tasti morti | |
+| pinned nwipe v0.42 | la version figée nwipe v0.42 | die festgelegte Version nwipe v0.42 | la versión fija nwipe v0.42 | la versione fissata nwipe v0.42 | not *épinglé* / *angepinnt* (UI pinning) |
+| Everyday / Three overwrites / Quick zero | Usage courant / Trois écrasements / Zéro rapide | Standard / Dreifaches Überschreiben / Schnelles Nullen | Habitual / Tres sobrescrituras / Rápido con ceros | Standard / Tre sovrascritture / Azzeramento rapido | *Quotidien*, *Alltag* read as "daily life" |
+| Support code / Save code / Build | Code d’assistance / Code d’enregistrement / Version | Supportcode / Speichercode / Build-Kennung | Código de soporte / Código de guardado / Compilación | Codice di assistenza / Codice di salvataggio / Build | read aloud to support |
+| Release build / Build status | Build de publication / État du build | Release-Build / Build-Status | Compilación de la versión / Estado de la compilación | Build di rilascio / Stato della build | report and helper use the same terms |
+| withheld | masqué | zurückgehalten | omitido | omesso | |
+| countdown | compte à rebours | Countdown | cuenta regresiva | conto alla rovescia | |
+| Mute / Unmute (button) | Couper le son / Rétablir le son | Stummschalten / Ton einschalten | Silenciar / Activar el sonido | Disattiva l’audio / Riattiva l’audio | actions, not states |
 
 ## Spanish decisions
 
@@ -125,11 +131,46 @@ reads naturally:
 - **SOUND_SELECTED** = "— salida seleccionada. …": no agreement with the
   output name; *salida* is the word used across the sound screen.
 
+## Italian decisions
+
+- **chiavetta USB**: the everyday term; *unità flash USB* is long and
+  *pendrive* informal. Short labels may say *USB* alone, as English does.
+- **Lei** with lower-case *suo*, *le*, *la* inside sentences (current formal
+  usage). Where a pronoun alone would be ambiguous, rephrase:
+  *Non inizia nulla senza una sua conferma*, *Interrotta su sua richiesta*.
+- **Buttons** use the interface imperative of Italian Windows (*Continua*,
+  *Indietro*, *Spegni*, *Cancella ora*); sentences use the Lei imperative
+  (*Scelga*, *Prema*, *Digiti*) and cite labels verbatim:
+  *scelga Ricontrolla i dischi*.
+- **cancellare / cancellazione** for erase; **annullare** for clear and
+  cancel. The two share no stem, so "clear is never erase" stays testable
+  (`cancell`).
+- **passata** for an overwrite pass (Italian wiping usage: *3 passate*),
+  **passaggio** for an erase step (*Passaggio 2 di 3*), **passo** for a
+  wizard step (*Passo 1 di 3*), **fase** for an engine phase.
+- **rapporto** for report (not *report*); **prove** for evidence (not
+  *evidenze*); **riferimento** for the diagnostic baseline.
+- **Standard** for Everyday, as in German; *Quotidiano* reads as "daily".
+- **Controllo finale** (final check) for the Review before erasing button and,
+  as *Controllo finale prima di cancellare*, the last-chance title.
+- **Build**: Italian Windows keeps *build* (*build del sistema operativo*);
+  support hears the value read aloud.
+- **non è una promessa** for "not promised"; never *garantito/garantita*
+  (`tests/test_language_selection.py` lists the Italian forbidden claims).
+- **Non tiri a indovinare** for "do not guess".
+- Windows names follow Italian Windows 10/11: *Impostazioni → Sistema →
+  Ripristino → Avvio avanzato → Riavvia ora*, *Scegli un’opzione*, *Usa un
+  dispositivo*, *Riavvia il sistema* in the *Arresta* menu, *Ambiente
+  ripristino Windows*.
+- **SOUND_SELECTED** = "— uscita selezionata. …": no agreement with the
+  output name.
+
 ## Checks
 
 `tests/test_translation_consistency_20261027.py` (placeholders by name and
 count, cited labels, key names, "clear" never "erase", Spanish opening marks,
-French apostrophes and spacing, helper pages citing UI labels) and
+French apostrophes and spacing, Italian apostrophes and spacing, helper pages
+citing UI labels) and
 `tests/test_language_selection.py` (surface coverage, typed words, no English
 leaks). Layout fits: `tests/test_adaptive_layout.py`,
 `tests/test_keyboard_layout.py`.
@@ -171,3 +212,20 @@ Spanish
 - `progress.ESTIMATE_EARLY`: se calculará cuando haya más progreso.
 - `storage_limits.SECTION_SUPPORTS_BODY`: … sanitización del controlador.
 - *contacte con el soporte técnico* (*contactar con* vs *contactar a*), used in many keys
+
+Italian
+- `methods.TITLE_PRNG`: Standard
+- `copy.TITLE_BLOCKED`: Si fermi
+- `copy.BTN_REVIEW_ERASE` / `copy.TITLE_LAST`: Controllo finale / Controllo finale prima di cancellare
+- `copy.STOP_ASK`: Interrompi la cancellazione (cited in several sentences; long for a button)
+- `copy.WHAT_LEAD`: Non inizia nulla senza una sua conferma.
+- `copy.SUPPORT_SAVE_LABEL`: Codice di salvataggio
+- `copy.SUPPORT_BUILD_LABEL`: Build (identical to English)
+- `copy.SPLASH_ROADMAP`: Scegliere un disco → Confermarne l’identità → Controllare e cancellare
+- `inventory.AVAILABLE_*`: N dischi cancellabili
+- `progress.ESTIMATE_EARLY`: disponibile quando ci sarà più avanzamento.
+- `support_export.HELPER_*`: processo ausiliario isolato del rapporto
+- `support_export.*_MALFORMED`: malformato/malformata
+- `compat_story` labels: immagine USB prodotta (manufactured image)
+- `helper/it.html`: Windows names *Usa un dispositivo*, *Scegli un’opzione*, *Riavvia il sistema*, menu *Arresta*, *Ambiente ripristino Windows*; defaults *non pacchettizzata/o*
+- Lower-case *suo/le/la* for Lei throughout (rather than *Suo/Le/La*)
