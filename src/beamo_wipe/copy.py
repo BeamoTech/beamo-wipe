@@ -1110,6 +1110,8 @@ ERASE_PROGRESS_LABEL = "Erase progress"
 RETRY_SAVE = "Retry evidence save"
 NO_WIPE_YET = "(no wipe yet)"
 ACCESSIBLE_TITLE = "Beamo Wipe — screen-reader view"
+# Screen-reader pick button: the action, then the spoken disk identity.
+ACCESSIBLE_SELECT_DISK = "Select {disk}"
 ACCESSIBLE_SELECTED = "selected"
 ACCESSIBLE_NOT_SELECTED = "not selected"
 ACCESSIBLE_NO_TARGET = "No target selected"

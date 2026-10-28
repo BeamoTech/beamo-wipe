@@ -377,6 +377,7 @@ STRINGS = {
         "RETRY_SAVE": "Réessayer l’enregistrement",
         "NO_WIPE_YET": "(aucun effacement)",
         "ACCESSIBLE_TITLE": "Beamo Wipe — vue lecteur d’écran",
+        "ACCESSIBLE_SELECT_DISK": "Sélectionner {disk}",
         "ACCESSIBLE_SELECTED": "sélectionné",
         "ACCESSIBLE_NOT_SELECTED": "non sélectionné",
         "ACCESSIBLE_NO_TARGET": "Aucune cible sélectionnée",
@@ -458,6 +459,7 @@ STRINGS = {
         "REASON_ZERO_CAPACITY": "capacité nulle",
         "REASON_ELIGIBILITY": "admissibilité non confirmée",
         "REASON_UNPROVEN_TRANSPORT": "connexion locale non confirmée",
+        "CANNOT_ERASE": "Effacement impossible : {reasons}.",
         "EMPTY_STEPS": "Aucun disque admissible disponible. Lisez les raisons ci-dessous. Gardez la clé USB Beamo branchée. Éteignez avant de vérifier les branchements. Si un disque reste indisponible ou si son identité est incertaine, contactez l’assistance. Ne contournez pas la protection. Si le disque interne de l’ordinateur n’apparaît pas, son stockage est peut-être en mode Intel RST, VMD ou RAID, que cette clé USB ne peut pas utiliser. Demandez conseil à l’assistance avant de modifier les réglages du micrologiciel.",
         "UNKNOWN_COUNT": "La liste des disques n’a pas pu être confirmée. Aucun disque n’est disponible à effacer.",
         "USB_PROTECTED": "Clé USB Beamo protégée",
@@ -582,6 +584,7 @@ STRINGS = {
         "REMAINING_LINE": "\nTemps restant estimé : {text}",
         "PROGRESS_UNKNOWN": "Progression non signalée",
         "LAST_REPORTED": "Dernier signalé : {text} (ancien)",
+        "OLD_PERCENT": "{percent} (ancien)",
     },
     "identity": {
         "UNKNOWN_MODEL": "Modèle inconnu",

@@ -377,6 +377,7 @@ STRINGS = {
         "RETRY_SAVE": "Speichern erneut versuchen",
         "NO_WIPE_YET": "(noch kein Löschen)",
         "ACCESSIBLE_TITLE": "Beamo Wipe — Screenreader-Ansicht",
+        "ACCESSIBLE_SELECT_DISK": "Auswählen: {disk}",
         "ACCESSIBLE_SELECTED": "ausgewählt",
         "ACCESSIBLE_NOT_SELECTED": "nicht ausgewählt",
         "ACCESSIBLE_NO_TARGET": "Kein Ziel ausgewählt",
@@ -458,6 +459,7 @@ STRINGS = {
         "REASON_ZERO_CAPACITY": "Kapazität null",
         "REASON_ELIGIBILITY": "Eignung nicht bestätigt",
         "REASON_UNPROVEN_TRANSPORT": "lokale Verbindung nicht bestätigt",
+        "CANNOT_ERASE": "Kann nicht gelöscht werden: {reasons}.",
         "EMPTY_STEPS": "Es ist kein geeigneter Datenträger verfügbar. Lesen Sie die Gründe unten. Lassen Sie den Beamo-USB-Stick angeschlossen. Fahren Sie herunter, bevor Sie Anschlüsse prüfen. Wenn ein Datenträger nicht verfügbar bleibt oder seine Identität unsicher ist, wenden Sie sich an den Support. Umgehen Sie den Schutz nicht. Wenn das eingebaute Laufwerk des Computers fehlt, ist sein Speicher möglicherweise auf Intel RST, VMD oder RAID eingestellt, was dieser USB-Stick nicht verwenden kann. Fragen Sie den Support, bevor Sie Firmware-Einstellungen ändern.",
         "UNKNOWN_COUNT": "Die Datenträgerliste konnte nicht bestätigt werden. Es steht kein Datenträger zum Löschen zur Verfügung.",
         "USB_PROTECTED": "Beamo-USB-Stick geschützt",
@@ -582,6 +584,7 @@ STRINGS = {
         "REMAINING_LINE": "\nGeschätzte Restzeit: {text}",
         "PROGRESS_UNKNOWN": "Fortschritt nicht gemeldet",
         "LAST_REPORTED": "Zuletzt gemeldet: {text} (alt)",
+        "OLD_PERCENT": "{percent} (alt)",
     },
     "identity": {
         "UNKNOWN_MODEL": "Unbekanntes Modell",

@@ -106,6 +106,8 @@ ELAPSED_LABEL = "Elapsed: {text}"
 REMAINING_LINE = "\nEstimated time remaining: {text}"
 PROGRESS_UNKNOWN = "Progress not reported"
 LAST_REPORTED = "Last reported: {text} (old)"
+# Short form beside the bar, where "Last reported" is shown elsewhere.
+OLD_PERCENT = "{percent} (old)"
 # Measured nwipe 0.42: the runner requests SIGUSR1 every 2.0s after the
 # handler exists. Five missed pulses mark telemetry stale, matching the
 # existing estimate-history expiry. The PRNG auto-bench is 8×1.0s before

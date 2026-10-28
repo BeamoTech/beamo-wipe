@@ -19,6 +19,7 @@ REASON_CAPACITY_UNKNOWN = "capacity could not be confirmed"
 REASON_ZERO_CAPACITY = "zero capacity"
 REASON_ELIGIBILITY = "eligibility could not be confirmed"
 REASON_UNPROVEN_TRANSPORT = "local connection could not be confirmed"
+CANNOT_ERASE = "Cannot erase: {reasons}."
 # Nested cards already say they cannot be erased separately. Keep other
 # reasons (mounted, protected) visible; drop the generic whole-disk label.
 NESTED_SILENT_REASONS = frozenset({REASON_UNSUPPORTED})
@@ -157,13 +158,65 @@ def excluded_device(
     )
 
 
+# A discovery snapshot keeps the language that was active when discovery ran,
+# often before the owner picked one. Its reasons and kind labels are shown in
+# the current language, and a silent reason stays silent after a switch.
+_REASON_NAMES = (
+    ("inventory", "REASON_UNSUPPORTED"),
+    ("inventory", "REASON_PROTECTED"),
+    ("inventory", "REASON_MOUNTED"),
+    ("inventory", "REASON_READ_ONLY"),
+    ("inventory", "REASON_CAPACITY_UNKNOWN"),
+    ("inventory", "REASON_ZERO_CAPACITY"),
+    ("inventory", "REASON_ELIGIBILITY"),
+    ("inventory", "REASON_UNPROVEN_TRANSPORT"),
+    ("discover", "IDENTITY_UNCONFIRMED"),
+)
+_KIND_NAMES = tuple(
+    ("inventory", name)
+    for name in (
+        "KIND_PART", "KIND_CRYPT", "KIND_MAPPED", "KIND_LOOP",
+        "KIND_ROM", "KIND_RAID", "KIND_DISK", "KIND_TECHNICAL",
+    )
+)
+
+
+def _in_current_language(text: str, names: tuple[tuple[str, str], ...]) -> str:
+    """text, or the current-language value of the label it is in any language."""
+    import importlib
+
+    from beamo_wipe import lang
+
+    for module, name in names:
+        variants = {lang.english(module, name)}
+        for code in lang.LANGUAGE_ORDER:
+            if code != "en" and name in lang.keys(code, module):
+                variants.add(lang.translated(code, module, name))
+        if text in variants:
+            return getattr(importlib.import_module(f"beamo_wipe.{module}"), name)
+    return text
+
+
+def current_reason(reason: str) -> str:
+    return _in_current_language(reason, _REASON_NAMES)
+
+
 def nested_heading(device: ExcludedDevice) -> str:
-    return device.summary or device.identity
+    if not device.summary:
+        return device.identity
+    kind, sep, rest = device.summary.partition(" · ")
+    return _in_current_language(kind, _KIND_NAMES) + sep + rest
 
 
 def nested_reason_text(device: ExcludedDevice) -> str:
-    shown = [reason for reason in device.reasons if reason not in NESTED_SILENT_REASONS]
-    return "; ".join(shown)
+    reasons = (current_reason(reason) for reason in device.reasons)
+    return "; ".join(reason for reason in reasons if reason not in NESTED_SILENT_REASONS)
+
+
+def explanation(device: ExcludedDevice) -> str:
+    """Identity and every reason, in the current language. Display only."""
+    reasons = "; ".join(current_reason(reason) for reason in device.reasons)
+    return f"{device.identity}\n" + CANNOT_ERASE.format(reasons=reasons)
 
 
 def nested_under(
@@ -200,7 +253,7 @@ def _indent(text: str, prefix: str = "  ") -> str:
 def full_text(devices: tuple[ExcludedDevice, ...]) -> str:
     blocks = [INTRO]
     for device in devices:
-        blocks.append(device.explanation)
+        blocks.append(explanation(device))
         nested = card_nesting_text(device.children)
         if nested:
             blocks.append(_indent(nested))

@@ -141,7 +141,9 @@ def test_pick_rows_speak_and_show_what_each_disk_holds(gtk, code):
         CONTENTS_DATA: C.CONTENTS_HINT_DATA,
     }
     for disk in wizard.selectable:
-        key = f"Select {wizard.disk_view(disk).announcement}"
+        key = C.ACCESSIBLE_SELECT_DISK.format(disk=wizard.disk_view(disk).announcement)
+        # The action word is the owner's language too, not English "Select".
+        assert key.startswith("Select ") == (code == "en")
         hint = expected[CONTENTS[disk.path]]
         assert app.actions[key].get_accessible().get_name() == f"{key}. {hint}"
         assert shown.count(hint) == 1
@@ -155,7 +157,7 @@ def test_unknown_contents_keep_the_plain_select_name(gtk):
     wizard.continue_owner()
     app = gtk(wizard)
     for disk in wizard.selectable:
-        key = f"Select {wizard.disk_view(disk).announcement}"
+        key = C.ACCESSIBLE_SELECT_DISK.format(disk=wizard.disk_view(disk).announcement)
         assert app.actions[key].get_accessible().get_name() == key
 
 
@@ -173,3 +175,6 @@ def test_preview_notice_follows_the_language_choice(gtk, code):
         if isinstance(w, Gtk.Label) and w.get_style_context().has_class("preview-notice")
     ]
     assert notices == [C.PREVIEW_BANNER]
+    # Orca reads the window title: it follows the language too.
+    assert app.window.get_title() == C.ACCESSIBLE_TITLE
+    assert app.window.get_title() != lang.english("copy", "ACCESSIBLE_TITLE")

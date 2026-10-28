@@ -167,7 +167,7 @@ def _serialize_progress(view: _progress.ProgressView) -> dict:
     elif percent is None:
         percent_text = ""
     elif view.percent_is_old:
-        percent_text = f"{format_progress_percent(percent)} (old)"
+        percent_text = _progress.OLD_PERCENT.format(percent=format_progress_percent(percent))
     else:
         percent_text = format_progress_percent(percent)
     marked = None if view.mismatch else view.position

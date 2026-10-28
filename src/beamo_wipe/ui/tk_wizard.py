@@ -4668,7 +4668,7 @@ class TkWizard:
         pulse = view.timing_text
         pct = view.percent
         if view.percent_is_old and pct is not None:
-            shown = f"{format_progress_percent(pct)} (old)"
+            shown = _progress.OLD_PERCENT.format(percent=format_progress_percent(pct))
         elif pct is None:
             shown = ""
         else:

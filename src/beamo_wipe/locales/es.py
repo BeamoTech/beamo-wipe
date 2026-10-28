@@ -382,6 +382,7 @@ STRINGS = {
         "RETRY_SAVE": "Reintentar el guardado de pruebas",
         "NO_WIPE_YET": "(aún no hay borrado)",
         "ACCESSIBLE_TITLE": "Beamo Wipe — vista para lector de pantalla",
+        "ACCESSIBLE_SELECT_DISK": "Seleccionar {disk}",
         "ACCESSIBLE_SELECTED": "seleccionado",
         "ACCESSIBLE_NOT_SELECTED": "no seleccionado",
         "ACCESSIBLE_NO_TARGET": "Ningún disco seleccionado",
@@ -463,6 +464,7 @@ STRINGS = {
         "REASON_ZERO_CAPACITY": "capacidad cero",
         "REASON_ELIGIBILITY": "no se pudo confirmar si se puede borrar",
         "REASON_UNPROVEN_TRANSPORT": "no se pudo confirmar la conexión local",
+        "CANNOT_ERASE": "No se puede borrar: {reasons}.",
         "EMPTY_STEPS": "No hay ningún disco disponible para borrar. Revise los motivos de abajo. Mantenga conectada la memoria USB Beamo. Apague antes de revisar las conexiones de las unidades. Si un disco sigue sin estar disponible o su identidad es dudosa, contacte con el soporte técnico. No eluda la protección. Si falta la unidad interna del equipo, es posible que su almacenamiento esté en modo Intel RST, VMD o RAID, que esta memoria USB no puede usar. Consulte al soporte técnico antes de cambiar la configuración del firmware.",
         "UNKNOWN_COUNT": "No se pudo confirmar la lista de discos. No hay ningún disco disponible para borrar.",
         "USB_PROTECTED": "Memoria USB Beamo protegida",
@@ -587,6 +589,7 @@ STRINGS = {
         "REMAINING_LINE": "\nTiempo restante estimado: {text}",
         "PROGRESS_UNKNOWN": "Progreso no informado",
         "LAST_REPORTED": "Último dato: {text} (antiguo)",
+        "OLD_PERCENT": "{percent} (antiguo)",
     },
     "identity": {
         "UNKNOWN_MODEL": "Modelo desconocido",

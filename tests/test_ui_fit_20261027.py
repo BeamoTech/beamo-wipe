@@ -247,6 +247,14 @@ def test_working_opens_with_not_reported_line_in_a_stable_slot(tk_app, code, siz
         assert _progress_slot_texts(app) == ["42%"]
         # The first number replaces the line in place: nothing below moves.
         assert app._progress_bar.winfo_rooty() == bar_top
+    stale = ProgressView("Writing", 42, 60, stale_for=900, percent_is_old=True)
+    with patch.object(Wizard, "progress_view", new_callable=PropertyMock, return_value=stale):
+        app._refresh_working()
+        _settle(app, 50)
+        # An old number is marked in the owner's language, in the same slot.
+        assert _progress_slot_texts(app) == [progress.OLD_PERCENT.format(percent="42%")]
+        assert ("(old)" in _progress_slot_texts(app)[0]) == (code == "en")
+        assert app._progress_bar.winfo_rooty() == bar_top
     assert not wiz.runner.started
 
 

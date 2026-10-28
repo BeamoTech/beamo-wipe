@@ -271,6 +271,9 @@ class AccessibleWizard:
             self.w.screen == Screen.LAST_CHANCE and self.shown != Screen.LAST_CHANCE
         )
         self.generation += 1
+        # Orca reads the window title; follow a language change.
+        if self.window.get_title() != C.ACCESSIBLE_TITLE:
+            self.window.set_title(C.ACCESSIBLE_TITLE)
         self._apply_type_css()
         self.actions = {}
         self.primary = self.progress_label = self.countdown_label = None
@@ -413,7 +416,7 @@ class AccessibleWizard:
             self._inventory_count()
             self._protected_boot()
             for disk in sorted(self.w.selectable, key=lambda d: d.path):
-                text = f"Select {self.w.disk_view(disk).announcement}"
+                text = C.ACCESSIBLE_SELECT_DISK.format(disk=self.w.disk_view(disk).announcement)
                 select = self.button(text, lambda path=disk.path: self._select(path), in_body=True)
                 hint = C.contents_hint(disk)
                 if hint:
