@@ -69,7 +69,7 @@ def test_rescan_lists_only_fixed_issues_newer_than_the_installed_source():
     findings = rescan.rescan(_manifest(PACKAGES), TRACKER, "bookworm")
     assert findings == [{
         "source": "openssl", "installed": "3.0.17-1~deb12u2", "fixed": "3.0.17-1~deb12u3",
-        "issue": "CVE-2026-0001", "urgency": "high",
+        "issue": "CVE-2026-0001", "urgency": "high", "suite": "bookworm",
     }]
 
 
@@ -94,3 +94,53 @@ def test_cli_exit_codes(tmp_path, capsys):
     tracker.write_text(json.dumps({}))
     assert rescan.main([str(manifest), "--tracker", str(tracker)]) == 0
     assert rescan.main([str(tmp_path / "missing.json"), "--tracker", str(tracker)]) == 2
+
+
+# Debian 12 image with the bookworm-backports kernel: records as dpkg
+# reports them (signed wrappers name their own source and version).
+BOOT_PACKAGES = [
+    {"name": "linux-image-6.12.95+deb12-amd64", "version": "6.12.95-1~bpo12+1", "arch": "amd64",
+     "source": "linux-signed-amd64 (6.12.95+1~bpo12+1)"},
+    {"name": "grub-efi-amd64-signed", "version": "1+2.06+13+deb12u1", "arch": "amd64",
+     "source": ""},
+    {"name": "shim-signed", "version": "1.51~1+deb12u1+16.1-2~deb12u1", "arch": "amd64",
+     "source": "shim-signed (1.51~1+deb12u1)"},
+]
+BOOT_TRACKER = {
+    "linux": {
+        # Fixed in trixie after the backport was built: missing.
+        "CVE-2026-1001": {"releases": {
+            "bookworm": {"status": "resolved", "fixed_version": "6.1.170-1"},
+            "trixie": {"status": "resolved", "fixed_version": "6.12.113-1", "urgency": "high"},
+        }},
+        # Fixed in exactly the trixie version the backport was built from.
+        "CVE-2026-1002": {"releases": {
+            "trixie": {"status": "resolved", "fixed_version": "6.12.95-1"},
+        }},
+    },
+    "grub2": {"CVE-2026-1003": {"releases": {
+        "bookworm": {"status": "resolved", "fixed_version": "2.06-13+deb12u2"},
+    }}},
+    "shim": {"CVE-2026-1004": {"releases": {
+        "bookworm": {"status": "resolved", "fixed_version": "16.1-2~deb12u1"},
+    }}},
+}
+
+
+def test_signed_boot_packages_and_backports_are_checked_as_their_real_sources():
+    findings = rescan.rescan(_manifest(BOOT_PACKAGES), BOOT_TRACKER, "bookworm")
+    assert [(f["source"], f["installed"], f["fixed"], f["issue"], f["suite"]) for f in findings] == [
+        ("grub2", "2.06-13+deb12u1", "2.06-13+deb12u2", "CVE-2026-1003", "bookworm"),
+        ("linux", "6.12.95-1~bpo12+1", "6.12.113-1", "CVE-2026-1001", "trixie"),
+    ]
+
+
+def test_cli_marks_findings_from_another_release(tmp_path, capsys):
+    manifest = tmp_path / "manifest.json"
+    tracker = tmp_path / "tracker.json"
+    manifest.write_text(json.dumps(_manifest(BOOT_PACKAGES)))
+    tracker.write_text(json.dumps(BOOT_TRACKER))
+    assert rescan.main([str(manifest), "--tracker", str(tracker)]) == 1
+    out = capsys.readouterr().out
+    assert "linux 6.12.95-1~bpo12+1 < 6.12.113-1 [trixie]  CVE-2026-1001 high" in out
+    assert "grub2 2.06-13+deb12u1 < 2.06-13+deb12u2  CVE-2026-1003" in out

@@ -7,8 +7,10 @@ lack security fixes Debian has since published. This reads the measured dpkg
 inventory from a release manifest (verify it first with
 scripts/verify-usb-download.py) and the Debian Security Tracker data, and
 lists every source package whose installed version is older than a version
-Debian has marked as fixed for the suite. It reads only; it never builds,
-publishes or changes anything.
+Debian has marked as fixed for the suite. Signed boot packages are checked as
+their real sources (linux, grub2, shim), and ~bpo backports against the
+release they come from. It reads only; it never builds, publishes or changes
+anything.
 
   rescan_release_packages.py MANIFEST.json [--tracker tracker.json] [--suite bookworm]
 
@@ -30,10 +32,15 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 from beamo_wipe.verification_evidence import verify_package_inventory  # noqa: E402
-from corresponding_source import _source_of  # noqa: E402
+from corresponding_source import _source_of, _unsigned_source  # noqa: E402
 
 TRACKER_URL = "https://security-tracker.debian.org/tracker/data/json"
 MAX_TRACKER_BYTES = 512 * 1024 * 1024
+# The tracker has no backports view. A ~bpoNN backport is rebuilt from the
+# next release's package, so it is checked against that release's fixes
+# (bookworm-backports 6.12.95-1~bpo12+1 against trixie, as 6.12.95-1).
+BACKPORT_RE = re.compile(r"~bpo(\d+)\+\d+$")
+BACKPORT_BASE = {"11": "bookworm", "12": "trixie", "13": "forky"}
 
 
 def _order(char: str) -> int:
@@ -84,23 +91,40 @@ def rescan(manifest: Mapping[str, Any], tracker: Mapping[str, Any], suite: str) 
         raise RuntimeError("manifest has no measured package inventory")
     inventory = verify_package_inventory(inventory)
     installed: Dict[str, str] = {}
-    for entry in inventory["packages"]:
-        source, version = _source_of(entry)
+
+    def note(source: str, version: str) -> None:
         if installed.setdefault(source, version) != version:
             # Mixed source versions: compare against the oldest one installed.
             if compare_versions(version, installed[source]) < 0:
                 installed[source] = version
+
+    for entry in inventory["packages"]:
+        source, version = _source_of(entry)
+        note(source, version)
+        # The tracker files kernel, GRUB and shim issues under linux, grub2
+        # and shim, not under the signed wrapper packages that install them.
+        unsigned = _unsigned_source(source, version, entry["version"])
+        if unsigned is not None:
+            note(*unsigned)
     findings = []
     for source, version in sorted(installed.items()):
+        check_suite, check_version = suite, version
+        backport = BACKPORT_RE.search(version)
+        if backport:
+            if backport.group(1) not in BACKPORT_BASE:
+                raise RuntimeError(f"unknown backports suite for {source} {version}")
+            check_suite = BACKPORT_BASE[backport.group(1)]
+            check_version = version[:backport.start()]
         for issue, record in sorted((tracker.get(source) or {}).items()):
-            release = ((record or {}).get("releases") or {}).get(suite) or {}
+            release = ((record or {}).get("releases") or {}).get(check_suite) or {}
             fixed = release.get("fixed_version")
             if release.get("status") != "resolved" or not fixed or fixed == "0":
                 continue
-            if compare_versions(version, fixed) < 0:
+            if compare_versions(check_version, fixed) < 0:
                 findings.append({
                     "source": source, "installed": version, "fixed": fixed,
                     "issue": issue, "urgency": release.get("urgency", ""),
+                    "suite": check_suite,
                 })
     return findings
 
@@ -136,7 +160,9 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
         print(f"{manifest.get('beamo_wipe_version', '?')}: {len(findings)} fixed issues missing "
               f"across {len(packages)} source packages ({args.suite})")
         for item in findings:
-            print(f"  {item['source']} {item['installed']} < {item['fixed']}  {item['issue']} {item['urgency']}")
+            where = f" [{item['suite']}]" if item["suite"] != args.suite else ""
+            print(f"  {item['source']} {item['installed']} < {item['fixed']}{where}  "
+                  f"{item['issue']} {item['urgency']}")
     return 1 if findings else 0
 
 

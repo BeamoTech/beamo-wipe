@@ -186,6 +186,21 @@ def _source_files(name, version, *, tamper=None, extra=None, bad_name=None):
     return blobs
 
 
+def _tarball(commit, name="nwipe"):
+    """A tar.gz like GitHub's: git archive's pax header names the commit."""
+    import io
+    import tarfile
+
+    buffer = io.BytesIO()
+    with tarfile.open(fileobj=buffer, mode="w:gz", format=tarfile.PAX_FORMAT,
+                      pax_headers={"comment": commit}) as archive:
+        data = f"{name} source\n".encode()
+        info = tarfile.TarInfo(f"{name}-{commit}/README")
+        info.size = len(data)
+        archive.addfile(info, io.BytesIO(data))
+    return buffer.getvalue()
+
+
 def _opener(plan, *, tamper_hash=None, **variant):
     routes = {}
     for package in plan["debian_sources"]:
@@ -203,7 +218,7 @@ def _opener(plan, *, tamper_hash=None, **variant):
         from urllib.parse import quote
         routes[f"{cs.SNAPSHOT}/mr/package/{quote(name, safe='')}/{quote(version, safe='')}"
                "/srcfiles?fileinfo=1"] = json.dumps(meta).encode()
-    routes[cs.NWIPE_TARBALL.format(commit=NWIPE_COMMIT)] = b"nwipe tarball"
+    routes[cs.NWIPE_TARBALL.format(commit=NWIPE_COMMIT)] = _tarball(NWIPE_COMMIT)
     seen = []
 
     def open_url(url):
@@ -249,7 +264,7 @@ def test_fetch_uses_github_tarball_when_commit_is_not_local(tmp_path):
     def opener(target):
         if target == url:
             seen.append(target)
-            return FakeResponse(b"github tarball")
+            return FakeResponse(_tarball(COMMIT, "beamo-wipe"))
         return open_url(target)
 
     receipt = cs.fetch(plan, tmp_path / "out", open_url=opener, git_archive=lambda _c: None)
@@ -304,7 +319,8 @@ def test_cli_plan_writes_new_file_and_refuses_overwrite(tmp_path, capsys):
     ("linux-image-6.12.95+deb12-amd64", "linux-signed-amd64 (6.12.95+1~bpo12+1)", ("linux", "6.12.95-1~bpo12+1")),
     ("linux-image-6.1.0-54-amd64", "linux-signed-amd64 (6.1.190+1)", ("linux", "6.1.190-1")),
     ("grub-efi-amd64-signed", "grub-efi-amd64-signed (1+2.06+13+deb12u2)", ("grub2", "2.06-13+deb12u2")),
-    ("shim-signed", "shim-signed (1.51~1+deb12u1+16.1-2~deb12u1)", ("shim", "16.1-2~deb12u1")),
+    ("shim-helpers-amd64-signed", "shim-helpers-amd64-signed (1+16.1+2~deb12u1)",
+     ("shim", "16.1-2~deb12u1")),
 ])
 def test_signed_boot_wrappers_also_pull_their_real_gpl_source(binary, source, expected):
     packages = [{"name": binary, "version": "0-1", "arch": "amd64", "source": source}]
@@ -316,6 +332,72 @@ def test_signed_boot_wrappers_also_pull_their_real_gpl_source(binary, source, ex
     assert result["debian_source_count"] == 2
 
 
+def test_debian_12_shim_signed_records_pull_shim_source():
+    # Exact Debian 12 records: the Source field names shim-signed's own
+    # version; the shim version is only in the binary version suffix.
+    packages = [
+        {"name": name, "version": "1.51~1+deb12u1+16.1-2~deb12u1", "arch": arch,
+         "source": "shim-signed (1.51~1+deb12u1)"}
+        for name, arch in (("shim-signed", "amd64"), ("shim-signed-common", "all"))
+    ]
+    packages.append({"name": "shim-helpers-amd64-signed", "version": "1+16.1+2~deb12u1",
+                     "arch": "amd64", "source": ""})
+    result = cs.plan(_manifest(packages))
+    sources = {(s["name"], s["version"]): s["binaries"] for s in result["debian_sources"]}
+    assert set(sources) == {
+        ("shim-signed", "1.51~1+deb12u1"),
+        ("shim-helpers-amd64-signed", "1+16.1+2~deb12u1"),
+        ("shim", "16.1-2~deb12u1"),
+    }
+    assert sources[("shim", "16.1-2~deb12u1")] == [
+        "shim-helpers-amd64-signed:amd64 (signed from)",
+        "shim-signed-common:all (signed from)",
+        "shim-signed:amd64 (signed from)",
+    ]
+
+
 def test_ordinary_sources_get_no_unsigned_companion():
     assert cs._unsigned_source("glibc", "2.36-9") is None
     assert cs._unsigned_source("shim-signed", "1.51") is None
+    assert cs._unsigned_source("shim-signed", "1.51", "1.51") is None
+    assert cs._unsigned_source("shim-signed", "1.51", "1.52+16.1-2") is None
+
+
+@pytest.mark.parametrize("field,value", [
+    ("version", "0.42/../../escaped"),
+    ("version", "../0.42"),
+    ("commit", "../" + "a" * 37),
+    ("commit", "A" * 40),
+])
+def test_fetch_refuses_unsafe_nwipe_identity_before_writing(tmp_path, field, value):
+    plan = cs.plan(_manifest(SMALL))
+    plan["nwipe"][field] = value
+    open_url, seen = _opener(plan)
+    with pytest.raises(cs.SourceError, match="invalid nwipe version or commit"):
+        cs.fetch(plan, tmp_path / "dest" / "out", open_url=open_url, git_archive=lambda c: b"x")
+    assert not (tmp_path / "dest").exists() and seen == []
+    assert not list(tmp_path.rglob("*escaped*"))
+
+
+def test_fetch_refuses_an_unsafe_beamo_commit(tmp_path):
+    plan = cs.plan(_manifest(SMALL))
+    plan["beamo_wipe"]["commit"] = "../" + "b" * 37
+    open_url, _ = _opener(plan)
+    with pytest.raises(cs.SourceError, match="invalid nwipe version or commit"):
+        cs.fetch(plan, tmp_path / "out", open_url=open_url, git_archive=lambda c: b"x")
+    assert not (tmp_path / "out").exists()
+
+
+@pytest.mark.parametrize("served", ["other-commit", "not-a-tarball"])
+def test_fetch_refuses_an_nwipe_tarball_for_another_commit(tmp_path, served):
+    plan = cs.plan(_manifest(SMALL))
+    open_url, _ = _opener(plan)
+    url = cs.NWIPE_TARBALL.format(commit=NWIPE_COMMIT)
+    body = _tarball("f" * 40) if served == "other-commit" else b"nwipe tarball"
+
+    def opener(target):
+        return FakeResponse(body) if target == url else open_url(target)
+
+    with pytest.raises(cs.SourceError, match="nwipe tarball"):
+        cs.fetch(plan, tmp_path / "out", open_url=opener, git_archive=lambda c: b"x")
+    assert not (tmp_path / "out" / "upstream").exists()

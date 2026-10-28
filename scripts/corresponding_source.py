@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -32,6 +33,7 @@ import re
 import stat
 import subprocess
 import sys
+import tarfile
 import time
 from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional
 from urllib.parse import quote
@@ -57,6 +59,7 @@ HEX40_RE = re.compile(r"[0-9a-f]{40}")
 SHA1_RE = re.compile(r"[0-9a-f]{40}")
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
 FILE_NAME_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9+.~_-]*")
+UPSTREAM_VERSION_RE = re.compile(r"[0-9][A-Za-z0-9.+~-]*")
 
 
 class SourceError(RuntimeError):
@@ -80,15 +83,20 @@ def _source_of(entry: Mapping[str, Any]) -> tuple[str, str]:
     return source, version
 
 
-def _unsigned_source(name: str, version: str) -> Optional[tuple[str, str]]:
+def _unsigned_source(
+    name: str, version: str, binary_version: str = ""
+) -> Optional[tuple[str, str]]:
     """The real source behind Debian's Secure Boot signed wrapper packages.
 
-    linux-signed-amd64, grub-efi-amd64-signed and shim-signed contain only
-    signatures and packaging; the GPL corresponding source is the unsigned
-    package at the matching version, e.g. linux-signed-amd64 6.12.95+1~bpo12+1
-    -> linux 6.12.95-1~bpo12+1, grub-efi-amd64-signed 1+2.06+13+deb12u2 ->
-    grub2 2.06-13+deb12u2, shim-signed 1.51~1+deb12u1+16.1-2~deb12u1 -> shim
-    16.1-2~deb12u1. fetch() fails if snapshot has no such version.
+    linux-signed-amd64, grub-efi-amd64-signed, shim-helpers-amd64-signed and
+    shim-signed contain only signatures and packaging; the GPL corresponding
+    source is the unsigned package at the matching version, e.g.
+    linux-signed-amd64 6.12.95+1~bpo12+1 -> linux 6.12.95-1~bpo12+1,
+    grub-efi-amd64-signed 1+2.06+13+deb12u2 -> grub2 2.06-13+deb12u2,
+    shim-helpers-amd64-signed 1+16.1+2~deb12u1 -> shim 16.1-2~deb12u1.
+    shim-signed's source version (1.51~1+deb12u1) does not name shim; its
+    binaries carry it as a suffix (1.51~1+deb12u1+16.1-2~deb12u1 -> shim
+    16.1-2~deb12u1). fetch() fails if snapshot has no such version.
     """
     def first_plus_to_hyphen(value: str) -> Optional[str]:
         match = re.fullmatch(r"([0-9][0-9.]*)\+(.+)", value)
@@ -97,11 +105,13 @@ def _unsigned_source(name: str, version: str) -> Optional[tuple[str, str]]:
     if re.fullmatch(r"linux-signed-[a-z0-9]+", name):
         derived = first_plus_to_hyphen(version)
         return ("linux", derived) if derived else None
-    if re.fullmatch(r"grub-efi-[a-z0-9]+-signed", name):
+    wrapped = re.fullmatch(r"(grub-efi|shim-helpers)-[a-z0-9]+-signed", name)
+    if wrapped:
         derived = first_plus_to_hyphen(version.split("+", 1)[1]) if "+" in version else None
-        return ("grub2", derived) if derived else None
-    if name == "shim-signed" and "+" in version:
-        return "shim", version.rsplit("+", 1)[1]
+        unsigned = "grub2" if wrapped.group(1) == "grub-efi" else "shim"
+        return (unsigned, derived) if derived else None
+    if name == "shim-signed" and binary_version.startswith(version + "+"):
+        return "shim", binary_version[len(version) + 1:]
     return None
 
 
@@ -116,7 +126,9 @@ def plan(manifest: Mapping[str, Any]) -> Dict[str, Any]:
     commit = source.get("commit", "")
     if not HEX40_RE.fullmatch(commit or "") or source.get("dirty"):
         raise SourceError("manifest source commit is missing or dirty")
-    if not HEX40_RE.fullmatch(nwipe.get("commit", "") or "") or not nwipe.get("version"):
+    if not HEX40_RE.fullmatch(nwipe.get("commit", "") or "") or not UPSTREAM_VERSION_RE.fullmatch(
+        str(nwipe.get("version") or "")
+    ):
         raise SourceError("manifest has no pinned nwipe commit")
     if inventory.get("source_commit") != commit:
         raise SourceError("package inventory belongs to another source commit")
@@ -125,7 +137,7 @@ def plan(manifest: Mapping[str, Any]) -> Dict[str, Any]:
         identity = _source_of(entry)
         binary = f"{entry['name']}:{entry['arch']}"
         groups.setdefault(identity, []).append(binary)
-        unsigned = _unsigned_source(*identity)
+        unsigned = _unsigned_source(*identity, entry["version"])
         if unsigned is not None:
             if not VERSION_RE.fullmatch(unsigned[1]):
                 raise SourceError(f"cannot derive unsigned source for {identity}")
@@ -245,11 +257,40 @@ def _git_archive(commit: str) -> Optional[bytes]:
     return result.stdout
 
 
+def _github_tarball(data: bytes, commit: str, what: str) -> bytes:
+    """Require a codeload tarball whose git-archive header names commit.
+
+    GitHub's tarball bytes are not promised to stay identical, so there is
+    no fixed hash; git archive records the commit id in the pax global header.
+    """
+    try:
+        with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as archive:
+            recorded = archive.pax_headers.get("comment")
+    except (tarfile.TarError, OSError, EOFError) as exc:
+        raise SourceError(f"{what} tarball is not a readable gzip tar") from exc
+    if recorded != commit:
+        raise SourceError(f"{what} tarball is not commit {commit}")
+    return data
+
+
 def fetch(sources: Mapping[str, Any], dest: Path, *, open_url: Opener = _default_open,
           git_archive: Callable[[str], Optional[bytes]] = _git_archive) -> Dict[str, Any]:
     """Download and verify every source file into a new directory."""
     if sources.get("schema") != SCHEMA:
         raise SourceError("not a corresponding-source plan")
+    # These name files under dest and URLs: refuse anything but a plain
+    # version and full commit ids before creating anything.
+    nwipe = sources.get("nwipe") or {}
+    commit = (sources.get("beamo_wipe") or {}).get("commit")
+    if (
+        not isinstance(nwipe.get("version"), str)
+        or not UPSTREAM_VERSION_RE.fullmatch(nwipe["version"])
+        or not isinstance(nwipe.get("commit"), str)
+        or not HEX40_RE.fullmatch(nwipe["commit"])
+        or not isinstance(commit, str)
+        or not HEX40_RE.fullmatch(commit)
+    ):
+        raise SourceError("plan has an invalid nwipe version or commit id")
     os.mkdir(dest, 0o755)  # refuses an existing path, including a symlink
     if not stat.S_ISDIR(os.lstat(dest).st_mode):
         raise SourceError("destination is not a new directory")
@@ -286,15 +327,17 @@ def fetch(sources: Mapping[str, Any], dest: Path, *, open_url: Opener = _default
         for file_name, data in sorted(downloaded.items()):
             keep(f"{folder}/{file_name}", data, f"{SNAPSHOT} {name} {version}")
 
-    nwipe = sources["nwipe"]
+    nwipe_tarball = _fetch(open_url, NWIPE_TARBALL.format(commit=nwipe["commit"]), MAX_FILE_BYTES)
     keep(f"upstream/nwipe-{nwipe['version']}-{nwipe['commit']}.tar.gz",
-         _fetch(open_url, NWIPE_TARBALL.format(commit=nwipe["commit"]), MAX_FILE_BYTES),
-         f"{nwipe['upstream']} {nwipe['commit']}")
-    commit = sources["beamo_wipe"]["commit"]
+         _github_tarball(nwipe_tarball, nwipe["commit"], "nwipe"),
+         f"{nwipe.get('upstream', '')} {nwipe['commit']}")
     archive = git_archive(commit)
     origin = f"git archive {commit} (excluding docs/evidence)"
     if archive is None:
-        archive = _fetch(open_url, BEAMO_TARBALL.format(commit=commit), MAX_FILE_BYTES)
+        archive = _github_tarball(
+            _fetch(open_url, BEAMO_TARBALL.format(commit=commit), MAX_FILE_BYTES),
+            commit, "Beamo Wipe",
+        )
         origin = f"{BEAMO_TARBALL.format(commit=commit)}"
     keep(f"upstream/beamo-wipe-{commit}.tar.gz", archive, origin)
     keep("SOURCES.json", _canonical(sources), "corresponding-source plan")
