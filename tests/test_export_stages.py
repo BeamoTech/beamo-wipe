@@ -111,11 +111,13 @@ def test_done_console_narrow_pages_full_stage_block(monkeypatch, tmp_path):
     import curses
 
     wiz = _eligible_wizard(lambda **kw: _ok_receipt(**kw), tmp_path)
+    # Page to the end: the per-outcome next steps made this page longer, and
+    # every stage and the volatile-report line must stay reachable by paging.
     _, _, term = _draw(
         monkeypatch,
         wiz,
-        keys=[curses.KEY_DOWN] * 10,
-        sizes=[(24, 60)] * 12,
+        keys=[curses.KEY_DOWN] * 20,
+        sizes=[(24, 60)] * 22,
     )
     all_text = " ".join(
         " ".join(frame[y] for y in sorted(frame)) for frame in term.frames
