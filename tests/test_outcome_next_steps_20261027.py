@@ -408,6 +408,13 @@ def test_console_result_fits_80x24_in_every_language(code, monkeypatch, language
         assert view.next_step in shown, (code, case[0])
         assert all(len(line) < 80 for line in term.frames[-1].values()), (code, case[0])
         assert max(term.frames[-1]) < 24, (code, case[0])
+        # The outcome is the page title and is not repeated in the body, so
+        # the longer next steps still leave Report status on the first page.
+        from beamo_wipe import copy as C
+
+        first = " ".join(term.frames[0][y] for y in sorted(term.frames[0]))
+        assert first.count(view.message) == 1, (code, case[0])
+        assert C.REPORT_STATUS_TITLE in first, (code, case[0])
         wiz.wants_shutdown = False
 
 

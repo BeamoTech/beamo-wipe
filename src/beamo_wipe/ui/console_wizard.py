@@ -1711,7 +1711,10 @@ def _loop(stdscr, wizard: Wizard) -> int:
             lines = []
             if wizard.selected and not error_report:
                 lines.extend(_identity_field_lines(wizard.disk_view(wizard.selected), w))
-            lines.extend(_lines(wizard.method_result, w))
+            # The outcome is already the page title above; a second copy would
+            # push Report status and safe removal off the first page.
+            if wizard.method_result != _screen_title(wizard):
+                lines.extend(_lines(wizard.method_result, w))
             lines.extend(_lines(wizard.method_summary, w))
             lines.extend(_lines(wizard.result_view.next_step, w))
             if may_have_erased(wizard.result_view.code):
