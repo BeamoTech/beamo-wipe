@@ -1924,3 +1924,128 @@
   "unavailable" stays English by design (support readback).
 - BW-CU-QEMU-COVERAGE — unchanged from BW-RR-QEMU-COVERAGE (NVMe/AHCI targets,
   writable boot stick); a QEMU 4K VGA probe for the xrandr path is also open.
+
+## BW-FINISH-20261028 — LOCAL VERIFIED, BRANCH PUSHED / HOSTED, NATIVE-REVIEW AND PHYSICAL GATES OPEN
+
+- 2026-10-28 / Claude (Opus 5.5) for the owner's request to finish all open
+  work from BW-READINESS-WORK-20261026, BW-RR-UX-POLISH-20261027 and
+  BW-COMPAT-UX-20261027. Repo BeamoTech/beamo-wipe, branch
+  `fix/release-readiness-20261026`, clone
+  `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`. Commits after
+  the pushed `40ccf8b`: 26 commits `0a02a03`..`872d38c` plus the commit adding this entry. State: pushed as branch `fix/release-readiness-20261026` (head = the commit adding this entry; ci.yml runs only for PRs/pushes to main or dispatch, so no workflow ran). No PR, no hosted
+  CI, no tag, no release, no device operation.
+- Agent clones (owned, safe to delete after merge): `beamo-wipe-{ui,results,
+  l10n,export,it}-20261027`, `beamo-wipe-helper-20261028`,
+  `beamo-wipe-pr93trial-20261028` under `C:/Users/Jack/dev/BeamoTech/`; WSL
+  copies `/home/beamo-qual/bw-*-2026102[78]`.
+
+### Done (commit: what, evidence)
+
+- `0a02a03`…`b723156`: native-quality review fixes for FR/DE/ES UI and
+  helper pages; placeholder/cited-label/safety-wording consistency test;
+  `docs/translations.md` translator guide + native review checklist.
+- `d842818` safety: exFAT 1.0 report USBs accepted beside FAT32 (still one
+  partition, same mount/readback rules); QEMU gate requires `exfat.ko`.
+- `d2f8035`: QEMU gate refuses a `shim-signed` older than `1.51~1+deb12u1`
+  (Debian 12's shim 16.1-2 dual-signed by the Microsoft UEFI CA 2011 and
+  2023, NX-capable per its changelog); secure-boot doc marks the next image
+  UNKNOWN until Q12. German stale-progress label no longer needs a dative.
+- `121697c`, `c5d125d` (UI agent): titles never sliced by focus reveal;
+  stale/negative body scroll clamped; Working shows "Progress not reported"
+  in a fixed slot; short windows put method cards / disk rows first;
+  last-chance ring visible at 800x600 and 1024x600; preview stripe and Tk
+  title re-translate; GTK limits notice after the radios; pick rows say
+  "Windows / Operating system / No operating system found on this disk".
+  New tests fail on the reference (143+16+13+…), pass on the branch.
+- `274c80c`, `951a485`, `98c97cd` (results agent): every failed or uncertain
+  outcome has its own next steps (all languages); report Limitations no
+  longer truncates canonical copy; nwipe's logged PRNG shown as "Random data
+  generator" for random/three-pass results (display only; parser accepts one
+  exact manifest record; argv/launch/outcome unchanged, runner diff additive).
+- `3599614`: countdown caption and Tk hint cite "Erase now"; EN helper says
+  "Stop erase" / "Restart computer"; report-saving status reworded (EN/FR/IT).
+- `4a8117e`, `4c9725a`: discovery snapshots made before the language choice
+  now read in the chosen language (reasons, nested kind labels, identity
+  labels, translated "Cannot erase:"); the silent nested "unsupported device"
+  reason stays silent in every language; " (old)" percent mark, GTK
+  "Select <disk>" name and GTK window title translated.
+- `4a90eeb`: blocked-screen error (copy.IDENTIFY_ERROR, stored in English by
+  discovery) is shown in the chosen language and keeps its specific heading
+  and recovery guidance (`lang.current_text`); blocking logic unchanged.
+- `f017eaa`, `71c2855`, `ea39f90`, `9ee7a5d`: Italian as fifth language (UI,
+  helper/it.html, staging/manifest, preview `--lang it`), all later keys
+  translated; key sets/order identical across fr/de/es/it.
+- `ca3d813`, `e885447`: FR/DE helper troubleshooting panels rebuilt to
+  English parity (illustrations, five steps, Windows menu paths, Technical
+  detail with the BitLocker recovery-key warning, stylesheet); new
+  section-parity test across all five helper pages. `60cdffb`, `0bba5b1`,
+  `872d38c`: narrow console result test pages to the end; FR/DE
+  forbidden-claims lists; the curses result page no longer repeats the
+  outcome, so Report status and safe removal stay on the first 80x24 page.
+- Verification: full suite on exact `872d38c` in six fresh sessions (private 72 DPI
+  Xvfb, 3 GB RAM /tmp; WSL copy byte-identical to the clone; no `.git`;
+  docs/evidence only secure-boot-119 and physical-acceptance-111): 12,840
+  passed, 63 failed, 2 errors, 86 skipped. Reference `d842818`, same method:
+  12,086 passed, 64 failed, 2 errors, 86 skipped. Every final failure and
+  both errors also occur on the reference (CI/receipt/evidence tests needing
+  `.git` or the omitted docs/evidence; tmp_path collisions in
+  test_corresponding_source); the reference's extra failure is the GTK 60 ms
+  sound-dialog timing test. ruff 0.9.2 (src+tests), security subsets,
+  compileall, mypy 2.1.0 (54 files), shellcheck, `git diff --check
+  40ccf8b..HEAD`: PASS. Logs: WSL `~/bw-full-872d38c-20261028/`,
+  `~/bw-full-ref-d842818-20261028/` (chunk05 re-run in `rerun05/` after a
+  1.5 GB tmpfs filled). Not run: ISO build, hosted CI/QEMU, native
+  Windows, Chrome pixel checks (4 skips), Orca, anything physical.
+
+### Open items (ID — acceptance, next action, blocker)
+
+- BW-FIN-HOSTED — OWNER AUTHORIZATION (spend). The lab coverage says
+  "no new spend authorized" for WIPE-ISO-QEMU. None of the image changes
+  since 0.2.14 has been built (firmware/backports/console-data/boot params,
+  exfat.ko, shim floor, troubleshoot probes). Next: owner authorizes the
+  hosted gate; open a PR for this branch (PR/main triggers ci.yml on
+  Blacksmith) or dispatch ci.yml on a verification ref; fix every failure.
+- BW-FIN-PR93 — AFTER PR93 MERGES. Trial merge of PR93 head `bf2b490` into
+  `4c9725a` (scratch clone `beamo-wipe-pr93trial-20261028`, aborted): one
+  textual conflict, `nwipe_runner.py` duplicate-run check in start(); keep
+  this branch's `or self._target_fd is not None` with PR93's
+  `error = SafetyError(...)`/_close_pinned_engine pattern. PR93's new error
+  paths call `_release_wipe_lock()`, which on this branch also closes the
+  target reservation, so no extra cleanup is needed. Re-run the full suite
+  after the real rebase/merge; PR93 may change before merge.
+- BW-FIN-SB-Q12 — REQUIRED BEFORE RELEASE. Inspect the next built image
+  (shim 16.1-2 dual-signed, kernel 6.12 backports): signer list, SBAT,
+  2023-only firmware behaviour, per docs/secure-boot-acceptance.md.
+- BW-FIN-SHIM-BUILD — WATCH FIRST HOSTED BUILD. shim-signed's preinst
+  refuses to install when mokutil reports Secure Boot enabled without a
+  matching db entry, or prints unexpected output. The live-build chroot runs
+  in Docker on the build worker; confirm in the first hosted build log that
+  the preinst passes, and that the QEMU gate's new shim floor holds.
+- BW-FIN-EXFAT-QEMU — HOSTED. Add/run a QEMU report-export probe onto an
+  exFAT image (only the module presence is gated today); physical exFAT
+  sticks from several vendors under BW-RR-PHYS.
+- BW-FIN-VOICE — FEATURE/DESIGN. Orca 43 takes its language from the
+  process locale; the image runs LANG=C.UTF-8 without the `locales`
+  package, so FR/DE/ES/IT text is spoken with the default English voice.
+  Needs locales + espeak-ng voices in the image, a per-language Orca restart
+  or settings change, and real-audio testing. Not started.
+- BW-FIN-CONSOLE-WORDS — BY DESIGN. Typed confirmation words and key names
+  stay English in every language (safety tokens; documented in locale
+  headers and docs/translations.md). Revisit only with a safety review.
+- BW-FIN-L10N-REVIEW — NATIVE REVIEW. FR/DE/ES/IT native speakers review the
+  checklist in docs/translations.md (Italian entirely machine-made, incl.
+  Windows names in helper/it.html; new FR/DE helper troubleshooting text).
+- BW-FIN-PICK-ROW — PARTIAL. At 800x600 the first pick row starts at
+  ~108 px but a full row (up to 217 px) does not fit the 192–273 px body;
+  name, capacity and serial are visible. Needs a compact row design.
+- BW-FIN-BUILD-TOKEN — BY DESIGN. Support "Build" value "unavailable" (no
+  injected build ID: previews/dev builds only) stays an English token.
+- BW-RR-PHYS, BW-RR-LEGAL, BW-RR-RELEASE, BW-RR-GPL-ARCHIVE, BW-RR-TRIXIE,
+  BW-RR-SIGNING/ENV, BW-RR-RESCAN-SCHEDULE, BW-RR-LIVEMEDIA,
+  BW-RR-QEMU-COVERAGE, BW-RR-HOST-DISK, BW-RR-HIDPI-QEMU/PHYS, BW-CU-HOSTED,
+  BW-CU-SB, BW-CU-PHYS — unchanged (see their entries); BW-RR-SHIM is now
+  BW-FIN-SB-Q12 + BW-FIN-SHIM-BUILD.
+- Closed by this entry: BW-RR-UX (exFAT, ES/IT, per-outcome steps, contents
+  hint, PRNG; console words by design), BW-CU-UI-LEFTOVERS (all except
+  BW-FIN-PICK-ROW), BW-RR-UX-POLISH leftovers (Elapsed, focus slicing, GTK
+  third radio; build token by design).
