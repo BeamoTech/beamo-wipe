@@ -179,6 +179,14 @@ _KIND_NAMES = tuple(
         "KIND_ROM", "KIND_RAID", "KIND_DISK", "KIND_TECHNICAL",
     )
 )
+# The translated parts of an identity line; model names and capacities stay.
+_IDENTITY_NAMES = tuple(
+    ("identity", name)
+    for name in (
+        "UNKNOWN_MODEL", "CONNECTION_UNKNOWN", "CONNECTION_OTHER",
+        "SERIAL_NOT_REPORTED", "HARDWARE_ID_LABEL", "SERIAL_LABEL",
+    )
+)
 
 
 def _in_current_language(text: str, names: tuple[tuple[str, str], ...]) -> str:
@@ -201,9 +209,27 @@ def current_reason(reason: str) -> str:
     return _in_current_language(reason, _REASON_NAMES)
 
 
+def current_identity(identity: str) -> str:
+    """A snapshot identity line ("title | capacity | connection | label: value")
+    with its translated labels in the current language."""
+    parts = []
+    for part in identity.split(" | "):
+        label, sep, value = part.partition(": ")
+        if sep:
+            part = (
+                _in_current_language(label, _IDENTITY_NAMES)
+                + sep
+                + _in_current_language(value, _IDENTITY_NAMES)
+            )
+        else:
+            part = _in_current_language(part, _IDENTITY_NAMES)
+        parts.append(part)
+    return " | ".join(parts)
+
+
 def nested_heading(device: ExcludedDevice) -> str:
     if not device.summary:
-        return device.identity
+        return current_identity(device.identity)
     kind, sep, rest = device.summary.partition(" · ")
     return _in_current_language(kind, _KIND_NAMES) + sep + rest
 
@@ -216,7 +242,7 @@ def nested_reason_text(device: ExcludedDevice) -> str:
 def explanation(device: ExcludedDevice) -> str:
     """Identity and every reason, in the current language. Display only."""
     reasons = "; ".join(current_reason(reason) for reason in device.reasons)
-    return f"{device.identity}\n" + CANNOT_ERASE.format(reasons=reasons)
+    return f"{current_identity(device.identity)}\n" + CANNOT_ERASE.format(reasons=reasons)
 
 
 def nested_under(

@@ -12,6 +12,7 @@ from __future__ import annotations
 import pytest
 
 from beamo_wipe import discover, inventory, lang, progress
+from beamo_wipe import identity as identity_module
 from beamo_wipe.demo import make_demo_wizard
 from beamo_wipe.models import ExcludedDevice
 from beamo_wipe.wizard import format_progress_percent
@@ -45,7 +46,7 @@ def _nested_partition(code, *reason_names):
 
 def test_every_reason_is_covered_and_labels_are_unambiguous():
     assert {name for module, name in inventory._REASON_NAMES if module == "inventory"} == set(REASONS)
-    for group in (inventory._REASON_NAMES, inventory._KIND_NAMES):
+    for group in (inventory._REASON_NAMES, inventory._KIND_NAMES, inventory._IDENTITY_NAMES):
         owner: dict[str, str] = {}
         for module, name in group:
             for code in lang.LANGUAGE_ORDER:
@@ -82,6 +83,30 @@ def test_every_reason_maps_from_the_language_it_was_made_in(made):
             assert inventory.current_reason(text) == getattr(module, name), (made, shown, name)
 
 
+@pytest.mark.parametrize("made", lang.LANGUAGE_ORDER)
+@pytest.mark.parametrize("shown", lang.LANGUAGE_ORDER)
+def test_identity_labels_follow_the_current_language(made, shown):
+    from beamo_wipe import identity as I
+
+    lang.set_language(made)
+    unknown = ExcludedDevice(
+        f"{I.UNKNOWN_MODEL} | 16 GB | {I.CONNECTION_UNKNOWN} | {I.SERIAL_LABEL}: {I.SERIAL_NOT_REPORTED}",
+        (inventory.REASON_UNSUPPORTED,),
+    )
+    known = ExcludedDevice(
+        f"Samsung SSD 970 EVO | 256 GB | NVMe | {I.HARDWARE_ID_LABEL}: eui.0025385b71b0f1a2",
+        (inventory.REASON_MOUNTED,),
+    )
+    lang.set_language(shown)
+    assert inventory.nested_heading(unknown) == (
+        f"{I.UNKNOWN_MODEL} | 16 GB | {I.CONNECTION_UNKNOWN} | {I.SERIAL_LABEL}: {I.SERIAL_NOT_REPORTED}"
+    )
+    # Model names, capacities, bus names and ID values are kept as reported.
+    assert inventory.explanation(known).splitlines()[0] == (
+        f"Samsung SSD 970 EVO | 256 GB | NVMe | {I.HARDWARE_ID_LABEL}: eui.0025385b71b0f1a2"
+    )
+
+
 def test_unknown_text_passes_through_unchanged():
     lang.set_language("de")
     assert inventory.current_reason("vendor-specific note") == "vendor-specific note"
@@ -105,6 +130,11 @@ def test_demo_inventory_scanned_in_english_reads_in_the_chosen_language(code):
             inventory.full_text(wizard.other_devices),
         )
     )
+    english_labels = {
+        lang.english("identity", name) + ":" for name in ("SERIAL_LABEL", "HARDWARE_ID_LABEL")
+    }
+    english_reasons |= english_labels
+    current |= {getattr(identity_module, name) + ":" for name in ("SERIAL_LABEL", "HARDWARE_ID_LABEL")}
     leaked = {text for text in english_reasons - current if text in shown}
     assert not leaked, (code, leaked)
     assert "Cannot erase" not in shown
