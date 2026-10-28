@@ -838,7 +838,7 @@ STRINGS = {
         "DIAG_VERIFYING": "Enregistrement et vérification. Laissez la clé USB branchée.",
         "DIAG_CHECKING": "Vérification des disques connectés.",
         "DIAG_NO_PREVIEW": "L’exportation USB de diagnostic n’est pas disponible en aperçu ni en essai à blanc.",
-        "DIAG_BASELINE_READY": "Référence vérifiée. Branchez maintenant une clé USB FAT32 ou exFAT amovible neuve et choisissez {action}.",
+        "DIAG_BASELINE_READY": "Référence vérifiée. Branchez maintenant une nouvelle clé USB amovible FAT32 ou exFAT et choisissez {action}.",
         "DIAG_NOT_SAVED": "Le rapport de diagnostic n’a pas été enregistré et vérifié. Éteignez avant de retirer la clé USB.",
         "DIAG_CONTEXT_CHANGED": "L’état de démarrage a changé. Enregistrez un nouveau rapport de diagnostic avant d’éteindre.",
         "DIAG_FAILED": "L’exportation de diagnostic a échoué. Éteignez avant de retirer la clé USB.",
