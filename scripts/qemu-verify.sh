@@ -312,6 +312,11 @@ BIOS_LIVE="$ISO_MOUNT/isolinux/live.cfg"
 EFI_GRUB="$ISO_MOUNT/boot/grub/grub.cfg"
 [[ -f "$BIOS_LIVE" ]] || { echo "ISO BIOS menu isolinux/live.cfg missing" >&2; exit 2; }
 [[ -f "$EFI_GRUB" ]] || { echo "ISO UEFI menu boot/grub/grub.cfg missing" >&2; exit 2; }
+# A template marker live-build did not fill would run as an unknown GRUB
+# command or show as text in the menu.
+if grep -Eq '@[A-Z_]+@' "$BIOS_LIVE" "$EFI_GRUB"; then
+  echo "ISO boot menu contains an unfilled live-build template marker" >&2; exit 2
+fi
 if grep -Eiq '^[[:space:]]*menu[[:space:]]+help[[:space:]]' "$BIOS_LIVE"; then
   echo "ISO BIOS boot entry was replaced with a help-file action" >&2; exit 2
 fi

@@ -64,12 +64,39 @@ def _grub_menu() -> str:
             "@INITRD_LIVE@": "/live/initrd.img-6.1.0-30-amd64",
             "@APPEND_LIVE@": live,
             "@LB_BOOTAPPEND_LIVE_FAILSAFE@": _bootappend("bootappend-live-failsafe"),
-            "@APPEND_VERIFY_CHECKSUMS@": f"{live} verify-checksums",
             "@ENABLE_INSTALL_MENU@": "false",
             "@ENABLE_MEMTEST@": "false",
-            "@ENABLE_VERIFY_CHECKSUMS@": "true",
         },
     )
+
+
+# Exactly the markers live-build 1:20230502 fills (binary_syslinux and
+# binary_grub_cfg sed lists). Any other @MARKER@ survives into the built menu.
+LB_SYSLINUX_MARKERS = {
+    "@ARCHITECTURE@", "@DATE@", "@DAY@", "@DISTRIBUTION@", "@FLAVOUR@", "@HOUR@",
+    "@INITRD@", "@INITRD_DI@", "@INITRD_GI@", "@KERNEL_DI@", "@KERNEL_GI@",
+    "@LB_ISO_APPLICATION@", "@LB_ISO_PUBLISHER@", "@LB_LINUX_PACKAGES@", "@LINUX@",
+    "@LINUX_VERSIONS@", "@LIVE_BOOT_VERSION@", "@LIVE_BUILD_VERSION@",
+    "@LIVE_CONFIG_VERSION@", "@LIVE_TOOLS_VERSION@", "@MINUTE@", "@MONTH@",
+    "@PARENT_DISTRIBUTION@", "@PROJECT@", "@SECOND@", "@TIMEZONE@", "@TIMEZONE_NUM@",
+    "@VERSION@", "@YEAR@", "@APPEND_INSTALL@", "@APPEND_LIVE@", "@APPEND_LIVE_FAILSAFE@",
+    "@MEMTEST@", "@MEMTEST_VERSION@", "@OPTIONAL_INSTALLER_INCLUDE@",
+    "@OPTIONAL_MEMTEST_INCLUDE@",
+}
+LB_GRUB_MARKERS = {
+    "@APPEND_DI@", "@APPEND_GI@", "@APPEND_INSTALL@", "@APPEND_LIVE@",
+    "@ENABLE_INSTALL_MENU@", "@ENABLE_MEMTEST@", "@FLAVOUR_LIVE@", "@INITRD_DI@",
+    "@INITRD_GI@", "@INITRD_LIVE@", "@KERNEL_DI@", "@KERNEL_GI@", "@KERNEL_LIVE@",
+    "@LB_BOOTAPPEND_INSTALL@", "@LB_BOOTAPPEND_LIVE@", "@LB_BOOTAPPEND_LIVE_FAILSAFE@",
+    "@MEMTEST_BIN@", "@MEMTEST_DIR@", "@MEMTEST_VERSION@",
+}
+
+
+def test_every_template_marker_is_one_live_build_fills():
+    for path in ISOLINUX.iterdir():
+        assert set(PLACEHOLDER.findall(path.read_text(encoding="utf-8"))) <= LB_SYSLINUX_MARKERS, path
+    for path in GRUB_PC.iterdir():
+        assert set(PLACEHOLDER.findall(path.read_text(encoding="utf-8"))) <= LB_GRUB_MARKERS, path
 
 
 def _hotkeys(text: str, pattern: str) -> list:
@@ -167,8 +194,14 @@ def test_uefi_menu_structure_survives_substitution():
 def test_uefi_recovery_and_utility_blocks_preserved():
     menu = _grub_menu()
     assert "noswap" in menu  # failsafe kernel line keeps safe args
-    assert "UEFI Firmware Settings" in menu
-    assert "Verify integrity of the boot medium" in menu
+    # Utilities keeps the one entry that works: restart into UEFI setup.
+    utilities = menu.split("submenu 'Utilities...'", 1)[1]
+    assert re.search(r'menuentry "UEFI Firmware Settings" --unrestricted --hotkey=f \{\s*fwsetup\s*\}',
+                     utilities)
+    # live-build 1:20230502 never filled the verify-checksums markers, so that
+    # entry never appeared and its marker ran as an unknown GRUB command.
+    commands = "\n".join(ln for ln in menu.splitlines() if not ln.lstrip().startswith("#"))
+    assert "Verify integrity" not in commands and "verify-checksums" not in commands
     assert "install_start.cfg" in menu  # inert without an installer
 
 
