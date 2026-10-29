@@ -38,9 +38,14 @@ publishing a release.
   5 units per shipment.
 - Dual USB-A/C sticks: check both connectors at first article (readback, boot).
 - Some sticks report as fixed (non-removable) disks. Boot-USB exclusion ignores
-  that flag ([boot exclusion signals](boot-exclusion-signals.md)); any boot effect
-  is **to be validated**. Record `lsblk -o NAME,RM,TRAN,MODEL` at first article;
-  reject a part only on recorded boot evidence.
+  that flag ([boot exclusion signals](boot-exclusion-signals.md)), but live-boot
+  looks for its files on removable disks first and only then on fixed disks.
+  When the stick itself reports fixed, it may first mount the PC's own internal
+  partitions read-only while searching, and a read-only ext4 mount still
+  replays a pending journal. Choose parts that report removable (`RM` = 1).
+  Record `lsblk -o NAME,RM,TRAN,MODEL` at first article. A part with `RM` = 0
+  needs recorded boot evidence on a PC with an internal Linux (ext4) disk
+  before it is accepted.
 
 ## 3. Duplicator requirements
 
