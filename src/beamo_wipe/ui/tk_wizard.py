@@ -20,7 +20,7 @@ from functools import partial
 import tkinter as tk
 from pathlib import Path
 from tkinter import font as tkfont
-from typing import Callable, List, Literal, Optional
+from typing import Callable, Iterable, List, Literal, Optional
 
 from beamo_wipe import copy as C
 from beamo_wipe import diagnostic_report as D
@@ -33,7 +33,7 @@ from beamo_wipe import progress as _progress
 from beamo_wipe import keyboard as _keyboard
 from beamo_wipe.keyboard import LAYOUT_ORDER
 from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER
-from beamo_wipe.models import Disk, DiskKind, MethodId, Screen
+from beamo_wipe.models import Disk, DiskKind, ExcludedDevice, MethodId, Screen
 from beamo_wipe.safety import same_size_conflict
 from beamo_wipe.ui import StartupDisplayUnavailable
 from beamo_wipe.ui.layout import DEFAULT_SIZE, MIN_SIZE, layout_for, opening_size
@@ -607,6 +607,22 @@ class _Box(tk.Canvas):
             pass
         for child in widget.winfo_children():
             self._repaint(child, bg)
+
+
+def _nesting_line(children: Iterable[ExcludedDevice]) -> str:
+    """Nested components as one wrapped paragraph for a dense picker row.
+
+    Same facts as ``inventory.card_nesting_text`` (intro, every component
+    and its reasons), without a line per component. Display only.
+    """
+    parts = []
+    for child in children:
+        heading = inventory.nested_heading(child)
+        reason = inventory.nested_reason_text(child)
+        parts.append(f"{heading} ({reason})" if reason else heading)
+    if not parts:
+        return ""
+    return f"{inventory.NESTED_INTRO} " + "; ".join(parts)
 
 
 def _soft_break_tokens(
@@ -3356,6 +3372,10 @@ class TkWizard:
             emit_serial_marker("BEAMO_WIPE_OWNER_CHECKED")
 
     def _disk_row(self, parent: tk.Widget, disk: Disk, selected: bool) -> _Box:
+        # Short windows (800x600 safe video, 1024x600, 720p): a whole row
+        # must fit the picker viewport without scrolling. Same facts, compact
+        # panel pads, tighter gaps, and nested components on one wrapped line.
+        dense = self.lay.short
         if disk.is_boot:
             fill, outline, ow = USB_BG, USB_BORDER, 1
         elif selected:
@@ -3364,9 +3384,9 @@ class TkWizard:
             fill, outline, ow = SURFACE, BORDER, 1
         card = _Box(
             parent, radius=RADIUS, fill=fill, outline=outline, ow=ow,
-            padx=20, pady=12, halo=False,
+            padx=16 if dense else 20, pady=8 if dense else 12, halo=False,
         )
-        card.pack(fill=tk.X, pady=(0, 10), padx=4)
+        card.pack(fill=tk.X, pady=(0, 8 if dense else 10), padx=4)
         inner = card.inner
         top = tk.Frame(inner, bg=fill)
         top.pack(fill=tk.X)
@@ -3381,16 +3401,17 @@ class TkWizard:
         if disk.is_boot:
             banner = C.BOOT_USB_BANNER if disk.bus == "USB" else C.BOOT_DISC_BANNER
             self._p(title_col, banner, font=self.font_s_bold, bg=fill).pack(
-                fill=tk.X, pady=(0, 6)
+                fill=tk.X, pady=(0, 2 if dense else 6)
             )
         self._disk_heading(title_col, disk, fill)
-        self._meta_line(title_col, disk, fill).pack(fill=tk.X, pady=(4, 0))
+        self._meta_line(title_col, disk, fill).pack(fill=tk.X, pady=(2 if dense else 4, 0))
         if not disk.is_boot:
             self._contents_line(title_col, disk, fill)
-        nested = inventory.card_nesting_text(self.w.nested_components(disk))
+        children = self.w.nested_components(disk)
+        nested = _nesting_line(children) if dense else inventory.card_nesting_text(children)
         if nested:
             nest = tk.Frame(title_col, bg=fill)
-            nest.pack(fill=tk.X, pady=(8, 0))
+            nest.pack(fill=tk.X, pady=(4 if dense else 8, 0))
             setattr(nest, "_beamo_nested", True)
             self._wrapping_label(
                 nest, nested, font=self.font_s, bg=fill, fg=MUTED
@@ -3421,7 +3442,7 @@ class TkWizard:
         if not hint:
             return
         line = self._wrapping_label(parent, hint, font=self.font_s, fg=MUTED, bg=bg)
-        line.pack_configure(pady=(4, 0))
+        line.pack_configure(pady=(2 if self.lay.short else 4, 0))
         setattr(line, "_beamo_contents_hint", True)
 
     def _pick(self) -> None:
@@ -3495,9 +3516,10 @@ class TkWizard:
         # footer retain their full height on short screens.
         guidance = tk.Frame(cards, bg=BG)
         guidance.pack(fill=tk.X)
-        # Short windows (800x600, 1024x600, 720p) must show a disk without
-        # scrolling: warnings stay first but compact, and the protected boot
-        # USB plus the notes about the current selection follow the disks.
+        # Short windows (800x600, 1024x600, 720p) must show a whole disk row
+        # without scrolling: warnings stay first but compact; the notes about
+        # the current selection, the protected boot USB and the Compare
+        # toggle follow the disks, in that order, and rows are dense.
         short = self.lay.short
         if same_size_conflict(self.w.listed_disks):
             self._panel(guidance, kind="warn", text=C.SAME_SIZE_HINT, compact=short).pack(fill=tk.X, pady=(0, 8 if short else 12))
@@ -3534,7 +3556,7 @@ class TkWizard:
             boot_card = self._protected_boot(cards)
             if boot_card is not None:
                 bind_wheel(boot_card)
-        self._comparison(cards)
+            self._comparison(cards)
         items: List = sorted(self.w.selectable, key=lambda d: d.path)
         for disk in items:
             selected = self.w.selected is not None and disk.path == self.w.selected.path
@@ -3572,6 +3594,8 @@ class TkWizard:
             selection_notes(trailing)
             self._protected_boot(trailing)
             bind_wheel(trailing)
+            # Outside trailing: its readers keep their own wheel scrolling.
+            self._comparison(cards)
         # Keep the informational inventory in the same scrolling region.
         # It must not consume the picker viewport on short laptop screens.
         self._other_devices(cards)

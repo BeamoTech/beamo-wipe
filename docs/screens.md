@@ -67,7 +67,12 @@ actions stay reachable at 800×600. The 80×24 console cannot grow glyphs.
 
 The graphical wizard uses real layouts at 800×600, 1024×600, and 1280×720 as
 well as 1024×740 and larger. Short windows may scroll the body; identity,
-warnings, and footer actions stay reachable. Type enlarges slightly on large
+warnings, and footer actions stay reachable. On Pick, short windows (under
+740 px tall) keep warnings first, then the disks, then the notes about the
+selection, the protected boot USB and Compare disks. Their disk rows are
+denser (tighter padding, nested partitions on one wrapped line) so the first
+whole row shows without scrolling at 800×600 and 1024×600; every fact stays
+in the row. Type enlarges slightly on large
 windows. Tk scaling stays pinned so X DPI does not change the layout. The
 window never opens taller than the panel. When type is enlarged, cards,
 warnings, comparison, progress, and footers wrap to their parent width and
