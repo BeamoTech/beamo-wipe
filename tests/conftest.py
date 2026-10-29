@@ -26,6 +26,34 @@ def _reset_ui_language():
     lang.set_language("en")
 
 
+def pytest_configure(config):
+    """Name the real exception when a Tk callback failure retires the wizard.
+
+    TkWizard._runtime_failure tears the window down and logs only the
+    exception type, so a hosted failure otherwise shows just later
+    "application has been destroyed" errors. Diagnostics only: the wrapped
+    handler still runs unchanged, and output goes to captured stderr.
+    """
+    try:
+        from beamo_wipe.ui import tk_wizard
+    except Exception:  # Non-Linux developer hosts cannot import the wizard.
+        return
+    original = tk_wizard.TkWizard._runtime_failure
+    if getattr(original, "_beamo_reports_traceback", False):
+        return
+
+    def reporting(self, kind, error, tb):
+        import sys
+        import traceback
+
+        print("Tk callback failure retired the wizard:", file=sys.__stderr__)
+        traceback.print_exception(kind, error, tb, file=sys.__stderr__)
+        return original(self, kind, error, tb)
+
+    reporting._beamo_reports_traceback = True
+    tk_wizard.TkWizard._runtime_failure = reporting
+
+
 def pytest_collection_modifyitems(config, items):
     """Run the Orca child before other GTK tests drown Bookworm AT-SPI."""
     if os.environ.get("BEAMO_HOSTED_ORCA_SEPARATE") == "1":

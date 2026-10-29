@@ -116,7 +116,7 @@ REPEATS = {
     "fr": "si cela se reproduit",
     "de": "wenn das wieder auftritt",
     "es": "si se repite",
-    "it": "se si ripete",
+    "it": "se il problema si ripete",
 }
 OPEN_RESTART = {
     "en": "then start again",
