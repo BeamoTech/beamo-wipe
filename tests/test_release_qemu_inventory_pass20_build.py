@@ -54,10 +54,11 @@ def _qemu_gate_output_names() -> set[str]:
         names.update(
             f"{label}-{suffix}.txt" for suffix in ("serial", "qemu", "cmdline")
         )
-    for label in ("bios-sata-usb", "uefi-nvme-usb"):
-        names.update(
-            f"guest-{label}-{suffix}.txt" for suffix in ("readback", "bundle", "fsck", "mount")
-        )
+    names.update(
+        f"guest-bios-sata-usb-{suffix}.txt" for suffix in ("readback", "bundle", "fsck", "mount")
+    )
+    # exFAT report: user-space fsck and guest readback, no worker mount.
+    names.update(f"guest-uefi-nvme-usb-{suffix}.txt" for suffix in ("readback", "bundle", "fsck"))
     for case in ("everyday", "extra", "quick_zero"):
         for run in (case, f"{case}-repeat"):
             names.update(
@@ -105,6 +106,10 @@ def test_release_lists_qemu_gate_outputs_from_script():
     # SATA/NVMe journeys: each label is a probe and a guest (not host) case.
     journeys = set(re.findall(r"^\s*run_bus_journey ([a-z][a-z0-9-]*) ", source, re.M))
     assert journeys == {"bios-sata-usb", "uefi-nvme-usb"}
+    exfat_journeys = set(re.findall(
+        r"^\s*run_bus_journey ([a-z][a-z0-9-]*) [a-z]+ [0-9]+ exfat\b", source, re.M
+    ))
+    assert exfat_journeys == {"uefi-nvme-usb"}
     labels |= journeys
     assert labels
 
@@ -119,6 +124,9 @@ def test_release_lists_qemu_gate_outputs_from_script():
         assert placeholders <= {"case", "label"}, template
         expanded = {template}
         template_cases = cases | journeys if template.startswith("guest-") else cases
+        if template == "guest-${case}-mount.txt":
+            # An exFAT report journey is checked without a worker mount.
+            template_cases = cases | (journeys - exfat_journeys)
         for placeholder, values in (("case", template_cases), ("label", labels)):
             expanded = {
                 name.replace("${" + placeholder + "}", value)

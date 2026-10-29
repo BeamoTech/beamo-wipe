@@ -888,9 +888,14 @@ make_guest_target() {
 }
 
 make_report_image() {
-  local img="$1"
+  local img="$1" filesystem="${2:-vfat}"
   qemu-img create -f raw "$img" 64M >>"$EVIDENCE_DIR/qemu-img.txt" 2>&1
-  mkfs.vfat -F 32 -n BEAMO_RPT "$img" >>"$EVIDENCE_DIR/qemu-img.txt" 2>&1
+  if [[ "$filesystem" == exfat ]]; then
+    # Many new USB sticks ship exFAT; the export accepts exFAT 1.0 too.
+    mkfs.exfat -L BEAMO_RPT "$img" >>"$EVIDENCE_DIR/qemu-img.txt" 2>&1
+  else
+    mkfs.vfat -F 32 -n BEAMO_RPT "$img" >>"$EVIDENCE_DIR/qemu-img.txt" 2>&1
+  fi
 }
 
 assert_guest_overwrite() {
@@ -1979,16 +1984,17 @@ boot_probe secureboot-usb no \
 # Most owners erase an NVMe or SATA disk from a writable USB stick. Boot the
 # USB image writable (guest writes go to a discarded overlay; its hash is
 # rechecked below), so the stick is excluded by its boot identity alone, and
-# run the default method to a saved report on each controller type.
+# run the default method to a saved report on each controller type. The NVMe
+# journey saves to an exFAT report stick, as many new sticks are formatted.
 run_bus_journey() {
-  local label="$1" bus="$2" serial="$3" key nwipe_method outcome guest_timeout
-  shift 3
+  local label="$1" bus="$2" serial="$3" report_fs="$4" key nwipe_method outcome guest_timeout
+  shift 4
   IFS='|' read -r _ key nwipe_method _ outcome _ guest_timeout _ \
     < <(grep '^everyday|' <<<"$METHOD_CASES")
   local local_target="$RUN_ROOT/target-${label}.qcow2"
   local local_report="$RUN_ROOT/report-${label}.raw"
   make_guest_target "$local_target"
-  make_report_image "$local_report"
+  make_report_image "$local_report" "$report_fs"
   TARGET="$local_target"
   REPORT_RAW="$local_report"
   QEMU_TARGET_SERIAL="$serial"
@@ -1999,16 +2005,42 @@ run_bus_journey() {
   QEMU_BOOT_WRITABLE=0
   assert_guest_phases "$label"
   assert_guest_overwrite "$label" "$nwipe_method" "$local_target"
-  verify_guest_report "$label" "$local_report" "$outcome" everyday "$nwipe_method" "$(method_title everyday)"
+  if [[ "$report_fs" == exfat ]]; then
+    verify_exfat_report "$label" "$local_report"
+  else
+    verify_guest_report "$label" "$local_report" "$outcome" everyday "$nwipe_method" "$(method_title everyday)"
+  fi
 }
-run_bus_journey bios-sata-usb sata 0004
+# The worker container cannot load the host's exfat.ko, so it checks the
+# exFAT report volume in user space. The guest already remounted it read-only
+# and verified every report file and digest before BEAMO_WIPE_REPORT_SAVED.
+verify_exfat_report() {
+  local case="$1" img="$2"
+  fsck.exfat -n "$img" >"$EVIDENCE_DIR/guest-${case}-fsck.txt" 2>&1 || {
+    echo "exFAT report volume is not clean after the guest export" >&2; return 1; }
+  {
+    printf 'type=%s\n' "$(blkid -p -o value -s TYPE "$img")"
+    printf 'label=%s\n' "$(blkid -p -o value -s LABEL "$img")"
+    printf 'readback_markers=%s\n' "$(marker_count "$case" BEAMO_WIPE_EXPORT_READBACK_VERIFIED)"
+    printf 'saved_markers=%s\n' "$(marker_count "$case" BEAMO_WIPE_REPORT_SAVED)"
+  } >"$EVIDENCE_DIR/guest-${case}-bundle.txt"
+  if ! grep -qx 'type=exfat' "$EVIDENCE_DIR/guest-${case}-bundle.txt" ||
+      ! grep -qx 'label=BEAMO_RPT' "$EVIDENCE_DIR/guest-${case}-bundle.txt" ||
+      grep -qx 'readback_markers=0' "$EVIDENCE_DIR/guest-${case}-bundle.txt" ||
+      grep -qx 'saved_markers=0' "$EVIDENCE_DIR/guest-${case}-bundle.txt"; then
+    echo "exFAT report journey lacks the guest readback or kept no exFAT volume" >&2
+    return 1
+  fi
+  log "shipped Wizard $case saved and read back its report on exFAT"
+}
+run_bus_journey bios-sata-usb sata 0004 vfat
 if [[ -f "$OVMF_VARS" ]]; then
   cp "$OVMF_VARS" "$RUN_ROOT/ovmf-nvme-vars.fd"
-  run_bus_journey uefi-nvme-usb nvme 0005 \
+  run_bus_journey uefi-nvme-usb nvme 0005 exfat \
     -drive "if=pflash,format=raw,readonly=on,file=$OVMF_CODE" \
     -drive "if=pflash,format=raw,file=$RUN_ROOT/ovmf-nvme-vars.fd"
 else
-  run_bus_journey uefi-nvme-usb nvme 0005 -bios "$OVMF_CODE"
+  run_bus_journey uefi-nvme-usb nvme 0005 exfat -bios "$OVMF_CODE"
 fi
 
 if [[ "$(sha256sum "$USB_IMAGE" | awk '{print $1}')" != "$QEMU_USB_SHA" ]]; then
@@ -2016,7 +2048,7 @@ if [[ "$(sha256sum "$USB_IMAGE" | awk '{print $1}')" != "$QEMU_USB_SHA" ]]; then
   exit 2
 fi
 log "usb_image_sha256=$QEMU_USB_SHA"
-printf 'iso_sha256=%s\nusb_image_sha256=%s\nnwipe_sha256=%s\nsource_commit=%s\nbuild_id=%s\nrepetitions=2\ncases=%s\neveryday=pass\nextra=pass\nquick_zero=pass\nbios=pass\nuefi=pass\nbios_usb=pass\nuefi_usb=pass\nsecureboot_usb=pass\nspeech_bios_usb=pass\nspeech_uefi_usb=pass\ntroubleshoot_bios_usb=pass\ntroubleshoot_uefi_usb=pass\nsata_bios_usb=pass\nnvme_uefi_usb=pass\nwritable_boot_usb=pass\nreport_export=pass\n' \
+printf 'iso_sha256=%s\nusb_image_sha256=%s\nnwipe_sha256=%s\nsource_commit=%s\nbuild_id=%s\nrepetitions=2\ncases=%s\neveryday=pass\nextra=pass\nquick_zero=pass\nbios=pass\nuefi=pass\nbios_usb=pass\nuefi_usb=pass\nsecureboot_usb=pass\nspeech_bios_usb=pass\nspeech_uefi_usb=pass\ntroubleshoot_bios_usb=pass\ntroubleshoot_uefi_usb=pass\nsata_bios_usb=pass\nnvme_uefi_usb=pass\nexfat_report=pass\nwritable_boot_usb=pass\nreport_export=pass\n' \
   "$(sha256sum "$ISO" | awk '{print $1}')" "$QEMU_USB_SHA" "$shipped_sha" \
   "$(tr -d '\n' <"$EVIDENCE_DIR/source-commit.txt")" \
   "${BUILD_ID:-local}" "${EXECUTED_CASES}" \

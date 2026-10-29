@@ -102,7 +102,7 @@ def test_gate_runs_both_journeys_with_the_default_method_and_a_saved_report():
     assert "QEMU_BOOT_WRITABLE=1" in journey
     # Reset so later probes keep the read-only stick and virtio target.
     assert journey.index("QEMU_TARGET_BUS=virtio") > journey.index('boot_probe "$label"')
-    assert re.search(r"^run_bus_journey bios-sata-usb sata 0004$", source, re.M)
+    assert re.search(r"^run_bus_journey bios-sata-usb sata 0004 vfat$", source, re.M)
     assert "run_bus_journey uefi-nvme-usb nvme 0005" in source
     serials = re.findall(r"\|(\d{4})$", source.split("METHOD_CASES=$(cat <<'EOF'\n", 1)[1]
                          .split("\nEOF\n", 1)[0], re.M)
@@ -123,5 +123,45 @@ def test_publisher_requires_the_new_journey_evidence():
     for label in ("bios-sata-usb", "uefi-nvme-usb"):
         for suffix in ("serial", "qemu", "cmdline"):
             assert f"{label}-{suffix}.txt" in names
-        for suffix in ("readback", "bundle", "fsck", "mount"):
+        for suffix in ("readback", "bundle", "fsck"):
             assert f"guest-{label}-{suffix}.txt" in names
+    assert "guest-bios-sata-usb-mount.txt" in names
+    assert "guest-uefi-nvme-usb-mount.txt" not in names
+
+
+def test_nvme_journey_saves_to_an_exfat_stick_checked_without_a_worker_mount():
+    source = QEMU.read_text(encoding="utf-8")
+    assert "run_bus_journey bios-sata-usb sata 0004 vfat" in source
+    assert source.count("run_bus_journey uefi-nvme-usb nvme 0005 exfat") == 2
+    image = _function("make_report_image")
+    assert 'mkfs.exfat -L BEAMO_RPT "$img"' in image
+    assert 'mkfs.vfat -F 32 -n BEAMO_RPT "$img"' in image
+    check = _function("verify_exfat_report")
+    assert 'fsck.exfat -n "$img"' in check
+    # No worker mount or loop device: the container cannot load exfat.ko.
+    assert "mount -t" not in check and "losetup" not in check
+    for marker in ("BEAMO_WIPE_EXPORT_READBACK_VERIFIED", "BEAMO_WIPE_REPORT_SAVED"):
+        assert marker in check
+    assert "exfat_report=pass" in source
+    hosted = (ROOT / "scripts/ci-hosted.sh").read_text(encoding="utf-8")
+    assert " exfatprogs " in hosted
+
+
+def test_exfat_report_check_requires_type_label_and_guest_markers(tmp_path):
+    def run(type_, label, readback, saved):
+        script = (
+            "set -euo pipefail\n"
+            f'EVIDENCE_DIR="{tmp_path}"\n'
+            "fsck.exfat() { :; }\n"
+            f"blkid() {{ case \"$*\" in *TYPE*) echo {type_} ;; *) echo {label} ;; esac; }}\n"
+            f"marker_count() {{ case \"$2\" in *READBACK*) echo {readback} ;; *) echo {saved} ;; esac; }}\n"
+            "log() { :; }\n"
+            + _function("verify_exfat_report")
+            + "verify_exfat_report uefi-nvme-usb /fake.raw\n"
+        )
+        return subprocess.run(["bash", "-c", script], capture_output=True, text=True, timeout=30)
+
+    assert run("exfat", "BEAMO_RPT", 1, 1).returncode == 0
+    for args in (("vfat", "BEAMO_RPT", 1, 1), ("exfat", "OTHER", 1, 1),
+                 ("exfat", "BEAMO_RPT", 0, 1), ("exfat", "BEAMO_RPT", 1, 0)):
+        assert run(*args).returncode != 0, args
