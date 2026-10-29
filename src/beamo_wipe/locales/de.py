@@ -169,7 +169,7 @@ STRINGS = {
         "BTN_REFRESH": "Datenträger erneut prüfen",
         "BTN_REFRESH_UTILITY": "Datenträger erneut prüfen (F5)",
         "PREVIEW_BANNER": "VORSCHAU auf diesem Computer — simulierte Datenträger — nichts wird gelöscht",
-        "HINT_KEYBOARD": "Up/Down wählt ein Layout. Tippen Sie in das Prüffeld. Enter fährt fort. Die Textgröße bleibt bis zum Neustart dieses USB-Sticks.",
+        "HINT_KEYBOARD": "Up/Down wählt ein Layout. Tippen Sie in das Prüffeld. Enter fährt fort. Die Textgröße bleibt bis zum Neustart dieses USB-Sticks erhalten.",
         "HINT_DEFAULT": "Enter fährt fort.  Esc geht zurück.",
         "HINT_PICK": "Klicken Sie einen Datenträger an oder verwenden Sie Up/Down.  Enter prüft diesen Datenträger.  Esc geht zurück.",
         "HINT_OWNER": "Space aktiviert das Kästchen.  Enter wählt einen Datenträger, wenn es aktiviert ist.",

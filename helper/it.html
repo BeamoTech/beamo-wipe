@@ -371,7 +371,7 @@
         <p>Windows 11: Impostazioni → Sistema → Ripristino → Avvio avanzato → Riavvia ora → Usa un dispositivo, se elencato. Windows 10: Impostazioni → Aggiornamento e sicurezza → Ripristino → Avvio avanzato → Riavvia ora → Usa un dispositivo. Questi menu sono per i PC UEFI. Veda <a href="#windows-11">Windows 11</a> e <a href="#windows-10">Windows 10</a>.</p>
         <details>
           <summary>Dettaglio tecnico</summary>
-          <p>Alcuni computer nascondono l’avvio da USB finché il firmware non lo consente. È un’impostazione del firmware del computer, non di Beamo. Se potrebbe usare di nuovo questa installazione di Windows, verifichi prima la chiave di ripristino di BitLocker. Questa pagina non può modificare il firmware.</p>
+          <p>Alcuni computer nascondono l’avvio da USB finché il firmware non lo consente. È un’impostazione del firmware del computer, non di Beamo. Se pensa di poter riutilizzare questa installazione di Windows, verifichi prima la chiave di ripristino di BitLocker. Questa pagina non può modificare il firmware.</p>
         </details>
         <p><a class="back" href="#guide">Torna ai problemi</a></p>
       </article>
@@ -402,7 +402,7 @@
         <p>Dell, Lenovo e Acer usano spesso <span class="kbd">F12</span>. ASUS usa spesso <span class="kbd">F8</span> o <span class="kbd">Esc</span>. MSI usa spesso <span class="kbd">F11</span>. Gigabyte usa spesso <span class="kbd">F12</span>. Mac con processore Intel: <span class="kbd">Option (⌥)</span> all’avvio. Non per Apple Silicon.</p>
         <details>
           <summary>Dettaglio tecnico</summary>
-          <p>Alcuni computer riducono il momento in cui un tasto viene accettato. <strong>Usa un dispositivo</strong> dell’Ambiente ripristino Windows evita questo problema di tempi su molti PC UEFI. Non consideri le modifiche al firmware, all’ordine di avvio o ai menu di configurazione come il passo automatico successivo.</p>
+          <p>Su alcuni computer il momento utile per premere il tasto è molto breve. <strong>Usa un dispositivo</strong> dell’Ambiente ripristino Windows evita questo problema di tempi su molti PC UEFI. Non dia per scontato che il passo successivo sia modificare il firmware, l’ordine di avvio o i menu di configurazione.</p>
         </details>
         <p><a class="back" href="#guide">Torna ai problemi</a></p>
       </article>
@@ -423,13 +423,13 @@
           <figcaption>Annoti il messaggio esatto. Questa guida non modifica Secure Boot.</figcaption>
         </figure>
         <ol>
-          <li>Se potrebbe usare di nuovo questa installazione di Windows, verifichi di poter recuperare la chiave di ripristino di BitLocker <strong>prima</strong> di qualsiasi modifica al firmware. Se non trova la chiave, si fermi. Usi invece un’altra porta USB o i passaggi di Windows. Veda <a href="#bitlocker">BitLocker</a>.</li>
+          <li>Se pensa di poter riutilizzare questa installazione di Windows, verifichi di poter recuperare la chiave di ripristino di BitLocker <strong>prima</strong> di qualsiasi modifica al firmware. Se non trova la chiave, si fermi. Usi invece un’altra porta USB o i passaggi di Windows. Veda <a href="#bitlocker">BitLocker</a>.</li>
           <li>Annoti il messaggio esatto sullo schermo. Arrivare a un menu di avvio non significa che una cancellazione sia iniziata.</li>
           <li>Provi un’altra porta USB diretta e riavvii.</li>
           <li>Sui computer con BIOS meno recenti, <strong>Usa un dispositivo</strong> potrebbe mancare. Usi il tasto del menu di avvio invece di modificare il firmware.</li>
           <li>Segua le istruzioni di avvio del produttore del computer. Questa guida non modifica Secure Boot e non aggira un rifiuto.</li>
         </ol>
-        <p>Veda <a href="#secure-boot">Secure Boot</a> per sapere che cosa include questa chiavetta USB. Non consideri le modifiche al firmware o a Secure Boot come il passo automatico successivo.</p>
+        <p>Veda <a href="#secure-boot">Secure Boot</a> per sapere che cosa include questa chiavetta USB. Non dia per scontato che il passo successivo sia modificare il firmware o Secure Boot.</p>
         <details>
           <summary>Dettaglio tecnico</summary>
           <p>Questa chiavetta USB usa i file di avvio firmati di Debian. Il fatto che il computer la avvii dipende dalle impostazioni di attendibilità del firmware di quel computer e dagli aggiornamenti di revoca. Il programma di avvio non modifica le impostazioni di Secure Boot. I BIOS meno recenti (legacy) e UEFI si comportano in modo diverso; la mancanza della voce <strong>Usa un dispositivo</strong> dipende spesso dal BIOS legacy, non da una cancellazione non riuscita.</p>
@@ -501,23 +501,23 @@
     </div>
 
     <div class="card warn" id="bitlocker">
-      <h2>Se potrebbe usare di nuovo questa installazione di Windows</h2>
+      <h2>Se pensa di poter riutilizzare questa installazione di Windows</h2>
       <p>Verifichi di poter recuperare la chiave di ripristino di BitLocker di questo PC <strong>prima</strong> di modificare il firmware, l’ordine di avvio, Secure Boot o le impostazioni del TPM. Queste modifiche possono far chiedere a Windows la chiave di ripristino di 48 cifre al successivo avvio.</p>
-      <p>Il supporto Microsoft non può recuperare, fornire o ricreare una chiave persa. La chiave potrebbe essere salvata in un account Microsoft su un altro dispositivo, custodita dal reparto IT dell’azienda o della scuola, stampata o memorizzata su una chiavetta USB salvata quando è stata attivata la crittografia.</p>
+      <p>Il supporto Microsoft non può recuperare, fornire o ricreare una chiave persa. La chiave potrebbe essere salvata nel suo account Microsoft (consultabile da un altro dispositivo), custodita dal reparto IT dell’azienda o della scuola, stampata su carta oppure salvata su una chiavetta USB quando è stata attivata la crittografia.</p>
       <p>Questa guida non disattiva BitLocker, non estrae chiavi e non consiglia di modificare Secure Boot. Se in futuro le serve ancora questo Windows e non trova la chiave, non modifichi il firmware. Usi invece i passaggi di Windows qui sotto, un’altra porta USB o le istruzioni di avvio del produttore.</p>
     </div>
 
     <div class="card" id="screen-reader">
       <h2>Se usa un lettore di schermo</h2>
       <p>Il menu di avvio ha un’opzione <strong>Beamo Wipe: speech for screen readers</strong> (voce per lettori di schermo). Appena compare il menu, prema <span class="kbd">S</span>. I computer UEFI con altoparlante integrato emettono due brevi segnali acustici mentre il menu è visualizzato; molti portatili e il menu dei BIOS meno recenti non emettono alcun suono, quindi prema <span class="kbd">S</span> alcune volte dopo il logo del firmware.</p>
-      <p>Il menu attende cinque secondi, poi avvia la procedura normale. Se succede, prema <span class="kbd">F8</span> nella procedura per passare alla vista con voce. La voce richiede altoparlanti o cuffie funzionanti. Scegliere una delle due opzioni non cancella nulla.</p>
+      <p>Il menu attende cinque secondi, poi avvia la procedura guidata normale. In tal caso, prema <span class="kbd">F8</span> nella procedura guidata per passare alla vista con voce. La voce richiede altoparlanti o cuffie funzionanti. Scegliere una delle due opzioni non cancella nulla.</p>
     </div>
 
     <div class="card" id="windows-11">
       <h2>Windows 11: avviare questa chiavetta USB dalle Impostazioni</h2>
       <p>Questi passaggi usano l’Ambiente ripristino Windows. <strong>Usa un dispositivo</strong> è disponibile sui PC UEFI. Potrebbe mancare nei BIOS legacy.</p>
       <ol>
-        <li>Tenga questa chiavetta USB in una porta del computer; se possibile, non in un hub della tastiera.</li>
+        <li>Tenga questa chiavetta USB collegata a una porta del computer; se possibile, non a un hub della tastiera.</li>
         <li>Impostazioni → Sistema → Ripristino</li>
         <li>In Avvio avanzato, scelga Riavvia ora</li>
         <li>Scegli un’opzione → Usa un dispositivo → questa chiavetta USB, se elencata</li>
@@ -528,7 +528,7 @@
       <h2>Windows 10: avviare questa chiavetta USB dalle Impostazioni</h2>
       <p>Questi passaggi usano l’Ambiente ripristino Windows. <strong>Usa un dispositivo</strong> è disponibile sui PC UEFI. Potrebbe mancare nei BIOS legacy.</p>
       <ol>
-        <li>Tenga questa chiavetta USB in una porta del computer; se possibile, non in un hub della tastiera.</li>
+        <li>Tenga questa chiavetta USB collegata a una porta del computer; se possibile, non a un hub della tastiera.</li>
         <li>Impostazioni → Aggiornamento e sicurezza → Ripristino</li>
         <li>In Avvio avanzato, scelga Riavvia ora</li>
         <li>Scegli un’opzione → Usa un dispositivo → questa chiavetta USB, se elencata</li>
@@ -542,13 +542,13 @@
         <li>Alcuni PC hanno un pulsante di ripristino o una combinazione di tasti del produttore. Varia da modello a modello. Legga le istruzioni del computer.</li>
         <li>Riavvii e provi il tasto del menu di avvio più comune per il suo PC. Se la chiavetta USB non compare, provi un’altra porta USB diretta.</li>
       </ul>
-      <p>Non consideri le modifiche al firmware, all’ordine di avvio o a Secure Boot come il passo automatico successivo. Se potrebbe tornare a questa installazione di Windows, verifichi prima la chiave di ripristino di BitLocker.</p>
+      <p>Non dia per scontato che il passo successivo sia modificare il firmware, l’ordine di avvio o Secure Boot. Se pensa di poter tornare a questa installazione di Windows, verifichi prima la chiave di ripristino di BitLocker.</p>
     </div>
 
     <div class="card" id="secure-boot">
-      <h2>Se il computer dice che Secure Boot non avvierà questa chiavetta USB</h2>
+      <h2>Se il computer segnala che Secure Boot impedisce l’avvio di questa chiavetta USB</h2>
       <p>Questa chiavetta USB usa i file di avvio firmati di Debian. Il fatto che il computer la avvii dipende dalle impostazioni di attendibilità del firmware di quel computer e dagli aggiornamenti di revoca. Beamo Wipe non modifica Secure Boot e non aggira un rifiuto.</p>
-      <p>Se rifiuta la chiavetta USB, provi un’altra porta USB diretta e consulti le istruzioni di avvio del produttore del computer. Non presuma che arrivare a un menu di avvio significhi che una cancellazione sia iniziata.</p>
+      <p>Se il computer rifiuta la chiavetta USB, provi un’altra porta USB diretta e consulti le istruzioni di avvio del produttore del computer. Non presuma che arrivare a un menu di avvio significhi che una cancellazione sia iniziata.</p>
     </div>
 
     <div class="card" id="kiosk-recovery">
@@ -561,7 +561,7 @@
 
     <div class="card" id="error-recovery">
       <h2>Se una schermata della procedura guidata mostra un problema</h2>
-      <p>Gli errori in Beamo Wipe usano tre sezioni, in questo ordine. L’identità del disco, le esclusioni, le incertezze e il messaggio esatto restano visibili.</p>
+      <p>In Beamo Wipe, le schermate di errore sono divise in tre sezioni, in questo ordine. L’identità del disco, le esclusioni, le incertezze e il messaggio esatto restano visibili.</p>
       <ol>
         <li><strong>Cosa è successo</strong> — il messaggio esatto di questa sessione.</li>
         <li><strong>Cosa significa per il suo disco</strong> — se è stato cancellato qualcosa e che cosa non presumere.</li>
@@ -575,7 +575,7 @@
       <p>Controlli di avere le copie che le servono. Sceglierà un disco. Tutto ciò che contiene verrà cancellato. Non potrà recuperare i file.</p>
       <p>Se quel disco contiene un sistema operativo, cancellarlo rimuove anche Windows o Linux, le applicazioni, i file e le partizioni di ripristino di quel disco. Viene cancellato solo il disco che conferma. Gli altri dischi no. Reinstallare un sistema operativo è un’operazione separata.</p>
       <p>Se questo computer ha una batteria, lo colleghi alla presa di corrente prima di cancellare. Tenga aperto il coperchio. Un’interruzione di corrente ferma la cancellazione. Lo schermo può spegnersi; prema un tasto o muova il mouse per riattivarlo. È lo schermo, non la sospensione.</p>
-      <p>Se vuole un rapporto dopo, le serve una chiavetta USB FAT32 o exFAT separata con un solo volume (di qualsiasi dimensione). La tenga scollegata finché la schermata del risultato non la richiede. Una chiavetta USB già collegata non può essere usata per il rapporto.</p>
+      <p>Se alla fine vuole un rapporto, le serve una chiavetta USB FAT32 o exFAT separata con un solo volume (di qualsiasi dimensione). La tenga scollegata finché la schermata del risultato non la richiede. Una chiavetta USB già collegata non può essere usata per il rapporto.</p>
       <p>La chiavetta USB live chiede a Linux di non reagire alla chiusura del coperchio né a una breve pressione del tasto di accensione, e disattiva la sospensione. Il firmware o una pressione prolungata del tasto di accensione possono comunque fermare la cancellazione. Usi Interrompi la cancellazione e attenda il risultato prima di spegnere. Un’interruzione di corrente può lasciare il disco cancellato solo in parte e far perdere i rapporti non salvati; una cancellazione interrotta non riprende automaticamente.</p>
       <p>Questa guida offline non può leggere lo stato della batteria o dell’alimentazione di rete. La procedura guidata live mostra i valori segnalati quando disponibili; un valore sconosciuto non prova che l’alimentazione sia collegata o che durerà.</p>
       <p>Per PC Windows o Linux a 64 bit Intel/AMD che si avviano da questa chiavetta USB. <strong>Non per Mac con Apple Silicon. Non per Chromebook.</strong> Alcuni Mac con processore Intel potrebbero mostrare questa chiavetta USB; molti no.</p>
@@ -592,7 +592,7 @@
       <h2>Salvataggio del rapporto</h2>
       <ol>
         <li>Inserisca la chiavetta USB del rapporto solo quando la schermata del risultato la richiede.</li>
-        <li>Controlli: la procedura guidata accetta esattamente una nuova chiavetta USB FAT32 o exFAT.</li>
+        <li>Controlli: la procedura guidata accetta una sola chiavetta USB FAT32 o exFAT appena collegata.</li>
         <li>Salvi: il rapporto viene scritto su quella chiavetta USB. Su una chiavetta lenta può richiedere un paio di minuti; non rimuova mai nessuna chiavetta USB durante il salvataggio.</li>
         <li>Verifichi: la copia viene riletta prima di essere considerata salvata.</li>
         <li>Rimozione sicura: solo la conferma di salvataggio indica che la chiavetta USB del rapporto può essere rimossa in sicurezza.</li>
@@ -603,8 +603,8 @@
       <ul>
         <li>File system o struttura errati: usi un’altra chiavetta USB con un solo volume FAT32 o exFAT.</li>
         <li>Già montata: scolleghi solo la chiavetta USB del rapporto, la ricolleghi, poi riprovi.</li>
-        <li>Più di una nuova chiavetta USB: scolleghi quelle in più, in modo che ne resti esattamente una.</li>
-        <li>Coinvolge il disco di avvio o il disco selezionato: prima spenga, poi distingua le chiavette USB a computer spento.</li>
+        <li>Più di una chiavetta USB appena collegata: scolleghi quelle in più, in modo che ne resti una sola.</li>
+        <li>È coinvolto il disco di avvio o il disco selezionato: prima spenga, poi distingua le chiavette USB a computer spento.</li>
       </ul>
     </div>
     <div class="card" id="removing-usb">
