@@ -128,3 +128,41 @@ def test_license_files_named_by_source_offer_are_on_the_usb_root(tmp_path):
     for name in ("LICENSE", "NOTICE", "THIRD_PARTY.md"):
         assert name in offer
         assert name in present
+
+
+def _ignored_by_gitignore(relative: str) -> bool:
+    """Plain-pattern subset of .gitignore matching (no negation needed here)."""
+    from fnmatch import fnmatchcase
+
+    for raw in (ROOT / ".gitignore").read_text(encoding="utf-8").splitlines():
+        pattern = raw.strip()
+        if not pattern or pattern.startswith(("#", "!")):
+            continue
+        pattern = pattern.lstrip("/").rstrip("/")
+        if fnmatchcase(relative, pattern) or relative.startswith(pattern + "/"):
+            return True
+    return False
+
+
+def test_every_generated_usb_root_file_is_git_ignored(tmp_path):
+    # The release manifest refuses a dirty tree: a staged root file that git
+    # does not ignore stopped CI run 40817302598 right after the ISO built.
+    project, live, _source = _fixture(tmp_path)
+    _write_linked_helpers(project)
+    result = subprocess.run(  # noqa: S603
+        [sys.executable, str(ASSETS), str(project), str(live)],
+        cwd=project,
+        env={**os.environ, "BUILD_ID": "local"},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    staged = sorted(os.listdir(live / "config/includes.binary"))
+    assert {"START-HERE-fr.html", "THIRD_PARTY.md"} <= set(staged)
+    # Nothing in includes.binary is tracked: every staged file is generated.
+    not_ignored = [
+        name for name in staged
+        if not _ignored_by_gitignore(f"packaging/live/config/includes.binary/{name}")
+    ]
+    assert not_ignored == []
