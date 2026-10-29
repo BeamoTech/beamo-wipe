@@ -2188,3 +2188,115 @@
   `verify` VALID / PASS at framework or preparation level only.
 - Not run: ISO build, hosted CI/QEMU, native Windows, Chrome pixel checks,
   Orca/speech, anything physical.
+
+## BW-PASS3-20261028 — LOCAL TARGETED VERIFIED / HOSTED GATE PENDING; WSL DOWN; NATIVE-REVIEW AND PHYSICAL GATES OPEN
+
+- 2026-10-28/29 / Claude (Opus 5.5) for the owner's request to "fully take
+  care of all of the rest of the stuff ... do what's best for the mass
+  majority of customers". The open owner decisions from BW-PASS2-20261028
+  were decided on that basis (below). Branch `fix/release-readiness-20261026`,
+  clone `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`, from
+  `22fa70c`. Lab `6fd49c5` (owned clone), run root
+  `C:/Users/Jack/beamo-release-evidence/wipe-pass3-claude-20261028`: doctor
+  20261028T230010Z-b9c571b692a3, sync 20261028T230035Z-07fe5d9eb357, plan
+  20261028T230038Z-e303374f8e43 PASS (preparation only).
+- The owner's message is taken as the go-ahead for the paid hosted gate
+  (BW-FIN-HOSTED). Three helper agents (Italian review, 800x600 row, PR93
+  crash) were stopped by the owner mid-run; their uncommitted Italian and
+  row work was reviewed, corrected and verified here before committing.
+
+### Done (commit: what, evidence)
+
+- `3dd48d8` BW-P2-KERNEL-LAG: the image installs Debian 12's LTS-maintained
+  `linux-image-6.12-amd64` from bookworm-security (Debian-signed,
+  6.12.113-1~deb12u1; DLA-4745/4788/4817) via `--linux-packages
+  linux-image-6.12` (flavour stays amd64: GRUB looks for vmlinuz-*amd64);
+  backports pin now firmware only. apt resolution simulated against the live
+  archive (469 packages, kernel from bookworm-security, firmware 20250410
+  from backports, no unmet dependency). Source plan/rescan map
+  linux-signed-6.12-amd64 to `linux-6.12` (tracker files 2,886 bookworm
+  issues there). Build-time debsecan can now see kernel fixes.
+- `c3e37fd` BW-P2-GRUB-UTILITIES: kept "UEFI Firmware Settings", removed the
+  never-filled verify-checksums block; template markers limited to those
+  live-build fills; QEMU gate rejects any unfilled marker.
+- `32725c8` BW-P2-PRNG-LONG: completion projection keeps nwipe's exact
+  options header/prng/auto records; evidence falls back to it only when the
+  digested tail cannot answer (display only; outcome/check equality tested;
+  red on the old code).
+- `2020bb8` BW-P2-GPL-SYSLINUX: plan always lists Debian 12 syslinux
+  3:6.04~git20190206.bf6db5b4+dfsg1-3 (on snapshot); QEMU gate binds ISO
+  isolinux/*.c32 and isolinux.bin (outside the boot info table) and the
+  worker's syslinux packages to it.
+- `b03b5a5`, `e3f35ad` BW-RR-QEMU-COVERAGE / BW-FIN-EXFAT-QEMU: QEMU erase-
+  and-report journeys on an AHCI SATA disk (BIOS, FAT32 report) and an NVMe
+  disk (UEFI, exFAT report, user-space fsck + guest readback markers), both
+  booted from the USB image attached writable (snapshot=on).
+- `5f02e2f` BW-RR-LIVEMEDIA decision: boot line unchanged (boot-critical);
+  manufacturing prefers RM=1 sticks, RM=0 parts need boot evidence on a PC
+  with an internal ext4 disk.
+- `e48d629`: Italian grammar/wording pass (UI and helper/it.html), FR/ES
+  "test box" and "only one newly plugged-in report USB", DE sentence fix.
+  1,091 locale/helper/claims/keyboard/UI-fit tests PASS.
+- `d430f98` BW-FIN-PICK-ROW: dense Pick row and Compare after the disks on
+  short windows; first row whole at 800x600/1024x600 in all languages.
+- `a00168f`: QEMU gate extracted only three ISO files, so the pass-2
+  initramfs microcode check and the new syslinux check would have failed
+  every hosted run; it now extracts /live, /isolinux, /EFI/boot (regular
+  files only). BW-FIN-SB-Q12 aid: gate records sbverify signers and PE .sbat
+  of shim, GRUB and kernel in secure-boot-signers.txt.
+- `d3ba776`: the one-kernel check counted the linux-image-6.12-amd64
+  meta-package too (would have failed every image); fake-dpkg test, red on
+  the old script.
+
+### Decisions recorded (no change)
+
+- BW-P2-RADIO-FILES — keep documented (no connection software, no customer
+  effect).
+- BW-P2-SOF-MTL, BW-FIN-VOICE — keep as documented limits. Sound and speech
+  on 2024+ Intel laptops and non-English voices need Debian 13 firmware/UCM
+  or locale work plus real-audio tests; the screen works without them.
+- BW-RR-TRIXIE — still a planned migration; the LTS kernel removes its
+  urgency (bookworm LTS runs to ~2028-06).
+- BW-FIN-PR93 — not taken over (Codex's open PR, native GTK crash; its
+  handoff needs a native backtrace on an admitted Linux worker). The
+  investigation agent was stopped by the owner with no result. Whichever PR
+  lands second rebases (conflict notes in BW-FIN-PR93 still apply).
+
+### Open items (ID — acceptance, next action, blocker)
+
+- BW-P3-WSL-DOWN — OWNER ACTION. At ~03:10 UTC 2026-10-29 the shared WSL
+  distro `BeamoComboQualification-20261001` began failing every process start
+  with EIO (getpwnam/getpwuid failed 5, /etc unreadable, also as root). Its
+  dynamic VHDX (182.6 GB) is on C:, which had 3.3 GB free; most likely the
+  VHDX could not grow. Not stopped or repaired (shared instance). Next: owner
+  frees C: space and approves `wsl --terminate BeamoComboQualification-20261001`
+  plus a filesystem check. Note `coordination/wsl-io-errors-claude-20261029.md`.
+- BW-P3-FULL-LOCAL — NOT RUN. The full local suite on the final candidate
+  could not start (WSL down). Every changed area passed its targeted tests
+  (counts above and in the commit messages); the hosted gate's full suite is
+  the full-suite evidence for this candidate.
+- BW-P3-HOSTED — PENDING. First hosted run of every image change since
+  0.2.14 (BW-FIN-HOSTED, BW-P2-HOSTED-NEW, BW-CU-HOSTED). Expect iteration:
+  first SATA/NVMe/exFAT journeys, writable-stick boots, syslinux byte check,
+  signer record, LTS kernel. Fix every failure; never weaken a check.
+- BW-FIN-SB-Q12 — after a green hosted run, a person reviews
+  secure-boot-signers.txt from that run's evidence against
+  docs/secure-boot-acceptance.md and writes the Q12 receipt.
+- Unchanged: BW-FIN-SHIM-BUILD (watch the first build log), BW-FIN-L10N-REVIEW
+  (now incl. the Italian pass), BW-RR-PHYS, BW-RR-LEGAL, BW-RR-RELEASE,
+  BW-RR-GPL-ARCHIVE, BW-RR-SIGNING/ENV, BW-RR-RESCAN-SCHEDULE,
+  BW-RR-HIDPI-QEMU/PHYS, BW-RR-HOST-DISK (now urgent: it took WSL down),
+  BW-CU-PHYS.
+
+### Verification — 2026-10-28 (pass 3), targeted only
+
+- WSL `BeamoComboQualification-20261001` as beamo-qual, private 72 DPI Xvfb,
+  RAM /tmp: kernel/boot/hardware/docs 377+45; boot menus 31; PRNG and
+  projection 721 (new test red 4/7 on old code); source plan 41; QEMU gate,
+  publisher and inventory suites 974 then 61 and 13; locale/UI 1,091; pick
+  row, ISO inspection, Secure Boot record and layout 832; kernel gate 12.
+  All failures seen were in the known no-`.git` environment set.
+- ruff 0.9.2 (src, tests, scripts), mypy 2.1.0 (54 files), shellcheck 0.9.0
+  (qemu-verify, ci-hosted, inside-docker) PASS on `d3ba776`'s tree.
+- Not run: full local suite (WSL down), ISO build, hosted CI/QEMU, native
+  Windows, Orca/speech, anything physical.
