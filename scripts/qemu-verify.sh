@@ -1665,6 +1665,9 @@ boot_probe() {
 verify_guest_report() {
   local case="$1" report_img="$2" expected_outcome="$3" expected_method="$4"
   local expected_nwipe="$5" expected_title="$6"
+  # Target identity: the method journeys erase virtio /dev/vda with the
+  # method's serial; the SATA journey passes its sd* name pattern and serial.
+  local expected_name="${7:-vda}" expected_serial="${8:-}"
   REPORT_RAW="$report_img"
   REPORT_LOOP_RO=1
   REPORT_LOOP="$(sudo losetup --find --show --read-only "$report_img")"
@@ -1680,6 +1683,7 @@ verify_guest_report() {
   # shellcheck disable=SC2024
   sudo python3 -sP - "$REPORT_MOUNT" "$expected_outcome" "$expected_method" \
     "$expected_nwipe" "$expected_title" "${BUILD_ID:-local}" "$(git rev-parse HEAD)" \
+    "$expected_name" "$expected_serial" \
     >"$EVIDENCE_DIR/guest-${case}-bundle.txt" <<'PY'
 import hashlib
 import json
@@ -1699,6 +1703,10 @@ def unique_report_fields(pairs):
 mountpoint = pathlib.Path(sys.argv[1])
 expected_outcome, expected_method, expected_nwipe, expected_title = sys.argv[2:6]
 expected_build_id, expected_source = sys.argv[6:8]
+# Kernel name pattern and serial of the erased disk (defaults: the method
+# journeys' virtio vda and the method's own serial).
+expected_name_pattern = sys.argv[8] if len(sys.argv) > 8 else "vda"
+expected_target_serial = sys.argv[9] if len(sys.argv) > 9 else ""
 reports = mountpoint / "BEAMO-WIPE-REPORTS"
 top = sorted(path.name for path in mountpoint.iterdir())
 if top != ["BEAMO-WIPE-REPORTS"]:
@@ -1841,17 +1849,20 @@ expected_argv = [
 ]
 if argv != expected_argv:
     raise SystemExit("guest argv differs from the single-target production command")
-expected_serial = {"everyday": "0001", "extra": "0002", "quick_zero": "0003"}[expected_method]
+expected_serial = expected_target_serial or {
+    "everyday": "0001", "extra": "0002", "quick_zero": "0003",
+}[expected_method]
+target_name = target.rsplit("/", 1)[-1]
 if (
-    target != "/dev/vda"
-    or device.get("realpath") != "/dev/vda"
-    or device.get("name") != "vda"
+    not re.fullmatch(expected_name_pattern, target_name)
+    or target != f"/dev/{target_name}"
+    or device.get("realpath") != target
+    or device.get("name") != target_name
     or device.get("serial") != expected_serial
     or type(device.get("size_bytes")) is not int
     or device["size_bytes"] != 67108864
 ):
     raise SystemExit("guest target identity differs from the disposable QEMU disk")
-target_name = target.rsplit("/", 1)[-1]
 log_text = actual["nwipe.log"].decode("utf-8", "replace")
 status_row = rf"^\s*!?\s*(?:{re.escape(target_name)}|{re.escape(target)})\s*\|\s*([^|]+)\|"
 statuses = list(re.finditer(status_row, log_text, re.M))
@@ -2080,7 +2091,9 @@ run_bus_journey() {
   if [[ "$report_fs" == exfat ]]; then
     verify_exfat_report "$label" "$local_report"
   else
-    verify_guest_report "$label" "$local_report" "$outcome" everyday "$nwipe_method" "$(method_title everyday)"
+    # AHCI disks are sd*; the boot stick may take the other sd name.
+    verify_guest_report "$label" "$local_report" "$outcome" everyday "$nwipe_method" \
+      "$(method_title everyday)" 'sd[a-z]+' "$serial"
   fi
 }
 # The worker container cannot load the host's exfat.ko, so it checks the
