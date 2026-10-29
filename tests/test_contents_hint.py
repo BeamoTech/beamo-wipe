@@ -167,7 +167,6 @@ def test_gallery_pick_cards_carry_and_render_the_hint(monkeypatch):
 
 def test_gallery_disk_card_renders_the_hint_line(monkeypatch):
     import json
-    import re
     import shutil
     import subprocess
 
@@ -182,7 +181,11 @@ def test_gallery_disk_card_renders_the_hint_line(monkeypatch):
         lambda scenario: _tag(original(scenario), CONTENTS),
     )
     disks = gallery._disks_payload("happy")
-    script, = re.findall(r"<script>(.*?)</script>", gallery.gallery_html(), re.S)
+    # The generated preview page has exactly one inline script (our own HTML;
+    # this extracts it for inspection, it is not an HTML filter).
+    page = gallery.gallery_html()
+    assert page.count("<script>") == 1 and page.count("</script>") == 1
+    script = page.split("<script>", 1)[1].split("</script>", 1)[0]
 
     def function(name):
         start = script.index(f"function {name}(")
