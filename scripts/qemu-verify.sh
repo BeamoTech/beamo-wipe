@@ -51,6 +51,10 @@ TARGET_RAW="$RUN_ROOT/target.raw"
 # derive the confirmation token from the same production policy as the UI
 # instead of assuming the target serial or a particular ISO size.
 QEMU_TARGET_SERIAL="0001"
+# Target controller (virtio, nvme or sata) and whether the USB boot image is
+# attached writable (snapshot=on) for the next boot_probe.
+QEMU_TARGET_BUS=virtio
+QEMU_BOOT_WRITABLE=0
 HOST_METHOD_BYTES=67108864
 # case|key|nwipe_method|verify|outcome|host_timeout_s|guest_done_timeout_s|serial
 METHOD_CASES=$(cat <<'EOF'
@@ -249,8 +253,10 @@ grep -q 'El Torito' "$EVIDENCE_DIR/isoinfo.txt" || {
 }
 
 # Inspect the exact ISO bytes without requiring the worker's ISO9660 driver.
-# Only the three inspected files are extracted from a private, hash-bound
-# snapshot. The live SquashFS remains mounted read-only for all existing checks.
+# Only the inspected paths are extracted from a private, hash-bound snapshot:
+# /live (SquashFS, kernel, initramfs), /isolinux (BIOS loader and menu),
+# /EFI/boot (shim, GRUB) and the GRUB menu, as regular files only. The live
+# SquashFS remains mounted read-only for all existing checks.
 python3 - "$ISO" "$RUN_ROOT/inspection.iso" "$ISO_MOUNT" "$QEMU_ISO_SHA" \
   >"$EVIDENCE_DIR/iso-extraction.txt" 2>&1 <<'PYISO'
 import hashlib
@@ -275,17 +281,29 @@ if digest.hexdigest() != expected:
     raise SystemExit('ISO inspection snapshot differs from verified artifact')
 os.chmod(snapshot, 0o400)
 command = ['xorriso', '-osirrox', 'on', '-indev', str(snapshot)]
-names = ('live/filesystem.squashfs', 'isolinux/live.cfg', 'boot/grub/grub.cfg')
-for name in names:
+# Directories: the kernel and initramfs names carry the kernel version, and
+# the BIOS and EFI loader sets are checked as a whole.
+extracted = ('live', 'isolinux', 'EFI/boot', 'boot/grub/grub.cfg')
+required = ('live/filesystem.squashfs', 'isolinux/live.cfg', 'isolinux/isolinux.bin',
+            'EFI/boot/bootx64.efi', 'EFI/boot/grubx64.efi', 'boot/grub/grub.cfg')
+for name in extracted:
     target = destination / name
     target.parent.mkdir(parents=True, exist_ok=True)
     command.extend(('-extract', '/' + name, str(target)))
 subprocess.run(command, check=True)
-for name in names:
-    target = destination / name
-    if not stat.S_ISREG(target.lstat().st_mode):
+files = []
+for name in extracted:
+    for path in [destination / name, *(destination / name).rglob('*')]:
+        mode = path.lstat().st_mode
+        if stat.S_ISREG(mode):
+            files.append(path)
+        elif not stat.S_ISDIR(mode):
+            raise SystemExit('ISO inspection output is not a regular file')
+for name in required:
+    if not stat.S_ISREG((destination / name).lstat().st_mode):
         raise SystemExit('ISO inspection output is not a regular file')
-    target.chmod(0o400)
+for path in files:
+    path.chmod(0o400)
 snapshot.unlink()
 print('Inspected ISO snapshot SHA-256:', expected)
 PYISO
@@ -304,6 +322,90 @@ grep -qiE '^nwipe version 0\.42([[:space:]]|$)' "$EVIDENCE_DIR/nwipe-version.txt
   exit 2
 }
 
+# BIOS boot files are GPL syslinux code outside the squashfs inventory. They
+# must be Debian 12's syslinux build, the version the corresponding-source
+# plan names (scripts/corresponding_source.py SYSLINUX_SOURCE_VERSION). This
+# worker's packages also supplied the USB image's ldlinux.sys and mbr.bin.
+SYSLINUX_SOURCE_VERSION='3:6.04~git20190206.bf6db5b4+dfsg1-3'
+for package in isolinux syslinux syslinux-common; do
+  [[ "$(dpkg-query -W -f='${source:Version}' "$package" 2>/dev/null)" == "$SYSLINUX_SOURCE_VERSION" ]] || {
+    echo "QEMU worker $package is not Debian 12 syslinux $SYSLINUX_SOURCE_VERSION" >&2; exit 2; }
+done
+python3 - "$ISO_MOUNT/isolinux" <<'PY' || exit 2
+import pathlib
+import sys
+
+iso = pathlib.Path(sys.argv[1])
+modules = pathlib.Path("/usr/lib/syslinux/modules/bios")
+shipped = sorted(iso.glob("*.c32"))
+if not shipped:
+    sys.exit("no syslinux modules in ISO isolinux/")
+for path in shipped:
+    reference = modules / path.name
+    if not reference.is_file() or reference.read_bytes() != path.read_bytes():
+        sys.exit(f"ISO isolinux/{path.name} is not Debian 12 syslinux's module")
+# xorriso -boot-info-table rewrites bytes 8-63 of the image's isolinux.bin.
+image = (iso / "isolinux.bin").read_bytes()
+reference = pathlib.Path("/usr/lib/ISOLINUX/isolinux.bin").read_bytes()
+if len(image) != len(reference) or image[:8] + image[64:] != reference[:8] + reference[64:]:
+    sys.exit("ISO isolinux/isolinux.bin is not Debian 12 isolinux's loader")
+PY
+# Secure Boot chain of this exact image for the human Q12 inspection
+# (docs/secure-boot-acceptance.md): every signature and SBAT entry of shim,
+# GRUB and the kernel. The gate requires only the publishers every Debian
+# signed chain has; firmware trust and revocation stay a human judgement.
+# A subshell with explicit exits: errexit does not apply inside an || list.
+(
+  for efi in "$ISO_MOUNT/EFI/boot/bootx64.efi" "$ISO_MOUNT/EFI/boot/grubx64.efi" \
+      "$ISO_MOUNT"/live/vmlinuz-*; do
+    printf '== %s\n' "${efi#"$ISO_MOUNT"/}"
+    sbverify --list "$efi" || exit 1
+  done
+) >"$EVIDENCE_DIR/secure-boot-signers.txt" 2>&1 || {
+  echo "could not list the ISO's Secure Boot signatures" >&2; exit 2; }
+python3 - "$EVIDENCE_DIR/secure-boot-signers.txt" "$ISO_MOUNT" <<'PY' || exit 2
+import pathlib
+import struct
+import sys
+
+evidence, root = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
+sections = {}
+for block in evidence.read_text(encoding="utf-8", errors="replace").split("== ")[1:]:
+    name, _, body = block.partition("\n")
+    sections[name.strip()] = body
+
+
+def sbat(path):
+    """The PE .sbat section text, or "" when the binary has none."""
+    data = path.read_bytes()
+    offset = struct.unpack_from("<I", data, 0x3C)[0]
+    if data[offset:offset + 4] != b"PE\0\0":
+        sys.exit(f"{path.name} is not a PE image")
+    count, optional = struct.unpack_from("<H12xH", data, offset + 6)
+    table = offset + 24 + optional
+    for index in range(count):
+        entry = table + 40 * index
+        name = data[entry:entry + 8].rstrip(b"\0")
+        size, _, raw_size, raw_offset = struct.unpack_from("<IIII", data, entry + 8)
+        if name == b".sbat":
+            return data[raw_offset:raw_offset + min(size, raw_size)].rstrip(b"\0").decode("ascii", "replace")
+    return ""
+
+
+with evidence.open("a", encoding="utf-8") as out:
+    for name in sections:
+        out.write(f"-- sbat {name}\n{sbat(root / name)}\n")
+shim = sections.get("EFI/boot/bootx64.efi", "")
+grub = sections.get("EFI/boot/grubx64.efi", "")
+kernels = [body for name, body in sections.items() if name.startswith("live/vmlinuz-")]
+if "Microsoft Corporation UEFI CA" not in shim:
+    sys.exit("ISO shim has no Microsoft UEFI CA signature")
+if "Debian Secure Boot" not in grub or not kernels:
+    sys.exit("ISO GRUB or kernel has no Debian Secure Boot signature")
+if not all("Debian Secure Boot" in body for body in kernels):
+    sys.exit("ISO kernel has no Debian Secure Boot signature")
+PY
+
 # Boot menus carry Beamo Wipe identity and never imply booting erases.
 # BIOS boots isolinux; UEFI boots grub. Both entries must exist with the
 # branded labels, the troubleshooting entry keeps the failsafe kernel line,
@@ -312,6 +414,11 @@ BIOS_LIVE="$ISO_MOUNT/isolinux/live.cfg"
 EFI_GRUB="$ISO_MOUNT/boot/grub/grub.cfg"
 [[ -f "$BIOS_LIVE" ]] || { echo "ISO BIOS menu isolinux/live.cfg missing" >&2; exit 2; }
 [[ -f "$EFI_GRUB" ]] || { echo "ISO UEFI menu boot/grub/grub.cfg missing" >&2; exit 2; }
+# A template marker live-build did not fill would run as an unknown GRUB
+# command or show as text in the menu.
+if grep -Eq '@[A-Z_]+@' "$BIOS_LIVE" "$EFI_GRUB"; then
+  echo "ISO boot menu contains an unfilled live-build template marker" >&2; exit 2
+fi
 if grep -Eiq '^[[:space:]]*menu[[:space:]]+help[[:space:]]' "$BIOS_LIVE"; then
   echo "ISO BIOS boot entry was replaced with a help-file action" >&2; exit 2
 fi
@@ -341,9 +448,15 @@ uefi_failsafe_linux="$(awk '
 ' "$EFI_GRUB")"
 for boot_line in "$bios_failsafe_append" "$uefi_failsafe_linux"; do
   for required in boot=live nopersistence noswap ip=frommedia nox11autologin \
-                  memtest noapic noapm nodma nomce nolapic nosmp nosplash vga=788; do
+                  nomodeset nosplash vga=788; do
     if ! printf '%s\n' "$boot_line" | grep -Eq "(^|[[:space:]])${required}([[:space:]]|$)"; then
       echo "ISO troubleshooting kernel line lost required flag: $required" >&2; exit 2
+    fi
+  done
+  # Legacy live-build failsafe flags can hang or stall modern UEFI PCs.
+  for forbidden in memtest noapic nolapic nosmp; do
+    if printf '%s\n' "$boot_line" | grep -Eq "(^|[[:space:]])${forbidden}([[:space:]]|$)"; then
+      echo "ISO troubleshooting kernel line has unsafe flag: $forbidden" >&2; exit 2
     fi
   done
 done
@@ -385,6 +498,106 @@ for forbidden in nano less iproute2 pciutils usbutils eject gcc git; do
     exit 2
   fi
 done
+# Hardware support: the LTS 6.12 kernel, display/audio/USB firmware,
+# CPU microcode and console keymaps must all be installed. No radio firmware
+# package (firmware-misc-nonfree's few legacy radio files are documented).
+for required in console-data firmware-amd-graphics firmware-intel-graphics \
+    firmware-nvidia-graphics firmware-misc-nonfree firmware-intel-misc \
+    firmware-sof-signed firmware-intel-sound firmware-cirrus intel-microcode \
+    amd64-microcode; do
+  if ! dpkg-query --admindir="$SQUASH_MOUNT/var/lib/dpkg" -W -f='${db:Status-Abbrev}' "$required" 2>/dev/null | grep -q '^ii'; then
+    echo "hardware support package missing from ISO: $required" >&2
+    exit 2
+  fi
+done
+for radio in firmware-iwlwifi firmware-atheros firmware-brcm80211 firmware-realtek \
+    firmware-mediatek firmware-libertas; do
+  if dpkg-query --admindir="$SQUASH_MOUNT/var/lib/dpkg" -W -f='${db:Status-Abbrev}' "$radio" 2>/dev/null | grep -q '^ii'; then
+    echo "radio firmware present in ISO: $radio" >&2
+    exit 2
+  fi
+done
+# The kernel is Debian 12's LTS-maintained 6.12 from bookworm-security, never
+# the stalled bookworm-backports build (~bpo) or a second kernel: the debsecan
+# gate below can then see every kernel fix Debian has published for it.
+kernel_version="$(dpkg-query --admindir="$SQUASH_MOUNT/var/lib/dpkg" -W -f='${Version}' linux-image-6.12-amd64)"
+dpkg --compare-versions "$kernel_version" ge '6.12.113-1~deb12u1' || {
+  echo "ISO kernel is older than Debian 12's LTS 6.12 kernel: $kernel_version" >&2
+  exit 2
+}
+[[ "$kernel_version" == *~deb12u* && "$kernel_version" != *bpo* ]] || {
+  echo "ISO kernel is not the bookworm-security 6.12 build: $kernel_version" >&2
+  exit 2
+}
+# Versioned image packages only; the linux-image-6.12-amd64 meta-package also
+# matches the dpkg glob.
+mapfile -t kernel_images < <(dpkg-query --admindir="$SQUASH_MOUNT/var/lib/dpkg" -W \
+  -f='${db:Status-Abbrev} ${Package}\n' 'linux-image-[0-9]*' 2>/dev/null |
+  awk '$1 == "ii" && $2 ~ /^linux-image-[0-9]+\.[0-9]+\.[0-9]+/ { print $2 }')
+[[ "${#kernel_images[@]}" -eq 1 && "${kernel_images[0]}" == linux-image-6.12.*+deb12-amd64 ]] || {
+  echo "ISO must contain exactly one Debian 12 LTS 6.12 kernel: ${kernel_images[*]}" >&2
+  exit 2
+}
+# Debian 12.15 ships shim 16.1-2 dual-signed by the Microsoft UEFI CA 2011 and
+# 2023, so Secure Boot also starts on PCs whose firmware trusts only the 2023
+# CA. An older, 2011-only shim must not reach a release image.
+shim_version="$(dpkg-query --admindir="$SQUASH_MOUNT/var/lib/dpkg" -W -f='${Version}' shim-signed)"
+dpkg --compare-versions "$shim_version" ge '1.51~1+deb12u1' || {
+  echo "ISO shim is not the dual-signed (2011 and 2023 CA) Debian build: $shim_version" >&2
+  exit 2
+}
+for firmware_dir in amdgpu i915 nvidia intel/sof intel-ucode amd-ucode; do
+  find "$SQUASH_MOUNT/usr/lib/firmware/$firmware_dir" -type f -print -quit 2>/dev/null | grep -q . || {
+    echo "firmware directory missing or empty in ISO: $firmware_dir" >&2
+    exit 2
+  }
+done
+# Both vendors' early microcode must be in every live initramfs, whatever CPU
+# built the image (etc/default/amd64-microcode forces AMD's "early" mode).
+python3 - "$ISO_MOUNT/live" <<'PY' || exit 2
+import pathlib
+import sys
+
+WANTED = {"kernel/x86/microcode/AuthenticAMD.bin", "kernel/x86/microcode/GenuineIntel.bin"}
+initrds = sorted(pathlib.Path(sys.argv[1]).glob("initrd.img*"))
+if not initrds:
+    sys.exit("no live initramfs in ISO")
+for initrd in initrds:
+    data = initrd.read_bytes()[: 256 * 1024 * 1024]
+    names, offset = set(), 0
+    # Early microcode is one or more uncompressed newc cpio archives in front
+    # of the compressed main archive.
+    while data.startswith(b"070701", offset):
+        size = int(data[offset + 54:offset + 62], 16)
+        name_size = int(data[offset + 94:offset + 102], 16)
+        name = data[offset + 110:offset + 110 + name_size - 1].decode("ascii", "replace")
+        offset = (offset + 110 + name_size + 3) & ~3
+        offset = (offset + size + 3) & ~3
+        if name == "TRAILER!!!":
+            while offset < len(data) and data[offset] == 0:
+                offset += 1
+        else:
+            names.add(name.removeprefix("./"))
+    missing = sorted(WANTED - names)
+    if missing:
+        sys.exit(f"early microcode missing from {initrd.name}: {missing}")
+PY
+# Every layout the shipped wizard offers must exist for X and the console.
+{ sudo chroot "$SQUASH_MOUNT" /usr/bin/python3 -B -sP -c '
+from beamo_wipe import keyboard
+for layout in keyboard.LAYOUTS.values():
+    print(layout.xkb_layout, layout.console_map)
+'; } >"$EVIDENCE_DIR/keyboard-layouts.txt"
+[[ -s "$EVIDENCE_DIR/keyboard-layouts.txt" ]] || { echo "no keyboard layouts listed" >&2; exit 2; }
+while read -r xkb_layout console_map; do
+  [[ "$xkb_layout" =~ ^[a-z]+$ && "$console_map" =~ ^[a-z0-9-]+$ ]] || {
+    echo "unexpected keyboard layout name: $xkb_layout $console_map" >&2; exit 2; }
+  [[ -f "$SQUASH_MOUNT/usr/share/X11/xkb/symbols/$xkb_layout" ]] || {
+    echo "X keyboard layout missing from ISO: $xkb_layout" >&2; exit 2; }
+  find "$SQUASH_MOUNT/usr/share/keymaps" -name "${console_map}.kmap.gz" -print -quit \
+    2>/dev/null | grep -q . || {
+    echo "console keymap missing from ISO: $console_map" >&2; exit 2; }
+done <"$EVIDENCE_DIR/keyboard-layouts.txt"
 # Debian bookworm's libparted2 on amd64 has a hard dependency on dmidecode.
 # Pinned nwipe needs libparted; its mandatory --quiet argument anonymizes the
 # unique disk and DMI values. Keep the dependency intact and prove that its
@@ -434,6 +647,10 @@ find "$SQUASH_MOUNT/lib/modules" -type f -name 'vfat.ko*' -print -quit | grep -q
   echo "FAT32 kernel module missing from ISO" >&2
   exit 2
 }
+find "$SQUASH_MOUNT/lib/modules" -type f -name 'exfat.ko*' -print -quit | grep -q . || {
+  echo "exFAT kernel module missing from ISO" >&2
+  exit 2
+}
 grep -q '^PrivateMounts=yes$' \
   "$SQUASH_MOUNT/etc/systemd/system/beamo-wipe-kiosk.service" || {
   echo "kiosk private mount namespace is missing" >&2
@@ -478,6 +695,20 @@ do
     exit 2
   }
 done
+[[ "$(readlink "$SQUASH_MOUNT/etc/systemd/system/ctrl-alt-del.target" 2>/dev/null || true)" == /dev/null ]] || {
+  echo "Ctrl+Alt+Del reboot target is not masked" >&2
+  exit 2
+}
+grep -q '^CtrlAltDelBurstAction=none$' \
+  "$SQUASH_MOUNT/etc/systemd/system.conf.d/beamo-kiosk.conf" 2>/dev/null || {
+  echo "Ctrl+Alt+Del burst reboot is not disabled" >&2
+  exit 2
+}
+grep -Eq '^kernel\.sysrq[[:space:]]*=[[:space:]]*0$' \
+  "$SQUASH_MOUNT/etc/sysctl.d/90-beamo-kiosk.conf" 2>/dev/null || {
+  echo "Magic SysRq is not disabled" >&2
+  exit 2
+}
 if grep -R -l 'xfce4-power-manager\|gnome-settings-daemon-power\|power-profiles-daemon' \
   "$SQUASH_MOUNT/var/lib/dpkg/status" 2>/dev/null | grep -q .; then
   echo "desktop power manager present in ISO" >&2
@@ -729,9 +960,14 @@ make_guest_target() {
 }
 
 make_report_image() {
-  local img="$1"
+  local img="$1" filesystem="${2:-vfat}"
   qemu-img create -f raw "$img" 64M >>"$EVIDENCE_DIR/qemu-img.txt" 2>&1
-  mkfs.vfat -F 32 -n BEAMO_RPT "$img" >>"$EVIDENCE_DIR/qemu-img.txt" 2>&1
+  if [[ "$filesystem" == exfat ]]; then
+    # Many new USB sticks ship exFAT; the export accepts exFAT 1.0 too.
+    mkfs.exfat -L BEAMO_RPT "$img" >>"$EVIDENCE_DIR/qemu-img.txt" 2>&1
+  else
+    mkfs.vfat -F 32 -n BEAMO_RPT "$img" >>"$EVIDENCE_DIR/qemu-img.txt" 2>&1
+  fi
 }
 
 assert_guest_overwrite() {
@@ -834,6 +1070,8 @@ with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as client:
             },
             action,
         )
+    elif action == "screendump":
+        execute("screendump", {"filename": value, "format": "png"}, "screendump")
     elif action == "hotplug-report":
         execute(
             "blockdev-add",
@@ -895,6 +1133,7 @@ record_qemu_cmdline() {
       # An added NIC can otherwise appear even beside `-nic none`.
       case "$arg" in
         qemu-xhci,id=beamo-xhci|usb-storage,drive=beamo-boot-media,serial=BEAMOBOOT,bootindex=1|virtio-blk-pci,drive=beamo-target,serial=*) ;;
+        nvme,drive=beamo-target,serial=*|ahci,id=beamo-ahci|ide-hd,drive=beamo-target,bus=beamo-ahci.0,serial=*) ;;
         *) echo "ABORT: QEMU command has an unexpected guest device" >&2; return 1 ;;
       esac
     fi
@@ -942,6 +1181,8 @@ report_marker_summary() {
     BEAMO_WIPE_RECOVERY_TMP_NOT_VOLATILE \
     BEAMO_WIPE_RECOVERY_UNAVAILABLE \
     BEAMO_WIPE_UI_MODE=accessible \
+    BEAMO_WIPE_SAFE_VIDEO=1 \
+    BEAMO_WIPE_GRAPHICAL_FAILED \
     BEAMO_WIPE_ACCESSIBLE_SCREEN_KEYBOARD \
     BEAMO_WIPE_SCREEN_SPLASH \
     BEAMO_WIPE_SCREEN_KEYBOARD \
@@ -1082,8 +1323,18 @@ wait_for_marker() {
     return 0
   fi
   report_marker_summary "$label"
+  capture_guest_screen "$label"
   echo "QEMU $label never emitted marker $marker" >&2
   return 1
+}
+
+# Diagnostics only: what the guest showed when an expected marker never
+# came (a guest framebuffer image; never gates a result).
+capture_guest_screen() {
+  local label="$1" socket_path="$RUN_ROOT/${1}.qmp"
+  [[ -S "$socket_path" ]] || return 0
+  qmp_request "$socket_path" screendump "$EVIDENCE_DIR/${label}-screen.png" \
+    >/dev/null 2>&1 || true
 }
 
 wait_for_new_marker() {
@@ -1286,6 +1537,24 @@ drive_speech_boot() {
   log "$label speech entry completed discovery and rendered the accessible wizard"
 }
 
+drive_troubleshoot_boot() {
+  local label="$1" qmp_socket="$2" deadline
+  deadline=$((SECONDS + BOOT_WAIT_SECONDS))
+  # Same shipped hotkey pattern as speech: T, plus Return on BIOS. Stop
+  # sending keys at the supervisor's safe-video marker, before X starts.
+  while [[ "$(marker_count "$label" BEAMO_WIPE_SAFE_VIDEO=1)" == 0 ]]; do
+    if (( SECONDS >= deadline )); then
+      report_marker_summary "$label"
+      echo "QEMU $label never selected the troubleshoot boot entry" >&2
+      return 1
+    fi
+    send_key "$qmp_socket" t
+    if [[ "$label" == bios* ]]; then send_key "$qmp_socket" ret; fi
+    sleep 1
+  done
+  log "$label troubleshoot entry booted with safe video settings"
+}
+
 qemu_machine() {
   local acceleration=kvm:tcg
   # Blacksmith validation requires actual KVM, with no silent TCG fallback.
@@ -1319,9 +1588,22 @@ boot_probe() {
   local media_args=(-cdrom "$ISO" -boot order=d)
   if [[ "$label" == *-usb ]]; then
     boot_media="$USB_IMAGE"
-    media_args=(-drive "if=none,id=beamo-boot-media,format=raw,readonly=on,file=$USB_IMAGE"
+    # A writable stick (QEMU keeps guest writes in a discarded overlay) proves
+    # the boot USB is excluded by its identity, not by a read-only flag.
+    local boot_access=readonly=on
+    [[ "${QEMU_BOOT_WRITABLE:-0}" != 1 ]] || boot_access=snapshot=on
+    media_args=(-drive "if=none,id=beamo-boot-media,format=raw,$boot_access,file=$USB_IMAGE"
       -device "usb-storage,drive=beamo-boot-media,serial=BEAMOBOOT,bootindex=1")
   fi
+  # Real PCs erase SATA (AHCI) and NVMe disks; the method journeys use virtio.
+  local target_devices
+  case "${QEMU_TARGET_BUS:-virtio}" in
+    virtio) target_devices=(-device "virtio-blk-pci,drive=beamo-target,serial=$token") ;;
+    nvme) target_devices=(-device "nvme,drive=beamo-target,serial=$token") ;;
+    sata) target_devices=(-device "ahci,id=beamo-ahci"
+      -device "ide-hd,drive=beamo-target,bus=beamo-ahci.0,serial=$token") ;;
+    *) echo "ABORT: unknown QEMU target bus $QEMU_TARGET_BUS" >&2; return 1 ;;
+  esac
   confirmation_token="$(guest_confirmation_token "$boot_media" "$HOST_METHOD_BYTES" "$token")"
   # shellcheck disable=SC2054 # commas are inside QEMU values, not separators
   local qemu_args=(
@@ -1330,7 +1612,7 @@ boot_probe() {
     "$@" "${media_args[@]}"
     -blockdev "driver=file,node-name=beamo-target-file,filename=$target_img"
     -blockdev "driver=qcow2,node-name=beamo-target,file=beamo-target-file"
-    -device "virtio-blk-pci,drive=beamo-target,serial=$token"
+    "${target_devices[@]}"
     -display none -serial "file:$EVIDENCE_DIR/${label}-serial.txt"
     -qmp "unix:$qmp_socket,server=on,wait=off"
     -no-reboot
@@ -1346,6 +1628,10 @@ boot_probe() {
     stop_pid "$pid"
     if [[ "$label" == bios* ]]; then BIOS_PID=""; else UEFI_PID=""; fi
     return 0
+  fi
+  if [[ "$label" == *-troubleshoot-usb ]]; then
+    # Safe video must still render the full Tk guide and reach Confirm.
+    drive_troubleshoot_boot "$label" "$qmp_socket"
   fi
   wait_for_marker "$label" BEAMO_WIPE_SCREEN_KEYBOARD "$BOOT_WAIT_SECONDS"
   send_key_for_marker "$label" "$qmp_socket" ret BEAMO_WIPE_SCREEN_OWNER 20
@@ -1392,6 +1678,9 @@ boot_probe() {
 verify_guest_report() {
   local case="$1" report_img="$2" expected_outcome="$3" expected_method="$4"
   local expected_nwipe="$5" expected_title="$6"
+  # Target identity: the method journeys erase virtio /dev/vda with the
+  # method's serial; the SATA journey passes its sd* name pattern and serial.
+  local expected_name="${7:-vda}" expected_serial="${8:-}"
   REPORT_RAW="$report_img"
   REPORT_LOOP_RO=1
   REPORT_LOOP="$(sudo losetup --find --show --read-only "$report_img")"
@@ -1407,6 +1696,7 @@ verify_guest_report() {
   # shellcheck disable=SC2024
   sudo python3 -sP - "$REPORT_MOUNT" "$expected_outcome" "$expected_method" \
     "$expected_nwipe" "$expected_title" "${BUILD_ID:-local}" "$(git rev-parse HEAD)" \
+    "$expected_name" "$expected_serial" \
     >"$EVIDENCE_DIR/guest-${case}-bundle.txt" <<'PY'
 import hashlib
 import json
@@ -1426,6 +1716,10 @@ def unique_report_fields(pairs):
 mountpoint = pathlib.Path(sys.argv[1])
 expected_outcome, expected_method, expected_nwipe, expected_title = sys.argv[2:6]
 expected_build_id, expected_source = sys.argv[6:8]
+# Kernel name pattern and serial of the erased disk (defaults: the method
+# journeys' virtio vda and the method's own serial).
+expected_name_pattern = sys.argv[8] if len(sys.argv) > 8 else "vda"
+expected_target_serial = sys.argv[9] if len(sys.argv) > 9 else ""
 reports = mountpoint / "BEAMO-WIPE-REPORTS"
 top = sorted(path.name for path in mountpoint.iterdir())
 if top != ["BEAMO-WIPE-REPORTS"]:
@@ -1568,17 +1862,20 @@ expected_argv = [
 ]
 if argv != expected_argv:
     raise SystemExit("guest argv differs from the single-target production command")
-expected_serial = {"everyday": "0001", "extra": "0002", "quick_zero": "0003"}[expected_method]
+expected_serial = expected_target_serial or {
+    "everyday": "0001", "extra": "0002", "quick_zero": "0003",
+}[expected_method]
+target_name = target.rsplit("/", 1)[-1]
 if (
-    target != "/dev/vda"
-    or device.get("realpath") != "/dev/vda"
-    or device.get("name") != "vda"
+    not re.fullmatch(expected_name_pattern, target_name)
+    or target != f"/dev/{target_name}"
+    or device.get("realpath") != target
+    or device.get("name") != target_name
     or device.get("serial") != expected_serial
     or type(device.get("size_bytes")) is not int
     or device["size_bytes"] != 67108864
 ):
     raise SystemExit("guest target identity differs from the disposable QEMU disk")
-target_name = target.rsplit("/", 1)[-1]
 log_text = actual["nwipe.log"].decode("utf-8", "replace")
 status_row = rf"^\s*!?\s*(?:{re.escape(target_name)}|{re.escape(target)})\s*\|\s*([^|]+)\|"
 statuses = list(re.finditer(status_row, log_text, re.M))
@@ -1764,6 +2061,11 @@ uefi_boot_probe uefi-usb ovmf-usb-vars.fd
 boot_probe bios-speech-usb no
 uefi_boot_probe uefi-speech-usb ovmf-speech-vars.fd
 
+# The troubleshoot entry (nomodeset) must boot to the same guide on the
+# firmware framebuffer, without a GPU driver, and reach the exact Confirm.
+boot_probe bios-troubleshoot-usb no
+uefi_boot_probe uefi-troubleshoot-usb ovmf-troubleshoot-vars.fd
+
 # Enrolled Microsoft keys and SMM enforcement. A bare OVMF boot is not
 # Secure Boot evidence. The guest must report the actual firmware variable.
 SECURE_CODE=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd
@@ -1775,12 +2077,76 @@ boot_probe secureboot-usb no \
   -drive "if=pflash,format=raw,readonly=on,file=$SECURE_CODE" \
   -drive "if=pflash,format=raw,file=$RUN_ROOT/secureboot-vars.fd"
 
+# Most owners erase an NVMe or SATA disk from a writable USB stick. Boot the
+# USB image writable (guest writes go to a discarded overlay; its hash is
+# rechecked below), so the stick is excluded by its boot identity alone, and
+# run the default method to a saved report on each controller type. The NVMe
+# journey saves to an exFAT report stick, as many new sticks are formatted.
+run_bus_journey() {
+  local label="$1" bus="$2" serial="$3" report_fs="$4" key nwipe_method outcome guest_timeout
+  shift 4
+  IFS='|' read -r _ key nwipe_method _ outcome _ guest_timeout _ \
+    < <(grep '^everyday|' <<<"$METHOD_CASES")
+  local local_target="$RUN_ROOT/target-${label}.qcow2"
+  local local_report="$RUN_ROOT/report-${label}.raw"
+  make_guest_target "$local_target"
+  make_report_image "$local_report" "$report_fs"
+  TARGET="$local_target"
+  REPORT_RAW="$local_report"
+  QEMU_TARGET_SERIAL="$serial"
+  QEMU_TARGET_BUS="$bus"
+  QEMU_BOOT_WRITABLE=1
+  boot_probe "$label" yes "$key" "$serial" "$local_target" "$local_report" "$guest_timeout" "$@"
+  QEMU_TARGET_BUS=virtio
+  QEMU_BOOT_WRITABLE=0
+  assert_guest_phases "$label"
+  assert_guest_overwrite "$label" "$nwipe_method" "$local_target"
+  if [[ "$report_fs" == exfat ]]; then
+    verify_exfat_report "$label" "$local_report"
+  else
+    # AHCI disks are sd*; the boot stick may take the other sd name.
+    verify_guest_report "$label" "$local_report" "$outcome" everyday "$nwipe_method" \
+      "$(method_title everyday)" 'sd[a-z]+' "$serial"
+  fi
+}
+# The worker container cannot load the host's exfat.ko, so it checks the
+# exFAT report volume in user space. The guest already remounted it read-only
+# and verified every report file and digest before BEAMO_WIPE_REPORT_SAVED.
+verify_exfat_report() {
+  local case="$1" img="$2"
+  fsck.exfat -n "$img" >"$EVIDENCE_DIR/guest-${case}-fsck.txt" 2>&1 || {
+    echo "exFAT report volume is not clean after the guest export" >&2; return 1; }
+  {
+    printf 'type=%s\n' "$(blkid -p -o value -s TYPE "$img")"
+    printf 'label=%s\n' "$(blkid -p -o value -s LABEL "$img")"
+    printf 'readback_markers=%s\n' "$(marker_count "$case" BEAMO_WIPE_EXPORT_READBACK_VERIFIED)"
+    printf 'saved_markers=%s\n' "$(marker_count "$case" BEAMO_WIPE_REPORT_SAVED)"
+  } >"$EVIDENCE_DIR/guest-${case}-bundle.txt"
+  if ! grep -qx 'type=exfat' "$EVIDENCE_DIR/guest-${case}-bundle.txt" ||
+      ! grep -qx 'label=BEAMO_RPT' "$EVIDENCE_DIR/guest-${case}-bundle.txt" ||
+      grep -qx 'readback_markers=0' "$EVIDENCE_DIR/guest-${case}-bundle.txt" ||
+      grep -qx 'saved_markers=0' "$EVIDENCE_DIR/guest-${case}-bundle.txt"; then
+    echo "exFAT report journey lacks the guest readback or kept no exFAT volume" >&2
+    return 1
+  fi
+  log "shipped Wizard $case saved and read back its report on exFAT"
+}
+run_bus_journey bios-sata-usb sata 0004 vfat
+if [[ -f "$OVMF_VARS" ]]; then
+  cp "$OVMF_VARS" "$RUN_ROOT/ovmf-nvme-vars.fd"
+  run_bus_journey uefi-nvme-usb nvme 0005 exfat \
+    -drive "if=pflash,format=raw,readonly=on,file=$OVMF_CODE" \
+    -drive "if=pflash,format=raw,file=$RUN_ROOT/ovmf-nvme-vars.fd"
+else
+  run_bus_journey uefi-nvme-usb nvme 0005 exfat -bios "$OVMF_CODE"
+fi
+
 if [[ "$(sha256sum "$USB_IMAGE" | awk '{print $1}')" != "$QEMU_USB_SHA" ]]; then
   echo 'ABORT: USB image changed during QEMU verification' >&2
   exit 2
 fi
 log "usb_image_sha256=$QEMU_USB_SHA"
-printf 'iso_sha256=%s\nusb_image_sha256=%s\nnwipe_sha256=%s\nsource_commit=%s\nbuild_id=%s\nrepetitions=2\ncases=%s\neveryday=pass\nextra=pass\nquick_zero=pass\nbios=pass\nuefi=pass\nbios_usb=pass\nuefi_usb=pass\nsecureboot_usb=pass\nspeech_bios_usb=pass\nspeech_uefi_usb=pass\nreport_export=pass\n' \
+printf 'iso_sha256=%s\nusb_image_sha256=%s\nnwipe_sha256=%s\nsource_commit=%s\nbuild_id=%s\nrepetitions=2\ncases=%s\neveryday=pass\nextra=pass\nquick_zero=pass\nbios=pass\nuefi=pass\nbios_usb=pass\nuefi_usb=pass\nsecureboot_usb=pass\nspeech_bios_usb=pass\nspeech_uefi_usb=pass\ntroubleshoot_bios_usb=pass\ntroubleshoot_uefi_usb=pass\nsata_bios_usb=pass\nnvme_uefi_usb=pass\nexfat_report=pass\nwritable_boot_usb=pass\nreport_export=pass\n' \
   "$(sha256sum "$ISO" | awk '{print $1}')" "$QEMU_USB_SHA" "$shipped_sha" \
   "$(tr -d '\n' <"$EVIDENCE_DIR/source-commit.txt")" \
   "${BUILD_ID:-local}" "${EXECUTED_CASES}" \

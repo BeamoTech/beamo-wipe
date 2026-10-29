@@ -84,7 +84,7 @@ these containers. Checkout does not retain Git credentials.
 | Windows | Native Go tests/vet including Win32 and PowerShell fixtures, on pinned Go 1.26.8 |
 | negative | Private safety mutation must produce the expected failing fake-device test, followed by a passing unmodified-source test |
 | iso | Tested launchers, pinned nwipe v0.42, build provenance, ISO size/PVD/checksums |
-| qemu | ISO and USB image inspection, installed-package inventory, fixed-vulnerability scan, isolated shipped-nwipe tests, BIOS/UEFI/Secure Boot checks, manifest finalization |
+| qemu | ISO and USB image inspection, installed-package inventory, fixed-vulnerability scan, BIOS boot files bound to Debian 12 syslinux, isolated shipped-nwipe tests, BIOS/UEFI/Secure Boot checks, full erase journeys per method (virtio) plus SATA (AHCI, BIOS, FAT32 report) and NVMe (UEFI, exFAT report) journeys from a writable USB stick, manifest finalization |
 
 The five source phases run concurrently; every process is waited for and any
 failure stops image building. ISO waits for all source gates. QEMU follows ISO
@@ -194,9 +194,12 @@ project currently pins them, but Debian package repositories remain mutable;
 this does **not** establish bit-for-bit reproducible ISO bytes. Record installed
 package versions and hashes for each build.
 
-The recorded prior-stable rollback for v0.2.12 is the signed
-`beamo-wipe-0.2.11-amd64.iso`, SHA-256
-`9694068e4d70824b316f12da9bd4c0ee964809d15ce5ad4d406333f710176305`.
+Each release manifest records its prior-stable rollback target in
+`prior_stable` (`PRIOR_STABLE` in `src/beamo_wipe/release_manifest.py`).
+The current source records the signed `beamo-wipe-0.2.11-amd64.iso`, SHA-256
+`9694068e4d70824b316f12da9bd4c0ee964809d15ce5ad4d406333f710176305`. For a
+rollback, use the `prior_stable` record in the signed manifest of the release
+being rolled back.
 See [release verification](release-verification.md) and [runbook](runbook.md).
 Do not relabel a fresh build as the old verified artifact.
 

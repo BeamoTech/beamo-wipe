@@ -1,14 +1,17 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Backlog #87: early language + keyboard-layout selection (EN/FR/DE)."""
+"""Backlog #87: early language + keyboard-layout selection (EN/FR/DE/ES/IT)."""
 
 import string
 
 FRENCH_TITLE_PICK = "Quel disque devons-nous effacer ?"
 GERMAN_TITLE_PICK = "Welcher Datenträger soll gelöscht werden?"
+SPANISH_TITLE_PICK = "¿Qué disco debemos borrar?"
+ITALIAN_TITLE_PICK = "Quale disco dobbiamo cancellare?"
+TRANSLATED = ("fr", "de", "es", "it")
 
 # Module-level UPPER names that are codes, filenames, or hook-rebuilt
 # structures — never translated. Everything else UPPER/str/tuple-of-str
-# must appear in the fr/de tables exactly.
+# must appear in the fr/de/es tables exactly.
 EXCLUDED = {
     "copy": {
         "EMPTY_DISKS", "SSD_FOOTER", "DONE_OK", "DONE_FAIL", "METHOD_CARDS",
@@ -56,8 +59,24 @@ IDENTICAL_KEEPERS = {
     ("de", "copy", "LANGUAGE_NAME_EN"),
     ("de", "copy", "LANGUAGE_NAME_FR"),
     ("de", "copy", "LANGUAGE_NAME_DE"),
+    ("fr", "copy", "LANGUAGE_NAME_ES"),
+    ("de", "copy", "LANGUAGE_NAME_ES"),
+    ("es", "copy", "LANGUAGE_NAME_EN"),
+    ("es", "copy", "LANGUAGE_NAME_FR"),
+    ("es", "copy", "LANGUAGE_NAME_DE"),
+    ("es", "copy", "LANGUAGE_NAME_ES"),
+    ("fr", "copy", "LANGUAGE_NAME_IT"),
+    ("de", "copy", "LANGUAGE_NAME_IT"),
+    ("es", "copy", "LANGUAGE_NAME_IT"),
+    ("it", "copy", "LANGUAGE_NAME_EN"),
+    ("it", "copy", "LANGUAGE_NAME_FR"),
+    ("it", "copy", "LANGUAGE_NAME_DE"),
+    ("it", "copy", "LANGUAGE_NAME_ES"),
+    ("it", "copy", "LANGUAGE_NAME_IT"),
     ("fr", "copy", "CON_INPUT_PREFIX"),
     ("de", "copy", "CON_INPUT_PREFIX"),
+    ("es", "copy", "CON_INPUT_PREFIX"),
+    ("it", "copy", "CON_INPUT_PREFIX"),
     ("fr", "result_summary", "STATUS_PRODUCTION"),
     # Correct German is byte-identical to the English label here.
     ("de", "support_export", "README_SUPPORT"),
@@ -120,6 +139,10 @@ def test_lang_round_trip_restores_english_exactly():
     assert C.TITLE_PICK == FRENCH_TITLE_PICK
     assert lang.set_language("de") == "de"
     assert C.TITLE_PICK == GERMAN_TITLE_PICK
+    assert lang.set_language("es") == "es"
+    assert C.TITLE_PICK == SPANISH_TITLE_PICK
+    assert lang.set_language("it") == "it"
+    assert C.TITLE_PICK == ITALIAN_TITLE_PICK
     assert lang.set_language("en") == "en"
     assert {m: dict(n) for m, n in lang.surface().items()} == before
     assert lang.current() == "en"
@@ -133,10 +156,15 @@ def test_lang_rejects_unknown_codes():
     assert lang.is_supported("en")
     assert lang.is_supported("fr")
     assert lang.is_supported("de")
-    assert not lang.is_supported("es")
+    assert lang.is_supported("es")
+    assert lang.is_supported("it")
+    # "pt" stands in for any language that is not shipped (was "it").
+    assert not lang.is_supported("pt")
+    assert not lang.is_supported("ES")
+    assert not lang.is_supported("IT")
     assert not lang.is_supported("")
     with pytest.raises(ValueError):
-        lang.set_language("es")
+        lang.set_language("pt")
     assert lang.current() == "en"
 
 
@@ -148,6 +176,8 @@ def test_lang_tables_cover_the_same_surface_as_english():
     assert len(surface["copy"]) >= 150
     for module in surface:
         assert lang.keys("fr", module) == lang.keys("de", module)
+        assert lang.keys("fr", module) == lang.keys("es", module)
+        assert lang.keys("fr", module) == lang.keys("it", module)
         assert set(lang.keys("fr", module)) == set(surface[module])
         for name in surface[module]:
             assert lang.english(module, name) == surface[module][name]
@@ -160,12 +190,14 @@ def test_swept_surface_matches_tables_exactly():
     for module, keys in swept.items():
         assert set(lang.keys("fr", module)) == set(keys), module
         assert set(lang.keys("de", module)) == set(keys), module
+        assert set(lang.keys("es", module)) == set(keys), module
+        assert set(lang.keys("it", module)) == set(keys), module
 
 
 def test_translations_carry_no_english_sentences():
     from beamo_wipe import lang
 
-    for code in ("fr", "de"):
+    for code in TRANSLATED:
         for module in lang.surface():
             for name in lang.surface()[module]:
                 english = lang.english(module, name)
@@ -200,7 +232,7 @@ def test_translations_have_no_english_stopword_leak():
         " are ", " for ", " use ", " all ", " but ", " not ",
         " you ", " can ",
     )
-    for code in ("fr", "de"):
+    for code in TRANSLATED:
         for module in lang.surface():
             for name in lang.surface()[module]:
                 english = lang.english(module, name)
@@ -216,7 +248,7 @@ def test_translations_have_no_english_stopword_leak():
 def test_placeholders_and_spacing_survive_translation():
     from beamo_wipe import lang
 
-    for code in ("fr", "de"):
+    for code in TRANSLATED:
         for module in lang.surface():
             for name in lang.surface()[module]:
                 english = lang.english(module, name)
@@ -244,7 +276,7 @@ def test_every_template_formats_in_every_language():
     from beamo_wipe import lang
 
     args = defaultdict(lambda: "X")
-    for code in ("en", "fr", "de"):
+    for code in ("en", *TRANSLATED):
         lang.set_language(code)
         for module in lang.surface():
             for name in lang.surface()[module]:
@@ -273,9 +305,33 @@ def test_derived_structures_rebuild_per_language():
     assert inventory.kind_label_for_type("part") == "Partition"
     assert support_export.LOG_STATUS_LINES["complete"] == "Journal du moteur : complet."
     assert C.EMPTY_DISKS == inventory.EMPTY_STEPS
+    lang.set_language("es")
+    assert outcomes.VIEWS["verified"].message == "Borrado completado; verificación correcta"
+    assert C.DONE_OK == outcomes.VIEWS["verified"].message
+    assert keyboard.LAYOUTS["es"].title == "QWERTY (español)"
+    assert keyboard.LAYOUTS["latam"].title == "QWERTY (latinoamericano)"
+    assert keyboard.LIMITS.startswith("Solo se ofrecen QWERTY")
+    assert result_summary.STATUS_LABELS["dirty"] == "modificado"
+    assert storage_limits.SECTIONS[0][0] == "Qué admite esta herramienta"
+    assert inventory.NESTED_SILENT_REASONS == frozenset({"dispositivo no compatible"})
+    assert support_export.LOG_STATUS_LINES["complete"] == "Registro del motor: completo."
+    assert C.EMPTY_DISKS == inventory.EMPTY_STEPS
+    lang.set_language("it")
+    assert outcomes.VIEWS["verified"].message == "Cancellazione completata; verifica superata"
+    assert C.DONE_OK == outcomes.VIEWS["verified"].message
+    assert keyboard.LAYOUTS["it"].title == "QWERTY (italiano)"
+    assert keyboard.LAYOUTS["us"].title == "QWERTY (USA)"
+    assert keyboard.LIMITS.startswith("Sono disponibili solo QWERTY")
+    assert result_summary.STATUS_LABELS["dirty"] == "modificato"
+    assert storage_limits.SECTIONS[0][0] == "Cosa supporta questo strumento"
+    assert inventory.NESTED_SILENT_REASONS == frozenset({"dispositivo non supportato"})
+    assert support_export.LOG_STATUS_LINES["complete"] == "Registro del motore: completo."
+    assert C.EMPTY_DISKS == inventory.EMPTY_STEPS
     lang.set_language("en")
     assert outcomes.VIEWS["verified"].message == "Erase completed; verification passed"
     assert keyboard.LAYOUTS["fr"].title == "AZERTY (French)"
+    assert keyboard.LAYOUTS["es"].title == "QWERTY (Spanish)"
+    assert keyboard.LAYOUTS["it"].title == "QWERTY (Italian)"
     assert inventory.NESTED_SILENT_REASONS == frozenset({"unsupported device"})
 
 
@@ -294,7 +350,7 @@ def test_markers_are_stable_across_languages():
     ]
     assert len(names) > 70
     english_markers = {}
-    for code in ("en", "fr", "de"):
+    for code in ("en", *TRANSLATED):
         lang.set_language(code)
         from beamo_wipe import support_export as S
 
@@ -318,7 +374,7 @@ def test_logic_comparisons_survive_translation():
     from beamo_wipe.safety import SafetyError
     from beamo_wipe import safety as safety_mod
 
-    for code in ("fr", "de"):
+    for code in TRANSLATED:
         lang.set_language(code)
         # Token mismatch still compares exactly: both sides read one constant.
         try:
@@ -366,8 +422,19 @@ def test_no_module_freezes_translated_names_at_import():
 def test_language_names_are_never_translated():
     from beamo_wipe import lang
 
-    assert lang.LANGUAGE_NAMES == {"en": "English", "fr": "Français", "de": "Deutsch"}
-    assert lang.LANGUAGE_ORDER == ("en", "fr", "de")
+    assert lang.LANGUAGE_NAMES == {
+        "en": "English", "fr": "Français", "de": "Deutsch", "es": "Español",
+        "it": "Italiano",
+    }
+    assert lang.LANGUAGE_ORDER == ("en", "fr", "de", "es", "it")
+    from beamo_wipe import copy as C
+
+    # The endonym constants stay identical in every table.
+    for code, name in lang.LANGUAGE_NAMES.items():
+        key = f"LANGUAGE_NAME_{code.upper()}"
+        assert getattr(C, key) == name
+        for table in TRANSLATED:
+            assert lang.translated(table, "copy", key) == name
 
 
 def test_wizard_language_validates_records_and_applies():
@@ -527,11 +594,30 @@ def test_helper_ships_french_and_german():
     root = pathlib.Path(__file__).resolve().parents[1] / "helper"
     index = (root / "index.html").read_text(encoding="utf-8")
     assert 'href="fr.html"' in index and 'href="de.html"' in index
+    assert 'href="es.html"' in index
+    assert 'href="it.html"' in index
     french = (root / "fr.html").read_text(encoding="utf-8")
     german = (root / "de.html").read_text(encoding="utf-8")
+    spanish = (root / "es.html").read_text(encoding="utf-8")
+    italian = (root / "it.html").read_text(encoding="utf-8")
     assert 'lang="fr"' in french and 'lang="de"' in german
+    assert 'lang="es"' in spanish
+    assert 'lang="it"' in italian
     assert "What this USB does" not in french
     assert "What this USB does" not in german
+    assert "What this USB does" not in spanish
+    assert "What this USB does" not in italian
+    # Every page links to every other language page, and never to itself.
+    pages = {
+        "index.html": index,
+        "fr.html": french,
+        "de.html": german,
+        "es.html": spanish,
+        "it.html": italian,
+    }
+    for name, page in pages.items():
+        for other in pages:
+            assert (f'href="{other}"' in page) == (other != name), (name, other)
 
 
 def test_translated_surfaces_carry_no_forbidden_claims():
@@ -542,7 +628,7 @@ def test_translated_surfaces_carry_no_forbidden_claims():
     from test_copy import FORBIDDEN
 
     root = pathlib.Path(__file__).resolve().parents[1]
-    for code in ("fr", "de"):
+    for code in TRANSLATED:
         blob = " ".join(
             t if isinstance(t, str) else " ".join(t)
             for module in lang.surface()
@@ -558,6 +644,74 @@ def test_translated_surfaces_carry_no_forbidden_claims():
     assert "pas les mac apple silicon" in fr_blob
     de_blob = (root / "helper/de.html").read_text(encoding="utf-8").lower()
     assert "keine apple-silicon-macs" in de_blob
+    es_blob = " ".join(
+        t if isinstance(t, str) else " ".join(t)
+        for module in lang.surface()
+        for t in (lang.translated("es", module, n) for n in lang.surface()[module])
+    ).lower()
+    es_blob += " " + (root / "helper/es.html").read_text(encoding="utf-8").lower()
+    es_blob += " " + gallery_html("es").lower()
+    assert "no para mac con apple silicon" in es_blob
+    # docs/claims.md forbidden claims, in Spanish wording.
+    for phrase in (
+        "plug and play", "certificado dod", "certificación dod", "certificado militar",
+        "certificado por", "garantizado", "garantizada", "100 % seguro", "100% seguro",
+        "100 % eficaz", "100% eficaz",
+        "irrecuperable", "imposible de recuperar", "cualquier ordenador",
+        "cualquier computadora", "cualquier mac", "funciona en mac",
+        "sin conocimientos técnicos", "nosotros inventamos",
+    ):
+        assert phrase not in es_blob, phrase
+    it_blob = " ".join(
+        t if isinstance(t, str) else " ".join(t)
+        for module in lang.surface()
+        for t in (lang.translated("it", module, n) for n in lang.surface()[module])
+    ).lower()
+    it_blob += " " + (root / "helper/it.html").read_text(encoding="utf-8").lower()
+    it_blob += " " + gallery_html("it").lower()
+    assert "non per mac con apple silicon" in it_blob
+    # docs/claims.md forbidden claims, in Italian wording.
+    for phrase in (
+        "plug and play", "certificato dod", "certificazione dod", "certificato militare",
+        "certificato da", "garantito", "garantita", "100 % sicur", "100% sicur",
+        "100 % efficace", "100% efficace",
+        "irrecuperabil", "impossibile da recuperare", "impossibile recuperare",
+        "qualsiasi computer", "qualunque computer", "qualsiasi mac", "qualunque mac",
+        "funziona su mac", "funziona sui mac",
+        "senza competenze tecniche", "nessuna competenza tecnica", "abbiamo inventato",
+    ):
+        assert phrase not in it_blob, phrase
+    # docs/claims.md forbidden claims, in French and German wording.
+    fr_blob += " " + " ".join(
+        t if isinstance(t, str) else " ".join(t)
+        for module in lang.surface()
+        for t in (lang.translated("fr", module, n) for n in lang.surface()[module])
+    ).lower() + " " + gallery_html("fr").lower()
+    for phrase in (
+        "plug and play", "certifié dod", "certification dod", "certifié militaire",
+        "certifié par", "effacement garanti", "suppression garantie", "garanti à 100",
+        "100 % garanti", "100 % sûr", "100% sûr", "100 % efficace", "100% efficace",
+        "irrécupérable", "impossible à récupérer", "n’importe quel ordinateur",
+        "tout ordinateur", "n’importe quel mac", "fonctionne sur mac",
+        "fonctionne sur les mac", "sans connaissances techniques",
+        "aucune compétence technique", "nous avons inventé",
+    ):
+        assert phrase not in fr_blob, phrase
+    de_blob += " " + " ".join(
+        t if isinstance(t, str) else " ".join(t)
+        for module in lang.surface()
+        for t in (lang.translated("de", module, n) for n in lang.surface()[module])
+    ).lower() + " " + gallery_html("de").lower()
+    for phrase in (
+        "plug and play", "dod-zertifiziert", "dod zertifiziert", "militärisch zertifiziert",
+        "zertifiziert von", "zertifiziert durch", "garantiert gelöscht",
+        "garantierte löschung", "100 % garantiert", "100 % sicher", "100% sicher",
+        "100 % wirksam", "100% wirksam", "nicht wiederherstellbar",
+        "unmöglich wiederherzustellen", "jeder computer", "jedem computer", "jeder mac",
+        "jedem mac", "funktioniert auf mac", "ohne technische kenntnisse",
+        "keine technischen kenntnisse", "wir haben erfunden",
+    ):
+        assert phrase not in de_blob, phrase
 
 
 def test_tokens_stay_ascii_exact_in_every_language():
@@ -566,7 +720,7 @@ def test_tokens_stay_ascii_exact_in_every_language():
     from beamo_wipe.safety import token_matches
 
     spec = ConfirmSpec(token="S4EV", prompt="x")
-    for code in ("en", "fr", "de"):
+    for code in ("en", *TRANSLATED):
         lang.set_language(code)
         assert token_matches("S4EV", spec)
         assert token_matches("s4ev", spec)
@@ -583,6 +737,8 @@ def test_gallery_renders_every_language_without_tokens():
         ("en", "Which disk should we erase?"),
         ("fr", FRENCH_TITLE_PICK),
         ("de", GERMAN_TITLE_PICK),
+        ("es", SPANISH_TITLE_PICK),
+        ("it", ITALIAN_TITLE_PICK),
     ):
         html = gallery_html(code)
         assert f'<html lang="{code}">' in html
@@ -592,5 +748,169 @@ def test_gallery_renders_every_language_without_tokens():
         assert "__PAYLOAD__" not in html
     import pytest
 
+    # "pt" stands in for any language that is not shipped (was "it").
     with pytest.raises(ValueError):
-        gallery_html("es")
+        gallery_html("pt")
+
+
+def test_translated_consoles_keep_exact_typed_command_words():
+    """Typed console words and key names stay English in every language."""
+    import re
+
+    from beamo_wipe import lang
+
+    words = re.compile(r"\b[A-Z]{2,}(?: [A-Z]{2,})*\b")
+    for code in TRANSLATED:
+        for name in lang.keys(code, "copy"):
+            if not name.startswith("CON_"):
+                continue
+            english = lang.english("copy", name)
+            translated = lang.translated(code, "copy", name)
+            for word in words.findall(english):
+                assert word in translated, (code, name, word)
+
+
+def test_spanish_console_keeps_exact_typed_commands(monkeypatch, capsys):
+    from beamo_wipe import copy as C
+    from beamo_wipe import lang
+    from beamo_wipe.demo import make_demo_wizard
+    from beamo_wipe.ui import console_wizard as console
+
+    lang.set_language("es")
+    try:
+        wizard = make_demo_wizard()
+        answers = iter([""])
+
+        def fake_input(_prompt=""):
+            try:
+                return next(answers)
+            except StopIteration:
+                raise EOFError
+
+        monkeypatch.setattr("builtins.input", fake_input)
+        console._plain_loop(wizard)
+        output = capsys.readouterr().out
+        assert C.TITLE_KEYBOARD == "Compruebe su teclado"
+        assert C.TITLE_KEYBOARD in output
+        assert "Check your keyboard" not in output
+        assert "Español" in output
+        assert "ERASE" in C.CON_ERASE_PROMPT and "YES" in C.CON_OWNER_PROMPT
+    finally:
+        lang.set_language("en")
+
+
+def test_spanish_evidence_records_locale_and_layout(monkeypatch):
+    from beamo_wipe import evidence as E
+    from beamo_wipe.demo import make_demo_wizard
+    from beamo_wipe.keyboard import ApplyResult
+    from beamo_wipe.models import MethodId
+
+    wizard = make_demo_wizard()
+    try:
+        assert wizard.set_language("es") is True
+        wizard.skip_splash()
+        monkeypatch.setattr(
+            wizard, "_apply_keyboard", lambda layout_id, **_: ApplyResult(True, "", layout_id)
+        )
+        assert wizard.set_keyboard_layout("latam") is True
+        payload = E.build_evidence(
+            disk=wizard.selectable[0],
+            discovery=wizard.discovery,
+            method=MethodId.EVERYDAY,
+            request=None,
+            result=None,
+            started_at_wall=None,
+            ended_at_wall=None,
+            started_mono=None,
+            ended_mono=None,
+            argv=[],
+            log_text="",
+            language=wizard.language,
+            keyboard_layout=wizard.keyboard_layout,
+        )
+        assert payload["locale"] == {"language": "es", "keyboard_layout": "latam"}
+    finally:
+        wizard.set_language("en")
+
+
+def test_italian_console_keeps_exact_typed_commands(monkeypatch, capsys):
+    from beamo_wipe import copy as C
+    from beamo_wipe import lang
+    from beamo_wipe.demo import make_demo_wizard
+    from beamo_wipe.ui import console_wizard as console
+
+    lang.set_language("it")
+    try:
+        wizard = make_demo_wizard()
+        answers = iter([""])
+
+        def fake_input(_prompt=""):
+            try:
+                return next(answers)
+            except StopIteration:
+                raise EOFError
+
+        monkeypatch.setattr("builtins.input", fake_input)
+        console._plain_loop(wizard)
+        output = capsys.readouterr().out
+        assert C.TITLE_KEYBOARD == "Controlli la tastiera"
+        assert C.TITLE_KEYBOARD in output
+        assert "Check your keyboard" not in output
+        assert "Italiano" in output
+        assert "ERASE" in C.CON_ERASE_PROMPT and "YES" in C.CON_OWNER_PROMPT
+    finally:
+        lang.set_language("en")
+
+
+def test_italian_evidence_records_locale_and_layout(monkeypatch):
+    from beamo_wipe import evidence as E
+    from beamo_wipe.demo import make_demo_wizard
+    from beamo_wipe.keyboard import ApplyResult
+    from beamo_wipe.models import MethodId
+
+    wizard = make_demo_wizard()
+    try:
+        assert wizard.set_language("it") is True
+        wizard.skip_splash()
+        monkeypatch.setattr(
+            wizard, "_apply_keyboard", lambda layout_id, **_: ApplyResult(True, "", layout_id)
+        )
+        # Choosing Italian never selects the Italian layout; the user does.
+        assert wizard.keyboard_layout == "us"
+        assert wizard.set_keyboard_layout("it") is True
+        payload = E.build_evidence(
+            disk=wizard.selectable[0],
+            discovery=wizard.discovery,
+            method=MethodId.EVERYDAY,
+            request=None,
+            result=None,
+            started_at_wall=None,
+            ended_at_wall=None,
+            started_mono=None,
+            ended_mono=None,
+            argv=[],
+            log_text="",
+            language=wizard.language,
+            keyboard_layout=wizard.keyboard_layout,
+        )
+        assert payload["locale"] == {"language": "it", "keyboard_layout": "it"}
+    finally:
+        wizard.set_language("en")
+
+
+def test_choosing_a_language_never_changes_the_keyboard_layout():
+    """No language preselects or applies a layout; only the user's choice does."""
+    from beamo_wipe import lang
+    from beamo_wipe.demo import make_demo_wizard
+
+    wizard = make_demo_wizard()
+    calls = []
+    wizard._apply_keyboard = lambda layout_id, **_: calls.append(layout_id)
+    try:
+        wizard.skip_splash()
+        for code in lang.LANGUAGE_ORDER:
+            assert wizard.set_language(code) is True
+            assert wizard.keyboard_layout == "us"
+        assert calls == []
+    finally:
+        wizard.set_language("en")

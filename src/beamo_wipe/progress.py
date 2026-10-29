@@ -102,9 +102,12 @@ STALE_NEXT = (
     'Do not turn off the computer. You can choose "Stop erase" at any time.'
 )
 ELAPSED_LINE = " · Elapsed: {text}"
+ELAPSED_LABEL = "Elapsed: {text}"
 REMAINING_LINE = "\nEstimated time remaining: {text}"
 PROGRESS_UNKNOWN = "Progress not reported"
 LAST_REPORTED = "Last reported: {text} (old)"
+# Short form beside the bar, where "Last reported" is shown elsewhere.
+OLD_PERCENT = "{percent} (old)"
 # Measured nwipe 0.42: the runner requests SIGUSR1 every 2.0s after the
 # handler exists. Five missed pulses mark telemetry stale, matching the
 # existing estimate-history expiry. The PRNG auto-bench is 8×1.0s before
@@ -342,6 +345,98 @@ def estimate(seconds: float) -> str:
         return LESS_THAN_MINUTE
     unit = 60 if seconds < 600 else 300 if seconds < 3600 else 3600
     return ABOUT_DURATION.format(text=duration(math.ceil(seconds / unit) * unit))
+
+
+# Method-screen time guide, shown before anything starts. Conservative
+# sustained-throughput bounds in bytes per second for each disk kind, not a
+# measurement of this disk. The guide never feeds the live estimate above,
+# never reaches evidence or reports, and is hidden when the size is unknown.
+GUIDE_RATES_BPS = {
+    "HDD": (60_000_000, 200_000_000),
+    "SSD": (100_000_000, 500_000_000),
+    "NVMe": (150_000_000, 1_500_000_000),
+}
+# Rotational state unknown: slowest hard-disk bound to fastest SATA SSD bound.
+GUIDE_RATES_UNKNOWN_BPS = (60_000_000, 500_000_000)
+# USB bridges and USB 2 ports can halve sustained speed. Only the slow bound
+# moves; a fast USB 3 enclosure can still reach the disk's own speed.
+GUIDE_USB_SLOW_FACTOR = 0.5
+GUIDE_MINUTES_BELOW_S = 5400  # under 1.5 hours: minutes
+GUIDE_HOURS_BELOW_S = 172800  # under 48 hours: hours; otherwise days
+GUIDE_LONG_S = 36000  # a slow bound over 10 hours suggests overnight
+_GUIDE_UNIT_S = {"minutes": 60, "hours": 3600, "days": 86400}
+
+
+@dataclass(frozen=True)
+class TimeGuide:
+    """Rounded range: low rounded down, high rounded up, units per end."""
+
+    low: int
+    low_unit: str
+    high: int
+    high_unit: str
+    long: bool
+
+
+def guide_seconds(
+    size_bytes: object, kind: object, usb: bool, passes: object
+) -> tuple[float, float] | None:
+    """(fast, slow) seconds for ``passes`` full-disk passes, or None.
+
+    Every overwrite and every verification read touches the whole disk once.
+    """
+    if (
+        not isinstance(size_bytes, int)
+        or isinstance(size_bytes, bool)
+        or size_bytes <= 0
+        or not isinstance(passes, int)
+        or isinstance(passes, bool)
+        or passes < 1
+    ):
+        return None
+    slow_rate, fast_rate = GUIDE_RATES_BPS.get(
+        str(getattr(kind, "value", kind)), GUIDE_RATES_UNKNOWN_BPS
+    )
+    slow = slow_rate * (GUIDE_USB_SLOW_FACTOR if usb else 1.0)
+    fast = float(fast_rate)
+    work = float(size_bytes) * passes
+    return work / fast, work / slow
+
+
+def _guide_unit(seconds: float) -> str:
+    if seconds < GUIDE_MINUTES_BELOW_S:
+        return "minutes"
+    if seconds < GUIDE_HOURS_BELOW_S:
+        return "hours"
+    return "days"
+
+
+def _guide_value(seconds: float, unit: str, *, up: bool) -> int:
+    value = seconds / _GUIDE_UNIT_S[unit]
+    step = 5 if unit == "minutes" and value >= 10 else 1
+    rounded = math.ceil(value / step) if up else math.floor(value / step)
+    return max(1, int(rounded) * step)
+
+
+def guide_range(fast_s: float, slow_s: float) -> TimeGuide | None:
+    """Friendly units: minutes under 1.5 h, hours under 48 h, else days."""
+    if not (
+        math.isfinite(fast_s) and math.isfinite(slow_s) and 0 < fast_s <= slow_s
+    ):
+        return None
+    low_unit, high_unit = _guide_unit(fast_s), _guide_unit(slow_s)
+    low = _guide_value(fast_s, low_unit, up=False)
+    high = _guide_value(slow_s, high_unit, up=True)
+    if low_unit == high_unit and high <= low:
+        high = low + (5 if low_unit == "minutes" and low >= 10 else 1)
+    return TimeGuide(low, low_unit, high, high_unit, slow_s > GUIDE_LONG_S)
+
+
+def time_guide(
+    size_bytes: object, kind: object, usb: bool, passes: object
+) -> TimeGuide | None:
+    bounds = guide_seconds(size_bytes, kind, usb, passes)
+    return guide_range(*bounds) if bounds else None
 
 
 def silence_text(stale_for: float | None) -> str:

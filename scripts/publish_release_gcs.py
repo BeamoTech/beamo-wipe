@@ -696,6 +696,8 @@ def _qemu_evidence_names() -> list[str]:
         "nwipe-version.txt",
         "fixed-vulnerabilities.txt",
         "accessible-runtime.txt",
+        "keyboard-layouts.txt",
+        "secure-boot-signers.txt",
         "report-image.txt",
         "report-helper-crash.txt",
         "fake-disk-e2e.txt",
@@ -710,8 +712,18 @@ def _qemu_evidence_names() -> list[str]:
         "secureboot-usb",
         "bios-speech-usb",
         "uefi-speech-usb",
+        "bios-troubleshoot-usb",
+        "uefi-troubleshoot-usb",
+        "bios-sata-usb",
+        "uefi-nvme-usb",
     ):
         names.extend(f"{label}-{suffix}.txt" for suffix in ("serial", "qemu", "cmdline"))
+    # SATA (FAT32 report) and NVMe (exFAT report, checked without a worker
+    # mount) erase journeys from the writable USB image.
+    names.extend(
+        f"guest-bios-sata-usb-{suffix}.txt" for suffix in ("readback", "bundle", "fsck", "mount")
+    )
+    names.extend(f"guest-uefi-nvme-usb-{suffix}.txt" for suffix in ("readback", "bundle", "fsck"))
     for method in ("everyday", "extra", "quick_zero"):
         for case in (method, f"{method}-repeat"):
             names.extend(

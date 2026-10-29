@@ -66,7 +66,7 @@ JSON `null`; it is not represented as a fabricated signal or exit code.
 ## Export and privacy
 
 With a validated armed baseline, the Done screen offers an indeterminate report
-or the proved terminal report through the existing new-USB-only FAT32 exporter.
+or the proved terminal report through the existing new-USB-only FAT32/exFAT exporter.
 The original disk baseline and target/boot kernel identities remain protected;
 current discovery does not replace them with whatever happened to be attached
 at restart. If context itself is rejected, only the existing Prepare-before-

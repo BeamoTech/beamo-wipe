@@ -8,8 +8,8 @@ Primary actions name the next step: **Choose a disk**, **Review this disk**, **C
 
 | Screen | Purpose |
 | --- | --- |
-| Splash / Keyboard | Splash explains that nothing starts automatically. Keyboard offers only the shipped US QWERTY, French AZERTY, and German QWERTZ layouts plus a typing-check box that is never saved. |
-| Owner | Combined introduction: explain irreversible erasure, backup copies, OS-disk consequences, wall-power reminder, display blanking, and supported PCs, then require the ownership or written-permission acknowledgement. Continue stays disabled until the box is checked. Between the bullets and the power panel, Owner states the report-media requirements up front: a separate FAT32 USB with one volume, kept unplugged until the result screen asks, with already-plugged media refused, and points to Need a report? for details. |
+| Splash / Keyboard | Splash explains that nothing starts automatically. Keyboard offers only the shipped US, UK, Spanish, Latin American and Italian QWERTY, French AZERTY, and German QWERTZ layouts (Up/Down; keys 1–7 outside the check box) plus a typing-check box that is never saved. The same screen picks the language: English, Français, Deutsch, Español or Italiano. |
+| Owner | Combined introduction: explain irreversible erasure, backup copies, OS-disk consequences, wall-power reminder, display blanking, and supported PCs, then require the ownership or written-permission acknowledgement. Continue stays disabled until the box is checked. Between the bullets and the power panel, Owner states the report-media requirements up front: a separate FAT32 or exFAT USB with one volume, kept unplugged until the result screen asks, with already-plugged media refused, and points to Need a report? for details. |
 | Pick a disk | Physical disks are primary cards. Partitions and other technical components nest under their parent when parentage is known. Keep eligible targets separate from read-only Other detected devices. Show a concise inventory count so the owner can check that expected disks were found, including zero, one, or many eligible disks, protected boot media, other devices that cannot be erased, and a fail-closed notice when the list cannot be confirmed. Show identity, the observed connection type, and deterministic exclusion reasons. Label each serial as Serial number so the value is not a bare string. Do not guess internal vs external location. Capacities use decimal GB, with an exact-tenth TB name when it does not collide; unknown media kind is labeled Type unknown. No excluded row offers a bypass. Empty or uncertain discovery gives safe support steps. When a report was requested, an info notice reminds the owner to keep the report USB unplugged until prompted, warns that extra USBs confuse the list, and gives the unplug-only-that-USB remedy; without a requested report no notice shows. |
 | Confirm | Show the irreversible-action warning, exact device identity, and partition-evidence preparation for the selected disk. Require the displayed confirmation token. |
 | Choose an erase method | Show a plain-language lead, then the operations below, comparison marks, and the device-specific storage notice. Everyday states it checks only exposed storage and does not promise duration. SSD and unknown-device warnings explain inaccessible, remapped, over-provisioned and controller-managed storage; additional overwrite passes do not fix those limits. |
@@ -44,7 +44,16 @@ so repaint and input continue during the scan; pressing F5 again while
 checking is ignored until the scan lands, so only one scan ever runs.
 
 The keyboard screen is required after splash. Only US QWERTY, French AZERTY,
-and German QWERTZ are offered. A successful layout change clears typed
+German QWERTZ, UK QWERTY, Spanish QWERTY, Latin American QWERTY and Italian
+QWERTY are offered (XKB `us fr de gb es latam it`; console-data maps
+`us fr de uk es la-latin1 it`). Tk shows them as compact cards, two columns
+when the window is wide enough and one column for narrow windows or larger
+text, with the selected layout's note below; Up/Down choose them even while
+the check box has focus (the footer hint names these), and keys 1–7 when focus
+is not in the check box. The plain console takes a lone digit; the curses
+console uses Left/Right so every digit stays available for the typing
+check. Choosing a language never changes or applies a
+layout. A successful layout change clears typed
 confirmations, the ownership acknowledgement, the selected disk, and last-chance
 authorization, and requires that flow again. A failed or unknown layout leaves
 the previous layout and is shown as an error; it does not silently substitute
@@ -58,7 +67,12 @@ actions stay reachable at 800×600. The 80×24 console cannot grow glyphs.
 
 The graphical wizard uses real layouts at 800×600, 1024×600, and 1280×720 as
 well as 1024×740 and larger. Short windows may scroll the body; identity,
-warnings, and footer actions stay reachable. Type enlarges slightly on large
+warnings, and footer actions stay reachable. On Pick, short windows (under
+740 px tall) keep warnings first, then the disks, then the notes about the
+selection, the protected boot USB and Compare disks. Their disk rows are
+denser (tighter padding, nested partitions on one wrapped line) so the first
+whole row shows without scrolling at 800×600 and 1024×600; every fact stays
+in the row. Type enlarges slightly on large
 windows. Tk scaling stays pinned so X DPI does not change the layout. The
 window never opens taller than the panel. When type is enlarged, cards,
 warnings, comparison, progress, and footers wrap to their parent width and

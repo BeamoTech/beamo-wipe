@@ -171,6 +171,7 @@ def test_locked_final_rescan_refuses_new_unbound_volume_before_process_spawn(
         "require_real_live_for_nwipe", "_verify_pinned_nwipe",
         "assert_existing_is_block_device", "assert_size_unchanged",
         "assert_local_device_transport", "assert_not_boot",
+        "_reserve_target_under_lock",
     ):
         monkeypatch.setattr(nwipe_runner, name, lambda *_a, **_k: None)
     monkeypatch.setattr(nwipe_runner, "pinned_nwipe_already_running", lambda **_k: False)

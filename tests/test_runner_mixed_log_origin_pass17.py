@@ -26,6 +26,7 @@ def only_fake_log_actions(monkeypatch):
     monkeypatch.setattr(module.subprocess, "run", forbidden)
     monkeypatch.setattr(module, "pinned_nwipe_already_running", forbidden)
     monkeypatch.setattr(module, "_recheck_identity_under_lock", forbidden)
+    monkeypatch.setattr(module, "_reserve_target_under_lock", forbidden)
     monkeypatch.setattr(module, "_try_log_diag", lambda *_args: None)
     realpath = os.path.realpath
 

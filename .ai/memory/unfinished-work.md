@@ -1716,3 +1716,587 @@
   repository browser regressions passed, which is distinct evidence.
 - Publication state: **NOT TESTED / NOT DEPLOYED** for ISO/QEMU/native Windows/
   physical acceptance. No hosted dispatch or publication performed.
+
+## BW-READINESS-WORK-20261026 — LOCAL COMMITS VERIFIED / RELEASE GATES OPEN
+
+- 2026-10-26 / Claude (Opus 5.5) for the owner's request to save everything
+  that cannot be done here and complete the rest. Follows the readiness review
+  BW-READINESS-REVIEW-20261026. Repo BeamoTech/beamo-wipe, branch
+  `fix/release-readiness-20261026` from main `58c677f` (product bytes = tag
+  v0.2.14 `9764d93`). Owned shared-object sparse clone (docs/evidence omitted)
+  `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`. Peer dirty work
+  in the main checkout and PR93 untouched. State: committed locally; pushed only
+  as a branch if noted below. No PR, no hosted CI, no tag, no release.
+- Test environment: existing WSL distro (no /mnt/c by design) with owned copies
+  `/home/beamo-qual/beamo-wipe-readiness-20261026` (work), `-red` (original
+  runner), `-base` (pristine main archive), helpers
+  `/home/beamo-qual/bwrt-readiness-20261026.sh` (private userns + tmpfs /tmp)
+  and `bwrtx-...sh` (adds private 72 DPI Xvfb + D-Bus). Pre-existing environment
+  failures reproduced identically on `-base`: tests needing `.git`
+  (git rev-parse), tests reading docs/evidence, test_compat_story helper copy,
+  ci_evidence gate runner, GTK sound-dialog layout under WSLg.
+
+### Completed and verified locally (commit: evidence)
+
+- `8872929` safety: runner holds a read-only, non-exclusive, CLOEXEC handle to
+  the confirmed disk from before the final rediscovery until nwipe exits, so the
+  kernel cannot hand its name to a swapped disk (nwipe 0.42 opens by name after
+  scan/PRNG benchmark; verified its open flags have no O_EXCL). 15 new tests
+  PASS; end-to-end case FAILS on the original runner (no handle at launch).
+  176 runner-related modules rerun; only environment failures remain.
+- `3ee29ed` image: troubleshoot entry = nomodeset safe video without
+  memtest/noapic/nolapic/nosmp; GRUB Utilities submenu --unrestricted;
+  ctrl-alt-del.target masked + CtrlAltDelBurstAction=none; kernel.sysrq=0;
+  QEMU squashfs checks + new bios/uefi-troubleshoot-usb boot probes
+  (BEAMO_WIPE_SAFE_VIDEO=1) + publisher inventory. Source tests PASS; ruff 0.9.2,
+  mypy 2.1.0 (52 modules), shellcheck PASS. NEW QEMU PROBES/CHECKS UNRUN until
+  the hosted KVM gate.
+- `eaed93d` GPL: SOURCE.txt is a written offer (3 years, cost-only, via support
+  URL); scripts/corresponding_source.py plans/fetches exact Debian sources from
+  snapshot.debian.org + nwipe/Beamo tarballs with hash checks; THIRD_PARTY.md
+  procedure + trademark/non-affiliation. Tests PASS (in-memory opener only).
+- `6e149d8` docs: Secure Boot wording, boot card (helper order, Lenovo/Acer/
+  Secured-core, SmartScreen, real screen order), SECURITY.md (private advisory,
+  supported versions, no numeric SLA), boot-exclusion-signals refresh, claims
+  (FAT32 second stick, SSD overwrite-only, no competitor comparison), version-
+  neutral ci/release docs, BeamoTech URLs incl. helper EN/FR/DE.
+- `ddf9b92` scripts/rescan_release_packages.py (published-release Debian
+  security rescan). Ran 2026-10-26 on public v0.2.13 manifest sha256
+  0f2796dc0cedd3e34c4a81e233b12c4662a6eb91a6b5aca7b54370d4afe85640 (matches
+  sidecar; signature not checked in this informational run): 11 fixed issues
+  missing in openssl 3.0.22-1~deb12u1, expat 2.5.0-1+deb12u4, brotli 1.0.9-2.
+  Output in WSL `/home/beamo-qual/beamo-wipe-readiness-20261026-rescan/`.
+- Further commits for copy changes and the manufacturing SOP/readback tool are
+  listed in the checkpoint at the end of this entry.
+
+### Cannot be done here — open items (ID, acceptance, next action, blocker)
+
+- BW-RR-PHYS — BLOCKED (hardware; remote-only host). Run the Tier 3 matrix in
+  docs/evidence/physical-acceptance-111 on dedicated hardware with the exact
+  release image: BIOS, UEFI SB off/on with inspected db/dbx, vendor boot keys,
+  troubleshoot (nomodeset) entry on real AMD/Intel/NVIDIA graphics, speech on
+  real audio, USB2/3/C ports, lid/power, real erase of DISPOSABLE SATA and NVMe
+  disks, boot-USB exclusion with a writable stick. Also a novice usability test
+  with non-technical participants. Next: owner provides lab hardware/people.
+- BW-RR-LEGAL — OWNER/COUNSEL. Review SOURCE.txt offer wording and 3-year
+  retention; NOTICE "no warranty" for a paid consumer product (US/EU/UK) and
+  whether an in-app terms/disclaimer screen is required before erasing; privacy
+  policy for support/report data; "not a Blancco replacement" in README/NOTICE
+  and the claims.md competitor rule; Debian trademark statement. No in-app
+  legal screen was added without approved text.
+- BW-RR-RELEASE — BLOCKED on PR93 + authority. v0.2.13 (latest) lacks the
+  0.2.14 safety fixes and the 11 Debian fixes above; v0.2.14 cannot publish
+  because check-release-ready.sh needs tag == main HEAD (now 58c677f). Next:
+  resolve PR93's GTK segfault (peer-owned, run 40433850969), open a PR for this
+  branch (triggers the hosted CI gate — owner authorization), merge, bump to
+  0.2.15, tag at main HEAD, wait for exact-main push CI, dispatch release.yml,
+  verify public bytes. Retain every gate; no bypass.
+- BW-RR-GPL-ARCHIVE — OPEN. Produce and privately retain (with readback) the
+  corresponding-source archive for v0.2.13 and every later release using
+  scripts/corresponding_source.py. Blocked: several GB free space (C: ~1 GB)
+  and an authorized private destination. Deciding whether release.yml should
+  run it is an automation change needing owner authority.
+- BW-RR-FIRMWARE — OWNER DECISION + ISO QUALIFICATION. Image ships no firmware
+  (--firmware-* false, main only): amdgpu, Intel SOF audio, microcode absent.
+  Decide on non-free-firmware packages (license review, size, THIRD_PARTY),
+  then hosted ISO/QEMU and physical display/audio tests.
+- BW-RR-TRIXIE — PLAN. Bookworm regular security support ended 2026-06; LTS to
+  ~2028-06. Migrate to Debian 13 (kernel 6.12, Python 3.13, Tk/GTK requal) on an
+  isolated build worker with full gates; new base digest pin.
+- BW-RR-SHIM — MONITOR. Shipped shim 16.1 is signed only by Microsoft UEFI CA
+  2011; firmware trusting only the 2023 CA (or a future revocation) will refuse
+  it. Adopt a 2023-CA-signed Debian shim when available; repeat the Q12
+  component inspection for the next release image (none exists for 0.2.14).
+- BW-RR-SIGNING / BW-RR-ENV — OWNER. Move the Ed25519 release key from
+  exportable Secret Manager to non-exportable KMS/HSM or offline custody with a
+  backup; publish its fingerprint on an independent channel (support site).
+  `production` environment has no required reviewer and admins can bypass;
+  sole-maintainer policy decision. Authenticode-sign the Windows launcher
+  (certificate purchase). Numeric SECURITY.md response targets. Dependabot
+  security updates. None changed here.
+- BW-RR-RESCAN-SCHEDULE — OWNER/SPEND. A scheduled hosted rescan is new spend;
+  until authorized, run scripts/rescan_release_packages.py on the latest
+  manifest at least weekly and before every stick production lot.
+- BW-RR-LIVEMEDIA — NEEDS QEMU + HARDWARE. live-boot is not bound to the
+  medium; if a stick reports non-removable, internal partitions may be probed
+  (ro mount can replay an ext4 journal). Evaluate live-media=/UUID binding with
+  a QEMU case (usb-storage removable=off + dirty ext4 internal disk) and
+  hardware; boot-critical, not changed blind.
+- BW-RR-QEMU-COVERAGE — HOSTED ITERATION. Add NVMe and AHCI erase targets and an
+  end-to-end writable-boot-stick exclusion probe (snapshot=on, assert BEAMOBOOT
+  absent from the pick list); current probes attach the stick readonly=on.
+- BW-RR-UX — PRODUCT DECISIONS. Report export on exFAT or clearer upfront
+  guidance; HiDPI auto-scaling; high-contrast theme; ES/IT locales; per-outcome
+  failure next steps; plain "computer's main drive" hint; localized typed
+  console words; record selected nwipe PRNG in reports.
+- BW-RR-HOST-DISK — OWNER URGENT. C: had ~1.0–1.4 GB free; iCloud Drive
+  `iCloudDrive.db-wal` is ~7.7 GB and Google DriveFS WAL ~0.66 GB. Not stopped
+  or deleted (owner apps). Other agents also report low space.
+
+### Final checkpoint — 2026-10-27 UTC
+
+- Additional commits: `40a522a` customer guidance (method screen "large hard
+  disks can take many hours", restart after interruption, Intel RST/VMD/RAID
+  hint on the empty list; FR/DE translated; layout modules at 72 DPI Xvfb show
+  no new failures; guidance tests PASS). `7174651` scripts/verify-usb-stick.py
+  + docs/manufacturing.md (99 readback tests PASS on regular-file fixtures; 149
+  PASS with adjacent download/signing tests; seven tool mutations caught; no
+  real device opened; procedure never executed with a duplicator or stick).
+- Final local checks on the branch: ruff 0.9.2 (src+tests+new scripts) PASS,
+  mypy 2.1.0 52 modules PASS, shellcheck PASS, `git diff --check` PASS. Not run:
+  full pytest suite in one session, ISO build, hosted CI/QEMU, native Windows,
+  browser/Orca live checks, anything physical.
+- Next exact action: owner decides whether to open a PR for
+  `fix/release-readiness-20261026` (starts the hosted CI gate) after or with
+  PR93's fix; then follow BW-RR-RELEASE. Translation wording (FR/DE) for the
+  three new sentences should get a native-speaker review.
+
+### BW-RR-UX-POLISH-20261027 — LOCAL, UNCOMMITTED (subagent, Claude Opus 5.5)
+
+- Same clone/branch, working tree only (not staged/committed). Done locally:
+  HiDPI readable mode in `usr/local/bin/beamo-wipe` (xrandr, fake-fixture
+  tests `tests/test_launcher_readable_mode.py`); method-screen rough time guide
+  (`progress.time_guide`, `copy.method_time_guide`, Tk/GTK/console, FR/DE; ES
+  added by the locale agent; `tests/test_method_time_guide.py`,
+  `tests/test_time_guide_other_views.py`); Tk polish pinned by
+  `tests/test_ui_polish_20261027.py`; docs progress-timing + DISP-12 row.
+- OPEN: BW-RR-HIDPI-QEMU/PHYS — run the readable-mode launcher in QEMU (e.g.
+  virtio-vga xres=3840) and on real 4K/2560x1600 panels incl. Orca view; NOT
+  TESTED. Native-speaker review of the FR/DE/ES guide strings.
+- OPEN (outside this task's files): wizard.py `elapsed_text` hardcodes English
+  "Elapsed:" on FR/DE/ES result screens; build identity "unavailable" is not
+  translated; initial focus reveal slices the Owner/Confirm title on 1280x720
+  (EN) and 800x600 (DE); GTK view at 800x600 leaves the third method radio
+  below the footer for the 1 TB demo HDD and in German (identical on base).
+
+## BW-COMPAT-UX-20261027 — LOCAL VERIFIED / HOSTED, NATIVE-REVIEW AND PHYSICAL GATES OPEN
+
+- 2026-10-27 / Claude (Opus 5.5) for the owner's request: more devices, smoother
+  and better-looking experience without breaking anything. Branch
+  `fix/release-readiness-20261026`, commits `261cf58`, `2fb1176`, `5fb9d90`,
+  `2d1c434`, `f42acd0` after `317914d`. Clone and WSL copies as in
+  BW-READINESS-WORK-20261026. No PR, hosted CI, release or device operation.
+- Done locally: console-data (console layouts actually load); non-free
+  graphics/audio/USB firmware + microcode; Debian-signed 6.12 kernel and
+  firmware 20250410 from bookworm-backports via a chroot-only apt pin (apt
+  resolution simulated against the live archive, no unmet deps); quiet normal
+  boot; usbcore.autosuspend=-1 and NVMe APST off on every entry; QEMU gate
+  checks for kernel >= 6.12, firmware packages/dirs, no radio firmware, and an
+  X layout + console keymap for every offered layout; GPL plan adds linux/grub2/
+  shim sources behind signed wrappers; HiDPI xrandr mode switch; Spanish UI and
+  helper; UK/ES/LatAm/IT layouts; per-disk time guide; eight visual fixes;
+  curses Left/Right layout choice; localized Elapsed label.
+- Verification: full suite in three fresh sessions (private 72 DPI Xvfb,
+  RAM /tmp): 96 failures, every one also failing on pristine main (no .git /
+  no docs/evidence in the copy); 71 re-run on base gave the identical set.
+  Note tests/test_usb_image_readback.py alone needs ~1.5 GB of /tmp (builds a
+  2 GiB image) — size test temp space accordingly. ruff, security lint, mypy
+  53 modules, shellcheck, git diff --check PASS.
+
+### Open items
+
+- BW-CU-HOSTED — NEXT CANDIDATE GATE. None of the image changes has been built:
+  backports pin, archive areas, firmware/microcode/console-data, boot params,
+  troubleshoot probes, squashfs/keymap/firmware checks, keyboard-layouts.txt
+  evidence. The first hosted ISO/QEMU run may need iteration; ISO size grows
+  (~+80–100 MB est.). Needs owner authorization for the PR/hosted gate.
+- BW-CU-SB — REQUIRED BEFORE RELEASE. New image boots linux-image-6.12.95+deb12
+  (backports, Debian-signed): repeat the Secure Boot component inspection
+  (docs/secure-boot-acceptance.md) for the exact new image.
+- BW-CU-PHYS — BLOCKED (hardware). Firmware effect on AMD/Intel/NVIDIA panels
+  (incl. nouveau GSP on RTX), SOF/Cirrus audio and speech, Renesas USB 3, the
+  6.12 kernel on 2023–2025 laptops, HiDPI xrandr switch on real 4K/2560x1600
+  panels and docks, autosuspend/APST effect, console keymaps and all seven
+  layouts typed on physical keyboards.
+- BW-CU-L10N-REVIEW — NATIVE REVIEW. Spanish (choices: memoria USB, equipo,
+  cuenta regresiva vs cuenta atrás, ratón, presione, Habitual, Compilación,
+  omitido; SOUND_SELECTED phrasing) and every new FR/DE string (time guide,
+  RST/VMD hint, power restart, keyboard limits/footer, Elapsed).
+- BW-CU-VOICE — FEATURE. No language→voice mapping: Spanish (and FR/DE) text
+  is spoken by Orca/espeak-ng with the default English voice; boot menu and
+  kiosk recovery screens stay English.
+- BW-CU-UI-LEFTOVERS — OPEN. Focus scroll clips the title (Owner 1280x720 EN,
+  Confirm 800x600 DE); GTK view at 800x600 puts the third method below the
+  footer (also on base); Working screen empty block before first percent;
+  800x600 method cards/pick list start below the fold; Last-chance ring half
+  visible at 800x600; body-scroll stale offset race when content grows then
+  shrinks; preview-only banner does not re-translate; support build ID token
+  "unavailable" stays English by design (support readback).
+- BW-CU-QEMU-COVERAGE — unchanged from BW-RR-QEMU-COVERAGE (NVMe/AHCI targets,
+  writable boot stick); a QEMU 4K VGA probe for the xrandr path is also open.
+
+## BW-FINISH-20261028 — LOCAL VERIFIED, BRANCH PUSHED / HOSTED, NATIVE-REVIEW AND PHYSICAL GATES OPEN
+
+- 2026-10-28 / Claude (Opus 5.5) for the owner's request to finish all open
+  work from BW-READINESS-WORK-20261026, BW-RR-UX-POLISH-20261027 and
+  BW-COMPAT-UX-20261027. Repo BeamoTech/beamo-wipe, branch
+  `fix/release-readiness-20261026`, clone
+  `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`. Commits after
+  the pushed `40ccf8b`: 26 commits `0a02a03`..`872d38c` plus the commit adding this entry. State: pushed as branch `fix/release-readiness-20261026` (head = the commit adding this entry; ci.yml runs only for PRs/pushes to main or dispatch, so no workflow ran). No PR, no hosted
+  CI, no tag, no release, no device operation.
+- Agent clones (owned, safe to delete after merge): `beamo-wipe-{ui,results,
+  l10n,export,it}-20261027`, `beamo-wipe-helper-20261028`,
+  `beamo-wipe-pr93trial-20261028` under `C:/Users/Jack/dev/BeamoTech/`; WSL
+  copies `/home/beamo-qual/bw-*-2026102[78]`.
+
+### Done (commit: what, evidence)
+
+- `0a02a03`…`b723156`: native-quality review fixes for FR/DE/ES UI and
+  helper pages; placeholder/cited-label/safety-wording consistency test;
+  `docs/translations.md` translator guide + native review checklist.
+- `d842818` safety: exFAT 1.0 report USBs accepted beside FAT32 (still one
+  partition, same mount/readback rules); QEMU gate requires `exfat.ko`.
+- `d2f8035`: QEMU gate refuses a `shim-signed` older than `1.51~1+deb12u1`
+  (Debian 12's shim 16.1-2 dual-signed by the Microsoft UEFI CA 2011 and
+  2023, NX-capable per its changelog); secure-boot doc marks the next image
+  UNKNOWN until Q12. German stale-progress label no longer needs a dative.
+- `121697c`, `c5d125d` (UI agent): titles never sliced by focus reveal;
+  stale/negative body scroll clamped; Working shows "Progress not reported"
+  in a fixed slot; short windows put method cards / disk rows first;
+  last-chance ring visible at 800x600 and 1024x600; preview stripe and Tk
+  title re-translate; GTK limits notice after the radios; pick rows say
+  "Windows / Operating system / No operating system found on this disk".
+  New tests fail on the reference (143+16+13+…), pass on the branch.
+- `274c80c`, `951a485`, `98c97cd` (results agent): every failed or uncertain
+  outcome has its own next steps (all languages); report Limitations no
+  longer truncates canonical copy; nwipe's logged PRNG shown as "Random data
+  generator" for random/three-pass results (display only; parser accepts one
+  exact manifest record; argv/launch/outcome unchanged, runner diff additive).
+- `3599614`: countdown caption and Tk hint cite "Erase now"; EN helper says
+  "Stop erase" / "Restart computer"; report-saving status reworded (EN/FR/IT).
+- `4a8117e`, `4c9725a`: discovery snapshots made before the language choice
+  now read in the chosen language (reasons, nested kind labels, identity
+  labels, translated "Cannot erase:"); the silent nested "unsupported device"
+  reason stays silent in every language; " (old)" percent mark, GTK
+  "Select <disk>" name and GTK window title translated.
+- `4a90eeb`: blocked-screen error (copy.IDENTIFY_ERROR, stored in English by
+  discovery) is shown in the chosen language and keeps its specific heading
+  and recovery guidance (`lang.current_text`); blocking logic unchanged.
+- `f017eaa`, `71c2855`, `ea39f90`, `9ee7a5d`: Italian as fifth language (UI,
+  helper/it.html, staging/manifest, preview `--lang it`), all later keys
+  translated; key sets/order identical across fr/de/es/it.
+- `ca3d813`, `e885447`: FR/DE helper troubleshooting panels rebuilt to
+  English parity (illustrations, five steps, Windows menu paths, Technical
+  detail with the BitLocker recovery-key warning, stylesheet); new
+  section-parity test across all five helper pages. `60cdffb`, `0bba5b1`,
+  `872d38c`: narrow console result test pages to the end; FR/DE
+  forbidden-claims lists; the curses result page no longer repeats the
+  outcome, so Report status and safe removal stay on the first 80x24 page.
+- Verification: full suite on exact `872d38c` in six fresh sessions (private 72 DPI
+  Xvfb, 3 GB RAM /tmp; WSL copy byte-identical to the clone; no `.git`;
+  docs/evidence only secure-boot-119 and physical-acceptance-111): 12,840
+  passed, 63 failed, 2 errors, 86 skipped. Reference `d842818`, same method:
+  12,086 passed, 64 failed, 2 errors, 86 skipped. Every final failure and
+  both errors also occur on the reference (CI/receipt/evidence tests needing
+  `.git` or the omitted docs/evidence; tmp_path collisions in
+  test_corresponding_source); the reference's extra failure is the GTK 60 ms
+  sound-dialog timing test. ruff 0.9.2 (src+tests), security subsets,
+  compileall, mypy 2.1.0 (54 files), shellcheck, `git diff --check
+  40ccf8b..HEAD`: PASS. Logs: WSL `~/bw-full-872d38c-20261028/`,
+  `~/bw-full-ref-d842818-20261028/` (chunk05 re-run in `rerun05/` after a
+  1.5 GB tmpfs filled). Not run: ISO build, hosted CI/QEMU, native
+  Windows, Chrome pixel checks (4 skips), Orca, anything physical.
+
+### Open items (ID — acceptance, next action, blocker)
+
+- BW-FIN-HOSTED — OWNER AUTHORIZATION (spend). The lab coverage says
+  "no new spend authorized" for WIPE-ISO-QEMU. None of the image changes
+  since 0.2.14 has been built (firmware/backports/console-data/boot params,
+  exfat.ko, shim floor, troubleshoot probes). Next: owner authorizes the
+  hosted gate; open a PR for this branch (PR/main triggers ci.yml on
+  Blacksmith) or dispatch ci.yml on a verification ref; fix every failure.
+- BW-FIN-PR93 — AFTER PR93 MERGES. Trial merge of PR93 head `bf2b490` into
+  `4c9725a` (scratch clone `beamo-wipe-pr93trial-20261028`, aborted): one
+  textual conflict, `nwipe_runner.py` duplicate-run check in start(); keep
+  this branch's `or self._target_fd is not None` with PR93's
+  `error = SafetyError(...)`/_close_pinned_engine pattern. PR93's new error
+  paths call `_release_wipe_lock()`, which on this branch also closes the
+  target reservation, so no extra cleanup is needed. Re-run the full suite
+  after the real rebase/merge; PR93 may change before merge.
+- BW-FIN-SB-Q12 — REQUIRED BEFORE RELEASE. Inspect the next built image
+  (shim 16.1-2 dual-signed, kernel 6.12 backports): signer list, SBAT,
+  2023-only firmware behaviour, per docs/secure-boot-acceptance.md.
+- BW-FIN-SHIM-BUILD — WATCH FIRST HOSTED BUILD. shim-signed's preinst
+  refuses to install when mokutil reports Secure Boot enabled without a
+  matching db entry, or prints unexpected output. The live-build chroot runs
+  in Docker on the build worker; confirm in the first hosted build log that
+  the preinst passes, and that the QEMU gate's new shim floor holds.
+- BW-FIN-EXFAT-QEMU — HOSTED. Add/run a QEMU report-export probe onto an
+  exFAT image (only the module presence is gated today); physical exFAT
+  sticks from several vendors under BW-RR-PHYS.
+- BW-FIN-VOICE — FEATURE/DESIGN. Orca 43 takes its language from the
+  process locale; the image runs LANG=C.UTF-8 without the `locales`
+  package, so FR/DE/ES/IT text is spoken with the default English voice.
+  Needs locales + espeak-ng voices in the image, a per-language Orca restart
+  or settings change, and real-audio testing. Not started.
+- BW-FIN-CONSOLE-WORDS — BY DESIGN. Typed confirmation words and key names
+  stay English in every language (safety tokens; documented in locale
+  headers and docs/translations.md). Revisit only with a safety review.
+- BW-FIN-L10N-REVIEW — NATIVE REVIEW. FR/DE/ES/IT native speakers review the
+  checklist in docs/translations.md (Italian entirely machine-made, incl.
+  Windows names in helper/it.html; new FR/DE helper troubleshooting text).
+- BW-FIN-PICK-ROW — PARTIAL. At 800x600 the first pick row starts at
+  ~108 px but a full row (up to 217 px) does not fit the 192–273 px body;
+  name, capacity and serial are visible. Needs a compact row design.
+- BW-FIN-BUILD-TOKEN — BY DESIGN. Support "Build" value "unavailable" (no
+  injected build ID: previews/dev builds only) stays an English token.
+- BW-RR-PHYS, BW-RR-LEGAL, BW-RR-RELEASE, BW-RR-GPL-ARCHIVE, BW-RR-TRIXIE,
+  BW-RR-SIGNING/ENV, BW-RR-RESCAN-SCHEDULE, BW-RR-LIVEMEDIA,
+  BW-RR-QEMU-COVERAGE, BW-RR-HOST-DISK, BW-RR-HIDPI-QEMU/PHYS, BW-CU-HOSTED,
+  BW-CU-SB, BW-CU-PHYS — unchanged (see their entries); BW-RR-SHIM is now
+  BW-FIN-SB-Q12 + BW-FIN-SHIM-BUILD.
+- Closed by this entry: BW-RR-UX (exFAT, ES/IT, per-outcome steps, contents
+  hint, PRNG; console words by design), BW-CU-UI-LEFTOVERS (all except
+  BW-FIN-PICK-ROW), BW-RR-UX-POLISH leftovers (Elapsed, focus slicing, GTK
+  third radio; build token by design).
+
+## BW-PASS2-20261028 — LOCAL VERIFIED, BRANCH PUSHED / HOSTED, NATIVE-REVIEW AND PHYSICAL GATES OPEN
+
+- 2026-10-28 / Claude (Opus 5.5) for the owner's request to run another very
+  thorough pass. Branch `fix/release-readiness-20261026` (clone
+  `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`), continuing
+  from `465274d`. Four independent read-only reviewers covered
+  `58c677f..465274d` (runtime safety; UI and locales; image, build and release
+  scripts; docs, helper pages and claims). Every finding was re-checked against
+  the code or primary sources (Debian package lists, live-build 1:20230502,
+  amd64-/intel-microcode hooks, madison, security tracker) before fixing.
+  No PR, hosted CI, tag, release, device or host-setting change.
+- Lab: current lab revision `6fd49c5` in owned clone
+  `C:/Users/Jack/dev/beamo-remote-lab-claude-20261028` (peer checkout at
+  `d3d0959` left untouched); run root
+  `C:/Users/Jack/beamo-release-evidence/wipe-pass2-claude-20261028`:
+  self-test PASS (61 tests, framework), doctor/sync/plan PASS (preparation).
+  Plan still lists WIPE-ISO-QEMU "no new spend authorized".
+
+### Done (commit: what, evidence)
+
+- `89373fe` safety: the pick row never says "No operating system found"; it
+  names only a recognised system. Contents check now recognises EFI+APFS/HFS+
+  (Intel Mac), Linux with swap or a GPT BIOS boot partition, and a Linux
+  vendor "Recovery" partition (no longer "Windows"). Selection, tokens, nwipe
+  unchanged. 766 related tests PASS.
+- `78dafdd`: START-HERE.html linked to fr/de/es/it.html that were never on the
+  stick root; they are now staged there as START-HERE-<code>.html with links
+  rewritten (live-system copies unchanged), README.txt lists them, and
+  THIRD_PARTY.md is on the root as SOURCE.txt/NOTICE say.
+- `6ab504f`: NOTICE/README no longer name a competitor or promise
+  "sanitization"; support guidance carries the BitLocker key warning;
+  "outside what the overwrite reaches" (EN/FR/DE); ADVANCED.md lists --quiet;
+  THIRD_PARTY/compat matrix: misc-nonfree's legacy radio files, no PC Renesas
+  USB 3 firmware, SOF 2.2.4 predates Meteor Lake.
+- `9bbd3e6`: FR/DE/ES/IT helper pages say speech uses the English voice.
+- `1796b6a`: verify-usb-stick.py keeps exit 1 for a FAIL whose receipt cannot
+  be written; manufacturing.md: boot-QA units never ship without a fresh
+  readback.
+- `5437259`: corresponding_source.py `plan` no longer fails on every real
+  image (shim version from the binary version; shim-helpers mapped); `fetch`
+  validates nwipe/Beamo identities before writing and binds GitHub tarballs to
+  the commit via the git-archive header. Real v0.2.13 manifest: plan lists
+  319 sources incl. linux 6.1.190-1, grub2 2.06-13+deb12u2, shim
+  16.1-2~deb12u1. rescan_release_packages.py checks linux/grub2/shim and
+  ~bpo12 backports against trixie. Weekly rescan of v0.2.13 (manifest sha256
+  0f2796dc…5640) 2026-10-28: same 11 fixed issues missing (openssl, expat,
+  brotli); its boot packages are current. Output WSL
+  `~/beamo-wipe-readiness-20261026-rescan/rescan-20261028.txt`.
+- `945313e`: /etc/default/amd64-microcode forces "early" (the default "auto"
+  depends on the build CPU); QEMU gate parses every live initramfs early cpio
+  and requires AuthenticAMD.bin and GenuineIntel.bin (parser tested on
+  synthetic archives; image not built).
+- `ff6b737`: Tk keyboard screen: Up/Down choose layouts even from the
+  focused check box (1–7 typed digits there; the hint now names Up/Down in
+  all languages; browser preview matches); over-wide footer hints wrap;
+  a long sub-page caption no longer overlaps the third stage name at
+  1000-1100 px (100-case test); console keyboard screen pages its lead on
+  short consoles (80x14-80x20, all languages).
+- `a496b73`: FR/ES "new report USB" no longer reads "brand-new".
+- `ad7fe73`: a two-part keyboard notice follows a language switch.
+- `8d5e445`: the held-reservation and curses time-guide tests now check what
+  their names claim.
+- Verification: see "Final verification" below.
+
+### Open items from this pass (ID — acceptance, next action, blocker)
+
+- BW-P2-KERNEL-LAG — OWNER DECISION before the next release. Debian 12
+  backports' newest kernel is linux-signed-amd64 6.12.95+1~bpo12+1; Debian 13
+  has 6.12.107+1 and the tracker lists fixes up to 6.12.113-1. The corrected
+  rescan counts 3,504 tracker issues fixed in trixie 6.12.96–6.12.113 that a
+  6.12.95 image would lack (all urgency "not yet assigned"); the shipped
+  v0.2.13 6.1.190 kernel lacks none. The build-time `debsecan --suite
+  bookworm` gate cannot see backports. Options: accept the lag (offline kiosk,
+  no network software), go back to the bookworm 6.1 kernel (loses newer
+  hardware support), or move the base to Debian 13 (BW-RR-TRIXIE). Whatever
+  is chosen, run scripts/rescan_release_packages.py on the candidate
+  manifest before publication.
+- BW-P2-GRUB-UTILITIES — OWNER DECISION. live-build 1:20230502 never fills
+  `@ENABLE_VERIFY_CHECKSUMS@`, so "Verify integrity of the boot medium" never
+  appears (the `3ee29ed` message claimed otherwise); the unlocked Utilities
+  submenu exposes only "UEFI Firmware Settings" (fwsetup) on UEFI.
+  tests/test_boot_menus.py::test_uefi_recovery_and_utility_blocks_preserved
+  deliberately keeps both, so nothing was removed. Decide keep / lock again /
+  remove (then update that test). Verify works after a live-build upgrade.
+- BW-P2-GPL-SYSLINUX — OPEN, needs hosted build data. The source plan reads the
+  squashfs dpkg inventory only. ISO isolinux files (Debian isolinux/
+  syslinux-common, installed by live-build only during binary_syslinux) and
+  the USB image's ldlinux/mbr.bin (CI host's Ubuntu syslinux) are not listed.
+  Next: record those package versions in the release manifest and add them to
+  corresponding_source.py (Debian via snapshot, Ubuntu via Launchpad), or
+  install the USB image's syslinux from the pinned Debian container.
+- BW-P2-PRNG-LONG — KNOWN LIMIT. "Random data generator" in the report comes
+  from the 1 MiB log snapshot whose digest the evidence carries; after about
+  5.5 h of 2-second progress lines the options header leaves that window and
+  the line is omitted (never wrong). A fix needs an evidence-schema change
+  (head snapshot plus digest); not done blind.
+- BW-P2-RADIO-FILES — DOCUMENTED. firmware-misc-nonfree (bpo) carries Agere/
+  VT6656/WF200/CW1200 Wi-Fi, Broadcom/NXP Bluetooth and Multi-Tech modem
+  files; no radio package or connection software is installed. If file-level
+  removal is required, it needs a reviewed hook (stage_wrapper_sources
+  approves exactly one) and a squashfs file gate.
+- BW-P2-SOF-MTL — DOCUMENTED. Debian 12 SOF 2.2.4 predates Meteor Lake; no
+  backport exists (Debian 13 has 2025.01). 2024+ Intel laptops may be silent.
+- BW-P2-HOSTED-NEW — HOSTED. Unrun until the hosted gate: the initramfs
+  microcode check, START-HERE-<code>.html and THIRD_PARTY.md on a real ISO
+  root and USB image, README.txt lines.
+- Unchanged and still open: BW-FIN-HOSTED (spend authorization), BW-FIN-PR93,
+  BW-FIN-SB-Q12, BW-FIN-SHIM-BUILD, BW-FIN-EXFAT-QEMU, BW-FIN-VOICE,
+  BW-FIN-L10N-REVIEW (now also the FR/ES "new USB" and Up/Down hint lines),
+  BW-FIN-PICK-ROW, BW-RR-* and BW-CU-* items listed in BW-FINISH-20261028.
+
+### Final verification — 2026-10-28 (pass 2)
+
+- Full suite on exact `8d5e445` (product tree of this entry's commit), WSL
+  `BeamoComboQualification-20261001` as beamo-qual, pristine `git archive`
+  copy `/home/beamo-qual/bw-pass2-8d5e445-20261028` (full docs/evidence, no
+  `.git`), six fresh sessions with private 72 DPI Xvfb and 3 GB RAM /tmp:
+  13,038 passed, 60 failed, 0 errors, 86 skipped. Every failure is in the
+  known environment set of the `d842818` and `872d38c` runs (CI/receipt
+  gates needing `.git`: test_ci_log_snapshot 36, ci_evidence_directory 6,
+  blacksmith_ci 4, ci_evidence_pipeline 3, release_manifest 2 and 8 single
+  modules; plus the GTK 60 ms sound-dialog timing test). No new failure; four
+  formerly evidence-dependent tests now pass. Logs
+  `~/bw-full-pass2-8d5e445-20261028/`.
+- Targeted runs during the pass: contents/UI-fit/locales 766, staging and
+  helper 162, docs/claims/readback 534, docs/image-config 648, source plan and
+  rescan 53, microcode/boot 100, Tk layout suites 907, later UI fixes 681 —
+  failures only from the same no-`.git` set.
+- Static: ruff 0.9.2 (src, tests, scripts) PASS; mypy 2.1.0
+  `--ignore-missing-imports` (CI form) 54 files PASS; shellcheck 0.9.0 on
+  qemu-verify, build-usb-image, inside-docker, launcher, kiosk PASS;
+  compileall PASS; `git diff --check` PASS.
+- Lab receipts (lab `6fd49c5`, owned clone): self-test
+  20261028T185439Z-786c42caac55, doctor 20261028T195848Z-25f63c5da8df, sync
+  20261028T195937Z-7d9b8901b313, plan 20261028T195950Z-1186c8d08a71 — all
+  `verify` VALID / PASS at framework or preparation level only.
+- Not run: ISO build, hosted CI/QEMU, native Windows, Chrome pixel checks,
+  Orca/speech, anything physical.
+
+## BW-PASS3-20261028 — LOCAL TARGETED VERIFIED / HOSTED GATE PENDING; WSL DOWN; NATIVE-REVIEW AND PHYSICAL GATES OPEN
+
+- 2026-10-28/29 / Claude (Opus 5.5) for the owner's request to "fully take
+  care of all of the rest of the stuff ... do what's best for the mass
+  majority of customers". The open owner decisions from BW-PASS2-20261028
+  were decided on that basis (below). Branch `fix/release-readiness-20261026`,
+  clone `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`, from
+  `22fa70c`. Lab `6fd49c5` (owned clone), run root
+  `C:/Users/Jack/beamo-release-evidence/wipe-pass3-claude-20261028`: doctor
+  20261028T230010Z-b9c571b692a3, sync 20261028T230035Z-07fe5d9eb357, plan
+  20261028T230038Z-e303374f8e43 PASS (preparation only).
+- The owner's message is taken as the go-ahead for the paid hosted gate
+  (BW-FIN-HOSTED). Three helper agents (Italian review, 800x600 row, PR93
+  crash) were stopped by the owner mid-run; their uncommitted Italian and
+  row work was reviewed, corrected and verified here before committing.
+
+### Done (commit: what, evidence)
+
+- `3dd48d8` BW-P2-KERNEL-LAG: the image installs Debian 12's LTS-maintained
+  `linux-image-6.12-amd64` from bookworm-security (Debian-signed,
+  6.12.113-1~deb12u1; DLA-4745/4788/4817) via `--linux-packages
+  linux-image-6.12` (flavour stays amd64: GRUB looks for vmlinuz-*amd64);
+  backports pin now firmware only. apt resolution simulated against the live
+  archive (469 packages, kernel from bookworm-security, firmware 20250410
+  from backports, no unmet dependency). Source plan/rescan map
+  linux-signed-6.12-amd64 to `linux-6.12` (tracker files 2,886 bookworm
+  issues there). Build-time debsecan can now see kernel fixes.
+- `c3e37fd` BW-P2-GRUB-UTILITIES: kept "UEFI Firmware Settings", removed the
+  never-filled verify-checksums block; template markers limited to those
+  live-build fills; QEMU gate rejects any unfilled marker.
+- `32725c8` BW-P2-PRNG-LONG: completion projection keeps nwipe's exact
+  options header/prng/auto records; evidence falls back to it only when the
+  digested tail cannot answer (display only; outcome/check equality tested;
+  red on the old code).
+- `2020bb8` BW-P2-GPL-SYSLINUX: plan always lists Debian 12 syslinux
+  3:6.04~git20190206.bf6db5b4+dfsg1-3 (on snapshot); QEMU gate binds ISO
+  isolinux/*.c32 and isolinux.bin (outside the boot info table) and the
+  worker's syslinux packages to it.
+- `b03b5a5`, `e3f35ad` BW-RR-QEMU-COVERAGE / BW-FIN-EXFAT-QEMU: QEMU erase-
+  and-report journeys on an AHCI SATA disk (BIOS, FAT32 report) and an NVMe
+  disk (UEFI, exFAT report, user-space fsck + guest readback markers), both
+  booted from the USB image attached writable (snapshot=on).
+- `5f02e2f` BW-RR-LIVEMEDIA decision: boot line unchanged (boot-critical);
+  manufacturing prefers RM=1 sticks, RM=0 parts need boot evidence on a PC
+  with an internal ext4 disk.
+- `e48d629`: Italian grammar/wording pass (UI and helper/it.html), FR/ES
+  "test box" and "only one newly plugged-in report USB", DE sentence fix.
+  1,091 locale/helper/claims/keyboard/UI-fit tests PASS.
+- `d430f98` BW-FIN-PICK-ROW: dense Pick row and Compare after the disks on
+  short windows; first row whole at 800x600/1024x600 in all languages.
+- `a00168f`: QEMU gate extracted only three ISO files, so the pass-2
+  initramfs microcode check and the new syslinux check would have failed
+  every hosted run; it now extracts /live, /isolinux, /EFI/boot (regular
+  files only). BW-FIN-SB-Q12 aid: gate records sbverify signers and PE .sbat
+  of shim, GRUB and kernel in secure-boot-signers.txt.
+- `d3ba776`: the one-kernel check counted the linux-image-6.12-amd64
+  meta-package too (would have failed every image); fake-dpkg test, red on
+  the old script.
+
+### Decisions recorded (no change)
+
+- BW-P2-RADIO-FILES — keep documented (no connection software, no customer
+  effect).
+- BW-P2-SOF-MTL, BW-FIN-VOICE — keep as documented limits. Sound and speech
+  on 2024+ Intel laptops and non-English voices need Debian 13 firmware/UCM
+  or locale work plus real-audio tests; the screen works without them.
+- BW-RR-TRIXIE — still a planned migration; the LTS kernel removes its
+  urgency (bookworm LTS runs to ~2028-06).
+- BW-FIN-PR93 — not taken over (Codex's open PR, native GTK crash; its
+  handoff needs a native backtrace on an admitted Linux worker). The
+  investigation agent was stopped by the owner with no result. Whichever PR
+  lands second rebases (conflict notes in BW-FIN-PR93 still apply).
+
+### Open items (ID — acceptance, next action, blocker)
+
+- BW-P3-WSL-DOWN — OWNER ACTION. At ~03:10 UTC 2026-10-29 the shared WSL
+  distro `BeamoComboQualification-20261001` began failing every process start
+  with EIO (getpwnam/getpwuid failed 5, /etc unreadable, also as root). Its
+  dynamic VHDX (182.6 GB) is on C:, which had 3.3 GB free; most likely the
+  VHDX could not grow. Not stopped or repaired (shared instance). Next: owner
+  frees C: space and approves `wsl --terminate BeamoComboQualification-20261001`
+  plus a filesystem check. Note `coordination/wsl-io-errors-claude-20261029.md`.
+- BW-P3-FULL-LOCAL — NOT RUN. The full local suite on the final candidate
+  could not start (WSL down). Every changed area passed its targeted tests
+  (counts above and in the commit messages); the hosted gate's full suite is
+  the full-suite evidence for this candidate.
+- BW-P3-HOSTED — PENDING. First hosted run of every image change since
+  0.2.14 (BW-FIN-HOSTED, BW-P2-HOSTED-NEW, BW-CU-HOSTED). Expect iteration:
+  first SATA/NVMe/exFAT journeys, writable-stick boots, syslinux byte check,
+  signer record, LTS kernel. Fix every failure; never weaken a check.
+- BW-FIN-SB-Q12 — after a green hosted run, a person reviews
+  secure-boot-signers.txt from that run's evidence against
+  docs/secure-boot-acceptance.md and writes the Q12 receipt.
+- Unchanged: BW-FIN-SHIM-BUILD (watch the first build log), BW-FIN-L10N-REVIEW
+  (now incl. the Italian pass), BW-RR-PHYS, BW-RR-LEGAL, BW-RR-RELEASE,
+  BW-RR-GPL-ARCHIVE, BW-RR-SIGNING/ENV, BW-RR-RESCAN-SCHEDULE,
+  BW-RR-HIDPI-QEMU/PHYS, BW-RR-HOST-DISK (now urgent: it took WSL down),
+  BW-CU-PHYS.
+
+### Verification — 2026-10-28 (pass 3), targeted only
+
+- WSL `BeamoComboQualification-20261001` as beamo-qual, private 72 DPI Xvfb,
+  RAM /tmp: kernel/boot/hardware/docs 377+45; boot menus 31; PRNG and
+  projection 721 (new test red 4/7 on old code); source plan 41; QEMU gate,
+  publisher and inventory suites 974 then 61 and 13; locale/UI 1,091; pick
+  row, ISO inspection, Secure Boot record and layout 832; kernel gate 12.
+  All failures seen were in the known no-`.git` environment set.
+- ruff 0.9.2 (src, tests, scripts), mypy 2.1.0 (54 files), shellcheck 0.9.0
+  (qemu-verify, ci-hosted, inside-docker) PASS on `d3ba776`'s tree.
+- Not run: full local suite (WSL down), ISO build, hosted CI/QEMU, native
+  Windows, Orca/speech, anything physical.

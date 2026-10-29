@@ -271,6 +271,9 @@ class AccessibleWizard:
             self.w.screen == Screen.LAST_CHANCE and self.shown != Screen.LAST_CHANCE
         )
         self.generation += 1
+        # Orca reads the window title; follow a language change.
+        if self.window.get_title() != C.ACCESSIBLE_TITLE:
+            self.window.set_title(C.ACCESSIBLE_TITLE)
         self._apply_type_css()
         self.actions = {}
         self.primary = self.progress_label = self.countdown_label = None
@@ -325,7 +328,7 @@ class AccessibleWizard:
             self.label(C.KEYBOARD_LIMITS)
             self.label(C.TEXT_SIZE_LEAD)
             for size_id, label in C.TEXT_SIZE_LABELS.items():
-                state = "selected" if self.w.text_size == size_id else C.ACCESSIBLE_NOT_SELECTED
+                state = C.ACCESSIBLE_SELECTED if self.w.text_size == size_id else C.ACCESSIBLE_NOT_SELECTED
                 self.button(
                     f"{label} ({state})",
                     lambda sid=size_id: self.w.set_text_size(sid),
@@ -333,7 +336,7 @@ class AccessibleWizard:
                 )
             for index, layout_id in enumerate(LAYOUT_ORDER, 1):
                 spec = _keyboard.LAYOUTS[layout_id]
-                state = "selected" if self.w.keyboard_layout == layout_id else C.ACCESSIBLE_NOT_SELECTED
+                state = C.ACCESSIBLE_SELECTED if self.w.keyboard_layout == layout_id else C.ACCESSIBLE_NOT_SELECTED
                 self.button(
                     f"{index} {spec.title} ({state})",
                     lambda lid=layout_id: self.w.set_keyboard_layout(lid),
@@ -343,7 +346,7 @@ class AccessibleWizard:
             self.label(C.TITLE_LANGUAGE)
             self.label(C.LANGUAGE_LEAD)
             for code in LANGUAGE_ORDER:
-                state = "selected" if self.w.language == code else C.ACCESSIBLE_NOT_SELECTED
+                state = C.ACCESSIBLE_SELECTED if self.w.language == code else C.ACCESSIBLE_NOT_SELECTED
                 self.button(
                     f"{LANGUAGE_NAMES[code]} ({state})",
                     lambda lang_code=code: self.w.set_language(lang_code),
@@ -413,8 +416,14 @@ class AccessibleWizard:
             self._inventory_count()
             self._protected_boot()
             for disk in sorted(self.w.selectable, key=lambda d: d.path):
-                text = f"Select {self.w.disk_view(disk).announcement}"
-                self.button(text, lambda path=disk.path: self._select(path), in_body=True)
+                text = C.ACCESSIBLE_SELECT_DISK.format(disk=self.w.disk_view(disk).announcement)
+                select = self.button(text, lambda path=disk.path: self._select(path), in_body=True)
+                hint = C.contents_hint(disk)
+                if hint:
+                    # Factual contents line: shown under the row and spoken
+                    # with it, so Orca users hear what sighted owners see.
+                    select.get_accessible().set_name(f"{text}. {hint}")
+                    self.label(hint)
                 nested = inventory.card_nesting_text(self.w.nested_components(disk))
                 if nested:
                     self.label(nested, focusable=True)
@@ -470,8 +479,8 @@ class AccessibleWizard:
         elif screen == Screen.METHOD:
             heading.set_text(C.TITLE_METHOD)
             self.identity()
-            self.label(f"{C.SEVERITY_LIMITS}: {self.w.storage_notice}", focusable=True)
             group = None
+            guides = []
             for method, spec in METHODS.items():
                 card = C.METHOD_CARDS[method]
                 # Keep the radio ATK name as the method summary. Plain lead
@@ -487,6 +496,13 @@ class AccessibleWizard:
                 choice.get_child().set_max_width_chars(65)
                 group = choice
                 choice.set_active(self.w.method == method)
+                # Orca reads the rough duration with its choice. The visible
+                # copy follows the choices so 800x600 keeps all three above
+                # the footer; the name still starts with the visible label.
+                guide = C.method_time_guide(method, self.w.selected)
+                if guide:
+                    choice.get_accessible().set_name(f"{label} {guide}")
+                    guides.append(f"{spec.title}: {guide}")
                 if spec.plain_lead:
                     choice.get_accessible().set_description(spec.plain_lead)
                 self.body.pack_start(choice, False, False, 3)
@@ -496,6 +512,12 @@ class AccessibleWizard:
                     if widget.get_active() and generation == self.generation
                     else None,
                 )
+            # The general storage limits follow the choices (the next Tab
+            # stop after them): above the radios this notice pushed the third
+            # choice under the footer at 800x600 for hard disks and German.
+            self.label(f"{C.SEVERITY_LIMITS}: {self.w.storage_notice}", focusable=True)
+            for text in guides:
+                self.label(text)
             for spec in METHODS.values():
                 self.label(spec.plain_lead)
             for spec_method in METHODS:

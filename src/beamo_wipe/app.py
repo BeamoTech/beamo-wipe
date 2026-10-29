@@ -54,9 +54,9 @@ def _parser() -> argparse.ArgumentParser:
     )
     p.add_argument(
         "--lang",
-        choices=("en", "fr", "de"),
+        choices=("en", "fr", "de", "es", "it"),
         default="en",
-        help="Gallery language: en, fr, or de. Preview only; ignored on the live USB.",
+        help="Gallery language: en, fr, de, es, or it. Preview only; ignored on the live USB.",
     )
     p.add_argument(
         "--helper",

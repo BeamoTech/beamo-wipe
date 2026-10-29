@@ -30,9 +30,58 @@ On supported Linux desktops: open Start Beamo Wipe Linux. A guided restart
 is offered only when the USB and an exact boot entry can be verified.
 You still choose and confirm the disk after restarting. Nothing erases automatically.
 Open START-HERE.html for this USB's build and boot-menu keys.
+Other languages: START-HERE-fr.html (Français), START-HERE-de.html (Deutsch),
+START-HERE-es.html (Español), START-HERE-it.html (Italiano).
 Engine: nwipe (GPL). Wrapper: GPL-3.0-or-later. NO WARRANTY.
-https://github.com/BeamoINT/beamo-wipe
+Source code and our written offer for it: SOURCE.txt.
+https://github.com/BeamoTech/beamo-wipe
 """
+
+REPOSITORY_URL = "https://github.com/BeamoTech/beamo-wipe"
+HELPER_LANGUAGES = ("fr", "de", "es", "it")
+
+
+def root_helper_name(code: str) -> str:
+    """Name of a helper page in the USB's visible root folder."""
+    return "START-HERE.html" if code == "en" else f"START-HERE-{code}.html"
+
+
+def link_root_helpers(page: bytes) -> bytes:
+    """Point the language links at the root copies, which are renamed.
+
+    The live system keeps helper/index.html and helper/<code>.html, but the
+    USB root names them START-HERE*.html, so a root page linking to fr.html
+    would open nothing.
+    """
+    out = page
+    for code in ("en", *HELPER_LANGUAGES):
+        source = "index.html" if code == "en" else f"{code}.html"
+        out = out.replace(
+            f'href="{source}"'.encode(), f'href="{root_helper_name(code)}"'.encode()
+        )
+    return out
+
+
+def source_offer(support_url: str) -> bytes:
+    """GPL corresponding-source notice and written offer shipped on the USB."""
+    return f"""Beamo Wipe: source code and written offer
+
+This USB contains free software under the GNU General Public License (GPL)
+and other licenses, including the Linux kernel, GRUB, nwipe and Debian
+packages. The license texts are on this USB (LICENSE, NOTICE and
+THIRD_PARTY.md) and inside the live system under /usr/share/doc/.
+
+Beamo Wipe source: {REPOSITORY_URL}
+Exact version and build: shown on START-HERE.html on this USB.
+
+Written offer: for at least three years after we last distribute this
+release, Beamo will give any third party who asks a complete
+machine-readable copy of the corresponding source code for every program on
+this USB that is covered by the GPL or a license requiring source
+distribution, for no more than our cost of physically performing that
+distribution. Ask through {support_url} and quote the version and build
+shown on START-HERE.html.
+""".encode("utf-8")
 
 
 def require_reviewed_chroot_includes(
@@ -145,6 +194,7 @@ def stage_assets(root: Path, live: Path) -> None:
     from beamo_wipe.build_identity import assert_injectable, injected_payload
     from beamo_wipe.compat_story import inject_helper_html
     from beamo_wipe.release_manifest import git_commit, git_dirty, live_build_inputs
+    from beamo_wipe.support_contact import SUPPORT_URL
 
     build_id = os.environ.get("BUILD_ID", "local")
     dirty = git_dirty()[0]
@@ -200,8 +250,9 @@ def stage_assets(root: Path, live: Path) -> None:
         helper_html, version=__version__, injected=injected, packaged=True
     ).encode("utf-8")
     put_bytes(share / "helper/index.html", packaged_html)
-    put_bytes(binary / "START-HERE.html", packaged_html)
-    for name in ("fr.html", "de.html"):
+    put_bytes(binary / "START-HERE.html", link_root_helpers(packaged_html))
+    for code in HELPER_LANGUAGES:
+        name = f"{code}.html"
         localized_source = root / "helper" / name
         localized_html = remember_source(
             localized_source, read_regular_bytes(localized_source)
@@ -211,9 +262,10 @@ def stage_assets(root: Path, live: Path) -> None:
             version=__version__,
             injected=injected,
             packaged=True,
-            language=name[:2],
+            language=code,
         ).encode("utf-8")
         put_bytes(share / "helper" / name, packaged_localized_html)
+        put_bytes(binary / root_helper_name(code), link_root_helpers(packaged_localized_html))
     for name in ("finished.wav", "attention.wav"):
         put_file(root / "packaging/sounds" / name, share / "sounds" / name)
 
@@ -231,9 +283,10 @@ def stage_assets(root: Path, live: Path) -> None:
         put_file(root / "desktop" / name, binary / name)
     for name in ("NOTICE", "LICENSE", "THIRD_PARTY.md"):
         put_file(root / name, docs / name)
-    for name in ("NOTICE", "LICENSE"):
+    # SOURCE.txt and NOTICE on the stick point readers at all three files.
+    for name in ("NOTICE", "LICENSE", "THIRD_PARTY.md"):
         put_file(root / name, binary / name)
-    source = b"Source: https://github.com/BeamoINT/beamo-wipe\n"
+    source = source_offer(SUPPORT_URL)
     put_bytes(binary / "SOURCE.txt", source)
     put_bytes(docs / "SOURCE.txt", source)
     put_bytes(binary / "README.txt", README.encode("utf-8"))

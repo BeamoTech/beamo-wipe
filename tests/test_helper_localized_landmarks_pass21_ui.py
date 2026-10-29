@@ -28,7 +28,7 @@ class _Landmarks(HTMLParser):
             self.links.append(data["href"])
 
 
-@pytest.mark.parametrize("language", ("en", "fr", "de"))
+@pytest.mark.parametrize("language", ("en", "fr", "de", "es", "it"))
 def test_helper_troubleshooting_articles_have_heading_names(language):
     filename = "index.html" if language == "en" else f"{language}.html"
     html = (HELPER / filename).read_text(encoding="utf-8")

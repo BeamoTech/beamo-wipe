@@ -121,7 +121,7 @@ LOCALIZED_HELPER_IDENTITY: dict[str, LocalizedHelperIdentity] = {
         ),
         "source_status": "kein hergestelltes Abbild",
         "labels": {
-            STATUS_PRODUCTION: "Dieser USB-Stick enthält ein hergestelltes Beamo Wipe-Abbild.",
+            STATUS_PRODUCTION: "Dieser USB-Stick enthält ein hergestelltes Beamo-Wipe-Abbild.",
             STATUS_DEVELOPMENT: "Dieser USB-Stick enthält ein Entwicklungsabbild, keine Produktionsversion.",
             STATUS_DIRTY: "Dieser USB-Stick wurde aus geändertem Quellcode erstellt. Er ist keine Produktionsversion.",
             STATUS_MISMATCH: "Dieser Starter passt nicht zur Identität des USB-Abbilds.",
@@ -133,6 +133,48 @@ LOCALIZED_HELPER_IDENTITY: dict[str, LocalizedHelperIdentity] = {
             STATUS_DIRTY: "geändert",
             STATUS_MISMATCH: "Quellcode stimmt nicht überein",
             STATUS_UNAVAILABLE: "nicht verfügbar",
+        },
+    },
+    "es": {
+        "source_label": (
+            "Esta copia no es una imagen USB fabricada. "
+            "Es la ayuda de origen que se usa para crear una."
+        ),
+        "source_status": "no es una imagen fabricada",
+        "labels": {
+            STATUS_PRODUCTION: "Esta memoria USB contiene una imagen fabricada de Beamo Wipe.",
+            STATUS_DEVELOPMENT: "Esta memoria USB contiene una imagen de desarrollo, no una versión de producción.",
+            STATUS_DIRTY: "Esta memoria USB se creó a partir de código fuente modificado. No es una versión de producción.",
+            STATUS_MISMATCH: "Este lanzador no coincide con la identidad de la imagen USB.",
+            STATUS_UNAVAILABLE: "Esta sesión no procede de una imagen USB fabricada.",
+        },
+        "statuses": {
+            STATUS_PRODUCTION: "producción",
+            STATUS_DEVELOPMENT: "desarrollo",
+            STATUS_DIRTY: "modificado",
+            STATUS_MISMATCH: "el código fuente no coincide",
+            STATUS_UNAVAILABLE: "no disponible",
+        },
+    },
+    "it": {
+        "source_label": (
+            "Questa copia non è un’immagine USB prodotta. "
+            "È la guida sorgente usata per crearne una."
+        ),
+        "source_status": "non è un’immagine prodotta",
+        "labels": {
+            STATUS_PRODUCTION: "Questa chiavetta USB contiene un’immagine prodotta di Beamo Wipe.",
+            STATUS_DEVELOPMENT: "Questa chiavetta USB contiene un’immagine di sviluppo, non una versione di produzione.",
+            STATUS_DIRTY: "Questa chiavetta USB è stata creata da codice sorgente modificato. Non è una versione di produzione.",
+            STATUS_MISMATCH: "Questo programma di avvio non corrisponde all’identità dell’immagine USB.",
+            STATUS_UNAVAILABLE: "Questa sessione non proviene da un’immagine USB prodotta.",
+        },
+        "statuses": {
+            STATUS_PRODUCTION: "produzione",
+            STATUS_DEVELOPMENT: "sviluppo",
+            STATUS_DIRTY: "modificato",
+            STATUS_MISMATCH: "sorgente non corrispondente",
+            STATUS_UNAVAILABLE: "non disponibile",
         },
     },
 }

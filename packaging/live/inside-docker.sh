@@ -90,6 +90,25 @@ cd /build/packaging/live
 
 lb clean --all || true
 
+# The troubleshoot entry means safe video: nomodeset keeps the firmware
+# framebuffer (X then uses fbdev or vesa) instead of a GPU driver that can
+# leave a black screen. It omits live-build's legacy failsafe flags
+# (noapic, nolapic, nosmp, memtest), which can hang or stall modern UEFI PCs.
+# It also stays verbose (no quiet) so a hang shows its last kernel message.
+#
+# Hardware support: non-free-firmware supplies only the graphics, audio,
+# USB-controller and CPU microcode firmware listed in the package list
+# (--firmware-chroot stays false: no Wi-Fi or Bluetooth blobs). The kernel is
+# Debian 12's own linux-image-6.12-amd64 from bookworm-security: Debian-signed
+# (same shim/GRUB chain), newer laptop support than 6.1, and kept current by
+# Debian LTS. Backports' 6.12 stopped receiving updates, so it is not used.
+# Backports are enabled only so config/archives/backports.pref.chroot can pin
+# the matching newer firmware; userland stays bookworm.
+#
+# Every entry keeps USB devices and NVMe drives fully awake for the session:
+# the live system runs from the stick, and some sticks, USB bridges and NVMe
+# drives drop off the bus when resuming from autosuspend or deep power states
+# during long erases.
 lb config \
   --ignore-system-defaults \
   --mode debian \
@@ -104,15 +123,18 @@ lb config \
   --win32-loader false \
   --iso-application "Beamo Wipe" \
   --iso-preparer "Beamo" \
-  --iso-publisher "Beamo https://github.com/BeamoINT/beamo-wipe" \
+  --iso-publisher "Beamo https://github.com/BeamoTech/beamo-wipe" \
   --iso-volume "BEAMO_WIPE" \
-  --archive-areas "main" \
+  --archive-areas "main non-free-firmware" \
+  --parent-archive-areas "main non-free-firmware" \
+  --backports true \
+  --linux-packages "linux-image-6.12" \
   --apt-recommends false \
   --firmware-binary false \
   --firmware-chroot false \
   --initsystem systemd \
-  --bootappend-live "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin" \
-  --bootappend-live-failsafe "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin memtest noapic noapm nodma nomce nolapic nosmp nosplash vga=788" \
+  --bootappend-live "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin usbcore.autosuspend=-1 nvme_core.default_ps_max_latency_us=0 quiet loglevel=3" \
+  --bootappend-live-failsafe "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin usbcore.autosuspend=-1 nvme_core.default_ps_max_latency_us=0 nomodeset nosplash vga=788" \
   --mirror-bootstrap "https://deb.debian.org/debian/" \
   --mirror-chroot "https://deb.debian.org/debian/" \
   --mirror-binary "https://deb.debian.org/debian/" \

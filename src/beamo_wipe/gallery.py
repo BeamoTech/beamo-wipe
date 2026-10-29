@@ -149,6 +149,7 @@ def _disks_payload(scenario: str = "happy") -> list[dict]:
                 "prepare": "" if disk.is_boot else C.prepare_selected(disk),
                 "components": components,
                 "contents": disk.contents,
+                "contentsHint": "" if disk.is_boot else C.contents_hint(disk),
                 "eraseLabel": "" if disk.is_boot else C.erase_now_label(disk, peers),
             }
         )
@@ -166,7 +167,7 @@ def _serialize_progress(view: _progress.ProgressView) -> dict:
     elif percent is None:
         percent_text = ""
     elif view.percent_is_old:
-        percent_text = f"{format_progress_percent(percent)} (old)"
+        percent_text = _progress.OLD_PERCENT.format(percent=format_progress_percent(percent))
     else:
         percent_text = format_progress_percent(percent)
     marked = None if view.mismatch else view.position
@@ -1057,6 +1058,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .help-reader { max-height: 55vh; }
   .help-reader.compact { max-height: 43vh; }
   .nested { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); }
+  .contents-hint { margin-top: 4px; }
   .nested-intro { font-weight: 600; margin-bottom: 4px; }
   .nested-item { margin-top: 6px; }
   .inventory-reader:focus-visible, .help-reader:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
@@ -1226,7 +1228,7 @@ const MATCH_OK = '<svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11
 const EMBLEM = '__LOGO_SPLASH__';
 
 // Key names inside hint copy render as key-caps, mirroring _hint_bar.
-const KEY_RE = /(Up\/Down|1, 2, or 3|any key|Enter|Esc|Space)/g;
+const KEY_RE = /(?<![\p{L}\p{N}])(Up\/Down|1, 2, or 3|1–7|any key|Enter|Esc|Space)(?![\p{L}\p{N}])/gu;
 const KEY_MAP = {"Up/Down": ["↑", "↓"], "1, 2, or 3": ["1", "2", "3"]};
 function renderHint(text) {
   const el = document.getElementById("hint");
@@ -1397,6 +1399,7 @@ function diskCard(d) {
           <div class="size">${esc(d.size)}</div>
         </div>
         ${metaLine(d)}
+        ${d.contentsHint ? `<div class="small muted contents-hint">${esc(d.contentsHint)}</div>` : ""}
         ${nestedComponents(d)}
       </div>
     </div>
@@ -1889,6 +1892,16 @@ document.addEventListener("keydown", e => {
   if (screen === "splash" && !e.repeat && !e.altKey && !e.ctrlKey && !e.metaKey
       && !e.target?.closest?.(".scenarios")) {
     e.preventDefault(); screen = "keyboard"; draw(); return;
+  }
+  if (screen === "keyboard" && ["ArrowUp", "ArrowDown"].includes(e.key)) {
+    // As in the Tk view: Up/Down choose a layout even from the check box.
+    e.preventDefault();
+    const ids = P.keyboardLayouts.map(item => item.id);
+    const at = Math.max(0, ids.indexOf(keyboardLayout || "us"));
+    keyboardLayout = ids[(at + (e.key === "ArrowUp" ? ids.length - 1 : 1)) % ids.length];
+    owner = false; token = ""; selected = null;
+    draw();
+    return;
   }
   if (["working", "stop_confirm"].includes(screen) && e.key === "Escape") {
     e.preventDefault();

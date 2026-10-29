@@ -50,7 +50,7 @@ def test_all_hints_render_as_key_caps():
         C.HINT_SPLASH,
         C.HINT_KEYBOARD,
     ):
-        for word in ("Enter", "Esc", "Space", "Up/Down", "1, 2, or 3", "any key"):
+        for word in ("Enter", "Esc", "Space", "Up/Down", "1, 2, or 3", "1–7", "any key"):
             if word in hint:
                 assert tkui._KEY_TOKEN_RE.search(hint), hint
 

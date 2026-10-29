@@ -19,6 +19,8 @@ cut stops the erase. Unsaved reports are lost.
 | Sleep / hibernate keys | Ignore | logind `HandleSuspendKey` / `HandleHibernateKey` |
 | Lid close | Ignore at logind | Firmware on some laptops still sleeps. Not claimed without a hardware receipt. |
 | Short power-button press | Ignore | Use **Shut down** in the wizard. |
+| Ctrl+Alt+Del | Ignore | `ctrl-alt-del.target` is masked and `CtrlAltDelBurstAction=none`, so repeated presses in the console guide or recovery menu cannot force a reboot. |
+| Magic SysRq keys | Disabled | `kernel.sysrq = 0`; Alt+SysRq combinations cannot reboot or power off past the erase guard. |
 | Held power button | Firmware | Outside this USB. May cut power during an erase. |
 | Wizard **Shut down** | `systemctl poweroff` | Blocked while Checking, Working, Stopping, refresh, export, or evidence save. |
 | Automatic sleep during erase | Refused | `AllowSuspend=no`, masked `suspend.target`, and a sleep/idle inhibit while nwipe runs. |
@@ -31,6 +33,8 @@ session recovery does not resume an erase, and unsaved evidence is lost.
 
 - `packaging/live/config/includes.chroot/etc/systemd/logind.conf.d/beamo-kiosk.conf`
 - `packaging/live/config/includes.chroot/etc/systemd/sleep.conf.d/beamo-kiosk.conf`
+- `packaging/live/config/includes.chroot/etc/systemd/system.conf.d/beamo-kiosk.conf` (Ctrl+Alt+Del burst)
+- `packaging/live/config/includes.chroot/etc/sysctl.d/90-beamo-kiosk.conf` (SysRq)
 - `packaging/live/config/includes.chroot/etc/X11/xorg.conf.d/10-beamo.conf`
 - `packaging/live/config/includes.chroot/usr/local/bin/beamo-wipe` (`xset` wake path)
 - `src/beamo_wipe/sleep_inhibit.py` (does not wrap nwipe; does not inhibit shutdown)

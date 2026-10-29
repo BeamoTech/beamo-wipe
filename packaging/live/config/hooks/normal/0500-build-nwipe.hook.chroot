@@ -186,6 +186,8 @@ rm -f /lib/live/config/0140-xinit
 for policy in \
   /etc/systemd/logind.conf.d/beamo-kiosk.conf \
   /etc/systemd/sleep.conf.d/beamo-kiosk.conf \
+  /etc/systemd/system.conf.d/beamo-kiosk.conf \
+  /etc/sysctl.d/90-beamo-kiosk.conf \
   /etc/X11/xorg.conf.d/10-beamo.conf
 do
   if [ ! -f "$policy" ]; then
@@ -200,6 +202,10 @@ do
   ln -sfn /dev/null "/etc/systemd/system/${unit}"
   systemctl mask "${unit}" || true
 done
+# Ctrl+Alt+Del outside X would reboot immediately, past the erase guard.
+# system.conf.d/beamo-kiosk.conf also disables the repeated-press burst.
+ln -sfn /dev/null /etc/systemd/system/ctrl-alt-del.target
+systemctl mask ctrl-alt-del.target || true
 chmod 755 /usr/local/bin/beamo-wipe
 chmod 755 /usr/local/sbin/beamo-wipe-kiosk
 mkdir -p /etc/systemd/system/multi-user.target.wants
@@ -211,10 +217,14 @@ chown -R root:root /usr/lib/beamo-wipe /usr/local/bin/beamo-wipe \
   /usr/local/sbin/beamo-wipe-kiosk /etc/systemd/system/beamo-wipe-kiosk.service \
   /etc/systemd/logind.conf.d/beamo-kiosk.conf \
   /etc/systemd/sleep.conf.d/beamo-kiosk.conf \
+  /etc/systemd/system.conf.d/beamo-kiosk.conf \
+  /etc/sysctl.d/90-beamo-kiosk.conf \
   /etc/X11/xorg.conf.d/10-beamo.conf \
   /usr/share/beamo-wipe /usr/share/doc/beamo-wipe
 chmod 0644 /etc/systemd/logind.conf.d/beamo-kiosk.conf \
   /etc/systemd/sleep.conf.d/beamo-kiosk.conf \
+  /etc/systemd/system.conf.d/beamo-kiosk.conf \
+  /etc/sysctl.d/90-beamo-kiosk.conf \
   /etc/X11/xorg.conf.d/10-beamo.conf
 find /usr/lib/beamo-wipe /usr/share/beamo-wipe /usr/share/doc/beamo-wipe \
   -type d -exec chmod 0755 {} +

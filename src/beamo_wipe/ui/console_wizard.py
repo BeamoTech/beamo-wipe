@@ -289,9 +289,16 @@ def _pick_blocks(wizard: Wizard, width: int) -> list[tuple[object, list[str]]]:
         view, block = _pick_disk_header(wizard, disk, width)
         for note in view.notes:
             block.extend(_lines("  " + note, width))
+        hint = C.contents_hint(disk)
+        if hint:
+            block.extend(_lines("  " + hint, width))
         block.extend(_nested_lines(wizard, disk, width))
         blocks.append((disk, block))
     return blocks
+
+
+# Rows the keyboard screen keeps for its paged layout list under a fixed lead.
+KEYBOARD_MIN_LIST_ROWS = 6
 
 
 def _paint_paged(
@@ -801,7 +808,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
             print(C.KEYBOARD_CHECK_LABEL)
             typed = input(C.CON_INPUT_PREFIX)
             key = typed.strip()
-            keyboard_mapping = {"1": "us", "2": "fr", "3": "de"}
+            keyboard_mapping = {str(i): lid for i, lid in enumerate(LAYOUT_ORDER, 1)}
             if key in keyboard_mapping:
                 wizard.set_keyboard_layout(keyboard_mapping[key])
             elif key.upper() == "K":
@@ -891,6 +898,9 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 _emit(f"    {view.id_label}: {view.id_value}")
                 for note in view.notes:
                     _emit("    " + note)
+                hint = C.contents_hint(disk)
+                if hint:
+                    _emit("    " + hint)
                 nested = inventory.card_nesting_text(wizard.nested_components(disk))
                 if nested:
                     for line in nested.split("\n"):
@@ -948,12 +958,14 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 extra = f" {card['extra']}" if card["extra"] else ""
                 lead = f" {card['lead']}" if card["lead"] else ""
                 limits_note = f" {card['limits']}" if card["limits"] else ""
+                guide = C.method_time_guide(method, wizard.selected)
+                guide = f" {guide}" if guide else ""
                 # One logical line so overwrite + verification stay a contiguous description.
                 # The TTY wraps at its own width; pre-fill would split spec.description.
                 print(
                     f"{card['key']} {spec.title}{mark}: "
                     f"{spec.overwrite_description} {spec.verification_description}"
-                    f"{extra}{lead}{limits_note}"
+                    f"{guide}{extra}{lead}{limits_note}"
                 )
             choice = _answer(wizard, C.CON_METHOD_PROMPT).strip()
             if choice.lower() == "a":
@@ -1288,16 +1300,25 @@ def _loop(stdscr, wizard: Wizard) -> int:
         elif wizard.screen == Screen.SPLASH:
             y = _wrap(stdscr, y, C.SPLASH_TAGLINE, w, y_max)
         elif wizard.screen == Screen.KEYBOARD:
-            y = _wrap(stdscr, y, C.KEYBOARD_LEAD, w, y_max)
-            y = _wrap(stdscr, y, C.KEYBOARD_LIMITS, w, y_max)
-            y = _wrap(stdscr, y, C.TEXT_SIZE_LEAD, w, y_max)
-            y = _wrap(stdscr, y, C.TEXT_SIZE_CONSOLE, w, y_max)
-            y = _wrap(stdscr, y, _keyboard.CONSOLE_DEAD_KEYS, w, y_max) + 1
+            lead: list[str] = []
+            for text in (C.KEYBOARD_LEAD, C.KEYBOARD_LIMITS, C.TEXT_SIZE_LEAD,
+                         C.TEXT_SIZE_CONSOLE, _keyboard.CONSOLE_DEAD_KEYS):
+                lead.extend(_lines(text, w))
             lines = []
-            for i, layout_id in enumerate(LAYOUT_ORDER, 1):
+            if y + len(lead) + 1 + KEYBOARD_MIN_LIST_ROWS <= y_max:
+                for line in lead:
+                    _add(stdscr, y, 0, line)
+                    y += 1
+                y += 1
+            else:
+                # A short console: a fixed lead would fill every row and the
+                # layouts could never be reached, so it pages with them.
+                lines.extend(lead)
+                lines.append("")
+            for layout_id in LAYOUT_ORDER:
                 layout_spec = _keyboard.LAYOUTS[layout_id]
                 star = ">" if wizard.keyboard_layout == layout_id else " "
-                lines.extend(_lines(f"{star} {i} {layout_spec.title}: {layout_spec.note}", w))
+                lines.extend(_lines(f"{star} {layout_spec.title}: {layout_spec.note}", w))
                 lines.append("")
             lines.extend(_lines(C.TITLE_LANGUAGE, w))
             lines.extend(_lines(C.LANGUAGE_LEAD, w))
@@ -1568,6 +1589,19 @@ def _loop(stdscr, wizard: Wizard) -> int:
                     )
                 )
                 lines.append("")
+            # Rough durations follow the choices so the first page keeps
+            # every method; taller consoles show them without scrolling.
+            guides = [
+                (i, METHODS[method].title, C.method_time_guide(method, wizard.selected))
+                for i, method in enumerate(
+                    (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO), 1
+                )
+            ]
+            for i, title, guide in guides:
+                if guide:
+                    lines.extend(_lines(f"{i} {title}: {guide}", w))
+            if any(guide for _, _, guide in guides):
+                lines.append("")
             for method in (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO):
                 extra = C.METHOD_CARDS[method]["extra"]
                 if extra:
@@ -1690,7 +1724,10 @@ def _loop(stdscr, wizard: Wizard) -> int:
             lines = []
             if wizard.selected and not error_report:
                 lines.extend(_identity_field_lines(wizard.disk_view(wizard.selected), w))
-            lines.extend(_lines(wizard.method_result, w))
+            # The outcome is already the page title above; a second copy would
+            # push Report status and safe removal off the first page.
+            if wizard.method_result != _screen_title(wizard):
+                lines.extend(_lines(wizard.method_result, w))
             lines.extend(_lines(wizard.method_summary, w))
             lines.extend(_lines(wizard.result_view.next_step, w))
             if may_have_erased(wizard.result_view.code):
@@ -1977,9 +2014,15 @@ def _handle(wizard: Wizard, ch: int) -> None:
         wizard.open_keyboard()
         return
     if wizard.screen == Screen.KEYBOARD:
-        keyboard_mapping = {ord("1"): "us", ord("2"): "fr", ord("3"): "de"}
-        if ch in keyboard_mapping:
-            wizard.set_keyboard_layout(keyboard_mapping[ch])
+        # Left/Right choose the layout so every digit stays available for the
+        # typing check: digit placement is what differs between layouts.
+        if ch in (curses.KEY_LEFT, curses.KEY_RIGHT):
+            step = -1 if ch == curses.KEY_LEFT else 1
+            try:
+                index = LAYOUT_ORDER.index(wizard.keyboard_layout)
+            except ValueError:
+                index = 0
+            wizard.set_keyboard_layout(LAYOUT_ORDER[(index + step) % len(LAYOUT_ORDER)])
             return
         if ch == curses.KEY_F2:
             wizard.set_language(_next_language(wizard))

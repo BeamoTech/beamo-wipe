@@ -15,9 +15,9 @@ report eligibility and the Finished-screen export remain independent.
    Every existing disk is protected. If this cannot be established, saving
    stays blocked; retry preparation after resolving discovery. Never override
    boot identification or enter a device path.
-3. Insert exactly one separate, writable removable FAT32 USB. Choose **Save
-   diagnostic report**. The console requires literal `SAVE` (or `PREPARE` for
-   the preparation step). FAT12/16, exFAT, NTFS, mounted/read-only media,
+3. Insert exactly one separate, writable removable FAT32 or exFAT USB. Choose
+   **Save diagnostic report**. The console requires literal `SAVE` (or `PREPARE` for
+   the preparation step). FAT12/16, NTFS, mounted/read-only media,
    ambiguous layouts, multiple new drives and changed original drives fail
    closed with a specific message. No formatting is offered.
 4. Wait for “Diagnostic report saved and verified. Report USB is safe to

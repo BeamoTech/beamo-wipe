@@ -231,10 +231,14 @@ def test_curses_help_scrolls_all_media_guidance_at_small_sizes(
 @pytest.mark.parametrize(
     "fstype,fsver",
     [
+        # exFAT is accepted only with its published revision; a missing or
+        # different version still never reaches export.
         ("exfat", None),
+        ("exfat", "2.0"),
         ("ntfs", None),
         ("vfat", "FAT12"),
         ("vfat", "FAT16"),
+        ("vfat", "1.0"),
         (None, None),
     ],
 )

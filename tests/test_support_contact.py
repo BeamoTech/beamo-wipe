@@ -19,6 +19,8 @@ def test_destination_single_source():
     assert SC.SUPPORT_SHORT in README_SUPPORT
     assert SC.SUPPORT_SHORT in lang.translated("fr", "support_export", "README_SUPPORT")
     assert SC.SUPPORT_SHORT in lang.translated("de", "support_export", "README_SUPPORT")
+    assert SC.SUPPORT_SHORT in lang.translated("es", "support_export", "README_SUPPORT")
+    assert SC.SUPPORT_SHORT in lang.translated("it", "support_export", "README_SUPPORT")
     assert SC.SUPPORT_SHORT in C.support_text()
     assert SC.SUPPORT_SHORT in C.support_lead()
 
@@ -95,6 +97,17 @@ def test_trigger_strings_still_say_contact_support():
 
     triggers = [
         outcomes.SUPPORT,
+        # Each outcome-specific step replaced the former shared SUPPORT text;
+        # every one of them must still send the owner to support.
+        outcomes.NEXT_OPEN_FAILED,
+        outcomes.NEXT_GEOMETRY,
+        outcomes.NEXT_VERIFICATION_FAILED,
+        outcomes.NEXT_ENGINE_FAILED,
+        outcomes.NEXT_INTERRUPTED,
+        outcomes.NEXT_CANCELLED,
+        outcomes.NEXT_COMPLETION_MISSING,
+        outcomes.NEXT_PROCESS_FAILED,
+        outcomes.NEXT_INDETERMINATE,
         outcomes.NEXT_START_FAILED,
         outcomes.NEXT_STOP_UNCONFIRMED,
         W.RECOVERY_MAY_RUNNING,
@@ -245,7 +258,13 @@ def test_helper_and_boot_card_name_destination():
 
     root = Path(__file__).resolve().parents[1]
     svg = SC.qr_svg()
-    for rel in ("helper/index.html", "helper/fr.html", "helper/de.html"):
+    for rel in (
+        "helper/index.html",
+        "helper/fr.html",
+        "helper/de.html",
+        "helper/es.html",
+        "helper/it.html",
+    ):
         html = (root / rel).read_text(encoding="utf-8")
         assert SC.SUPPORT_SHORT in html, rel
         assert f'href="{SC.SUPPORT_URL}"' in html, rel

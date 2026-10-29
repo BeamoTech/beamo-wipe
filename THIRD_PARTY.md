@@ -29,9 +29,60 @@ while nwipe stays GPL-2.0.
 Debian `live-boot`, `live-config`, GNU/Linux, Xorg, Python 3, and
 Tkinter, GTK, PyGObject, AT-SPI, Orca, Speech Dispatcher, and PulseAudio
 in the live image keep their own licenses (GPL, LGPL, MIT,
-Apache, and others as shipped by Debian). Offer those sources the
-same way Debian does: the live USB `SOURCE.txt` points here, and
-Debian source packages are available from `deb.debian.org`.
+Apache, and others as shipped by Debian). Each package's license is in
+`/usr/share/doc/<package>/copyright` inside the live system.
+
+## Device firmware and CPU microcode
+
+So screens and laptop audio work on more PCs, the image includes Debian's
+redistributable `non-free-firmware` packages for graphics (AMD, Intel,
+NVIDIA), Intel, Cirrus and TI laptop audio and other small device firmware,
+plus Intel and AMD CPU microcode. They are vendor binaries under their own
+redistribution licenses, listed in `/usr/share/doc/<package>/copyright`
+inside the live system; Beamo does not modify them. No Wi-Fi or Bluetooth
+firmware package is installed, and the image has no Wi-Fi or Bluetooth
+software to connect with. Debian's general `firmware-misc-nonfree` package
+does carry a few files for older or embedded Wi-Fi, Bluetooth and modem
+chips. The graphics and misc firmware come from Debian's
+`bookworm-backports`; the Debian-signed Linux 6.12 kernel is Debian 12's own
+LTS-maintained `linux-image-6.12-amd64` from `bookworm-security`; everything
+else is Debian 12 (bookworm).
+
+## Corresponding source (GPL)
+
+Sticks and downloads carry GPL-covered programs: the Linux kernel, GRUB,
+nwipe, live-boot and other Debian packages. `SOURCE.txt` on every USB is a
+written offer, valid for at least three years after Beamo last distributes
+that release, to provide the complete corresponding source to anyone who
+asks through the support contact. A pointer to `deb.debian.org` alone is not
+enough: superseded package versions disappear from it.
+
+Fulfil the offer for each published release:
+
+1. Verify the release manifest with `scripts/verify-usb-download.py`.
+2. `python3 scripts/corresponding_source.py plan manifest.json --out SOURCES.json`
+   maps every installed binary package in the signed dpkg inventory to its
+   exact source package and version, plus the pinned nwipe and Beamo Wipe
+   commits. It always adds Debian 12's `syslinux` source: the BIOS boot
+   files (isolinux.bin, *.c32, ldlinux.sys, mbr.bin) are installed outside
+   the squashfs inventory, and the QEMU gate checks they are that build.
+3. `python3 scripts/corresponding_source.py fetch SOURCES.json NEW_DIR`
+   downloads each Debian source package from snapshot.debian.org, which keeps
+   every published version, checks every file against snapshot's content
+   hash and the `.dsc` checksums, and adds the nwipe and Beamo Wipe tarballs.
+   `SHA256SUMS` and `ARCHIVE.json` list every file.
+4. Store that archive privately with its checksums for at least three years
+   after the release's last distribution, confirm readback, and answer
+   requests from it.
+
+The tool does not verify Debian's OpenPGP `.dsc` signatures. The offer text
+and retention commitment need legal review before a commercial release.
+
+## Trademarks
+
+Debian is a registered trademark of Software in the Public Interest, Inc.
+Beamo Wipe is not affiliated with or endorsed by the Debian Project or the
+nwipe project.
 
 ## Why this is not “Beamo SecureErase Engine”
 

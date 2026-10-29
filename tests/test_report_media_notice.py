@@ -128,13 +128,23 @@ def test_gallery_embeds_preesase_notices():
 
 def test_report_media_keys_translated_in_fr_and_de():
     from beamo_wipe.locales import de as de_locale
+    from beamo_wipe.locales import es as es_locale
     from beamo_wipe.locales import fr as fr_locale
+    from beamo_wipe.locales import it as it_locale
 
     for key in ("REPORT_MEDIA_WHAT", "REPORT_MEDIA_WANTED"):
         assert key in fr_locale.STRINGS["copy"]
         assert key in de_locale.STRINGS["copy"]
+        assert key in es_locale.STRINGS["copy"]
+        assert key in it_locale.STRINGS["copy"]
         assert fr_locale.STRINGS["copy"][key] != getattr(C, key)
         assert de_locale.STRINGS["copy"][key] != getattr(C, key)
+        assert es_locale.STRINGS["copy"][key] != getattr(C, key)
+        assert it_locale.STRINGS["copy"][key] != getattr(C, key)
+    assert "FAT32" in es_locale.STRINGS["copy"]["REPORT_MEDIA_WHAT"]
+    assert "desconectada" in es_locale.STRINGS["copy"]["REPORT_MEDIA_WANTED"]
+    assert "FAT32" in it_locale.STRINGS["copy"]["REPORT_MEDIA_WHAT"]
+    assert "scollegata" in it_locale.STRINGS["copy"]["REPORT_MEDIA_WANTED"]
 
 
 def test_report_media_notices_follow_active_language():
@@ -148,7 +158,7 @@ def test_report_media_notices_follow_active_language():
         lang.set_language("en")
 
 
-@pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html"])
+@pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html", "es.html", "it.html"])
 def test_helper_states_media_requirements_up_front(name):
     from beamo_wipe.gallery import project_root
 
@@ -158,6 +168,8 @@ def test_helper_states_media_requirements_up_front(name):
         "index.html": ("FAT32", "unplugged until"),
         "fr.html": ("FAT32", "débranchée jusqu"),
         "de.html": ("FAT32", "abgezogen, bis"),
+        "es.html": ("FAT32", "desconectada hasta"),
+        "it.html": ("FAT32", "scollegata finché"),
     }[name]
     for marker in markers:
         assert marker in card

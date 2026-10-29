@@ -116,6 +116,7 @@ def test_real_runner_path_checks_raw_model_before_any_process_spawn(
         "require_real_live_for_nwipe", "_verify_pinned_nwipe",
         "assert_existing_is_block_device", "assert_size_unchanged",
         "assert_local_device_transport", "assert_not_boot",
+        "_reserve_target_under_lock",
     ):
         monkeypatch.setattr(runner_module, name, lambda *_a, **_k: None)
     monkeypatch.setattr(runner_module, "pinned_nwipe_already_running", lambda **_k: False)
