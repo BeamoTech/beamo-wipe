@@ -529,8 +529,11 @@ dpkg --compare-versions "$kernel_version" ge '6.12.113-1~deb12u1' || {
   echo "ISO kernel is not the bookworm-security 6.12 build: $kernel_version" >&2
   exit 2
 }
+# Versioned image packages only; the linux-image-6.12-amd64 meta-package also
+# matches the dpkg glob.
 mapfile -t kernel_images < <(dpkg-query --admindir="$SQUASH_MOUNT/var/lib/dpkg" -W \
-  -f='${db:Status-Abbrev} ${Package}\n' 'linux-image-[0-9]*' 2>/dev/null | awk '$1 == "ii" { print $2 }')
+  -f='${db:Status-Abbrev} ${Package}\n' 'linux-image-[0-9]*' 2>/dev/null |
+  awk '$1 == "ii" && $2 ~ /^linux-image-[0-9]+\.[0-9]+\.[0-9]+/ { print $2 }')
 [[ "${#kernel_images[@]}" -eq 1 && "${kernel_images[0]}" == linux-image-6.12.*+deb12-amd64 ]] || {
   echo "ISO must contain exactly one Debian 12 LTS 6.12 kernel: ${kernel_images[*]}" >&2
   exit 2

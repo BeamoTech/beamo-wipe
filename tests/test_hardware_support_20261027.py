@@ -107,6 +107,47 @@ def test_usb_and_nvme_stay_awake_on_every_entry():
         assert "nvme_core.default_ps_max_latency_us=0" in flags, option
 
 
+def _run_kernel_gate(tmp_path, installed: dict[str, str]):
+    """Run the gate's kernel block against a fake dpkg-query."""
+    import subprocess
+
+    source = QEMU.read_text(encoding="utf-8")
+    start = source.index("# The kernel is Debian 12's LTS-maintained 6.12")
+    end = source.index("# Debian 12.15 ships shim 16.1-2")
+    rows = "".join(f"ii  {name} {version}|" for name, version in installed.items())
+    fake = (
+        "dpkg-query() {\n"
+        '  local fmt="" pkg=""\n'
+        '  for arg in "$@"; do case "$arg" in -f=*) fmt="${arg#-f=}" ;; -*) ;; *) pkg="$arg" ;; esac; done\n'
+        f'  local rows="{rows}" row\n'
+        '  IFS="|" read -ra list <<<"$rows"\n'
+        "  for row in \"${list[@]}\"; do\n"
+        '    read -r status name version <<<"$row"\n'
+        '    if [[ "$fmt" == *Status-Abbrev* ]]; then [[ "$name" == linux-image-[0-9]* ]] && printf "%s  %s\\n" "$status" "$name"\n'
+        '    elif [[ "$name" == "$pkg" ]]; then printf "%s" "$version"; fi\n'
+        "  done\n"
+        "  return 0\n"
+        "}\n"
+    )
+    script = "set -euo pipefail\nSQUASH_MOUNT=/fake\n" + fake + source[start:end] + "echo KERNEL_OK\n"
+    return subprocess.run(["bash", "-c", script], capture_output=True, text=True, timeout=30)
+
+
+def test_kernel_gate_counts_versioned_kernels_not_the_meta_package(tmp_path):
+    ok = {"linux-image-6.12-amd64": "6.12.113-1~deb12u1",
+          "linux-image-6.12.113+deb12-amd64": "6.12.113-1~deb12u1"}
+    result = _run_kernel_gate(tmp_path, ok)
+    assert result.returncode == 0 and "KERNEL_OK" in result.stdout, result.stderr
+    second = {**ok, "linux-image-6.1.0-54-amd64": "6.1.190-1"}
+    assert _run_kernel_gate(tmp_path, second).returncode != 0
+    backport = {"linux-image-6.12-amd64": "6.12.95-1~bpo12+1",
+                "linux-image-6.12.95+deb12-amd64": "6.12.95-1~bpo12+1"}
+    assert _run_kernel_gate(tmp_path, backport).returncode != 0
+    older = {"linux-image-6.12-amd64": "6.12.111-1~deb12u1",
+             "linux-image-6.12.111+deb12-amd64": "6.12.111-1~deb12u1"}
+    assert _run_kernel_gate(tmp_path, older).returncode != 0
+
+
 def test_qemu_gate_inspects_kernel_firmware_and_every_offered_keymap():
     source = QEMU.read_text(encoding="utf-8")
     for name in (*FIRMWARE, "console-data"):
