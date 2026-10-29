@@ -686,13 +686,16 @@ def _label_line_cuts(widget: tk.Misc, top: float, height: float) -> tuple[float,
     try:
         if not str(widget.cget("text")):
             return ()
-        line = float(widget.tk.call("font", "metrics", widget.cget("font"), "-linespace"))
+        line = float(str(widget.tk.call("font", "metrics", widget.cget("font"), "-linespace")))
+        # Screen distances can come back as Tcl objects (Debian 12's Python
+        # 3.11 and Tk 8.6.13 return pady that way), which float() rejects;
+        # Tk converts its own distance text, units included.
         inset = sum(
-            float(widget.cget(option))
+            float(widget.winfo_fpixels(str(widget.cget(option))))
             for option in ("borderwidth", "highlightthickness", "pady")
         )
         anchor = str(widget.cget("anchor"))
-    except (tk.TclError, ValueError):
+    except (tk.TclError, TypeError, ValueError):
         return ()
     if line <= 0:
         return ()
