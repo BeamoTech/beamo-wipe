@@ -32,6 +32,7 @@ def _qemu_gate_output_names() -> set[str]:
         "fixed-vulnerabilities.txt",
         "accessible-runtime.txt",
         "keyboard-layouts.txt",
+        "secure-boot-signers.txt",
         "report-image.txt",
         "report-helper-crash.txt",
         "fake-disk-e2e.txt",

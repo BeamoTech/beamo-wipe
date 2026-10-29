@@ -67,7 +67,11 @@ describes as dual-signed with the 2023 CA and NX-capable
 ([Debian CA changes](https://wiki.debian.org/SecureBoot/CAChanges)). The QEMU
 gate refuses an older `shim-signed`. Until Q12 is repeated on that exact image,
 its signer list, SBAT entries and 2023-only behaviour are UNKNOWN; this
-section's 0.2.12 findings do not transfer to it.
+section's 0.2.12 findings do not transfer to it. The QEMU gate now records
+every signature and SBAT entry of the built image's shim, GRUB and kernel in
+`secure-boot-signers.txt` (and fails if shim lacks a Microsoft UEFI CA
+signature or GRUB/kernel a Debian one); a person still has to compare that
+record with firmware policy for the Q12 receipt.
 
 Shim has `shim,4` / `shim.debian,1` SBAT entries. GRUB has `grub,5`,
 `grub.debian,5`, and `grub.debian12,1`. Evaluate every matching entry against

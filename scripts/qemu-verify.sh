@@ -253,8 +253,10 @@ grep -q 'El Torito' "$EVIDENCE_DIR/isoinfo.txt" || {
 }
 
 # Inspect the exact ISO bytes without requiring the worker's ISO9660 driver.
-# Only the three inspected files are extracted from a private, hash-bound
-# snapshot. The live SquashFS remains mounted read-only for all existing checks.
+# Only the inspected paths are extracted from a private, hash-bound snapshot:
+# /live (SquashFS, kernel, initramfs), /isolinux (BIOS loader and menu),
+# /EFI/boot (shim, GRUB) and the GRUB menu, as regular files only. The live
+# SquashFS remains mounted read-only for all existing checks.
 python3 - "$ISO" "$RUN_ROOT/inspection.iso" "$ISO_MOUNT" "$QEMU_ISO_SHA" \
   >"$EVIDENCE_DIR/iso-extraction.txt" 2>&1 <<'PYISO'
 import hashlib
@@ -279,17 +281,29 @@ if digest.hexdigest() != expected:
     raise SystemExit('ISO inspection snapshot differs from verified artifact')
 os.chmod(snapshot, 0o400)
 command = ['xorriso', '-osirrox', 'on', '-indev', str(snapshot)]
-names = ('live/filesystem.squashfs', 'isolinux/live.cfg', 'boot/grub/grub.cfg')
-for name in names:
+# Directories: the kernel and initramfs names carry the kernel version, and
+# the BIOS and EFI loader sets are checked as a whole.
+extracted = ('live', 'isolinux', 'EFI/boot', 'boot/grub/grub.cfg')
+required = ('live/filesystem.squashfs', 'isolinux/live.cfg', 'isolinux/isolinux.bin',
+            'EFI/boot/bootx64.efi', 'EFI/boot/grubx64.efi', 'boot/grub/grub.cfg')
+for name in extracted:
     target = destination / name
     target.parent.mkdir(parents=True, exist_ok=True)
     command.extend(('-extract', '/' + name, str(target)))
 subprocess.run(command, check=True)
-for name in names:
-    target = destination / name
-    if not stat.S_ISREG(target.lstat().st_mode):
+files = []
+for name in extracted:
+    for path in [destination / name, *(destination / name).rglob('*')]:
+        mode = path.lstat().st_mode
+        if stat.S_ISREG(mode):
+            files.append(path)
+        elif not stat.S_ISDIR(mode):
+            raise SystemExit('ISO inspection output is not a regular file')
+for name in required:
+    if not stat.S_ISREG((destination / name).lstat().st_mode):
         raise SystemExit('ISO inspection output is not a regular file')
-    target.chmod(0o400)
+for path in files:
+    path.chmod(0o400)
 snapshot.unlink()
 print('Inspected ISO snapshot SHA-256:', expected)
 PYISO
@@ -335,6 +349,61 @@ image = (iso / "isolinux.bin").read_bytes()
 reference = pathlib.Path("/usr/lib/ISOLINUX/isolinux.bin").read_bytes()
 if len(image) != len(reference) or image[:8] + image[64:] != reference[:8] + reference[64:]:
     sys.exit("ISO isolinux/isolinux.bin is not Debian 12 isolinux's loader")
+PY
+# Secure Boot chain of this exact image for the human Q12 inspection
+# (docs/secure-boot-acceptance.md): every signature and SBAT entry of shim,
+# GRUB and the kernel. The gate requires only the publishers every Debian
+# signed chain has; firmware trust and revocation stay a human judgement.
+# A subshell with explicit exits: errexit does not apply inside an || list.
+(
+  for efi in "$ISO_MOUNT/EFI/boot/bootx64.efi" "$ISO_MOUNT/EFI/boot/grubx64.efi" \
+      "$ISO_MOUNT"/live/vmlinuz-*; do
+    printf '== %s\n' "${efi#"$ISO_MOUNT"/}"
+    sbverify --list "$efi" || exit 1
+  done
+) >"$EVIDENCE_DIR/secure-boot-signers.txt" 2>&1 || {
+  echo "could not list the ISO's Secure Boot signatures" >&2; exit 2; }
+python3 - "$EVIDENCE_DIR/secure-boot-signers.txt" "$ISO_MOUNT" <<'PY' || exit 2
+import pathlib
+import struct
+import sys
+
+evidence, root = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
+sections = {}
+for block in evidence.read_text(encoding="utf-8", errors="replace").split("== ")[1:]:
+    name, _, body = block.partition("\n")
+    sections[name.strip()] = body
+
+
+def sbat(path):
+    """The PE .sbat section text, or "" when the binary has none."""
+    data = path.read_bytes()
+    offset = struct.unpack_from("<I", data, 0x3C)[0]
+    if data[offset:offset + 4] != b"PE\0\0":
+        sys.exit(f"{path.name} is not a PE image")
+    count, optional = struct.unpack_from("<H12xH", data, offset + 6)
+    table = offset + 24 + optional
+    for index in range(count):
+        entry = table + 40 * index
+        name = data[entry:entry + 8].rstrip(b"\0")
+        size, _, raw_size, raw_offset = struct.unpack_from("<IIII", data, entry + 8)
+        if name == b".sbat":
+            return data[raw_offset:raw_offset + min(size, raw_size)].rstrip(b"\0").decode("ascii", "replace")
+    return ""
+
+
+with evidence.open("a", encoding="utf-8") as out:
+    for name in sections:
+        out.write(f"-- sbat {name}\n{sbat(root / name)}\n")
+shim = sections.get("EFI/boot/bootx64.efi", "")
+grub = sections.get("EFI/boot/grubx64.efi", "")
+kernels = [body for name, body in sections.items() if name.startswith("live/vmlinuz-")]
+if "Microsoft Corporation UEFI CA" not in shim:
+    sys.exit("ISO shim has no Microsoft UEFI CA signature")
+if "Debian Secure Boot" not in grub or not kernels:
+    sys.exit("ISO GRUB or kernel has no Debian Secure Boot signature")
+if not all("Debian Secure Boot" in body for body in kernels):
+    sys.exit("ISO kernel has no Debian Secure Boot signature")
 PY
 
 # Boot menus carry Beamo Wipe identity and never imply booting erases.
