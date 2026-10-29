@@ -84,6 +84,11 @@ run_ui() {
   else
     graphical_rc=127
   fi
+  # Fixed, identifier-free marker for the QEMU gate: the graphical guide did
+  # not run and the keyboard text screens follow (harmless without serial).
+  if [ -c /dev/ttyS0 ]; then
+    printf '%s\n' BEAMO_WIPE_GRAPHICAL_FAILED >/dev/ttyS0 2>/dev/null || true
+  fi
   say "The spoken screen could not start. A keyboard text screen is showing instead. Speech is not available on it."
   run_console
 }

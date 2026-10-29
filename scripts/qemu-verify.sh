@@ -1070,6 +1070,8 @@ with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as client:
             },
             action,
         )
+    elif action == "screendump":
+        execute("screendump", {"filename": value, "format": "png"}, "screendump")
     elif action == "hotplug-report":
         execute(
             "blockdev-add",
@@ -1180,6 +1182,7 @@ report_marker_summary() {
     BEAMO_WIPE_RECOVERY_UNAVAILABLE \
     BEAMO_WIPE_UI_MODE=accessible \
     BEAMO_WIPE_SAFE_VIDEO=1 \
+    BEAMO_WIPE_GRAPHICAL_FAILED \
     BEAMO_WIPE_ACCESSIBLE_SCREEN_KEYBOARD \
     BEAMO_WIPE_SCREEN_SPLASH \
     BEAMO_WIPE_SCREEN_KEYBOARD \
@@ -1320,8 +1323,18 @@ wait_for_marker() {
     return 0
   fi
   report_marker_summary "$label"
+  capture_guest_screen "$label"
   echo "QEMU $label never emitted marker $marker" >&2
   return 1
+}
+
+# Diagnostics only: what the guest showed when an expected marker never
+# came (a guest framebuffer image; never gates a result).
+capture_guest_screen() {
+  local label="$1" socket_path="$RUN_ROOT/${1}.qmp"
+  [[ -S "$socket_path" ]] || return 0
+  qmp_request "$socket_path" screendump "$EVIDENCE_DIR/${label}-screen.png" \
+    >/dev/null 2>&1 || true
 }
 
 wait_for_new_marker() {
