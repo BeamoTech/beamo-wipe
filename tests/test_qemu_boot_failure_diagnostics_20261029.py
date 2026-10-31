@@ -49,6 +49,7 @@ def _run_ui(tmp_path, startx_rc: int) -> tuple[subprocess.CompletedProcess, list
         "say() { :; }\n"
         f"startx() {{ return {startx_rc}; }}\n"
         "fake_console() { echo CONSOLE_RAN; }\n"
+        "safe_video_xorg_config() { :; }\n"
         + block
         + "run_ui\n"
     )
@@ -105,3 +106,45 @@ def test_capture_is_skipped_without_a_live_qmp_socket(tmp_path):
     result = subprocess.run(["bash", "-c", script], capture_output=True, text=True, timeout=30)
     assert result.returncode == 0, result.stderr
     assert result.stdout.split() == ["DONE"]
+
+
+def _safe_video_config(tmp_path, cmdline: str, fb0: bool, dri: bool):
+    source = KIOSK.read_text(encoding="utf-8")
+    dev = tmp_path / "dev"
+    (dev / "dri").mkdir(parents=True)
+    if fb0:
+        (dev / "fb0").write_text("")
+    if dri:
+        (dev / "dri" / "card0").write_text("")
+    (tmp_path / "cmdline").write_text(cmdline + "\n")
+    out = tmp_path / "20-beamo-safe-video.conf"
+    out.write_text("stale from an earlier session\n")
+    block = (_function(source, "boot_has_word") + _function(source, "safe_video_xorg_config"))
+    block = block.replace("/proc/cmdline", f'"{tmp_path}/cmdline"')
+    block = block.replace("[ -e /dev/", f'[ -e {dev.as_posix()}/')
+    script = f'set -u\nSAFE_VIDEO_XORG="{out}"\n' + block + "safe_video_xorg_config\n"
+    result = subprocess.run(["sh", "-c", script], capture_output=True, text=True, timeout=30)
+    assert result.returncode == 0, result.stderr
+    return out.read_text() if out.exists() else None
+
+
+def test_uefi_safe_video_points_x_at_the_firmware_framebuffer(tmp_path):
+    # CI run 41237147966: fb0 present, no DRM device, X tried only vesa.
+    config = _safe_video_config(tmp_path, "boot=live nomodeset nosplash", fb0=True, dri=False)
+    assert 'Driver "fbdev"' in config and 'Option "fbdev" "/dev/fb0"' in config
+    assert "BusID" not in config and "vesa" not in config.lower()
+
+
+def test_other_sessions_leave_x_autodetection_alone(tmp_path):
+    # BIOS safe video (no framebuffer: vesa works), KMS present, or a normal
+    # boot: no pinned driver, and a stale file from before is removed.
+    assert _safe_video_config(tmp_path / "a", "boot=live nomodeset", fb0=False, dri=False) is None
+    assert _safe_video_config(tmp_path / "b", "boot=live nomodeset", fb0=True, dri=True) is None
+    assert _safe_video_config(tmp_path / "c", "boot=live quiet", fb0=True, dri=False) is None
+
+
+def test_run_ui_writes_the_safe_video_config_before_x_starts():
+    source = KIOSK.read_text(encoding="utf-8")
+    body = _function(source, "run_ui")
+    assert body.index("safe_video_xorg_config") < body.index("startx ")
+    assert "SAFE_VIDEO_XORG=/etc/X11/xorg.conf.d/20-beamo-safe-video.conf" in source
