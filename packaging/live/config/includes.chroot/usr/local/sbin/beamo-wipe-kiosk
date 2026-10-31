@@ -67,6 +67,30 @@ run_console() {
   return "$console_rc"
 }
 
+# Fixed, identifier-free classification of a failed X start for the QEMU
+# gate: which display devices exist and which known X error was logged.
+# No log text, device name or hardware detail is ever printed.
+graphical_diagnostics() {
+  if [ -e /dev/fb0 ]; then echo BEAMO_WIPE_X_FB0=1; else echo BEAMO_WIPE_X_FB0=0; fi
+  if [ -e /dev/dri/card0 ]; then echo BEAMO_WIPE_X_DRI=1; else echo BEAMO_WIPE_X_DRI=0; fi
+  x_log=""
+  for candidate in /var/log/Xorg.0.log /root/.local/share/xorg/Xorg.0.log; do
+    if [ -r "$candidate" ]; then x_log="$candidate"; break; fi
+  done
+  if [ -z "$x_log" ]; then
+    echo BEAMO_WIPE_X_LOG_MISSING
+    return 0
+  fi
+  grep -q 'no screens found' "$x_log" && echo BEAMO_WIPE_X_NO_SCREENS
+  grep -q 'No devices detected' "$x_log" && echo BEAMO_WIPE_X_NO_DEVICES
+  grep -q '(EE) modeset' "$x_log" && echo BEAMO_WIPE_X_MODESET_ERROR
+  grep -q '(EE) FBDEV' "$x_log" && echo BEAMO_WIPE_X_FBDEV_ERROR
+  grep -q '(EE) VESA' "$x_log" && echo BEAMO_WIPE_X_VESA_ERROR
+  grep -q 'Failed to load module' "$x_log" && echo BEAMO_WIPE_X_MODULE_MISSING
+  grep -q 'Fatal server error' "$x_log" && echo BEAMO_WIPE_X_FATAL
+  return 0
+}
+
 run_ui() {
   rm -f /tmp/.X11-unix/X0 /tmp/.X0-lock "$XAUTHORITY" 2>/dev/null || true
   say "Beamo Wipe is starting with speech. No new erase starts automatically."
@@ -88,6 +112,7 @@ run_ui() {
   # not run and the keyboard text screens follow (harmless without serial).
   if [ -c /dev/ttyS0 ]; then
     printf '%s\n' BEAMO_WIPE_GRAPHICAL_FAILED >/dev/ttyS0 2>/dev/null || true
+    graphical_diagnostics >/dev/ttyS0 2>/dev/null || true
   fi
   say "The spoken screen could not start. A keyboard text screen is showing instead. Speech is not available on it."
   run_console

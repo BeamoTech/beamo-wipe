@@ -13,11 +13,18 @@ and files only.
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 KIOSK = ROOT / "packaging/live/config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk"
 QEMU = ROOT / "scripts/qemu-verify.sh"
+X_MARKERS = {
+    "BEAMO_WIPE_X_FB0=1", "BEAMO_WIPE_X_FB0=0", "BEAMO_WIPE_X_DRI=1", "BEAMO_WIPE_X_DRI=0",
+    "BEAMO_WIPE_X_LOG_MISSING", "BEAMO_WIPE_X_NO_SCREENS", "BEAMO_WIPE_X_NO_DEVICES",
+    "BEAMO_WIPE_X_MODESET_ERROR", "BEAMO_WIPE_X_FBDEV_ERROR", "BEAMO_WIPE_X_VESA_ERROR",
+    "BEAMO_WIPE_X_MODULE_MISSING", "BEAMO_WIPE_X_FATAL",
+}
 
 
 def _function(source: str, name: str) -> str:
@@ -28,7 +35,8 @@ def _run_ui(tmp_path, startx_rc: int) -> tuple[subprocess.CompletedProcess, list
     source = KIOSK.read_text(encoding="utf-8")
     serial = tmp_path / "ttyS0"
     serial.write_text("")
-    block = (_function(source, "run_console") + _function(source, "run_ui"))
+    block = (_function(source, "run_console") + _function(source, "graphical_diagnostics")
+             + _function(source, "run_ui"))
     block = (
         block.replace("[ -c /dev/ttyS0 ]", f'[ -f "{serial}" ]')
         .replace(">/dev/ttyS0", f'>>"{serial}"')
@@ -51,7 +59,11 @@ def _run_ui(tmp_path, startx_rc: int) -> tuple[subprocess.CompletedProcess, list
 def test_failed_graphical_start_sends_a_fixed_marker_then_falls_back(tmp_path):
     result, markers = _run_ui(tmp_path, 1)
     assert result.returncode == 0, result.stderr
-    assert markers == ["BEAMO_WIPE_GRAPHICAL_FAILED"]
+    assert markers[0] == "BEAMO_WIPE_GRAPHICAL_FAILED"
+    # Then only fixed classifications: display devices present and known
+    # X errors, never log text or hardware names.
+    assert set(markers[1:]) <= X_MARKERS
+    assert {m.split("=")[0] for m in markers if "=" in m} == {"BEAMO_WIPE_X_FB0", "BEAMO_WIPE_X_DRI"}
     assert "CONSOLE_RAN" in result.stdout
 
 
@@ -66,6 +78,11 @@ def test_gate_reports_the_marker_and_saves_a_screenshot_on_a_missed_marker():
     source = QEMU.read_text(encoding="utf-8")
     summary = _function(source, "report_marker_summary")
     assert "BEAMO_WIPE_GRAPHICAL_FAILED" in summary
+    for marker in X_MARKERS:
+        assert marker in summary, marker
+    kiosk = KIOSK.read_text(encoding="utf-8")
+    emitted = set(re.findall(r"echo (BEAMO_WIPE_X_[A-Z0-9_]+(?:=[01])?)", kiosk))
+    assert emitted == X_MARKERS
     waiting = _function(source, "wait_for_marker")
     timeout_branch = waiting.rsplit('report_marker_summary "$label"', 1)[1]
     assert 'capture_guest_screen "$label"' in timeout_branch
