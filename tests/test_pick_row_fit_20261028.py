@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """A whole disk row fits the picker at 800x600 and 1024x600 (BW-FIN-PICK-ROW).
 
-The boot menu's safe-video entry (``vga=788``) opens the live kiosk at
-800x600. The first row started below the same-size warning and the Compare
+Very old 4:3 panels and some VM or firmware framebuffers open the live
+kiosk at 800x600. The first row started below the same-size warning and the Compare
 toggle, so only its name, capacity and serial were in view: the connection,
 comparison note, contents and nested partitions needed a scroll. Short
 windows now use a denser row and list the Compare toggle after the disks;

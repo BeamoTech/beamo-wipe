@@ -73,8 +73,11 @@ The gate fails unless all of these pass:
 10. The USB image's speech and troubleshoot entries are each selected with
    their shipped menu hotkey under SeaBIOS and OVMF. Speech must render the
    accessible wizard. Troubleshoot must report `BEAMO_WIPE_SAFE_VIDEO=1`
-   (`nomodeset`, no GPU driver) and still reach the exact Confirm token on the
-   firmware framebuffer. QEMU's standard VGA is not a physical GPU.
+   (`nomodeset`, no GPU driver, no forced `vga=` mode) and still reach the exact Confirm token on the
+   firmware framebuffer. QEMU's standard VGA is not a physical GPU. If the
+   graphical guide cannot start, the kiosk sends `BEAMO_WIPE_GRAPHICAL_FAILED`
+   before its keyboard text screens; whenever an expected marker never comes
+   the gate saves the guest screen as `<label>-screen.png` (diagnostics only).
 
 ```sh
 BEAMO_WIPE_VERSION=0.2.14 ./scripts/qemu-verify.sh

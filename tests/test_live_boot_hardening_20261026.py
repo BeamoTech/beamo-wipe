@@ -45,7 +45,11 @@ def test_troubleshoot_entry_is_safe_video_not_legacy_failsafe():
     # verbose: the normal entry's quiet console options are deliberately absent.
     assert set(normal) - {"quiet", "loglevel=3"} <= set(failsafe)
     assert "quiet" not in failsafe and not any(f.startswith("loglevel=") for f in failsafe)
-    assert {"nomodeset", "nosplash", "vga=788"} <= set(failsafe)
+    assert {"nomodeset", "nosplash"} <= set(failsafe)
+    # vga=788 forced a 16-bit VESA framebuffer on which X could not start
+    # (CI run 40824797788: BEAMO_WIPE_GRAPHICAL_FAILED, keyboard text
+    # screens instead of the guide). X or the firmware picks the mode.
+    assert not any(f.startswith("vga=") for f in failsafe)
     for flag in ("memtest", "noapic", "nolapic", "nosmp", "nomce", "nodma", "noapm"):
         assert flag not in failsafe
     assert "nomodeset" not in normal
@@ -57,6 +61,8 @@ def test_qemu_requires_safe_video_and_rejects_legacy_flags_on_built_iso():
     assert required
     flags = required.group(1).replace("\\\n", " ").split()
     assert "nomodeset" in flags and "noapic" not in flags and "memtest" not in flags
+    assert "vga=788" not in flags
+    assert "forces a vga= mode" in source
     assert "for forbidden in memtest noapic nolapic nosmp; do" in source
 
 
@@ -134,7 +140,7 @@ def _kiosk_markers(cmdline: str, tmp_path: Path) -> list[str]:
 
 
 @pytest.mark.parametrize("cmdline,expected", [
-    ("boot=live nox11autologin nomodeset nosplash vga=788", True),
+    ("boot=live nox11autologin nomodeset nosplash", True),
     ("boot=live nox11autologin", False),
     ("boot=live xnomodeset nomodesetx", False),
     ("boot=live beamo.ui=accessible", False),

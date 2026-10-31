@@ -91,8 +91,11 @@ cd /build/packaging/live
 lb clean --all || true
 
 # The troubleshoot entry means safe video: nomodeset keeps the firmware
-# framebuffer (X then uses fbdev or vesa) instead of a GPU driver that can
-# leave a black screen. It omits live-build's legacy failsafe flags
+# framebuffer (X then uses it, or vesa on BIOS) instead of a GPU driver
+# that can leave a black screen. No vga= mode: vga=788 forced a 16-bit
+# VESA framebuffer on which X could not start (QEMU, BIOS), leaving only
+# the keyboard text screens; X now picks the mode, as Ubuntu's safe
+# graphics entry does. It omits live-build's legacy failsafe flags
 # (noapic, nolapic, nosmp, memtest), which can hang or stall modern UEFI PCs.
 # It also stays verbose (no quiet) so a hang shows its last kernel message.
 #
@@ -134,7 +137,7 @@ lb config \
   --firmware-chroot false \
   --initsystem systemd \
   --bootappend-live "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin usbcore.autosuspend=-1 nvme_core.default_ps_max_latency_us=0 quiet loglevel=3" \
-  --bootappend-live-failsafe "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin usbcore.autosuspend=-1 nvme_core.default_ps_max_latency_us=0 nomodeset nosplash vga=788" \
+  --bootappend-live-failsafe "boot=live components hostname=beamo-wipe username=root noeject nopersistence noswap ip=frommedia nox11autologin usbcore.autosuspend=-1 nvme_core.default_ps_max_latency_us=0 nomodeset nosplash" \
   --mirror-bootstrap "https://deb.debian.org/debian/" \
   --mirror-chroot "https://deb.debian.org/debian/" \
   --mirror-binary "https://deb.debian.org/debian/" \

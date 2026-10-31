@@ -448,11 +448,16 @@ uefi_failsafe_linux="$(awk '
 ' "$EFI_GRUB")"
 for boot_line in "$bios_failsafe_append" "$uefi_failsafe_linux"; do
   for required in boot=live nopersistence noswap ip=frommedia nox11autologin \
-                  nomodeset nosplash vga=788; do
+                  nomodeset nosplash; do
     if ! printf '%s\n' "$boot_line" | grep -Eq "(^|[[:space:]])${required}([[:space:]]|$)"; then
       echo "ISO troubleshooting kernel line lost required flag: $required" >&2; exit 2
     fi
   done
+  # A forced vga= mode (16-bit vga=788) left X unable to start; safe video
+  # lets X or the firmware framebuffer choose the mode.
+  if printf '%s\n' "$boot_line" | grep -Eq '(^|[[:space:]])vga='; then
+    echo "ISO troubleshooting kernel line forces a vga= mode" >&2; exit 2
+  fi
   # Legacy live-build failsafe flags can hang or stall modern UEFI PCs.
   for forbidden in memtest noapic nolapic nosmp; do
     if printf '%s\n' "$boot_line" | grep -Eq "(^|[[:space:]])${forbidden}([[:space:]]|$)"; then
