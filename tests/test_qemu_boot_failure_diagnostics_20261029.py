@@ -253,7 +253,9 @@ def test_uefi_safe_video_runs_after_the_other_qemu_stages_with_its_own_target():
         assert source.index(earlier) < probe, earlier
     assert probe < source.index("ABORT: USB image changed during QEMU verification")
     saved = source.index('troubleshoot_uefi_target="$TARGET"')
-    assert source.index("boot_probe bios-troubleshoot-usb no") < saved < source.index("SECURE_CODE=")
+    # Saved after the UEFI probes and Secure Boot, before any bus journey.
+    assert source.index("boot_probe secureboot-usb no") < saved < source.index("run_bus_journey() {")
+    assert source.index('uefi_boot_probe uefi-speech-usb ovmf-speech-vars.fd') < saved
     restore = source[:probe].rsplit("\nfi\n", 1)[1]
     assert restore.split() == [
         'TARGET="$troubleshoot_uefi_target"',

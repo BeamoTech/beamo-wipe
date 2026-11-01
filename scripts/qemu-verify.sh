@@ -2096,10 +2096,6 @@ uefi_boot_probe uefi-speech-usb ovmf-speech-vars.fd
 boot_probe bios-troubleshoot-usb no
 # UEFI safe video runs last (below) so a failure there still leaves
 # evidence for Secure Boot and the SATA/NVMe journeys; it stays required.
-# Keep the exact target and report it would have used here.
-troubleshoot_uefi_target="$TARGET"
-troubleshoot_uefi_serial="$QEMU_TARGET_SERIAL"
-troubleshoot_uefi_report="$REPORT_RAW"
 
 # Enrolled Microsoft keys and SMM enforcement. A bare OVMF boot is not
 # Secure Boot evidence. The guest must report the actual firmware variable.
@@ -2111,6 +2107,12 @@ boot_probe secureboot-usb no \
   -global driver=cfi.pflash01,property=secure,value=on \
   -drive "if=pflash,format=raw,readonly=on,file=$SECURE_CODE" \
   -drive "if=pflash,format=raw,file=$RUN_ROOT/secureboot-vars.fd"
+
+# The bus journeys below replace the target, serial and report; UEFI safe
+# video (last) keeps the exact ones the UEFI probes above used.
+troubleshoot_uefi_target="$TARGET"
+troubleshoot_uefi_serial="$QEMU_TARGET_SERIAL"
+troubleshoot_uefi_report="$REPORT_RAW"
 
 # Most owners erase an NVMe or SATA disk from a writable USB stick. Boot the
 # USB image writable (guest writes go to a discarded overlay; its hash is
