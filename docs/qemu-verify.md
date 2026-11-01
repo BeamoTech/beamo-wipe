@@ -78,6 +78,13 @@ The gate fails unless all of these pass:
    graphical guide cannot start, the kiosk sends `BEAMO_WIPE_GRAPHICAL_FAILED`
    before its keyboard text screens; whenever an expected marker never comes
    the gate saves the guest screen as `<label>-screen.png` (diagnostics only).
+   It also sends fixed `BEAMO_WIPE_X_*` classes (display devices present and
+   known Xorg/fbdev error kinds; never log text). UEFI safe video runs last,
+   after Secure Boot and the SATA/NVMe journeys, with its original target
+   and report, so one failure there still leaves evidence for the rest. On
+   Linux 6.9+ the firmware framebuffer sits under its PCI display device,
+   which bookworm's Xorg 21.1.7 fbdev helper refuses; the kiosk shows X a
+   platform link for it in its private mount namespace only.
 
 ```sh
 BEAMO_WIPE_VERSION=0.2.14 ./scripts/qemu-verify.sh

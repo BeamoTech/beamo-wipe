@@ -24,6 +24,18 @@ X_MARKERS = {
     "BEAMO_WIPE_X_LOG_MISSING", "BEAMO_WIPE_X_NO_SCREENS", "BEAMO_WIPE_X_NO_DEVICES",
     "BEAMO_WIPE_X_MODESET_ERROR", "BEAMO_WIPE_X_FBDEV_ERROR", "BEAMO_WIPE_X_VESA_ERROR",
     "BEAMO_WIPE_X_FB_NOT_FOUND",
+    "BEAMO_WIPE_X_FB_OPEN_FAILED",
+    "BEAMO_WIPE_X_FB_GET_INFO_FAILED",
+    "BEAMO_WIPE_X_FB_PUT_VAR_FAILED",
+    "BEAMO_WIPE_X_FB_MODE_MODIFIED",
+    "BEAMO_WIPE_X_FB_MODE_INIT_FAILED",
+    "BEAMO_WIPE_X_FB_MMAP_FAILED",
+    "BEAMO_WIPE_X_FB_DEPTH_UNSUPPORTED",
+    "BEAMO_WIPE_X_FB_SHADOW_FAILED",
+    "BEAMO_WIPE_X_FB_VISUAL_FAILED",
+    "BEAMO_WIPE_X_FB_TYPE_UNSUPPORTED",
+    "BEAMO_WIPE_X_SCREEN_INIT_FAILED",
+    "BEAMO_WIPE_X_NO_USABLE_SCREEN",
     "BEAMO_WIPE_X_MODULE_MISSING", "BEAMO_WIPE_X_FATAL",
 }
 
@@ -85,6 +97,7 @@ def test_gate_reports_the_marker_and_saves_a_screenshot_on_a_missed_marker():
         assert marker in summary, marker
     kiosk = KIOSK.read_text(encoding="utf-8")
     emitted = set(re.findall(r"echo (BEAMO_WIPE_X_[A-Z0-9_]+(?:=[01])?)", kiosk))
+    emitted |= set(re.findall(r"\n\s+echo (BEAMO_WIPE_X_[A-Z0-9_]+)", kiosk))
     assert emitted == X_MARKERS
     waiting = _function(source, "wait_for_marker")
     timeout_branch = waiting.rsplit('report_marker_summary "$label"', 1)[1]
@@ -230,3 +243,20 @@ def test_firmware_framebuffer_link_stays_in_the_private_namespace():
     assert "PrivateMounts=yes" in unit
     run_ui = _function(KIOSK.read_text(encoding="utf-8"), "run_ui")
     assert run_ui.index("firmware_fb_for_x") < run_ui.index("startx ")
+
+
+def test_uefi_safe_video_runs_after_the_other_qemu_stages_with_its_own_target():
+    source = QEMU.read_text(encoding="utf-8")
+    probe = source.index("uefi_boot_probe uefi-troubleshoot-usb ovmf-troubleshoot-vars.fd")
+    for earlier in ("boot_probe secureboot-usb no", "run_bus_journey bios-sata-usb sata 0004 vfat",
+                    "run_bus_journey uefi-nvme-usb nvme 0005 exfat \\"):
+        assert source.index(earlier) < probe, earlier
+    assert probe < source.index("ABORT: USB image changed during QEMU verification")
+    saved = source.index('troubleshoot_uefi_target="$TARGET"')
+    assert source.index("boot_probe bios-troubleshoot-usb no") < saved < source.index("SECURE_CODE=")
+    restore = source[:probe].rsplit("\nfi\n", 1)[1]
+    assert restore.split() == [
+        'TARGET="$troubleshoot_uefi_target"',
+        'QEMU_TARGET_SERIAL="$troubleshoot_uefi_serial"',
+        'REPORT_RAW="$troubleshoot_uefi_report"',
+    ]

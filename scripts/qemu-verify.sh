@@ -1198,6 +1198,18 @@ report_marker_summary() {
     BEAMO_WIPE_X_MODESET_ERROR \
     BEAMO_WIPE_X_FBDEV_ERROR \
     BEAMO_WIPE_X_FB_NOT_FOUND \
+    BEAMO_WIPE_X_FB_OPEN_FAILED \
+    BEAMO_WIPE_X_FB_GET_INFO_FAILED \
+    BEAMO_WIPE_X_FB_PUT_VAR_FAILED \
+    BEAMO_WIPE_X_FB_MODE_MODIFIED \
+    BEAMO_WIPE_X_FB_MODE_INIT_FAILED \
+    BEAMO_WIPE_X_FB_MMAP_FAILED \
+    BEAMO_WIPE_X_FB_DEPTH_UNSUPPORTED \
+    BEAMO_WIPE_X_FB_SHADOW_FAILED \
+    BEAMO_WIPE_X_FB_VISUAL_FAILED \
+    BEAMO_WIPE_X_FB_TYPE_UNSUPPORTED \
+    BEAMO_WIPE_X_SCREEN_INIT_FAILED \
+    BEAMO_WIPE_X_NO_USABLE_SCREEN \
     BEAMO_WIPE_X_VESA_ERROR \
     BEAMO_WIPE_X_MODULE_MISSING \
     BEAMO_WIPE_X_FATAL \
@@ -2082,7 +2094,12 @@ uefi_boot_probe uefi-speech-usb ovmf-speech-vars.fd
 # The troubleshoot entry (nomodeset) must boot to the same guide on the
 # firmware framebuffer, without a GPU driver, and reach the exact Confirm.
 boot_probe bios-troubleshoot-usb no
-uefi_boot_probe uefi-troubleshoot-usb ovmf-troubleshoot-vars.fd
+# UEFI safe video runs last (below) so a failure there still leaves
+# evidence for Secure Boot and the SATA/NVMe journeys; it stays required.
+# Keep the exact target and report it would have used here.
+troubleshoot_uefi_target="$TARGET"
+troubleshoot_uefi_serial="$QEMU_TARGET_SERIAL"
+troubleshoot_uefi_report="$REPORT_RAW"
 
 # Enrolled Microsoft keys and SMM enforcement. A bare OVMF boot is not
 # Secure Boot evidence. The guest must report the actual firmware variable.
@@ -2158,6 +2175,11 @@ if [[ -f "$OVMF_VARS" ]]; then
 else
   run_bus_journey uefi-nvme-usb nvme 0005 exfat -bios "$OVMF_CODE"
 fi
+
+TARGET="$troubleshoot_uefi_target"
+QEMU_TARGET_SERIAL="$troubleshoot_uefi_serial"
+REPORT_RAW="$troubleshoot_uefi_report"
+uefi_boot_probe uefi-troubleshoot-usb ovmf-troubleshoot-vars.fd
 
 if [[ "$(sha256sum "$USB_IMAGE" | awk '{print $1}')" != "$QEMU_USB_SHA" ]]; then
   echo 'ABORT: USB image changed during QEMU verification' >&2

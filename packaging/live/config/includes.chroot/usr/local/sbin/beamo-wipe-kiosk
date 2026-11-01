@@ -86,6 +86,22 @@ graphical_diagnostics() {
   grep -q '(EE) modeset' "$x_log" && echo BEAMO_WIPE_X_MODESET_ERROR
   grep -q '(EE) FBDEV' "$x_log" && echo BEAMO_WIPE_X_FBDEV_ERROR
   grep -q 'Unable to find a valid framebuffer device' "$x_log" && echo BEAMO_WIPE_X_FB_NOT_FOUND
+  # Each fixed fbdev/fbdevhw (Xorg 21.1.7, fbdev 0.5.0) failure class.
+  grep -q 'Failed to open framebuffer device' "$x_log" && echo BEAMO_WIPE_X_FB_OPEN_FAILED
+  grep -q 'FBIOGET_[FV]SCREENINFO' "$x_log" && echo BEAMO_WIPE_X_FB_GET_INFO_FAILED
+  grep -q 'FBIOPUT_VSCREENINFO: ' "$x_log" && echo BEAMO_WIPE_X_FB_PUT_VAR_FAILED
+  grep -q 'FBIOPUT_VSCREENINFO succeeded but modified' "$x_log" && echo BEAMO_WIPE_X_FB_MODE_MODIFIED
+  grep -q 'mode initialization failed' "$x_log" && echo BEAMO_WIPE_X_FB_MODE_INIT_FAILED
+  grep -q 'mmap fbmem\|mapping of video memory' "$x_log" && echo BEAMO_WIPE_X_FB_MMAP_FAILED
+  grep -q 'bits per pixel\|not supported at depth\|pixmap depth setup failed' "$x_log" &&
+    echo BEAMO_WIPE_X_FB_DEPTH_UNSUPPORTED
+  grep -q 'shadow framebuffer' "$x_log" && echo BEAMO_WIPE_X_FB_SHADOW_FAILED
+  grep -q 'visual type setup failed\|miCreateDefColormap failed' "$x_log" &&
+    echo BEAMO_WIPE_X_FB_VISUAL_FAILED
+  grep -q 'not yet supported\|text mode is not supported\|unrecognised' "$x_log" &&
+    echo BEAMO_WIPE_X_FB_TYPE_UNSUPPORTED
+  grep -q 'AddScreen/ScreenInit failed' "$x_log" && echo BEAMO_WIPE_X_SCREEN_INIT_FAILED
+  grep -q 'none have a usable configuration' "$x_log" && echo BEAMO_WIPE_X_NO_USABLE_SCREEN
   grep -q '(EE) VESA' "$x_log" && echo BEAMO_WIPE_X_VESA_ERROR
   grep -q 'Failed to load module' "$x_log" && echo BEAMO_WIPE_X_MODULE_MISSING
   grep -q 'Fatal server error' "$x_log" && echo BEAMO_WIPE_X_FATAL
