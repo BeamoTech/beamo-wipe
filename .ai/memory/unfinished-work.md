@@ -2388,3 +2388,45 @@
 - Unchanged: BW-P3-WSL-DOWN (owner action), BW-P3-FULL-LOCAL (hosted full
   suite passed on a76ee5c: covers it for this head), BW-FIN-L10N-REVIEW,
   BW-RR-PHYS, BW-RR-RELEASE, PR #93 ordering, owner merge decision.
+
+### BW-PASS3-UI2-20261101 — second UI modernisation pass — 2026-11-01 / Claude (Opus 5.5)
+
+Owner request: "It still needs a bit of modernization. Go ahead and run
+another very thorough and comprehensive pass of this." Repo
+`beamo-wipe`, branch `fix/release-readiness-20261026`, readiness clone
+`C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`.
+
+- DONE locally (commit after this note on the same branch):
+  - lighter secondary button edge (`BUTTON_EDGE`);
+  - sound and "Erase another disk" actions are links;
+  - no rule inside the footer;
+  - soft selected-disk summary edge (`SUMMARY_EDGE`), with Show more in
+    its caption row on Confirm, Method, Working and Done;
+  - Pick help link and Show more on the inventory row;
+  - storage-limits link inside the limits notice on roomy Method;
+  - segmented text-size control;
+  - one-column review screen: red erase callout (same words), countdown
+    ring beside its caption, compact on 800x600 and 1024x600;
+  - evidence warning on Working is a warn panel;
+  - sans monospace fallback for Windows/macOS previews;
+  - gallery mirrors tokens, review layout, segmented control and links.
+  - Tests: `tests/test_modern_polish_20261101.py`; pass-1 review test
+    updated; the gallery Node test pipes its program on stdin.
+- Local evidence (Windows harness, not Linux):
+  - new file plus pass-1 layout tests: 48 passed (one Tk file-read error);
+  - review/countdown fit in every language at 800x600 and 1024x600,
+    kiosk and preview: 51 passed. A first version overflowed by up to
+    22 px in preview; fixed before commit;
+  - `test_ui_fit_20261027` + `test_tk_runtime`: failure set identical to
+    HEAD `1ba496c` (16 environmental each);
+  - gallery files: only difference was the Node argv-length limit, now
+    fixed (6 passed).
+  - Not run here: Playwright browser tests; Linux/DejaVu 72 DPI fits;
+    `test_reflow_large_text` last_chance, which hangs on this host for
+    both trees.
+- Host note: C: had about 0.95 GB free, and Tk library reads failed
+  intermittently (BW-P3-WSL-DOWN owner action).
+- NEXT: the hosted gate must pass on the new head before merge (any push
+  reruns the paid full gate). Independent review (BW-P3-GREPTILE) must
+  cover this diff too. Owner looks at the screenshots in the scratch
+  `compare2/`.

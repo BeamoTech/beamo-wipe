@@ -110,11 +110,15 @@ def test_roomy_review_groups_its_facts_in_a_white_card(tk_app):  # noqa: F811
         w for w in _descendants(app._body)
         if w.winfo_class() == "Label" and str(w.cget("text")).startswith(C.SEVERITY_WARNING + ":")
     )
-    assert warning.cget("bg") == tkui.SURFACE
+    # The warning is a red callout (test_modern_polish_20261101) inside the
+    # one white review card.
+    boxes = []
     node = warning
-    while node is not None and not isinstance(node, tkui._Box):
+    while node is not None:
+        if isinstance(node, tkui._Box):
+            boxes.append(node._fill)
         node = node.master
-    assert node is not None and node._fill == tkui.SURFACE
+    assert boxes[:2] == [tkui.DANGER_TINT, tkui.SURFACE]
     assert not wiz.erase_enabled and not wiz.runner.started
 
 

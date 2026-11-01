@@ -812,7 +812,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
     /* Shared palette, pinned against ui/tk_wizard.py by tests/test_ui_system.py. */
     --bg: #EEF2F6; --surface: #FFFFFF; --surface-alt: #F4F6F8;
     --ink: #12202E; --muted: #4A5A6A;
-    --border: #E3E8EE; --border-strong: #6E7C8A;
+    --border: #E3E8EE; --border-strong: #6E7C8A; --button-edge: #C3CCD6; --summary-edge: #B9CBE0;
     --navy: #0A1B34; --navy-soft: #16315C; --navy-muted: #C9D6E8;
     --primary: #1C4A73; --primary-dark: #163A5C; --primary-press: #102A44; --primary-tint: #F0F5FA;
     --danger: #B3261E; --danger-dark: #8E1D16; --danger-press: #6E1510; --danger-tint: #FBEBE9; --danger-border: #E6A79E;
@@ -845,7 +845,10 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .shell .card .title { font-size: calc(16px * var(--type)); }
   .shell .small, .shell .card .meta { font-size: calc(14px * var(--type)); }
   .shell button.btn { font-size: calc(15px * var(--type)); }
-  .textsizes { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+  .textsizes { display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 2px; margin: 0 0 12px; background: var(--track); border-radius: var(--pill); }
+  .textsizes button.btn { min-width: 0; padding: 6px 16px; font-size: 14px; }
+  .textsizes button.btn.segment { background: transparent; color: var(--ink); }
+  .textsizes button.btn.segment:hover { background: #D9E0E8; }
   .preview-stripe { background: var(--accent); color: var(--navy); padding: 8px 28px; font-size: 13px; font-weight: 700; letter-spacing: .01em; overflow-wrap: break-word; }
   /* Quiet white chrome: the navy-on-transparent mark sits on a white bar
      above the gray page, a hairline below it — mirroring _draw_header. */
@@ -856,12 +859,13 @@ _TEMPLATE = r"""<!DOCTYPE html>
   /* Current-stage text lives in .steptext. The list is a screen-reader
      name only — never eight equal pages. */
   .journey { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-  .review-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(140px, 200px); gap: 24px; margin-top: 8px; align-items: start; }
-  .shell[data-text="large"] .review-grid,
-  .shell[data-text="extra"] .review-grid { grid-template-columns: minmax(0, 1fr); }
-  .review-grid .countcap { max-width: 260px; text-align: center; }
+  .review-grid { display: grid; grid-template-columns: minmax(0, 1fr); margin-top: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+  .erase-callout { display: flex; gap: 12px; align-items: flex-start; background: var(--danger-tint); border: 1px solid var(--danger-border); border-radius: var(--radius); padding: 12px 14px; margin-top: 14px; }
+  .erase-callout .review-warning { margin: 0; }
+  .review-grid .ringwrap { flex-direction: row; justify-content: flex-start; gap: 16px; margin: 14px 0 4px; }
+  .review-grid .countcap { margin-top: 0; text-align: left; }
   .review-warning { color: var(--danger); font-weight: 700; overflow-wrap: anywhere; }
-  .card.identity { background: var(--primary-tint); border-color: var(--primary); padding: 16px 22px; }
+  .card.identity { background: var(--primary-tint); border-color: var(--summary-edge); padding: 16px 22px; }
   .identity-label { color: var(--primary); font-size: 12px; font-weight: 700; margin-bottom: 6px; }
   .serialpair { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
   .serialpair .ser { min-width: 0; }
@@ -930,11 +934,11 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .panel.ok .sev { color: var(--ok); }
   .panel.limits .sev { color: var(--primary); }
   .panel .extra { font-size: 14px; color: var(--muted); margin-top: 4px; }
-  /* Assist (utilities + keyboard hints) above a hairline; navigation is
-     Back/secondary left and the primary action right. */
+  /* Assist (utilities + keyboard hints) above the navigation row: Back/
+     secondary left and the primary action right. No rule between them. */
   .foot { flex: none; padding: 0 32px; background: var(--surface); border-top: 1px solid var(--border); }
   .assist { max-width: 940px; margin: 0 auto; padding-top: 4px; }
-  .footrow { max-width: 940px; margin: 0 auto; padding: 16px 0 20px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .footrow { max-width: 940px; margin: 0 auto; padding: 12px 0 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .card, .panel, .foot, .compare-pre, .help-reader { overflow-wrap: anywhere; }
   .fleft, .fright { display: flex; gap: 12px; flex: none; }
   .fright { margin-left: auto; }
@@ -948,7 +952,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
   button.btn.danger { background: var(--danger); color: #fff; min-width: 160px; }
   button.btn.danger:hover:not(:disabled) { background: var(--danger-dark); }
   button.btn.danger:active:not(:disabled) { background: var(--danger-press); }
-  button.btn.secondary { background: var(--surface); color: var(--ink); border: 1px solid var(--border-strong); }
+  button.btn.secondary { background: var(--surface); color: var(--ink); border: 1px solid var(--button-edge); }
   .secondary:hover:not(:disabled) { background: var(--surface-alt); }
   .secondary:active:not(:disabled) { background: #E2E8EE; }
   button.btn:disabled { background: var(--disabled-bg); color: var(--disabled-fg); border-color: transparent; box-shadow: none; cursor: not-allowed; }
@@ -1086,8 +1090,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .page, .shell, .body, .col { min-width: 0; }
   @media (max-width: 1000px) { .hdr { padding: 0 16px; } }
   @media (max-width: 700px) {
-    .review-grid { grid-template-columns: minmax(0, 1fr); }
-    .review-grid .ringwrap { padding: 12px 0; }
+    .review-grid { padding: 12px; }
     .pick-tools { flex-wrap: wrap; }
     .page { padding: 12px 8px 24px; }
     .body { padding: 0 16px 16px; }
@@ -1216,7 +1219,8 @@ function badge(kind, size) {
       `<line x1="${s*0.28}" y1="${s*0.52}" x2="${s*0.72}" y2="${s*0.52}" stroke="#fff" stroke-width="${s*0.07}" stroke-linecap="round"/>` +
       `<line x1="${s*0.28}" y1="${s*0.68}" x2="${s*0.72}" y2="${s*0.68}" stroke="#fff" stroke-width="${s*0.07}" stroke-linecap="round"/></svg>`;
   }
-  const c = "#7A5200";
+  // "erase" is the warn triangle in red (the review screen's erase warning).
+  const c = kind === "erase" ? "#B3261E" : "#7A5200";
   return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}">` +
     `<path d="M ${s/2} ${2} L ${s-2} ${s-3} L 2 ${s-3} Z" fill="${c}" stroke="${c}" stroke-width="${s*0.18}" stroke-linejoin="round"/>` +
     `<line x1="${s/2}" y1="${s*0.36}" x2="${s/2}" y2="${s*0.62}" stroke="#fff" stroke-width="${s*0.09}" stroke-linecap="round"/>` +
@@ -1490,7 +1494,7 @@ function draw() {
       const selected = (keyboardLayout || "us") === item.id;
       return `<div class="card pickable${selected ? " sel" : ""}" data-layout="${item.id}" tabindex="0" role="button" aria-pressed="${selected}"><div class="row"><span class="radio"></span><div class="grow"><div class="title">${item.title}</div><p class="small muted">${item.note}</p></div><span class="kbd">${i+1}</span></div></div>`;
     }).join("");
-    const sizes = P.textSizes.map(item => `<button type="button" class="btn${textSize === item.id ? " primary" : ""}" data-text="${item.id}">${item.label}</button>`).join("");
+    const sizes = P.textSizes.map(item => `<button type="button" class="btn ${textSize === item.id ? "primary" : "segment"}" data-text="${item.id}">${item.label}</button>`).join("");
     const langs = P.languages.map(l => `<div class="small">${l.active ? ">" : "&nbsp;"} ${l.name}</div>`).join("");
     main.innerHTML = `<h1 class="sub">${P.titles.keyboard}</h1><p class="subtitle">${P.keyboardLead}</p>
       <p class="small muted">${P.keyboardLimits}</p>
@@ -1746,7 +1750,7 @@ function draw() {
     const frac = ready ? 1 : Math.max(0, Math.min(1, tLeft / 5));
     const ringColor = "var(--primary)";
     main.innerHTML = `<h1 class="sub">${P.titles.last}</h1><p class="subtitle">${P.lastLead}</p>
-      <div class="review-grid"><div>${summaryCard(selected)}<p style="font-weight:700">${esc(P.methods[method].operation)}</p><p class="review-warning">${P.sevWarning}: ${esc(selected.eraseLabel)}</p><p class="small">${P.methods[method].summary}</p>${powerPanel()}</div><div class="ringwrap"><div style="position:relative;width:64px;height:64px">
+      <div class="review-grid"><div>${summaryCard(selected)}<p style="font-weight:700;margin-bottom:2px">${esc(P.methods[method].operation)}</p><p class="small muted" style="margin-top:0">${P.methods[method].summary}</p><div class="erase-callout" role="alert">${badge("erase", 24)}<p class="review-warning">${P.sevWarning}: ${esc(selected.eraseLabel)}</p></div></div><div class="ringwrap"><div style="position:relative;width:64px;height:64px;flex:none">
         <svg width="64" height="64" viewBox="0 0 190 190">
           <circle cx="95" cy="95" r="81" fill="none" stroke="var(--track)" stroke-width="11"/>
           ${ready ? `<circle cx="95" cy="95" r="81" fill="none" stroke="var(--primary)" stroke-width="11"/>` :
@@ -1754,7 +1758,7 @@ function draw() {
               stroke-dasharray="${CIRC}" stroke-dashoffset="${CIRC * (1 - frac)}" transform="rotate(-90 95 95)"/>`}
         </svg>
         <div class="ringnum" style="${ready ? "color:var(--primary)" : ""}">${ready ? "0" : tLeft}</div></div>
-      <div class="countcap${ready ? " ready" : ""}">${ready ? P.countdownReady : P.countdownCaption}</div></div></div>`;
+      <div class="countcap${ready ? " ready" : ""}">${ready ? P.countdownReady : P.countdownCaption}</div></div>${powerPanel()}</div>`;
     btnsL.append(btn(P.buttons.back, () => { if (timer) clearInterval(timer); screen = "method"; draw(); }));
     btnsR.append(btn(P.buttons.erase, () => { if (tLeft<=0) startWork(); }, "danger", tLeft>0));
     renderHint(P.hints.lastChance);
@@ -1783,10 +1787,10 @@ function draw() {
       soundsOn = !soundsOn;
       this.textContent = soundsOn ? P.sounds.toggleOn : P.sounds.toggleOff;
       document.getElementById("soundsNote").textContent = this.textContent;
-    }));
+    }, "ghost"));
     btnsL.append(btn(P.sounds.hear, () => {
       document.getElementById("soundsNote").textContent = P.sounds.offLive;
-    }));
+    }, "ghost"));
     renderHint(P.hints.working);
   } else if (["stop_confirm", "stopping", "stopped", "stop_unconfirmed"].includes(screen)) {
     const result = screen === "stopped" ? P.stop.stopped : P.stop.unconfirmed;
@@ -1848,10 +1852,10 @@ function draw() {
       soundsOn = !soundsOn;
       this.textContent = soundsOn ? P.sounds.toggleOn : P.sounds.toggleOff;
       document.getElementById("soundsNote").textContent = this.textContent;
-    }));
+    }, "ghost"));
     btnsL.append(btn(P.sounds.hearAgain, () => {
       document.getElementById("soundsNote").textContent = P.sounds.offLive;
-    }));
+    }, "ghost"));
     btnsR.append(btn(P.buttons.runAgain, requestAnotherPreview, "primary"));
   }
   if (["what", "owner", "method", "advanced"].includes(screen)) {
