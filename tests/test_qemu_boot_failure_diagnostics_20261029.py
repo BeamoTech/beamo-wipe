@@ -23,6 +23,7 @@ X_MARKERS = {
     "BEAMO_WIPE_X_FB0=1", "BEAMO_WIPE_X_FB0=0", "BEAMO_WIPE_X_DRI=1", "BEAMO_WIPE_X_DRI=0",
     "BEAMO_WIPE_X_LOG_MISSING", "BEAMO_WIPE_X_NO_SCREENS", "BEAMO_WIPE_X_NO_DEVICES",
     "BEAMO_WIPE_X_MODESET_ERROR", "BEAMO_WIPE_X_FBDEV_ERROR", "BEAMO_WIPE_X_VESA_ERROR",
+    "BEAMO_WIPE_X_FB_NOT_FOUND",
     "BEAMO_WIPE_X_MODULE_MISSING", "BEAMO_WIPE_X_FATAL",
 }
 
@@ -50,6 +51,7 @@ def _run_ui(tmp_path, startx_rc: int) -> tuple[subprocess.CompletedProcess, list
         f"startx() {{ return {startx_rc}; }}\n"
         "fake_console() { echo CONSOLE_RAN; }\n"
         "safe_video_x_config() { :; }\n"
+        "firmware_fb_for_x() { :; }\n"
         + block
         + "run_ui\n"
     )
@@ -168,3 +170,63 @@ def test_safe_video_writes_nothing_under_the_read_only_etc():
     assert run_ui.count('${x_config:+-config "$x_config"}') == 2
     assert not (ROOT / "packaging/live/config/includes.chroot/etc/X11/xorg.conf.d/"
                 "20-beamo-safe-video.conf").exists()
+
+
+def _firmware_fb(tmp_path, *, fb0=True, dri=False, link="../../devices/pci0000:00/0000:00:02.0/"
+                 "efi-framebuffer.0/graphics/fb0", bus="../../../../bus/platform"):
+    """Run firmware_fb_for_x against a fake /dev and sysfs; mount and ln are
+    recorded, never run."""
+    source = KIOSK.read_text(encoding="utf-8")
+    dev = tmp_path / "dev"
+    (dev / "dri").mkdir(parents=True)
+    if fb0:
+        (dev / "fb0").write_text("")
+    if dri:
+        (dev / "dri" / "card0").write_text("")
+    calls = tmp_path / "calls"
+    block = _function(source, "firmware_fb_for_x")
+    block = block.replace("[ -e /dev/", f"[ -e {dev.as_posix()}/")
+    script = (
+        "set -u\n"
+        f'FIRMWARE_FB_LINK=x\n'
+        f'readlink() {{ case "$1" in */device/subsystem) [ -n "{bus}" ] && echo "{bus}" ;; '
+        f'*) [ -n "{link}" ] && echo "{link}" ;; esac; }}\n'
+        f'mount() {{ echo "mount $*" >>"{calls.as_posix()}"; }}\n'
+        f'ln() {{ echo "ln $*" >>"{calls.as_posix()}"; }}\n'
+        + block + "firmware_fb_for_x\n"
+    )
+    result = subprocess.run(["sh", "-c", script], capture_output=True, text=True, timeout=30)
+    assert result.returncode == 0, result.stderr
+    return calls.read_text().splitlines() if calls.exists() else []
+
+
+def test_firmware_framebuffer_under_pci_gets_a_link_x_accepts(tmp_path):
+    # Linux 6.12 sysfb parent + Xorg 21.1.7 fbdevhw (CI run 41258566638:
+    # -config used, fbdev tried, still no screens).
+    calls = _firmware_fb(tmp_path)
+    assert calls == [
+        "mount -t tmpfs -o mode=0755,size=64k,nosuid,nodev,noexec beamo-graphics /sys/class/graphics",
+        "ln -s x /sys/class/graphics/fb0",
+    ]
+    source = KIOSK.read_text(encoding="utf-8")
+    assert "FIRMWARE_FB_LINK=../../devices/platform/" in source
+    assert "devices/pci" not in source.split("FIRMWARE_FB_LINK=", 1)[1].split("\n", 1)[0]
+
+
+def test_firmware_framebuffer_link_is_left_alone_otherwise(tmp_path):
+    # DRM bound, no fb0, fb0 not under PCI (e.g. older kernels), a real PCI
+    # GPU fbdev driver (bus pci), or an unreadable link: nothing is mounted.
+    assert _firmware_fb(tmp_path / "a", dri=True) == []
+    assert _firmware_fb(tmp_path / "b", fb0=False) == []
+    assert _firmware_fb(tmp_path / "c", link="../../devices/platform/efi-framebuffer.0/graphics/fb0") == []
+    assert _firmware_fb(tmp_path / "d", bus="../../../../bus/pci") == []
+    assert _firmware_fb(tmp_path / "e", link="") == []
+    assert _firmware_fb(tmp_path / "f", bus="") == []
+
+
+def test_firmware_framebuffer_link_stays_in_the_private_namespace():
+    unit = (ROOT / "packaging/live/config/includes.chroot/etc/systemd/system/"
+            "beamo-wipe-kiosk.service").read_text(encoding="utf-8")
+    assert "PrivateMounts=yes" in unit
+    run_ui = _function(KIOSK.read_text(encoding="utf-8"), "run_ui")
+    assert run_ui.index("firmware_fb_for_x") < run_ui.index("startx ")

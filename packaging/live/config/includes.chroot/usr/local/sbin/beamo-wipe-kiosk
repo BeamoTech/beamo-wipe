@@ -85,6 +85,7 @@ graphical_diagnostics() {
   grep -q 'No devices detected' "$x_log" && echo BEAMO_WIPE_X_NO_DEVICES
   grep -q '(EE) modeset' "$x_log" && echo BEAMO_WIPE_X_MODESET_ERROR
   grep -q '(EE) FBDEV' "$x_log" && echo BEAMO_WIPE_X_FBDEV_ERROR
+  grep -q 'Unable to find a valid framebuffer device' "$x_log" && echo BEAMO_WIPE_X_FB_NOT_FOUND
   grep -q '(EE) VESA' "$x_log" && echo BEAMO_WIPE_X_VESA_ERROR
   grep -q 'Failed to load module' "$x_log" && echo BEAMO_WIPE_X_MODULE_MISSING
   grep -q 'Fatal server error' "$x_log" && echo BEAMO_WIPE_X_FATAL
@@ -108,9 +109,34 @@ safe_video_x_config() {
   printf '%s\n' "$SAFE_VIDEO_X_CONFIG"
 }
 
+# Linux 6.9+ (here 6.12) parents the firmware framebuffer device to the
+# PCI display it scans out from, so /sys/class/graphics/fb0 resolves under
+# devices/pci. Bookworm's Xorg 21.1.7 fbdev helper then refuses fb0 on its
+# non-PCI path and finds no fb directly under the PCI device on its PCI
+# path, so X has no screen whenever no DRM driver is bound (UEFI safe video,
+# or a GPU without a working driver; vesa cannot help without a legacy
+# video BIOS). Later Xorg 21.1 releases (Debian 13) decide by the device's
+# bus instead. In this service's private mount namespace only
+# (PrivateMounts=yes), give X the class link that rule would accept, and
+# only for a firmware framebuffer on the platform bus. Discovery, the host
+# and other sessions never see it.
+FIRMWARE_FB_LINK=../../devices/platform/beamo-firmware-framebuffer/graphics/fb0
+firmware_fb_for_x() {
+  [ -e /dev/fb0 ] || return 0
+  [ -e /dev/dri/card0 ] && return 0
+  link="$(readlink /sys/class/graphics/fb0 2>/dev/null)" || return 0
+  case "$link" in */devices/pci*) ;; *) return 0 ;; esac
+  bus="$(readlink /sys/class/graphics/fb0/device/subsystem 2>/dev/null)" || return 0
+  case "$bus" in */bus/platform) ;; *) return 0 ;; esac
+  mount -t tmpfs -o mode=0755,size=64k,nosuid,nodev,noexec beamo-graphics \
+    /sys/class/graphics 2>/dev/null || return 0
+  ln -s "$FIRMWARE_FB_LINK" /sys/class/graphics/fb0 2>/dev/null || true
+}
+
 run_ui() {
   rm -f /tmp/.X11-unix/X0 /tmp/.X0-lock "$XAUTHORITY" 2>/dev/null || true
   x_config="$(safe_video_x_config)"
+  firmware_fb_for_x
   say "Beamo Wipe is starting with speech. No new erase starts automatically."
   if command -v startx >/dev/null 2>&1; then
     graphical_rc=0
