@@ -117,12 +117,22 @@ qemu_x_details() {
   [ "$(cat /sys/class/dmi/id/sys_vendor 2>/dev/null)" = QEMU ] || return 0
   grep -a 'FBDEV(0)\|Modeline\|(EE)' "$1" 2>/dev/null | tr -cd '\11\12\40-\176' |
     head -n 80 | sed 's/^/BEAMO_WIPE_QEMU_X_LOG /'
-  for fb in /sys/bus/platform/devices/*/graphics/fb0; do
-    [ -d "$fb" ] || continue
-    for attr in name virtual_size bits_per_pixel stride mode modes; do
-      printf 'BEAMO_WIPE_QEMU_FB %s=%s\n' "$attr" "$(tr -cd '\40-\176' <"$fb/$attr" 2>/dev/null)"
-    done
-  done
+  # The kernel's own fb var/fix (what FBIOPUT_VSCREENINFO hands back).
+  python3 -I -c '
+import fcntl, os, struct
+fd = os.open("/dev/fb0", os.O_RDONLY)
+var = struct.unpack("<40I", fcntl.ioctl(fd, 0x4600, bytes(160)))
+fix = fcntl.ioctl(fd, 0x4602, bytes(80))
+names = ("xres yres xres_virtual yres_virtual xoffset yoffset bits_per_pixel grayscale "
+         "red_off red_len red_msb green_off green_len green_msb blue_off blue_len blue_msb "
+         "transp_off transp_len transp_msb nonstd activate height width accel_flags pixclock "
+         "left_margin right_margin upper_margin lower_margin hsync_len vsync_len sync vmode "
+         "rotate colorspace r0 r1 r2 r3").split()
+print("BEAMO_WIPE_QEMU_FB_VAR " + " ".join("%s=%d" % pair for pair in zip(names, var)))
+print("BEAMO_WIPE_QEMU_FB_FIX smem_len=%d line_length=%d visual=%d type=%d" % (
+    struct.unpack_from("<I", fix, 24)[0], struct.unpack_from("<I", fix, 48)[0],
+    struct.unpack_from("<I", fix, 36)[0], struct.unpack_from("<I", fix, 28)[0]))
+' 2>/dev/null || echo BEAMO_WIPE_QEMU_FB_READ_FAILED
   return 0
 }
 

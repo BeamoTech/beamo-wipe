@@ -289,8 +289,12 @@ def test_qemu_details_are_sent_only_inside_a_qemu_guest(tmp_path):
     assert run() == []
     vendor.write_text("QEMU\n")
     lines = run()
-    assert len(lines) == 2 and all(line.startswith("BEAMO_WIPE_QEMU_X_LOG [") for line in lines)
-    assert "modified mode" in lines[1]
+    log_lines = [line for line in lines if line.startswith("BEAMO_WIPE_QEMU_X_LOG ")]
+    assert len(log_lines) == 2 and all(line.startswith("BEAMO_WIPE_QEMU_X_LOG [") for line in log_lines)
+    assert "modified mode" in log_lines[1]
+    # Then the kernel framebuffer var/fix, or a fixed marker when unreadable.
+    rest = lines[2:]
+    assert rest and all(line.startswith("BEAMO_WIPE_QEMU_FB_") for line in rest)
     # graphical_diagnostics calls it last, after the fixed classes.
     body = _function(source, "graphical_diagnostics")
     assert body.rstrip().splitlines()[-3].strip() == 'qemu_x_details "$x_log"'
