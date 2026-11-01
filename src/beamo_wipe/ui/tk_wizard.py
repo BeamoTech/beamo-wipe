@@ -61,9 +61,10 @@ from beamo_wipe.wizard import (
 # same values — tests/test_ui_system.py pins the sync and the WCAG contrast
 # floor, so tune here and mirror there, never in one place only.
 
-# The field is plain white on every screen, splash included: hierarchy
-# comes from spacing, type, and the navy/amber brand accents, not tint.
-BG = "#FFFFFF"
+# The page is a soft cool gray and every content surface (cards, the
+# header bar, panels, fields) is white, so hierarchy comes from white
+# cards on a quiet field, spacing and type rather than heavy borders.
+BG = "#EEF2F6"
 SURFACE = "#FFFFFF"
 SURFACE_ALT = "#F4F6F8"
 INK = "#12202E"
@@ -101,6 +102,8 @@ TRACK = "#E4E9EF"
 # One soft shadow layer. Tk has no blur, so the single rounded rect is
 # offset down a few pixels in a cool gray that stays quiet on BG.
 SHADOW = "#D5DCE6"
+# The footer bar is white like the header, framing the gray page.
+FOOTER_BG = SURFACE
 PREVIEW_BG = "#E6A817"
 PREVIEW_FG = "#0A1B34"
 
@@ -726,6 +729,9 @@ class _Button(tk.Canvas):
         "danger": (DANGER, "#FFFFFF", DANGER_DARK, DANGER_PRESS, None, FOCUS),
         "secondary": (SURFACE, INK, SURFACE_ALT, "#E2E8EE", BORDER_STRONG, FOCUS),
         "ghost": (None, PRIMARY, PRIMARY_TINT, "#D7E4F2", None, FOCUS),
+        # Footer tools: quiet gray text that shades on hover, so the one
+        # primary action is the only strong colour in the footer.
+        "quiet": (None, MUTED, TRACK, "#D9E0E8", None, FOCUS),
     }
 
     _RING_GAP = 4  # canvas room below the pill so the focus ring never clips
@@ -792,7 +798,7 @@ class _Button(tk.Canvas):
     def _state_colors(self) -> tuple:
         bg, fg, hover, press, outline, _ring = self._VARIANTS[self._variant]
         if not self._enabled:
-            if self._variant == "ghost":
+            if self._variant == "ghost" or self._variant == "quiet":
                 return self.cget("bg"), DISABLED_FG, None
             return DISABLED_BG, DISABLED_FG, None
         if self._pressed and press is not None:
@@ -1609,8 +1615,9 @@ class TkWizard:
         # Pack the footer first: when a small screen cannot fit everything,
         # pack clips the last-packed widget, and the action buttons must be
         # the last thing that ever gets clipped.
-        self._footer = tk.Frame(self.root, bg=BG)
+        self._footer = tk.Frame(self.root, bg=FOOTER_BG)
         self._footer.pack(fill=tk.X, side=tk.BOTTOM)
+        tk.Frame(self.root, bg=BORDER, height=1).pack(fill=tk.X, side=tk.BOTTOM)
         self._body = tk.Frame(self.root, bg=BG)
         self._body.pack(fill=tk.BOTH, expand=True, side=tk.TOP)
         self._apply_grid()
@@ -1725,9 +1732,9 @@ class TkWizard:
         if width <= 1 or height <= 1:
             return
         cv.delete("all")
-        # Quiet white chrome: the navy-on-transparent mark sits on the
-        # field, a hairline separates header from body. No navy chip.
-        cv.create_rectangle(-2, -2, width + 2, height + 2, fill=BG, outline="")
+        # Quiet white chrome: the navy-on-transparent mark sits on a white
+        # bar above the gray page, with a hairline below. No navy chip.
+        cv.create_rectangle(-2, -2, width + 2, height + 2, fill=SURFACE, outline="")
         cv.create_rectangle(0, height - 1, width, height, fill=BORDER, outline="")
         mid = height / 2.0 - 1
         logo = self._logo_header
@@ -2501,7 +2508,7 @@ class TkWizard:
         *,
         height: int,
         wrap: Literal["none", "char", "word"] = "word",
-        bg: str = SURFACE_ALT,
+        bg: str = SURFACE,
         padx: int = 12,
         pady: int = 8,
     ) -> tk.Text:
@@ -2538,15 +2545,16 @@ class TkWizard:
     def _kbd(self, parent: tk.Widget, text: str) -> _Box:
         """A quiet keyboard key-cap. Makes keyboard affordances scannable."""
         pad = max(2, int(round(2 * self._type_scale())))
-        cap = _Box(parent, radius=8, fill=SURFACE_ALT, outline=BORDER_STRONG, ow=1, padx=8, pady=pad)
-        tk.Label(cap.inner, text=text, font=self.font_tiny, fg=INK, bg=SURFACE_ALT).pack()
+        cap = _Box(parent, radius=8, fill=SURFACE, outline=BORDER_STRONG, ow=1, padx=8, pady=pad)
+        tk.Label(cap.inner, text=text, font=self.font_tiny, fg=INK, bg=SURFACE).pack()
         cap.fit_now()
         return cap
 
     def _hint_bar(self, parent: tk.Widget, hint: str) -> tk.Frame:
         """Hint copy with known key names rendered as key-caps."""
-        bar = tk.Frame(parent, bg=BG)
-        inner = tk.Frame(bar, bg=BG)
+        surface = parent.cget("bg")
+        bar = tk.Frame(parent, bg=surface)
+        inner = tk.Frame(bar, bg=surface)
         inner.pack(anchor="w")
         pos = 0
         for match in _KEY_TOKEN_RE.finditer(hint):
@@ -2563,7 +2571,7 @@ class TkWizard:
         if not text:
             return
         tk.Label(
-            parent, text=text, font=self.font_s, fg=MUTED, bg=BG, anchor="w",
+            parent, text=text, font=self.font_s, fg=MUTED, bg=parent.cget("bg"), anchor="w",
         ).pack(side=tk.LEFT)
 
     def _panel(
@@ -2578,9 +2586,9 @@ class TkWizard:
         colors = {
             "warn": (WARN_BG, WARN_BORDER),
             "danger": (DANGER_TINT, DANGER_BORDER),
-            "info": (SURFACE_ALT, BORDER),
+            "info": (SURFACE, BORDER),
             "ok": (OK_TINT, OK_BORDER),
-            "limits": (SURFACE_ALT, BORDER),
+            "limits": (SURFACE, BORDER),
         }
         # Severity words: the label line keeps every non-neutral panel
         # readable in monochrome. Neutral info stays unlabeled.
@@ -2860,30 +2868,30 @@ class TkWizard:
         navigation is Back/secondary left and the primary action right.
         Buttons pack into ``row._left`` / ``row._right``."""
         assert self._footer is not None
-        col = self._column(self._footer, fill_height=False)
-        assist = tk.Frame(col, bg=BG)
+        col = self._column(self._footer, fill_height=False, bg=FOOTER_BG)
+        assist = tk.Frame(col, bg=FOOTER_BG)
         assist.pack(fill=tk.X, pady=(0, 4))
-        tools = tk.Frame(assist, bg=BG)
+        tools = tk.Frame(assist, bg=FOOTER_BG)
         tools.pack(fill=tk.X)
 
-        tool_row = tk.Frame(tools, bg=BG)
+        tool_row = tk.Frame(tools, bg=FOOTER_BG)
         tool_row.pack(anchor="w")
         tool_width = 0
 
         def utility(text: str, command: Callable[[], None]) -> None:
             nonlocal tool_row, tool_width
             button = _Button(tool_row, text=text, font=self.font_s, command=command,
-                             variant="ghost", compact=True)
+                             variant="quiet", compact=True)
             width = button.winfo_reqwidth() + 4
             # Enlarged fonts must not expand the fixed footer beyond the
             # window. Keep every utility available in compact stacked rows.
             if tool_width and tool_width + width > self.lay.content_w:
                 button.destroy()
-                tool_row = tk.Frame(tools, bg=BG)
+                tool_row = tk.Frame(tools, bg=FOOTER_BG)
                 tool_row.pack(anchor="w")
                 tool_width = 0
                 button = _Button(tool_row, text=text, font=self.font_s, command=command,
-                                 variant="ghost", compact=True)
+                                 variant="quiet", compact=True)
             button.pack(side=tk.LEFT, padx=(0, 4))
             tool_width += width
 
@@ -2911,7 +2919,7 @@ class TkWizard:
             utility(C.DIAGNOSTIC_TITLE, self._nav(self.w.open_diagnostic))
         if self.w.screen == Screen.DONE and not self.w.preview:
             note = tk.Label(
-                assist, text=C.ANOTHER_HINT, font=self.font_s, bg=BG,
+                assist, text=C.ANOTHER_HINT, font=self.font_s, bg=FOOTER_BG,
                 fg=MUTED, wraplength=max(200, self.lay.content_w - 24), justify=tk.LEFT,
                 anchor="w",
             )
@@ -2924,14 +2932,14 @@ class TkWizard:
         caps = sum(len(_KEY_TOKEN_KEYS.get(m.group(0), (m,))) for m in _KEY_TOKEN_RE.finditer(hint))
         too_wide = self.font_s.measure(hint) + 24 * caps > self.lay.content_w - 8
         if self.lay.short or self._type_scale() > 1.05 or too_wide:
-            self._hint = self._p(assist, hint, font=self.font_s, fg=MUTED,
+            self._hint = self._p(assist, hint, font=self.font_s, fg=MUTED, bg=FOOTER_BG,
                                  wraplength=self.lay.content_w - 8)
             self._hint.configure(width=1)
         else:
             self._hint = self._hint_bar(assist, hint)
         self._hint.pack(fill=tk.X, pady=(4, 0))
         tk.Frame(col, bg=BORDER, height=1).pack(fill=tk.X)
-        row = tk.Frame(col, bg=BG)
+        row = tk.Frame(col, bg=FOOTER_BG)
         pad = self.lay.footer_pad_y
         row.pack(fill=tk.X, pady=(max(8, pad - 4), pad))
         # Left first so Tab from Back reaches the primary. Left actions
@@ -2939,14 +2947,14 @@ class TkWizard:
         # The primary cluster is packed next so it stays on the right edge
         # of the content column. Hints stay in the assist strip so Done's
         # four left actions plus Shut down still fit the 940px column.
-        left_host = tk.Frame(row, bg=BG)
+        left_host = tk.Frame(row, bg=FOOTER_BG)
         # Centred beside the taller primary: compact Back sat at the top edge
         # of the row, visibly higher than the button it pairs with. Wrapped
         # left rows are taller than the primary and fill the row either way.
         left_host.pack(side=tk.LEFT, anchor="w")
-        left = tk.Frame(left_host, bg=BG)
+        left = tk.Frame(left_host, bg=FOOTER_BG)
         left.pack(anchor="w")
-        right = tk.Frame(row, bg=BG)
+        right = tk.Frame(row, bg=FOOTER_BG)
         right.pack(side=tk.RIGHT, anchor="n")
         row._left_host = left_host  # type: ignore[attr-defined]
         row._left = left  # type: ignore[attr-defined]
@@ -2959,7 +2967,7 @@ class TkWizard:
         budget = max(280, self.lay.content_w - 168)
         used = getattr(row, "_left_width", 0)
         if used and used + width > budget:
-            left = tk.Frame(row._left_host, bg=BG)  # type: ignore[attr-defined]
+            left = tk.Frame(row._left_host, bg=FOOTER_BG)  # type: ignore[attr-defined]
             left.pack(anchor="w")
             row._left = left  # type: ignore[attr-defined]
             row._left_width = 0  # type: ignore[attr-defined]
@@ -3104,7 +3112,8 @@ class TkWizard:
             spec = _keyboard.LAYOUTS[layout_id]
             selected = self.w.keyboard_layout == layout_id
             fill = PRIMARY_TINT if selected else SURFACE
-            outline = PRIMARY if selected else BORDER_STRONG
+            # Light card edge; the radio inside carries the control contrast.
+            outline = PRIMARY if selected else BORDER
             card = _Box(
                 layout_grid, radius=RADIUS, fill=fill, outline=outline, ow=2 if selected else 1,
                 padx=14, pady=8, halo=False,
@@ -3185,7 +3194,7 @@ class TkWizard:
 
             chip = _Box(
                 lang_row, radius=PILL, fill=PRIMARY_TINT if selected else SURFACE,
-                outline=PRIMARY if selected else BORDER_STRONG, ow=2 if selected else 1,
+                outline=PRIMARY if selected else BORDER, ow=2 if selected else 1,
                 padx=14, pady=6, halo=False,
             )
             chip.pack(side=tk.LEFT, padx=(0, 8))
@@ -3297,27 +3306,11 @@ class TkWizard:
             marker.create_oval(1, 9, 8, 16, fill=ACCENT, outline="")
             marker.pack(side=tk.LEFT, anchor="n")
             self._p(
-                line, bullet, font=self.font_lead, fg=INK, bg=SURFACE, flow_pad=24,
+                line, bullet, font=self.font_b, fg=INK, bg=SURFACE, flow_pad=24,
             ).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(14, 0))
-        self._panel(
-            zone, kind="info", text=C.REPORT_MEDIA_WHAT, compact=True
-        ).pack(fill=tk.X, pady=(12, 0))
-        power = self._panel(
-            zone, kind="info", text=C.POWER_REMINDER, extra=C.POWER_BLANKING
-        )
-        power.pack(fill=tk.X, pady=(12, 0))
-        self._power_notice(power.inner, reminder=False, bg=SURFACE_ALT, indent=40)
-        if self._more_link(zone):
-            self._panel(
-                zone,
-                kind="info",
-                text=C.this_usb_line(),
-                extra=C.SECURE_BOOT_HINT + " " + C.ENGINE_LINE + " " + C.POWER_EVENTS,
-            ).pack(fill=tk.X, pady=(12, 0))
-        self._support_identity_block(zone)
         checked = bool(self.w.owner_ok)
         self._wrapping_label(zone, C.OWNER_LEAD, font=self.font_s_bold, bg=BG).pack(
-            fill=tk.X, pady=(16, 8)
+            fill=tk.X, pady=(14, 8)
         )
         card = _Box(
             zone,
@@ -3349,6 +3342,23 @@ class TkWizard:
         card.bind("<FocusIn>", lambda _e: card.set_focused(True))
         card.bind("<FocusOut>", lambda _e: card.set_focused(False))
         card.focus_set()
+        # Supporting notes follow the one action on this screen.
+        self._panel(
+            zone, kind="info", text=C.REPORT_MEDIA_WHAT, compact=True
+        ).pack(fill=tk.X, pady=(16, 0))
+        power = self._panel(
+            zone, kind="info", text=C.POWER_REMINDER, extra=C.POWER_BLANKING
+        )
+        power.pack(fill=tk.X, pady=(12, 0))
+        self._power_notice(power.inner, reminder=False, bg=power._fill, indent=40)
+        if self._more_link(zone):
+            self._panel(
+                zone,
+                kind="info",
+                text=C.this_usb_line(),
+                extra=C.SECURE_BOOT_HINT + " " + C.ENGINE_LINE + " " + C.POWER_EVENTS,
+            ).pack(fill=tk.X, pady=(12, 0))
+        self._support_identity_block(zone)
         row = self._footer_shell(C.HINT_OWNER)
         self._back_btn(row)
         self._primary_btn(row, C.primary_action(Screen.OWNER), self.w.continue_owner, enabled=self.w.owner_ok)
@@ -3519,10 +3529,10 @@ class TkWizard:
         # footer retain their full height on short screens.
         guidance = tk.Frame(cards, bg=BG)
         guidance.pack(fill=tk.X)
-        # Short windows (800x600, 1024x600, 720p) must show a whole disk row
-        # without scrolling: warnings stay first but compact; the notes about
-        # the current selection, the protected boot USB and the Compare
-        # toggle follow the disks, in that order, and rows are dense.
+        # A disk row leads the list at every size: warnings stay first (compact
+        # on short windows); the notes about the current selection, the
+        # protected boot USB and the Compare toggle follow the disks, and
+        # short windows (800x600, 1024x600, 720p) use dense rows.
         short = self.lay.short
         if same_size_conflict(self.w.listed_disks):
             self._panel(guidance, kind="warn", text=C.SAME_SIZE_HINT, compact=short).pack(fill=tk.X, pady=(0, 8 if short else 12))
@@ -3545,9 +3555,6 @@ class TkWizard:
             if self.w.report_wanted:
                 self._panel(parent, kind="info", text=C.REPORT_MEDIA_WANTED, compact=True).pack(fill=tk.X, pady=(0, 8))
 
-        if not short:
-            selection_notes(guidance)
-
         def bind_wheel(widget):
             for sequence in ("<MouseWheel>", "<Button-4>", "<Button-5>"):
                 widget.bind(sequence, _wheel)
@@ -3555,11 +3562,6 @@ class TkWizard:
                 bind_wheel(child)
 
         bind_wheel(guidance)
-        if not short:
-            boot_card = self._protected_boot(cards)
-            if boot_card is not None:
-                bind_wheel(boot_card)
-            self._comparison(cards)
         items: List = sorted(self.w.selectable, key=lambda d: d.path)
         for disk in items:
             selected = self.w.selected is not None and disk.path == self.w.selected.path
@@ -3591,14 +3593,15 @@ class TkWizard:
             canvas.after(90, lambda: self._pick_restore_tick(gen)),
             canvas.after(180, lambda: self._pick_restore_tick(gen, final=True)),
         ]
-        if short:
-            trailing = tk.Frame(cards, bg=BG)
-            trailing.pack(fill=tk.X)
-            selection_notes(trailing)
-            self._protected_boot(trailing)
-            bind_wheel(trailing)
-            # Outside trailing: its readers keep their own wheel scrolling.
-            self._comparison(cards)
+        # The disks lead at every size: the notes about the current
+        # selection, the protected boot USB and Compare follow them.
+        trailing = tk.Frame(cards, bg=BG)
+        trailing.pack(fill=tk.X, pady=(4 if short else 8, 0))
+        selection_notes(trailing)
+        self._protected_boot(trailing)
+        bind_wheel(trailing)
+        # Outside trailing: its readers keep their own wheel scrolling.
+        self._comparison(cards)
         # Keep the informational inventory in the same scrolling region.
         # It must not consume the picker viewport on short laptop screens.
         self._other_devices(cards)
@@ -3636,7 +3639,7 @@ class TkWizard:
         cells = []
         for entry in entries:
             cell = tk.Frame(
-                grid, bg=SURFACE_ALT, highlightbackground=BORDER,
+                grid, bg=SURFACE, highlightbackground=BORDER,
                 highlightthickness=1, padx=8, pady=8,
             )
             cells.append(cell)
@@ -4137,13 +4140,13 @@ class TkWizard:
         # Token-match state is a pill: calm while waiting, green when it
         # matches, so the gate's answer scans at a glance.
         pill = _Box(
-            zone, radius=PILL, fill=SURFACE_ALT, outline=BORDER, ow=1,
+            zone, radius=PILL, fill=SURFACE, outline=BORDER, ow=1,
             padx=12, pady=6,
         )
         pill.pack(anchor="w", pady=(12, 0))
         self._match_pill = pill
         self._match_icon = tk.Canvas(
-            pill.inner, width=22, height=22, highlightthickness=0, bg=SURFACE_ALT
+            pill.inner, width=22, height=22, highlightthickness=0, bg=SURFACE
         )
         self._match_icon.pack(side=tk.LEFT)
         self._match_label = tk.Label(
@@ -4151,7 +4154,7 @@ class TkWizard:
             text="",
             font=self.font_s_bold,
             fg=MUTED,
-            bg=SURFACE_ALT,
+            bg=SURFACE,
             anchor="w",
         )
         self._match_label.pack(side=tk.LEFT, padx=(8, 0))
@@ -4177,10 +4180,10 @@ class TkWizard:
             self._match_label.configure(text=C.CONFIRM_MATCH_OK, fg=OK, bg=OK_TINT)
         else:
             if self._match_pill is not None:
-                self._match_pill.set_style(fill=SURFACE_ALT, outline=BORDER)
-            cv.configure(bg=SURFACE_ALT)
+                self._match_pill.set_style(fill=SURFACE, outline=BORDER)
+            cv.configure(bg=SURFACE)
             cv.create_oval(2, 2, 20, 20, outline=BORDER_STRONG, width=2)
-            self._match_label.configure(text=C.CONFIRM_MATCH_WAIT, fg=MUTED, bg=SURFACE_ALT)
+            self._match_label.configure(text=C.CONFIRM_MATCH_WAIT, fg=MUTED, bg=SURFACE)
 
     def _ensure_confirm_focus(self, entry: tk.Entry, retries: int = 20) -> None:
         """Recover Entry focus while X11 finishes mapping the no-WM window."""
@@ -4509,29 +4512,42 @@ class TkWizard:
         # the whole review it fell under the fold at 800x600.
         stacked = self.lay.stack_review
         zone = None if stacked else tk.Frame(review, bg=BG)
-        details = tk.Frame(review, bg=BG)
+        # Roomy windows group the review facts in one white card. Stacked
+        # (short) windows keep them on the page so the countdown stays above
+        # the fold at 800x600.
+        card: tk.Widget
+        details: tk.Frame
+        if stacked:
+            details = tk.Frame(review, bg=BG)
+            card = details
+        else:
+            box = _Box(review, radius=RADIUS, fill=SURFACE, outline=BORDER, ow=1,
+                       padx=18, pady=14)
+            card, details = box, box.inner
+        surface = details.cget("bg")
         if zone is None:
-            details.pack(fill=tk.X, anchor="n")
+            card.pack(fill=tk.X, anchor="n")
         else:
             zone.pack(side=tk.RIGHT, padx=(24, 0), anchor="n")
-            details.pack(side=tk.LEFT, fill=tk.X, expand=True, anchor="n")
+            card.pack(side=tk.LEFT, fill=tk.X, expand=True, anchor="n")
         if self.w.selected is not None:
             self._disk_summary(details, self.w.selected).pack(fill=tk.X)
             self._p(
                 details,
                 self.w.prepare_text(),
                 font=self.font_s,
-                bg=BG,
+                bg=surface,
             ).pack(fill=tk.X, pady=(8, 0))
         self._wrapping_label(
-            details, self.w.operation_summary, font=self.font_bold, bg=BG
+            details, self.w.operation_summary, font=self.font_bold, bg=surface
         ).pack_configure(pady=(12, 0))
         self._wrapping_label(details, f"{C.SEVERITY_WARNING}: {self.w.erase_label()}",
-                             font=self.font_bold, bg=BG, fg=DANGER).pack_configure(pady=(16, 8))
+                             font=self.font_bold, bg=surface, fg=DANGER).pack_configure(
+                                 pady=(16, 8) if stacked else (14, 8))
         if zone is None:
-            zone = tk.Frame(details, bg=BG)
+            zone = tk.Frame(details, bg=surface)
             zone.pack(fill=tk.X, pady=(0, 8), anchor="n")
-        self._wrapping_label(details, self.w.method_summary, font=self.font_s, bg=BG)
+        self._wrapping_label(details, self.w.method_summary, font=self.font_s, bg=surface)
         if self.w.error:
             sections = recovery_for_wizard_error(self.w.error)
             if sections:
@@ -4539,11 +4555,11 @@ class TkWizard:
             else:
                 self._panel(col, kind="danger", text=self.w.error).pack(fill=tk.X, pady=(12, 0))
             self._support_identity_block(col)
-        self._power_notice(details)
+        self._power_notice(details, bg=surface)
         ring_px = self.lay.ring
         self._ring_px = ring_px
         ring = tk.Canvas(
-            zone, width=ring_px, height=ring_px, bg=BG, highlightthickness=0
+            zone, width=ring_px, height=ring_px, bg=zone.cget("bg"), highlightthickness=0
         )
         if stacked:
             ring.pack(side=tk.LEFT, anchor="n")
@@ -4551,11 +4567,11 @@ class TkWizard:
             ring.pack()
         self._countdown_ring = ring
         self._countdown_num = tk.Label(
-            ring, text="", font=self.font_bold, fg=INK, bg=BG, anchor="center"
+            ring, text="", font=self.font_bold, fg=INK, bg=zone.cget("bg"), anchor="center"
         )
         ring.create_window(ring_px / 2, ring_px / 2, window=self._countdown_num)
         self._countdown_label = tk.Label(
-            zone, text="", font=self.font_b, fg=MUTED, bg=BG,
+            zone, text="", font=self.font_b, fg=MUTED, bg=zone.cget("bg"),
             anchor="w" if stacked else "center",
             justify=tk.LEFT if stacked else tk.CENTER,
             wraplength=max(120, ring_px + 40),
@@ -4652,39 +4668,39 @@ class TkWizard:
         elif self.w.operation_identity_text:
             self._p(col, self.w.operation_identity_text, font=self.font_b, fg=MUTED).pack(fill=tk.X)
         container = self._center_zone(col)
-        progress_card = _Box(container, radius=RADIUS, fill=SURFACE_ALT,
+        progress_card = _Box(container, radius=RADIUS, fill=SURFACE,
                              outline=BORDER, ow=1, padx=20, pady=16)
         progress_card.pack(fill=tk.X)
         zone = progress_card.inner
         tk.Label(zone, text=C.ERASE_PROGRESS_LABEL, font=self.font_s_bold,
-                 fg=MUTED, bg=SURFACE_ALT, anchor="w").pack(fill=tk.X, pady=(0, 8))
+                 fg=MUTED, bg=SURFACE, anchor="w").pack(fill=tk.X, pady=(0, 8))
         # One fixed-height slot: the large percentage once the engine reports
         # one, and until then the same honest "not reported" state the
         # screen-reader and console views speak. No empty block, no jump.
-        slot = tk.Frame(zone, bg=SURFACE_ALT)
+        slot = tk.Frame(zone, bg=SURFACE)
         self._progress_pct = tk.Label(
-            slot, text="", font=self.font_stat, fg=INK, bg=SURFACE_ALT, anchor="w"
+            slot, text="", font=self.font_stat, fg=INK, bg=SURFACE, anchor="w"
         )
         self._progress_wait = tk.Label(
             slot, text=_progress.PROGRESS_UNKNOWN, font=self.font_lead, fg=MUTED,
-            bg=SURFACE_ALT, anchor="w", justify=tk.LEFT,
+            bg=SURFACE, anchor="w", justify=tk.LEFT,
             wraplength=max(200, self.lay.wrap - 80),
         )
         slot.configure(height=self._progress_pct.winfo_reqheight())
         slot.pack_propagate(False)
         slot.pack(fill=tk.X, pady=(0, 12))
         self._progress_wait.pack(fill=tk.BOTH, expand=True)
-        bar = tk.Canvas(zone, height=BAR_H, bg=SURFACE_ALT, highlightthickness=0)
+        bar = tk.Canvas(zone, height=BAR_H, bg=SURFACE, highlightthickness=0)
         bar.pack(fill=tk.X)
         bar.bind("<Configure>", lambda _e: self._refresh_working())
         self._progress_bar = bar
         self._progress_label = self._p(
-            zone, C.WORKING_PULSE, fg=MUTED, font=self.font_b, bg=SURFACE_ALT
+            zone, C.WORKING_PULSE, fg=MUTED, font=self.font_b, bg=SURFACE
         )
         self._progress_label.pack(fill=tk.X, pady=(14, 0))
-        self._power_notice(zone, reminder=False, bg=SURFACE_ALT)
+        self._power_notice(zone, reminder=False, bg=SURFACE)
         self._p(zone, self.w.method_summary, font=self.font_s,
-                fg=MUTED, bg=SURFACE_ALT).pack(fill=tk.X, pady=(10, 0))
+                fg=MUTED, bg=SURFACE).pack(fill=tk.X, pady=(10, 0))
         if self.w.evidence_warning:
             self._p(col, f"{C.SEVERITY_WARNING}: {self.w.evidence_warning}", font=self.font_s_bold).pack(fill=tk.X, pady=(8, 0))
         if self.w.sound_message:

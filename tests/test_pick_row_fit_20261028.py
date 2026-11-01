@@ -130,7 +130,7 @@ def test_tall_windows_keep_the_roomy_row(tk_app, code, size):  # noqa: F811
     disks = sorted(wiz.selectable, key=lambda d: d.path)
     first = disks[0]
     card = app._pick_cards[first.path]
-    # One line per nested component, and Compare above the disks as before.
+    # One line per nested component; Compare follows the disks at every size.
     nested = inventory.card_nesting_text(wiz.nested_components(first))
     assert nested.count("\n") >= 2
     assert nested in _texts(card)
@@ -138,6 +138,7 @@ def test_tall_windows_keep_the_roomy_row(tk_app, code, size):  # noqa: F811
         w for w in _descendants(canvas)
         if isinstance(w, tkui._CheckRow) and w.cget("text") == inventory.COMPARE_TITLE
     )
-    assert compare.winfo_rooty() + compare.winfo_height() <= card.winfo_rooty()
+    last = app._pick_cards[disks[-1].path]
+    assert compare.winfo_rooty() >= last.winfo_rooty() + last.winfo_height()
     assert card._pady == 12 and card._padx == 20
     assert not wiz.runner.started

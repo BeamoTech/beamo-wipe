@@ -56,6 +56,8 @@ DPI pinning: `TkWizard.__init__` calls `tk call tk scaling 1.0` so layouts at 72
 
 One palette is shared by Tk, gallery, helper and pinned by `tests/test_ui_system.py`.
 
+- **Surfaces**: a soft gray page (`BG #EEF2F6`) with white content (`SURFACE #FFFFFF`): cards, panels, fields and key caps are white, and the header and footer are white bars with a hairline, so hierarchy comes from white cards on a quiet field rather than heavy borders. Footer tools are quiet gray buttons; the one primary action is the only strong colour in the footer. The owner check sits directly under "Here's what happens" and the Pick list leads with the disks at every window size. `tests/test_modern_layout_20261031.py` pins these.
+
 - **Body type**: `DejaVu Sans` / `Noto Sans` fallback, 34 px bold titles, 18 px lead, 16 px body/button, 14 px meta, 12 px tiny caps. Minimum readable ≥12 px (WCAG large-text threshold). Entry is 26 px bold mono so typed token is readable at 1024 width in bright rooms.
 - **WCAG AA**: text pairs ≥4.5:1, white-on-primary/navy/danger ≥4.5:1, non-text UI (focus ring, strong border) ≥3:1 (`test_text_contrast_meets_wcag_aa`, `test_non_text_contrast_meets_wcag_aa`).
 - **Key caps**: `Up/Down → ↑ ↓`, `1, 2, or 3 → 1 2 3`, `1–7` (one cap in every language; the keyboard footer now names `Up/Down`), `Enter/Esc/Space/any key` rendered as `_Box`/`span.kbd` with `BORDER_STRONG #6E7C8A` (≥3:1 on `SURFACE`).

@@ -810,7 +810,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
 <style>
   :root {
     /* Shared palette, pinned against ui/tk_wizard.py by tests/test_ui_system.py. */
-    --bg: #FFFFFF; --surface: #FFFFFF; --surface-alt: #F4F6F8;
+    --bg: #EEF2F6; --surface: #FFFFFF; --surface-alt: #F4F6F8;
     --ink: #12202E; --muted: #4A5A6A;
     --border: #E3E8EE; --border-strong: #6E7C8A;
     --navy: #0A1B34; --navy-soft: #16315C; --navy-muted: #C9D6E8;
@@ -847,9 +847,9 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .shell button.btn { font-size: calc(15px * var(--type)); }
   .textsizes { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
   .preview-stripe { background: var(--accent); color: var(--navy); padding: 8px 28px; font-size: 13px; font-weight: 700; letter-spacing: .01em; overflow-wrap: break-word; }
-  /* Quiet white chrome: the navy-on-transparent mark sits on the field,
-     a hairline separates header from body — mirroring _draw_header. */
-  .hdr { background: var(--bg); border-bottom: 1px solid var(--border); color: var(--ink); height: 56px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+  /* Quiet white chrome: the navy-on-transparent mark sits on a white bar
+     above the gray page, a hairline below it — mirroring _draw_header. */
+  .hdr { background: var(--surface); border-bottom: 1px solid var(--border); color: var(--ink); height: 56px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
   .brandrow { display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 700; }
   .brandchip { display: flex; align-items: center; justify-content: center; flex: none; }
   .brandchip svg { display: block; }
@@ -932,7 +932,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .panel .extra { font-size: 14px; color: var(--muted); margin-top: 4px; }
   /* Assist (utilities + keyboard hints) above a hairline; navigation is
      Back/secondary left and the primary action right. */
-  .foot { flex: none; padding: 0 32px; }
+  .foot { flex: none; padding: 0 32px; background: var(--surface); border-top: 1px solid var(--border); }
   .assist { max-width: 940px; margin: 0 auto; padding-top: 4px; }
   .footrow { max-width: 940px; margin: 0 auto; padding: 16px 0 20px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .card, .panel, .foot, .compare-pre, .help-reader { overflow-wrap: anywhere; }
@@ -1533,16 +1533,17 @@ function draw() {
     main.innerHTML = `<h1 class="sub">${P.titles.owner}</h1><p class="subtitle">${P.whatLead}</p><div class="cz"><div class="czc">
       <div class="card"><div class="title">${P.titles.what}</div>
       <ul class="bullets">${P.what.map(x=>"<li>"+x+"</li>").join("")}</ul></div>
-      <div style="margin-top:12px">${panel("info", P.reportMediaWhat, true)}</div>
+      <p class="subtitle" style="margin-top:14px">${P.ownerLead}</p>
+      <div class="ownercard${owner ? " checked" : ""}" id="own" tabindex="0" role="checkbox" aria-checked="${owner}">
+        <span class="cbox">${owner ? "✓" : ""}</span><span>${P.owner}</span></div>
+      <div style="margin-top:16px">${panel("info", P.reportMediaWhat, true)}</div>
       <div class="panel info" style="margin-top:12px">${badge("info", 28)}<div>
       <div>${P.powerReminder}</div><div class="extra">${P.powerBlanking}</div>
       <div id="power-status" role="status" aria-live="polite">${powerText()}</div></div></div>
       ${moreLink("more-detail")}
       ${moreDetail(showMore ? `<div class="panel info" style="margin-top:12px">${badge("info", 28)}<div>
       <div>${P.thisUsb}</div><div class="extra">${P.secureBoot} ${P.engine} ${P.powerEvents}</div></div></div>` : "")}
-      <p class="subtitle" style="margin-top:16px">${P.ownerLead}</p>
-      <div class="ownercard${owner ? " checked" : ""}" id="own" tabindex="0" role="checkbox" aria-checked="${owner}">
-        <span class="cbox">${owner ? "✓" : ""}</span><span>${P.owner}</span></div></div></div>`;
+      </div></div>`;
     bindMore();
     const card = main.querySelector("#own");
     const toggle = () => { owner = !owner; draw(); document.getElementById("own").focus(); };
@@ -1567,13 +1568,14 @@ function draw() {
   } else if (screen === "pick") {
     let html = `<h1 class="sub">${P.titles.pick}</h1><p class="subtitle">${P.pickSubtitle}</p>`;
     if (P.sameSizeConflict && mode === "happy") html += `<div style="margin-bottom:12px">${panel("warn", P.sameSize)}</div>`;
-    if (selected && (selected.kind === "SSD" || selected.kind === "NVMe")) html += `<div style="margin-bottom:12px">${panel("limits", P.ssd, true)}</div>`;
-    if (reportWanted) html += `<div style="margin-bottom:12px">${panel("info", P.reportMediaWanted, true)}</div>`;
     html += `<div class="pick-tools"><span class="small muted inventory-count" role="status" aria-live="polite">${esc(P.inventoryCount[mode] || P.inventoryCount.happy)}</span>${moreLink()}</div>`;
     html += `<div class="disklist">`;
+    selectable().forEach(d => { html += diskCard(d); });
+    // Selection notes, the protected boot USB and Compare follow the disks.
+    if (selected && (selected.kind === "SSD" || selected.kind === "NVMe")) html += `<div style="margin:4px 0 8px">${panel("limits", P.ssd, true)}</div>`;
+    if (reportWanted) html += `<div style="margin:4px 0 8px">${panel("info", P.reportMediaWanted, true)}</div>`;
     disks().filter(d => d.isBoot).forEach(d => { html += diskCard(d); });
     if (selectable().length > 1) html += `<details class="compare"><summary>${esc(P.compareTitle)}</summary><div class="compare-body"><p>${esc(P.compareIntro)}</p><div class="compare-grid">${P.comparison.map(text => `<pre class="compare-pre" tabindex="0">${esc(text)}</pre>`).join("")}</div></div></details>`;
-    selectable().forEach(d => { html += diskCard(d); });
     html += `</div>`;
     main.innerHTML = html;
     const unsure = btn(P.diskHelpButton, () => {
