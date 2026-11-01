@@ -2353,3 +2353,38 @@
   review (BW-FIN-L10N-REVIEW) should include the reordered owner screen.
 - BW-P3-WSL-DOWN, BW-P3-FULL-LOCAL, BW-FIN-SB-Q12, BW-RR-PHYS and the rest
   of BW-PASS3-20261028's open list — unchanged.
+
+### BW-PASS3-CI-UI-20261031 update — 2026-11-01 / Claude (Opus 5.5)
+
+- BW-P3-HOSTED — DONE for head `a76ee5c` (pushed). Run 41275044269: CI gate,
+  Linux image gate and Windows launcher tests success; QEMU summary every
+  case pass (methods x2, bios/uefi/usb, secureboot_usb, speech BIOS/UEFI,
+  troubleshoot BIOS/UEFI, sata_bios_usb, nvme_uefi_usb, exfat_report,
+  writable_boot_usb, report_export). ISO 160f1c8d…5740d, USB image
+  47391793…09220, nwipe 7303abba…71c0e. Evidence artifact
+  ci-evidence-…-41275044269-1 includes secure-boot-signers.txt.
+  Evidence binds to that exact SHA only; any later push needs a new run.
+- UEFI safe-video root causes fixed: `0b8cfdd` (ProtectSystem=full blocked
+  a runtime /etc write; shipped -config file), `f2b993a` (Linux 6.9+ PCI
+  parent vs Xorg 21.1.7 fbdevhw; private-namespace class link; fixed
+  upstream in Xorg 21.1.16 / Debian 13 — drop the workaround on the trixie
+  move, BW-RR-TRIXIE), `a76ee5c` (GRUB gfxmode 800x600x32 first; X cannot
+  use a 24bpp packed framebuffer). Gate: UEFI safe video runs last
+  (`3ff10b7`, `63ad9fe`); fixed X/fbdev classes plus a QEMU-only (DMI
+  vendor QEMU) geometry detail in private serial evidence (`5a17f01`,
+  `c5fe630`).
+- BW-P3-GREPTILE — still BLOCKED: no Greptile review after `f6719f3`;
+  author-agent reviews (not independent) recorded on PR #94 for
+  `f6719f3..0b5bf48` and `0b5bf48..a76ee5c`. Next: a person (or Greptile
+  when available) reviews the final diff against main and records it on
+  the PR per AGENTS.md.
+- BW-P3-SB-Q12 next action: a person reviews secure-boot-signers.txt from
+  run 41275044269 against docs/secure-boot-acceptance.md.
+- Known limit: a firmware offering no 32-bit 800x600 mode still gets the
+  keyboard text guide in safe video (24bpp fbdev unsupported by Xorg).
+- This update is a LOCAL commit in the readiness clone, not pushed: a push
+  would rerun the paid gate and move the PR head off the green SHA. Land
+  it with the next necessary push or the merge.
+- Unchanged: BW-P3-WSL-DOWN (owner action), BW-P3-FULL-LOCAL (hosted full
+  suite passed on a76ee5c: covers it for this head), BW-FIN-L10N-REVIEW,
+  BW-RR-PHYS, BW-RR-RELEASE, PR #93 ordering, owner merge decision.
