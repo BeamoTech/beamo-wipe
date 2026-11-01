@@ -49,11 +49,13 @@ def _run_ui(tmp_path, startx_rc: int) -> tuple[subprocess.CompletedProcess, list
     serial = tmp_path / "ttyS0"
     serial.write_text("")
     block = (_function(source, "run_console") + _function(source, "graphical_diagnostics")
-             + _function(source, "run_ui"))
+             + _function(source, "qemu_x_details") + _function(source, "run_ui"))
     block = (
         block.replace("[ -c /dev/ttyS0 ]", f'[ -f "{serial}" ]')
         .replace(">/dev/ttyS0", f'>>"{serial}"')
         .replace("/usr/local/bin/beamo-wipe --console", "fake_console")
+        # CI runners may themselves be QEMU guests; the harness is not one.
+        .replace("/sys/class/dmi/id/sys_vendor", f"{tmp_path.as_posix()}/no-dmi")
     )
     script = (
         "set -u\n"
@@ -262,3 +264,33 @@ def test_uefi_safe_video_runs_after_the_other_qemu_stages_with_its_own_target():
         'QEMU_TARGET_SERIAL="$troubleshoot_uefi_serial"',
         'REPORT_RAW="$troubleshoot_uefi_report"',
     ]
+
+
+def test_qemu_details_are_sent_only_inside_a_qemu_guest(tmp_path):
+    source = KIOSK.read_text(encoding="utf-8")
+    log = tmp_path / "Xorg.0.log"
+    log.write_text(
+        '[    12.3] (II) FBDEV(0): Modeline "current"x0.0   20.83  800 832 928 1024  600 604 608 624\n'
+        "[    12.4] (EE) FBDEV(0): FBIOPUT_VSCREENINFO succeeded but modified mode\n"
+        "[    12.5] (II) unrelated line\n"
+    )
+    vendor = tmp_path / "sys_vendor"
+    block = _function(source, "qemu_x_details").replace(
+        "/sys/class/dmi/id/sys_vendor", vendor.as_posix()
+    ).replace("/sys/bus/platform/devices/*/graphics/fb0", f"{tmp_path.as_posix()}/none/*")
+
+    def run():
+        result = subprocess.run(["sh", "-c", "set -u\n" + block + f'qemu_x_details "{log.as_posix()}"\n'],
+                                capture_output=True, text=True, timeout=30)
+        assert result.returncode == 0, result.stderr
+        return result.stdout.splitlines()
+
+    vendor.write_text("LENOVO\n")
+    assert run() == []
+    vendor.write_text("QEMU\n")
+    lines = run()
+    assert len(lines) == 2 and all(line.startswith("BEAMO_WIPE_QEMU_X_LOG [") for line in lines)
+    assert "modified mode" in lines[1]
+    # graphical_diagnostics calls it last, after the fixed classes.
+    body = _function(source, "graphical_diagnostics")
+    assert body.rstrip().splitlines()[-3].strip() == 'qemu_x_details "$x_log"'
