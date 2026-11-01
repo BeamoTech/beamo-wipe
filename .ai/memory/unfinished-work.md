@@ -2300,3 +2300,56 @@
   (qemu-verify, ci-hosted, inside-docker) PASS on `d3ba776`'s tree.
 - Not run: full local suite (WSL down), ISO build, hosted CI/QEMU, native
   Windows, Orca/speech, anything physical.
+
+## BW-PASS3-CI-UI-20261031 — HOSTED GATE ITERATING; UI REDESIGN COMMITTED; GREPTILE UNAVAILABLE; WSL STILL DOWN
+
+- 2026-10-29..31 / Claude (Opus 5.5). Branch `fix/release-readiness-20261026`,
+  clone `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`, PR #94.
+  Continues BW-PASS3-20261028 (its open items stand unless updated here).
+
+### Done (commit: what, evidence)
+
+- Hosted CI iterations (Blacksmith `ci.yml`, paid gate authorised by the
+  owner in pass 3): run 40811225589 → `6f638b5` (CodeQL tag regex),
+  `ab8bfbd` (Greptile P1: SATA report identity, test), `33ea16e` (Tk callback
+  traceback hook, Italian pin); run 40814724934 → `9aad14a` (Tk distances
+  as Tcl objects on Debian 12 Python 3.11 / Tk 8.6.13, 284 failures);
+  `6f21bed` (gitignore generated USB-root pages); run 40820524524 first
+  reached QEMU, BIOS safe video failed → `05e52bb` (GRAPHICAL_FAILED marker,
+  guest screendump); run 40824797788 → `e793841` (drop vga=788, gate rejects
+  vga=); run 41232620234 BIOS safe video PASS, UEFI safe video FAIL →
+  `27a4fce` (X failure classification); run 41237147966: fb0=1, no DRI,
+  vesa error → `8697d65` (kiosk writes a one-session fbdev Device for
+  nomodeset + fb0 + no DRM only; 7 tests PASS locally via Git sh).
+- `383e6b7` UI redesign (owner request "modernize ... cleaner and
+  simpler"): gray page #EEF2F6 with white surfaces, white header/footer
+  bars, quiet footer tools, owner check above its notes (in view at all
+  four sizes, five languages), Pick leads with disks, roomy review card;
+  gallery and helper mirror it. Local (Windows harness, scratch
+  `C:/Users/Jack/dev/beamo-wipe-pass3-scratch-20261028/per`):
+  modern_layout+ui_polish 81 PASS, pick_row_fit 24, header_caption 98
+  (+1 Tk-load flake), ui_fit 262, adaptive 91 (one test hangs on Windows
+  on the frozen base too), gallery/helper/UI-system 215, ruff 0.9.2 and
+  mypy 2.1.0 (--platform linux) PASS. Every other local failure also failed
+  on the frozen base copy or is a Windows-only environment error (Tk
+  library reads under concurrency, symlinks, POSIX paths, no desktop focus,
+  DryRunRunner cannot reach WORKING, curses stub).
+
+### Open items (ID — acceptance, next action, blocker)
+
+- BW-P3-HOSTED — ITERATING. Next: hosted run on the pushed head with
+  `8697d65` + `383e6b7`; expect UEFI safe video to pass, then the
+  remaining QEMU stages (Secure Boot record, SATA/NVMe/exFAT journeys).
+  Fix every failure; never weaken a check; push only after a run finishes
+  (cancel-in-progress).
+- BW-P3-GREPTILE — BLOCKED. Greptile reviewed only `f6719f3` (finding fixed
+  in `ab8bfbd`); no review on later heads. Owner reports this month's credit
+  is used up; not confirmable from repo/API evidence (cause: unknown, owner-
+  reported credit exhaustion likely). No credits bought. An author-agent
+  review of `f6719f3..HEAD` is recorded on PR #94 and is NOT independent.
+  Acceptance: an independent review (a person, or Greptile when available)
+  of the final diff against main, recorded on the PR per AGENTS.md.
+- BW-P3-UI-VISUAL — owner looks at the after screenshots; native-speaker
+  review (BW-FIN-L10N-REVIEW) should include the reordered owner screen.
+- BW-P3-WSL-DOWN, BW-P3-FULL-LOCAL, BW-FIN-SB-Q12, BW-RR-PHYS and the rest
+  of BW-PASS3-20261028's open list — unchanged.
