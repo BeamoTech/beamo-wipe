@@ -2438,3 +2438,36 @@ another very thorough and comprehensive pass of this." Repo
   Still open: independent review of the final diff (BW-P3-GREPTILE), owner
   merge decision, BW-FIN-SB-Q12 (signers from this run), native-speaker
   review, PR #93 ordering, BW-RR-PHYS. This note is a LOCAL commit only.
+
+## BW-UX-AUDIT-20261101 — UX improvement audit (proposals, nothing implemented)
+
+- Status: OPEN, awaiting owner choice of which items to build. 2026-11-01,
+  Claude. Repo `beamo-wipe`, branch `fix/release-readiness-20261026`, read
+  at `0f8f5e0` (local). Source: screenshots in scratch
+  `beamo-wipe-pass3-scratch-20261028/p2after{,-s}/` plus copy.py,
+  outcomes.py, methods.py, progress.py, inventory.py, tk_wizard.py.
+- Top items (full list was given in chat on 2026-11-01):
+  1. Report without a second USB (e.g. on-screen QR summary); current
+     route needs a separate FAT32/exFAT USB, plugged in only at the end.
+  2. One strong erase warning per screen; the same consequence text repeats
+     on Owner, Confirm (twice in one panel), Review (gray line + red callout).
+  3. Confirm token is printed in the prompt; ask for the serial's last
+     characters shown in the card instead (safety: commit + tests).
+  4. Header stays on "1 Preparation" for 6+ screens; show sub-steps.
+  5. Language comes after layout on the keyboard screen; put it first and
+     suggest a layout from the language.
+  6. Working: five unlabeled lines incl. "not reported" placeholders;
+     show %, time left, step N of M; offer the finish sound up front.
+  7. Result title "Erase completed; verification passed" -> plain words
+     plus a what-next checklist; declutter the 6-control Done footer.
+  8. Pick: show partition labels/filesystems (discovery has `label`),
+     drop the duplicated serial "characters 1 to 14" line, compact rows,
+     double-click to review, sort internal first.
+  9. "Check disks again" (clears owner tick + confirmations) is a casual
+     footer link on Confirm/Review; inconsistent utility sets per screen.
+  10. Pre-boot: unsigned Windows launcher (SmartScreen), one-click
+     "restart to boot options", detect Intel VMD/RST for the empty state.
+- Constraints: any confirm-token, disk-selection or nwipe-flag change is a
+  `safety:` commit with tests; claims per docs/claims.md; SSD
+  sanitize/secure-erase is outside the current safety boundary (owner).
+- NEXT: owner picks items; implement locally, then final hosted gate.
