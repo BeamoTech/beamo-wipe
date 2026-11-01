@@ -20,6 +20,9 @@ in [the component receipt](evidence/secure-boot-119/README.md). Record the actua
 flashed image in [BUILD-IDENTITY](evidence/physical-acceptance-111/BUILD-IDENTITY.md)
 before a case. A different image requires its own signature inspection and
 receipt; neither a version string nor a source-only build transfers this one.
+Images built after 0.2.14 boot Debian's signed Linux 6.12 kernel from
+`bookworm-security` (`linux-image-6.12-amd64`, Debian LTS) instead of 6.1, so
+their chain needs that new inspection.
 Q12 identifies test inputs, not authorization to overwrite a USB or disk.
 Before a physical boot, complete the [post-flash readback](evidence/physical-acceptance-111/README.md#post-flash-readback)
 and record its receipt. A source-file hash or successful write alone does not
@@ -57,6 +60,18 @@ Microsoft's Windows signing CAs are distinct from the third-party UEFI CA.
 A 2023-only trust store does not authenticate this 2011-only shim unless it
 has another applicable authorization. This is an inference from the inspected
 signatures, consistent with [Microsoft's Linux transition guidance](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/linux-distribution-guidance-handling-2023keys).
+
+**Next image (not inspected):** Debian 12.15 replaced this shim with
+`shim-signed` `1.51~1+deb12u1` (shim `16.1-2~deb12u1`), which its changelog
+describes as dual-signed with the 2023 CA and NX-capable
+([Debian CA changes](https://wiki.debian.org/SecureBoot/CAChanges)). The QEMU
+gate refuses an older `shim-signed`. Until Q12 is repeated on that exact image,
+its signer list, SBAT entries and 2023-only behaviour are UNKNOWN; this
+section's 0.2.12 findings do not transfer to it. The QEMU gate now records
+every signature and SBAT entry of the built image's shim, GRUB and kernel in
+`secure-boot-signers.txt` (and fails if shim lacks a Microsoft UEFI CA
+signature or GRUB/kernel a Debian one); a person still has to compare that
+record with firmware policy for the Q12 receipt.
 
 Shim has `shim,4` / `shim.debian,1` SBAT entries. GRUB has `grub,5`,
 `grub.debian,5`, and `grub.debian12,1`. Evaluate every matching entry against

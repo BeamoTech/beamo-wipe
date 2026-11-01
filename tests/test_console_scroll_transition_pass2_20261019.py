@@ -10,7 +10,7 @@ from beamo_wipe.ui import console_wizard as console
 
 
 PAGE_DOWN = [console.curses.KEY_NPAGE] * 5
-FIRST_LAYOUT = f"> 1 {keyboard.LAYOUTS['us'].title}: {keyboard.LAYOUTS['us'].note}"
+FIRST_LAYOUT = f"> {keyboard.LAYOUTS['us'].title}: {keyboard.LAYOUTS['us'].note}"
 
 
 @pytest.mark.parametrize(

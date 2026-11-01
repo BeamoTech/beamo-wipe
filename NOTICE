@@ -7,7 +7,7 @@ erasure engine.
   Engine:  nwipe v0.42
   Upstream: https://github.com/martijnvanbrummelen/nwipe
   License: GNU GPL v2 (see THIRD_PARTY.md)
-  Wrapper source: https://github.com/BeamoINT/beamo-wipe
+  Wrapper source: https://github.com/BeamoTech/beamo-wipe
   Wrapper license: GNU GPL v3 or later (see LICENSE)
 
 There is NO WARRANTY for this program, to the extent permitted by
@@ -15,5 +15,5 @@ applicable law. You run it as the owner of the machine and disks, or
 with written permission to erase them.
 
 This is owner-operated disk erasure before recycle or resale. It is
-not a lab certificate, not a Blancco replacement, and not a claim
+not a lab certificate, not a certified erasure service, and not a claim
 that every SSD controller will make data unrecoverable.

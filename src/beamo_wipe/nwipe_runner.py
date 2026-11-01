@@ -148,6 +148,41 @@ NWIPE_SIGUSR1_READY_RE = re.compile(
     r"(?:Program options are set as follows\b|do not show GUI interface\b|"
     r"Using direct I/O\b|Using cached I/O\b)"
 )
+# nwipe 0.42 (6082bde) options.c nwipe_options_log() names the generator in
+# nwipe_options.prng, which nwipe.c copied into every wipe context just before
+# logging the manifest. Exact logging.c records only; "Unknown" is not a name.
+NWIPE_PRNG_LOG_NAMES = frozenset(
+    {
+        "Mersenne Twister",
+        "Lagged Fibonacci generator",
+        "XORoshiro-256",
+        "SplitMix64",
+        "AES-256-CTR (CSPRNG)",
+        "ISAAC (CSPRNG)",
+        "ISAAC-64 (CSPRNG)",
+        "ChaCha20 (CSPRNG)",
+    }
+)
+# prng.c labels in nwipe.c's "Auto-selected fastest PRNG" record, mapped to the
+# manifest name for the same generator. Only Lagged Fibonacci is spelled apart.
+NWIPE_PRNG_AUTO_LABELS = {
+    "Mersenne Twister": "Mersenne Twister",
+    "ISAAC (CSPRNG)": "ISAAC (CSPRNG)",
+    "ISAAC-64 (CSPRNG)": "ISAAC-64 (CSPRNG)",
+    "Lagged Fibonacci": "Lagged Fibonacci generator",
+    "XORoshiro-256": "XORoshiro-256",
+    "SplitMix64": "SplitMix64",
+    "AES-256-CTR (CSPRNG)": "AES-256-CTR (CSPRNG)",
+    "ChaCha20 (CSPRNG)": "ChaCha20 (CSPRNG)",
+}
+_NWIPE_LOG_STAMP = r"\[\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\] "
+NWIPE_OPTIONS_HEADER_RE = re.compile(
+    _NWIPE_LOG_STAMP + r" notice: Program options are set as follows\.\.\."
+)
+NWIPE_PRNG_OPTION_RE = re.compile(_NWIPE_LOG_STAMP + r" notice:   prng {9}= (.+)")
+NWIPE_PRNG_AUTO_RE = re.compile(
+    _NWIPE_LOG_STAMP + r"   info: Auto-selected fastest PRNG: (.+)"
+)
 NWIPE_VERSION_TIMEOUT_S = 5
 # Drive Status is written before create_system_multi_disc_pdf()/smartctl.
 # 64KiB from EOF can be only that tail, hiding | Erased |.
@@ -502,6 +537,33 @@ def _recheck_identity_under_lock(request: WipeRequest) -> None:
     except Exception as exc:
         raise SafetyError("Disk identity changed. Refusing to erase.") from exc
     assert_rediscovered_identity(request, fresh)
+
+
+def _reserve_target_under_lock(request: WipeRequest) -> int:
+    """Hold the confirmed disk open read-only until the engine has exited.
+
+    nwipe opens its positional target by name only after its own device scan
+    and PRNG selection. While any handle to a disk stays open, the kernel
+    keeps that disk's name allocated: if the disk is unplugged, its node
+    disappears and a newly attached disk receives a different name, so the
+    engine's open fails instead of reaching another disk. Rediscovery runs
+    after this reservation, binding the confirmed identity to the held name.
+    The handle is read-only, non-exclusive and is never inherited by nwipe.
+    """
+    flags = os.O_RDONLY | os.O_NONBLOCK | os.O_NOCTTY | os.O_NOFOLLOW | os.O_CLOEXEC
+    try:
+        fd = os.open(request.device, flags)
+    except OSError as exc:
+        raise SafetyError("Disk identity changed. Refusing to erase.") from exc
+    try:
+        held = os.fstat(fd)
+        if (not stat.S_ISBLK(held.st_mode) or not request.device_rdev
+                or held.st_rdev != request.device_rdev):
+            raise SafetyError("Disk identity changed. Refusing to erase.")
+    except BaseException:
+        os.close(fd)
+        raise
+    return fd
 
 
 def build_nwipe_argv(request: WipeRequest) -> List[str]:
@@ -1252,6 +1314,44 @@ def evaluate_nwipe_completion(
     return ok, detail
 
 
+def logged_random_generator(log_text: object) -> Optional[str]:
+    """The random-data generator nwipe 0.42 logged for this run, or None.
+
+    Display only: never part of an outcome. Accepts exactly one complete
+    options-manifest record after the manifest header, with a known name.
+    A second manifest record, a conflicting or repeated auto-selection
+    record, an unknown name or a cut-off record leaves the value unknown.
+    Device text cannot supply these records: a full record is longer than
+    the 40-byte model or 20-byte serial nwipe can print.
+    """
+    if not isinstance(log_text, str) or not log_text:
+        return None
+    lines = log_text.split("\n")
+    # Only newline-terminated records are complete.
+    lines = lines[:-1]
+    header_seen = False
+    chosen: list[str] = []
+    auto: list[str] = []
+    for line in lines:
+        if NWIPE_OPTIONS_HEADER_RE.fullmatch(line):
+            header_seen = True
+            continue
+        option = NWIPE_PRNG_OPTION_RE.fullmatch(line)
+        if option is not None:
+            if not header_seen:
+                return None
+            chosen.append(option.group(1))
+            continue
+        selected = NWIPE_PRNG_AUTO_RE.fullmatch(line)
+        if selected is not None:
+            auto.append(selected.group(1))
+    if len(chosen) != 1 or chosen[0] not in NWIPE_PRNG_LOG_NAMES or len(auto) > 1:
+        return None
+    if auto and NWIPE_PRNG_AUTO_LABELS.get(auto[0]) != chosen[0]:
+        return None
+    return chosen[0]
+
+
 def _assert_named_wipe_lock(fd: int, lock_path: str) -> None:
     """The coordination name must still refer to our locked inode."""
     try:
@@ -1286,6 +1386,9 @@ class NwipeRunner:
         self._sigusr1_armed = False
         self._last_logfile = ""
         self._log_fd: Optional[int] = None
+        # Read-only handle that keeps the confirmed disk's kernel name from
+        # being reassigned between final rediscovery and engine exit.
+        self._target_fd: Optional[int] = None
         self._active_log_identity: Optional[tuple[str, int, int]] = None
         self._active_request: Optional[WipeRequest] = None
         self._sleep_inhibit = SleepInhibit()
@@ -1306,6 +1409,7 @@ class NwipeRunner:
                 and self._proc is None
                 and self._lock_fd is None
                 and self._log_fd is None
+                and self._target_fd is None
                 and not self._cleanup_failed
             )
 
@@ -1315,7 +1419,7 @@ class NwipeRunner:
             if self._cleanup_failed:
                 raise SafetyError("Runner cleanup could not be confirmed.")
             if (self._proc is not None or self._lock_fd is not None
-                    or self._log_fd is not None):
+                    or self._log_fd is not None or self._target_fd is not None):
                 raise SafetyError("A wipe is already running.")
             # A new launch attempt owns the runner state even if an early
             # preflight check refuses it. A later poll must not return the
@@ -1379,7 +1483,7 @@ class NwipeRunner:
                     verified_engine.close()
                 raise SafetyError("Runner cleanup could not be confirmed.")
             if (self._proc is not None or self._lock_fd is not None
-                    or self._log_fd is not None):
+                    or self._log_fd is not None or self._target_fd is not None):
                 if verified_engine is not None:
                     verified_engine.close()
                 raise SafetyError("A wipe is already running.")
@@ -1418,6 +1522,9 @@ class NwipeRunner:
                         )
                     assert_local_device_transport(request.device)
                     assert_not_boot(request.device, request.boot_device, required=True)
+                    # Reserve the name first, so the rediscovered identity is
+                    # the disk nwipe can open by that name until it exits.
+                    self._target_fd = _reserve_target_under_lock(request)
                     _recheck_identity_under_lock(request)
             except BaseException:
                 try:
@@ -1880,6 +1987,14 @@ class NwipeRunner:
                             NWIPE_GEOMETRY_RE,
                         ))
                         or any(_status_column_has_name(body, name) for name in names)
+                        # Display-only generator records. After hours of
+                        # progress lines they are no longer in the exported
+                        # tail; logged_random_generator() still requires the
+                        # same exact, unique, header-first records here.
+                        or any(regex.fullmatch(line) for regex in (
+                            NWIPE_OPTIONS_HEADER_RE, NWIPE_PRNG_OPTION_RE,
+                            NWIPE_PRNG_AUTO_RE,
+                        ))
                     )
                     if relevant:
                         retained_bytes += len(raw)
@@ -1968,6 +2083,15 @@ class NwipeRunner:
         self._lock_path = lock_path
 
     def _release_wipe_lock(self) -> None:
+        target_fd = self._target_fd
+        if target_fd is not None:
+            # Callers release only after the engine has exited or was never
+            # launched. The read-only reservation carries no write state.
+            self._target_fd = None
+            try:
+                os.close(target_fd)
+            except OSError as exc:
+                _try_log_diag("nwipe", "target_hold_close_failed", type(exc).__name__)
         self._sleep_inhibit.stop()
         if self._cleanup_failed:
             raise SafetyError("Runner cleanup could not be confirmed.")

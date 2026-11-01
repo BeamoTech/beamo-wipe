@@ -37,7 +37,7 @@ the supervisor without authorizing poweroff; Ctrl-C cannot confirm discard.
 | Startup diagnostic exported and verified for the current startup/discovery status | Normal shutdown; diagnostics remain separate from erase evidence |
 | Later erase starts or startup status changes | Earlier diagnostic receipt cannot satisfy the new report |
 
-Only the constrained FAT32 exporter can acknowledge saved status: exact report
+Only the constrained FAT32/exFAT exporter can acknowledge saved status: exact report
 hash, valid session directory, successful checksum/readback verification, and
 final unmount. A screenshot, button history, COMPLETE file alone, or a modified
 sharing copy is insufficient. The legacy manual-copy API does not acknowledge

@@ -128,7 +128,7 @@ NO_EXPORT_EVIDENCE = "No current verified evidence to export"
 NO_FINISHED_REPORT = "A current finished wipe report is not available."
 EVIDENCE_UNREADABLE = "The saved wipe evidence could not be read. Try saving the report again."
 REPORT_CHANGED_BEFORE_SAVE = "The finished wipe report changed before it could be saved."
-REPORT_SAVING = "Saving and verifying the report USB. Leave it connected."
+REPORT_SAVING = "Saving the report to the USB and verifying it. Leave the USB connected."
 EXPORT_FAILED = "The report export failed. Shut down before removing the USB."
 REPORT_NOT_SAVED = "The report was not saved and verified. Shut down before removing the USB."
 REPORT_CHANGED_DURING_SAVE = "The finished wipe report changed while it was being saved. Shut down before removing the USB."
@@ -136,7 +136,7 @@ EXPORT_NO_START = "The report export could not start."
 DIAG_VERIFYING = "Saving and verifying. Leave the USB connected."
 DIAG_CHECKING = "Checking connected disks."
 DIAG_NO_PREVIEW = "Diagnostic USB export is unavailable in preview or dry-run."
-DIAG_BASELINE_READY = "Baseline checked. Now insert one new removable FAT32 USB and choose {action}."
+DIAG_BASELINE_READY = "Baseline checked. Now insert one new removable FAT32 or exFAT USB and choose {action}."
 DIAG_NOT_SAVED = "Diagnostic report was not saved and verified. Shut down before removing the USB."
 DIAG_CONTEXT_CHANGED = "Startup status changed. Save a new diagnostic report before shutting down."
 DIAG_FAILED = "Diagnostic export failed. Shut down before removing the USB."
@@ -824,11 +824,11 @@ class Wizard:
 
     @property
     def elapsed_text(self) -> str:
-        from beamo_wipe.progress import duration
+        from beamo_wipe import progress
         if self._recovered:
             value = (self.evidence or {}).get("timestamps", {}).get("duration_s")
-            return "Elapsed: " + duration(value)
-        return "Elapsed: " + duration(self.progress_view.elapsed)
+            return progress.ELAPSED_LABEL.format(text=progress.duration(value))
+        return progress.ELAPSED_LABEL.format(text=progress.duration(self.progress_view.elapsed))
 
     @staticmethod
     def _result_evidence_key(result: WipeResult) -> str:
@@ -1012,6 +1012,12 @@ class Wizard:
             except ValueError:
                 return False
             self.language = code
+            # A shown error or keyboard notice is a translated constant; keep
+            # it, and the guidance matched against it, in the new language.
+            if self.error:
+                self.error = ui_lang.current_text(self.error)
+            if self.keyboard_message:
+                self.keyboard_message = ui_lang.current_text(self.keyboard_message)
             return True
 
     def set_keyboard_layout(self, layout_id: str) -> bool:
@@ -1430,6 +1436,18 @@ class Wizard:
                 return
             self._enter_pick()
 
+    def _discovery_error(self) -> Optional[str]:
+        """Discovery's error in the current language.
+
+        Discovery usually runs before the owner picks a language. The blocked
+        heading and recovery guidance match the error against constants in
+        the current language, so a stale English copy would get generic help.
+        """
+        from beamo_wipe import lang as ui_lang
+
+        error = self.discovery.error
+        return ui_lang.current_text(error) if error else error
+
     def _enter_pick(self) -> None:
         if self._startup_blocked:
             self.screen = Screen.PICK_BLOCKED
@@ -1441,7 +1459,7 @@ class Wizard:
             # exception messages may contain device paths or serials.
             diag = getattr(self.discovery, "diagnostic", None)
             if diag:
-                self.error = self.discovery.error
+                self.error = self._discovery_error()
                 try:
                     from beamo_wipe.diagnostics import log_diag
                     from beamo_wipe.diagnostic_report import CODES
@@ -1459,7 +1477,7 @@ class Wizard:
                 except Exception:
                     pass
             else:
-                self.error = self.discovery.error
+                self.error = self._discovery_error()
             return
         try:
             assert_boot_excluded(self.discovery)

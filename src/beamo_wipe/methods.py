@@ -158,5 +158,8 @@ METHODS = {
 DEFAULT_METHOD = MethodId.EVERYDAY
 
 ALLOWED_NWIPE_METHODS = frozenset({"prng", "dodshort", "zero"})
+# nwipe 0.42 method.c: random overwrites everything; dodshort's third pass is a
+# random stream. Zero fill never reads the generator.
+RANDOM_DATA_NWIPE_METHODS = frozenset({"prng", "dodshort"})
 ALLOWED_VERIFY = frozenset({"last", "off", "all"})
 ALLOWED_ROUNDS = frozenset({1})

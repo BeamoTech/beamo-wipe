@@ -85,6 +85,7 @@ def test_interrupted_pre_spawn_inhibitor_releases_lock(tmp_path, monkeypatch):
         "assert_local_device_transport",
         "assert_not_boot",
         "_recheck_identity_under_lock",
+        "_reserve_target_under_lock",
     ):
         monkeypatch.setattr("beamo_wipe.nwipe_runner." + name, lambda *_, **__: None)
     monkeypatch.setattr(

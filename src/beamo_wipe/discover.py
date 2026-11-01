@@ -1089,6 +1089,10 @@ def _volume_label(node: Dict[str, Any]) -> str:
 
 
 _POSIX_FS = frozenset({"ext4", "ext3", "xfs", "btrfs", "f2fs"})
+# An Intel Mac system disk is EFI plus APFS (or HFS+ before macOS 10.13).
+_MAC_FS = frozenset({"apfs", "hfsplus"})
+# GPT "BIOS boot" partition that GRUB uses on legacy-BIOS installs.
+_BIOS_BOOT_PARTTYPES = frozenset({"21686148-6449-6e6f-744e-656564454649", "ef02"})
 _WINDOWS_LABELS = frozenset(
     {"recovery", "winre", "windows", "system reserved", "windows recovery"}
 )
@@ -1173,9 +1177,23 @@ def _contents_from_evidence(
         or parttypes & _EFI_PARTTYPES
     )
     posix = bool(fstypes & _POSIX_FS)
-    if windows_marks or (bool(fstypes & {"ntfs"}) and efi):
+    ntfs = "ntfs" in fstypes
+    # Linux vendor recovery partitions are also labelled "Recovery" (FAT32
+    # beside ext4), so that label alone names Windows only without Linux.
+    recovery_only = labels & _WINDOWS_LABELS == {"recovery"}
+    if recovery_only and posix and not ntfs:
+        windows_marks = bool(
+            "bitlocker" in fstypes
+            or any(any(mark in name for mark in _WINDOWS_PARTNAMES) for name in partnames)
+            or parttypes & _WINDOWS_OS_PARTTYPES
+        )
+    if windows_marks or (ntfs and efi):
         return CONTENTS_WINDOWS
-    if efi and posix:
+    if efi and (posix or fstypes & _MAC_FS):
+        return CONTENTS_SYSTEM
+    # Legacy-BIOS Linux has no EFI partition but keeps swap, a GPT BIOS boot
+    # partition or a vendor recovery partition beside its root filesystem.
+    if posix and ("swap" in fstypes or parttypes & _BIOS_BOOT_PARTTYPES or recovery_only):
         return CONTENTS_SYSTEM
     if fstypes:
         return CONTENTS_DATA

@@ -111,11 +111,13 @@ def test_done_console_narrow_pages_full_stage_block(monkeypatch, tmp_path):
     import curses
 
     wiz = _eligible_wizard(lambda **kw: _ok_receipt(**kw), tmp_path)
+    # Page to the end: the per-outcome next steps made this page longer, and
+    # every stage and the volatile-report line must stay reachable by paging.
     _, _, term = _draw(
         monkeypatch,
         wiz,
-        keys=[curses.KEY_DOWN] * 10,
-        sizes=[(24, 60)] * 12,
+        keys=[curses.KEY_DOWN] * 20,
+        sizes=[(24, 60)] * 22,
     )
     all_text = " ".join(
         " ".join(frame[y] for y in sorted(frame)) for frame in term.frames
@@ -200,7 +202,9 @@ def test_gallery_done_card_shows_stages():
 
 def test_export_stage_keys_translated_in_fr_and_de():
     from beamo_wipe.locales import de as de_locale
+    from beamo_wipe.locales import es as es_locale
     from beamo_wipe.locales import fr as fr_locale
+    from beamo_wipe.locales import it as it_locale
 
     keys = (
         "EXPORT_STAGE_INSERT",
@@ -217,9 +221,11 @@ def test_export_stage_keys_translated_in_fr_and_de():
         assert key in de_locale.STRINGS["copy"]
         assert fr_locale.STRINGS["copy"][key] != getattr(C, key)
         assert de_locale.STRINGS["copy"][key] != getattr(C, key)
+        assert es_locale.STRINGS["copy"][key] != getattr(C, key)
+        assert it_locale.STRINGS["copy"][key] != getattr(C, key)
 
 
-@pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html"])
+@pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html", "es.html", "it.html"])
 def test_helper_explains_export_stages(name):
     from beamo_wipe.gallery import project_root
 
@@ -230,6 +236,8 @@ def test_helper_explains_export_stages(name):
         "index.html": ("Insert", "Check", "Save", "Verify", "removal"),
         "fr.html": ("Insérez", "Vérif", "Enregistr", "Contrôl", "retrait"),
         "de.html": ("Stecken", "Prüf", "Speichern", "Verifizier", "Abziehen"),
+        "es.html": ("Conecte", "Compruebe", "Guarde", "Verifique", "Retirada segura"),
+        "it.html": ("Inserisca", "Controlli", "Salvi", "Verifichi", "Rimozione sicura"),
     }[name]
     positions = [card.index(marker) for marker in markers]
     assert positions == sorted(positions)

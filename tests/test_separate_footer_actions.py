@@ -86,12 +86,16 @@ def test_assist_nav_labels_stay_on_the_swept_copy_surface():
     keys = set(_swept_surface()["copy"])
     assert "ASSIST_LABEL" in keys
     assert "NAV_LABEL" in keys
-    for code in ("fr", "de"):
+    for code in ("fr", "de", "es", "it"):
         table = set(lang.keys(code, "copy"))
         assert "ASSIST_LABEL" in table
         assert "NAV_LABEL" in table
     assert lang.translated("fr", "copy", "ASSIST_LABEL") != C.ASSIST_LABEL
     assert lang.translated("de", "copy", "NAV_LABEL") != C.NAV_LABEL
+    assert lang.translated("es", "copy", "ASSIST_LABEL") != C.ASSIST_LABEL
+    assert lang.translated("es", "copy", "NAV_LABEL") != C.NAV_LABEL
+    assert lang.translated("it", "copy", "ASSIST_LABEL") != C.ASSIST_LABEL
+    assert lang.translated("it", "copy", "NAV_LABEL") != C.NAV_LABEL
 
 
 def test_assist_nav_names_do_not_rewrite_result_heading():
@@ -165,7 +169,13 @@ def test_last_chance_hint_is_above_navigation_not_between_actions(ui, size):  # 
     hint_bottom = hint.winfo_rooty() + hint.winfo_height()
     nav_top = min(back.winfo_rooty(), erase.winfo_rooty())
     assert hint_bottom <= nav_top + 2
-    assert abs(back.winfo_rooty() - erase.winfo_rooty()) <= 4
+    # Same row: vertically centred on each other (compact Back is shorter
+    # than the primary), and overlapping vertically.
+    back_mid = back.winfo_rooty() + back.winfo_height() / 2
+    erase_mid = erase.winfo_rooty() + erase.winfo_height() / 2
+    assert abs(back_mid - erase_mid) <= 4
+    assert back.winfo_rooty() < erase.winfo_rooty() + erase.winfo_height()
+    assert erase.winfo_rooty() < back.winfo_rooty() + back.winfo_height()
     nav_y = back.winfo_rooty()
     nav_bottom = nav_y + back.winfo_height()
     overlapping = []

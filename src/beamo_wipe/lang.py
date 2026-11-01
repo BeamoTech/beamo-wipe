@@ -1,18 +1,24 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""UI language selection. English is the source; French and German tables
-in locales/ override module attributes. Tables hold data only (never
-functions); builders format translated templates, and modules with derived
-text rebuild it in _apply_language().
+"""UI language selection. English is the source; French, German, Spanish and
+Italian tables in locales/ override module attributes. Tables hold data only
+(never functions); builders format translated templates, and modules with
+derived text rebuild it in _apply_language().
 """
 
 from __future__ import annotations
 
 import importlib
 
-LANGUAGE_ORDER = ("en", "fr", "de")
+LANGUAGE_ORDER = ("en", "fr", "de", "es", "it")
 
 # Own-language names. Never translated, never in the tables.
-LANGUAGE_NAMES = {"en": "English", "fr": "Français", "de": "Deutsch"}
+LANGUAGE_NAMES = {
+    "en": "English",
+    "fr": "Français",
+    "de": "Deutsch",
+    "es": "Español",
+    "it": "Italiano",
+}
 
 # Translated modules in dependency order: a module's _apply_language() may
 # read another module's already-translated attributes (copy reads outcomes,
@@ -130,3 +136,57 @@ def set_language(code: str) -> str:
             _apply_hook(modules[module_name])
     _current = code
     return code
+
+
+_REVERSE = None
+
+
+def _reverse_index():
+    """{text: {(module, name), ...}} for every language's constant strings."""
+    global _REVERSE
+    if _REVERSE is None:
+        index: dict = {}
+        for code in LANGUAGE_ORDER:
+            tables = _snapshot() if code == "en" else _tables(code)
+            for module_name, names in tables.items():
+                for name, value in names.items():
+                    if isinstance(value, str):
+                        index.setdefault(value, set()).add((module_name, name))
+        _REVERSE = index
+    return _REVERSE
+
+
+def current_text(text: str) -> str:
+    """A stored constant string, in the current language.
+
+    Text kept from before a language switch (discovery runs before the owner
+    picks one) maps to the current value of the translated constant it equals
+    in any language, or to two such constants joined. Formatted, unknown or
+    ambiguous text is returned as is.
+    """
+    if not isinstance(text, str):
+        return text
+    whole = _current_constant(text)
+    if whole is not None:
+        return whole
+    # Two constants joined, such as the keyboard notice GRAPHICAL_ONLY +
+    # SESSION_ONLY. Both halves must be exact, unambiguous constants.
+    for head in _reverse_index():
+        if head and len(head) < len(text) and text.startswith(head):
+            first = _current_constant(head)
+            second = _current_constant(text[len(head):])
+            if first is not None and second is not None:
+                return first + second
+    return text
+
+
+def _current_constant(text: str) -> str | None:
+    keys = _reverse_index().get(text)
+    if not keys:
+        return None
+    modules = _modules()
+    current = {getattr(modules[module_name], name) for module_name, name in keys}
+    if len(current) != 1:
+        return None
+    (value,) = current
+    return value if isinstance(value, str) else None

@@ -85,5 +85,8 @@ draw();
 if (document.activeElement !== more)
   throw Error('progress redraw lost keyboard focus on Show more');
 """
-    result = subprocess.run([node, "-e", program], capture_output=True, text=True)
+    # stdin, not -e: the gallery's draw() alone is near the 32,767-character
+    # Windows command-line limit.
+    result = subprocess.run([node, "-"], input=program, capture_output=True,
+                            text=True, encoding="utf-8")
     assert result.returncode == 0, result.stderr

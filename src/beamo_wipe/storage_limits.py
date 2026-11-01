@@ -43,7 +43,7 @@ SECTION_VERIFY_TITLE = "Read-back verification"
 SECTION_HDD_TITLE = "Hard disks, hidden areas, and damaged media"
 SECTION_HDD_BODY = (
     "Hidden HPA/DCO areas, remapped or unreadable sectors, and unexposed NVMe "
-    "namespaces are outside the overwrite guarantee. A drive can report "
+    "namespaces are outside what the overwrite reaches. A drive can report "
     "completion while hidden data remains. Read or write errors, missing "
     "completion evidence, and interruption must not be treated as success."
 )

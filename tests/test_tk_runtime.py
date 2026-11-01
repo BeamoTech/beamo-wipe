@@ -1577,8 +1577,8 @@ def test_saved_receipt_location_fits_minimum_window(ui, tmp_path):
     assert "/run/" not in blob and "/dev/" not in blob
 
 
-@pytest.mark.parametrize('message', ['No new report USB found. Insert exactly one new FAT32 report USB, then try again.',
-                                    'Use a FAT32 report USB. Other filesystems are not mounted.',
+@pytest.mark.parametrize('message', ['No new report USB found. Insert exactly one new FAT32 or exFAT report USB, then try again.',
+                                    'Use a FAT32 or exFAT report USB. Other filesystems are not mounted.',
                                     'The report USB was removed.'])
 def test_report_aftercare_errors_and_lifetime_at_minimum_size(ui, tmp_path, message):
     from beamo_wipe import copy as C
