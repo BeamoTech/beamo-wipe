@@ -94,33 +94,30 @@ graphical_diagnostics() {
 # Safe video on UEFI: nomodeset leaves the firmware framebuffer (/dev/fb0)
 # and no DRM device. X's autodetection then tried only vesa, which cannot
 # work without a legacy video BIOS, and found no screens (QEMU OVMF, CI
-# run 41237147966). Point X at the framebuffer in exactly that case. BIOS
-# safe video has no framebuffer and keeps vesa; normal boots use KMS.
-SAFE_VIDEO_XORG=/etc/X11/xorg.conf.d/20-beamo-safe-video.conf
-safe_video_xorg_config() {
-  rm -f "$SAFE_VIDEO_XORG" 2>/dev/null || true
+# run 41237147966). Point X at the framebuffer in exactly that case with
+# the shipped /etc/X11/beamo-safe-video.conf (relative -config names are
+# searched in /etc/X11; xorg.conf.d still applies). Nothing is written at
+# runtime: this service runs with ProtectSystem=full, so /etc is read-only
+# (CI run 41255192420). BIOS safe video has no framebuffer and keeps vesa;
+# normal boots use KMS.
+SAFE_VIDEO_X_CONFIG=beamo-safe-video.conf
+safe_video_x_config() {
   boot_has_word nomodeset || return 0
   [ -e /dev/fb0 ] || return 0
   [ -e /dev/dri/card0 ] && return 0
-  printf '%s\n' \
-    '# Written by the Beamo kiosk for this safe-video session only.' \
-    'Section "Device"' \
-    '    Identifier "Beamo safe video framebuffer"' \
-    '    Driver "fbdev"' \
-    '    Option "fbdev" "/dev/fb0"' \
-    'EndSection' >"$SAFE_VIDEO_XORG" 2>/dev/null || true
+  printf '%s\n' "$SAFE_VIDEO_X_CONFIG"
 }
 
 run_ui() {
   rm -f /tmp/.X11-unix/X0 /tmp/.X0-lock "$XAUTHORITY" 2>/dev/null || true
-  safe_video_xorg_config
+  x_config="$(safe_video_x_config)"
   say "Beamo Wipe is starting with speech. No new erase starts automatically."
   if command -v startx >/dev/null 2>&1; then
     graphical_rc=0
     if [ "$UI_MODE" = accessible ]; then
-      startx /usr/local/bin/beamo-wipe --accessible -- -nolisten tcp vt1 || graphical_rc=$?
+      startx /usr/local/bin/beamo-wipe --accessible -- -nolisten tcp vt1 ${x_config:+-config "$x_config"} || graphical_rc=$?
     else
-      startx /usr/local/bin/beamo-wipe -- -nolisten tcp vt1 || graphical_rc=$?
+      startx /usr/local/bin/beamo-wipe -- -nolisten tcp vt1 ${x_config:+-config "$x_config"} || graphical_rc=$?
     fi
     rm -f /tmp/.X11-unix/X0 /tmp/.X0-lock "$XAUTHORITY" 2>/dev/null || true
     if [ "$graphical_rc" -eq 0 ]; then

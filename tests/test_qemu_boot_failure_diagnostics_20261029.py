@@ -49,7 +49,7 @@ def _run_ui(tmp_path, startx_rc: int) -> tuple[subprocess.CompletedProcess, list
         "say() { :; }\n"
         f"startx() {{ return {startx_rc}; }}\n"
         "fake_console() { echo CONSOLE_RAN; }\n"
-        "safe_video_xorg_config() { :; }\n"
+        "safe_video_x_config() { :; }\n"
         + block
         + "run_ui\n"
     )
@@ -108,7 +108,8 @@ def test_capture_is_skipped_without_a_live_qmp_socket(tmp_path):
     assert result.stdout.split() == ["DONE"]
 
 
-def _safe_video_config(tmp_path, cmdline: str, fb0: bool, dri: bool):
+def _safe_video_args(tmp_path, cmdline: str, fb0: bool, dri: bool) -> list[str]:
+    """The X server arguments run_ui passes after "--", from fake devices."""
     source = KIOSK.read_text(encoding="utf-8")
     dev = tmp_path / "dev"
     (dev / "dri").mkdir(parents=True)
@@ -117,34 +118,53 @@ def _safe_video_config(tmp_path, cmdline: str, fb0: bool, dri: bool):
     if dri:
         (dev / "dri" / "card0").write_text("")
     (tmp_path / "cmdline").write_text(cmdline + "\n")
-    out = tmp_path / "20-beamo-safe-video.conf"
-    out.write_text("stale from an earlier session\n")
-    block = (_function(source, "boot_has_word") + _function(source, "safe_video_xorg_config"))
-    block = block.replace("/proc/cmdline", f'"{tmp_path}/cmdline"')
-    block = block.replace("[ -e /dev/", f'[ -e {dev.as_posix()}/')
-    script = f'set -u\nSAFE_VIDEO_XORG="{out}"\n' + block + "safe_video_xorg_config\n"
+    block = _function(source, "boot_has_word") + _function(source, "safe_video_x_config")
+    block = block.replace("/proc/cmdline", f'"{tmp_path.as_posix()}/cmdline"')
+    block = block.replace("[ -e /dev/", f"[ -e {dev.as_posix()}/")
+    startx = next(line for line in _function(source, "run_ui").splitlines()
+                  if "startx /usr/local/bin/beamo-wipe --" in line and "--accessible" not in line)
+    server = startx.split(" -- ", 1)[1].split(" || ", 1)[0]
+    script = (
+        "set -u\n" + 'SAFE_VIDEO_X_CONFIG=beamo-safe-video.conf\n' + block
+        + 'x_config="$(safe_video_x_config)"\n'
+        + "printf '%s\\n' " + server + "\n"
+    )
     result = subprocess.run(["sh", "-c", script], capture_output=True, text=True, timeout=30)
     assert result.returncode == 0, result.stderr
-    return out.read_text() if out.exists() else None
+    return result.stdout.split("\n")[:-1]
 
 
 def test_uefi_safe_video_points_x_at_the_firmware_framebuffer(tmp_path):
     # CI run 41237147966: fb0 present, no DRM device, X tried only vesa.
-    config = _safe_video_config(tmp_path, "boot=live nomodeset nosplash", fb0=True, dri=False)
+    args = _safe_video_args(tmp_path, "boot=live nomodeset nosplash", fb0=True, dri=False)
+    assert args == ["-nolisten", "tcp", "vt1", "-config", "beamo-safe-video.conf"]
+    config = (ROOT / "packaging/live/config/includes.chroot/etc/X11/beamo-safe-video.conf").read_text(
+        encoding="utf-8")
     assert 'Driver "fbdev"' in config and 'Option "fbdev" "/dev/fb0"' in config
-    assert "BusID" not in config and "vesa" not in config.lower()
+    assert "BusID" not in config and 'Driver "vesa"' not in config
 
 
 def test_other_sessions_leave_x_autodetection_alone(tmp_path):
     # BIOS safe video (no framebuffer: vesa works), KMS present, or a normal
-    # boot: no pinned driver, and a stale file from before is removed.
-    assert _safe_video_config(tmp_path / "a", "boot=live nomodeset", fb0=False, dri=False) is None
-    assert _safe_video_config(tmp_path / "b", "boot=live nomodeset", fb0=True, dri=True) is None
-    assert _safe_video_config(tmp_path / "c", "boot=live quiet", fb0=True, dri=False) is None
+    # boot: X gets no extra config file.
+    plain = ["-nolisten", "tcp", "vt1"]
+    assert _safe_video_args(tmp_path / "a", "boot=live nomodeset", fb0=False, dri=False) == plain
+    assert _safe_video_args(tmp_path / "b", "boot=live nomodeset", fb0=True, dri=True) == plain
+    assert _safe_video_args(tmp_path / "c", "boot=live quiet", fb0=True, dri=False) == plain
 
 
-def test_run_ui_writes_the_safe_video_config_before_x_starts():
+def test_safe_video_writes_nothing_under_the_read_only_etc():
+    # CI run 41255192420: the kiosk service has ProtectSystem=full, so a
+    # runtime write to /etc/X11/xorg.conf.d failed silently.
+    unit = (ROOT / "packaging/live/config/includes.chroot/etc/systemd/system/"
+            "beamo-wipe-kiosk.service").read_text(encoding="utf-8")
+    assert "ProtectSystem=full" in unit
     source = KIOSK.read_text(encoding="utf-8")
-    body = _function(source, "run_ui")
-    assert body.index("safe_video_xorg_config") < body.index("startx ")
-    assert "SAFE_VIDEO_XORG=/etc/X11/xorg.conf.d/20-beamo-safe-video.conf" in source
+    body = _function(source, "safe_video_x_config")
+    assert ">" not in body.replace("2>/dev/null", "")
+    assert "xorg.conf.d/20-beamo" not in source
+    run_ui = _function(source, "run_ui")
+    assert run_ui.index('x_config="$(safe_video_x_config)"') < run_ui.index("startx ")
+    assert run_ui.count('${x_config:+-config "$x_config"}') == 2
+    assert not (ROOT / "packaging/live/config/includes.chroot/etc/X11/xorg.conf.d/"
+                "20-beamo-safe-video.conf").exists()

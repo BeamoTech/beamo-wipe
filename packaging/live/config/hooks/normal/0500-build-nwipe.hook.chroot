@@ -219,13 +219,13 @@ chown -R root:root /usr/lib/beamo-wipe /usr/local/bin/beamo-wipe \
   /etc/systemd/sleep.conf.d/beamo-kiosk.conf \
   /etc/systemd/system.conf.d/beamo-kiosk.conf \
   /etc/sysctl.d/90-beamo-kiosk.conf \
-  /etc/X11/xorg.conf.d/10-beamo.conf \
+  /etc/X11/xorg.conf.d/10-beamo.conf /etc/X11/beamo-safe-video.conf \
   /usr/share/beamo-wipe /usr/share/doc/beamo-wipe
 chmod 0644 /etc/systemd/logind.conf.d/beamo-kiosk.conf \
   /etc/systemd/sleep.conf.d/beamo-kiosk.conf \
   /etc/systemd/system.conf.d/beamo-kiosk.conf \
   /etc/sysctl.d/90-beamo-kiosk.conf \
-  /etc/X11/xorg.conf.d/10-beamo.conf
+  /etc/X11/xorg.conf.d/10-beamo.conf /etc/X11/beamo-safe-video.conf
 find /usr/lib/beamo-wipe /usr/share/beamo-wipe /usr/share/doc/beamo-wipe \
   -type d -exec chmod 0755 {} +
 find /usr/lib/beamo-wipe /usr/share/beamo-wipe /usr/share/doc/beamo-wipe \
