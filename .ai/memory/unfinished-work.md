@@ -2430,3 +2430,11 @@ another very thorough and comprehensive pass of this." Repo
   reruns the paid full gate). Independent review (BW-P3-GREPTILE) must
   cover this diff too. Owner looks at the screenshots in the scratch
   `compare2/`.
+- 2026-11-01 update (BW-PASS3-UI2-20261101): hosted gate GREEN on pushed
+  head `9c16e13` (run 41300394923; merge ref `e4cb941` = main `58c677f` +
+  `9c16e13`). CI gate, Linux image gate and Windows launcher tests
+  succeeded; pytest 13997 passed / 0 failed / 15 skipped; every QEMU case
+  passed. ISO 1008de9f…a81b, USB image 141fde94…5d1a, nwipe 1dbe27e2…2447.
+  Still open: independent review of the final diff (BW-P3-GREPTILE), owner
+  merge decision, BW-FIN-SB-Q12 (signers from this run), native-speaker
+  review, PR #93 ordering, BW-RR-PHYS. This note is a LOCAL commit only.
