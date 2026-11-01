@@ -298,3 +298,16 @@ def test_qemu_details_are_sent_only_inside_a_qemu_guest(tmp_path):
     # graphical_diagnostics calls it last, after the fixed classes.
     body = _function(source, "graphical_diagnostics")
     assert body.rstrip().splitlines()[-3].strip() == 'qemu_x_details "$x_log"'
+
+
+def test_grub_hands_linux_a_32_bit_framebuffer_when_it_can():
+    # CI run 41272451830: fb0 was 800x600 at 24 bpp packed (line 2400), set
+    # by GRUB's bochs driver; X (no 24bpp pixmaps) asked fbdev for 32 bpp
+    # and fbdevhw rejected the unchanged 24-bpp var. Firmware GOP modes are
+    # almost always 32 bpp; the fallbacks keep the old choice elsewhere.
+    config = (ROOT / "packaging/live/config/bootloaders/grub-pc/config.cfg").read_text(
+        encoding="utf-8")
+    lines = [line.strip() for line in config.splitlines()]
+    assert "set gfxmode=800x600x32,800x600,auto" in lines
+    assert "set gfxmode=800x600" not in lines
+    assert lines.index("set gfxmode=800x600x32,800x600,auto") < lines.index("set gfxpayload=keep")
