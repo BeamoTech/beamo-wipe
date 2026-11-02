@@ -34,6 +34,7 @@ TRANSLATED_MODULES = (
     "progress",
     "engine_checks",
     "result_summary",
+    "erase_record",
     "privacy",
     "diagnostic_report",
     "session_recovery",

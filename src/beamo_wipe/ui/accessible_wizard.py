@@ -39,6 +39,31 @@ from beamo_wipe.ui import StartupDisplayUnavailable  # noqa: E402
 from beamo_wipe.wizard import Wizard, error_needs_support  # noqa: E402
 
 
+def _record_image(text: str, scale: int = 4):
+    """Gtk.Image of the record code, or None when it cannot be drawn."""
+    try:
+        gi.require_version("GdkPixbuf", "2.0")
+        from gi.repository import GdkPixbuf
+
+        from beamo_wipe.erase_record import qr_matrix
+
+        matrix = qr_matrix(text)
+        size = len(matrix) * scale
+        rows = []
+        for modules in matrix:
+            row_bytes = bytearray()
+            for dark in modules:
+                row_bytes.extend((b"\x00\x00\x00" if dark else b"\xff\xff\xff") * scale)
+            rows.append(bytes(row_bytes) * scale)
+        data = GLib.Bytes.new(b"".join(rows))
+        pixbuf = GdkPixbuf.Pixbuf.new_from_bytes(
+            data, GdkPixbuf.Colorspace.RGB, False, 8, size, size, size * 3
+        )
+        return Gtk.Image.new_from_pixbuf(pixbuf)
+    except Exception:
+        return None
+
+
 def _error_text(wizard: Wizard) -> str:
     """Error severity in words. Shared by render and tick updates so the
     live refresh never drops the label."""
@@ -154,6 +179,31 @@ class AccessibleWizard:
         widget.set_selectable(focusable)
         self.body.pack_start(widget, False, False, 4)
         return widget
+
+    def erase_record(self) -> None:
+        """Erase record (#127): heading, code, then the same summary as text.
+
+        The code image is not focusable; its accessible name says the text
+        follows. Orca reads the focusable summary label line by line.
+        """
+        record = self.w.erase_record
+        if record is None:
+            return
+        heading = self.label(C.RECORD_TITLE, focusable=True)
+        heading.get_accessible().set_role(Atk.Role.HEADING)
+        self.label(C.RECORD_PREVIEW_NOTE if record.preview else C.RECORD_LEAD, focusable=True)
+        image = _record_image(record.text)
+        if image is None:
+            self.label(C.RECORD_NO_CODE)
+        else:
+            image.set_halign(Gtk.Align.START)
+            image.get_accessible().set_name(C.RECORD_CODE_NAME)
+            self.body.pack_start(image, False, False, 8)
+        self.label(C.RECORD_TEXT_LABEL)
+        summary = self.label("\n".join(record.lines), focusable=True)
+        summary.get_accessible().set_name(record.text)
+        if not record.preview:
+            self.label(C.RECORD_NOTE)
 
     def support_identity_labels(self) -> None:
         ident = self.w.support_identity
@@ -710,6 +760,7 @@ class AccessibleWizard:
                         message=report.message,
                     )
                 )
+            self.erase_record()
             if self.w.preview:
                 self.button(C.BTN_RUN_AGAIN, self.w.reset_for_preview)
             else:

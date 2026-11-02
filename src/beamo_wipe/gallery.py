@@ -102,6 +102,22 @@ def _recovery_payload(sections) -> dict | None:
     }
 
 
+def _record_payload(ok: bool) -> dict:
+    """Preview erase record (#127): same builder and code as the live screen."""
+    from beamo_wipe import NWIPE_PINNED_VERSION, __version__
+    from beamo_wipe import erase_record as R
+
+    record = R.build_preview_record(
+        preview_view(ok).message,
+        R.software_text(__version__, None, NWIPE_PINNED_VERSION),
+    )
+    try:
+        svg = R.qr_svg(record.text, label=C.RECORD_CODE_NAME)
+    except Exception:
+        svg = ""
+    return {"svg": svg, "lines": list(record.lines)}
+
+
 def _disks_payload(scenario: str = "happy") -> list[dict]:
     result = discovery_for_scenario(scenario)  # type: ignore[arg-type]
     peers = listed_disks(result)
@@ -433,11 +449,18 @@ def _gallery_html_for_current_language(lang: str) -> str:
         "sevSaved": C.SEVERITY_SAVED,
         "sevLimits": C.SEVERITY_LIMITS,
         "previewResults": {
-            "ok": preview_view(True).payload(),
+            "ok": {**preview_view(True).payload(), "record": _record_payload(True)},
             "failed": {
                 **preview_view(False).payload(),
                 "recovery": _recovery_payload(recovery_for_view(preview_view(False))),
+                "record": _record_payload(False),
             },
+        },
+        "record": {
+            "title": C.RECORD_TITLE,
+            "lead": C.RECORD_PREVIEW_NOTE,
+            "textLabel": C.RECORD_TEXT_LABEL,
+            "noCode": C.RECORD_NO_CODE,
         },
         "recoveryLabels": {
             "happened": Rec.RECOVERY_HAPPENED,
@@ -1031,6 +1054,13 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .support svg { width: 132px; height: auto; flex: none; border: 1px solid var(--muted); background: #fff; }
   .support p { margin: 0; min-width: 0; }
   .support p:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+  .record { max-width: 700px; margin: 16px auto 0; text-align: left; background: #fff; border: 1px solid var(--line, #E3E8EE); border-radius: 12px; padding: 14px 18px; }
+  .record h2 { font-size: 1rem; margin: 0 0 4px; }
+  .record .lead { margin: 0 0 10px; }
+  .record .body { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+  .record .code svg { width: 280px; height: auto; display: block; background: #fff; }
+  .record .label { margin: 0 0 2px; color: var(--muted); font-size: 0.85rem; }
+  .record pre { margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.85rem; white-space: pre-wrap; overflow-wrap: anywhere; }
   .support-code { max-width: 700px; margin: 16px auto 0; text-align: left; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
   .support-code .row { display: flex; gap: 12px; margin: 0; }
   .support-code .k { color: var(--muted); min-width: 7em; }
@@ -1296,6 +1326,14 @@ function stepInfo() {
     report_help:[1,P.reportHelpTitle,P.reportHelpTitle],
     refresh_confirm:[0,"",P.titles.refresh]};
   return map[screen] || [0,"",""];
+}
+function recordBlock(result) {
+  const record = result.record;
+  if (!record) return "";
+  const code = record.svg ? `<div class="code">${record.svg}</div>` : `<p class="small muted">${esc(P.record.noCode)}</p>`;
+  return `<section class="record" aria-labelledby="record-heading"><h2 id="record-heading">${esc(P.record.title)}</h2>
+    <p class="lead small">${esc(P.record.lead)}</p><div class="body">${code}
+    <div><p class="label">${esc(P.record.textLabel)}</p><pre tabindex="0">${esc(record.lines.join("\n"))}</pre></div></div></section>`;
 }
 function supportBlock() {
   return `<div class="support"><div aria-hidden="true">${P.supportQr}</div><p tabindex="0">${P.supportLead}</p></div>`;
@@ -1843,6 +1881,7 @@ function draw() {
       <section aria-labelledby="report-status-heading">
       <h2 id="report-status-heading">${P.reportStatusTitle}</h2>
       <p>${P.reportPreview}</p><p class="small">${P.reportStatusNotice}</p></section>
+      ${recordBlock(result)}
       <p class="small muted" id="soundsNote" role="status"></p>
       ${moreLink("more-detail")}</div>`;
     bindMore();

@@ -1184,6 +1184,132 @@ class Wizard:
         return step
 
     @property
+    def erase_record(self):
+        """Photo record for the result screen, or None while it must not show.
+
+        Shown only on DONE once the outcome is final: never while evidence is
+        still being prepared, while an engine may still run, or after a Stop
+        that could not be confirmed. Every fact is one this session already
+        validated; the Result line is the on-screen outcome text exactly.
+        """
+        from beamo_wipe import NWIPE_PINNED_VERSION, __version__
+        from beamo_wipe import erase_record as R
+        from beamo_wipe.build_identity import STATUSES
+
+        with self._lock:
+            if self.screen != Screen.DONE:
+                return None
+            result = self.result_view
+            if self.preview:
+                try:
+                    return R.build_preview_record(
+                        result.message,
+                        R.software_text(__version__, None, NWIPE_PINNED_VERSION),
+                    )
+                except ValueError:
+                    return None
+            if self.wipe_result is None and not self._recovered:
+                return None
+            if self._evidence_saving or self._finishing:
+                return None
+            if result.code == "stop_unconfirmed":
+                return None
+            evidence = (
+                self.evidence
+                if isinstance(self.evidence, dict) and not self.evidence_error
+                else None
+            )
+            facts = self._record_disk_facts(evidence)
+            method = self._record_method(evidence)
+            claim = self._saved_report_claim
+            exported = self._has_verified_export_locked()
+            evidence_error = bool(self.evidence_error)
+        if self._live_pinned_engine_busy() or self._recovery_busy():
+            return None
+        started = ended = ""
+        if evidence is not None:
+            from beamo_wipe import result_summary as RS
+
+            timestamps = evidence.get("timestamps")
+            if isinstance(timestamps, dict):
+                schema = RS._schema_version(evidence)
+                started = R.wall_text(RS._wall_display(timestamps, "started_at_wall", schema))
+                ended = R.wall_text(RS._wall_display(timestamps, "ended_at_wall", schema))
+            software = R.software_text(
+                evidence.get("beamo_wipe_version"),
+                evidence.get("build_id")
+                if evidence.get("build_status") in STATUSES else None,
+                evidence.get("nwipe_version"),
+            )
+        else:
+            from beamo_wipe.support_code import public_build_id
+
+            software = R.software_text(
+                __version__, public_build_id(), NWIPE_PINNED_VERSION
+            )
+        if evidence_error:
+            report = R.REPORT_NOT_STORED
+        elif exported and claim is not None:
+            checksum = "" if claim.privacy_reduced else R.checksum_text(claim.evidence_sha256)
+            report = (
+                R.REPORT_SAVED_CHECKSUM.format(checksum=checksum)
+                if checksum else R.REPORT_SAVED
+            )
+        else:
+            report = R.REPORT_NOT_SAVED
+        try:
+            return R.build_record(
+                result=result.message,
+                disk=facts[0],
+                capacity=facts[1],
+                id_label=facts[2],
+                id_value=facts[3],
+                method=method,
+                started=started,
+                ended=ended,
+                elapsed_line=self.elapsed_text,
+                report=report,
+                software=software,
+            )
+        except ValueError:
+            # A result that cannot be repeated exactly is not shown at all.
+            return None
+
+    def _record_disk_facts(self, evidence) -> tuple[str, str, str, str]:
+        """Title, capacity and identifier exactly as the result card shows them."""
+        from beamo_wipe import lang
+
+        if self.selected is not None:
+            try:
+                view = self.disk_view(self.selected)
+                return view.title, view.capacity, view.id_label, view.id_value
+            except (SafetyError, ValueError, TypeError, AttributeError):
+                pass
+        shown = evidence.get("device_presentation") if evidence is not None else None
+        if not isinstance(shown, dict):
+            return "", "", "", ""
+
+        def text(key: str) -> str:
+            value = shown.get(key)
+            return lang.current_text(value) if isinstance(value, str) else ""
+
+        return text("title"), text("capacity"), text("id_label"), text("id_value")
+
+    def _record_method(self, evidence) -> str:
+        """Pinned method title in the current language."""
+        method_id = None
+        if evidence is not None and isinstance(evidence.get("method"), dict):
+            try:
+                method_id = MethodId(evidence["method"].get("id"))
+            except (ValueError, TypeError):
+                method_id = None
+        if method_id is None:
+            request = self._wipe_request
+            method_id = request.method if request is not None else self.method
+        spec = METHODS.get(method_id)
+        return spec.title if spec is not None else ""
+
+    @property
     def support_identity(self):
         """Non-sensitive code plus build id when a report cannot be saved."""
         from beamo_wipe.support_code import identity_for_wizard, record_identity

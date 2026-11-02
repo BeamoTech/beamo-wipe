@@ -934,6 +934,45 @@ def test_accessible_done_fail_shows_focusable_support(ui):
     assert labels[0].get_can_focus()
 
 
+@pytest.mark.parametrize("code", ["verified", "unverified", "cancelled", "engine_failed"])
+def test_accessible_done_reads_the_erase_record_as_text(ui, code):
+    """#127: the screen-reader view carries the photo record as focusable text."""
+    from gi.repository import Atk
+
+    from beamo_wipe import copy as C
+
+    wizard, _, _ = case_evidence(next(c for c in CASES if c[0] == code))
+    record = wizard.erase_record
+    assert record is not None
+    app = ui(wizard)
+    app.render()
+    drain()
+    shown = list(widgets(app.window))
+    headings = [
+        w.get_accessible().get_name() for w in shown
+        if w.get_accessible().get_role() == Atk.Role.HEADING
+    ]
+    assert C.RECORD_TITLE in headings
+    # The outcome stays the first heading; the record follows the report.
+    assert headings[0] in (wizard.result_view.message, wizard.result_view.announcement)
+    assert headings.index(C.REPORT_STATUS_TITLE) < headings.index(C.RECORD_TITLE)
+    summary = [
+        w for w in shown
+        if isinstance(w, Gtk.Label) and w.get_text() == "\n".join(record.lines)
+    ]
+    assert len(summary) == 1 and summary[0].get_can_focus()
+    assert summary[0].get_accessible().get_name() == record.text
+    images = [
+        w for w in shown
+        if isinstance(w, Gtk.Image) and w.get_accessible().get_name() == C.RECORD_CODE_NAME
+    ]
+    assert len(images) == 1 and not images[0].get_can_focus()
+    pixbuf = images[0].get_pixbuf()
+    from beamo_wipe.erase_record import qr_matrix
+
+    assert pixbuf.get_width() == pixbuf.get_height() == len(qr_matrix(record.text)) * 4
+
+
 def test_accessible_blocked_leads_with_specific_heading(ui):
     from beamo_wipe import copy as C
 

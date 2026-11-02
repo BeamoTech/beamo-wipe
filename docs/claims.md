@@ -37,7 +37,11 @@ Do not write any of these:
   "Use a device" restart. Some PCs list USB only after USB boot is allowed in
   firmware settings; if you will use that Windows again, find its BitLocker
   recovery key before changing firmware.
-- A wipe report is optional. Saving one needs a second, separate USB stick
+- After the erase, the result screen shows a code you can photograph with a
+  phone camera for a short summary: the result as the screen states it, the
+  disk and its serial number, the method and the time. It is a summary, not a
+  certificate, and needs no second USB, app or internet.
+- A full wipe report is optional. Saving one needs a second, separate USB stick
   formatted FAT32 or exFAT, which is not included. Many sticks over 32 GB come
   formatted as exFAT. NTFS, FAT12 and FAT16 sticks are refused. Beamo Wipe does
   not format the report stick. Plug it in only when the result screen asks.

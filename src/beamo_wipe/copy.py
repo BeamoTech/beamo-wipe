@@ -479,26 +479,40 @@ REPORT_WANTED = "I want to save a report"
 REPORT_VOLATILE = (
     "Any unsaved report is lost when this live session shuts down or loses power."
 )
+REPORT_HELP_PHOTO = (
+    "No second USB? Photograph the code\n"
+    "After the erase, the result screen shows a square code. Take a photo of it "
+    "with your phone. The phone's camera shows it as plain text: the result, the "
+    "disk and its serial number, the method and the time. No app or internet is "
+    "needed. It is a summary, not a certificate. Anyone who sees the photo can "
+    "read the disk's serial number."
+)
 REPORT_HELP_NEED = (
-    "What you need\n"
+    "Saving the full report to a USB\n"
     "Saving a report is optional. You need a separate removable FAT32 or exFAT USB device, "
     "with one writable, unmounted volume. It must be different from the Beamo boot USB and "
     "the disk you erase. NTFS, FAT12 and FAT16 are not supported. "
     "Beamo Wipe does not format or repair report media."
 )
 REPORT_HELP_INSERT = (
-    "When to insert the report USB\n"
-    "Keep the report USB unplugged while choosing the erase target, confirming, "
-    "and erasing. Only after the erase has stopped and the result screen offers "
-    "Save report to USB, insert exactly one report USB, then choose Save report to USB. "
-    "Leave the Beamo boot USB and selected erase disk connected."
+    "Keep the report USB unplugged while choosing, confirming and erasing. Only "
+    "after the erase has stopped and the result screen offers Save report to USB, "
+    "insert exactly one report USB, then choose Save report to USB. Leave the "
+    "Beamo boot USB and selected erase disk connected."
+)
+REPORT_HELP_STAGES = (
+    "Saving then shows five stages: 1. Insert the report USB. 2. Check the USB: "
+    "exactly one new FAT32 or exFAT USB is accepted. "
+    "3. Save the report. 4. Verify the copy (Beamo Wipe reads it back). "
+    "5. Safe removal: remove the report USB only after the saved message. "
+    "Never remove report media while saving. If saving fails, follow the "
+    "displayed error and retry while this session is still running."
 )
 REPORT_HELP_PLUGGED = (
-    "If the report USB is already plugged in\n"
-    "If you already inserted the report USB before erasing, remove only that "
-    "report USB. Leave the boot USB and erase disk connected. Choose Check disks "
-    "again, then choose and confirm the erase target again. Do not guess which "
-    "disk to unplug or erase."
+    "If you inserted the report USB before erasing, remove only that report USB. "
+    "Leave the boot USB and erase disk connected. Choose Check disks again, then "
+    "choose and confirm the erase target again. Do not guess which disk to unplug "
+    "or erase."
 )
 REPORT_HELP_CONTAINS = (
     "What the report contains\n"
@@ -511,36 +525,27 @@ REPORT_HELP_CONTAINS = (
     "device paths, and engine logs. Do not use the sharing copy where full "
     "identity evidence is required. To share, copy only SHARE.json and SHARE.txt."
 )
-REPORT_HELP_REMOVE = (
-    "Removing the report USB\n"
-    "Wait for the saved and safe-to-remove message before removing the report USB. "
-    "If saving fails, follow the displayed error and retry while this session is "
-    "still running. Never remove report media while saving."
-)
 REPORT_HELP_START = (
     "If the wipe cannot start\n"
     "If the wipe cannot start, Diagnostic report has a separate flow: keep the "
     "report USB unplugged for Prepare and insert it only when prompted. "
     "Diagnostics are not erase evidence and do not establish that an erase ran."
 )
-REPORT_HELP_STAGES = (
-    "Saving in stages\n"
-    "1. Insert the report USB, only when the result screen asks. "
-    "2. Check the USB: exactly one new FAT32 or exFAT USB is accepted. "
-    "3. Save the report to that USB. "
-    "4. Verify the copy by reading it back. "
-    "5. Safe removal: only the saved message makes the report USB safe to remove. "
-    "Never remove report media while saving."
-)
-REPORT_HELP_SECTIONS = (
-    REPORT_HELP_NEED,
-    REPORT_HELP_INSERT,
-    REPORT_HELP_PLUGGED,
-    REPORT_HELP_CONTAINS.format(volatile=REPORT_VOLATILE),
-    REPORT_HELP_REMOVE,
-    REPORT_HELP_START,
-    REPORT_HELP_STAGES,
-)
+
+
+def _report_help_sections() -> tuple[str, ...]:
+    """Photo first (no second USB needed), then the USB report, then limits."""
+    return (
+        REPORT_HELP_PHOTO,
+        "\n".join(
+            (REPORT_HELP_NEED, REPORT_HELP_INSERT, REPORT_HELP_STAGES, REPORT_HELP_PLUGGED)
+        ),
+        REPORT_HELP_CONTAINS.format(volatile=REPORT_VOLATILE),
+        REPORT_HELP_START,
+    )
+
+
+REPORT_HELP_SECTIONS = _report_help_sections()
 REPORT_HELP_TEXT = "\n\n".join(REPORT_HELP_SECTIONS)
 REPORT_SHARE_REDACTED = (
     "Also save a labeled sharing copy without serials, hardware IDs, device paths, "
@@ -553,10 +558,10 @@ REPORT_INSERT = (
     "The original report includes disk identifiers. A sharing copy, if saved, is not identity evidence."
 )
 REPORT_MEDIA_WHAT = (
-    "Want a report afterwards? You will need a separate FAT32 or exFAT USB stick with "
-    "one volume (any size). Keep it unplugged until the result screen asks "
-    "for it. A USB that is already plugged in cannot be used for the report. "
-    "Open Need a report? for the full requirements."
+    "Want a record afterwards? The result screen shows a code you can photograph. "
+    "A full report needs a separate FAT32 or exFAT USB stick with one volume, "
+    "kept unplugged until the result screen asks for it; one already plugged in "
+    "cannot be used. Open Need a report? for details."
 )
 REPORT_MEDIA_WANTED = (
     "Report requested: keep the report USB unplugged until the result screen "
@@ -581,6 +586,26 @@ POST_ERASE_BOOT = (
 REPORT_STATUS_TITLE = "Report status"
 REPORT_STATUS_NOTICE = "Saving or checking a report does not change the erase result."
 REPORT_PREVIEW = "Preview only. No report was saved."
+RECORD_TITLE = "Keep a record without a USB"
+RECORD_LEAD = (
+    "Photograph this code to keep a record of this erase. "
+    "It is a summary, not a certificate."
+)
+RECORD_NOTE = (
+    "Your phone's camera shows it as text. No app or internet is needed. "
+    "The photo shows the disk's serial number."
+)
+RECORD_PREVIEW_NOTE = (
+    "Sample code. After a real erase it holds the result, the disk and its "
+    "serial number, the method and the time."
+)
+RECORD_TEXT_LABEL = "The same summary as text"
+RECORD_NO_CODE = "The code could not be drawn. The same summary is shown as text."
+RECORD_CODE_NAME = "Erase summary code. The same summary follows as text."
+CON_RECORD_LEAD = (
+    "Write down or photograph this summary to keep a record of this erase. "
+    "It is a summary, not a certificate."
+)
 
 
 EXPORT_STAGE_INSERT = "Insert the report USB"
@@ -1179,15 +1204,7 @@ def _apply_language() -> None:
     }
     STOP_LEAD = _outcomes.STOP_WARNING + STOP_LEAD_SUFFIX
     WHAT_MORE = SECURE_BOOT_HINT + " " + ENGINE_LINE
-    REPORT_HELP_SECTIONS = (
-        REPORT_HELP_NEED,
-        REPORT_HELP_INSERT,
-        REPORT_HELP_PLUGGED,
-        REPORT_HELP_CONTAINS.format(volatile=REPORT_VOLATILE),
-        REPORT_HELP_REMOVE,
-        REPORT_HELP_START,
-        REPORT_HELP_STAGES,
-    )
+    REPORT_HELP_SECTIONS = _report_help_sections()
     REPORT_HELP_TEXT = "\n\n".join(REPORT_HELP_SECTIONS)
     ADVANCED_LOG_NOTE = ADVANCED_LOG_LEAD + REPORT_VOLATILE + ADVANCED_LOG_TAIL
     EXPORT_STAGES = (

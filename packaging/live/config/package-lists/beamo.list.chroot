@@ -12,7 +12,8 @@ systemd-sysv
 python3
 python3-tk
 python3-gi
-# QR matrix for the support code on error screens (pure Python use only).
+# QR matrices, pure Python and offline (BSD-3-Clause): the support destination on
+# error screens and the result-screen erase record (#127). No new package.
 python3-qrcode
 gir1.2-gtk-3.0
 librsvg2-common

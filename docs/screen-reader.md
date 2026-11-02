@@ -71,6 +71,14 @@ remapped, over-provisioned, or controller-managed flash; extra overwrite passes
 do not fix these limits. Failed or missing evidence remains unsuccessful or
 indeterminate. Confirmed cancellation says “Stopped by you.”
 
+After the report status, Finished has a **Keep a record without a USB**
+heading. The QR code below it is an image a sighted helper can photograph; it
+is not focusable and its accessible name says the same summary follows as
+text. Tab to the next label to read that summary line by line: result exactly
+as announced, disk, capacity, serial number, method, times, report state and
+software version. It is a summary, not a certificate. It is not shown while an
+erase may still be running or after a stop that could not be confirmed.
+
 The view starts Orca and PulseAudio on the live USB. Speech requires working
 audio output. Native Tk 8.6 is not claimed to expose its custom canvas controls
 to screen readers. The sequential `--plain-console` view is also available for

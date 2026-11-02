@@ -9,7 +9,7 @@ Primary actions name the next step: **Choose a disk**, **Review this disk**, **C
 | Screen | Purpose |
 | --- | --- |
 | Splash / Keyboard | Splash explains that nothing starts automatically. Keyboard offers only the shipped US, UK, Spanish, Latin American and Italian QWERTY, French AZERTY, and German QWERTZ layouts (Up/Down; keys 1–7 outside the check box) plus a typing-check box that is never saved. The same screen picks the language: English, Français, Deutsch, Español or Italiano. |
-| Owner | Combined introduction: explain irreversible erasure, backup copies, OS-disk consequences, wall-power reminder, display blanking, and supported PCs, then require the ownership or written-permission acknowledgement. Continue stays disabled until the box is checked. Between the bullets and the power panel, Owner states the report-media requirements up front: a separate FAT32 or exFAT USB with one volume, kept unplugged until the result screen asks, with already-plugged media refused, and points to Need a report? for details. |
+| Owner | Combined introduction: explain irreversible erasure, backup copies, OS-disk consequences, wall-power reminder, display blanking, and supported PCs, then require the ownership or written-permission acknowledgement. Continue stays disabled until the box is checked. Between the bullets and the power panel, Owner says the result screen shows a code to photograph (no second USB needed) and states the full report's media requirements up front: a separate FAT32 or exFAT USB with one volume, kept unplugged until the result screen asks, with already-plugged media refused, and points to Need a report? for details. |
 | Pick a disk | Physical disks are primary cards. Partitions and other technical components nest under their parent when parentage is known. Keep eligible targets separate from read-only Other detected devices. Show a concise inventory count so the owner can check that expected disks were found, including zero, one, or many eligible disks, protected boot media, other devices that cannot be erased, and a fail-closed notice when the list cannot be confirmed. Show identity, the observed connection type, and deterministic exclusion reasons. Label each serial as Serial number so the value is not a bare string. Do not guess internal vs external location. Capacities use decimal GB, with an exact-tenth TB name when it does not collide; unknown media kind is labeled Type unknown. No excluded row offers a bypass. Empty or uncertain discovery gives safe support steps. When a report was requested, an info notice reminds the owner to keep the report USB unplugged until prompted, warns that extra USBs confuse the list, and gives the unplug-only-that-USB remedy; without a requested report no notice shows. |
 | Confirm | Show the irreversible-action warning, exact device identity, and partition-evidence preparation for the selected disk. Require the displayed confirmation token. |
 | Choose an erase method | Show a plain-language lead, then the operations below, comparison marks, and the device-specific storage notice. Everyday states it checks only exposed storage and does not promise duration. SSD and unknown-device warnings explain inaccessible, remapped, over-provisioned and controller-managed storage; additional overwrite passes do not fix those limits. |
@@ -180,3 +180,43 @@ The browser preview simulates confirmation, stopping, and stopped states; no dis
 ### Support code when a report cannot be saved (#106)
 
 Blocked, empty, diagnostic, last-chance start failures, graphical-unavailable What, and live Finished screens where the report was not saved show a **Support code** and **Build** line in monospace, plus a **Save code** when the on-screen refusal is a known export failure. The values are non-sensitive: no disk serial, path, or translated problem text. Labels follow the chosen language; the code (`BW-` family token) and build id never do. Progress copy (checking, verifying, saving) does not become a save code. Browser preview shows sample codes on blocked/empty only; its Finished screens stay preview and do not simulate a live export failure. Console and the screen-reader view use the same text, without a QR of the code. The offline helper tells the owner to read those on-screen lines. Kiosk recovery cannot generate them.
+
+### Photo record of the erase (#127)
+
+Live Finished screens show **Keep a record without a USB**: a QR code plus the
+same summary as text, so an owner without a second USB can photograph it. A
+phone camera shows the code as plain text; it holds no link, needs no app or
+network, and is never written anywhere (not the target, not `/tmp`). Lines, in
+the session language and with the labels RESULT.txt uses: a header saying it is
+a summary, not a certificate; **Result** (the on-screen outcome exactly, never
+shortened; Quick zero says verification was not performed); **Disk**,
+**Capacity** and the identifier the disk card shows (**Serial number**, or
+**Hardware ID** when the disk reports no usable serial); **Method**;
+**Started**/**Ended (clock not verified)** from validated evidence when the
+clock reading is available; the on-screen **Elapsed** line when known;
+**Report** (saved to USB with the first 12 characters of the result.json
+checksum, saved as a sharing copy, not saved, or could not be stored); and the
+Beamo Wipe version, short build id and nwipe version. Values come from this
+session's validated evidence and the result-screen disk card; untrusted text is
+flattened to one line and capped at 64 characters with a visible
+"(truncated)" marker. The code uses error correction M, a 4-module quiet zone
+and a UTF-8 ECI header so accented languages decode correctly.
+
+It appears only on DONE once the outcome is final: not while evidence is being
+prepared, not when **Stop could not be confirmed**, and not while any pinned
+nwipe may still be running. If the on-screen result cannot be repeated exactly,
+no record is shown. When evidence cannot be saved, the record repeats the
+downgraded on-screen result and says the full report could not be stored.
+After a verified USB export the record updates to name the saved report.
+Preview shows a sample that says nothing was erased and holds no disk identity.
+
+Tk draws the code at 4 px per module (smaller only if the content column is
+narrower than the code) beside or above the text, after the next steps and
+any check warnings for every outcome, so it never pushes guidance or a
+"not a pass" warning further down. Nothing in it is a Tab stop, so Shut down →
+Show more → Save report stays two Tabs. The GTK screen-reader view adds a
+**Keep a record without a USB** heading, the code image (accessible name says
+the text follows, not focusable) and one focusable label with the summary.
+Curses pages the text summary after the report status and warnings; the plain
+console prints it verbatim. Neither draws a terminal QR, which does not fit
+80×25 reliably. The browser preview shows the same sample record.

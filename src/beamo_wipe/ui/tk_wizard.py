@@ -1436,8 +1436,8 @@ def _new_owned_native(native_root, factory, *args, **kwargs):
 
 
 class TkWizard:
-    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_match_label', '_match_icon', '_match_pill', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
-    _NATIVE_ASSETS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_confirm_var', '_typing_var', '_owner_var')
+    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_match_label', '_match_icon', '_match_pill', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
+    _NATIVE_ASSETS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var')
     def __init__(self, wizard: Wizard, fullscreen: bool = False) -> None:
         _collect_retired_interpreters()
         self._native_owner = threading.current_thread()
@@ -1509,6 +1509,10 @@ class TkWizard:
             self._logo_header = self._load_image("logo-header.png")
             self._logo_splash = self._load_image("logo-splash.png")
             self._support_qr: Optional[tk.PhotoImage] = None
+            # Erase record code (#127), reused while its text and scale stay
+            # the same so report-status redraws do not rebuild the image.
+            self._record_qr: Optional[tk.PhotoImage] = None
+            self._record_qr_key: Optional[tuple[str, int]] = None
             self._support_lead: Optional[tk.Label] = None
             self._support_copy_bound = False
             self._confirm_var = _new_owned_native(self.root, tk.StringVar, master=self.root)
@@ -3998,6 +4002,110 @@ class TkWizard:
         self._support_copy_bound = True
         frame.pack(fill=tk.X, pady=(12, 0))
 
+    def _record_image(self, text: str, scale: int) -> Optional[tk.PhotoImage]:
+        """Black-on-white record code; None when the QR library is unavailable."""
+        from beamo_wipe.erase_record import qr_matrix
+
+        key = (text, scale)
+        if self._record_qr is not None and self._record_qr_key == key:
+            return self._record_qr
+        try:
+            matrix = qr_matrix(text)
+            size = len(matrix) * scale
+            image = _new_owned_native(
+                self.root, tk.PhotoImage, master=self.root, width=size, height=size
+            )
+            rows = []
+            for modules in matrix:
+                line = " ".join(
+                    "#000000" if dark else "#ffffff"
+                    for dark in modules
+                    for _ in range(scale)
+                )
+                rows.extend(["{" + line + "}"] * scale)
+            image.put(" ".join(rows))
+        except Exception:
+            return None
+        self._record_qr = image
+        self._record_qr_key = key
+        return image
+
+    def _record_scale(self, modules: int, room: int) -> int:
+        """4 px modules (phone decoders read these reliably from a screen),
+        stepping down only when the card is narrower than the code."""
+        scale = 4
+        while scale > 2 and modules * scale > room:
+            scale -= 1
+        return scale
+
+    def _record_block(self, parent: Optional[tk.Widget]) -> None:
+        """Photo record of this erase (#127): a scannable code plus the same text.
+
+        Shown only when the wizard offers a final record. Nothing here is a
+        Tab stop, so Shut down -> Show more -> Save report keeps its two-Tab
+        path. The text column is the readable equivalent of the code.
+        """
+        from beamo_wipe.erase_record import qr_matrix
+
+        record = self.w.erase_record
+        if record is None:
+            return
+        assert parent is not None
+        short = self.lay.short
+        box = _Box(
+            parent, radius=RADIUS, fill=SURFACE, outline=BORDER, ow=1,
+            padx=18, pady=10 if short else 14, shadow=False,
+        )
+        box.pack(fill=tk.X, pady=(12, 0))
+        inner = box.inner
+        room = max(200, self.lay.content_w - 40)
+        self._p(inner, C.RECORD_TITLE, font=self.font_s_bold, bg=SURFACE,
+                wraplength=room).pack(fill=tk.X)
+        lead = C.RECORD_PREVIEW_NOTE if record.preview else C.RECORD_LEAD
+        self._p(inner, lead, font=self.font_s, bg=SURFACE, wraplength=room).pack(
+            fill=tk.X, pady=(2, 8)
+        )
+        image: Optional[tk.PhotoImage] = None
+        try:
+            modules = len(qr_matrix(record.text))
+        except Exception:
+            modules = 0
+        if modules:
+            image = self._record_image(record.text, self._record_scale(modules, room))
+        text = "\n".join(record.lines)
+        body = tk.Frame(inner, bg=SURFACE)
+        body.pack(fill=tk.X)
+        text_width = max(self.font_mono_sm.measure(line) for line in record.lines)
+        side = (
+            image is not None
+            and int(image.width()) + 20 + min(text_width, 360) <= room
+        )
+        if image is not None:
+            # White quiet zone is part of the image; the label adds no border
+            # so nothing dark touches the code's edge.
+            tk.Label(body, image=image, bg="#ffffff", bd=0, highlightthickness=0).pack(
+                side=tk.LEFT if side else tk.TOP, anchor="nw"
+            )
+        else:
+            self._p(body, C.RECORD_NO_CODE, font=self.font_s, fg=MUTED, bg=SURFACE,
+                    wraplength=room).pack(fill=tk.X)
+        column = tk.Frame(body, bg=SURFACE)
+        if side:
+            column.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(20, 0))
+            wrap = max(160, room - int(image.width()) - 20) if image is not None else room
+        else:
+            column.pack(fill=tk.X, pady=(10, 0))
+            wrap = room
+        # Both follow the column's allocated width (card padding included),
+        # so long translated lines wrap instead of clipping.
+        self._p(column, C.RECORD_TEXT_LABEL, font=self.font_meta, fg=MUTED,
+                bg=SURFACE, wraplength=wrap).pack(fill=tk.X)
+        self._p(column, text, font=self.font_mono_sm, bg=SURFACE,
+                wraplength=wrap).pack(fill=tk.X, pady=(2, 0))
+        if not record.preview:
+            self._p(column if side else inner, C.RECORD_NOTE, font=self.font_meta,
+                    fg=MUTED, bg=SURFACE, wraplength=wrap).pack(fill=tk.X, pady=(8, 0))
+
     def _status_screen(self, kind: str, title: str, message: str) -> None:
         """Centered status layout shared by the blocked and empty screens."""
         col = self._column(self._body, fill_height=True)
@@ -4909,6 +5017,9 @@ class TkWizard:
             self._p(col, result.next_step, font=self.font_s).pack(fill=tk.X)
         for alert in self.w.check_alerts:
             self._panel(col, kind="warn", text=alert).pack(fill=tk.X, pady=(8, 0))
+        # The photo record follows the next steps and any check warnings, so
+        # it never pushes guidance or a "not a pass" warning further down.
+        self._record_block(col)
         if self.w.sound_message:
             self._p(col, self.w.sound_message, font=self.font_s, fg=MUTED).pack(
                 fill=tk.X, pady=(8, 0)

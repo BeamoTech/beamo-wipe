@@ -32,6 +32,21 @@ in the live image keep their own licenses (GPL, LGPL, MIT,
 Apache, and others as shipped by Debian). Each package's license is in
 `/usr/share/doc/<package>/copyright` inside the live system.
 
+## QR codes (python3-qrcode)
+
+| Field | Value |
+| --- | --- |
+| Package | Debian bookworm `python3-qrcode` (source `python-qrcode`), already in `packaging/live/config/package-lists/beamo.list.chroot` |
+| Version in the image | 7.4.2-2 (recorded in each release's signed `manifest.json` `installed_packages`, for example v0.2.13) |
+| License | BSD-3-Clause (Copyright Lincoln Loop), compatible with GPL-3.0-or-later |
+| Use | Offline, pure Python: the support-destination code on error screens and the result-screen erase record (#127) |
+
+The erase record adds a standard UTF-8 ECI header (ISO/IEC 18004) using the
+library's own bit buffer and Reed-Solomon helpers; the library itself is
+unchanged. Nothing is fetched at run time. `dev.py setup` installs `qrcode` 8.2
+from PyPI and hosted CI installs the runner's `python3-qrcode`; tests decode the
+generated codes, so they do not depend on one library version's exact matrix.
+
 ## Device firmware and CPU microcode
 
 So screens and laptop audio work on more PCs, the image includes Debian's

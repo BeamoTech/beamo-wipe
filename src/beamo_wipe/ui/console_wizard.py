@@ -257,6 +257,15 @@ def _nested_lines(wizard: Wizard, disk, width: int, indent: str = "  ") -> list[
     return lines
 
 
+def _record_lines(wizard: Wizard) -> list[str]:
+    """Erase record (#127) as text. A terminal QR does not fit 80x25 reliably."""
+    record = wizard.erase_record
+    if record is None:
+        return []
+    lead = C.RECORD_PREVIEW_NOTE if record.preview else C.CON_RECORD_LEAD
+    return [C.RECORD_TITLE, lead, *record.lines]
+
+
 def _support_identity_text(wizard: Wizard) -> str:
     ident = wizard.support_identity
     if ident is None:
@@ -1131,6 +1140,13 @@ def _plain_loop_body(wizard: Wizard) -> int:
             print(C.REPORT_STATUS_NOTICE)
             if report.evidence_error:
                 print(f"{C.SEVERITY_WARNING}: {wizard.evidence_warning}")
+            record_lines = _record_lines(wizard)
+            if record_lines:
+                # Title and lead wrap; the summary prints verbatim, line by line.
+                _emit(record_lines[0])
+                _emit(record_lines[1])
+                for line in record_lines[2:]:
+                    print(line)
             if wizard.preview:
                 ans = _answer(wizard, C.CON_RUN_AGAIN).strip().lower()
                 if ans in ("q", "quit", "close"):
@@ -1765,6 +1781,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
             if wizard.check_alerts:
                 for alert in wizard.check_alerts:
                     lines.extend(_lines(f"{C.SEVERITY_WARNING}: {alert}", w))
+            for record_line in _record_lines(wizard):
+                lines.extend(_lines(record_line, w))
             limits_offset = _paint_paged(stdscr, y, lines, limits_offset, y_max, w)
         _paint_footer(stdscr, footer)
         stdscr.refresh()
