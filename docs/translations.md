@@ -244,3 +244,10 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
 - `copy.WHAT_BULLETS[0:2]` and the first paragraph of each `helper/*.html`
   "What this USB does" card: the Owner sentence about what the tool does and
   the backup reminder.
+- `copy.CONFIRM_SERIAL_END`, `CONFIRM_SERIAL_ALL`, `CONFIRM_HARDWARE_END`,
+  `CONFIRM_HARDWARE_ALL`, `CONFIRM_LONGER`, `CONFIRM_MARKED` and
+  `CONFIRM_MARKED_CONSOLE` (added 2026-11-02 for #129, not yet reviewed): the
+  Confirm instruction. It must name the same field as `identity.SERIAL_LABEL`
+  / `HARDWARE_ID_LABEL` in the card; *{count}* is a numeral; the console
+  string must keep literal [brackets]. FR *soulignés*, DE *unterstrichen*,
+  ES *subrayados*, IT *sottolineati* refer to the marked characters.

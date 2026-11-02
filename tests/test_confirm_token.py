@@ -20,17 +20,32 @@ def _disc(name: str, boot: str):
     )
 
 
-def test_unique_size_uses_gb_label():
+def test_unique_size_uses_serial_ending_not_the_size():
+    """#129: the card's serial ending, named in the prompt but never shown there."""
     d = _disc("lsblk_vm_iso.json", "/dev/sr0")
     disk = selectable_disks(d)[0]
     spec = confirm_spec(disk, selectable_disks(d))
-    assert spec.token == disk.size_gb_label
+    assert spec.in_card and spec.token == disk.serial[-4:]
     assert token_matches(spec.token, spec)
+    assert token_matches(" " + spec.token + " ", spec)
+    assert not token_matches(disk.size_gb_label, spec)
+    assert spec.token not in spec.prompt
+    assert spec.prompt == "Type the last 4 characters of the serial number shown above."
+
+
+def test_unique_size_without_serial_keeps_the_size_label():
+    """Fallback: no usable identifier keeps the older printed size token."""
+    from dataclasses import replace
+
+    d = _disc("lsblk_vm_iso.json", "/dev/sr0")
+    disk = replace(selectable_disks(d)[0], serial="", wwn="")
+    spec = confirm_spec(disk, [disk])
+    assert not spec.in_card
+    assert spec.token == disk.size_gb_label
     assert token_matches(" " + spec.token + " ", spec)
     assert not token_matches("999", spec)
     assert spec.token in spec.prompt
     assert "numbers" in spec.prompt
-    assert "serial number" not in spec.prompt.lower()
 
 
 def test_duplicate_size_uses_serial_suffix():
@@ -42,15 +57,14 @@ def test_duplicate_size_uses_serial_suffix():
     assert spec0.token == disks[0].serial[-4:]
     assert spec1.token == disks[1].serial[-4:]
     assert spec0.token != spec1.token
-    assert "4 characters" in spec0.prompt
-    assert spec0.token in spec0.prompt
-    assert "serial number" not in spec0.prompt.lower()
+    assert "last 4 characters of the serial number" in spec0.prompt
+    assert spec0.token not in spec0.prompt
     assert token_matches(spec0.token.lower(), spec0)
     assert not token_matches(spec0.token, spec1)
     assert not token_matches(disks[0].size_gb_label, spec0)
 
 
-def test_same_size_colliding_serial_suffix_uses_device_name():
+def test_same_size_colliding_serial_suffix_needs_one_more_character():
     from beamo_wipe.models import Disk, DiskKind
 
     d1 = Disk(
@@ -77,8 +91,11 @@ def test_same_size_colliding_serial_suffix_uses_device_name():
     )
     spec1 = confirm_spec(d1, [d1, d2])
     spec2 = confirm_spec(d2, [d1, d2])
-    assert spec1.token == "AAAA1234"
-    assert spec2.token == "BBBB1234"
+    # #129: "1234" is shared, so the fifth-last character is added.
+    assert spec1.token == "A1234"
+    assert spec2.token == "B1234"
+    assert "Another listed disk" in spec1.prompt and spec1.token not in spec1.prompt
+    assert not token_matches("1234", spec1)
     assert spec1.token != spec2.token
     assert not token_matches(spec1.token, spec2)
     assert spec1.token not in {"sda", "sdb"}

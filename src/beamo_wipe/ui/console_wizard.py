@@ -230,15 +230,21 @@ def _chrome_lines(wizard: Wizard, width: int) -> list[str]:
     return lines
 
 
-def _identity_field_lines(view, width: int, *, include_path: bool = False, indent: str = "") -> list[str]:
-    """Wrapped identity fields. Capacity, type, and connection share a line."""
+def _identity_field_lines(
+    view, width: int, *, include_path: bool = False, indent: str = "", token: bool = False
+) -> list[str]:
+    """Wrapped identity fields. Capacity, type, and connection share a line.
+
+    With ``token`` (Confirm only) the confirmation characters at the end of
+    the identifier are in [brackets] (#129): a text mark, never colour alone.
+    """
     lines: list[str] = []
     if view.title:
         lines.extend(_lines(f"{indent}{view.title}", width))
     meta = "  ".join(part for part in (view.capacity, view.kind_chip, view.connection) if part)
     if meta:
         lines.extend(_lines(f"{indent}{meta}", width))
-    ident = view.id_value
+    ident = view.token_marked_id if token else view.id_value
     lines.extend(_lines(f"{indent}{view.id_label}: {ident}", width))
     for note in view.notes:
         lines.extend(_lines(f"{indent}{note}", width))
@@ -584,8 +590,8 @@ def _emit(text: str, width: int = 76) -> None:
         print(line)
 
 
-def _print_view(view, width: int = 76, *, include_path: bool = False) -> None:
-    for line in _identity_field_lines(view, width, include_path=include_path):
+def _print_view(view, width: int = 76, *, include_path: bool = False, token: bool = False) -> None:
+    for line in _identity_field_lines(view, width, include_path=include_path, token=token):
         print(line)
 
 
@@ -941,9 +947,9 @@ def _plain_loop_body(wizard: Wizard) -> int:
             disk = wizard.selected
             confirm_spec = wizard.confirm
             if disk:
-                _print_view(wizard.disk_view(disk))
+                _print_view(wizard.disk_view(disk), token=True)
             _emit(f"{C.SEVERITY_WARNING}: {wizard.warning_text()}")
-            print(confirm_spec.prompt if confirm_spec else "")
+            print(C.confirm_prompt(confirm_spec, console=True) if confirm_spec else "")
             print(C.CONFIRM_KEYBOARD_LINE.format(
                 layout=_keyboard.LAYOUTS[wizard.keyboard_layout].title,
                 language=LANGUAGE_NAMES[wizard.language],
@@ -1505,11 +1511,11 @@ def _loop(stdscr, wizard: Wizard) -> int:
             limits_offset = _paint_paged(stdscr, y, lines, limits_offset, y_max, w)
         elif wizard.screen == Screen.CONFIRM and wizard.selected:
             view = wizard.disk_view(wizard.selected)
-            rest = _identity_field_lines(view, w)
+            rest = _identity_field_lines(view, w, token=True)
             rest.extend(_lines(f"{C.SEVERITY_WARNING}: {wizard.warning_text()}", w))
             confirm_spec = wizard.confirm
             if confirm_spec:
-                rest.extend(_lines(confirm_spec.prompt, w))
+                rest.extend(_lines(C.confirm_prompt(confirm_spec, console=True), w))
             rest.extend(_lines(C.CONFIRM_KEYBOARD_LINE.format(
                 layout=_keyboard.LAYOUTS[wizard.keyboard_layout].title,
                 language=LANGUAGE_NAMES[wizard.language],

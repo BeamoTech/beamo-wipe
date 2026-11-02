@@ -128,6 +128,10 @@ class ConfirmSpec:
     token: str
     prompt: str
     identity_field: str = "size"
+    # True when the token is the end of the identifier the disk card shows
+    # (#129). The prompt then names the field, never the characters, and the
+    # card marks them. False keeps the older prompt that prints the token.
+    in_card: bool = False
 
 
 @dataclass(frozen=True)

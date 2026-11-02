@@ -1875,3 +1875,41 @@ def test_diagnostic_rejection_announces_next_step(ui):
     app = ui(wizard)
     assert E.USB_VOLUME_WRITABLE in text(app)
     assert E.NEXT_REPLUG in text(app)
+
+
+@pytest.mark.parametrize("serial", ["S4EVNX0N123456", "ABCD12-3"])
+def test_accessible_confirm_names_the_field_and_marks_the_characters(ui, serial):
+    """#129: Orca hears the instruction; the serial is readable by character."""
+    from beamo_wipe import copy as C
+
+    wizard = make_demo_wizard()
+    wizard.skip_intro()
+    wizard.accept_what()
+    wizard.set_owner(True)
+    wizard.continue_owner()
+    wizard.select_disk(sorted(wizard.selectable, key=lambda d: d.path)[0].path)
+    wizard.selected = replace(wizard.selected, serial=serial)
+    wizard.continue_pick()
+    spec = wizard.confirm
+    view = wizard.disk_view(wizard.selected)
+    app = ui(wizard)
+    labels = [w for w in widgets(app.window) if isinstance(w, Gtk.Label)]
+    identity = next(w for w in labels if w.get_text() == view.announcement)
+    prompt = C.confirm_prompt(spec)
+    assert any(w.get_text() == prompt for w in labels)
+    entry = next(w for w in widgets(app.window) if isinstance(w, Gtk.Entry))
+    assert entry.get_accessible().get_name() == prompt
+    assert entry.get_text() == ""  # never auto-filled
+    if spec.in_card:
+        # The plain text Orca reads is the whole identifier; markup only marks it.
+        assert identity.get_can_focus() and identity.get_selectable()
+        assert identity.get_use_markup()
+        assert 'underline="double"' in identity.get_label()
+        assert f">{spec.token}</span>" in identity.get_label()
+        assert spec.token not in prompt
+        assert C.CONFIRM_MARKED in prompt
+    else:
+        # Older fallback: the prompt prints the token; nothing is marked.
+        assert not identity.get_use_markup()
+        assert spec.token in prompt
+    assert not wizard.runner.started

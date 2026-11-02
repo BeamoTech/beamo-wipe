@@ -160,7 +160,9 @@ def _disks_payload(scenario: str = "happy") -> list[dict]:
                 "isBoot": disk.is_boot,
                 "eligible": spec is not None,
                 "token": spec.token if spec else "",
-                "prompt": spec.prompt if spec else "",
+                "prompt": C.confirm_prompt(spec) if spec else "",
+                "tokenStart": view.token_start,
+                "tokenEnd": view.token_end,
                 "warning": "" if disk.is_boot else C.confirm_warning(disk),
                 "components": components,
                 "contents": disk.contents,
@@ -986,6 +988,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .morelink { display: inline-block; margin: 8px 0 0; }
   .entryshell { background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 12px 18px; box-shadow: var(--shadow); }
   .entryshell:focus-within { outline: 3px solid var(--focus); outline-offset: 2px; border-color: var(--focus); }
+  .token-mark { background: #FFF3C4; color: inherit; outline: 1px solid var(--ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
   input.token { font-family: "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-size: 26px; font-weight: 700; width: 100%; padding: 4px 0; border: 0; outline: none; background: transparent; color: var(--ink); letter-spacing: .02em; }
   .match { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; margin: 12px 0 0; color: var(--muted); background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--pill); padding: 6px 12px; }
   .match.ok { color: var(--ok); background: var(--ok-tint); border-color: var(--ok); }
@@ -1407,9 +1410,18 @@ function metaLine(d, opts) {
   const extra = showMore
     ? `<div class="small muted more-path"${detailId ? ` id="${detailId}"` : ""}>${esc(P.pathNote)}: ${esc(d.path)}</div><div class="small muted">${esc(P.capacityUnitNote)}</div>`
     : (detailId ? `<div id="${detailId}" hidden></div>` : "");
-  return `<div class="meta"><span class="serialpair"><span class="serial-label">${esc(d.idLabel || P.serialLabel)}</span><span class="mono ser">${esc(screen === "pick" && !d.isBoot ? d.markedSerial || d.serial : d.serial)}</span></span>
+  return `<div class="meta"><span class="serialpair"><span class="serial-label">${esc(d.idLabel || P.serialLabel)}</span><span class="mono ser">${serialText(d)}</span></span>
     <span class="disktype">${esc(d.kindLabel)}</span>
     <div class="connection"><span class="serial-label">${esc(P.connectionLabel)}</span><span>${esc(d.connection || d.bus)}</span></div>${notes}${extra}</div>`;
+}
+function serialText(d) {
+  // Pick compares serials; Confirm marks the characters to type (#129).
+  if (screen === "pick" && !d.isBoot) return esc(d.markedSerial || d.serial);
+  if (screen === "confirm" && d.tokenEnd > d.tokenStart) {
+    return esc(d.serial.slice(0, d.tokenStart)) + '<mark class="token-mark">'
+      + esc(d.serial.slice(d.tokenStart, d.tokenEnd)) + "</mark>" + esc(d.serial.slice(d.tokenEnd));
+  }
+  return esc(d.serial);
 }
 function summaryCard(d) {
   return `<div class="card hero identity"><div class="identity-label">${P.selectedDisk}</div><div class="row" style="align-items:flex-start">

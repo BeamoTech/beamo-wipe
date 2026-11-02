@@ -11,7 +11,7 @@ Primary actions name the next step: **Choose a disk**, **Review this disk**, **C
 | Splash / Keyboard | Splash explains that nothing starts automatically. Keyboard offers only the shipped US, UK, Spanish, Latin American and Italian QWERTY, French AZERTY, and German QWERTZ layouts (Up/Down; keys 1–7 outside the check box) plus a typing-check box that is never saved. The same screen picks the language: English, Français, Deutsch, Español or Italiano. |
 | Owner | Combined introduction: say once what the tool does (it erases everything on the disk you choose, including any Windows or Linux), remind about backup copies, give the wall-power reminder, display blanking, and supported PCs, then require the ownership or written-permission acknowledgement. Continue stays disabled until the box is checked. Between the bullets and the power panel, Owner says the result screen shows a code to photograph (no second USB needed) and states the full report's media requirements up front: a separate FAT32 or exFAT USB with one volume, kept unplugged until the result screen asks, with already-plugged media refused, and points to Need a report? for details. |
 | Pick a disk | Physical disks are primary cards. Partitions and other technical components nest under their parent when parentage is known. Keep eligible targets separate from read-only Other detected devices. Show a concise inventory count so the owner can check that expected disks were found, including zero, one, or many eligible disks, protected boot media, other devices that cannot be erased, and a fail-closed notice when the list cannot be confirmed. Show identity, the observed connection type, and deterministic exclusion reasons. Label each serial as Serial number so the value is not a bare string. Do not guess internal vs external location. Capacities use decimal GB, with an exact-tenth TB name when it does not collide; unknown media kind is labeled Type unknown. No excluded row offers a bypass. Empty or uncertain discovery gives safe support steps. When a report was requested, an info notice reminds the owner to keep the report USB unplugged until prompted, warns that extra USBs confuse the list, and gives the unplug-only-that-USB remedy; without a requested report no notice shows. |
-| Confirm | Show exact device identity and one warning box naming the selected disk by model and size: everything on it will be erased (including Windows or its operating system when partitions show one), and it cannot be got back. Require the displayed confirmation token. |
+| Confirm | Show exact device identity and one warning box naming the selected disk by model and size: everything on it will be erased (including Windows or its operating system when partitions show one), and it cannot be got back. Ask for the confirmation characters by field and count, never by printing them; they are marked in the disk card (see Confirmation characters). |
 | Choose an erase method | Show a plain-language lead, then the operations below, comparison marks, and the device-specific storage notice. Everyday states it checks only exposed storage and does not promise duration. SSD and unknown-device warnings explain inaccessible, remapped, over-provisioned and controller-managed storage; additional overwrite passes do not fix those limits. |
 | Supported storage limits | Full offline limits, reached directly from method selection. Back returns to the chosen method. |
 | Review before erasing | Emphasize selected disk and plain method operation above technical pass details. The red callout is the only erase warning: the Confirm sentence with the serial or hardware ID added. It stays above the fold at 800×600 and every text size. A small countdown marks a fresh five-second review period: zero only enables Erase now and never starts erasure. Require explicit activation. |
@@ -220,3 +220,41 @@ the text follows, not focusable) and one focusable label with the summary.
 Curses pages the text summary after the report status and warnings; the plain
 console prints it verbatim. Neither draws a terminal QR, which does not fit
 80×25 reliably. The browser preview shows the same sample record.
+
+### Confirmation characters (#129)
+
+Confirm asks the owner to type characters they must read from the selected
+disk's card, so a copied number cannot stand in for checking the disk. The
+rule lives in `safety.confirm_spec`; every surface uses it.
+
+- **Field.** The identifier the card shows: the reported serial number, or
+  the hardware ID (WWN, as lsblk printed it) when no serial is reported.
+- **Count.** The last 4 characters. If another listed disk (including the
+  protected Beamo USB) has a serial or hardware ID ending with the same
+  characters, or the ending equals another disk's size label, full
+  identifier or a kernel name, take one more character until it is unique.
+  The prompt then adds "Another listed disk ends with the same last 4
+  characters, so more are needed." When every character is needed it asks
+  for the whole serial number or hardware ID.
+- **Characters.** ASCII letters and digits only. An identifier that is
+  missing, shorter than 4, or whose ending contains a space, punctuation or
+  a non-ASCII character keeps the older rule, which prints the token in the
+  prompt: the size label, or for same-size disks a unique serial ending,
+  full serial or hardware ID. If nothing is unique the disk cannot be
+  confirmed. A fallback is never weaker than before.
+- **Prompt.** "Type the last 4 characters of the serial number shown
+  above." (or hardware ID), never the characters themselves.
+- **Mark.** Tk boxes and underlines the characters in place over the card's
+  serial, with a pale fill. GTK underlines (double), bolds and tints them in
+  the identity text, which is focusable on Confirm so Orca can read the
+  serial character by character; the entry's accessible name is the full
+  instruction. Curses, the plain console and text fallbacks put them in
+  [brackets]. The web preview uses a `<mark>` with outline and underline.
+- **Comparison (#156).** Leading and trailing whitespace is ignored and case
+  does not matter. Nothing else is relaxed: no partial match, no inner
+  spaces, no auto-fill, and another disk's characters never match.
+- **Binding.** Erase now recomputes the characters from the rediscovered
+  disk list. A changed serial, size, hardware ID or path is rejected as
+  before; a newly listed disk that shares the ending makes the typed
+  characters too short, so authorization fails closed.
+- The token is never logged, exported or placed in a support code.

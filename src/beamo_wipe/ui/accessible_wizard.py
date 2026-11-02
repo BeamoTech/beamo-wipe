@@ -284,16 +284,44 @@ class AccessibleWizard:
             for child in widget.get_children():
                 self._style_tree(child)
 
-    def identity(self):
+    def identity(self, *, token: bool = False):
         disk = self.w.operation_disk
         if disk is not None:
-            self.label(self.w.disk_view(disk).announcement).get_style_context().add_class(
-                "disk-identity"
-            )
+            view = self.w.disk_view(disk)
+            marked = token and view.token_end > view.token_start
+            # On Confirm the identity is focusable and selectable, so Orca can
+            # read the serial or hardware ID character by character (#129).
+            widget = self.label(view.announcement, focusable=marked)
+            widget.get_style_context().add_class("disk-identity")
+            if marked:
+                self._mark_token(widget, view)
         elif self.w.operation_identity_text:
             self.label(self.w.operation_identity_text).get_style_context().add_class(
                 "disk-identity"
             )
+
+    def _mark_token(self, widget, view) -> None:
+        """Underline the confirmation characters inside the identity text.
+
+        The label's text (what AT-SPI and Orca read) is unchanged; Pango
+        markup underlines, bolds and tints the ending of the identifier, so
+        the mark is not colour alone.
+        """
+        text = view.announcement
+        field = f"{view.id_label}: {view.id_value}"
+        at = text.find(field)
+        if at < 0:
+            return
+        start = at + len(view.id_label) + 2 + view.token_start
+        end = at + len(view.id_label) + 2 + view.token_end
+        esc = GLib.markup_escape_text
+        widget.set_markup(
+            esc(text[:start])
+            + '<span underline="double" weight="bold" background="#FFF3C4">'
+            + esc(text[start:end])
+            + "</span>"
+            + esc(text[end:])
+        )
 
     def reader(self, text: str):
         view = Gtk.TextView()
@@ -506,7 +534,7 @@ class AccessibleWizard:
             self.button(C.BTN_SHUTDOWN, self.w.shutdown)
         elif screen == Screen.CONFIRM:
             heading.set_text(C.TITLE_CONFIRM)
-            self.identity()
+            self.identity(token=True)
             arrival = self.label(f"{C.SEVERITY_WARNING}: {self.w.warning_text()}", focusable=True)
             arrival.get_style_context().add_class("erase-warning")
             arrival.get_accessible().set_role(Atk.Role.ALERT)
@@ -514,7 +542,7 @@ class AccessibleWizard:
                 layout=_keyboard.LAYOUTS[self.w.keyboard_layout].title,
                 language=LANGUAGE_NAMES[self.w.language],
             ))
-            prompt = self.w.confirm.prompt if self.w.confirm else C.ACCESSIBLE_NO_TARGET
+            prompt = C.confirm_prompt(self.w.confirm) if self.w.confirm else C.ACCESSIBLE_NO_TARGET
             self.label(prompt)
             entry = Gtk.Entry()
             entry.get_accessible().set_name(prompt)

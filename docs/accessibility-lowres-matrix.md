@@ -173,7 +173,7 @@ No shortcut bypasses ownership or token. `confirm_erase` re-discovers and calls 
 |---|---|---|
 | Long disk name | Title label at low-res still wraps via `WRAP-110` (panel text) / title row packs `size_phrase` right, name left trunc not clipped because `test_screen_fits_without_clipping` asserts `winfo_reqwidth <= winfo_width+2` | `test_screen_fits_without_clipping` |
 | Long serial | Serial rendered `font_mono_bold 14` via `_meta_line`; serial first element, then optional `· bus · /dev/sda` only when `Show more`; raw serial `wraplength` not needed as mono single token, but card width `WRAP` guarantees it fits at 940 | `_meta_line` + `_disk_summary` + gallery `metaLine` |
-| Missing serial | Falls back to `"no serial"` (`NO_CODE`) so UI never shows blank; confirm token falls back to device name via `SAFE_TOKEN_RE` | `test_plain_console_zero…`, `test_empty_serial…` |
+| Missing serial | Falls back to `"no serial"` (`NO_CODE`) so UI never shows blank; confirm characters come from the hardware ID ending, else the older size rule (docs/screens.md "Confirmation characters") | `test_plain_console_zero…`, `test_empty_serial…` |
 | Partition / log path in Advanced | Advanced rows `wraplength=WRAP-60` so long `nwipe --method=` lines wrap inside hero card | `_advanced` |
 | Owner checkbox text | `wraplength=WRAP-140` inside owned card, fitted with `fit_now` avoidance of transient geometry | `_owner` |
 | What bullets | Each bullet row `marker Canvas 10×26` + label `wraplength=WRAP-80` inside the combined owner explanation card | `_owner` |

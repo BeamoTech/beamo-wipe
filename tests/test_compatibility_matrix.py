@@ -76,9 +76,11 @@ def test_matrix_duplicate_size_colliding_suffix_uses_device_name():
     assert sda.size_gb_label == sdc.size_gb_label
     spec_a = confirm_spec(sda, listed)
     spec_c = confirm_spec(sdc, listed)
-    # suffix 1234 collides; unique full serials are the tokens. Never kernel names.
-    assert spec_a.token == "AAAA1234"
-    assert spec_c.token == "BBBB1234"
+    # Suffix 1234 collides; one more card character tells them apart (#129).
+    # Never kernel names.
+    assert spec_a.token == "A1234"
+    assert spec_c.token == "B1234"
+    assert spec_a.in_card and spec_c.in_card
     assert spec_a.token != spec_c.token
     assert spec_a.token not in {"sda", "sdc"}
     assert spec_a.token != "500"

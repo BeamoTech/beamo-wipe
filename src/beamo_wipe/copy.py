@@ -831,6 +831,15 @@ def contents_hint(disk: Disk) -> str:
 CONFIRM_TYPE_SIZE = "Type these numbers so we know it is the right disk: {token}"
 CONFIRM_TYPE_FOUR = "Type these 4 characters so we know it is the right disk: {token}"
 CONFIRM_TYPE_CHARS = "Type these characters so we know it is the right disk: {token}"
+# Card token prompts (#129): they name the field and how many characters,
+# never the characters. The disk card marks them (CONFIRM_MARKED*).
+CONFIRM_SERIAL_END = "Type the last {count} characters of the serial number shown above."
+CONFIRM_SERIAL_ALL = "Type the whole serial number shown above."
+CONFIRM_HARDWARE_END = "Type the last {count} characters of the hardware ID shown above."
+CONFIRM_HARDWARE_ALL = "Type the whole hardware ID shown above."
+CONFIRM_LONGER = "Another listed disk ends with the same last 4 characters, so more are needed."
+CONFIRM_MARKED = "They are underlined in the disk details above."
+CONFIRM_MARKED_CONSOLE = "They are in [brackets] in the disk details above."
 # The destructive-action warning (#128), shared by Confirm and Review on
 # every surface so the wording cannot drift. It names the selected disk and,
 # when partitions show one, the system on it; it says once that the loss is
@@ -852,6 +861,26 @@ def confirm_type_four(token: str) -> str:
 
 def confirm_type_chars(token: str) -> str:
     return CONFIRM_TYPE_CHARS.format(token=token)
+
+
+def confirm_type_card(field: str, count: int, *, whole: bool = False, longer: bool = False) -> str:
+    """Prompt for a card token: names the field and count, never the characters."""
+    if field == "wwn":
+        text = CONFIRM_HARDWARE_ALL if whole and longer else CONFIRM_HARDWARE_END.format(count=count)
+    else:
+        text = CONFIRM_SERIAL_ALL if whole and longer else CONFIRM_SERIAL_END.format(count=count)
+    return f"{text} {CONFIRM_LONGER}" if longer else text
+
+
+def confirm_prompt(spec, *, console: bool = False) -> str:
+    """The Confirm instruction every surface shows for ``spec`` (ConfirmSpec).
+
+    A card token adds where the characters are marked: underlined in the
+    graphical and screen-reader views, [bracketed] in text consoles.
+    """
+    if not getattr(spec, "in_card", False):
+        return spec.prompt
+    return f"{spec.prompt} {CONFIRM_MARKED_CONSOLE if console else CONFIRM_MARKED}"
 
 
 def erase_warning(disk: Disk, identity: str) -> str:

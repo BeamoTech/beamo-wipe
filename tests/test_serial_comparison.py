@@ -114,7 +114,7 @@ def test_gallery_and_console_share_comparison(monkeypatch):
         assert item['comparisonNote'] == view.comparison_note
         assert "Compare serial number character 6:" in lines
     html = gallery.gallery_html()
-    assert 'esc(screen === "pick" && !d.isBoot ? d.markedSerial || d.serial : d.serial)' in html
+    assert 'if (screen === "pick" && !d.isBoot) return esc(d.markedSerial || d.serial);' in html
     assert 'd.comparisonNote' in html
 
 

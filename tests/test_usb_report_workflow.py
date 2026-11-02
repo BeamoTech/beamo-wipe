@@ -1444,7 +1444,9 @@ def test_qemu_types_the_token_required_for_current_guest_disk_size(tmp_path):
     )
     helper = re.search(r"^guest_confirmation_token\(\) \{\n.*?^\}", qemu, re.MULTILINE | re.DOTALL)
     assert helper is not None
-    for boot_size, expected in ((563_085_312, "0"), (2 * 1024**3, "0"), (429_916_160, serial)):
+    # #129: the guest's 4-digit serial is the card token at every boot size.
+    assert len(serial) == 4 and serial.isdigit()
+    for boot_size, expected in ((563_085_312, serial), (2 * 1024**3, serial), (429_916_160, serial)):
         boot = Disk(
             path="/dev/sr0",
             name="sr0",

@@ -2669,3 +2669,76 @@ another very thorough and comprehensive pass of this." Repo
 - NEXT: owner chooses the hosted-gate route for #94 + #127 + #128 (fold into
   PR #94 or dispatch `ci.yml` on this branch); after a green gate and native
   review, merge in order #94 -> #127 -> #128. Do not push to main before that.
+
+## BW-129-TOKEN — Confirm asks for marked serial characters (IMPLEMENTED LOCALLY; HOSTED GATE, NATIVE REVIEW, MERGE PENDING)
+
+- Status: implemented on branch `feat/serial-suffix-token-129`, stacked on
+  `feat/single-erase-warning-128` (`39316c9`) -> #127 -> PR #94 `9c16e13`;
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`.
+  2026-11-02, Claude. SAFETY change (confirmation token): `safety:` commit.
+  NOT Done: Linux 72 DPI suite, GTK/Orca runtime, ISO build and the QEMU
+  gate (whose guest helper derives the token) have not run; translations
+  need native review; nothing is on main.
+- Problem (UI review item 3): the prompt printed the answer ("Type these 4
+  characters so we know it is the right disk: 3456"; most disks "…: 256"),
+  so owners could copy it without reading the disk card.
+- Rule (safety.confirm_spec, documented in docs/screens.md "Confirmation
+  characters"): the last 4 characters of the identifier the card shows
+  (serial; hardware ID/WWN as printed when no serial), more characters while
+  another listed disk (incl. the protected Beamo USB) ends the same way or
+  the ending equals another disk's size label, full ID or a kernel name;
+  "whole serial/hardware ID" when every character is needed. ASCII letters
+  and digits only. Missing, shorter than 4, or an ending with a space,
+  punctuation or non-ASCII keeps the older rule (prompt prints size label /
+  same-size suffix / full ID), else AMBIGUOUS_IDENTITY as before. The
+  prompt names field and count, never the characters ("Type the last 4
+  characters of the serial number shown above."); duplicates add "Another
+  listed disk ends with the same last 4 characters, so more are needed."
+- Comparison (#156 decision): unchanged `token_matches` — outer whitespace
+  ignored, case-insensitive, nothing else (no inner spaces, no partial, no
+  auto-fill). Launch still recomputes the token from the rediscovered list
+  (assert_ready_to_wipe) after the identity check, so serial/size/WWN/path
+  changes are rejected and a new lookalike disk makes the typed characters
+  too short (TOKEN_MISMATCH). The token is never logged or exported.
+- Marking: Tk keeps the whole serial in one label and places a boxed
+  (1 px INK) and underlined (2 px bar) copy of the ending exactly over those
+  characters (`_mark_token`, `CONFIRM_MARK_BG` fill); GTK identity text gets
+  Pango double underline + bold + tint and is focusable/selectable on
+  Confirm so Orca reads it by character, entry accessible name = full
+  instruction; curses, plain console use `[brackets]`; web preview uses a
+  `<mark>` with outline + underline. `DiskIdentityView.token_start/end`,
+  `token_marked_id`; `copy.confirm_prompt(spec, console=)`.
+- Files: safety.py, models.py (ConfirmSpec.in_card), identity.py, copy.py,
+  locales fr/de/es/it (7 keys), ui/tk_wizard.py, ui/accessible_wizard.py,
+  ui/console_wizard.py, gallery.py; docs/screens.md, runbook.md,
+  accessibility-lowres-matrix.md, translations.md.
+- Tests: new `tests/test_card_token_129.py` (normal serial, punctuation /
+  space / non-ASCII endings, missing/short serial, WWN fallback, 4-char
+  serial, duplicate endings incl. boot USB and size collisions, duplicate
+  serials, pairwise "no disk accepts another's token" over mixed fleets,
+  partial/padded input, #156 whitespace/case, no auto-fill, rediscovery:
+  serial change keeping the ending, size/WWN/path change, new lookalike disk;
+  curses, plain console, gallery, all languages, Tk mark position at 2 sizes
+  x 2 text sizes). New GTK test in test_accessible_runtime.py. Updated
+  old-rule expectations: test_confirm_token, test_compatibility_matrix,
+  test_capacity_and_unknown_type (size-label fallback kept with no serial),
+  test_contents_efi_token_pass13, test_identity,
+  test_console_confirm_utility_tokens_pass34_ui (peer forces whole word),
+  test_console_fallback_complete, test_security_hardening_new and
+  test_serial_comparison (escaping of every serial slice),
+  test_usb_report_workflow (QEMU guest token = numeric serial 0001; helper
+  computation reproduced for serials 0001-0005 x 3 boot sizes).
+- Checks (Windows-native route; WSL still broken): behaviour probe on the
+  baseline fails 6/8, passes 8/8 on the change (scratch
+  `token129-scratch-20261102/probe-results.txt`); ruff (all CI selections),
+  compileall, mypy --platform linux pass; per-file comparison of 102
+  token-related files (pf-base/pf-new1): every new-only failure was an
+  old-rule expectation, now updated; Confirm-related Tk tests in
+  tk_runtime/ui_fit/reflow/adaptive (6 sizes) pass. Screenshots
+  `token129-scratch-20261102/shots-{before,after}/`, console diff
+  `console-{before,after}.txt`.
+- Not run here: test_usb_report_workflow (fixtures need ~2.6 GB; C: has
+  ~150 MB), GTK/Orca tests, full pytest, ISO/QEMU. Related #148/#152/#156:
+  not found in repo/backlog/issues; #156 comparison decision recorded above.
+- NEXT: hosted gate with #94/#127/#128 (owner chooses route); native review;
+  merge in order #94 -> #127 -> #128 -> #129.

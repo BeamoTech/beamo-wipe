@@ -53,9 +53,11 @@ def _scan(monkeypatch, *, field, name, fstype, shape):
     assert result.boot_identified and result.boot.path == "/dev/sdb"
     assert [disk.path for disk in result.selectable] == ["/dev/sda"]
     disk = result.selectable[0]
-    # Content guidance does not alter the hardware or the owner's size token.
+    # Content guidance does not alter the hardware or the confirmation (#129:
+    # the last 4 characters of the serial the card shows).
     assert disk_identity(disk)[:3] == ("/dev/sda", "FAKE-TARGET", 128_000_000_000)
-    assert confirm_spec(disk, listed_disks(result)).token == "128"
+    spec = confirm_spec(disk, listed_disks(result))
+    assert spec.in_card and spec.token == "RGET"
     return disk
 
 

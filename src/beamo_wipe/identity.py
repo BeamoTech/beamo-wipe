@@ -68,6 +68,18 @@ class DiskIdentityView:
     comparison_start: int = 0
     comparison_end: int = 0
     comparison_note: str = ""
+    # Confirmation characters (#129): the ending of id_value the owner types.
+    # Offsets into id_value; equal when the token is not taken from the card.
+    token_start: int = 0
+    token_end: int = 0
+
+    @property
+    def token_marked_id(self) -> str:
+        """id_value with the confirmation characters in [brackets] (text surfaces)."""
+        if self.token_end <= self.token_start:
+            return self.id_value
+        a, b = self.token_start, self.token_end
+        return f"{self.id_value[:a]}[{self.id_value[a:b]}]{self.id_value[b:]}"
 
     @property
     def marked_id(self) -> str:
@@ -206,6 +218,14 @@ def present_disk(
         serial_comparison(disk, listed) if compare_serials and comparable else (0, 0, "")
     )
     confirmable = spec is not None
+    token_start = token_end = 0
+    if (
+        spec is not None
+        and spec.in_card
+        and kind in {"serial", "wwn"}
+        and id_value.casefold().endswith(spec.token.casefold())
+    ):
+        token_start, token_end = len(id_value) - len(spec.token), len(id_value)
 
     return DiskIdentityView(
         title=display_title(disk),
@@ -223,6 +243,8 @@ def present_disk(
         comparison_start=start,
         comparison_end=end,
         comparison_note=comparison,
+        token_start=token_start,
+        token_end=token_end,
     )
 
 

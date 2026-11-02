@@ -105,6 +105,9 @@ ACCENT = "#E6A817"
 DISABLED_BG = "#E8ECF1"
 DISABLED_FG = "#6E7989"
 TRACK = "#E4E9EF"
+# Confirmation characters in the disk card (#129). The box and underline
+# carry the meaning; the fill only adds contrast.
+CONFIRM_MARK_BG = "#FFF3C4"
 # One soft shadow layer. Tk has no blur, so the single rounded rect is
 # offset down a few pixels in a cool gray that stays quiet on BG.
 SHADOW = "#D5DCE6"
@@ -2815,8 +2818,12 @@ class TkWizard:
         name.pack(side=tk.LEFT, fill=tk.X, expand=True)
         self._wrapping_label(name, view.title, font=self.font_bold, bg=bg)
 
-    def _meta_line(self, parent: tk.Widget, disk: Disk, bg: str) -> tk.Frame:
-        """Model, capacity, connection, and strongest identifier. Path is not identity."""
+    def _meta_line(self, parent: tk.Widget, disk: Disk, bg: str, *, token: bool = False) -> tk.Frame:
+        """Model, capacity, connection, and strongest identifier. Path is not identity.
+
+        With ``token`` (Confirm only) the confirmation characters at the end
+        of the identifier are boxed and underlined in place (#129).
+        """
         view = self.w.disk_view(disk)
         meta = tk.Frame(parent, bg=bg)
         chip = " · ".join(part for part in (view.kind_chip, view.connection) if part)
@@ -2831,7 +2838,9 @@ class TkWizard:
                  fg=MUTED, bg=bg).pack(side=tk.LEFT, anchor="n", padx=(0, 8), pady=2)
         value = tk.Frame(identity, bg=bg)
         value.pack(side=tk.LEFT, fill=tk.X, expand=True)
-        self._wrapping_label(value, view.marked_id, font=self.font_mono_bold, bg=bg)
+        ident = self._wrapping_label(value, view.marked_id, font=self.font_mono_bold, bg=bg)
+        if token and view.token_end > view.token_start:
+            self._mark_token(ident, view.id_value[view.token_start:view.token_end])
         for note in view.notes:
             self._wrapping_label(value, note, font=self.font_s, fg=MUTED, bg=bg)
         if self._show_more:
@@ -2849,7 +2858,50 @@ class TkWizard:
             )
         return meta
 
-    def _disk_summary(self, parent: tk.Widget, disk: Disk, *, more: bool = False) -> _Box:
+    def _mark_token(self, label: tk.Label, tail: str) -> None:
+        """Box and underline ``tail``, the end of the identifier in ``label``.
+
+        The label keeps the whole identifier as one string (readout, wrapping,
+        evidence). A copy of its ending in the same monospace font sits exactly
+        over those characters, inside a 1 px box with a 2 px underline, so the
+        mark is a shape as well as a colour. It follows wrapping: the ending
+        is always at the end of the label's last line.
+        """
+        font = self.font_mono_bold
+        mark = tk.Frame(label.master, bg=INK, bd=0, highlightthickness=0)
+        chars = tk.Label(mark, text=tail, font=font, fg=INK, bg=CONFIRM_MARK_BG,
+                         bd=0, padx=0, pady=0, highlightthickness=0)
+        chars.pack(padx=1, pady=(1, 0))
+        tk.Frame(mark, bg=INK, height=2, bd=0, highlightthickness=0).pack(fill=tk.X)
+        setattr(mark, "_beamo_token_mark", True)
+        setattr(chars, "_beamo_token_mark", True)
+
+        def place(_event=None) -> None:
+            try:
+                lines = str(label.cget("text")).splitlines() or [""]
+                last = lines[-1]
+                if not last.casefold().endswith(tail.casefold()):
+                    mark.place_forget()
+                    return
+                edge = int(float(label.cget("bd"))) + int(float(label.cget("highlightthickness")))
+                left = edge + int(float(label.cget("padx")))
+                line = font.metrics("linespace")
+                height = label.winfo_height()
+                top = max(edge, (height - line * len(lines)) // 2)
+                x = left + font.measure(last[: len(last) - len(tail)]) - 1
+                y = top + line * (len(lines) - 1) - 1
+                # Offsets above already include the label's border.
+                mark.place(in_=label, x=x, y=y, width=font.measure(tail) + 2, height=line + 3,
+                           bordermode="outside")
+                mark.lift(label)
+            except (tk.TclError, ValueError):
+                return
+
+        label.bind("<Configure>", place, add="+")
+        label.after_idle(place)
+
+    def _disk_summary(self, parent: tk.Widget, disk: Disk, *, more: bool = False,
+                      token: bool = False) -> _Box:
         """The selected disk, shared across confirmation, method, and result screens.
 
         Short windows tighten its padding so the step's own controls start
@@ -2876,7 +2928,9 @@ class TkWizard:
         else:
             label.pack(fill=tk.X, pady=(0, 2 if short else 6))
         self._disk_heading(inner, disk, PRIMARY_TINT)
-        self._meta_line(inner, disk, PRIMARY_TINT).pack(fill=tk.X, pady=(2 if short else 4, 0))
+        self._meta_line(inner, disk, PRIMARY_TINT, token=token).pack(
+            fill=tk.X, pady=(2 if short else 4, 0)
+        )
         return box
 
     # -- footer / buttons -----------------------------------------------------
@@ -4261,7 +4315,7 @@ class TkWizard:
         self._title_block(col, C.TITLE_CONFIRM)
         zone = self._center_zone(col)
         # Details share the summary's caption row, not a row of their own.
-        self._disk_summary(zone, disk, more=True).pack(fill=tk.X)
+        self._disk_summary(zone, disk, more=True, token=True).pack(fill=tk.X)
         self._panel(zone, kind="warn", text=self.w.warning_text()).pack(fill=tk.X, pady=(12, 0))
         self._p(
             zone,
@@ -4272,9 +4326,10 @@ class TkWizard:
             font=self.font_s,
             fg=MUTED,
         ).pack(fill=tk.X, pady=(8, 0))
-        # The prompt can carry a full serial as the typed token: same
+        # A card token's prompt names the field, never the characters (#129).
+        # The older fallback prompt can carry a full serial as the token: same
         # character-level wrapping as identity labels, never a clipped tail.
-        self._wrapping_label(zone, spec.prompt, font=self.font_b, bg=BG).pack(
+        self._wrapping_label(zone, C.confirm_prompt(spec), font=self.font_b, bg=BG).pack(
             fill=tk.X, pady=(14, 8)
         )
         shell = _Box(

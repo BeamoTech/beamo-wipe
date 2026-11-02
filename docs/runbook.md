@@ -127,7 +127,7 @@ Prohibition: support never runs `export BEAMO_WIPE_BOOT_DEVICE=/dev/sdX` for a c
 
 ```
 Confirm screen type-to-confirm does not enable Choose erase method
-  ├─ Re-read together: "Type these numbers so we know it is the right disk: <token>" — token is size label or last 4 of serial or device name via SAFE_TOKEN_RE (casefold trimmed). Choose erase method is disabled until token_ok (takefocus=0 on disabled primary).
+  ├─ Re-read together: "Type the last 4 characters of the serial number shown above." — the characters are underlined/boxed (or [bracketed] in text mode) at the end of the serial or hardware ID in the disk card; more than 4 when another listed disk ends the same way. Older prompt "Type these numbers…: <token>" only when the disk has no usable serial/hardware ID (see docs/screens.md "Confirmation characters"). Case and outer spaces do not matter. Choose erase method is disabled until token_ok (takefocus=0 on disabled primary).
   ├─ Check: are two disks same size `size_gb_label`? → same_size_conflict → token is serial suffix, not size (see copy.py confirm_warning). Hint: "Two disks are the same size. Look at the characters under the name" + SSD footer if SSD.
   ├─ Customer typed `O` vs `0`? → Explain mono token, letter vs digit; qwerty `I/l`.
   └─ Still blocked → collect photo of disk summary (model+serial+size) vs token shown, verify `confirm_spec` for that size/serial pair. No bypass.
@@ -238,7 +238,7 @@ Use these verbatim or close; they contain no bypass instruction.
 
 *PICK_BLOCKED / uncertain USB:* "We refuse to list disks when we can't tell which is this USB — that's fail-closed and correct. Use Diagnostic report for support. Keep report media disconnected for Prepare, then insert one separate supported FAT32 or exFAT USB only when prompted. If the report cannot be saved, read the Support code and Build lines on the screen (for example `BW-S-BUND`) and send those exact values — not raw inventories or logs. Diagnostics do not establish that an erase ran."
 
-*Token mismatch:* "That screen wants the numbers/4 characters under the name on that row (size label or last 4 of serial). Capitals don't matter; type it exactly. Choose erase method stays off until it matches — that's the gate."
+*Token mismatch:* "Type the characters marked at the end of the serial number (or hardware ID) in the disk box — usually the last 4, more if the screen says so. If the screen instead shows the characters after a colon, type those. Capitals don't matter; type it exactly. Choose erase method stays off until it matches — that's the gate."
 
 *Interrupted / Failed:* "`The erase did not finish. Files may still be on the disk.` There's no resume. If Save report to USB is available after the erase has stopped, leave the Beamo USB and selected disk attached, insert exactly one FAT32 or exFAT USB, and choose **Save report to USB**. Wait for `Report saved and verified` before removing it. That report lets support match the exact failure (`IN USE`, `No sane device geometry`, `Unable to open device`, failure row, or non-zero exit)."
 
