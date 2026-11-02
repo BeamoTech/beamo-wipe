@@ -535,13 +535,45 @@ def test_accessible_long_identity_and_warning_remain_readable(ui, screen):
     assert wizard.selected.serial in text(app)
     assert wizard.selected.path not in text(app)
     assert "You cannot get" in text(app)
-    assert wizard.prepare_text() in text(app)
+    # #128: the warning is said once; no second preparation line repeats it.
+    assert text(app).count(C.ERASE_CANNOT_UNDO) == 1
     assert (C.TITLE_CONFIRM if screen == Screen.CONFIRM else C.TITLE_LAST) in text(app)
     arrival = app.window.get_focus()
     warning = wizard.warning_text() if screen == Screen.CONFIRM else wizard.erase_label()
     assert arrival.get_text() == f"{C.SEVERITY_WARNING}: {warning}"
     has_selection, start, end = arrival.get_selection_bounds()
     assert not has_selection and start == end
+    assert not wizard.runner.started
+
+
+@pytest.mark.parametrize("contents", ["windows", "data"])
+@pytest.mark.parametrize("screen", [Screen.OWNER, Screen.CONFIRM, Screen.LAST_CHANCE])
+def test_accessible_screen_reads_one_erase_warning_before_the_action(ui, screen, contents):
+    """#128: one warning per screen, read before the action it guards."""
+    from gi.repository import Atk
+
+    from beamo_wipe import copy as C
+    from test_single_erase_warning_128 import EXPECTED, _wizard_at, warning_counts
+
+    wizard = _wizard_at(screen, contents)
+    app = ui(wizard)
+    assert warning_counts(text(app)) == EXPECTED[screen]
+    order = list(widgets(app.window))
+    if screen == Screen.OWNER:
+        bullets = next(w for w in order if isinstance(w, Gtk.Label)
+                       and w.get_text() == "\n".join(C.WHAT_BULLETS))
+        action = next(w for w in order if isinstance(w, Gtk.CheckButton))
+    else:
+        warning = wizard.warning_text() if screen == Screen.CONFIRM else wizard.erase_label()
+        alert = next(w for w in order if isinstance(w, Gtk.Label)
+                     and w.get_text() == f"{C.SEVERITY_WARNING}: {warning}")
+        # Orca hears the warning on arrival, as an alert, before the action.
+        assert app.window.get_focus() is alert
+        assert alert.get_accessible().get_role() == Atk.Role.ALERT
+        bullets = alert
+        label = C.BTN_ERASE if screen == Screen.LAST_CHANCE else C.primary_action(Screen.CONFIRM)
+        action = next(w for w in order if isinstance(w, Gtk.Button) and w.get_label() == label)
+    assert order.index(bullets) < order.index(action)
     assert not wizard.runner.started
 
 

@@ -6,7 +6,6 @@ from beamo_wipe import outcomes as _outcomes
 from beamo_wipe import progress as _progress
 from beamo_wipe import storage_limits as _limits
 from beamo_wipe.models import (
-    CONTENTS_DATA,
     CONTENTS_SYSTEM,
     CONTENTS_UNKNOWN,
     CONTENTS_WINDOWS,
@@ -150,11 +149,12 @@ TEXT_SIZE_LABELS = {
 
 WHAT_LEAD = "Nothing starts until you say so."
 
+# One erase warning per screen (#128). Owner says once what the tool does;
+# Confirm and Review carry the disk-specific ERASE_EVERYTHING* warning.
 WHAT_BULLETS = (
-    "Check that you have the copies you need. You will pick a disk. "
-    "Everything on that disk will be erased. You cannot get the files back.",
-    "If that disk holds an operating system, erasing it also removes "
-    "Windows or Linux, applications, files, and recovery partitions on that disk.",
+    "Beamo Wipe erases everything on the disk you choose, including any "
+    "Windows or Linux on it.",
+    "Make sure you have copies of anything you want to keep.",
     # Literal must stay in lockstep with compat_story.PLATFORMS so language
     # sweep still sees WHAT_BULLETS (aliases are invisible to ast.literal_eval).
     "For 64-bit Intel/AMD Windows or Linux PCs that start from this USB. "
@@ -179,23 +179,6 @@ POWER_EVENTS = (
 POWER_BLANKING = (
     "The screen may go dark. Press a key or move the mouse to bring it back. "
     "That is the display, not sleep."
-)
-
-PREPARE_WINDOWS = (
-    "This selected disk shows Windows partitions. Erasing it also removes "
-    "Windows, applications, files, and recovery partitions on this disk."
-)
-PREPARE_SYSTEM = (
-    "This selected disk shows operating-system partitions. Erasing it also removes "
-    "the operating system, applications, files, and recovery partitions on this disk."
-)
-PREPARE_DATA = (
-    "This selected disk does not show operating-system partitions. "
-    "Erasing it still removes every file on this disk."
-)
-PREPARE_UNKNOWN = (
-    "Erasing this selected disk removes every file on it, including any "
-    "operating system, applications, files, and recovery partitions on this disk."
 )
 
 # Closed-by-default Show more. Help first; nwipe by name only for honesty.
@@ -848,8 +831,14 @@ def contents_hint(disk: Disk) -> str:
 CONFIRM_TYPE_SIZE = "Type these numbers so we know it is the right disk: {token}"
 CONFIRM_TYPE_FOUR = "Type these 4 characters so we know it is the right disk: {token}"
 CONFIRM_TYPE_CHARS = "Type these characters so we know it is the right disk: {token}"
-CONFIRM_WARNING_TEXT = "Every file on {title}, {size}, will be erased. You cannot get them back. {prep}"
-ERASE_NOW_TEXT = "This will erase {title}, {capacity}, {id}. You cannot get the files back."
+# The destructive-action warning (#128), shared by Confirm and Review on
+# every surface so the wording cannot drift. It names the selected disk and,
+# when partitions show one, the system on it; it says once that the loss is
+# permanent. Owner states what the tool does in WHAT_BULLETS instead.
+ERASE_EVERYTHING = "Everything on {disk} will be erased."
+ERASE_EVERYTHING_WINDOWS = "Everything on {disk} will be erased, including Windows."
+ERASE_EVERYTHING_SYSTEM = "Everything on {disk} will be erased, including its operating system."
+ERASE_CANNOT_UNDO = "You cannot get it back."
 PICK_SUBTITLE = "Match the name, size and serial or hardware ID. Choose only the disk you intend to erase."
 
 
@@ -865,31 +854,37 @@ def confirm_type_chars(token: str) -> str:
     return CONFIRM_TYPE_CHARS.format(token=token)
 
 
-def prepare_selected(disk: Disk) -> str:
-    """Consequence of erasing this disk, from observed filesystem evidence."""
+def erase_warning(disk: Disk, identity: str) -> str:
+    """The one destructive-action warning for ``disk``, named by ``identity``.
+
+    Windows or another operating system is named only when the disk's
+    partitions show one (models.CONTENTS_*). "Everything" already covers
+    files, applications and recovery partitions, so no second sentence
+    repeats the loss.
+    """
     contents = getattr(disk, "contents", CONTENTS_UNKNOWN)
     if contents == CONTENTS_WINDOWS:
-        return PREPARE_WINDOWS
-    if contents == CONTENTS_SYSTEM:
-        return PREPARE_SYSTEM
-    if contents == CONTENTS_DATA:
-        return PREPARE_DATA
-    return PREPARE_UNKNOWN
+        template = ERASE_EVERYTHING_WINDOWS
+    elif contents == CONTENTS_SYSTEM:
+        template = ERASE_EVERYTHING_SYSTEM
+    else:
+        template = ERASE_EVERYTHING
+    return f"{template.format(disk=identity)} {ERASE_CANNOT_UNDO}"
 
 
 def confirm_warning(disk: Disk) -> str:
+    """Confirm: the warning names the disk by model and size."""
     from beamo_wipe.identity import display_title
 
-    return CONFIRM_WARNING_TEXT.format(
-        title=display_title(disk), size=disk.size_phrase, prep=prepare_selected(disk)
-    )
+    return erase_warning(disk, f"{display_title(disk)}, {disk.size_phrase}")
 
 
 def erase_now_label(disk: Disk, peers=()) -> str:
+    """Review: the same warning, with the serial or hardware ID added."""
     from beamo_wipe.identity import present_disk
 
     view = present_disk(disk, peers)
-    return ERASE_NOW_TEXT.format(title=view.title, capacity=view.capacity, id=view.id_value)
+    return erase_warning(disk, f"{view.title}, {view.capacity}, {view.id_value}")
 
 
 def pick_subtitle() -> str:

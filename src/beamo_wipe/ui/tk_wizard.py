@@ -4699,13 +4699,8 @@ class TkWizard:
         card.pack(fill=tk.X, anchor="n")
         if self.w.selected is not None:
             self._disk_summary(details, self.w.selected).pack(fill=tk.X)
-            self._p(
-                details,
-                self.w.prepare_text(),
-                font=self.font_s,
-                fg=MUTED,
-                bg=surface,
-            ).pack(fill=tk.X, pady=(8, 0))
+        # The red callout below is this screen's one erase warning (#128);
+        # it already names any Windows or operating system on the disk.
         self._wrapping_label(
             details, self.w.operation_summary, font=self.font_bold, bg=surface
         ).pack_configure(pady=(10 if stacked else 12, 0))

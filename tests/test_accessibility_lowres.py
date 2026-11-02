@@ -317,10 +317,10 @@ def test_copy_never_forbids_recovery_language():
     )
     surfaces = (
         *C.WHAT_BULLETS,
-        C.PREPARE_WINDOWS,
-        C.PREPARE_SYSTEM,
-        C.PREPARE_DATA,
-        C.PREPARE_UNKNOWN,
+        C.ERASE_EVERYTHING,
+        C.ERASE_EVERYTHING_WINDOWS,
+        C.ERASE_EVERYTHING_SYSTEM,
+        C.ERASE_CANNOT_UNDO,
         C.POWER_REMINDER,
         C.POWER_BLANKING,
         C.WORKING_PULSE,

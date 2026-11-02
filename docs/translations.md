@@ -233,3 +233,14 @@ Italian
 - `helper/it.html`: Windows names *Usa un dispositivo*, *Scegli un’opzione*, *Riavvia il sistema*, menu *Arresta*, *Ambiente ripristino Windows*; defaults *non pacchettizzata/o*
 - Lower-case *suo/le/la* for Lei throughout (rather than *Suo/Le/La*)
 - Added after the first Italian pass, not yet reviewed with it: `copy.CONTENTS_HINT_*` (*… trovato su questo disco*), `outcomes.NEXT_*` per-result next steps (*Valuti di sostituirlo o di distruggerlo fisicamente*, *Se si ripete*), `inventory.CANNOT_ERASE` (*Impossibile cancellare:*), `progress.OLD_PERCENT` (*non recente*), `copy.ACCESSIBLE_SELECT_DISK` (*Seleziona*) and `result_summary.H_RANDOM_GENERATOR` (*Generatore di dati casuali*)
+
+All languages (added 2026-11-02 for #128, not yet reviewed)
+- `copy.ERASE_EVERYTHING`, `copy.ERASE_EVERYTHING_WINDOWS`, `copy.ERASE_EVERYTHING_SYSTEM`
+  and `copy.ERASE_CANNOT_UNDO`: the one erase warning on Confirm and Review.
+  `{disk}` is the model and size (Review adds the serial), so the sentence must
+  read naturally with a comma-separated name in that slot. FR *Vous ne pourrez
+  pas le récupérer* (*le* = *tout le contenu*), DE *Sie bekommen nichts davon
+  zurück*, ES *No podrá recuperarlo*, IT *Non potrà recuperarlo*.
+- `copy.WHAT_BULLETS[0:2]` and the first paragraph of each `helper/*.html`
+  "What this USB does" card: the Owner sentence about what the tool does and
+  the backup reminder.

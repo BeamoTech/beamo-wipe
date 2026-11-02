@@ -32,6 +32,20 @@ def _part(path, **fields):
     return node
 
 
+def _warning_kind(disk) -> str:
+    """Which ERASE_EVERYTHING* sentence the Confirm warning uses (#128)."""
+    text = C.confirm_warning(disk)
+    assert text.endswith(" " + C.ERASE_CANNOT_UNDO)
+    for kind, template in (
+        ("windows", C.ERASE_EVERYTHING_WINDOWS),
+        ("system", C.ERASE_EVERYTHING_SYSTEM),
+        ("plain", C.ERASE_EVERYTHING),
+    ):
+        if template.split("{disk}", 1)[1] + " " in text:
+            return kind
+    raise AssertionError(text)
+
+
 def _disk_node(path="/dev/nvme0n1", children=None, **fields):
     node = {
         "name": path.rsplit("/", 1)[-1],
@@ -64,11 +78,12 @@ def test_windows_partitions_are_system_windows():
     assert classify_contents(node) == "windows"
     disk = node_to_disk(node, False)
     assert disk.contents == "windows"
-    text = C.prepare_selected(disk)
-    assert text == C.PREPARE_WINDOWS
-    assert "Windows" in text
-    assert "recovery partitions on this disk" in text
-    assert C.confirm_warning(disk).endswith(text)
+    assert _warning_kind(disk) == "windows"
+    text = C.confirm_warning(disk)
+    assert "including Windows" in text
+    # One warning: "Everything" covers files, apps and recovery partitions.
+    assert text.count("will be erased") == 1
+    assert text.count(C.ERASE_CANNOT_UNDO) == 1
 
 
 def test_linux_efi_root_is_system_not_windows():
@@ -80,9 +95,9 @@ def test_linux_efi_root_is_system_not_windows():
     )
     assert classify_contents(node) == "system"
     disk = node_to_disk(node, False)
-    text = C.prepare_selected(disk)
-    assert text == C.PREPARE_SYSTEM
-    assert "Windows," not in text
+    assert _warning_kind(disk) == "system"
+    text = C.confirm_warning(disk)
+    assert "Windows" not in text
     assert "operating system" in text
 
 
@@ -93,10 +108,10 @@ def test_data_disk_has_no_os_partitions():
     )
     assert classify_contents(node) == "data"
     disk = node_to_disk(node, False)
-    text = C.prepare_selected(disk)
-    assert text == C.PREPARE_DATA
-    assert "does not show operating-system partitions" in text
-    assert "every file on this disk" in text
+    assert _warning_kind(disk) == "plain"
+    text = C.confirm_warning(disk)
+    assert "Everything on Fake Disk" in text
+    assert "operating system" not in text and "Windows" not in text
 
 
 def test_windows_gpt_names_from_lsblk_partlabel_are_not_called_data():
@@ -125,7 +140,7 @@ def test_windows_gpt_names_from_lsblk_partlabel_are_not_called_data():
         ],
     )
     assert classify_contents(node) == "windows"
-    assert C.prepare_selected(node_to_disk(node, False)) == C.PREPARE_WINDOWS
+    assert _warning_kind(node_to_disk(node, False)) == "windows"
     reserved = _disk_node(
         children=[_part("/dev/nvme0n1p1", partlabel="Microsoft reserved partition")]
     )
@@ -188,7 +203,7 @@ def test_ntfs_data_without_windows_marks_is_not_a_windows_claim():
         ],
     )
     assert classify_contents(node) == "data"
-    assert "Windows partitions" not in C.prepare_selected(node_to_disk(node, False))
+    assert _warning_kind(node_to_disk(node, False)) == "plain"
 
 
 def test_bitlocker_and_msr_are_windows():
@@ -219,24 +234,20 @@ def test_vfat_efi_without_posix_is_data_not_an_os_claim():
         ]
     )
     assert classify_contents(node) == "data"
-    assert "operating-system partitions" in C.prepare_selected(node_to_disk(node, False))
+    assert _warning_kind(node_to_disk(node, False)) == "plain"
 
 
 def test_missing_fstype_is_unknown_not_a_windows_claim():
     node = _disk_node(children=[_part("/dev/nvme0n1p1"), _part("/dev/nvme0n1p2")])
     assert classify_contents(node) == "unknown"
     disk = node_to_disk(node, False)
-    text = C.prepare_selected(disk)
-    assert text == C.PREPARE_UNKNOWN
-    assert "Windows partitions" not in text
+    assert _warning_kind(disk) == "plain"
 
 
 def test_whole_disk_filesystem_is_data_without_claiming_windows_os():
     node = _disk_node(children=[], fstype="ntfs", label="Windows")
     assert classify_contents(node) == "data"
-    text = C.prepare_selected(node_to_disk(node, False))
-    assert text == C.PREPARE_DATA
-    assert "Windows partitions" not in text
+    assert _warning_kind(node_to_disk(node, False)) == "plain"
 
 
 def test_opened_luks_or_lvm_root_is_not_called_a_data_disk():
@@ -266,7 +277,7 @@ def test_opened_luks_or_lvm_root_is_not_called_a_data_disk():
             ]
         )
         assert classify_contents(node) == "system"
-        assert C.prepare_selected(node_to_disk(node, False)) == C.PREPARE_SYSTEM
+        assert _warning_kind(node_to_disk(node, False)) == "system"
 
 
 def test_opened_windows_volume_is_not_called_a_data_disk():
@@ -289,7 +300,7 @@ def test_opened_windows_volume_is_not_called_a_data_disk():
         ]
     )
     assert classify_contents(node) == "windows"
-    assert C.prepare_selected(node_to_disk(node, False)) == C.PREPARE_WINDOWS
+    assert _warning_kind(node_to_disk(node, False)) == "windows"
 
 
 def test_filesystem_on_a_bcache_disk_is_not_called_a_data_disk():
@@ -314,7 +325,7 @@ def test_filesystem_on_a_bcache_disk_is_not_called_a_data_disk():
         ]
     )
     assert classify_contents(node) == "system"
-    assert C.prepare_selected(node_to_disk(node, False)) == C.PREPARE_SYSTEM
+    assert _warning_kind(node_to_disk(node, False)) == "system"
 
     windows = _disk_node(
         children=[
@@ -336,7 +347,7 @@ def test_filesystem_on_a_bcache_disk_is_not_called_a_data_disk():
         ]
     )
     assert classify_contents(windows) == "windows"
-    assert C.prepare_selected(node_to_disk(windows, False)) == C.PREPARE_WINDOWS
+    assert _warning_kind(node_to_disk(windows, False)) == "windows"
 
 
 def test_opened_ext4_without_efi_stays_a_data_disk():
@@ -358,7 +369,7 @@ def test_opened_ext4_without_efi_stays_a_data_disk():
         ]
     )
     assert classify_contents(node) == "data"
-    assert C.prepare_selected(node_to_disk(node, False)) == C.PREPARE_DATA
+    assert _warning_kind(node_to_disk(node, False)) == "plain"
 
 
 def test_flat_windows_partition_rows_keep_the_windows_warning(monkeypatch, tmp_path):
@@ -417,7 +428,7 @@ def test_flat_windows_partition_rows_keep_the_windows_warning(monkeypatch, tmp_p
     )
     disk = next(item for item in found.selectable if item.path == "/dev/sda")
     assert disk.contents == "windows"
-    assert C.prepare_selected(disk) == C.PREPARE_WINDOWS
+    assert _warning_kind(disk) == "windows"
 
 
 def test_demo_disks_without_fstype_stay_unknown():
@@ -425,7 +436,7 @@ def test_demo_disks_without_fstype_stay_unknown():
 
     for disk in make_demo_wizard().selectable:
         assert disk.contents == "unknown"
-        assert C.prepare_selected(disk) == C.PREPARE_UNKNOWN
+        assert _warning_kind(disk) == "plain"
 
 
 @pytest.mark.parametrize("code,view", list(VIEWS.items()))
@@ -507,8 +518,8 @@ def test_console_what_wraps_prepare_bullets_at_80x24(monkeypatch):
     for bullet in C.WHAT_BULLETS:
         for word in bullet.split():
             assert word in shown
-    assert "copies you need" in shown
-    assert "recovery partitions" in shown
+    assert "copies of anything you want to keep" in shown
+    assert "Windows or Linux" in shown
     assert all(len(line) <= 78 for line in textwrap.wrap(" ".join(C.WHAT_BULLETS), 78))
 
 
@@ -529,10 +540,11 @@ def test_console_last_chance_keeps_identity_and_prepare(monkeypatch):
     wiz.selected = replace(wiz.selectable[0], contents=disk.contents, model=disk.model)
     wiz.screen = Screen.LAST_CHANCE
     shown, _ = _draw_console(monkeypatch, wiz)
-    assert wiz.prepare_text() == C.PREPARE_WINDOWS
     assert "Fake Disk" in shown
-    assert "Windows" in shown
-    assert "recovery partitions" in shown
+    # #128: the one Review warning names Windows; no separate line repeats it.
+    assert "including Windows" in " ".join(shown.split())
+    assert "recovery partitions" not in shown
+    assert " ".join(shown.split()).count("will be erased") == 1
     assert "Wait" in shown or "Enter to erase" in shown
 
 
@@ -553,8 +565,8 @@ def test_helper_and_what_copy_agree_on_backups_and_os_disks():
     helper = (REPO / "helper" / "index.html").read_text(encoding="utf-8")
     blob = " ".join(C.WHAT_BULLETS) + " " + helper
     assert C.WHAT_BULLETS[0] in helper
-    assert "copies you need" in blob
-    assert "recovery partitions on that disk" in helper
+    assert C.WHAT_BULLETS[1] in helper
+    assert "copies of anything you want to keep" in blob
     assert "Only the disk you confirm is erased" in helper
     assert "separate task" in helper
     assert "was processed" not in helper
@@ -586,10 +598,10 @@ def test_prepare_and_aftercare_avoid_recovery_promises():
     blob = " ".join(
         [
             *C.WHAT_BULLETS,
-            C.PREPARE_WINDOWS,
-            C.PREPARE_SYSTEM,
-            C.PREPARE_DATA,
-            C.PREPARE_UNKNOWN,
+            C.ERASE_EVERYTHING,
+            C.ERASE_EVERYTHING_WINDOWS,
+            C.ERASE_EVERYTHING_SYSTEM,
+            C.ERASE_CANNOT_UNDO,
             AFTERCARE_SUCCESS,
         ]
     ).lower()

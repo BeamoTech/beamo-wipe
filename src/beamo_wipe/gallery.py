@@ -162,7 +162,6 @@ def _disks_payload(scenario: str = "happy") -> list[dict]:
                 "token": spec.token if spec else "",
                 "prompt": spec.prompt if spec else "",
                 "warning": "" if disk.is_boot else C.confirm_warning(disk),
-                "prepare": "" if disk.is_boot else C.prepare_selected(disk),
                 "components": components,
                 "contents": disk.contents,
                 "contentsHint": "" if disk.is_boot else C.contents_hint(disk),

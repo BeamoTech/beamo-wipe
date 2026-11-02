@@ -2060,8 +2060,8 @@ def test_what_screen_shows_backup_and_os_prepare_at_minimum_size(ui):
     shown = _label_text(app)
     for bullet in C.WHAT_BULLETS:
         assert bullet in shown
-    assert "copies you need" in shown
-    assert "recovery partitions on that disk" in shown
+    assert "copies of anything you want to keep" in shown
+    assert "Windows or Linux" in shown
     assert C.POWER_REMINDER in shown
     assert C.POWER_BLANKING in shown
     assert C.TITLE_OWNER in shown
@@ -2072,15 +2072,14 @@ def test_what_screen_shows_backup_and_os_prepare_at_minimum_size(ui):
 
 
 @pytest.mark.parametrize("contents,prepare", [
-    ("windows", "This selected disk shows Windows partitions"),
-    ("system", "This selected disk shows operating-system partitions"),
-    ("data", "does not show operating-system partitions"),
-    ("unknown", "including any operating system"),
+    ("windows", "will be erased, including Windows."),
+    ("system", "will be erased, including its operating system."),
+    ("data", "will be erased. You cannot get it back."),
+    ("unknown", "will be erased. You cannot get it back."),
 ])
 @pytest.mark.parametrize("screen", [Screen.CONFIRM, Screen.LAST_CHANCE])
 def test_prepare_text_visible_for_system_and_data_disks(ui, contents, prepare, screen):
     from dataclasses import replace
-    from beamo_wipe import copy as C
 
     wiz, app = ui(size=MIN_WINDOW)
     _drive_to(wiz, app, screen, size=MIN_WINDOW)
@@ -2092,7 +2091,8 @@ def test_prepare_text_visible_for_system_and_data_disks(ui, contents, prepare, s
     assert prepare in shown
     assert wiz.selected.display_name in shown
     assert wiz.selected.serial in shown
-    assert C.prepare_selected(wiz.selected) in shown
+    # #128: the one warning on each screen carries the system it found.
+    assert shown.count("will be erased") == 1
     assert not _clipping_problems(app)
     assert not _off_window_problems(app)
 

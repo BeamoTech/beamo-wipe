@@ -22,7 +22,6 @@ def test_interleaved_key_does_not_rearm_enter_on_final_review(monkeypatch):
     wizard.can_refresh = False
     wizard.can_open_report_help = False
     wizard.begin_review_overlay.return_value = False
-    wizard.prepare_text.return_value = ""
     wizard.erase_label.return_value = "fake target"
     wizard.erase_enabled = False
 

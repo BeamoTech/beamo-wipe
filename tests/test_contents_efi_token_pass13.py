@@ -14,6 +14,11 @@ from beamo_wipe.safety import confirm_spec, disk_identity, listed_disks
 discovery = importlib.import_module("beamo_wipe.discover")
 
 
+def _tail(template: str) -> str:
+    """The part of an ERASE_EVERYTHING* sentence after the disk name."""
+    return template.split("{disk}", 1)[1]
+
+
 def _scan(monkeypatch, *, field, name, fstype, shape):
     monkeypatch.setenv("BEAMO_WIPE_DRY_RUN", "1")
 
@@ -61,8 +66,7 @@ def _scan(monkeypatch, *, field, name, fstype, shape):
 def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstype, field, name):
     disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
     assert disk.contents == CONTENTS_DATA
-    assert C.prepare_selected(disk) == C.PREPARE_DATA
-    assert C.confirm_warning(disk).endswith(C.PREPARE_DATA)
+    assert C.confirm_warning(disk).endswith(f"{_tail(C.ERASE_EVERYTHING)} {C.ERASE_CANNOT_UNDO}")
 
 
 @pytest.mark.parametrize("shape", ["tree", "flat"])
@@ -72,9 +76,8 @@ def test_efi_letters_inside_ordinary_names_remain_data(monkeypatch, shape, fstyp
 def test_explicit_efi_names_keep_operating_system_guidance(monkeypatch, shape, fstype, expected, field, name):
     disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
     assert disk.contents == expected
-    expected_copy = C.PREPARE_WINDOWS if expected == CONTENTS_WINDOWS else C.PREPARE_SYSTEM
-    assert C.prepare_selected(disk) == expected_copy
-    assert C.confirm_warning(disk).endswith(expected_copy)
+    expected_copy = C.ERASE_EVERYTHING_WINDOWS if expected == CONTENTS_WINDOWS else C.ERASE_EVERYTHING_SYSTEM
+    assert C.confirm_warning(disk).endswith(f"{_tail(expected_copy)} {C.ERASE_CANNOT_UNDO}")
 
 
 @pytest.mark.parametrize("shape", ["tree", "flat"])
@@ -93,5 +96,5 @@ def test_independent_firmware_and_windows_evidence_remains_authoritative(monkeyp
     disk = _scan(monkeypatch, field=field, name=name, fstype=fstype, shape=shape)
     expected = CONTENTS_WINDOWS if forced_windows or fstype == "ntfs" else CONTENTS_SYSTEM
     assert disk.contents == expected
-    expected_copy = C.PREPARE_WINDOWS if expected == CONTENTS_WINDOWS else C.PREPARE_SYSTEM
-    assert C.prepare_selected(disk) == expected_copy
+    expected_copy = C.ERASE_EVERYTHING_WINDOWS if expected == CONTENTS_WINDOWS else C.ERASE_EVERYTHING_SYSTEM
+    assert _tail(expected_copy) in C.confirm_warning(disk)

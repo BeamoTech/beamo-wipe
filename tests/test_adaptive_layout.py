@@ -203,12 +203,12 @@ def test_every_walkable_screen_keeps_actions_and_copy(ui, size):  # noqa: F811
             assert C.KEYBOARD_CHECK_LABEL in shown
         if screen == Screen.OWNER:
             assert C.POWER_REMINDER in shown
-            assert "copies you need" in shown
+            assert C.WHAT_BULLETS[1] in shown
             assert C.OWNER_CHECKBOX in shown
         if screen in {Screen.CONFIRM, Screen.LAST_CHANCE} and wiz.selected is not None:
             assert wiz.selected.display_name in shown
             assert wiz.selected.serial in shown
-            assert "cannot get" in shown.lower() or wiz.prepare_text() in shown
+            assert shown.count(C.ERASE_CANNOT_UNDO) == 1
         if screen == Screen.LAST_CHANCE:
             labels = [b.itemcget(b._label, "text") for b in _buttons(app)]
             assert C.BTN_ERASE in labels

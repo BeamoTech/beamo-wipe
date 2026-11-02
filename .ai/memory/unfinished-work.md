@@ -2579,3 +2579,93 @@ another very thorough and comprehensive pass of this." Repo
   Then scan the result screen with two phone camera apps (iOS Camera and
   Android Camera / Google Lens) on a monitor and from a photo. Fix any
   failure and rerun. Merge to main only after all of these pass.
+
+## BW-128-WARN — One erase warning per screen (IMPLEMENTED LOCALLY; HOSTED GATE, NATIVE REVIEW, MERGE PENDING)
+
+- Status: implemented on branch `feat/single-erase-warning-128` (stacked on
+  `feat/qr-erase-summary-127` at `2a79067`, which sits on PR #94 head `9c16e13`),
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`.
+  2026-11-02, Claude. NOT Done: the Linux 72 DPI suite, GTK/Orca runtime and
+  ISO/QEMU gate have not run, the translations need native review, and
+  nothing is on main (it depends on unmerged PR #94 and #127).
+- Problem (UI review item 2): Owner said "Everything on that disk will be
+  erased. You cannot get the files back." and then "erasing it also
+  removes…"; Confirm's yellow box said "Every file … will be erased. You
+  cannot get them back." and then "Erasing it also removes…"; Review showed
+  a gray "This selected disk shows Windows partitions. Erasing it also
+  removes…" line above the red "This will erase … You cannot get the files
+  back." callout.
+- Change (copy only; no disk-selection, token, countdown, method or nwipe
+  change, so not a `safety:` commit):
+  - `copy.py`: new shared `ERASE_EVERYTHING`, `ERASE_EVERYTHING_WINDOWS`,
+    `ERASE_EVERYTHING_SYSTEM`, `ERASE_CANNOT_UNDO` and `erase_warning(disk,
+    identity)`. Confirm = "Everything on <model>, <size> will be erased[,
+    including Windows | including its operating system]. You cannot get it
+    back." Review red callout = the same sentence with the serial/hardware
+    ID. The system is named only when partitions show one (models.CONTENTS_*).
+  - Owner `WHAT_BULLETS`: "Beamo Wipe erases everything on the disk you
+    choose, including any Windows or Linux on it." / "Make sure you have
+    copies of anything you want to keep." / platforms line (unchanged).
+  - Removed: `PREPARE_WINDOWS/SYSTEM/DATA/UNKNOWN`, `CONFIRM_WARNING_TEXT`,
+    `ERASE_NOW_TEXT`, `copy.prepare_selected`, `Wizard.prepare_text`, the
+    gallery `prepare` field, and the Review gray line in Tk, GTK, curses and
+    plain console. fr/de/es/it tables updated in the same key positions.
+  - Helper pages (5 languages): "What this USB does" first paragraph now
+    uses the Owner sentence, "You cannot get it back." and the backup line;
+    the second paragraph no longer repeats the erase consequence.
+  - Docs: `docs/screens.md` Owner/Confirm/Review rows; new strings added to
+    the `docs/translations.md` native review checklist. `docs/claims.md`
+    unchanged (no new claim).
+- Warning inventory before the change (all surfaces, file:line at
+  `2a79067`): copy.py:153-157 WHAT_BULLETS[0..1]; copy.py:184-199 PREPARE_*;
+  copy.py:851 CONFIRM_WARNING_TEXT; copy.py:852 ERASE_NOW_TEXT; Owner
+  tk_wizard.py:3347, accessible_wizard.py:433, console_wizard.py:836 and
+  1358, gallery.py:561 (+ JS owner bullets); Confirm tk_wizard.py:4265,
+  accessible_wizard.py:510, console_wizard.py:945 and 1510, gallery.py:164
+  (+ JS `panel("warn", d.warning)`); Review gray line tk_wizard.py:4704,
+  accessible_wizard.py:639, console_wizard.py:1028 and 1668, gallery.py:165
+  (`prepare`, not rendered by the JS); Review red callout tk_wizard.py:4729,
+  accessible_wizard.py:644, console_wizard.py:1030 and 1670, gallery JS
+  `selected.eraseLabel`; helper/*.html:574-575.
+- Tests: new `tests/test_single_erase_warning_128.py` (per-screen counts for
+  Tk at 800x600 and 1280x820 x 3 text sizes, curses, plain console and the
+  gallery; Review callout above the fold, bold red, the only red text, before
+  the countdown, in all 5 languages x 3 text sizes; shared-sentence and
+  retired-string checks in all languages). New GTK test
+  `test_accessible_screen_reads_one_erase_warning_before_the_action` in
+  `tests/test_accessible_runtime.py` (count, ALERT role, arrival focus,
+  warning before the action). Updated: test_copy, test_prepare_aftercare,
+  test_contents_efi_token_pass13, test_contents_os_layouts_20261028,
+  test_accessibility_lowres, test_accessible_runtime, test_adaptive_layout,
+  test_console_parity, test_console_enter_interleaved_pass25_ui,
+  test_tk_runtime, and test_curses_review_page_pass18_ui (terminal 16 -> 14
+  rows so the paged-warning safety scenario still starts below page one).
+- Checks (Windows-native route; WSL still fails with I/O errors):
+  - On the baseline tree the new file fails 51 cases (every rendered count,
+    including all 12 Tk per-screen cases); on the change all non-extra cases
+    pass.
+  - ruff (all CI selections), compileall and `mypy --platform linux`: pass.
+  - Per-file comparison of 213 related files (scratch
+    `warn128-scratch-20261102/pf-{base,new}.txt`): new-only failures were
+    test_curses_review_page_pass18_ui (fixed above), test_laptop_power_ui
+    [size1-what] (passes on two reruns; flake) and test_usb_report_workflow
+    (disk filled while both trees wrote its ~537 MB fake image at once; not
+    rerun because C: has ~220 MB free; untouched code).
+  - Final focused run of the 7 most affected files: exit 0.
+  - Screenshots: `warn128-scratch-20261102/shots-{before,after}/` (Owner,
+    Confirm, Review at 800x600/1280x820, large text, fr/de/es/it);
+    console renders `console-{before,after}.txt`.
+- Not run / blocked:
+  - Tk at the Extra-large text size on Review: on this Windows host Tk's
+    idle layout never settles (baseline and change alike; also with 72 DPI
+    scaling). Linux CI covers it, including the new above-the-fold test.
+  - GTK/Orca runtime tests (need Linux GTK), full `python3 -m pytest`,
+    ISO build and QEMU: hosted `ci.yml` gate only.
+  - Intermittent Windows Tcl start-up failures ("couldn't read file …
+    No error") plus WSL I/O errors and a full C: suggest a host storage
+    problem; owner should check the disk.
+  - #180 and #181: not found in the repo, the backlog or GitHub issues (the
+    full UX list was given only in chat); nothing changed for them.
+- NEXT: owner chooses the hosted-gate route for #94 + #127 + #128 (fold into
+  PR #94 or dispatch `ci.yml` on this branch); after a green gate and native
+  review, merge in order #94 -> #127 -> #128. Do not push to main before that.

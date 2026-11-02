@@ -85,7 +85,7 @@ def test_system_layouts_are_named_as_an_operating_system(name):
     assert classify_contents(node) == "system"
     disk = node_to_disk(node, False)
     assert C.contents_hint(disk) == C.CONTENTS_HINT_SYSTEM
-    assert C.prepare_selected(disk) == C.PREPARE_SYSTEM
+    assert C.ERASE_EVERYTHING_SYSTEM.split("{disk}", 1)[1] in C.confirm_warning(disk)
 
 
 @pytest.mark.parametrize("name", sorted(WINDOWS_LAYOUTS))
@@ -101,7 +101,7 @@ def test_unrecognised_layouts_stay_data_and_claim_nothing(name):
     assert classify_contents(node) == "data"
     disk = node_to_disk(node, False)
     # The confirm text stays detection-relative; the pick row says nothing.
-    assert C.prepare_selected(disk) == C.PREPARE_DATA
+    assert C.ERASE_EVERYTHING.split("{disk}", 1)[1] in C.confirm_warning(disk)
     assert C.contents_hint(disk) == ""
 
 

@@ -130,7 +130,7 @@ def test_what_keeps_enter_action_on_80x24(monkeypatch):
     assert "Space to check" in footer
     assert "Enter chooses a disk only when checked" in footer
     all_text = " ".join(" ".join(frame[y] for y in sorted(frame)) for frame in term.frames)
-    assert "copies you need" in all_text
+    assert "copies of anything you want to keep" in all_text
     assert C.OWNER_CHECKBOX in all_text or "written permission" in all_text
     assert "F5: Check disks again" in shown
     assert "R: Need a report?" in shown

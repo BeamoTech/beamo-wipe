@@ -54,7 +54,9 @@ def test_curses_does_not_enable_erase_before_paged_warning_is_visible(monkeypatc
             self.presses = 0
 
         def getmaxyx(self):
-            return (16, 80)
+            # Short enough that the review's one warning starts below the
+            # first page (#128 removed the line that used to precede it).
+            return (14, 80)
 
         def keypad(self, *_args):
             pass

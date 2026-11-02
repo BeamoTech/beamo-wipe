@@ -85,10 +85,10 @@ def _happy_blob() -> str:
             copy.confirm_type_size("256"),
             copy.confirm_type_four("A111"),
             copy.confirm_type_chars("ABC"),
-            copy.PREPARE_WINDOWS,
-            copy.PREPARE_SYSTEM,
-            copy.PREPARE_DATA,
-            copy.PREPARE_UNKNOWN,
+            copy.ERASE_EVERYTHING,
+            copy.ERASE_EVERYTHING_WINDOWS,
+            copy.ERASE_EVERYTHING_SYSTEM,
+            copy.ERASE_CANNOT_UNDO,
             copy.POWER_REMINDER,
             copy.POWER_BLANKING,
             copy.WORKING_PULSE,
@@ -138,11 +138,13 @@ def test_customer_copy_does_not_say_beamo_did_not_write():
 def test_what_screen_is_plain_prepare_bullets():
     assert len(copy.WHAT_BULLETS) == 3
     blob = " ".join(copy.WHAT_BULLETS).lower()
-    assert "copies you need" in blob
-    assert "pick a disk" in blob
-    assert "cannot get the files back" in blob
-    assert "operating system" in blob
-    assert "recovery partitions" in blob
+    # #128: Owner says once what the tool does. The disk-specific
+    # "cannot get it back" warning belongs to Confirm and Review.
+    assert copy.WHAT_BULLETS[0].startswith("Beamo Wipe erases everything on the disk you choose")
+    assert "windows or linux" in copy.WHAT_BULLETS[0].lower()
+    assert "copies of anything you want to keep" in blob
+    assert "erase" not in copy.WHAT_BULLETS[1].lower()
+    assert "cannot get" not in blob
     assert "not apple silicon" in blob
     assert copy.WHAT_BULLETS[-1] == PLATFORMS
     assert copy.SECURE_BOOT_HINT == STORY_SECURE_BOOT
