@@ -462,15 +462,62 @@ def test_tk_boxes_and_underlines_the_characters_in_place(tk_app, size, text_size
 
     assert frame.cget("bg") == tkui.INK
     bar = [w for w in frame.winfo_children() if w is not chars]
-    assert len(bar) == 1 and int(bar[0].cget("height")) == 2
+    assert len(bar) == 1 and _px(bar[0], "height") == 2
     assert chars.cget("bg") == tkui.CONFIRM_MARK_BG
     # Placed over the identifier's last characters.
     font = app.font_mono_bold
     head = view.id_value[: view.token_start]
     x = chars.winfo_rootx() - ident.winfo_rootx()
-    start = int(ident.cget("bd")) + int(ident.cget("highlightthickness")) + int(ident.cget("padx"))
+    start = _px(ident, "bd") + _px(ident, "highlightthickness") + _px(ident, "padx")
     assert abs(x - (start + font.measure(head))) <= 1
     assert ident.winfo_rooty() <= chars.winfo_rooty() <= ident.winfo_rooty() + ident.winfo_height()
+    assert not wiz.runner.started
+
+
+def _px(widget, option: str) -> int:
+    # Debian 12's Tk returns distances as Tcl objects; int() refuses those.
+    return int(round(float(widget.winfo_fpixels(str(widget.cget(option))))))
+
+
+class _TclObjLike:
+    """Like _tkinter.Tcl_Obj: str() gives the value, float() and int() refuse it."""
+
+    def __init__(self, value) -> None:
+        self._text = str(value)
+
+    def __str__(self) -> str:
+        return self._text
+
+
+def test_tk_mark_survives_distances_returned_as_tcl_objects(tk_app, monkeypatch):  # noqa: F811
+    """Hosted CI run 41493625767 (Debian 12, Tk 8.6.13): ``cget("bd")`` gave a
+    Tcl object, float() raised TypeError in the mark's idle callback, and that
+    retired the wizard on every Confirm screen. Local Tk returns plain ints."""
+    import tkinter as tk
+
+    from test_tk_runtime import _drive_to
+    from test_ui_fit_20261027 import _descendants, _settle
+
+    real_cget = tk.Label.cget
+
+    def tcl_obj_cget(self, key):
+        value = real_cget(self, key)
+        if key in ("bd", "borderwidth", "highlightthickness", "padx", "pady"):
+            return _TclObjLike(value)
+        return value
+
+    monkeypatch.setattr(tk.Label, "cget", tcl_obj_cget)
+    wiz, app = tk_app(size=(1280, 820))
+    _drive_to(wiz, app, Screen.PICK, size=(1280, 820))
+    wiz.select_disk(sorted(wiz.selectable, key=lambda d: d.path)[0].path)
+    wiz.continue_pick()
+    app._draw()
+    _settle(app, 80)
+    assert wiz.screen == Screen.CONFIRM
+    assert app.root.winfo_exists()
+    marks = [w for w in _descendants(app._body) if getattr(w, "_beamo_token_mark", False)]
+    frame = next(w for w in marks if w.winfo_class() == "Frame")
+    assert frame.winfo_ismapped()
     assert not wiz.runner.started
 
 

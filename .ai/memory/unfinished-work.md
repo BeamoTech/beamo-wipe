@@ -2742,3 +2742,31 @@ another very thorough and comprehensive pass of this." Repo
   not found in repo/backlog/issues; #156 comparison decision recorded above.
 - NEXT: hosted gate with #94/#127/#128 (owner chooses route); native review;
   merge in order #94 -> #127 -> #128 -> #129.
+- 2026-11-02 / Claude (Opus 5.5), hosted gate. Owner asked to use free CI
+  allowances. Findings: repo is public, so GitHub standard runners are free
+  (Oct runner minutes $0 net; Actions storage was billed $0.51 org-wide);
+  ci.yml uses Blacksmith labels (switching would be a workflow change).
+  Blacksmith free tier 3,000 2-vCPU min/month per org, overage billed;
+  org estimate from GitHub job timings (dashboard not accessible): Oct
+  ~36,700 (mostly beamo-flasher), Nov 1-2 ~1,100. GCP not used (legacy per
+  this guide). One `workflow_dispatch` of ci.yml on
+  `feat/serial-suffix-token-129` @ c313878: run 41493625767 FAILED (Linux
+  image gate 201 failed / 14,025 passed; Windows launcher tests passed; ISO
+  and QEMU not reached). Causes: (1) #129 `_mark_token` did float() on
+  `cget("bd")`, a Tcl_Obj on Debian 12 Tk 8.6.13; the TypeError retired the
+  wizard on every Confirm screen (as 9aad14a); (2) #127
+  `test_erase_record_127._decode` imported numpy, absent in the CI image.
+  Plus the intended negative-test failure. Fixed: distances via
+  winfo_fpixels(str()), TypeError caught and the mark hidden; new test
+  `test_tk_mark_survives_distances_returned_as_tcl_objects` (fails on the
+  old code with TypeError, passes now); Pillow-only zbar canvas
+  (pixel-identical to the numpy canvas, zxing decodes it). zbar decode with
+  ECI UTF-8 still unverified locally (pyzbar DLL needs a missing VC++
+  runtime). Local: test_card_token_129 and test_erase_record_127 pass; CI
+  ruff selections and mypy pass. X11-only Tk files skip on Windows by
+  design. Two #128 Tk cases at 800x600 extra text
+  (LAST_CHANCE; review callout extra-en) hang locally on #128, #129 and the
+  fix alike; they passed in the hosted run. If #127 merges alone it needs
+  the numpy fix too.
+- NEXT: push the fix commits and re-run ci.yml on this branch (one run);
+  then native review and the merge order above.

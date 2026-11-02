@@ -2883,8 +2883,14 @@ class TkWizard:
                 if not last.casefold().endswith(tail.casefold()):
                     mark.place_forget()
                     return
-                edge = int(float(label.cget("bd"))) + int(float(label.cget("highlightthickness")))
-                left = edge + int(float(label.cget("padx")))
+                # Distances can come back as Tcl objects (Debian 12's Python
+                # 3.11 and Tk 8.6.13), which float() rejects; Tk converts its
+                # own distance text, units included.
+                def px(option: str) -> int:
+                    return int(round(float(label.winfo_fpixels(str(label.cget(option))))))
+
+                edge = px("bd") + px("highlightthickness")
+                left = edge + px("padx")
                 line = font.metrics("linespace")
                 height = label.winfo_height()
                 top = max(edge, (height - line * len(lines)) // 2)
@@ -2894,8 +2900,13 @@ class TkWizard:
                 mark.place(in_=label, x=x, y=y, width=font.measure(tail) + 2, height=line + 3,
                            bordermode="outside")
                 mark.lift(label)
-            except (tk.TclError, ValueError):
-                return
+            except (tk.TclError, TypeError, ValueError):
+                # No safe position: hide the mark rather than retire the
+                # wizard. A stale mark must never sit on other characters.
+                try:
+                    mark.place_forget()
+                except tk.TclError:
+                    pass
 
         label.bind("<Configure>", place, add="+")
         label.after_idle(place)
