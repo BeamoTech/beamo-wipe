@@ -2472,64 +2472,110 @@ another very thorough and comprehensive pass of this." Repo
   sanitize/secure-erase is outside the current safety boundary (owner).
 - NEXT: owner picks items; implement locally, then final hosted gate.
 
-## BW-127-QR — QR-code erase summary on the result screen (OPEN, AWAITING OWNER DECISION)
+## BW-127-QR — Photo record (QR erase summary) on the result screen (IMPLEMENTED; HOSTED GATE, PHONE SCANS, MERGE PENDING)
 
-- Status: proposal only; NO production code written. 2026-11-01, Claude.
-  Repo `beamo-wipe`, read at branch `fix/release-readiness-20261026`
-  (`fdaaa44`, PR #94 head plus local docs commits). Backlog #127 = UX audit
-  item 1 (BW-UX-AUDIT-20261101). Coordinate with #135, #145, #171 (not
-  implemented here).
-- Baseline facts (from source, not assumed):
-  - Live image already ships `python3-qrcode` (signed v0.2.13 manifest:
-    7.4.2-2, source `python-qrcode`, arch all; BSD licence per Debian).
-    Used today only for the constant support-URL QR
-    (`support_contact.py`, refuses any other payload). No new package needed;
-    the dev venv uses qrcode 8.2, so tests must check payload/decoding, not
-    byte-identical matrices across versions.
-  - Result screen: `tk_wizard.py` `_done()` (badge, heading
-    `result.message`, elapsed, disk card with serial, report panel, method,
-    recovery sections, footer). Text fields come from
-    `result_summary._result_fields()` (same source as RESULT.txt).
-  - `wizard.evidence` stays in memory when saving to /tmp fails
-    (`evidence_error`), so a summary can still be built in that case.
-  - No session ID exists. Report checksum (SHA-256 of result.json) exists
-    only after evidence is saved.
-  - Report help = 7 sections (`copy.REPORT_HELP_SECTIONS`); export accepts
-    FAT32 or exFAT (`support_export.SUPPORTED_FILESYSTEMS`).
-  - Sample 479-byte payload: version 15 (L) / 17 (M) QR, 85/93 modules with
-    quiet zone = 255/279 px at 3 px per module.
-- PROPOSAL (needs explicit owner approval of fields + wording):
-  1. Format: plain UTF-8 text, one "Label: value" per line, in the session
-     language, labels identical to RESULT.txt. No URL, no JSON, no app.
-  2. Fields, in order: header "Beamo Wipe erase summary - not a
-     certificate"; Result (exact `result.message`); Verification (exact
-     RESULT.txt line); Disk; Capacity; Serial (option A full / B last 6 /
-     C omitted; recommend A, it is already on the screen and in result.json);
-     Method title; Started/Ended with "(clock not verified)"; Elapsed;
-     Report (saved to USB + first 12 hex of checksum / not saved);
-     "Beamo Wipe <version>, build <first 8 of build id>, nwipe 0.42".
-     Excluded: WWN, device path, warnings text, logs, support code.
-  3. Shown only on DONE after a final outcome; never for
-     `stop_unconfirmed` (erase may still run) or while saving/exporting
-     evidence; preview shows a sample marked "Preview - nothing erased".
-     Regenerated after a USB save so the Report line changes.
-  4. Wording: "Photograph this code to keep a record of this erase. It is a
-     summary, not a certificate." Same text summary readable on screen
-     (Show text), in the GTK/Orca view and in the curses fallback (text
-     only; a block QR does not fit 80x25).
-  5. Layout: error correction M, 3 px modules (4 px on large screens),
-     4-module quiet zone, white panel; on 800x600 behind a "Keep a record"
-     button on the result screen so the existing footer stays visible.
-  6. Help: new first section "No second USB? Photograph the code"; merge
-     the 7 sections to about 4. USB export unchanged.
-  7. claims.md: amend the report honesty line to "The result screen shows a
-     code you can photograph for a short summary (not a certificate). Saving
-     the full report needs a second, separate USB..." — owner approval.
-- Must not: write to the target, add network/URL, claim more than the
-  screen, change export/safety flow, or merge before approval.
-- Blocked/limits: phone-camera scan tests (two apps, screenshot and
-  photographed screen) need a person with a phone; QEMU/ISO gates need the
-  hosted runner. Feature should land on top of PR #94 (base for the UI).
-- NEXT: owner approves/edits items 1, 2 (serial option), 4, 5, 7; then
-  implement with tests decoding the payload per outcome (verified,
-  unverified Quick zero, stopped, failed, evidence-save failure).
+- Status: implemented and committed as `adaaef1` on branch
+  `feat/qr-erase-summary-127` (worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`). Base: PR #94
+  head `9c16e13` plus local docs commits `0f8f5e0`, `fdaaa44`, `13322c1`.
+  2026-11-02, Claude. NOT Done: the Linux/hosted gate, phone-camera scans
+  and native-speaker review are open, and nothing is on main. It depends on
+  PR #94, which is unmerged (owner decision).
+- Owner decision (2026-11-01, in chat): "Go with all of the best options that
+  optimize for user experience and convenience while also factoring in safety
+  and ease of use. I approve all of that." Applied:
+  - Fields: header "Beamo Wipe erase summary. Not a certificate."
+    - Result: the exact on-screen outcome.
+    - Disk, Capacity, and the identifier the disk card shows: the full Serial
+      number, or Hardware ID when the disk reports no usable serial. Including
+      Hardware ID is a judgment call so serial-less disks stay identifiable.
+    - Method.
+    - Started/Ended (clock not verified), when validated.
+    - Elapsed, when known.
+    - Report: saved to USB with the first 12 hex of the result.json checksum,
+      saved (sharing copy), not saved, or could not be stored.
+    - Software: Beamo Wipe version, 8-char build id, nwipe version.
+    - Not included: URL, support code, path, warnings, logs.
+  - Changed from the proposal:
+    - No separate Verification line; Result already states it.
+    - 4 px modules at every size, so no "Keep a record" button is needed.
+    - The record is placed after the next steps and any check warnings, so it
+      never pushes a "not a pass" warning down.
+  - Encoding: plain UTF-8 text in the session language with RESULT.txt
+    labels. QR uses ECC M, a 4-module quiet zone and a UTF-8 ECI (26) header.
+  - Wording:
+    - "Keep a record without a USB"
+    - "Photograph this code to keep a record of this erase. It is a summary,
+      not a certificate."
+    - "Your phone's camera shows it as text. No app or internet is needed.
+      The photo shows the disk's serial number."
+  - Report help: 7 sections become 4, with "No second USB? Photograph the
+    code" first. USB export is unchanged. The `REPORT_MEDIA_WHAT` Owner note,
+    claims.md and the 5 helper pages now mention the photo option.
+- Gating (never shown):
+  - screen != DONE;
+  - evidence still saving or finishing;
+  - `stop_unconfirmed`;
+  - a pinned nwipe may still run, or recovery is busy;
+  - the result cannot be repeated exactly.
+
+  Preview shows a sample with no disk identity. Nothing is written anywhere.
+- Files:
+  - `src/beamo_wipe/erase_record.py` (new);
+  - `wizard.py`, `ui/tk_wizard.py`, `ui/accessible_wizard.py`,
+    `ui/console_wizard.py`, `gallery.py`, `copy.py`, `lang.py`,
+    `locales/{fr,de,es,it}.py`;
+  - `helper/*.html`;
+  - docs: `claims.md`, `screens.md`, `screen-reader.md`,
+    `report-shutdown.md`, `development.md`;
+  - `THIRD_PARTY.md` (python3-qrcode 7.4.2-2, BSD-3-Clause, already in the
+    image; no new package);
+  - package-list comment;
+  - tests: `tests/test_erase_record_127.py` (new, 86 cases),
+    `tests/test_accessible_runtime.py` (GTK record test, 4 cases),
+    `tests/test_screen_hierarchy.py` (new headings).
+- Checks run. Windows host only: WSL fails with I/O errors and may not be
+  restarted. Used a scratch fcntl/realpath shim; see memory
+  `windows-native-test-route`.
+  - `test_erase_record_127.py`: 85 passed, 1 skipped (Windows Tk start-up
+    flake). Decodes every outcome in all 5 languages (zxing-cpp), and covers
+    evidence-save failure, gating, no truncation, the Tab cycle and 800x600
+    clipping at 3 text sizes.
+  - qrcode 7.4.2 and 8.2: 55/55 (5 languages × 11 outcomes) decode exactly,
+    with ECI 26 present.
+  - 12 rendered Tk screenshots: 12/12 decoded by zxing-cpp and by OpenCV
+    Aruco. Sizes 800x600, 1280x820 and 1600x1000; large and extra text; fr
+    and de; evidence error; preview.
+  - ruff (full plus both S-selections): pass. mypy `--platform linux`: pass.
+  - Baseline-diff of 106 UI, copy and wizard test files: only regressions
+    found were Italian 800x600 clipping and a lost FAT32/exFAT sentence; both
+    fixed. The 12 focused report, language and helper files now show the same
+    failure set as baseline (Windows-only failures).
+  - 5 Tk layout files time out on Windows in both trees: adaptive_layout,
+    ui_fit, tk_runtime, reflow_large_text, header_caption_fit. NOT verified
+    locally.
+- Not run / open:
+  - full Linux pytest at Xvfb 72 DPI, including the 5 files above;
+  - GTK/Orca tests (no gi on Windows), including
+    `test_accessible_done_reads_the_erase_record_as_text`;
+  - `test_result_tab_order_reaches_report_without_shutdown` (Linux fixture);
+  - CI decodes with pyzbar/zbar; its handling of ECI is unverified until it
+    runs;
+  - ISO build and QEMU on Blacksmith `ci.yml`. Not dispatched: the paid gate
+    needs the owner's choice of route (below);
+  - phone-camera scans with two apps against the screen and against a photo
+    of it (needs a person with a phone);
+  - native-speaker review of the new fr/de/es/it strings;
+  - browser-preview screenshot (Windows demo disks are not eligible); its
+    content is covered by `test_gallery_preview_shows_the_sample_record`.
+- Screenshots (scratch, not committed):
+  `C:\Users\Jack\dev\BeamoTech\qr127-scratch-20261101\shots-before\` and
+  `shots-after\`.
+- NEXT (owner chooses):
+  1. Fold this commit into PR #94, or open it as a PR after #94 merges. The
+     PR's hosted `ci.yml` run is the final gate.
+  2. Or dispatch `ci.yml` on `feat/qr-erase-summary-127`.
+
+  Then scan the result screen with two phone camera apps (iOS Camera and
+  Android Camera / Google Lens) on a monitor and from a photo. Fix any
+  failure and rerun. Merge to main only after all of these pass.
