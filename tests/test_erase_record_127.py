@@ -61,9 +61,15 @@ def _decode(text: str) -> str:
         from pyzbar.pyzbar import decode as zbar_decode
     except ImportError:
         pytest.skip("no QR decoder (zxing-cpp/pyzbar)")
-    import numpy as np
-
-    image = Image.fromarray(np.asarray(_canvas(matrix)))
+    # Pillow only: the Debian CI image has python3-pil and python3-pyzbar but
+    # no numpy (hosted run 41493625767).
+    size = len(matrix) * SCREEN_SCALE
+    image = Image.new("L", (size, size), 255)
+    for y, row in enumerate(matrix):
+        for x, dark in enumerate(row):
+            if dark:
+                image.paste(0, (x * SCREEN_SCALE, y * SCREEN_SCALE,
+                                (x + 1) * SCREEN_SCALE, (y + 1) * SCREEN_SCALE))
     found = zbar_decode(image)
     assert found, "record code did not decode"
     return found[0].data.decode("utf-8")
