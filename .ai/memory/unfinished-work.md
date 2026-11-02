@@ -2768,5 +2768,18 @@ another very thorough and comprehensive pass of this." Repo
   (LAST_CHANCE; review callout extra-en) hang locally on #128, #129 and the
   fix alike; they passed in the hosted run. If #127 merges alone it needs
   the numpy fix too.
-- NEXT: push the fix commits and re-run ci.yml on this branch (one run);
-  then native review and the merge order above.
+- Run 41518189715 on 71f06f6 (5fa1633 numpy-free decode + 71f06f6 Tcl_Obj
+  mark fix): source tests, ISO and most QEMU passed; FAILED at
+  bios-quick_zero: "never emitted a new exact marker
+  BEAMO_WIPE_CONFIRM_MATCHED". Cause (harness, not product): the BIOS
+  method boots attach the ISO with -cdrom, QEMU's default IDE serial is
+  QM00003, and the quick_zero target serial 0003 shared its last 4. The
+  guest rightly listed both and fell back to the older rule; the host helper
+  models the boot media with no serial and typed 0003. Fix: CD-ROM-booted
+  targets now use 7001/7002/7003 (UEFI default 7001); USB journeys keep
+  0004/0005 (boot media serial BEAMOBOOT). New test
+  `test_cdrom_booted_targets_keep_their_own_confirm_characters` checks each
+  target against QM00001..QM00012. Local QEMU-related test failures are
+  identical to the baseline's 19 Windows-environment failures.
+- NEXT: push and re-run ci.yml on this branch (one run); then native
+  review and the merge order above.

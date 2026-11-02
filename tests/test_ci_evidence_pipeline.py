@@ -33,7 +33,7 @@ def test_qemu_report_verifier_accepts_production_bundles(tmp_path, method_id, pr
     evidence.update(source_commit="a" * 40, build_id="fixture")
     evidence["device"].update(
         path="/dev/vda", realpath="/dev/vda", name="vda",
-        serial={"everyday": "0001", "extra": "0002", "quick_zero": "0003"}[method_id],
+        serial={"everyday": "7001", "extra": "7002", "quick_zero": "7003"}[method_id],
         size_bytes=67108864, size_gb_label="0",
     )
     evidence["logfile"] = "/tmp/beamo-wipe/nwipe.log"

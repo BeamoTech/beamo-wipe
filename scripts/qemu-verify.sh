@@ -50,7 +50,10 @@ TARGET_RAW="$RUN_ROOT/target.raw"
 # The guest target is deliberately small. Its displayed size is now 0 GB;
 # derive the confirmation token from the same production policy as the UI
 # instead of assuming the target serial or a particular ISO size.
-QEMU_TARGET_SERIAL="0001"
+# Targets booted beside the -cdrom ISO must not end like QEMU's default IDE
+# serials (QM00001, QM00003, ...): the guest lists the CD-ROM too, and a
+# shared last-4 ending rightly changes the Confirm characters (#129).
+QEMU_TARGET_SERIAL="7001"
 # Target controller (virtio, nvme or sata) and whether the USB boot image is
 # attached writable (snapshot=on) for the next boot_probe.
 QEMU_TARGET_BUS=virtio
@@ -58,9 +61,9 @@ QEMU_BOOT_WRITABLE=0
 HOST_METHOD_BYTES=67108864
 # case|key|nwipe_method|verify|outcome|host_timeout_s|guest_done_timeout_s|serial
 METHOD_CASES=$(cat <<'EOF'
-everyday|1|prng|last|verified|90|180|0001
-extra|2|dodshort|last|verified|180|300|0002
-quick_zero|3|zero|off|completed|60|180|0003
+everyday|1|prng|last|verified|90|180|7001
+extra|2|dodshort|last|verified|180|300|7002
+quick_zero|3|zero|off|completed|60|180|7003
 EOF
 )
 ISO_MOUNT="$RUN_ROOT/iso"
@@ -1893,7 +1896,7 @@ expected_argv = [
 if argv != expected_argv:
     raise SystemExit("guest argv differs from the single-target production command")
 expected_serial = expected_target_serial or {
-    "everyday": "0001", "extra": "0002", "quick_zero": "0003",
+    "everyday": "7001", "extra": "7002", "quick_zero": "7003",
 }[expected_method]
 target_name = target.rsplit("/", 1)[-1]
 if (
@@ -2062,7 +2065,7 @@ done <<<"$METHOD_CASES"
 log "all production methods completed isolated BIOS journeys"
 
 TARGET="$RUN_ROOT/target-uefi.qcow2"
-QEMU_TARGET_SERIAL="0001"
+QEMU_TARGET_SERIAL="7001"
 make_guest_target "$TARGET"
 
 OVMF_CODE=""

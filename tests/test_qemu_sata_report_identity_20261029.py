@@ -2,7 +2,7 @@
 """The QEMU report check accepts the SATA journey's own disk, and only it.
 
 Greptile (PR #94): verify_guest_report hard-coded the method journeys'
-virtio /dev/vda and serial 0001, so a correct report from the AHCI SATA
+virtio /dev/vda and serial 0001 (now 7001), so a correct report from the AHCI SATA
 journey (sd* disk, serial 0004) would have failed the hosted gate. The
 journey now passes its name pattern and serial. Fake report files only.
 """
@@ -76,7 +76,7 @@ def test_sata_report_passes_with_the_journeys_identity(tmp_path):
 @pytest.mark.parametrize("identity,why", [
     ((), "default virtio identity"),
     (("vda", "0004"), "wrong name pattern"),
-    (("sd[a-z]+", "0001"), "wrong serial"),
+    (("sd[a-z]+", "7001"), "wrong serial"),
     (("sd[a-z]+", ""), "method serial default"),
 ])
 def test_sata_report_fails_with_any_other_identity(tmp_path, identity, why):
@@ -87,7 +87,7 @@ def test_sata_report_fails_with_any_other_identity(tmp_path, identity, why):
 
 
 def test_method_journey_default_identity_is_unchanged(tmp_path):
-    mount = _report(tmp_path, "/dev/vda", "0001")
+    mount = _report(tmp_path, "/dev/vda", "7001")
     assert _check(mount).returncode == 0
     # A virtio report never passes as the SATA journey's disk.
     assert _check(mount, "sd[a-z]+", "0004").returncode != 0
