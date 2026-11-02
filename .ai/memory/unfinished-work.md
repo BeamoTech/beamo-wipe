@@ -2781,5 +2781,21 @@ another very thorough and comprehensive pass of this." Repo
   `test_cdrom_booted_targets_keep_their_own_confirm_characters` checks each
   target against QM00001..QM00012. Local QEMU-related test failures are
   identical to the baseline's 19 Windows-environment failures.
-- NEXT: push and re-run ci.yml on this branch (one run); then native
-  review and the merge order above.
+- Run 41528619370 on 4fa4c15: source tests, ISO, all six BIOS method
+  journeys (every Confirm matched, erase, report export), bios/uefi-usb,
+  troubleshoot, speech and Secure Boot boots passed. FAILED at
+  bios-sata-usb after Erase now: "never emitted a new exact marker
+  BEAMO_WIPE_KEY_RETURN_RELEASED" (qemu-verify.sh send_key_for_marker
+  release wait, 20 s, key-up retried at 5 and 10). Guest serial evidence
+  (artifact ci-evidence-4fa4c15...-41528619370-1): the SATA erase reached
+  WORKING and DONE before any Return release was acknowledged, and none
+  followed on DONE. In the green PR #94 run (41300394923) and in all six
+  method journeys here, the release was acknowledged during WORKING,
+  before DONE. Not a Confirm/#129 step; the stack did not change key
+  bindings (root <KeyRelease-Return> -> after_idle _release_return ->
+  arm_done_keyboard). Unproven whether this is a timing race (fast 64 MB
+  AHCI erase) or a DONE-screen effect of #127's record drawing; if the
+  release is lost, Done stays unarmed until the next Return press/release.
+- NEXT (owner decision): either one more ci.yml run on 4fa4c15+ to test
+  the race hypothesis, or first investigate DONE-screen release handling
+  (#127) in a Linux X11 guest. Then native review and the merge order.
