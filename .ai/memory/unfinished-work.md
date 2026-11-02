@@ -2471,3 +2471,65 @@ another very thorough and comprehensive pass of this." Repo
   `safety:` commit with tests; claims per docs/claims.md; SSD
   sanitize/secure-erase is outside the current safety boundary (owner).
 - NEXT: owner picks items; implement locally, then final hosted gate.
+
+## BW-127-QR — QR-code erase summary on the result screen (OPEN, AWAITING OWNER DECISION)
+
+- Status: proposal only; NO production code written. 2026-11-01, Claude.
+  Repo `beamo-wipe`, read at branch `fix/release-readiness-20261026`
+  (`fdaaa44`, PR #94 head plus local docs commits). Backlog #127 = UX audit
+  item 1 (BW-UX-AUDIT-20261101). Coordinate with #135, #145, #171 (not
+  implemented here).
+- Baseline facts (from source, not assumed):
+  - Live image already ships `python3-qrcode` (signed v0.2.13 manifest:
+    7.4.2-2, source `python-qrcode`, arch all; BSD licence per Debian).
+    Used today only for the constant support-URL QR
+    (`support_contact.py`, refuses any other payload). No new package needed;
+    the dev venv uses qrcode 8.2, so tests must check payload/decoding, not
+    byte-identical matrices across versions.
+  - Result screen: `tk_wizard.py` `_done()` (badge, heading
+    `result.message`, elapsed, disk card with serial, report panel, method,
+    recovery sections, footer). Text fields come from
+    `result_summary._result_fields()` (same source as RESULT.txt).
+  - `wizard.evidence` stays in memory when saving to /tmp fails
+    (`evidence_error`), so a summary can still be built in that case.
+  - No session ID exists. Report checksum (SHA-256 of result.json) exists
+    only after evidence is saved.
+  - Report help = 7 sections (`copy.REPORT_HELP_SECTIONS`); export accepts
+    FAT32 or exFAT (`support_export.SUPPORTED_FILESYSTEMS`).
+  - Sample 479-byte payload: version 15 (L) / 17 (M) QR, 85/93 modules with
+    quiet zone = 255/279 px at 3 px per module.
+- PROPOSAL (needs explicit owner approval of fields + wording):
+  1. Format: plain UTF-8 text, one "Label: value" per line, in the session
+     language, labels identical to RESULT.txt. No URL, no JSON, no app.
+  2. Fields, in order: header "Beamo Wipe erase summary - not a
+     certificate"; Result (exact `result.message`); Verification (exact
+     RESULT.txt line); Disk; Capacity; Serial (option A full / B last 6 /
+     C omitted; recommend A, it is already on the screen and in result.json);
+     Method title; Started/Ended with "(clock not verified)"; Elapsed;
+     Report (saved to USB + first 12 hex of checksum / not saved);
+     "Beamo Wipe <version>, build <first 8 of build id>, nwipe 0.42".
+     Excluded: WWN, device path, warnings text, logs, support code.
+  3. Shown only on DONE after a final outcome; never for
+     `stop_unconfirmed` (erase may still run) or while saving/exporting
+     evidence; preview shows a sample marked "Preview - nothing erased".
+     Regenerated after a USB save so the Report line changes.
+  4. Wording: "Photograph this code to keep a record of this erase. It is a
+     summary, not a certificate." Same text summary readable on screen
+     (Show text), in the GTK/Orca view and in the curses fallback (text
+     only; a block QR does not fit 80x25).
+  5. Layout: error correction M, 3 px modules (4 px on large screens),
+     4-module quiet zone, white panel; on 800x600 behind a "Keep a record"
+     button on the result screen so the existing footer stays visible.
+  6. Help: new first section "No second USB? Photograph the code"; merge
+     the 7 sections to about 4. USB export unchanged.
+  7. claims.md: amend the report honesty line to "The result screen shows a
+     code you can photograph for a short summary (not a certificate). Saving
+     the full report needs a second, separate USB..." — owner approval.
+- Must not: write to the target, add network/URL, claim more than the
+  screen, change export/safety flow, or merge before approval.
+- Blocked/limits: phone-camera scan tests (two apps, screenshot and
+  photographed screen) need a person with a phone; QEMU/ISO gates need the
+  hosted runner. Feature should land on top of PR #94 (base for the UI).
+- NEXT: owner approves/edits items 1, 2 (serial option), 4, 5, 7; then
+  implement with tests decoding the payload per outcome (verified,
+  unverified Quick zero, stopped, failed, evidence-save failure).
