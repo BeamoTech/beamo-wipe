@@ -59,12 +59,17 @@ def test_every_outcome_renders_message_next_step_and_actions(ui, size, case):  #
     app.root.geometry(f"{size[0]}x{size[1]}+40+40")
     app._draw()
     shown = _mapped_text(app)
-    assert view.message in shown
-    assert view.next_step in shown
+    # #134: the plain headline; finished outcomes show their note and What
+    # next list (the status line is behind Show more), failures the exact
+    # status as What happened and their next step.
+    plain = wiz.result_plain
+    assert plain.headline in shown
     assert wiz.selected.display_name in shown
     if view.success:
-        assert "verification passed" in shown or "was not performed" in shown
+        assert plain.note in shown and plain.numbered[-1] in shown
     else:
+        assert view.message in shown
+        assert view.next_step in shown
         assert "verification passed" not in shown
     labels = [b.itemcget(b._label, "text") for b in _buttons(app) if b.winfo_ismapped()]
     assert C.BTN_SHUTDOWN in labels
@@ -85,12 +90,16 @@ def test_verified_and_unverified_stay_visibly_distinct(ui):  # noqa: F811
     app.w = unverified
     app._draw()
     warn_shown = _mapped_text(app)
-    assert VIEWS["verified"].message in ok_shown
-    assert VIEWS["unverified"].message in warn_shown
-    assert VIEWS["verified"].message not in warn_shown
-    assert "read-back pass" in warn_shown.lower() or "was not performed" in warn_shown
-    assert VIEWS["verified"].next_step in ok_shown
-    assert VIEWS["unverified"].next_step in warn_shown
+    # #134: plain headlines; Quick zero never reads as checked.
+    from beamo_wipe import outcomes as O
+
+    assert O.HEADLINE_VERIFIED in ok_shown
+    assert O.HEADLINE_UNVERIFIED in warn_shown
+    assert O.HEADLINE_VERIFIED not in warn_shown
+    assert O.NOTE_UNVERIFIED in warn_shown and O.NOTE_VERIFIED not in warn_shown
+    assert O.NOTE_VERIFIED in ok_shown
+    assert O.NEXT_ITEM_GIVE_VERIFIED in ok_shown
+    assert O.NEXT_ITEM_GIVE_VERIFIED not in warn_shown
     _assert_geometry(app)
 
 
@@ -258,8 +267,15 @@ def test_console_every_outcome_fits_80x24_without_overflow(monkeypatch):
         wiz, _, _ = case_evidence(case)
         shown, packed, term = _draw(monkeypatch, wiz)
         view = wiz.result_view
-        assert view.message in shown
-        assert view.next_step in shown
+        plain = wiz.result_plain
+        assert plain.headline in shown  # #134
+        if plain.checklist:
+            from beamo_wipe import outcomes as O
+
+            assert O.WHAT_NEXT in shown and plain.numbered[-1] in shown
+        else:
+            assert view.message in shown
+            assert view.next_step in shown
         assert all(len(line) < 80 for line in term.frames[-1].values())
         assert max(term.frames[-1]) < 24
         footer = _footer(term)

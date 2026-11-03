@@ -102,6 +102,52 @@ PREVIEW_OK = "Preview finished"
 PREVIEW_FAILED = "Preview of a failed erase"
 PREVIEW_NEXT = "Nothing on this computer was erased. No overwrite or verification was performed."
 
+# Plain words for the result screen (#134, owner-approved 2026-11-03). Each
+# view's `message` above stays the technical status line: evidence, the saved
+# report, the photo record and support keep it, and the screen keeps it under
+# Show more (failures also keep it as What happened). Only the two finished
+# outcomes get a note and a short What next list; failures keep their What
+# happened / What it means for your disk / What to do next sections.
+# Never "checked" or "verified" for Quick zero; no certificate or "cannot be
+# recovered" wording (docs/claims.md); the SSD limit stays in both notes.
+HEADLINE_VERIFIED = "Done — this disk was erased and checked"
+HEADLINE_UNVERIFIED = "Done — this disk was overwritten with zeros (not checked)"
+NOTE_VERIFIED = (
+    "The check read the disk back after the last overwrite. It covers the "
+    "storage the disk shows; on an SSD, the drive's controller decides what "
+    "remains. Other disks were not erased."
+)
+NOTE_UNVERIFIED = (
+    "Quick zero does not read the disk back, so nothing confirms the "
+    "overwrite reached every part. On an SSD, the drive's controller decides "
+    "what remains. Other disks were not erased."
+)
+WHAT_NEXT = "What next"
+NEXT_ITEM_SHUT_DOWN = "Shut down when you have finished."
+NEXT_ITEM_REMOVE_USB = "When the computer is off, remove the Beamo USB."
+NEXT_ITEM_KEEP = (
+    "Keeping this computer? If this was its main disk, install an operating "
+    "system before you use it again."
+)
+NEXT_ITEM_GIVE_VERIFIED = "Giving it away or selling it? This disk is ready to pass on."
+# {method} is the translated Everyday method name.
+NEXT_ITEM_GIVE_UNVERIFIED = (
+    "Giving it away or selling it? Erase it again with {method} first — it "
+    "checks its work."
+)
+HEADLINE_VERIFICATION_FAILED = "Not confirmed — the check after the erase failed"
+HEADLINE_ENGINE_FAILED = "Not finished — the disk reported an error"
+HEADLINE_PROCESS_FAILED = "Not finished — the erase ended with an error"
+HEADLINE_COMPLETION_MISSING = "Not confirmed — the erase may not have finished"
+HEADLINE_INDETERMINATE = "Not confirmed — the result is unknown"
+HEADLINE_INTERRUPTED = "Not finished — the erase was interrupted"
+HEADLINE_CANCELLED = "Stopped — you stopped the erase before it finished"
+HEADLINE_OCCUPIED = "Not finished — the disk was in use"
+HEADLINE_OPEN_FAILED = "Nothing erased — the disk could not be opened"
+HEADLINE_GEOMETRY = "Nothing erased — the disk could not be used safely"
+HEADLINE_START_FAILED = "Nothing erased — the erase could not start"
+HEADLINE_STOP_UNCONFIRMED = "Not confirmed — the erase may still be running"
+
 
 def _build_views() -> dict[str, ResultView]:
     def remains(step: str) -> str:
@@ -253,6 +299,81 @@ def preview_view(ok: bool) -> ResultView:
         "info",
         "info",
         ok,
+    )
+
+
+@dataclass(frozen=True)
+class PlainResult:
+    """What the result screen says in plain words (#134).
+
+    ``checklist`` is empty except for the two finished outcomes; screens then
+    show the failure sections (or a preview's next step) as before.
+    """
+
+    headline: str
+    note: str = ""
+    checklist: tuple[str, ...] = ()
+
+    @property
+    def numbered(self) -> tuple[str, ...]:
+        return tuple(f"{i}. {item}" for i, item in enumerate(self.checklist, 1))
+
+    @property
+    def announcement(self) -> str:
+        parts = [self.headline + "."]
+        if self.note:
+            parts.append(self.note)
+        if self.checklist:
+            parts.append(WHAT_NEXT + ": " + " ".join(self.numbered))
+        return " ".join(parts)
+
+
+def _headlines() -> dict[str, str]:
+    # Read at call time so the current language's values apply.
+    return {
+        "verified": HEADLINE_VERIFIED,
+        "unverified": HEADLINE_UNVERIFIED,
+        "verification_failed": HEADLINE_VERIFICATION_FAILED,
+        "engine_failed": HEADLINE_ENGINE_FAILED,
+        "process_failed": HEADLINE_PROCESS_FAILED,
+        "completion_missing": HEADLINE_COMPLETION_MISSING,
+        "indeterminate": HEADLINE_INDETERMINATE,
+        "interrupted": HEADLINE_INTERRUPTED,
+        "cancelled": HEADLINE_CANCELLED,
+        "occupied": HEADLINE_OCCUPIED,
+        "open_failed": HEADLINE_OPEN_FAILED,
+        "geometry_unusable": HEADLINE_GEOMETRY,
+        "start_failed": HEADLINE_START_FAILED,
+        "stop_unconfirmed": HEADLINE_STOP_UNCONFIRMED,
+    }
+
+
+def plain_result(view: ResultView, *, headline_code: str = "", notice: str = "") -> PlainResult:
+    """Plain headline, note and What next list for ``view``.
+
+    ``headline_code`` names the outcome to describe when the wizard replaced
+    an indeterminate view's message (evidence could not be saved). ``notice``
+    (a recovered session) leads a finished outcome's note, because the list
+    replaces the next-step paragraph that otherwise carries it. Preview and
+    unknown codes keep their own message as the headline.
+    """
+    code = headline_code or view.code
+    headline = _headlines().get(code, view.message) if view.code != "preview" else view.message
+    if view.code == "verified" and view.success:
+        note, give = NOTE_VERIFIED, NEXT_ITEM_GIVE_VERIFIED
+    elif view.code == "unverified" and view.success:
+        from beamo_wipe import methods
+
+        note = NOTE_UNVERIFIED
+        give = NEXT_ITEM_GIVE_UNVERIFIED.format(method=methods.TITLE_PRNG)
+    else:
+        return PlainResult(headline)
+    if notice:
+        note = f"{notice} {note}"
+    return PlainResult(
+        headline,
+        note,
+        (NEXT_ITEM_SHUT_DOWN, NEXT_ITEM_REMOVE_USB, NEXT_ITEM_KEEP, give),
     )
 
 

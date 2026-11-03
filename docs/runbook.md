@@ -167,6 +167,11 @@ Technical codes and bounded diagnostics remain available for support. Never
 infer success from exit 0 or a progress percentage alone. Successful completion
 requires an explicit successful completion marker accepted by the validator,
 consistent method/verification facts, and no conflicting failure or interruption.
+The result screen leads with a plain headline for each code
+(`outcomes.plain_result`, #134) and keeps the explanation below as its status
+line (reports and the photo record use it unchanged). For `verified` and
+`unverified` the screen shows a note and a numbered What next list instead of
+the next-step text in this table; see `docs/screens.md`.
 
 | Code | Visible explanation and safe next step |
 | --- | --- |

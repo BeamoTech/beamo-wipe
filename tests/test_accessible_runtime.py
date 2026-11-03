@@ -389,7 +389,7 @@ print(json.dumps(names))
     names = json.loads(output)
     if not names:
         pytest.skip("AT-SPI desktop is empty (registry cannot open this display)")
-    assert wizard.result_view.announcement in names
+    assert wizard.result_plain.headline in names  # #134 plain headline
     assert "Shut down" in names
     assert app.w.result_view.code == "unverified"
 
@@ -400,12 +400,9 @@ def test_result_focus_does_not_create_a_text_selection(ui, case):
     app = ui(wizard)
     heading = app.window.get_focus()
     assert isinstance(heading, Gtk.Label)
-    expected = (
-        wizard.result_view.announcement
-        if wizard.result_view.success
-        else wizard.result_view.message
-    )
-    assert heading.get_text() == expected
+    # #134: the plain headline; the exact status follows (What happened or
+    # Technical details).
+    assert heading.get_text() == wizard.result_plain.headline
     assert heading.get_can_focus()
     assert heading.get_selectable()
     has_selection, start, end = heading.get_selection_bounds()
@@ -825,17 +822,17 @@ sys.exit(entry['main']())
         checkpoint = log_size()
         app = ui(first)
         app_box.append(app)
-        wait_for(first.result_view.message, since=checkpoint)
+        wait_for(first.result_plain.headline, since=checkpoint)
         for case in CASES[1:]:
             wizard, _, _ = case_evidence(case)
             app.w = wizard
             checkpoint = log_size()
             app.render()
-            wait_for(wizard.result_view.message, since=checkpoint)
+            wait_for(wizard.result_plain.headline, since=checkpoint)
         wizard.evidence = None
         checkpoint = log_size()
         app.render()
-        wait_for(VIEWS["indeterminate"].message, since=checkpoint)
+        wait_for(wizard.result_plain.headline, since=checkpoint)
         # Short visual headings must not suppress the full warning on arrival.
         # An overridden accessible name alone is insufficient: Orca reads the
         # label's text interface instead. Exercise the actual speech output.
@@ -986,7 +983,7 @@ def test_accessible_done_reads_the_erase_record_as_text(ui, code):
     ]
     assert C.RECORD_TITLE in headings
     # The outcome stays the first heading; the record follows the report.
-    assert headings[0] in (wizard.result_view.message, wizard.result_view.announcement)
+    assert headings[0] == wizard.result_plain.headline
     assert headings.index(C.REPORT_STATUS_TITLE) < headings.index(C.RECORD_TITLE)
     summary = [
         w for w in shown
@@ -1287,6 +1284,34 @@ def test_accessible_working_finish_sound_toggle_and_walk_away(ui):
     assert toggle.get_accessible().get_description() == C.FINISH_SOUND_REASON_NO_OUTPUT
 
 
+@pytest.mark.parametrize("code", ["verified", "unverified", "cancelled"])
+def test_accessible_result_plain_headline_and_what_next(ui, code):
+    """#134: the plain headline is the heading; finished outcomes read their
+    note and numbered What next list; the exact status stays in Technical
+    details (an expander) or What happened."""
+    from beamo_wipe import outcomes as O
+    from beamo_wipe import recovery as Rec
+    from test_result_presentations import CASES, case_evidence
+
+    wizard, _evidence, _ = case_evidence(next(c for c in CASES if c[0] == code))
+    app = ui(wizard)
+    plain = wizard.result_plain
+    shown = text(app)
+    assert app.window.get_focus().get_text() == plain.headline
+    assert O.HEADLINE_VERIFIED not in shown or code == "verified"
+    if plain.checklist:
+        assert plain.note in shown and O.WHAT_NEXT in shown
+        for item in plain.numbered:
+            assert item in shown
+        assert C.POST_ERASE_BOOT not in shown
+        expanders = [w for w in widgets(app.window) if isinstance(w, Gtk.Expander)]
+        assert any(e.get_label() == Rec.RECOVERY_TECHNICAL for e in expanders)
+        assert wizard.result_technical in shown
+    else:
+        assert O.WHAT_NEXT not in shown.splitlines()
+        assert Rec.RECOVERY_HAPPENED in shown and wizard.result_view.message in shown
+
+
 def test_accessible_stale_progress_announces_meaning_and_next_steps_once(ui):
     from unittest.mock import PropertyMock, patch
     from beamo_wipe.progress import STALE_MEANING, STALE_NEXT, ProgressView
@@ -1518,12 +1543,15 @@ def test_separate_erase_and_report_headings(ui, case, status):
     # #95: the specific outcome is the erase heading; the generic label is gone.
     # #107: failures then add What happened / meaning / next as headings.
     assert wizard.result_view == VIEWS[case[0]]
+    # #134: the plain headline is the erase heading.
+    assert wizard.result_plain.headline in headings
     if wizard.result_view.success:
-        assert wizard.result_view.announcement in headings
+        from beamo_wipe import outcomes as O
+
+        assert O.WHAT_NEXT in headings
     else:
         from beamo_wipe import recovery as R
 
-        assert wizard.result_view.message in headings
         assert R.RECOVERY_HAPPENED in headings
         assert R.RECOVERY_MEANING in headings
         assert R.RECOVERY_NEXT in headings
@@ -1811,16 +1839,19 @@ def test_done_announcement_is_first_heading(ui):
 
 @pytest.mark.parametrize(
     "code,shown",
-    [("verified", True), ("engine_failed", True), ("cancelled", True), ("open_failed", False)],
+    [("verified", False), ("engine_failed", True), ("cancelled", True), ("open_failed", False)],
 )
 def test_done_post_erase_boot_note_announced(ui, code, shown):
-    """Backlog #97: post-erase note. Needs display."""
+    """Backlog #97: post-erase note. Needs display. #134: finished outcomes
+    say it once, as the What next list's "Keeping this computer?" item."""
     from beamo_wipe import copy as C
+    from beamo_wipe import outcomes as O
 
     case = next(c for c in CASES if c[0] == code)
     wizard, _, _ = case_evidence(case)
     app = ui(wizard)
     assert (C.POST_ERASE_BOOT in text(app)) == shown
+    assert (O.NEXT_ITEM_KEEP in text(app)) == (code == "verified")
 
 
 @pytest.mark.parametrize("code", ["verified", "engine_failed", "cancelled", "interrupted"])

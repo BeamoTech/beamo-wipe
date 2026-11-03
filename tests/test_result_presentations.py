@@ -156,7 +156,13 @@ def test_every_reason_console_report_and_recovery(case, tmp_path, monkeypatch, c
     monkeypatch.setattr("builtins.input", lambda _: (_ for _ in ()).throw(EOFError()))
     console._plain_loop(wiz)
     visible = capsys.readouterr().out
-    assert expected.message in visible and expected.next_step in visible
+    assert expected.message in visible
+    # #134: finished outcomes print the What next list instead of the
+    # next-step paragraph; the saved README keeps the full announcement.
+    if expected.success:
+        assert wiz.result_plain.numbered[-1] in visible
+    else:
+        assert expected.next_step in visible
     bundle = _bundle_files(json.dumps(ev).encode(), log.encode(), "complete")
     assert expected.announcement in bundle["README.txt"].decode()
     logfile.write_text(log)
@@ -243,5 +249,12 @@ def test_curses_result_at_80x24(case, monkeypatch):
     monkeypatch.setattr(console.curses, "use_default_colors", lambda *a: None)
     console._loop(terminal, wiz)
     text = " ".join(terminal.rows[y] for y in sorted(terminal.rows))
-    assert wiz.result_view.message in text
-    assert wiz.result_view.next_step in text
+    # #134: plain headline; finished outcomes show the What next list on the
+    # first page (the status line follows in the paged tail).
+    plain = wiz.result_plain
+    assert plain.headline in text
+    if plain.checklist:
+        assert plain.numbered[-1] in text
+    else:
+        assert wiz.result_view.message in text
+        assert wiz.result_view.next_step in text

@@ -99,7 +99,10 @@ these explanations. No excluded row offers an erase action or bypass.
 Results use the same evidence-based explanation in the native interfaces and report
 exports. “Erase completed; verification passed” requires validated completion
 evidence for a method with read-back verification. Quick zero instead says
-“Erase completed; verification was not performed.” Read-back checks exposed
+“Erase completed; verification was not performed.” On screen these status lines
+sit under Technical details: the heading says the same in plain words (“Done —
+this disk was erased and checked”, or “… overwritten with zeros (not checked)”
+for Quick zero) and a short What next list follows. Read-back checks exposed
 storage only; it does not prove hidden copies were erased. Confirmed user
 cancellation says “Stopped by you.” Failed verification, interruption, missing
 evidence, and an unconfirmed stop remain distinct. Saved evidence can be checked

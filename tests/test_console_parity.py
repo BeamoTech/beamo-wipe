@@ -216,8 +216,17 @@ def test_last_chance_and_done_keep_full_identity(method, monkeypatch):
 def test_every_outcome_console_keeps_identity_and_footer(case, monkeypatch):
     wiz, _, _ = case_evidence(case)
     shown, packed, term = _draw(monkeypatch, wiz)
-    assert wiz.result_view.message in shown
-    assert wiz.result_view.next_step in shown
+    # #134: the plain headline leads; finished outcomes show their What
+    # next list, failures their status message and next step.
+    plain = wiz.result_plain
+    assert plain.headline in shown
+    if plain.checklist:
+        from beamo_wipe import outcomes as O
+
+        assert O.WHAT_NEXT in shown and plain.numbered[-1] in shown
+    else:
+        assert wiz.result_view.message in shown
+        assert wiz.result_view.next_step in shown
     assert wiz.selected.display_name in shown
     footer = _footer(term)
     assert "shut down" in footer.lower() or "run again" in footer.lower()

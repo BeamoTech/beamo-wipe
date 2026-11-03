@@ -171,6 +171,15 @@ def recovery_for_view(view: ResultView) -> Optional[RecoverySections]:
     )
 
 
+def technical_status(view: ResultView) -> str:
+    """The exact status message and result code, for support (#134).
+
+    Screens show it under Technical details (Tk Show more, a GTK expander,
+    the curses and plain console tail).
+    """
+    return f"{view.message}. " + TECHNICAL_RESULT_CODE.format(code=view.code)
+
+
 def recovery_for_outcome(code: str) -> Optional[RecoverySections]:
     from beamo_wipe import outcomes as O
 

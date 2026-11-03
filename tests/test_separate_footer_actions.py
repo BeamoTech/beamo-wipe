@@ -118,7 +118,7 @@ def test_assist_nav_names_do_not_rewrite_result_heading():
     try:
         app.window.resize(800, 600)
         drain()
-        expected = wizard.result_view.announcement
+        expected = wizard.result_plain.headline  # #134
         names = [w.get_accessible().get_name() for w in widgets(app.window)]
         assert expected in names
         assert C.NAV_LABEL in names

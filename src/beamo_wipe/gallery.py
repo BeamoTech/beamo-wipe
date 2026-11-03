@@ -22,7 +22,7 @@ from beamo_wipe.support_code import (
 )
 from beamo_wipe import support_export as _export
 from beamo_wipe import inventory
-from beamo_wipe.outcomes import preview_view
+from beamo_wipe.outcomes import plain_result, preview_view
 from beamo_wipe.recovery import (
     recovery_for_blocked,
     recovery_for_empty,
@@ -92,6 +92,13 @@ def _favicon_uri() -> str:
         + "</g></svg>"
     )
     return "data:image/svg+xml," + quote(svg, safe="")
+
+
+def _outcome_payload(code: str) -> dict:
+    """A real outcome's view plus its plain headline (#134), as on the live
+    screens. The view's message stays the What happened line."""
+    view = C.VIEWS[code]
+    return {**view.payload(), "headline": plain_result(view).headline}
 
 
 def _recovery_payload(sections) -> dict | None:
@@ -661,9 +668,9 @@ def _gallery_html_for_current_language(lang: str) -> str:
             "keep": C.STOP_KEEP,
             "confirm": C.STOP_CONFIRM,
             "stopping": C.STOPPING_TEXT,
-            "stopped": C.VIEWS["cancelled"].payload(),
+            "stopped": _outcome_payload("cancelled"),
             "stoppedRecovery": _recovery_payload(recovery_for_outcome("cancelled")),
-            "unconfirmed": C.VIEWS["stop_unconfirmed"].payload(),
+            "unconfirmed": _outcome_payload("stop_unconfirmed"),
             "unconfirmedRecovery": _recovery_payload(
                 recovery_for_outcome("stop_unconfirmed")
             ),
@@ -1398,7 +1405,7 @@ function stepInfo() {
     confirm:[1,prep,P.titles.confirm], method:[1,prep,P.titles.method],
     disk_help:[1,P.diskHelpTitle,P.diskHelpTitle], limits:[1,P.limitsTitle,P.limitsTitle], advanced:[1,P.titles.advanced,P.titles.advanced], last:[1,prep,P.titles.last],
     stop_confirm:[2,erase,P.stop.title], stopping:[2,erase,P.stoppingErase],
-    stop_unconfirmed:[2,erase,P.stop.unconfirmed.message], stopped:[3,result,P.stop.stopped.message],
+    stop_unconfirmed:[2,erase,P.stop.unconfirmed.headline], stopped:[3,result,P.stop.stopped.headline],
     working:[2,erase,P.titles.working], done:[3,result,P.titles.doneOk],
     report_help:[1,P.reportHelpTitle,P.reportHelpTitle],
     refresh_confirm:[0,"",P.titles.refresh]};
@@ -1939,7 +1946,7 @@ function draw() {
     renderHint(P.hints.working);
   } else if (["stop_confirm", "stopping", "stopped", "stop_unconfirmed"].includes(screen)) {
     const result = screen === "stopped" ? P.stop.stopped : P.stop.unconfirmed;
-    const title = screen === "stop_confirm" ? P.stop.title : screen === "stopping" ? P.stoppingErase : result.message;
+    const title = screen === "stop_confirm" ? P.stop.title : screen === "stopping" ? P.stoppingErase : result.headline;
     const recovery = screen === "stopped" ? P.stop.stoppedRecovery
       : screen === "stop_unconfirmed" ? P.stop.unconfirmedRecovery : null;
     const detail = screen === "stop_confirm" ? P.stop.lead : screen === "stopping" ? P.stop.stopping : "";

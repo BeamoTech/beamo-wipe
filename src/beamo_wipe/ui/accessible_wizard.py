@@ -228,17 +228,21 @@ class AccessibleWizard:
             heading.get_style_context().add_class("recovery-heading")
             self.label(body, focusable=True)
         if sections.technical:
-            from beamo_wipe import recovery as Rec
+            self.technical(sections.technical)
 
-            expander = Gtk.Expander.new(Rec.RECOVERY_TECHNICAL)
-            reader = Gtk.Label(label=sections.technical)
-            reader.set_line_wrap(True)
-            reader.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
-            reader.set_max_width_chars(65)
-            reader.set_selectable(True)
-            reader.set_can_focus(True)
-            expander.add(reader)
-            self.body.pack_start(expander, False, False, 4)
+    def technical(self, text: str) -> None:
+        """Technical details stay behind an expander, read on demand."""
+        from beamo_wipe import recovery as Rec
+
+        expander = Gtk.Expander.new(Rec.RECOVERY_TECHNICAL)
+        reader = Gtk.Label(label=text)
+        reader.set_line_wrap(True)
+        reader.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        reader.set_max_width_chars(65)
+        reader.set_selectable(True)
+        reader.set_can_focus(True)
+        expander.add(reader)
+        self.body.pack_start(expander, False, False, 4)
 
     def button(self, text: str, action: Callable, *, enabled: bool = True,
                utility: bool = False, in_body: bool = False):
@@ -765,8 +769,14 @@ class AccessibleWizard:
         elif screen == Screen.DONE:
             self.w.request_auto_outcome_sound()
             result = self.w.result_view
+            plain = self.w.result_plain
             sections = recovery_for_view(result)
-            heading.set_text(result.message if sections else result.announcement)
+            # The plain headline is the heading (#134). A preview keeps its
+            # one-sentence announcement; finished outcomes read their note
+            # and What next list as the labels that follow.
+            heading.set_text(
+                plain.headline if sections or plain.checklist else result.announcement
+            )
             heading.get_accessible().set_role(Atk.Role.HEADING)
             icon = Gtk.Image.new_from_icon_name(
                 {
@@ -777,7 +787,7 @@ class AccessibleWizard:
                 }[result.icon],
                 Gtk.IconSize.DIALOG,
             )
-            icon.get_accessible().set_name(result.message)
+            icon.get_accessible().set_name(plain.headline)
             css = Gtk.CssProvider()
             color = {
                 "ok": "#17703F",
@@ -798,12 +808,23 @@ class AccessibleWizard:
             self.label(self.w.elapsed_text)
             if sections:
                 self.recovery(sections)
+            elif plain.checklist:
+                from beamo_wipe import outcomes as O
+
+                self.label(plain.note, focusable=True)
+                next_heading = self.label(O.WHAT_NEXT, focusable=True)
+                next_heading.get_accessible().set_role(Atk.Role.HEADING)
+                for item in plain.numbered:
+                    self.label(item, focusable=True)
             else:
                 self.label(self.w.result_view.next_step)
             if self.w.done_support_needed:
                 self.label(C.support_text(), focusable=True)
             self.support_identity_labels()
-            if may_have_erased(result.code):
+            if plain.checklist:
+                # Support wording: the exact status message and result code.
+                self.technical(self.w.result_technical)
+            elif may_have_erased(result.code):
                 self.label(C.POST_ERASE_BOOT)
             for alert in self.w.check_alerts:
                 self.label(f"{C.SEVERITY_WARNING}: {alert}")

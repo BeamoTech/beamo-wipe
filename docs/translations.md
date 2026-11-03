@@ -278,3 +278,11 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   finish-sound check box, walk-away line and reasons. Only `WALK_AWAY_BEEP`
   may promise a sound. The `FINISH_SOUND_STATE_*` values must start with the
   exact `FINISH_SOUND_TOGGLE` text (the console prints them as its state).
+- `outcomes.HEADLINE_*`, `NOTE_VERIFIED`, `NOTE_UNVERIFIED`, `WHAT_NEXT` and
+  `NEXT_ITEM_*` (added 2026-11-03 for #134, owner-approved English, not yet
+  reviewed): the result screen's plain headline, note and What next list.
+  The `MSG_*` status messages are unchanged (evidence, report, photo record).
+  Quick zero's headline and note must never say checked or verified (FR/DE/ES/
+  IT: *non vérifié*, *nicht geprüft*, *sin comprobar*, *non controllato*);
+  nothing may promise data cannot be recovered. `NEXT_ITEM_GIVE_UNVERIFIED`
+  keeps `{method}` (the Everyday name), quoted in each language's style.

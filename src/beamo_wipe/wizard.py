@@ -3292,6 +3292,40 @@ class Wizard:
         return view
 
     @property
+    def result_plain(self):
+        """Plain headline, note and What next list for the result (#134).
+
+        ``result_view.message`` stays the technical status line (evidence,
+        report, photo record). When evidence could not be saved the view is
+        indeterminate with a replaced message; the headline then describes
+        that message's outcome rather than "result unknown".
+        """
+        from beamo_wipe.outcomes import plain_result
+
+        view = self.result_view
+        headline_code = ""
+        if view.code == "indeterminate" and not self.preview:
+            headline_code = {
+                ERASE_STOPPED_BY_YOU: "cancelled",
+                ERASE_INTERRUPTED_MSG: "interrupted",
+                ERASE_COMPLETION_UNCONFIRMED: "completion_missing",
+                ERASE_UNFINISHED: "process_failed",
+            }.get(view.message, "")
+        notice = ""
+        if self._recovered:
+            from beamo_wipe.session_recovery import NOTICE
+
+            notice = NOTICE
+        return plain_result(view, headline_code=headline_code, notice=notice)
+
+    @property
+    def result_technical(self) -> str:
+        """The technical status line kept for support (Show more on Tk)."""
+        from beamo_wipe.recovery import technical_status
+
+        return technical_status(self.result_view)
+
+    @property
     def can_open_report_help(self) -> bool:
         return self.screen in {Screen.WHAT, Screen.OWNER, Screen.METHOD, Screen.ADVANCED} and self._wipe_request is None
 

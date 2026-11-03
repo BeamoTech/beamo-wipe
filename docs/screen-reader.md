@@ -63,19 +63,25 @@ selected. **Stop and shut down** uses the report-protected shutdown decision.
 Opening this help retains only the ownership acknowledgement already made;
 select the disk and complete confirmation and countdown again before erasure.
 
-On screen changes, focus moves to the screen explanation. Finished announces
-the canonical evidence outcome and safe next step. Quick zero completion says
-“Erase completed; verification was not performed.” A verified completion checks
-exposed storage only. No read-back result guarantees coverage of inaccessible,
+On screen changes, focus moves to the screen explanation. Finished's heading
+is the outcome in plain words (#134), for example “Done — this disk was erased
+and checked”. Quick zero says “Done — this disk was overwritten with zeros (not
+checked)”, never checked or verified. A finished result's note and its
+numbered **What next** heading and list follow as separate focusable labels;
+the exact status message (“Erase completed; verification was not performed.”)
+and result code are under the **Technical details** expander. A verified
+completion checks exposed storage only. No read-back result guarantees coverage of inaccessible,
 remapped, over-provisioned, or controller-managed flash; extra overwrite passes
 do not fix these limits. Failed or missing evidence remains unsuccessful or
-indeterminate. Confirmed cancellation says “Stopped by you.”
+indeterminate; failures read their plain heading, then What happened (the
+exact status), What it means for your disk and What to do next. Confirmed
+cancellation's status still says “Stopped by you.”
 
 After the report status, Finished has a **Keep a record without a USB**
 heading. The QR code below it is an image a sighted helper can photograph; it
 is not focusable and its accessible name says the same summary follows as
-text. Tab to the next label to read that summary line by line: result exactly
-as announced, disk, capacity, serial number, method, times, report state and
+text. Tab to the next label to read that summary line by line: result as its
+exact status message (the Technical details line), disk, capacity, serial number, method, times, report state and
 software version. It is a summary, not a certificate. It is not shown while an
 erase may still be running or after a stop that could not be confirmed.
 

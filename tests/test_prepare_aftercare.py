@@ -466,12 +466,18 @@ def test_finished_console_keeps_identity_and_scoped_aftercare(case, capsys, monk
     console._plain_loop(wiz)
     out = capsys.readouterr().out
     view = wiz.result_view
-    assert view.message in out
-    assert view.next_step in out
+    assert view.message in out  # headline first; status as Technical details
+    assert wiz.result_plain.headline in out
     assert wiz.selected.display_name in out
     if view.success:
-        assert AFTERCARE_SUCCESS in out
+        # #134: the note and What next list replace the aftercare paragraph.
+        from beamo_wipe import outcomes as O
+
+        assert O.WHAT_NEXT in out and wiz.result_plain.note in out
+        assert AFTERCARE_SUCCESS not in out
+        assert "Other disks were not erased." in out
     else:
+        assert view.next_step in out
         assert AFTERCARE_SUCCESS not in out
         assert "was processed" not in out
 
@@ -552,10 +558,11 @@ def test_console_last_chance_keeps_identity_and_prepare(monkeypatch):
 def test_console_done_wraps_aftercare_at_80x24(case, monkeypatch):
     wiz, _, _ = case_evidence(case)
     shown, _ = _draw_console(monkeypatch, wiz)
-    assert wiz.result_view.message in shown or wiz.result_view.message.split(";")[0] in shown
+    assert wiz.result_plain.headline in shown  # #134
     if wiz.result_view.success:
-        assert "validated selected disk" in shown
-        assert "separate task" in shown
+        # The What next list replaces the aftercare paragraph at 80x24.
+        assert "Other disks were not erased." in shown
+        assert "install an operating" in shown
     else:
         assert "was processed" not in shown
         assert "validated selected disk" not in shown

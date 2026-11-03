@@ -3036,58 +3036,38 @@ another very thorough and comprehensive pass of this." Repo
   on the image; native review of the new strings; merge order #94 -> #127 ->
   #128 -> #129 -> #130 -> #131 -> #132 -> #133.
 
-## BW-134-RESULT — Plain result headline and a short "What next" checklist (BLOCKED: OWNER COPY APPROVAL; NOTHING IMPLEMENTED)
+## BW-134-RESULT — Plain result headline and a short "What next" list (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA, NATIVE REVIEW, MERGE PENDING)
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/plain-result-134` (stacked on
   `feat/finish-sound-133` @ 572d35d), worktree
   `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #134
-  (UI review item 8). The task requires owner approval of the exact copy
-  before implementing; only this proposal is recorded. Refs #170/#171/#172
-  are coordination only (not in this repo's backlog record; not done).
-- Baseline (572d35d): heading = `ResultView.message` from outcomes.py
-  ("Erase completed; verification passed" / "Erase completed; verification
-  was not performed" / failure messages); success shows one paragraph
-  (NEXT_VERIFIED_LEAD or NEXT_UNVERIFIED_LEAD + AFTERCARE_SUCCESS) plus the
-  separate POST_ERASE_BOOT note; failures show What happened / What it means
-  for your disk / What to do next + "Technical details: Result code: X".
-  `message` is also the "Result:" line of the photo record (QR), the saved
-  report, the evidence `presentation` that sharing copies must match, and
-  the screen-reader announcement. Screenshots/text: scratch
-  `work134-scratch-20261103/shots-before` (10 outcomes at 800x600, verified
-  Three overwrites, 1280x820, large/extra; visible.txt; console.txt curses).
-- Proposed design: keep `message` unchanged as the technical status line
-  (evidence, report, QR record, support codes and saved-report validation
-  unchanged); add a separate plain headline + one-line note + "What next"
-  checklist for the screen only (Tk, GTK/Orca, curses, plain console, web
-  preview). Success: the checklist replaces the paragraph and the separate
-  POST_ERASE_BOOT note (no duplication). The technical line moves under the
-  result screen's existing Show more ("Technical status: <message> (result
-  code: <code>)"). Failures keep the three sections; What happened keeps the
-  exact technical message. Sounds, report status, photo record unchanged.
-- PROPOSED COPY (awaiting approval; checked against docs/claims.md — no
-  certificate, no "impossible to recover", SSD limits kept, Quick zero never
-  "checked"/"verified"):
-  - verified (Everyday, Three overwrites): headline "Done — this disk was
-    erased and checked". Note: "The check read the disk back after the last
-    overwrite. It covers the storage the disk shows; on an SSD, the drive's
-    controller decides what remains. Other disks were not erased."
-  - unverified (Quick zero only): headline "Done — this disk was overwritten
-    with zeros (not checked)". Note: "Quick zero does not read the disk
-    back, so nothing confirms the overwrite reached every part. On an SSD,
-    the drive's controller decides what remains. Other disks were not
-    erased."
-  - What next (both successes): 1 "Press Shut down when you have finished."
-    2 "When the computer is off, remove the Beamo USB." 3 "Keeping this
-    computer? If this was its main disk, install an operating system before
-    you use it again." 4 verified (option A, recommended): "Giving it away
-    or selling it? This disk is ready to pass on." / (option B): A plus
-    "For very sensitive data on an SSD, follow the drive maker's guidance
-    or use a destruction service." 4 Quick zero: "Giving it away or selling
-    it? Erase it again with Everyday first — it checks its work."
-  - Failure headlines (option F2, recommended; F1 = keep today's
-    headings): verification_failed "Not confirmed — the check after the
-    erase failed"; engine_failed "Not finished — the disk reported an
-    error"; process_failed "Not finished — the erase ended with an error";
+  (UI review item 8). Refs #170/#171/#172 are coordination only (not in this
+  repo's backlog record; not done). Proposal recorded first (9ea6d68).
+- OWNER APPROVAL (2026-11-03, in chat): "I approve it all, just do whatever is
+  best for the overall user experience and convenience while also
+  maintaining security and safety overall." Choices made under that: item 4
+  verified = option A (the note above already carries the SSD limit);
+  failure headlines = F2; Quick zero item 4 as proposed; item 1 reworded
+  surface-neutral ("Shut down when you have finished." — the console has no
+  button; Enter shuts down).
+- APPROVED ENGLISH WORDING (as shipped, `outcomes.py`):
+  - verified (Everyday, Three overwrites): "Done — this disk was erased and
+    checked". Note: "The check read the disk back after the last overwrite.
+    It covers the storage the disk shows; on an SSD, the drive's controller
+    decides what remains. Other disks were not erased."
+  - unverified (Quick zero only): "Done — this disk was overwritten with
+    zeros (not checked)". Note: "Quick zero does not read the disk back, so
+    nothing confirms the overwrite reached every part. On an SSD, the
+    drive's controller decides what remains. Other disks were not erased."
+  - What next: 1 "Shut down when you have finished." 2 "When the computer
+    is off, remove the Beamo USB." 3 "Keeping this computer? If this was its
+    main disk, install an operating system before you use it again." 4
+    verified "Giving it away or selling it? This disk is ready to pass on." /
+    Quick zero "Giving it away or selling it? Erase it again with Everyday
+    first — it checks its work."
+  - Failures: verification_failed "Not confirmed — the check after the erase
+    failed"; engine_failed "Not finished — the disk reported an error";
+    process_failed "Not finished — the erase ended with an error";
     completion_missing "Not confirmed — the erase may not have finished";
     indeterminate "Not confirmed — the result is unknown"; interrupted "Not
     finished — the erase was interrupted"; cancelled "Stopped — you stopped
@@ -3095,18 +3075,45 @@ another very thorough and comprehensive pass of this." Repo
     use"; open_failed "Nothing erased — the disk could not be opened";
     geometry_unusable "Nothing erased — the disk could not be used safely";
     start_failed "Nothing erased — the erase could not start";
-    stop_unconfirmed "Not confirmed — the erase may still be running";
-    preview unchanged. No checklist on failures (their What to do next
-    stays).
-- NEXT: owner approves/edits the copy (decisions: item 4 option A/B;
-  failure headlines F1/F2; Quick zero item 4). Then implement on this
-  branch: copy in outcomes.py (or a new result-presentation helper) + fr/de/
-  es/it drafts (native review pending), Tk/GTK/curses/plain/gallery
-  rendering, Show more technical line, docs/screens.md + screen-reader.md,
-  per-outcome unit + rendered tests (fail before/pass after), forbidden-claim
-  test for Quick zero, 800x600/1280x820 at every text size, keyboard order,
-  curses 80x24; then the per-file baseline comparison, ruff/mypy, record
-  the approved wording here.
-- Blockers: owner copy approval (required by the task). Same unverified
-  scope as #127-#133 (no WSL/Linux run, GTK/Orca, ISO/QEMU; hosted gate
-  needs owner approval).
+    stop_unconfirmed "Not confirmed — the erase may still be running".
+    Preview unchanged.
+- Design: `ResultView` (and `message`) unchanged, so evidence, sharing-copy
+  validation, the saved report/README, RESULT.txt (QEMU check), the photo
+  record and support codes are untouched. New `outcomes.PlainResult` /
+  `plain_result()`, `Wizard.result_plain` (unsaved-evidence replaced
+  messages map to their outcome's headline; a recovered session's notice
+  leads the note) and `Wizard.result_technical`
+  (`recovery.technical_status`: "<message>. Result code: <code>").
+  Surfaces: Tk heading + note + What next above the support identity, the
+  technical line behind Show more; GTK heading, focusable note/list (What
+  next is an ATK heading), Technical details expander; curses title + list
+  on the first 80x24 page, technical line in the tail; plain console
+  headline, list, technical line; web preview stop screens use the
+  headline. Finished outcomes no longer show the separate POST_ERASE_BOOT
+  note or the AFTERCARE_SUCCESS paragraph (item 3 and the note say it once).
+- Files: outcomes.py, wizard.py, recovery.py, gallery.py, locales/{fr,de,es,
+  it}.py (22 strings each, drafts), ui/{tk_wizard,accessible_wizard,
+  console_wizard}.py; docs screens.md, screen-reader.md, translations.md,
+  runbook.md, storage-and-controller-limits.md, README.md. Tests: new
+  tests/test_plain_result_134.py (42 non-Tk + 10 Tk); a GTK test added and
+  5 GTK expectations updated in test_accessible_runtime.py; updated
+  test_separate_footer_actions, test_console_parity, test_outcome_heading,
+  test_post_erase_boot (x3), test_prepare_aftercare (x2),
+  test_rendered_visible_behavior (x3), test_result_presentations (x2) —
+  all intended wording changes (headline/list instead of message/next step).
+- Checks (Windows-native, 2026-11-03): new tests 52 pass; all fail on 572d35d
+  except the ResultView-fields guard (passes on both by design). Per-file
+  comparison of 91 related + 14 doc-test files vs 572d35d: new-only failures
+  were the intended expectations above (updated; pass), Tk Tcl/init
+  glitches (pass individually), the sparse worktree's missing
+  docs/evidence/ (physical_acceptance_111, secure_boot_expectations,
+  usb_verification_docs; the archive baseline has it), and tmp
+  PermissionError / symlink-privilege failures identical on the baseline.
+  ruff (CI selections incl. S rules), mypy --platform linux, compileall,
+  node --check of the gallery script and git diff --check pass.
+  Screenshots: scratch work134-scratch-20261103 shots-before / shots-after /
+  shots-after-de (visible.txt, console.txt).
+- NOT VERIFIED: GTK/Orca tests and speech (no GTK on this host), full Linux
+  pytest at 72 DPI, ISO/QEMU, native review of the FR/DE/ES/IT strings.
+- NEXT: hosted ci.yml on the stack head (owner approval); native review;
+  merge order #94 -> #127 -> ... -> #133 -> #134.

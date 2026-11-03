@@ -37,6 +37,35 @@ def _print_recovery(sections) -> None:
     print(format_recovery_text(sections, include_technical=True))
 
 
+def _result_plain(wizard):
+    """The plain headline, note and What next list (#134).
+
+    Simplified test wizards without the property get the same wording from
+    their result view.
+    """
+    plain = getattr(wizard, "result_plain", None)
+    if plain is None:
+        from beamo_wipe.outcomes import plain_result
+
+        plain = plain_result(wizard.result_view)
+    return plain
+
+
+def _what_next_lines(plain) -> list[str]:
+    from beamo_wipe import outcomes as O
+
+    return [plain.note, O.WHAT_NEXT, *plain.numbered]
+
+
+def _technical_line(wizard) -> str:
+    from beamo_wipe import recovery as Rec
+
+    technical = getattr(wizard, "result_technical", None)
+    if technical is None:
+        technical = Rec.technical_status(wizard.result_view)
+    return f"{Rec.RECOVERY_TECHNICAL}: {technical}"
+
+
 def _print_error_recovery(error, *, recovered: bool = False) -> None:
     sections = recovery_for_wizard_error(error)
     if sections is None:
@@ -200,7 +229,7 @@ def _screen_title(wizard: Wizard) -> str:
     if screen == Screen.DIAGNOSTIC:
         return D.report_title(wizard.startup_error_code)
     if screen == Screen.DONE:
-        return wizard.result_view.message or C.TITLE_DONE_OK
+        return _result_plain(wizard).headline or C.TITLE_DONE_OK
     return C.APP_NAME
 
 
@@ -1203,7 +1232,11 @@ def _plain_loop_body(wizard: Wizard) -> int:
             wizard.request_auto_outcome_sound()
             # Plain mode waits on typed input here, so it rings once (#133).
             bell_rung = _ring_finish_bell(wizard, bell_rung, _plain_bell)
-            print(wizard.method_result)
+            plain = _result_plain(wizard)
+            # Plain headline first; failures follow with What happened (the
+            # exact status message), finished outcomes keep it as the
+            # Technical details line below.
+            print(plain.headline)
             print(wizard.elapsed_text)
             report = wizard.report_view
             print(wizard.method_summary)
@@ -1212,6 +1245,9 @@ def _plain_loop_body(wizard: Wizard) -> int:
             sections = recovery_for_view(wizard.result_view)
             if sections:
                 _print_recovery(sections)
+            elif plain.checklist:
+                for line in _what_next_lines(plain):
+                    print(line)
             else:
                 print(wizard.result_view.next_step)
             if wizard.done_support_needed:
@@ -1219,7 +1255,9 @@ def _plain_loop_body(wizard: Wizard) -> int:
             ident = _support_identity_text(wizard)
             if ident:
                 print(ident)
-            if may_have_erased(wizard.result_view.code):
+            if plain.checklist:
+                print(_technical_line(wizard))
+            elif may_have_erased(wizard.result_view.code):
                 print(C.POST_ERASE_BOOT)
             print(wizard.sound_toggle_text)
             print(C.CON_SOUND_WORDS_DONE)
@@ -1845,14 +1883,23 @@ def _loop(stdscr, wizard: Wizard) -> int:
             lines = []
             if wizard.selected and not error_report:
                 lines.extend(_identity_field_lines(wizard.disk_view(wizard.selected), w))
-            # The outcome is already the page title above; a second copy would
-            # push Report status and safe removal off the first page.
-            if wizard.method_result != _screen_title(wizard):
-                lines.extend(_lines(wizard.method_result, w))
-            lines.extend(_lines(wizard.method_summary, w))
-            lines.extend(_lines(wizard.result_view.next_step, w))
-            if may_have_erased(wizard.result_view.code):
-                lines.extend(_lines(C.POST_ERASE_BOOT, w))
+            plain = _result_plain(wizard)
+            if plain.checklist:
+                # The plain headline is the page title (#134); the note and
+                # What next list replace the next-step paragraph and the
+                # post-erase note. The status message goes to the tail.
+                lines.extend(_lines(wizard.method_summary, w))
+                for line in _what_next_lines(plain):
+                    lines.extend(_lines(line, w))
+            else:
+                # Failures: the exact status message (What happened) under
+                # the plain title, unless they are the same (preview).
+                if wizard.method_result != _screen_title(wizard):
+                    lines.extend(_lines(wizard.method_result, w))
+                lines.extend(_lines(wizard.method_summary, w))
+                lines.extend(_lines(wizard.result_view.next_step, w))
+                if may_have_erased(wizard.result_view.code):
+                    lines.extend(_lines(C.POST_ERASE_BOOT, w))
             lines.extend(_lines(C.REPORT_STATUS_TITLE, w))
             lines.extend(_lines(_report_headline(wizard, report), w))
             if not wizard.preview and not report.evidence_error:
@@ -1881,6 +1928,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 lines.extend(_lines(f"{Rec.RECOVERY_MEANING}: {sections.meaning}", w))
                 if sections.technical:
                     lines.extend(_lines(f"{Rec.RECOVERY_TECHNICAL}: {sections.technical}", w))
+            elif plain.checklist:
+                lines.extend(_lines(_technical_line(wizard), w))
             lines.extend(_lines(wizard.elapsed_text, w))
             lines.extend(_lines(C.REPORT_STATUS_NOTICE, w))
             if wizard.check_alerts:

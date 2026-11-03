@@ -2818,6 +2818,21 @@ class TkWizard:
             bg=bg,
         ).pack(fill=tk.X, pady=(4, 0))
 
+    def _what_next(self, parent: tk.Widget, plain) -> None:
+        """A finished outcome's note, then its short numbered What next list (#134)."""
+        from beamo_wipe import outcomes as O
+
+        frame = tk.Frame(parent, bg=BG)
+        frame.pack(fill=tk.X, pady=(8, 0), anchor="w")
+        setattr(frame, "_beamo_what_next", True)
+        if plain.note:
+            self._p(frame, plain.note, font=self.font_s, fg=MUTED).pack(fill=tk.X)
+        tk.Label(
+            frame, text=O.WHAT_NEXT, font=self.font_s_bold, fg=INK, bg=BG, anchor="w",
+        ).pack(fill=tk.X, pady=(6 if self.lay.short else 8, 0))
+        for item in plain.numbered:
+            self._p(frame, item, font=self.font_s).pack(fill=tk.X, pady=(2, 0))
+
     def _more_link(
         self,
         parent: tk.Widget,
@@ -5224,10 +5239,12 @@ class TkWizard:
         col = self._column(self._body, fill_height=True)
         self.w.request_auto_outcome_sound()
         result = self.w.result_view
-        # Erase status heading stays independent of report chrome.
-        # Cancelled copy remains in result.message ("Stopped by you").
-        # The specific outcome is the main heading; the badge carries color.
-        title = result.message
+        # Erase status heading stays independent of report chrome. The plain
+        # headline names the specific outcome (#134); the badge carries
+        # color. result.message stays the technical status line: What
+        # happened on failures, Show more on finished outcomes.
+        plain = self.w.result_plain
+        title = plain.headline
 
         badge_size = 64 if self.lay.short else 72
         icon = (_icon_status(col, True, badge_size) if result.icon == "check"
@@ -5246,6 +5263,18 @@ class TkWizard:
             self._disk_summary(col, self.w.selected, more=True).pack(
                 fill=tk.X, pady=(8 if self.lay.short else 12, 0)
             )
+        if plain.checklist and self._show_more:
+            from beamo_wipe import recovery as Rec
+
+            self._p(col, f"{Rec.RECOVERY_TECHNICAL}: {self.w.result_technical}",
+                    font=self.font_s, fg=MUTED).pack(
+                fill=tk.X, pady=(6, 0)
+            )
+        if plain.checklist:
+            # What to do now comes before the support identity, which is
+            # for support. The list's "Keeping this computer?" item replaces
+            # the separate post-erase start-up note; nothing is said twice.
+            self._what_next(col, plain)
         if (
             self.w.done_support_needed
             or self.w.evidence_support_needed
@@ -5253,7 +5282,7 @@ class TkWizard:
         ):
             self._support_block(col)
         self._support_identity_block(col)
-        if may_have_erased(result.code):
+        if not plain.checklist and may_have_erased(result.code):
             self._p(col, C.POST_ERASE_BOOT, font=self.font_s, fg=MUTED).pack(
                 fill=tk.X, pady=(8, 0)
             )
@@ -5273,9 +5302,9 @@ class TkWizard:
         sections = recovery_for_view(result)
         if sections:
             self._recovery_block(
-                col, sections, omit_duplicate_happened=result.message
+                col, sections, omit_duplicate_happened=title
             )
-        else:
+        elif not plain.checklist:
             self._p(col, result.next_step, font=self.font_s).pack(fill=tk.X)
         for alert in self.w.check_alerts:
             self._panel(col, kind="warn", text=alert).pack(fill=tk.X, pady=(8, 0))
