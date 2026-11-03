@@ -32,7 +32,7 @@ def test_report_state_never_changes_erase_or_receipt(case, status, monkeypatch, 
     output = capsys.readouterr().out
     # #95: the specific outcome heads the erase area; the generic label is
     # gone, but erase content still precedes report content.
-    assert output.index(expected.message) < output.index("Report status")
+    assert output.index(expected.message) < output.index(C.REPORT_STATUS_TITLE)
     assert w.report_view.tone == (
         "warn" if status == "error" else "ok" if status == "saved" else "info"
     )

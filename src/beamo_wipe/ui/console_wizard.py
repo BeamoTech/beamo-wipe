@@ -561,20 +561,15 @@ def _primary_footer(
         action = C.CON_DIAG_SAVE if wizard._diagnostic_baseline else C.CON_DIAG_PREPARE
         return [C.CON_DIAG_LINE.format(action=action)]
     if screen == Screen.DONE:
-        report = wizard.report_view
-        if wizard.preview:
-            action = C.CON_DONE_PREVIEW
-        elif report.can_save:
-            action = C.CON_DONE_SAVE
-        elif report.can_retry_evidence:
-            action = C.CON_DONE_RETRY
-        else:
-            action = C.CON_DONE_SHUTDOWN
+        # Two actions (#135): erase another disk and shut down. Report keys
+        # are in the Save a report panel; sounds stay the settings line.
+        action = C.CON_DONE_PREVIEW if wizard.preview else C.CON_DONE_SHUTDOWN
+        reason = getattr(wizard, "done_actions_reason", "")
         if wizard.can_erase_another:
-            lines = [C.CON_DONE_READ, C.ANOTHER_HINT,
+            lines = [C.CON_DONE_READ, reason or C.ANOTHER_HINT,
                      C.CON_DONE_ANOTHER.format(action=action)]
         else:
-            lines = [C.CON_DONE_READ, action]
+            lines = [C.CON_DONE_READ, action] + ([reason] if reason else [])
         lines.append(_sounds_footer(wizard, C.CON_SOUND_HEAR_AGAIN))
         if wizard.sound_message:
             lines.append(wizard.sound_message)
@@ -769,17 +764,41 @@ def _answer(wizard: Wizard, prompt: str) -> str:
     return answer
 
 
-def _report_headline(wizard: Wizard, report) -> str:
-    """Report copy state in words. Saved copies say Saved; report and
-    evidence problems stay warnings, never errors: report transport must
-    not reuse the red erase-failure severity."""
-    if wizard.preview:
-        return C.REPORT_PREVIEW
-    if report.tone == "ok":
-        return f"{C.SEVERITY_SAVED}: {report.headline}"
-    if report.tone == "warn":
-        return f"{C.SEVERITY_WARNING}: {report.headline}"
-    return report.headline
+def _panel_lines(wizard: Wizard, panel, *, keys: bool = True) -> list[str]:
+    """Save a report panel (#135) as text: state, steps, controls, notice.
+
+    Saved copies say Saved; report and evidence problems stay warnings,
+    never errors: report transport must not reuse the red erase-failure
+    severity. ``keys`` adds the curses key for each usable control; a
+    greyed control is replaced by its reason.
+    """
+    if panel.kind == "preview":
+        return [panel.headline]
+    if panel.tone == "ok":
+        out = [f"{C.SEVERITY_SAVED}: {panel.headline}"]
+    elif panel.tone == "warn":
+        out = [f"{C.SEVERITY_WARNING}: {panel.headline}"]
+    else:
+        out = [panel.headline]
+    if panel.detail:
+        prefix = f"{C.SEVERITY_WARNING}: " if panel.kind == "evidence" else ""
+        out.extend((prefix + panel.detail).split("\n"))
+    out.extend(panel.step_lines)
+    if panel.show_retry:
+        if panel.retry_enabled:
+            if keys:
+                out.append(C.CON_PANEL_RETRY)
+        else:
+            out.append(panel.retry_reason)
+    if panel.show_save:
+        if panel.save_enabled:
+            if keys:
+                out.append(C.CON_PANEL_SAVE)
+        else:
+            out.append(panel.save_reason)
+    if panel.notice:
+        out.append(panel.notice)
+    return [line for line in out if line]
 
 
 def _plain_loop(wizard: Wizard) -> int:
@@ -1238,7 +1257,6 @@ def _plain_loop_body(wizard: Wizard) -> int:
             # Technical details line below.
             print(plain.headline)
             print(wizard.elapsed_text)
-            report = wizard.report_view
             print(wizard.method_summary)
             if wizard.selected:
                 _print_view(wizard.disk_view(wizard.selected))
@@ -1259,17 +1277,14 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 print(_technical_line(wizard))
             elif may_have_erased(wizard.result_view.code):
                 print(C.POST_ERASE_BOOT)
-            print(wizard.sound_toggle_text)
-            print(C.CON_SOUND_WORDS_DONE)
-            if wizard.sound_message:
-                print(wizard.sound_message)
             for alert in wizard.check_alerts:
                 print(f"{C.SEVERITY_WARNING}: {alert}")
+            # Save a report (#135): a fresh read-only USB check per print.
+            getattr(wizard, "refresh_report_usb", lambda: None)()
+            panel = wizard.report_panel
             print(C.REPORT_STATUS_TITLE)
-            print(_report_headline(wizard, report))
-            print(C.REPORT_STATUS_NOTICE)
-            if report.evidence_error:
-                print(f"{C.SEVERITY_WARNING}: {wizard.evidence_warning}")
+            for line in _panel_lines(wizard, panel, keys=False):
+                print(line)
             record_lines = _record_lines(wizard)
             if record_lines:
                 # Title and lead wrap; the summary prints verbatim, line by line.
@@ -1277,6 +1292,11 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 _emit(record_lines[1])
                 for line in record_lines[2:]:
                     print(line)
+            # Settings (#135): sounds after the result and report.
+            print(wizard.sound_toggle_text)
+            print(C.CON_SOUND_WORDS_DONE)
+            if wizard.sound_message:
+                print(wizard.sound_message)
             if wizard.preview:
                 ans = _answer(wizard, C.CON_RUN_AGAIN).strip().lower()
                 if ans in ("q", "quit", "close"):
@@ -1288,14 +1308,18 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 else:
                     wizard.reset_for_preview()
             else:
-                if not report.evidence_error:
-                    print(C.report_aftercare(can_save=report.can_save, status=report.status, message=report.message))
-                if report.can_retry_evidence:
+                retry = panel.show_retry and panel.retry_enabled
+                if retry:
                     prompt = C.CON_DONE_RETRY_PROMPT
-                elif report.can_save:
+                elif panel.save_enabled:
                     prompt = C.CON_DONE_SAVE_PROMPT
                 else:
                     prompt = C.CON_DONE_SHUTDOWN_PROMPT
+                    if panel.show_save:
+                        print(C.CON_PLAIN_RECHECK)
+                reason = getattr(wizard, "done_actions_reason", "")
+                if reason:
+                    print(reason)
                 if wizard.can_erase_another:
                     print(C.ANOTHER_HINT)
                     prompt += C.CON_DONE_ANOTHER_PROMPT
@@ -1304,9 +1328,9 @@ def _plain_loop_body(wizard: Wizard) -> int:
                     wizard.toggle_sounds()
                 elif action == "HEAR":
                     wizard.request_hear_outcome_sound()
-                elif action == "RETRY" and report.can_retry_evidence:
+                elif action == "RETRY" and retry:
                     wizard.retry_evidence_save()
-                elif action == "SAVE" and report.can_save:
+                elif action == "SAVE" and panel.save_enabled:
                     wizard.save_report_to_usb()
                 elif action == "ANOTHER":
                     wizard.erase_another_disk()
@@ -1901,20 +1925,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 if may_have_erased(wizard.result_view.code):
                     lines.extend(_lines(C.POST_ERASE_BOOT, w))
             lines.extend(_lines(C.REPORT_STATUS_TITLE, w))
-            lines.extend(_lines(_report_headline(wizard, report), w))
-            if not wizard.preview and not report.evidence_error:
-                lines.extend(
-                    _lines(
-                        C.report_aftercare(
-                            can_save=report.can_save, status=report.status, message=report.message
-                        ),
-                        w,
-                    )
-                )
-            if report.evidence_error:
-                lines.extend(_lines(f"{C.SEVERITY_WARNING}: {wizard.evidence_warning}", w))
-                if report.status == "error":
-                    lines.extend(_lines(C.EXPORT_GUIDE_RETRY, w))
+            for panel_line in _panel_lines(wizard, wizard.report_panel):
+                lines.extend(_lines(panel_line, w))
             if wizard.selected and error_report:
                 lines.extend(_identity_field_lines(wizard.disk_view(wizard.selected), w))
             if wizard.done_support_needed:
@@ -1931,7 +1943,6 @@ def _loop(stdscr, wizard: Wizard) -> int:
             elif plain.checklist:
                 lines.extend(_lines(_technical_line(wizard), w))
             lines.extend(_lines(wizard.elapsed_text, w))
-            lines.extend(_lines(C.REPORT_STATUS_NOTICE, w))
             if wizard.check_alerts:
                 for alert in wizard.check_alerts:
                     lines.extend(_lines(f"{C.SEVERITY_WARNING}: {alert}", w))
@@ -2050,7 +2061,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
         if (
             wizard.screen == Screen.DONE
             and not wizard.preview
-            and wizard.report_view.can_save
+            and wizard.report_panel.save_enabled
             and ch in (ord("r"), ord("R"))
         ):
             _confirm_report_save(stdscr, wizard)

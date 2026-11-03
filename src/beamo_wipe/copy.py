@@ -557,12 +557,12 @@ REPORT_HELP_INSERT = (
     "Beamo boot USB and selected erase disk connected."
 )
 REPORT_HELP_STAGES = (
-    "Saving then shows five stages: 1. Insert the report USB. 2. Check the USB: "
-    "exactly one new FAT32 or exFAT USB is accepted. "
-    "3. Save the report. 4. Verify the copy (Beamo Wipe reads it back). "
-    "5. Safe removal: remove the report USB only after the saved message. "
-    "Never remove report media while saving. If saving fails, follow the "
-    "displayed error and retry while this session is still running."
+    "The result screen then guides you in five steps: 1. Insert the report USB. "
+    "2. Beamo Wipe looks for it and shows what it found, or why that stick cannot "
+    "be used. 3. Choose Save report to USB: Beamo Wipe saves the report and reads "
+    "the copy back. 4. It shows where the report was saved. 5. Remove the report "
+    "USB only after that. Never remove report media while saving. If saving fails, "
+    "follow the displayed error and retry while this session is still running."
 )
 REPORT_HELP_PLUGGED = (
     "If you inserted the report USB before erasing, remove only that report USB. "
@@ -639,9 +639,54 @@ POST_ERASE_BOOT = (
     "start normally now. To use that computer again, you may need to install "
     "an operating system first."
 )
-REPORT_STATUS_TITLE = "Report status"
+# The Save a report panel heading (#135; was "Report status").
+REPORT_STATUS_TITLE = "Save a report (optional)"
 REPORT_STATUS_NOTICE = "Saving or checking a report does not change the erase result."
 REPORT_PREVIEW = "Preview only. No report was saved."
+# Save a report panel on the result screen (#135). Steps run in order;
+# detection is a read-only check and Save runs the export's own checks.
+REPORT_STEP_INSERT = (
+    "Insert a separate USB stick now (FAT32 or exFAT). Keep the Beamo USB "
+    "and this disk connected."
+)
+REPORT_STEP_SAVE = "Choose Save report to USB."
+REPORT_STEP_SAVING = "Saving and checking the copy."
+REPORT_STEP_CHECKING = "Checking the USB again."
+REPORT_STEP_CHECKED = "USB checked."
+REPORT_STEP_SAVED = "Saved and checked."
+REPORT_STEP_WHERE = "See where it was saved."
+REPORT_STEP_REMOVE = "Remove the report USB."
+REPORT_STEP_REMOVE_NOW = "You can remove the report USB now."
+REPORT_USB_LOOKING = "Looking for a USB…"
+REPORT_USB_NONE = "Looking for a USB… none found yet."
+REPORT_USB_FOUND = "Found: {label} ({filesystem})"
+REPORT_USB_MANY = (
+    "More than one new USB stick is plugged in. Remove the extra one."
+)
+REPORT_USB_FORMAT = (
+    "This USB is formatted {filesystem} — use a FAT32 or exFAT stick."
+)
+REPORT_USB_FORMAT_UNKNOWN = (
+    "This USB is not formatted FAT32 or exFAT — use a FAT32 or exFAT stick."
+)
+REPORT_USB_UNAVAILABLE = "Could not check for a USB just now. Trying again…"
+REPORT_USB_ON_SAVE = "The USB is checked when you choose Save."
+REPORT_SAVE_WAIT = "Save is available when one suitable USB is found."
+REPORT_NOT_OFFERED = "A report can't be saved for this result."
+RETRY_UNAVAILABLE = (
+    "Retry evidence save is not available now. Keep this session open and "
+    "contact support."
+)
+DONE_WAIT_SAVING = (
+    "Shut down and Erase another disk come back when saving finishes."
+)
+DONE_WAIT_PREPARING = (
+    "Shut down and Erase another disk come back when the report is ready."
+)
+DONE_ANOTHER_OFF = (
+    "Erase another disk is not available because this erase may still be running."
+)
+DONE_ANOTHER_BUSY = "Erase another disk is not available right now."
 RECORD_TITLE = "Keep a record without a USB"
 RECORD_LEAD = (
     "Photograph this code to keep a record of this erase. "
@@ -1148,8 +1193,9 @@ CON_DIAG_SAVE = "save diagnostic report"
 CON_DIAG_PREPARE = "prepare baseline"
 CON_DIAG_LINE = "R: {action}    Esc: back    S: shut down"
 CON_DONE_PREVIEW = "Enter: run again    C: close"
-CON_DONE_SAVE = "R: save report to one FAT32 or exFAT USB    Enter: shut down"
-CON_DONE_RETRY = "E: retry evidence save    Enter: shut down"
+CON_PANEL_SAVE = "R: save report to USB"
+CON_PANEL_RETRY = "E: retry evidence save"
+CON_PLAIN_RECHECK = "Insert the USB, then press Enter to check again."
 CON_DONE_SHUTDOWN = "Enter: shut down"
 CON_DONE_READ = "Up/Down, PgUp/PgDn: read aftercare."
 CON_DONE_ANOTHER = "{action}    A: erase another disk"

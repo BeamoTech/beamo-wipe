@@ -73,8 +73,15 @@ def test_every_outcome_renders_message_next_step_and_actions(ui, size, case):  #
         assert "verification passed" not in shown
     labels = [b.itemcget(b._label, "text") for b in _buttons(app) if b.winfo_ismapped()]
     assert C.BTN_SHUTDOWN in labels
-    save = next(b for b in _buttons(app) if b.itemcget(b._label, "text") == C.BTN_SAVE_REPORT)
-    assert save._enabled is bool(wiz.report_view.can_save)
+    # #135: Save lives in the report panel and appears only when a report
+    # can be saved; the panel says why otherwise. No greyed Save.
+    panel = wiz.report_panel
+    saves = [b for b in _buttons(app) if b.itemcget(b._label, "text") == C.BTN_SAVE_REPORT]
+    assert len(saves) == int(panel.show_save)
+    for save in saves:
+        assert save._enabled is panel.save_enabled
+    if not panel.show_save:
+        assert (panel.detail or panel.headline) in shown
     _assert_geometry(app)
 
 
@@ -157,8 +164,10 @@ def test_saved_report_receipt_is_visible_on_done(ui, tmp_path):  # noqa: F811
     shown = _mapped_text(app)
     assert "Folder: BEAMO-WIPE-REPORTS/" in shown
     assert "safe to remove" in shown.lower() or "RESULT.txt" in shown
-    save = _button_named(app, C.BTN_SAVE_REPORT)
-    assert save._enabled is bool(wiz.report_view.can_save)
+    # #135: a saved report shows where it went and no further Save button.
+    assert not any(b.itemcget(b._label, "text") == C.BTN_SAVE_REPORT
+                   for b in _buttons(app) if b.winfo_ismapped())
+    assert C.REPORT_STEP_REMOVE_NOW in shown
     _assert_geometry(app)
 
 
@@ -331,7 +340,8 @@ def test_result_checks_keep_details_visible_and_warnings_scrollable(ui, size):  
         app.root.event_generate('<Next>')
         app.root.update()
         assert canvas.yview()[0] > before
-    for label in (C.BTN_SAVE_REPORT, C.BTN_SHUTDOWN):
+    # #135: the footer keeps two actions, both always on screen.
+    for label in (C.BTN_ERASE_ANOTHER, C.BTN_SHUTDOWN):
         button = _button_named(app, label)
         assert button.winfo_rooty() >= app._footer.winfo_rooty()
         assert button.winfo_rooty() + button.winfo_height() <= app.root.winfo_rooty() + size[1]

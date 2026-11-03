@@ -67,9 +67,11 @@ erase disk attached, and choose **Check disks again** (it explains the reset,
 then you confirm) before choosing and
 confirming the target again. Do not guess which device to remove.
 
-Only after the erase has stopped and the result screen offers **Save report to
-USB**, insert exactly one separate removable FAT32 or exFAT USB, then choose
-**Save report to USB**. Leave the Beamo boot USB and selected erase disk
+Only after the erase has stopped and the result screen's **Save a report**
+panel asks for it, insert exactly one separate removable FAT32 or exFAT USB,
+wait for **Found: …**, then choose **Save report to USB**. The panel's live
+line is a read-only check with the export's own rules; Save repeats every
+check below before anything is mounted. Leave the Beamo boot USB and selected erase disk
 connected. The report USB must have one writable, unmounted FAT32 or exFAT
 (revision 1.0) volume; NTFS, FAT12 and FAT16 are unsupported. Each is mounted
 by its in-kernel driver (`vfat` or `exfat`) with the same

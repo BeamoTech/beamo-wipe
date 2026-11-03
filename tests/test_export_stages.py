@@ -195,9 +195,11 @@ def test_retry_guidance_matches_save_button_label():
 def test_gallery_done_card_shows_stages():
     from beamo_wipe.gallery import gallery_html
 
+    # #135: the gallery's report help carries the result screen's guided
+    # steps (the preview itself never saves a report).
     html = gallery_html()
-    for stage in C.EXPORT_STAGES:
-        assert stage in html
+    assert "guides you in five steps" in html
+    assert C.REPORT_PREVIEW in html
 
 
 def test_export_stage_keys_translated_in_fr_and_de():

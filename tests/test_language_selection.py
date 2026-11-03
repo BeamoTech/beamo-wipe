@@ -29,6 +29,9 @@ EXCLUDED = {
         "LOG_STATUS_LINES", "UNSHARE_BIN", "PYTHON_BIN", "MOUNT_BIN",
         "UMOUNT_BIN", "SYNC_BIN", "MOUNTINFO_PATH", "REPORTS_DIR",
         "OWNER_WIPE_FILE", "OWNER_DIAGNOSTIC_FILE",
+        # #135: internal report-USB detection states, never shown.
+        "PROBE_NONE", "PROBE_MANY", "PROBE_FOUND", "PROBE_FORMAT",
+        "PROBE_REFUSED", "PROBE_UNAVAILABLE",
     },
     "discover": {
         "LIVE_MOUNTS", "LSBLK_BINARIES", "FINDMNT_BINARIES", "MOUNTINFO_PATH",

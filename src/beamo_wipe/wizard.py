@@ -135,6 +135,7 @@ EXPORT_FAILED = "The report export failed. Shut down before removing the USB."
 REPORT_NOT_SAVED = "The report was not saved and verified. Shut down before removing the USB."
 REPORT_CHANGED_DURING_SAVE = "The finished wipe report changed while it was being saved. Shut down before removing the USB."
 EXPORT_NO_START = "The report export could not start."
+REPORT_USB_POLL_S = 1.5  # read-only report-USB detection on Done (#135)
 DIAG_VERIFYING = "Saving and verifying. Leave the USB connected."
 DIAG_CHECKING = "Checking connected disks."
 DIAG_NO_PREVIEW = "Diagnostic USB export is unavailable in preview or dry-run."
@@ -386,6 +387,7 @@ class Wizard:
         rediscover: Callable[[], DiscoveryResult] | None = None,
         wall_clock: Callable[[], str] | None = None,
         report_exporter: Optional[Callable[..., object]] = None,
+        report_usb_probe: Optional[Callable[..., object]] = None,
     ) -> None:
         self.discovery = discovery
         self.runner = runner
@@ -491,6 +493,19 @@ class Wizard:
         self._pending_evidence: Optional[tuple[dict[str, Any], Any, Optional[WipeResult], Optional[str]]] = None
         self._pending_evidence_path: Optional[Path] = None
         self._report_exporter = report_exporter
+        # Live report-USB detection on the result screen (#135): a read-only
+        # lsblk scan through the export's own selector. Off for previews and
+        # dry runs; a test that injects an exporter injects a probe too (or
+        # gets none, and Save then checks the USB itself as before).
+        if report_usb_probe is None and report_exporter is None and not dry_run:
+            from beamo_wipe.support_export import probe_report_usb
+
+            report_usb_probe = probe_report_usb
+        self._report_usb_probe = report_usb_probe
+        self._report_usb: Optional[Any] = None
+        self._report_usb_busy = False
+        self._report_usb_due = 0.0
+        self._report_usb_generation = 0
         self.report_status = "idle"  # idle | saving | saved | error
         self.report_message = ""
         self.report_session = ""
@@ -962,6 +977,7 @@ class Wizard:
         self.power.tick(self.now)
         self._poll_audio()
         self._tick_finish_sound()
+        self._poll_report_usb()
         with self._lock:
             self._recover_when_quiescent()
         if (
@@ -3038,6 +3054,12 @@ class Wizard:
                 return None
             self._active_report_claim = claim
             self._done_keyboard_armed = False
+            if self._report_usb_probe is not None:
+                # Save re-checks the stick itself; afterwards detection
+                # starts fresh, so a stick pulled mid-save is not "found".
+                self._report_usb_generation += 1
+                self._report_usb = None
+                self._report_usb_due = 0.0
             self._set_report_state_locked(
                 status="saving",
                 message=REPORT_SAVING,
@@ -3122,6 +3144,103 @@ class Wizard:
                     message=final_message,
                     session=final_session,
                 )
+
+    # -- Save a report panel (#135) ------------------------------------------
+
+    def _report_target_locked(self) -> str:
+        if self._wipe_request is not None:
+            return self._wipe_request.device
+        return self.selected.path if self.selected is not None else ""
+
+    def _poll_report_usb(self) -> None:
+        """Start one background read-only USB scan when one is due."""
+        if self._report_usb_probe is None:
+            return
+        with self._lock:
+            if (
+                self._report_usb_busy
+                or self.now < self._report_usb_due
+                or not self._can_save_report_locked()
+            ):
+                return
+            self._report_usb_busy = True
+            self._report_usb_due = self.now + REPORT_USB_POLL_S
+            generation = self._report_usb_generation
+            discovery = self.discovery
+            target = self._report_target_locked()
+        started, _ = _start_guarded_thread(
+            lambda: self._run_report_usb_probe(generation, discovery, target),
+            name="beamo-report-usb",
+        )
+        if not started:
+            with self._lock:
+                self._report_usb_busy = False
+
+    def refresh_report_usb(self) -> None:
+        """One synchronous scan now (plain console redraws, tests)."""
+        if self._report_usb_probe is None:
+            return
+        with self._lock:
+            if self._report_usb_busy or not self._can_save_report_locked():
+                return
+            self._report_usb_busy = True
+            generation = self._report_usb_generation
+            discovery = self.discovery
+            target = self._report_target_locked()
+        self._run_report_usb_probe(generation, discovery, target)
+
+    def _run_report_usb_probe(self, generation: int, discovery, target: str) -> None:
+        from beamo_wipe.support_export import PROBE_UNAVAILABLE, ReportUsbProbe
+
+        try:
+            probe = self._report_usb_probe
+            assert probe is not None
+            result = probe(discovery=discovery, target_path=target)
+        except Exception:  # noqa: BLE001 - shown as "could not check"
+            result = ReportUsbProbe(PROBE_UNAVAILABLE)
+        with self._lock:
+            self._report_usb_busy = False
+            if generation != self._report_usb_generation:
+                return
+            if result != self._report_usb:
+                self._report_usb = result
+                self._report_revision += 1
+
+    @property
+    def report_usb(self):
+        """Latest detection result; a "looking" placeholder before the first."""
+        from beamo_wipe.support_export import ReportUsbProbe
+
+        with self._lock:
+            if self._report_usb_probe is None:
+                return None
+            return self._report_usb or ReportUsbProbe("looking")
+
+    @property
+    def report_panel(self):
+        """The Save a report panel for every result-screen surface."""
+        from beamo_wipe.report_panel import build_report_panel
+
+        return build_report_panel(
+            self.report_view, preview=self.preview, usb=self.report_usb,
+            evidence_warning=self.evidence_warning,
+        )
+
+    @property
+    def done_actions_reason(self) -> str:
+        """Why Shut down or Erase another disk is shown greyed, else ""."""
+        if self.screen != Screen.DONE or self.preview:
+            return ""
+        report = self.report_view
+        if report.exporting:
+            return C.DONE_WAIT_SAVING
+        if report.saving_evidence:
+            return C.DONE_WAIT_PREPARING
+        if self.wipe_result is None or self.can_erase_another:
+            return ""
+        if self.result_view.code == "stop_unconfirmed" or self._live_pinned_engine_busy():
+            return C.DONE_ANOTHER_OFF
+        return C.DONE_ANOTHER_BUSY
 
     def save_report_to_usb(self) -> None:
         """Synchronously save a report. Used by console fallbacks and tests."""

@@ -286,3 +286,11 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   IT: *non vérifié*, *nicht geprüft*, *sin comprobar*, *non controllato*);
   nothing may promise data cannot be recovered. `NEXT_ITEM_GIVE_UNVERIFIED`
   keeps `{method}` (the Everyday name), quoted in each language's style.
+- `copy.REPORT_STEP_*`, `REPORT_USB_*`, `REPORT_SAVE_WAIT`,
+  `REPORT_NOT_OFFERED`, `RETRY_UNAVAILABLE`, `DONE_WAIT_*`, `DONE_ANOTHER_*`,
+  `CON_PANEL_*` and `CON_PLAIN_RECHECK`, plus the changed
+  `REPORT_STATUS_TITLE` and `REPORT_HELP_STAGES` (2026-11-03 for #135, not
+  yet reviewed): the Save a report panel and the two-action footer. Keep
+  `{label}` and `{filesystem}`; filesystem names (FAT32, exFAT, NTFS) are
+  not translated. Button names inside sentences must match `BTN_*` /
+  `RETRY_SAVE` exactly. Key names stay English (`R`, `E`, `Enter`).

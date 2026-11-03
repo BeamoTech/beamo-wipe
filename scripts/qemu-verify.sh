@@ -1271,6 +1271,9 @@ report_marker_summary() {
     BEAMO_WIPE_REPORT_SAVING \
     BEAMO_WIPE_REPORT_SAVED \
     BEAMO_WIPE_REPORT_ERROR \
+    BEAMO_WIPE_REPORT_USB_NONE \
+    BEAMO_WIPE_REPORT_USB_FOUND \
+    BEAMO_WIPE_REPORT_USB_REFUSED \
     BEAMO_WIPE_EXPORT_CONTROLLER_STARTED \
     BEAMO_WIPE_EXPORT_EVIDENCE_VERIFIED \
     BEAMO_WIPE_EXPORT_SCAN_ONE \
@@ -1535,7 +1538,11 @@ drive_report_export() {
   # device_add is deliberately after DONE: the export selector accepts only a
   # newly inserted USB that was absent from the wipe's protected baseline.
   qmp_request "$qmp_socket" hotplug-report "$report_img"
-  sleep 5
+  # Save report is greyed (and skipped by Tab) until the result screen's
+  # read-only detection finds exactly one eligible stick (#135). Wait for
+  # that redraw instead of a fixed sleep.
+  wait_for_marker "$label" BEAMO_WIPE_REPORT_USB_FOUND 30
+  sleep 1
   # From Shut down, Tab visits the keyboard-accessible Show more control,
   # then Save report. Keep this in sync with the real Tk traversal test.
   send_key "$qmp_socket" tab

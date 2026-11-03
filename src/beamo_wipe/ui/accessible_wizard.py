@@ -78,6 +78,36 @@ def _error_text(wizard: Wizard) -> str:
     return text
 
 
+def _widget_text(widget) -> str:
+    """The words a focused label or button shows, else ""."""
+    if widget is None:
+        return ""
+    try:
+        if isinstance(widget, Gtk.Button):
+            return widget.get_label() or ""
+        if isinstance(widget, Gtk.Label):
+            return widget.get_text() or ""
+    except Exception:  # noqa: BLE001 - destroyed or foreign widget
+        return ""
+    return ""
+
+
+def _find_by_text(root, text: str):
+    """First focusable, sensitive label or button showing exactly ``text``."""
+    stack = [root]
+    while stack:
+        widget = stack.pop(0)
+        if (
+            widget.get_can_focus()
+            and widget.get_sensitive()
+            and _widget_text(widget) == text
+        ):
+            return widget
+        if isinstance(widget, Gtk.Container):
+            stack.extend(widget.get_children())
+    return None
+
+
 class AccessibleWizard:
     def __init__(self, wizard: Wizard, fullscreen: bool = False):
         self.w = wizard
@@ -376,6 +406,15 @@ class AccessibleWizard:
         self.finish_toggle = None
         self._rendered_sound_message = self.w.sound_message
         self.power_label = None
+        # A Done re-render (live report-USB status, #135) keeps Orca where
+        # it was; from inside the report panel it moves to the new status.
+        refocus_text, refocus_panel = "", False
+        if getattr(self, "shown", None) == Screen.DONE == self.w.screen:
+            focused = self.window.get_focus()
+            refocus_text = _widget_text(focused)
+            refocus_panel = focused is not None and focused in getattr(self, "_panel_widgets", ())
+        self._panel_widgets: list = []
+        self._panel_status = None
         self.shown = self.w.screen
         self.report_revision = self.w.report_view.revision
         self.sound_revision = getattr(self.w, "sound_revision", 0)
@@ -806,6 +845,10 @@ class AccessibleWizard:
             self.identity()
             self.label(self.w.method_summary)
             self.label(self.w.elapsed_text)
+            panel = self.w.report_panel
+            if panel.kind == "evidence":
+                # Ref #153: the evidence failure and Retry come first.
+                self.report_panel(panel)
             if sections:
                 self.recovery(sections)
             elif plain.checklist:
@@ -829,45 +872,16 @@ class AccessibleWizard:
             for alert in self.w.check_alerts:
                 self.label(f"{C.SEVERITY_WARNING}: {alert}")
             report = self.w.report_view
-            report_heading = self.label(C.REPORT_STATUS_TITLE, focusable=True)
-            report_heading.get_accessible().set_role(Atk.Role.HEADING)
-            report_heading.get_style_context().add_class("screen-heading")
-            if self.w.preview:
-                report_summary = self.label(C.REPORT_PREVIEW, focusable=True)
-            elif report.tone == "ok":
-                report_summary = self.label(f"{C.SEVERITY_SAVED}: {report.headline}", focusable=True)
-                report_summary.get_style_context().add_class("report-saved")
-            elif report.tone == "warn":
-                report_summary = self.label(f"{C.SEVERITY_WARNING}: {report.headline}", focusable=True)
-                report_summary.get_style_context().add_class("report-warning")
-                report_summary.get_accessible().set_role(Atk.Role.ALERT)
-            else:
-                report_summary = self.label(report.headline, focusable=True)
-            self.label(C.REPORT_STATUS_NOTICE)
-            if report.evidence_error:
-                self.label(f"{C.SEVERITY_WARNING}: {self.w.evidence_warning}")
-            if not self.w.preview and not report.evidence_error:
-                self.label(
-                    C.report_aftercare(
-                        can_save=report.can_save,
-                        status=report.status,
-                        message=report.message,
-                    )
-                )
+            if panel.kind != "evidence":
+                self.report_panel(panel)
             self.erase_record()
+            # Two final actions (#135). Report controls are in the panel;
+            # the Sound check utility below holds the sound settings.
             if self.w.preview:
                 self.button(C.BTN_RUN_AGAIN, self.w.reset_for_preview)
             else:
-                if report.evidence_error:
-                    self.button(C.RETRY_SAVE, self.w.begin_evidence_retry,
-                                enabled=report.can_retry_evidence)
-                self.button(
-                    C.BTN_SAVE_REPORT,
-                    self.w.begin_report_export,
-                    enabled=report.can_save,
-                )
-            if not self.w.preview:
-                self.label(C.ANOTHER_HINT)
+                reason = self.w.done_actions_reason
+                self.label(reason or C.ANOTHER_HINT, focusable=bool(reason))
                 self.button(C.BTN_ERASE_ANOTHER, self.w.erase_another_disk,
                             enabled=self.w.can_erase_another)
             self.button(
@@ -976,7 +990,10 @@ class AccessibleWizard:
             self.utilities.destroy()
         self.arrival = arrival
         if self._focus_active_window() is self.window:
-            arrival.grab_focus()
+            target = _find_by_text(self.window, refocus_text) if refocus_text else None
+            if target is None and refocus_panel:
+                target = self._panel_status
+            (target or arrival).grab_focus()
         if first_review_frame:
             # Building and showing the first review may consume its original
             # timer. Give Orca users the full five seconds after arrival.
@@ -1005,6 +1022,53 @@ class AccessibleWizard:
         if self.w.other_devices:
             self.label(inventory.TITLE)
             self.reader(inventory.full_text(self.w.other_devices))
+
+    def report_panel(self, panel) -> None:
+        """Save a report (#135): heading, state, numbered steps, controls.
+
+        Steps are focusable so Orca reads them in order; a greyed control is
+        followed by its reason.
+        """
+        widgets = self._panel_widgets
+        heading = self.label(C.REPORT_STATUS_TITLE, focusable=True)
+        heading.get_accessible().set_role(Atk.Role.HEADING)
+        heading.get_style_context().add_class("screen-heading")
+        widgets.append(heading)
+        if panel.kind == "preview":
+            widgets.append(self.label(panel.headline, focusable=True))
+            return
+        if panel.tone == "ok":
+            summary = self.label(f"{C.SEVERITY_SAVED}: {panel.headline}", focusable=True)
+            summary.get_style_context().add_class("report-saved")
+        elif panel.tone == "warn":
+            summary = self.label(f"{C.SEVERITY_WARNING}: {panel.headline}", focusable=True)
+            summary.get_style_context().add_class("report-warning")
+            summary.get_accessible().set_role(Atk.Role.ALERT)
+        else:
+            summary = self.label(panel.headline, focusable=True)
+        widgets.append(summary)
+        self._panel_status = summary
+        if panel.detail:
+            prefix = f"{C.SEVERITY_WARNING}: " if panel.kind == "evidence" else ""
+            widgets.append(self.label(prefix + panel.detail, focusable=True))
+        for index, line in enumerate(panel.step_lines):
+            step = self.label(line, focusable=True)
+            widgets.append(step)
+            if index == 1 and panel.kind in ("ready", "failed"):
+                # The live USB line: where Orca lands when it changes.
+                self._panel_status = step
+        if panel.show_retry:
+            widgets.append(self.button(C.RETRY_SAVE, self.w.begin_evidence_retry,
+                                       enabled=panel.retry_enabled, in_body=True))
+            if not panel.retry_enabled:
+                widgets.append(self.label(panel.retry_reason, focusable=True))
+        if panel.show_save:
+            widgets.append(self.button(C.BTN_SAVE_REPORT, self.w.begin_report_export,
+                                       enabled=panel.save_enabled, in_body=True))
+            if not panel.save_enabled:
+                widgets.append(self.label(panel.save_reason, focusable=True))
+        if panel.notice:
+            self.label(panel.notice)
 
     def open_sound_check(self):
         from beamo_wipe.ui.sound_dialog import SoundDialog

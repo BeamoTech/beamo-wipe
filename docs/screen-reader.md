@@ -77,7 +77,15 @@ indeterminate; failures read their plain heading, then What happened (the
 exact status), What it means for your disk and What to do next. Confirmed
 cancellation's status still says “Stopped by you.”
 
-After the report status, Finished has a **Keep a record without a USB**
+Next comes the **Save a report (optional)** heading (#135). Its state, the
+numbered steps and any greyed control's reason are focusable labels; Save
+report to USB and Retry evidence save are buttons inside it, and the bottom
+buttons are only Erase another disk and Shut down. When the live USB line
+changes, the view keeps focus where it was; if focus was inside the panel it
+moves to the new status line so Orca reads it. Sound settings stay in the
+Sound check utility.
+
+After the report panel, Finished has a **Keep a record without a USB**
 heading. The QR code below it is an image a sighted helper can photograph; it
 is not focusable and its accessible name says the same summary follows as
 text. Tab to the next label to read that summary line by line: result as its

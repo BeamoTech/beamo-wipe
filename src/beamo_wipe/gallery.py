@@ -567,7 +567,6 @@ def _gallery_html_for_current_language(lang: str) -> str:
         "anotherTitle": C.ANOTHER_TITLE,
         "anotherLoss": C.ANOTHER_LOSS,
         "anotherDiscard": C.ANOTHER_DISCARD,
-        "eraseAnother": C.BTN_ERASE_ANOTHER,
         "shutdownTitle": C.SHUTDOWN_TITLE,
         "shutdownLoss": C.SHUTDOWN_LOSS,
         "shutdownKeep": C.SHUTDOWN_KEEP,
@@ -1999,16 +1998,16 @@ function draw() {
       <p class="small muted" id="soundsNote" role="status"></p>
       ${moreLink("more-detail")}</div>`;
     bindMore();
-    utilities.append(btn(P.eraseAnother, requestAnotherPreview, "secondary"));
-    btnsL.append(btn(P.buttons.closePreview, closePreview, "secondary"));
-    btnsL.append(btn(soundsOn ? P.sounds.toggleOn : P.sounds.toggleOff, function() {
+    // #135: two footer actions; sounds sit with the settings utilities.
+    utilities.append(btn(soundsOn ? P.sounds.toggleOn : P.sounds.toggleOff, function() {
       soundsOn = !soundsOn;
       this.textContent = soundsOn ? P.sounds.toggleOn : P.sounds.toggleOff;
       document.getElementById("soundsNote").textContent = this.textContent;
     }, "ghost"));
-    btnsL.append(btn(P.sounds.hearAgain, () => {
+    utilities.append(btn(P.sounds.hearAgain, () => {
       document.getElementById("soundsNote").textContent = P.sounds.offLive;
     }, "ghost"));
+    btnsL.append(btn(P.buttons.closePreview, closePreview, "secondary"));
     btnsR.append(btn(P.buttons.runAgain, requestAnotherPreview, "primary"));
   }
   if (["what", "owner", "method", "advanced"].includes(screen)) {

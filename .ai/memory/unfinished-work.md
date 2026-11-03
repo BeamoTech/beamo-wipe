@@ -3117,3 +3117,92 @@ another very thorough and comprehensive pass of this." Repo
   pytest at 72 DPI, ISO/QEMU, native review of the FR/DE/ES/IT strings.
 - NEXT: hosted ci.yml on the stack head (owner approval); native review;
   merge order #94 -> #127 -> ... -> #133 -> #134.
+
+## BW-135-REPORT — Guided Save a report panel; two-action result footer (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA, QEMU, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/report-panel-135` (stacked on
+  `feat/plain-result-134` @ 1d69a67), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #135
+  (UI review item 9). Refs #127/#145/#153/#175 coordination only.
+- WHAT CHANGED: the result footer keeps two actions (Erase another disk,
+  Shut down; preview: Close preview, Run again). Report saving is a
+  "Save a report (optional)" panel (heading = `REPORT_STATUS_TITLE`, was
+  "Report status") with five numbered steps: 1 insert a separate FAT32/exFAT
+  stick; 2 live line ("Looking for a USB…", "Found: SanDisk Ultra, 16 GB
+  (FAT32)", "More than one new USB stick…", "This USB is formatted NTFS — use
+  a FAT32 or exFAT stick.", or the precise refusal + next step); 3 Save report
+  to USB; 4 where it was saved + file names (existing receipt, Ref #35); 5
+  remove the report USB. Save is greyed with "Save is available when one
+  suitable USB is found." until exactly one eligible stick is found. Retry
+  evidence save lives in the panel; on evidence failure the panel moves under
+  the disk summary (Tk: Retry right after the warning headline) so it stays
+  in the first 800x600 view (Ref #153). Greyed footer actions show a reason
+  ("…come back when saving finishes" etc.) in the footer note.
+- SOUNDS (Ref #175 not decided in this repo): Tk/gallery put Sounds: on/off
+  and Hear again with the other settings utilities in the footer assist
+  strip (Tab-reachable; focus kept on the toggle after pressing); curses
+  keeps "O: Sounds … H: Hear again" as the settings line under the two-action
+  line; plain console prints them after the report; GTK keeps the Sound check
+  utility (it had no Done sound buttons). Relocate when #175 decides.
+- SAFETY / DETECTION: `support_export.probe_report_usb` = one read-only
+  `lsblk` scan through the export's own baseline (boot USB + erased target
+  required) and `select_export_volume`; returns state + model/size label +
+  filesystem name only (no path/serial). Never mounts, opens, writes or runs
+  anything else (test patches subprocess/os.open/mkdir to fail). Wizard polls
+  it on a background thread every 1.5 s only while a save is possible (Done,
+  not preview, evidence gate ok, not exporting, not saved); redraw only on
+  change; detection resets at each export claim (stick pulled mid-save is
+  looked for again). Live probe only in the kiosk (dry_run=False, no injected
+  exporter). Save still runs the unchanged export with its two scans; the
+  evidence gate, exactly-one-new-USB rule, boot/target exclusion and
+  FAT32/exFAT 1.0 support (confirmed in code: vfat FAT32 + exfat 1.0) are
+  unchanged. No erase discovery, boot exclusion, nwipe argv, token, countdown
+  or method change; commit uses `safety:` because report-USB discovery gained
+  a new read-only caller.
+- FILES: new `src/beamo_wipe/report_panel.py`; `support_export.py` (probe),
+  `wizard.py` (probe wiring/polling, `report_panel`, `done_actions_reason`),
+  `copy.py` (+27 strings; `REPORT_STATUS_TITLE`, `REPORT_HELP_STAGES` changed;
+  `CON_DONE_SAVE`/`CON_DONE_RETRY` replaced by `CON_PANEL_*`), locales
+  fr/de/es/it (drafts), `ui/tk_wizard.py`, `ui/accessible_wizard.py`,
+  `ui/console_wizard.py`, `gallery.py`; docs screens.md, screen-reader.md,
+  runbook.md, ADVANCED.md, README.md, translations.md.
+- TESTS: new `tests/test_report_panel_135.py` (probe states incl. no USB, two
+  USBs, NTFS/FAT16/ext4/HFS+/unknown, mounted/read-only/two partitions,
+  protected disks, scan failure, read-only guarantee; every panel state incl.
+  saving/saved/failed/removed mid-save/evidence/preview; wizard polling;
+  Tk footer two actions in 9 states + preview, greyed-has-reason, two-Tab
+  QEMU path, evidence Retry in first view, sounds by Tab + focus kept, live
+  redraw keeps focus, text sizes; curses and plain console). GTK: one new
+  test + export-stages test updated in test_accessible_runtime.py (not run
+  here). Updated: test_rendered_visible_behavior, test_separate_report_status
+  (+ the files listed under CHECKS).
+- CHECKS: Windows-native (WSL down), 2026-11-03. New test file: 77 pass
+  (53 non-Tk, 24 Tk run one by one); all fail on 1d69a67 (no report_panel
+  module). Per-file comparison vs 1d69a67 of 294 related files plus 34
+  doc/QEMU-script files: new-only failures were intended pins of the old
+  footer/"Report status"/export-stage wording (updated: test_rendered_visible_
+  behavior, test_separate_report_status, test_export_stages,
+  test_erase_record_127, test_warning_success_differentiation,
+  test_language_selection EXCLUDED probe states; ES "use" -> "utilice"), the
+  #134 first-view and German 800x600 fits (fixed by putting the footer note
+  beside the sound links), and environmental ones identical to the baseline
+  or explained: tmp PermissionError (_done_wizard/write_evidence_atomic),
+  Tcl init glitches (pass alone), WSL/gh 401, the sparse worktree's missing
+  docs/evidence/. ruff (CI selections incl. S rules), mypy --platform linux,
+  compileall, node --check of the gallery script (en, de), bash -n
+  qemu-verify.sh and git diff --check pass. QEMU: qemu-verify.sh now waits
+  for BEAMO_WIPE_REPORT_USB_FOUND (fixed state-name marker emitted by Tk)
+  instead of a fixed 5 s sleep before Tab, Tab, Space.
+- KNOWN DEBT: copy.report_aftercare / export_stage_lines / EXPORT_STAGE_*
+  are no longer used by any surface (kept with their tests; remove and port
+  those tests to report_panel in a follow-up).
+- SCREENSHOTS: scratch `work135-scratch-20261103` shots-before (1d69a67),
+  shots-after, shots-after-de (visible.txt), console.txt.
+- NOT VERIFIED: GTK/Orca tests and speech (no GTK here), full Linux pytest at
+  72 DPI (WSL down), ISO/QEMU (the qemu-verify Tab-Tab-Space save path now
+  needs the live probe to find the hotplugged stick within its 5 s sleep;
+  covered locally only by the Tk two-Tab test), real USB sticks, native
+  review of FR/DE/ES/IT strings.
+- NEXT: hosted ci.yml on the stack head (owner approval) incl. QEMU report
+  save; native review; #175 decides the final sound-settings place; merge
+  order #94 -> #127 -> ... -> #134 -> #135.

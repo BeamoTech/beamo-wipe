@@ -2398,6 +2398,22 @@ class TkWizard:
             # Each visit to the keyboard screen starts on the language (#131).
             self._kbd_focus: Optional[tuple] = None
         assert self._body is not None and self._footer is not None
+        self._done_refocus = ""
+        if self.w.screen == Screen.DONE and getattr(self, "_shown", None) == Screen.DONE:
+            # Live report-USB status (#135) redraws Done on its own; keep the
+            # keyboard where the person left it instead of on Shut down.
+            try:
+                # Last focus in this window, even while another window is
+                # active (focus_get() is None then).
+                focused = self.root.focus_lastfor()
+            except (KeyError, tk.TclError):
+                focused = None
+            if isinstance(focused, _Button):
+                self._done_refocus = self._button_key(focused)
+            else:
+                # A control focused by the previous draw may not be mapped
+                # yet (Tk defers its focus); keep what that draw chose.
+                self._done_refocus = getattr(self, "_done_focus_key", "")
         if self._pick_canvas is not None:
             try:
                 bbox = self._pick_canvas.bbox("all")
@@ -2518,6 +2534,11 @@ class TkWizard:
             emit_serial_marker(f"BEAMO_WIPE_DISCOVERY_{code.upper()}")
         if report_view is not None:
             emit_serial_marker(f"BEAMO_WIPE_REPORT_{report_view.status.upper()}")
+            # Live report-USB state (#135): a fixed state name only, never a
+            # model, size, path or serial.
+            usb = self.w.report_usb
+            if usb is not None:
+                emit_serial_marker(f"BEAMO_WIPE_REPORT_USB_{usb.state.upper()}")
         if first_review_draw:
             # Building a large first review can consume the original timer.
             # Start the visible five seconds after the screen is complete.
@@ -2717,6 +2738,8 @@ class TkWizard:
             self._wrapping_label(
                 lines, extra, font=self.font_s, fg=MUTED, bg=bg,
             ).pack(fill=tk.X, pady=(4, 0))
+        box.lines = lines  # type: ignore[attr-defined]
+        box.bg = bg  # type: ignore[attr-defined]
         return box
 
     def _bind_tree(self, widget: tk.Misc, click) -> None:
@@ -3090,16 +3113,30 @@ class TkWizard:
                 utility(C.SCREEN_READER_VIEW, self._click_accessible)
         if self.w.can_open_diagnostic:
             utility(C.DIAGNOSTIC_TITLE, self._nav(self.w.open_diagnostic))
+        if self.w.screen == Screen.DONE:
+            # Settings for this screen (#135): sounds live with the other
+            # utilities, reachable by Tab like every footer control.
+            utility(self.w.sound_toggle_text, self._nav(self.w.toggle_sounds))
+            utility(C.SOUND_HEAR_AGAIN, self._nav(self.w.request_hear_outcome_sound))
         if self.w.screen == Screen.DONE and not self.w.preview:
-            note = tk.Label(
-                assist, text=C.ANOTHER_HINT, font=self.font_s, bg=FOOTER_BG,
-                fg=MUTED, wraplength=max(200, self.lay.content_w - 24), justify=tk.LEFT,
-                anchor="w",
-            )
-            # width=1 so the unwrapped sentence cannot stretch the footer
-            # past an 1024-wide window; fill=X uses the content column.
-            note.configure(width=1)
-            note.pack(fill=tk.X, pady=(4, 0))
+            reason = self.w.done_actions_reason
+            text = reason or C.ANOTHER_HINT
+            if tool_width and tool_width + self.font_s.measure(text) + 24 <= self.lay.content_w:
+                # #135: beside the sound settings when the line has room, so
+                # the footer is no taller than before the settings moved in.
+                note = tk.Label(tool_row, text=text, font=self.font_s, bg=FOOTER_BG,
+                                fg=MUTED, anchor="w")
+                note.pack(side=tk.LEFT, padx=(12, 0))
+            else:
+                note = tk.Label(
+                    assist, text=text, font=self.font_s, bg=FOOTER_BG,
+                    fg=MUTED, wraplength=max(200, self.lay.content_w - 24), justify=tk.LEFT,
+                    anchor="w",
+                )
+                # width=1 so the unwrapped sentence cannot stretch the footer
+                # past an 1024-wide window; fill=X uses the content column.
+                note.configure(width=1)
+                note.pack(fill=tk.X, pady=(4, 0))
         # One unwrapped line of key-caps must fit the column; a longer
         # translation (Spanish, Italian) wraps like the short-window hint.
         caps = sum(len(_KEY_TOKEN_KEYS.get(m.group(0), (m,))) for m in _KEY_TOKEN_RE.finditer(hint))
@@ -5263,6 +5300,11 @@ class TkWizard:
             self._disk_summary(col, self.w.selected, more=True).pack(
                 fill=tk.X, pady=(8 if self.lay.short else 12, 0)
             )
+        panel = self.w.report_panel
+        if panel.kind == "evidence":
+            # Ref #153: an evidence-save failure and its Retry stay in the
+            # first view, above guidance and the support code.
+            self._report_save_panel(col, panel)
         if plain.checklist and self._show_more:
             from beamo_wipe import recovery as Rec
 
@@ -5286,18 +5328,11 @@ class TkWizard:
             self._p(col, C.POST_ERASE_BOOT, font=self.font_s, fg=MUTED).pack(
                 fill=tk.X, pady=(8, 0)
             )
-        self._p(col, C.REPORT_STATUS_TITLE, font=self.font_s_bold).pack(
-            fill=tk.X, pady=(12, 4)
-        )
-        detail = (C.REPORT_PREVIEW if self.w.preview else
-                  self.w.evidence_warning if report.evidence_error else
-                  C.report_aftercare(can_save=report.can_save, status=report.status, message=report.message))
-        self._panel(
-            col, kind="info" if self.w.preview else report.tone,
-            text=C.REPORT_PREVIEW if self.w.preview else report.headline,
-            extra=C.REPORT_STATUS_NOTICE + ("" if self.w.preview else " " + detail),
-            compact=True,
-        ).pack(fill=tk.X)
+        # Save a report (#135): numbered steps, live USB status and its own
+        # Save. No Tab stop sits between Show more and Save, so Shut down ->
+        # Show more -> Save stays the two-Tab path.
+        if panel.kind != "evidence":
+            self._report_save_panel(col, panel)
         self._p(col, self.w.method_summary, font=self.font_s).pack(fill=tk.X, pady=(8, 0))
         sections = recovery_for_view(result)
         if sections:
@@ -5315,26 +5350,15 @@ class TkWizard:
             self._p(col, self.w.sound_message, font=self.font_s, fg=MUTED).pack(
                 fill=tk.X, pady=(8, 0)
             )
+        # Footer (#135): two actions. Sounds and Hear again sit with the
+        # other settings in the assist strip; report actions are in the panel.
         row = self._footer_shell(C.HINT_DEFAULT if self.w.preview else C.HINT_DONE)
         if self.w.preview:
             self._secondary_btn(row, C.BTN_CLOSE_PREVIEW, self._click_shutdown)
-            self._link_btn(row, self.w.sound_toggle_text, self.w.toggle_sounds)
-            self._link_btn(row, C.SOUND_HEAR_AGAIN, self.w.request_hear_outcome_sound)
             self._primary_btn(row, C.BTN_RUN_AGAIN, self.w.reset_for_preview)
         else:
-            if report.evidence_error:
-                self._secondary_btn(row, C.RETRY_SAVE, self._click_retry_evidence,
-                                    enabled=report.can_retry_evidence)
-            self._secondary_btn(
-                row,
-                C.BTN_SAVE_REPORT,
-                self._click_save_report,
-                enabled=report.can_save,
-            )
-            self._link_btn(row, self.w.sound_toggle_text, self.w.toggle_sounds)
-            self._link_btn(row, C.SOUND_HEAR_AGAIN, self.w.request_hear_outcome_sound)
-            self._link_btn(row, C.BTN_ERASE_ANOTHER, self.w.erase_another_disk,
-                           enabled=self.w.can_erase_another)
+            self._secondary_btn(row, C.BTN_ERASE_ANOTHER, self.w.erase_another_disk,
+                                enabled=self.w.can_erase_another)
             self._primary_btn(
                 row,
                 C.BTN_SHUTDOWN,
@@ -5342,7 +5366,75 @@ class TkWizard:
                 enabled=not report.exporting and not report.saving_evidence,
             )
         if self._primary is not None and not getattr(self, "_report_space_release_pending", False):
-            self._primary.focus_set()
+            target = self._find_done_button(getattr(self, "_done_refocus", ""))
+            chosen = target or self._primary
+            chosen.focus_set()
+            self._done_focus_key = self._button_key(chosen)
+
+    @staticmethod
+    def _button_key(button: "_Button") -> str:
+        text = str(button.itemcget(button._label, "text"))
+        # The sounds toggle changes its words when pressed; match it by role.
+        return "\x00sounds" if text in (C.SOUND_TOGGLE_ON, C.SOUND_TOGGLE_OFF) else text
+
+    def _find_done_button(self, key: str) -> Optional["_Button"]:
+        if not key:
+            return None
+        stack: list[tk.Misc] = [self.root]
+        while stack:
+            widget = stack.pop()
+            if isinstance(widget, _Button) and widget._enabled and self._button_key(widget) == key:
+                return widget
+            stack.extend(widget.winfo_children())
+        return None
+
+    def _report_save_panel(self, col: tk.Frame, panel) -> None:
+        """Save a report (#135): steps, the live USB line and its controls.
+
+        Every greyed control has its reason on the line under it.
+        """
+        self._p(col, C.REPORT_STATUS_TITLE, font=self.font_s_bold).pack(
+            fill=tk.X, pady=(12, 4)
+        )
+        kind = panel.tone if panel.tone in ("ok", "warn") else "info"
+        # Ref #153: Retry evidence save comes straight after its warning
+        # headline so it stays in the first view at 800x600; the longer
+        # explanation follows it.
+        retry_first = panel.kind == "evidence"
+        box = self._panel(col, kind=kind, text=panel.headline,
+                          extra=None if retry_first else (panel.detail or None),
+                          compact=True)
+        box.pack(fill=tk.X)
+        lines, bg = box.lines, box.bg  # type: ignore[attr-defined]
+        for line in panel.step_lines:
+            self._wrapping_label(lines, line, font=self.font_s, bg=bg).pack(
+                fill=tk.X, pady=(3, 0)
+            )
+
+        def control(text: str, command: Callable[[], None], enabled: bool, reason: str) -> None:
+            button = _Button(lines, text=text, command=self._nav(command),
+                             font=self.font_btn, variant="secondary",
+                             enabled=enabled, compact=self.lay.compact)
+            button.pack(anchor="w", pady=(8, 0))
+            if not enabled and reason:
+                self._wrapping_label(lines, reason, font=self.font_s, fg=MUTED, bg=bg).pack(
+                    fill=tk.X, pady=(4, 0)
+                )
+
+        if panel.show_retry:
+            control(C.RETRY_SAVE, self._click_retry_evidence,
+                    panel.retry_enabled, panel.retry_reason)
+        if retry_first and panel.detail:
+            self._wrapping_label(lines, panel.detail, font=self.font_s, fg=MUTED, bg=bg).pack(
+                fill=tk.X, pady=(8, 0)
+            )
+        if panel.show_save:
+            control(C.BTN_SAVE_REPORT, self._click_save_report,
+                    panel.save_enabled, panel.save_reason)
+        if panel.notice:
+            self._wrapping_label(lines, panel.notice, font=self.font_s, fg=MUTED, bg=bg).pack(
+                fill=tk.X, pady=(8, 0)
+            )
 
     def _advanced(self) -> None:
         col = self._column(self._body, fill_height=True)

@@ -341,8 +341,10 @@ def test_report_help_leads_with_the_photo_option():
     for kept in ("FAT32 or exFAT", "Save report to USB", "remove only that report USB",
                  "Never remove report media while saving", C.BTN_REFRESH):
         assert kept in usb
-    for stage in C.EXPORT_STAGES:
-        assert stage in usb
+    # #135: the help names the result screen's guided steps.
+    for step in ("looks for it", "shows where the report was saved",
+                 "Remove the report USB only after that"):
+        assert step in usb
     assert "photograph" in C.REPORT_MEDIA_WHAT
 
 

@@ -206,8 +206,11 @@ completion evidence remains indeterminate, separate from confirmed cancellation
 and interruption. Do not automatically re-run an erase or edit evidence into success.
 
 Keep report media unplugged during target selection, confirmation, and erasing.
-After the erase has stopped and **Save report to USB** is available, leave the
-boot USB and target attached, insert exactly one new FAT32 or exFAT USB, then choose Save.
+After the erase has stopped, the result screen's **Save a report** panel asks
+for the stick: leave the boot USB and target attached, insert exactly one new
+FAT32 or exFAT USB, wait for **Found: …**, then choose **Save report to USB**.
+If the panel says the stick is the wrong format or that two are plugged in,
+follow that line; Save stays greyed until one suitable stick is found.
 Any unsaved report is lost when the live session shuts down or loses power.
 The optional **Need a report?** preference does not export. If requested reports
 remain unsaved, shutdown asks **Shut down without saving?**; **Keep session open**

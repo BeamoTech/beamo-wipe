@@ -1920,10 +1920,37 @@ def test_done_export_stages_announced_per_state(ui, tmp_path, status):
         wizard.report_message = "Report USB was removed."
     app = ui(wizard)
     body = text(app)
-    for index, stage in enumerate(C.EXPORT_STAGES, 1):
-        assert (f"{index}. {stage}" in body) == (status != "error")
+    # #135: the Save a report panel reads its numbered steps in every state.
+    assert C.REPORT_STATUS_TITLE in body
+    for line in wizard.report_panel.step_lines:
+        assert line in body
     if status == "error":
-        assert "Save report to USB again" in body
+        assert "Report USB was removed." in body
+
+
+@pytest.mark.parametrize("found", [True, False])
+def test_done_report_panel_and_two_final_actions(ui, tmp_path, found):
+    """#135: Save sits in the panel with its reason; two final actions. Needs display."""
+    from beamo_wipe import copy as C
+    from beamo_wipe import support_export as X
+    from test_usb_report_workflow import _done_wizard, _success_receipt
+
+    wizard = _done_wizard(_success_receipt, tmp_path)
+    usb = (X.ReportUsbProbe(X.PROBE_FOUND, label="SanDisk Ultra, 16 GB", filesystem="FAT32")
+           if found else X.ReportUsbProbe(X.PROBE_NONE))
+    wizard._report_usb_probe = lambda **_k: usb
+    wizard._report_usb = usb
+    app = ui(wizard)
+    body = text(app)
+    for line in wizard.report_panel.step_lines:
+        assert line in body
+    save = app.actions[C.BTN_SAVE_REPORT]
+    assert save.get_parent() is app.body
+    assert save.get_sensitive() is found
+    assert (C.REPORT_SAVE_WAIT in body) is (not found)
+    navigation = sorted(widget.get_label() for widget in app.navigation.get_children())
+    assert navigation == sorted([C.BTN_ERASE_ANOTHER, C.BTN_SHUTDOWN])
+    assert C.RETRY_SAVE not in app.actions
 
 
 def test_diagnostic_rejection_announces_next_step(ui):

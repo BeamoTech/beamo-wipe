@@ -1072,6 +1072,120 @@ def select_export_volume(
     )
 
 
+
+# Live report-USB detection for the result screen (#135). Read-only: one
+# lsblk scan through the same selector the export uses. Nothing is mounted,
+# opened or written; Save still runs the export's own two-scan checks.
+PROBE_NONE = "none"
+PROBE_MANY = "many"
+PROBE_FOUND = "found"
+PROBE_FORMAT = "format"
+PROBE_REFUSED = "refused"
+PROBE_UNAVAILABLE = "unavailable"
+FILESYSTEM_NAMES: Mapping[str, str] = MappingProxyType({
+    "vfat": "FAT",
+    "exfat": "exFAT",
+    "ntfs": "NTFS",
+    "ext2": "ext2",
+    "ext3": "ext3",
+    "ext4": "ext4",
+    "btrfs": "Btrfs",
+    "xfs": "XFS",
+    "f2fs": "F2FS",
+    "hfs": "HFS",
+    "hfsplus": "Mac OS Extended (HFS+)",
+    "apfs": "APFS",
+    "iso9660": "ISO 9660",
+    "udf": "UDF",
+    "crypto_LUKS": "LUKS",
+    "BitLocker": "BitLocker",
+    "swap": "swap",
+})
+_FAT_VERSIONS = frozenset({"FAT12", "FAT16", "FAT32"})
+
+
+@dataclass(frozen=True)
+class ReportUsbProbe:
+    """What one read-only scan saw for the report USB. No device paths."""
+
+    state: str
+    label: str = ""
+    filesystem: str = ""
+    detail: str = ""
+
+
+def filesystem_name(fstype: str, fsver: str = "") -> str:
+    """Owner-facing filesystem name, or "" when unknown or unformatted."""
+    if fstype == "vfat":
+        return fsver if fsver in _FAT_VERSIONS else "FAT"
+    return FILESYSTEM_NAMES.get(fstype, "")
+
+
+def _new_usb_volume_type(
+    payload: Mapping[str, Any], baseline: Sequence[DeviceFingerprint]
+) -> tuple[str, str]:
+    """(fstype, fsver) of the single new USB's single volume, best effort."""
+    try:
+        roots = _root_disks(payload)
+        new = [
+            node for node in roots
+            if node.get("type") == "disk"
+            and node.get("tran") == "usb"
+            and not any(_same_device(_fingerprint_node(node), old) for old in baseline)
+        ]
+        if len(new) != 1:
+            return "", ""
+        node = new[0]
+        children = _children(node)
+        if not _strict_text(node, "fstype") and len(children) == 1:
+            node = children[0]
+        return _strict_text(node, "fstype"), _strict_text(node, "fsver")
+    except (SafetyError, AttributeError, TypeError, ValueError):
+        return "", ""
+
+
+def probe_report_usb(
+    *,
+    discovery: DiscoveryResult,
+    target_path: str,
+    scan: Callable[[], Mapping[str, Any]] = run_lsblk,
+) -> ReportUsbProbe:
+    """Classify the report USB from one read-only scan (#135).
+
+    Uses the export's own baseline (boot USB and erased target required)
+    and selector, so "found" here means the export's first check would
+    accept the same stick. Never mounts, opens or writes a device.
+    """
+    required_paths = {target_path}
+    if discovery.boot is not None:
+        required_paths.add(discovery.boot.path)
+    baseline = baseline_fingerprints(discovery.disks, required_paths=required_paths)
+    try:
+        payload = scan()
+    except Exception:  # noqa: BLE001 - a failed scan is "could not check"
+        return ReportUsbProbe(PROBE_UNAVAILABLE)
+    try:
+        volume = select_export_volume(payload, baseline)
+    except SafetyError as exc:
+        detail = str(exc)
+        if detail == USB_NOT_SINGLE.format(detail=USB_NONE_FOUND):
+            return ReportUsbProbe(PROBE_NONE)
+        if detail == USB_NOT_SINGLE.format(detail=USB_MANY_FOUND):
+            return ReportUsbProbe(PROBE_MANY)
+        if detail in (USB_FAT32_ONLY, USB_FAT32_NOT_12_16):
+            fstype, fsver = _new_usb_volume_type(payload, baseline)
+            return ReportUsbProbe(
+                PROBE_FORMAT, filesystem=filesystem_name(fstype, fsver), detail=detail
+            )
+        return ReportUsbProbe(PROBE_REFUSED, detail=detail)
+    except Exception:  # noqa: BLE001 - malformed scan data: could not check
+        return ReportUsbProbe(PROBE_UNAVAILABLE)
+    return ReportUsbProbe(
+        PROBE_FOUND,
+        label=destination_label_for(volume.parent.model, volume.parent.size_bytes),
+        filesystem=filesystem_name(volume.fstype, volume.fsver),
+    )
+
 def prepare_terminal_evidence(path: Path, target_path: str) -> VerifiedEvidence:
     data = _verified_evidence_bytes(Path(path))
     from beamo_wipe.evidence import SUPPORTED_SCHEMA_VERSIONS, _unique_evidence_fields
